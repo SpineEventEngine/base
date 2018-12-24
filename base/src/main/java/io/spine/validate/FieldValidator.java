@@ -35,7 +35,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
- * Validates fields according to Spine custom protobuf options and
+ * Validates messages according to Spine custom protobuf options and
  * provides constraint violations found.
  *
  * @param <V>
@@ -46,10 +46,7 @@ abstract class FieldValidator<V> implements Logging {
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
 
-    /**
-     * A change of values that is is being validated.
-     */
-    private final FieldValueChange fieldValueChange;
+    private final FieldValue value;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
 
@@ -59,58 +56,31 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
-    private final boolean setOnce;
 
     /**
      * If set the validator would assume that the field is required even
      * if the {@code required} option is not set.
      */
-    private final boolean strict;
-
-    /**
-     * Creates a new validator instance.
-     *
-     * <p>Created validator validates the change of the value of the field.
-     * This constructor should be used when the previous value of the field is important for
-     * validation, as opposed to just the new value of the field, in which case {@linkplain
-     * #FieldValidator(FieldValue, boolean) this constructor} should be used.
-     *
-     * @param fieldValueChange
-     *         the change of the field to validate.
-     * @param strict
-     *         if {@code true} the validator would assume that the field
-     */
-    protected FieldValidator(FieldValueChange fieldValueChange, boolean strict) {
-        this.fieldValueChange = fieldValueChange;
-        FieldValue desiredValue = fieldValueChange.newValue();
-        this.declaration = desiredValue.declaration();
-        this.values = desiredValue.asList();
-        this.strict = strict;
-        this.required = desiredValue.valueOf(OptionsProto.required);
-        this.ifMissingOption = desiredValue.valueOf(OptionsProto.ifMissing);
-        this.validate = desiredValue.valueOf(OptionsProto.valid);
-        this.ifInvalid = desiredValue.valueOf(OptionsProto.ifInvalid);
-        this.setOnce = desiredValue.valueOf(OptionsProto.setOnce);
-    }
+    private final boolean assumeRequired;
 
     /**
      * Creates a new validator instance.
      *
      * @param fieldValue
      *         the value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
      */
-    protected FieldValidator(FieldValue fieldValue, boolean strict) {
-        this.fieldValueChange = FieldValueChange.withoutPreviousValue(fieldValue);
+    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+        this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
-        this.strict = strict;
+        this.assumeRequired = assumeRequired;
         this.required = fieldValue.valueOf(OptionsProto.required);
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
-        this.setOnce = fieldValue.valueOf(OptionsProto.setOnce);
     }
 
     /**
@@ -158,7 +128,6 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
-        validateSetOnce();
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -167,32 +136,6 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
-    }
-
-    /**
-     * Validates whether a logic enforced by the {@code (set_once)} option.
-     *
-     * <p>If a field that is being validated already has any value, and there's an attempt to change
-     * it, a {@code ConstraintViolation} is generated.
-     */
-    @SuppressWarnings("ConstantConditions")
-        // `isFirstTimeSet` controls for `null`s.
-    private void validateSetOnce() {
-        if (setOnce && !fieldValueChange.isFirstTimeSet()) {
-            FieldValue previousValue = fieldValueChange.previousValue();
-            FieldValue desiredValue = fieldValueChange.newValue();
-            String fieldName = previousValue.declaration()
-                                            .name()
-                                            .javaCase();
-            ConstraintViolation setOnceViolation = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat("%s has (set_once) = true, can't change its value from %s to %s")
-                    .addParam(fieldName)
-                    .addParam(previousValue.toString())
-                    .addParam(desiredValue.toString())
-                    .build();
-            addViolation(setOnceViolation);
-        }
     }
 
     /**
@@ -234,7 +177,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} if the field has required attribute or validation is strict.
      */
     protected boolean isRequiredField() {
-        boolean result = required || strict;
+        boolean result = required || assumeRequired;
         return result;
     }
 
@@ -338,9 +281,8 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        FieldValue desiredValue = fieldValueChange.newValue();
-        boolean requiredSetExplicitly = desiredValue.option(OptionsProto.required)
-                                                    .isExplicitlySet();
+        boolean requiredSetExplicitly = value.option(OptionsProto.required)
+                                             .isExplicitlySet();
         boolean notRequired = !required && requiredSetExplicitly;
         return declaration.isEntityId() && !notRequired;
     }
@@ -351,8 +293,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return the field context
      */
     protected FieldContext getFieldContext() {
-        return fieldValueChange.newValue()
-                               .context();
+        return value.context();
     }
 
     /** Returns a path to the current field. */

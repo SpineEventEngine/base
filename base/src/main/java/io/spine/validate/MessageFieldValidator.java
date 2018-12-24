@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -50,27 +49,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldValueChange
-     *         the change of the field value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
-     */
-    MessageFieldValidator(FieldValueChange fieldValueChange, boolean strict) {
-        super(fieldValueChange, strict);
-        this.timeConstraint = fieldValueChange.newValue().valueOf(OptionsProto.when);
-    }
-
-    /**
-     * Creates a new validator instance.
-     *
      * @param fieldValue
      *         the value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even if
+     *         such constraint is not explicitly set
      */
-    @VisibleForTesting
-    MessageFieldValidator(FieldValue fieldValue, boolean strict) {
-        super(fieldValue, strict);
+    MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired);
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 

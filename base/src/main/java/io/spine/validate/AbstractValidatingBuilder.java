@@ -37,7 +37,6 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -130,7 +129,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
-        checkNotNull(result);
         return result;
     }
 
@@ -151,7 +149,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
-        checkNotNull(result);
         return result;
     }
 
@@ -159,20 +156,10 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue currentValue = currentFieldValue(descriptor, fieldContext);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValueChange change = FieldValueChange.of(currentValue, valueToValidate);
-        FieldValidator<?> validator = create(change);
+        FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
-    }
-
-    private FieldValue currentFieldValue(FieldDescriptor descriptor,
-                                                   FieldContext fieldContext) {
-        FieldValue fieldValue = getMessageBuilder().hasField(descriptor) ?
-                                FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
-                                FieldValue.unsetValue(fieldContext);
-        return fieldValue;
     }
 
     /**
