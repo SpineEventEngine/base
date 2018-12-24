@@ -27,9 +27,11 @@ import com.google.protobuf.Message;
 import io.spine.protobuf.Messages;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.base.UuidValue.FIELD_NAME;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -89,7 +91,7 @@ class UuidFactory<I extends Message> {
      */
     @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
     I newUuidOf(String value) {
-        checkNotEmptyOrBlank(value);
+        checkIsUuid(value);
         Message initializedId = Messages.builderFor(idClass)
                                         .setField(uuidField, value)
                                         .build();
@@ -99,5 +101,25 @@ class UuidFactory<I extends Message> {
     private static boolean isUuidValue(Descriptor message) {
         DescriptorProto messageProto = message.toProto();
         return new UuidValue.Matcher().test(messageProto);
+    }
+
+    /**
+     * Checks that the given value is UUID-based.
+     *
+     * <p>The check utilizes the Standard Java {@code UUID}
+     * {@linkplain java.util.UUID#fromString(String) check on construction}.
+     *
+     * @throws IllegalArgumentException
+     *         if the passed value is not a valid UUID string
+     */
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // Just verify that object is constructed without errors.
+    private static void checkIsUuid(String value) {
+        checkNotEmptyOrBlank(value);
+        try {
+            UUID.fromString(value);
+        } catch (NumberFormatException e) {
+            throw newIllegalArgumentException(e, "Invalid UUID string: %s", value);
+        }
     }
 }

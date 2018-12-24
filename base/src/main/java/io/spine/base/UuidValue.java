@@ -23,8 +23,6 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageDeclaration;
 
@@ -83,6 +81,9 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
 
     /**
      * Creates a new identifier instance from the passed value.
+     *
+     * @throws IllegalArgumentException
+     *         if the passed value is not a valid UUID string
      */
     default I of(String value) {
         checkNotEmptyOrBlank(value);
