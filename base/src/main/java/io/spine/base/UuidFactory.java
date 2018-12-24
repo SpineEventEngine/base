@@ -46,6 +46,7 @@ class UuidFactory<I extends Message> {
 
     private static final String ERROR_MESSAGE =
             "A UUID message should have a single string field named %s.";
+    private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     private final Class<I> idClass;
     private final FieldDescriptor uuidField;
@@ -121,7 +122,7 @@ class UuidFactory<I extends Message> {
         try {
             UUID.fromString(value);
         } catch (NumberFormatException e) {
-            throw newIllegalArgumentException(e, "Invalid UUID string: %s", value);
+            throw newIllegalArgumentException(e, INVALID_STRING_MESSAGE, value);
         }
     }
 }
