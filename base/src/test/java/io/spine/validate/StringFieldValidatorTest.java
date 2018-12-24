@@ -104,13 +104,6 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
     }
 
     @Override
-    protected FieldValidator<?> setOnceValidatorWithPresetDefaultValue() {
-        String previousValue = "";
-        String actualValue = Identifier.newUuid();
-        return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, previousValue, actualValue);
-    }
-
-    @Override
     protected FieldValidator<?> validSetOnceValidator() {
         String desiredValue = Identifier.newUuid();
         return getValidator(SET_ONCE_STRING_FIELD_DESC, desiredValue);

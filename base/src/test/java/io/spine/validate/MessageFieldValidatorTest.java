@@ -112,15 +112,6 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     }
 
     @Override
-    protected FieldValidator<?> setOnceValidatorWithPresetDefaultValue() {
-        Timestamp previousValue = Timestamp.getDefaultInstance();
-        Timestamp desiredValue = now();
-
-        return getValidatorForChangedField(SET_ONCE_TIMESTAMP_FIELD_DESC, previousValue,
-                                           desiredValue);
-    }
-
-    @Override
     protected FieldValidator<?> validSetOnceValidator() {
         Timestamp now = now();
         return getValidator(SET_ONCE_TIMESTAMP_FIELD_DESC, now);

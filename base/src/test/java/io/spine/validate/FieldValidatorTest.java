@@ -114,16 +114,6 @@ public abstract class FieldValidatorTest<V> {
     protected abstract FieldValidator<V> setOnceViolatedValidator();
 
     /**
-     * Creates a validator for a field with {@code (set_once) = true}, that is being set first with
-     * a default value, and then with an actual one.
-     *
-     * <p>It should result in a constraint violation.
-     *
-     * @return new instance of a field validator
-     */
-    protected abstract FieldValidator<?> setOnceValidatorWithPresetDefaultValue();
-
-    /**
      * Creates a validator for a field with {@code (set_once) = true}, that is being set only once.
      *
      * <p>It should result in no constraint violations.
@@ -227,14 +217,6 @@ public abstract class FieldValidatorTest<V> {
     @DisplayName("pick up violations of a set_once option")
     void testSetOnceViolated() {
         FieldValidator<?> validator = setOnceViolatedValidator();
-        List<ConstraintViolation> violations = validator.validate();
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    @DisplayName("not confuse default field values for values that have not been set")
-    void testSetOnceDifferentiatesBetweenDefaultAndUnsetValues() {
-        FieldValidator<?> validator = setOnceValidatorWithPresetDefaultValue();
         List<ConstraintViolation> violations = validator.validate();
         assertEquals(1, violations.size());
     }
