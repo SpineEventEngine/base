@@ -24,7 +24,7 @@ import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
-import io.spine.base.UniqueId;
+import io.spine.base.UuidValue;
 import io.spine.code.proto.MessageDeclaration;
 
 import java.util.Optional;
@@ -105,7 +105,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         COMMAND_MESSAGE(CommandMessage.class, CommandMessage.predicate()),
         REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.predicate()),
 
-        UNIQUE_ID(UniqueId.class, UniqueId.predicate(), ParameterFactory.messageItself());
+        UNIQUE_ID(UuidValue.class, UuidValue.predicate(), ParameterFactory.messageItself());
 
         private final Class<? extends Message> interfaceClass;
         private final Predicate<MessageDeclaration> predicate;

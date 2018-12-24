@@ -29,7 +29,7 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
-import io.spine.base.UniqueId;
+import io.spine.base.UuidValue;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
@@ -253,7 +253,7 @@ class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate UniqueId insertion points")
+    @DisplayName("generate UuidValue insertion points")
     void generateUniqueIdInsertionPoints() {
         String filePath = "spine/tools/protoc/unique_ids.proto";
 
@@ -268,12 +268,12 @@ class MarkerInterfaceGeneratorTest {
             assertTrue(file.hasName());
 
             String genericParam = '<' + ProjectId.class.getSimpleName() + '>';
-            assertEquals(UniqueId.class.getName() + genericParam + ',', file.getContent());
+            assertEquals(UuidValue.class.getName() + genericParam + ',', file.getContent());
         }
     }
 
     @Test
-    @DisplayName("not generate UniqueId insertion points for non-ID messages")
+    @DisplayName("not generate UuidValue insertion points for non-ID messages")
     void notGenerateUniqueIdForIncorrect() {
         String filePath = "spine/tools/protoc/incorrect_ids.proto";
 

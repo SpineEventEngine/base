@@ -52,7 +52,7 @@ import static io.spine.base.UuidMessage.isUuidMessage;
 @SuppressWarnings({"unchecked" /* Class cast correctness guaranteed by the interface contract. */,
         "InterfaceNeverImplemented" /* Used by the Protobuf Compiler plugin. */})
 @Immutable
-public interface UniqueId<I extends Message> extends SerializableMessage {
+public interface UuidValue<I extends Message> extends SerializableMessage {
 
     /**
      * Provides a predicate which checks whether the given {@code MessageDeclaration} represents an
