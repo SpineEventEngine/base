@@ -44,6 +44,9 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 class UuidFactory<I extends Message> {
 
+    private static final String ERROR_MESSAGE =
+            "A UUID message should have a single string field named %s.";
+
     private final Class<I> idClass;
     private final FieldDescriptor uuidField;
 
@@ -66,8 +69,7 @@ class UuidFactory<I extends Message> {
     static <I extends Message> UuidFactory<I> forClass(Class<I> idClass) {
         Descriptor message = Messages.newInstance(idClass)
                                      .getDescriptorForType();
-        checkState(isUuidValue(message),
-                   "A UUID message should have a single string field named %s.", FIELD_NAME);
+        checkState(isUuidMessage(message), ERROR_MESSAGE, FIELD_NAME);
         List<FieldDescriptor> fields = message.getFields();
         FieldDescriptor uuidField = fields.get(0);
         return new UuidFactory<>(idClass, uuidField);
@@ -98,7 +100,7 @@ class UuidFactory<I extends Message> {
         return (I) initializedId;
     }
 
-    private static boolean isUuidValue(Descriptor message) {
+    private static boolean isUuidMessage(Descriptor message) {
         DescriptorProto messageProto = message.toProto();
         return new UuidValue.Matcher().test(messageProto);
     }
