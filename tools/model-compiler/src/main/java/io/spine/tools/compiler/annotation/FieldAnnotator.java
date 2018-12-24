@@ -21,14 +21,16 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.GeneratedAccessors;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
-import io.spine.code.proto.FieldName;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.Options;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
@@ -38,12 +40,14 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
@@ -57,46 +61,46 @@ import static java.lang.String.format;
  *
  * @author Dmytro Grankin
  */
-class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
+class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
 
     FieldAnnotator(Class<? extends Annotation> annotation,
                    GeneratedExtension<FieldOptions, Boolean> option,
-                   Collection<FileDescriptorProto> fileDescriptors,
+                   Collection<FileDescriptor> fileDescriptors,
                    String genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 
     @Override
     public void annotate() {
-        for (FileDescriptorProto file : fileDescriptors()) {
+        for (FileDescriptor file : fileDescriptors()) {
             annotate(file);
         }
     }
 
     @Override
-    protected void annotateOneFile(FileDescriptorProto file) {
+    protected void annotateOneFile(FileDescriptor file) {
         if (!shouldAnnotate(file)) {
             return;
         }
 
-        SourceFile outerClass = SourceFile.forOuterClassOf(file);
+        SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
         rewriteSource(outerClass, new FileFieldAnnotation<JavaClassSource>(file));
     }
 
     @Override
-    protected void annotateMultipleFiles(FileDescriptorProto file) {
-        for (DescriptorProto messageType : file.getMessageTypeList()) {
+    protected void annotateMultipleFiles(FileDescriptor file) {
+        for (Descriptor messageType : file.getMessageTypes()) {
             if (shouldAnnotate(messageType)) {
                 SourceVisitor<JavaClassSource> annotation =
-                        new MessageFieldAnnotation<>(file, messageType);
-                SourceFile filePath = SourceFile.forMessage(messageType, file);
+                        new MessageFieldAnnotation<>(messageType);
+                SourceFile filePath = SourceFile.forMessage(messageType.toProto(), file.toProto());
                 rewriteSource(filePath, annotation);
             }
         }
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(FieldDescriptorProto file) {
+    protected Optional<Boolean> getOptionValue(FieldDescriptor file) {
         return Options.option(file, getOption());
     }
 
@@ -136,9 +140,9 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         /**
          * A file descriptor, that has {@code false} value for a {@code java_multiple_files} option.
          */
-        private final FileDescriptorProto fileDescriptor;
+        private final FileDescriptor fileDescriptor;
 
-        private FileFieldAnnotation(FileDescriptorProto file) {
+        private FileFieldAnnotation(FileDescriptor file) {
             checkMultipleFilesOption(file, false);
             this.fileDescriptor = file;
         }
@@ -152,20 +156,18 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         @Override
         public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
-            for (DescriptorProto messageType : fileDescriptor.getMessageTypeList()) {
-                Iterable<String> unannotatableFields = getNotAnnotatableFields(messageType);
-                processMessageDescriptor(input, messageType, unannotatableFields);
+            for (Descriptor messageType : fileDescriptor.getMessageTypes()) {
+                processMessageDescriptor(input, messageType);
             }
             return null;
         }
 
         private void processMessageDescriptor(AbstractJavaSource<T> input,
-                                              DescriptorProto messageType,
-                                              Iterable<String> unannotatableFields) {
-            for (FieldDescriptorProto field : messageType.getFieldList()) {
+                                              Descriptor messageType) {
+            for (FieldDescriptor field : messageType.getFields()) {
                 if (shouldAnnotate(field)) {
                     JavaSource message = findNestedType(input, messageType.getName());
-                    annotateMessageField(asClassSource(message), field, unannotatableFields);
+                    annotateMessageField(asClassSource(message), new FieldDeclaration(field));
                 }
             }
         }
@@ -183,16 +185,10 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
          * A message descriptor for a file descriptor,
          * that has {@code true} value for a {@code java_multiple_files} option.
          */
-        private final DescriptorProto message;
+        private final Descriptor message;
 
-        private MessageFieldAnnotation(FileDescriptorProto file, DescriptorProto message) {
-            if (!file.getMessageTypeList()
-                     .contains(message)) {
-                throw newIllegalStateException(
-                        "Specified message `%s` does not belong to the file `%s`.",
-                        message, file);
-            }
-            checkMultipleFilesOption(file, true);
+        private MessageFieldAnnotation(Descriptor message) {
+            checkMultipleFilesOption(message.getFile(), true);
 
             this.message = message;
         }
@@ -206,10 +202,9 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         @Override
         public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
-            Iterable<String> fieldsToSkip = getNotAnnotatableFields(message);
-            for (FieldDescriptorProto field : message.getFieldList()) {
+            for (FieldDescriptor field : message.getFields()) {
                 if (shouldAnnotate(field)) {
-                    annotateMessageField(asClassSource(input), field, fieldsToSkip);
+                    annotateMessageField(asClassSource(input), new FieldDeclaration(field));
                 }
             }
             return null;
@@ -223,18 +218,12 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      *        the message, that contains field for annotation
      * @param field
      *        the field descriptor to get field name
-     * @param skipFields
-     *        the field names that should not be annotated
      */
     private void annotateMessageField(JavaClassSource message,
-                                      FieldDescriptorProto field,
-                                      Iterable<String> skipFields) {
-        String capitalizedFieldName = FieldName.of(field)
-                                               .toCamelCase();
+                                      FieldDeclaration field) {
         JavaClassSource messageBuilder = getBuilder(message);
-
-        annotateAccessors(message, capitalizedFieldName, skipFields);
-        annotateAccessors(messageBuilder, capitalizedFieldName, skipFields);
+        annotateAccessors(message, field);
+        annotateAccessors(messageBuilder, field);
     }
 
     /**
@@ -242,69 +231,25 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      *
      * @param javaSource
      *        class source to modify
-     * @param capitalizedFieldName
-     *        the field name to get accessors
-     * @param skipFields
-     *        the field names that should not be annotated
+     * @param field
+     *        the declaration of the field to be annotated
      */
     private void annotateAccessors(JavaClassSource javaSource,
-                                   String capitalizedFieldName,
-                                   Iterable<String> skipFields) {
-        for (MethodSource method : javaSource.getMethods()) {
-            boolean shouldAnnotate =
-                    shouldAnnotateMethod(method.getName(), capitalizedFieldName, skipFields);
-            if (method.isPublic() && shouldAnnotate) {
-                addAnnotation(method);
-            }
+                                   FieldDeclaration field) {
+        ImmutableSet<String> names = GeneratedAccessors.forField(field)
+                                                       .names();
+        try (PrintStream out = new PrintStream(new File("/Users/ddashenkov/Desktop/build.log"))) {
+            out.println("Lookup started");
+            javaSource.getMethods()
+                      .stream()
+                      .peek(method -> out.println("Checking method " + method))
+                      .filter(MethodSource::isPublic)
+                      .filter(method -> names.contains(method.getName()))
+                      .peek(method -> out.println("Marking method " + method))
+                      .forEach(this::addAnnotation);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Tells whether a method with the specified name relates to the specified field name.
-     *
-     * @param methodName           the method name to check annotation need
-     * @param capitalizedFieldName the field name, that requires annotation
-     * @param unannotatableFields  the capitalized names of fields, that do not require annotation
-     * @return {@code true} if a method with the specified name should be annotated,
-     *         {@code false} otherwise
-     */
-    @VisibleForTesting
-    static boolean shouldAnnotateMethod(String methodName,
-                                        String capitalizedFieldName,
-                                        Iterable<String> unannotatableFields) {
-        if (!methodName.contains(capitalizedFieldName)) {
-            return false;
-        }
-
-        for (String unannotatableField : unannotatableFields) {
-            boolean isDebatableMethod =
-                    unannotatableField.length() > capitalizedFieldName.length();
-            if (isDebatableMethod && methodName.contains(unannotatableField)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtains the capitalized field names, that should not be annotated,
-     * for the specified message descriptor.
-     *
-     * @param messageDescriptor the message descriptor to collect the fields
-     * @return the capitalized field names
-     * @see #shouldAnnotate(com.google.protobuf.GeneratedMessageV3)
-     */
-    private Iterable<String> getNotAnnotatableFields(DescriptorProto messageDescriptor) {
-        Collection<String> fieldNames = newLinkedList();
-        for (FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
-            if (shouldAnnotate(fieldDescriptor)) {
-                String capitalizedFieldName = FieldName.of(fieldDescriptor)
-                                                       .toCamelCase();
-                fieldNames.add(capitalizedFieldName);
-            }
-        }
-        return fieldNames;
     }
 
     /**
@@ -314,13 +259,10 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * @param file the file descriptor to scan
      * @return {@code true} if the file descriptor contains fields for annotation
      */
-    private boolean shouldAnnotate(FileDescriptorProto file) {
-        for (DescriptorProto messageDescriptor : file.getMessageTypeList()) {
-            if (shouldAnnotate(messageDescriptor)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean shouldAnnotate(FileDescriptor file) {
+        return file.getMessageTypes()
+                   .stream()
+                   .anyMatch(this::shouldAnnotate);
     }
 
     /**
@@ -330,13 +272,10 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * @param definition the message descriptor to scan
      * @return {@code true} if the message descriptor contains fields for annotation
      */
-    private boolean shouldAnnotate(DescriptorProto definition) {
-        for (FieldDescriptorProto fieldDescriptor : definition.getFieldList()) {
-            if (shouldAnnotate(fieldDescriptor)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean shouldAnnotate(Descriptor definition) {
+        return definition.getFields()
+                         .stream()
+                         .anyMatch(this::shouldAnnotate);
     }
 
     /**
@@ -346,7 +285,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * @param file the file descriptor to check
      * @param expectedValue  the expected value for the {@code java_multiple_files}.
      */
-    private static void checkMultipleFilesOption(FileDescriptorProto file, boolean expectedValue) {
+    private static void checkMultipleFilesOption(FileDescriptor file, boolean expectedValue) {
         boolean actualValue = file.getOptions().getJavaMultipleFiles();
         if (actualValue != expectedValue) {
             throw newIllegalStateException("`java_multiple_files` should be `%s`, but was `%s`.",

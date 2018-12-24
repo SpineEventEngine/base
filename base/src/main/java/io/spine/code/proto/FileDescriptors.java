@@ -197,6 +197,13 @@ public final class FileDescriptors {
     }
 
     /**
+     * Verifies if the passed file declares types NOT under the "google" package.
+     */
+    public static boolean isNotGoogle(FileDescriptor file) {
+        return !isGoogle(file);
+    }
+
+    /**
      * Verifies if a package of a file does not start with {@code "google"}.
      */
     private enum IsNotGoogleProto implements Predicate<FileDescriptorProto>, Logging {

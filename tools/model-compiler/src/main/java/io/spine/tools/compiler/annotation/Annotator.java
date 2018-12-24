@@ -21,10 +21,10 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -45,6 +45,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.java.SourceFile.forMessage;
+import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
@@ -63,7 +65,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * @param <O> the type of Protobuf option, which is managed by the annotator
  * @param <D> the proto descriptor type used to receive {@link #option} value
  */
-public abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessageV3> {
+public abstract class Annotator<O extends ExtendableMessage, D extends GenericDescriptor> {
 
     /**
      * An annotation class.
@@ -80,7 +82,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     /**
      * Protobuf file descriptors to process.
      */
-    private final ImmutableList<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptor> fileDescriptors;
 
     /**
      * An absolute path to the Java sources, generated basing on {@link #fileDescriptors}.
@@ -89,7 +91,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     protected Annotator(Class<? extends Annotation> annotation,
                         GeneratedExtension<O, Boolean> option,
-                        Collection<FileDescriptorProto> fileDescriptors,
+                        Collection<FileDescriptor> fileDescriptors,
                         String genProtoDir) {
         this.annotation = checkNotNull(annotation);
         this.option = checkNotNull(option);
@@ -97,7 +99,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         this.genProtoDir = checkNotNull(genProtoDir);
     }
 
-    protected Iterable<FileDescriptorProto> fileDescriptors() {
+    protected Iterable<FileDescriptor> fileDescriptors() {
         return fileDescriptors;
     }
 
@@ -110,7 +112,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     /**
      * Annotates the Java sources generated from the specified file descriptor.
      */
-    protected final void annotate(FileDescriptorProto fileDescriptor) {
+    protected final void annotate(FileDescriptor fileDescriptor) {
         if (fileDescriptor.getOptions().getJavaMultipleFiles()) {
             annotateMultipleFiles(fileDescriptor);
         } else {
@@ -124,7 +126,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      *
      * @param fileDescriptor the file descriptor
      */
-    protected abstract void annotateOneFile(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateOneFile(FileDescriptor fileDescriptor);
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
@@ -132,7 +134,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      *
      * @param fileDescriptor the file descriptor
      */
-    protected abstract void annotateMultipleFiles(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateMultipleFiles(FileDescriptor fileDescriptor);
 
     /**
      * Tells whether the generated program elements
@@ -148,11 +150,11 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     /**
      * Annotates message class and MessageOrBuilder interface that correspond to the passed type.
      */
-    protected final void annotateMessageTypes(DescriptorProto type, FileDescriptorProto file) {
-        SourceFile messageClass = SourceFile.forMessage(type, file);
+    protected final void annotateMessageTypes(Descriptor type, FileDescriptor file) {
+        SourceFile messageClass = forMessage(type.toProto(), file.toProto());
         annotate(messageClass);
 
-        SourceFile messageOrBuilderInterface = SourceFile.forMessageOrBuilder(type, file);
+        SourceFile messageOrBuilderInterface = forMessageOrBuilder(type.toProto(), file.toProto());
         annotate(messageOrBuilderInterface);
     }
 
@@ -168,7 +170,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      *
      * @param descriptor the descriptor to extract {@link #option} value.
      * @return the option value
-     * @see #shouldAnnotate(GeneratedMessageV3)
+     * @see #shouldAnnotate(GenericDescriptor)
      */
     protected abstract Optional<Boolean> getOptionValue(D descriptor);
 
