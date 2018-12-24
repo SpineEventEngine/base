@@ -115,6 +115,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addStatement(descriptorDeclaration())
+                          .addStatement(validateSetOnce())
                           .addStatement(validateStatement(fieldName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
