@@ -27,10 +27,7 @@ import com.google.common.truth.Truth;
 import io.spine.code.Indent;
 import io.spine.code.IndentLevel;
 import io.spine.js.generate.given.GivenLines;
-import io.spine.js.generate.output.CodeLine;
-import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.IndentedLine;
-import io.spine.js.generate.output.RawLine;
+import io.spine.js.generate.output.snippet.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,11 +35,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.js.generate.output.CodeLines.LINE_SEPARATOR;
-import static io.spine.js.generate.output.RawLine.comment;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.js.generate.given.GivenLines.newCodeLines;
+import static io.spine.js.generate.output.CodeLines.LINE_SEPARATOR;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -219,7 +215,7 @@ class CodeLinesTest {
     void appendUnalignedLine() {
         CodeLines lines = new CodeLines();
         lines.increaseDepth();
-        CodeLine comment = comment("The field...");
+        CodeLine comment = Comment.of("The field...");
         lines.append(comment);
         String expected = lines.indent() + comment.content();
         assertThat(lines).isEqualTo(expected);
@@ -258,9 +254,9 @@ class CodeLinesTest {
     @Test
     @DisplayName("join lines using comma")
     void joinLinesWithComma() {
-        CodeLine first = RawLine.of("entry1");
-        CodeLine second = RawLine.of("entry2");
-        CodeLine last = RawLine.of("entry3");
+        CodeLine first = CodeLine.of("entry1");
+        CodeLine second = CodeLine.of("entry2");
+        CodeLine last = CodeLine.of("entry3");
         List<CodeLine> lines = ImmutableList.of(first, second, last);
         CodeLines code = CodeLines.commaSeparated(lines);
         assertThat(code).contains(first + ",");

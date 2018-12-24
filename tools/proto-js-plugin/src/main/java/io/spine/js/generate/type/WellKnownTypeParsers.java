@@ -40,19 +40,18 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.RawLine;
-import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
 import java.util.List;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.output.CodeLines.commaSeparated;
-import static io.spine.js.generate.output.RawLine.emptyLine;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
+import static io.spine.js.generate.output.CodeLine.emptyLine;
+import static io.spine.js.generate.output.CodeLines.commaSeparated;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -131,7 +130,7 @@ public final class WellKnownTypeParsers implements Snippet {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
-        CodeLine mapEntry = RawLine.mapEntry(typeUrl.value(), newParserCall);
+        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), newParserCall);
         return mapEntry;
     }
 

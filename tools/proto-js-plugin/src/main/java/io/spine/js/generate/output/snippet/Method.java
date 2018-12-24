@@ -20,10 +20,9 @@
 
 package io.spine.js.generate.output.snippet;
 
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.RawLine;
-import io.spine.js.generate.Snippet;
 
 import java.util.List;
 
@@ -49,27 +48,27 @@ public class Method implements Snippet {
 
     @Override
     public CodeLines value() {
-        CodeLines output = new CodeLines();
-        output.append(declaration());
+        CodeLines lines = new CodeLines();
+        lines.append(declaration());
+        appendBody(lines);
+        lines.append("};");
+        return lines;
+    }
+
+    private void appendBody(CodeLines output) {
         output.increaseDepth();
         for (CodeLine bodyLine : bodyLines) {
             output.append(bodyLine);
         }
         output.decreaseDepth();
-        output.append(ending());
-        return output;
     }
 
     /**
      * Declares JS method and enters its body.
      */
-    private RawLine declaration() {
+    private String declaration() {
         String argString = join(", ", arguments);
-        return RawLine.of(name + " = function(" + argString + ") {");
-    }
-
-    private static RawLine ending() {
-        return RawLine.of("};");
+        return name + " = function(" + argString + ") {";
     }
 
     /**
@@ -109,7 +108,7 @@ public class Method implements Snippet {
          * Appends a line to the body of the method.
          */
         public Builder appendToBody(String line) {
-            RawLine codeLine = RawLine.of(line);
+            CodeLine codeLine = CodeLine.of(line);
             body.add(codeLine);
             return this;
         }

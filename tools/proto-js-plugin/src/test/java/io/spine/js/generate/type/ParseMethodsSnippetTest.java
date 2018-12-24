@@ -43,7 +43,7 @@ class ParseMethodsSnippetTest {
     @DisplayName("generate explaining comment")
     void generateComment() {
         CodeLines comment = generator.generateComment();
-        assertContains(comment, COMMENT);
+        assertContains(comment, COMMENT.content());
     }
 
     @Test

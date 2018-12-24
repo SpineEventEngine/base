@@ -22,6 +22,9 @@ package io.spine.js.generate.output;
 
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+
 /**
  * A line of a Javascript code.
  *
@@ -33,6 +36,35 @@ public abstract class CodeLine {
      * Obtains the value of the line.
      */
     public abstract String content();
+
+    /**
+     * Obtains a code line with the specified content.
+     */
+    public static CodeLine of(String content) {
+        return new CodeLine() {
+            @Override
+            public String content() {
+                return content;
+            }
+        };
+    }
+
+    /**
+     * Obtains an empty code line.
+     */
+    public static CodeLine emptyLine() {
+        return of("");
+    }
+
+    /**
+     * Obtains a map entry with the string literal key.
+     */
+    public static CodeLine mapEntry(String key, Object value) {
+        checkNotNull(key);
+        checkNotNull(value);
+        String raw = format("['%s', %s]", key, value);
+        return of(raw);
+    }
 
     @Override
     public boolean equals(Object o) {

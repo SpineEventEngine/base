@@ -26,10 +26,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.RawLine;
-import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.snippet.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
@@ -37,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static io.spine.js.generate.output.RawLine.emptyLine;
+import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -152,7 +151,7 @@ public final class KnownTypesMap implements Snippet {
     private static CodeLine mapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         TypeName typeName = TypeName.from(message);
-        CodeLine mapEntry = RawLine.mapEntry(typeUrl.value(), typeName);
+        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), typeName);
         return mapEntry;
     }
 }

@@ -20,23 +20,31 @@
 
 package io.spine.js.generate.output;
 
-import io.spine.code.Indent;
-import io.spine.code.IndentLevel;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
+@DisplayName("CodeLine should")
+class CodeLineTest {
 
     @Test
-    @DisplayName("create indent for code based on depth and indentation")
-    void createIndent() {
-        IndentLevel depth = IndentLevel.of(2);
-        Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
-        String expected = "    content";
-        assertEquals(expected, line.content());
+    @DisplayName("provide a map entry with string literal key")
+    void mapEntry() {
+        String key = "k";
+        String value = "v";
+        CodeLine mapEntry = CodeLine.mapEntry(key, value);
+        assertThat(mapEntry).isEqualTo("['k', v]");
+    }
+
+    @Test
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        CodeLine line = CodeLine.emptyLine();
+        assertThat(line).isEqualTo("");
+    }
+
+    private static StringSubject assertThat(CodeLine line) {
+        return Truth.assertThat(line.content());
     }
 }

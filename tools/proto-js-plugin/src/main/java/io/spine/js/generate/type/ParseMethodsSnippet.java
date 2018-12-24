@@ -24,13 +24,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.Snippet;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.js.generate.output.RawLine.comment;
-import static io.spine.js.generate.output.RawLine.emptyLine;
+import static io.spine.js.generate.output.CodeLine.emptyLine;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
@@ -52,8 +52,8 @@ public final class ParseMethodsSnippet implements Snippet {
      * The comment inserted before the generated code.
      */
     @VisibleForTesting
-    static final String COMMENT =
-            "The code for parsing the Protobuf messages of this file from the JSON data.";
+    static final Comment COMMENT =
+            Comment.of("The generated code for parsing the Protobuf messages from the JSON data.");
 
     private final FileDescriptor file;
 
@@ -97,7 +97,7 @@ public final class ParseMethodsSnippet implements Snippet {
     CodeLines generateComment() {
         CodeLines snippet = new CodeLines();
         snippet.append(emptyLine());
-        snippet.append(comment(COMMENT));
+        snippet.append(COMMENT);
         return snippet;
     }
 

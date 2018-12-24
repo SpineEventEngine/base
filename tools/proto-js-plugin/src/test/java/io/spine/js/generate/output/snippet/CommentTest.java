@@ -18,43 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output;
+package io.spine.js.generate.output.snippet;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
-import io.spine.js.generate.output.CodeLine;
-import io.spine.js.generate.output.RawLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RawLine should")
-class RawLineTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("Comment should")
+class CommentTest {
 
     @Test
-    @DisplayName("provide a comment")
-    void comment() {
-        String value = "A comment text";
-        CodeLine comment = RawLine.comment(value);
-        assertThat(comment).isEqualTo("// " + value);
-    }
-
-    @Test
-    @DisplayName("provide a map entry with string literal key")
-    void mapEntry() {
-        String key = "k";
-        String value = "v";
-        CodeLine mapEntry = RawLine.mapEntry(key, value);
-        assertThat(mapEntry).isEqualTo("['k', v]");
-    }
-
-    @Test
-    @DisplayName("provide an empty line")
-    void emptyLine() {
-        CodeLine line = RawLine.emptyLine();
-        assertThat(line).isEqualTo("");
-    }
-
-    private static StringSubject assertThat(CodeLine line) {
-        return Truth.assertThat(line.content());
+    @DisplayName("be prepended with slashes")
+    void predendedWithSlashes() {
+        String text = "It is a comment text.";
+        Comment comment = Comment.of(text);
+        assertEquals("// " + text, comment.content());
     }
 }

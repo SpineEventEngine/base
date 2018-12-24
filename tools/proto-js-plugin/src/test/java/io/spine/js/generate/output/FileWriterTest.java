@@ -22,8 +22,6 @@ package io.spine.js.generate.output;
 
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.FileWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +31,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.io.Files.createTempDir;
-import static io.spine.js.generate.output.FileWriter.createFor;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
+import static io.spine.js.generate.output.FileWriter.createFor;
 
 @DisplayName("FileWriter should")
 class FileWriterTest {

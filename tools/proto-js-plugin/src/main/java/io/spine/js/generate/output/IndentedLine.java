@@ -64,7 +64,7 @@ final class IndentedLine extends CodeLine {
      *         the indent per a depth level
      */
     static IndentedLine of(String line, IndentLevel depth, Indent indent) {
-        RawLine rawLine = RawLine.of(line);
+        CodeLine rawLine = CodeLine.of(line);
         return of(rawLine, depth, indent);
     }
 
