@@ -125,7 +125,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
          *         the descriptor of a message to check
          * @param file
          *         the descriptor of the message's declaring file
-         * @return {@code true} if a message declaration matches the interface contract,
+         * @return {@code true} if the message declaration matches the interface contract,
          *         {@code false} otherwise
          */
         public boolean matches(DescriptorProto message, FileDescriptorProto file) {
