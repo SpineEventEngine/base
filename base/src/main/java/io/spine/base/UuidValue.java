@@ -67,7 +67,7 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
      *
      * <p>The predicate accepts a message descriptor and the declaring file descriptor.
      *
-     * @return the predicate to distinguish UUID values
+     * @return the predicate to distinguish UUID-based messages
      */
     static BiPredicate<DescriptorProto, FileDescriptorProto> predicate() {
         return (message, file) -> new Matcher().test(message);
@@ -96,7 +96,7 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
     }
 
     /**
-     * Checks if the given message declaration matches the {@code UuidValue} contract.
+     * Checks if the given message definition matches the {@code UuidValue} contract.
      */
     class Matcher implements Predicate<DescriptorProto> {
 
