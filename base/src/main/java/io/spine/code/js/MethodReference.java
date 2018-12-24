@@ -20,8 +20,6 @@
 
 package io.spine.code.js;
 
-import io.spine.code.proto.Type;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -30,16 +28,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MethodReference {
 
     /** The type declaring the method. */
-    private final Type type;
+    private final TypeName typeName;
     /** The name of the method. */
     private final String methodName;
     /** Whether the method is defined on the prototype or not. */
     private final boolean onPrototype;
 
-    private MethodReference(Type type, String methodName, boolean onPrototype) {
-        checkNotNull(type);
+    private MethodReference(TypeName typeName, String methodName, boolean onPrototype) {
+        checkNotNull(typeName);
         checkNotNull(methodName);
-        this.type = type;
+        this.typeName = typeName;
         this.methodName = methodName;
         this.onPrototype = onPrototype;
     }
@@ -47,19 +45,18 @@ public class MethodReference {
     /**
      * Obtains the reference to the instance method of the specified type.
      */
-    public static MethodReference onType(Type type, String methodName) {
-        return new MethodReference(type, methodName, false);
+    public static MethodReference onType(TypeName typeName, String methodName) {
+        return new MethodReference(typeName, methodName, false);
     }
 
     /**
      * Obtains the reference to the static method of the specified type.
      */
-    public static MethodReference onPrototype(Type type, String methodName) {
-        return new MethodReference(type, methodName, true);
+    public static MethodReference onPrototype(TypeName typeName, String methodName) {
+        return new MethodReference(typeName, methodName, true);
     }
 
     public String value() {
-        TypeName typeName = TypeName.from(type.descriptor());
         String delimiter = onPrototype
                            ? ".prototype."
                            : ".";

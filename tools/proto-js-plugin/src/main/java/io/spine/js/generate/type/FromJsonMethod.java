@@ -23,6 +23,7 @@ package io.spine.js.generate.type;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Snippet;
@@ -140,8 +141,8 @@ public class FromJsonMethod implements Snippet {
      */
     private static Method fromJson(Descriptor message) {
         TypeName typeName = TypeName.from(message);
-        String methodName = typeName.value() + '.' + FROM_JSON;
-        return Method.newBuilder(methodName)
+        MethodReference reference = MethodReference.onType(typeName, FROM_JSON);
+        return Method.newBuilder(reference.value())
                      .appendToBody(parsedValue())
                      .appendToBody(fromJsonReturn(typeName))
                      .build();
@@ -162,7 +163,8 @@ public class FromJsonMethod implements Snippet {
      */
     private static void addFromObjectCode(Descriptor message, CodeLines output) {
         TypeName typeName = TypeName.from(message);
-        String methodName = typeName.value() + '.' + FROM_OBJECT;
+        String methodName = MethodReference.onType(typeName, FROM_OBJECT)
+                                           .value();
         output.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(output);
         output.append(emptyLine());

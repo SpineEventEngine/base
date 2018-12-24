@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.MethodReference;
+import io.spine.code.js.TypeName;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.CodeLine;
@@ -79,14 +80,19 @@ final class TypeUrlMethods implements Snippet {
 
     @VisibleForTesting
     static Method typeUrlMethod(Type type) {
-        TypeUrl typeUrl = type.url();
-        String methodName = MethodReference.onType(type, METHOD_NAME)
+        TypeName typeName = TypeName.from(type.descriptor());
+        String methodName = MethodReference.onType(typeName, METHOD_NAME)
                                            .value();
-        CodeLine returnStatement = Return.stringLiteral(typeUrl.value());
+        CodeLine returnStatement = returnTypeUrl(type);
         Method method = Method
                 .newBuilder(methodName)
                 .appendToBody(returnStatement.content())
                 .build();
         return method;
+    }
+
+    private static CodeLine returnTypeUrl(Type type) {
+        TypeUrl typeUrl = type.url();
+        return Return.stringLiteral(typeUrl.value());
     }
 }

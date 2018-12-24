@@ -21,8 +21,6 @@
 package io.spine.code.js;
 
 import com.google.protobuf.Any;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,12 +31,12 @@ class MethodReferenceTest {
 
     private static final String METHOD_NAME = "method";
 
-    private final Type type = MessageType.of(Any.getDescriptor());
+    private final TypeName typeName = TypeName.from(Any.getDescriptor());
 
     @Test
     @DisplayName("provide reference to an instance method")
     void instanceMethod() {
-        MethodReference reference = MethodReference.onPrototype(type, METHOD_NAME);
+        MethodReference reference = MethodReference.onPrototype(typeName, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.prototype.method";
         assertEquals(expectedName, reference.value());
     }
@@ -46,7 +44,7 @@ class MethodReferenceTest {
     @Test
     @DisplayName("provide reference to a static method")
     void staticMethod() {
-        MethodReference reference = MethodReference.onType(type, METHOD_NAME);
+        MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.method";
         assertEquals(expectedName, reference.value());
     }
