@@ -21,19 +21,22 @@
 package io.spine.js.generate.type;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.Type;
+import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.JsImportGenerator;
+import io.spine.js.generate.output.snippet.MapExportSnippet;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static io.spine.js.generate.output.CodeLine.emptyLine;
@@ -80,6 +83,7 @@ public final class KnownTypesMap implements Snippet {
     public CodeLines value() {
         CodeLines snippet = new CodeLines();
         generateImports(snippet);
+        snippet.append(emptyLine());
         snippet.append(generateKnownTypesMap());
         return snippet;
     }
@@ -113,34 +117,21 @@ public final class KnownTypesMap implements Snippet {
      */
     @VisibleForTesting
     CodeLines generateKnownTypesMap() {
-        CodeLines snippet = new CodeLines();
-        CodeLines mapEntries = knownTypeEntries(fileSet.files());
-        snippet.append(emptyLine());
-        snippet.exportMap(MAP_NAME);
-        snippet.append(mapEntries);
-        snippet.quitMapDeclaration();
-        return snippet;
+        List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
+        MapExportSnippet.Builder exportBuilder = MapExportSnippet.newBuilder(MAP_NAME);
+        for (Map.Entry<String, TypeName> entry : entries) {
+            exportBuilder.withEntry(entry.getKey(), entry.getValue());
+        }
+        return exportBuilder.build()
+                            .value();
     }
 
-    @VisibleForTesting
-    static CodeLines knownTypeEntries(Collection<FileDescriptor> files) {
-        List<CodeLine> mapEntries = files.stream()
-                                         .flatMap(file -> knownTypeEntries(file).stream())
-                                         .collect(toList());
-        return CodeLines.commaSeparated(mapEntries);
-    }
-
-    /**
-     * Obtains {@linkplain #mapEntry(Descriptor) entries} to fill the known types with.
-     *
-     * @param file
-     *         the file to collect known types from
-     */
-    private static List<CodeLine> knownTypeEntries(FileDescriptor file) {
-        List<Descriptor> messages = file.getMessageTypes();
-        List<CodeLine> entries = messages.stream()
-                                         .map(KnownTypesMap::mapEntry)
-                                         .collect(toList());
+    private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
+        TypeSet types = TypeSet.messagesAndEnums(fileSet);
+        List<Map.Entry<String, TypeName>> entries = types.types()
+                                                         .stream()
+                                                         .map(KnownTypesMap::mapEntry)
+                                                         .collect(toList());
         return entries;
     }
 
@@ -148,10 +139,9 @@ public final class KnownTypesMap implements Snippet {
      * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry of
      * the "{@linkplain TypeUrl type-url}-to-JS-type" format.
      */
-    private static CodeLine mapEntry(Descriptor message) {
-        TypeUrl typeUrl = TypeUrl.from(message);
-        TypeName typeName = TypeName.from(message);
-        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), typeName);
-        return mapEntry;
+    private static Map.Entry<String, TypeName> mapEntry(Type type) {
+        TypeUrl typeUrl = type.url();
+        TypeName typeName = TypeName.from(type.descriptor());
+        return Maps.immutableEntry(typeUrl.value(), typeName);
     }
 }

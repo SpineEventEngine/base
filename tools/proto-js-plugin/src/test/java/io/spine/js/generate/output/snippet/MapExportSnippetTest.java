@@ -18,24 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output;
+package io.spine.js.generate.output.snippet;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CodeLine should")
-class CodeLineTest {
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("MapExportSnippet should")
+class MapExportSnippetTest {
+
+    private static final String MAP_NAME = "map";
 
     @Test
-    @DisplayName("provide an empty line")
-    void emptyLine() {
-        CodeLine line = CodeLine.emptyLine();
-        assertThat(line).isEqualTo("");
-    }
-
-    private static StringSubject assertThat(CodeLine line) {
-        return Truth.assertThat(line.content());
+    @DisplayName("be initialized with several entries")
+    void withSeveralEntries() {
+        MapExportSnippet map = MapExportSnippet
+                .newBuilder(MAP_NAME)
+                .withEntry("firstKey", 1)
+                .withEntry("lastKey", 999)
+                .build();
+        CodeLines lines = map.value();
+        String stringRepresentation = lines.toString();
+        assertThat(stringRepresentation).contains("module.exports.map = new Map([");
+        assertThat(stringRepresentation).contains("  ['firstKey', 1],");
+        assertThat(stringRepresentation).contains("  ['lastKey', 999]");
+        assertThat(stringRepresentation).contains("]);");
     }
 }

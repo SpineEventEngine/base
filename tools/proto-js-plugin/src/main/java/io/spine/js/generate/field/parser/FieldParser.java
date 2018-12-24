@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.type.WellKnownTypeParsers;
+import io.spine.js.generate.type.ExportStandardParsersMap;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,7 +68,7 @@ public interface FieldParser {
         if (fdecl.isMessage()) {
             Descriptors.Descriptor message = field.getMessageType();
             TypeUrl typeUrl = TypeUrl.from(message);
-            boolean isWellKnownType = WellKnownTypeParsers.hasParser(typeUrl);
+            boolean isWellKnownType = ExportStandardParsersMap.hasParser(typeUrl);
             return isWellKnownType
                    ? WellKnownFieldParser.createFor(field, jsOutput)
                    : MessageFieldParser.createFor(field, jsOutput);

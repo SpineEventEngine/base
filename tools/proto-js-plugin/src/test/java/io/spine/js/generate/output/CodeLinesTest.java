@@ -243,15 +243,6 @@ class CodeLinesTest {
     }
 
     @Test
-    @DisplayName("declare map export")
-    void exportMap() {
-        jsOutput.exportMap(MAP_NAME);
-        String mapDeclaration = "module.exports." + MAP_NAME + " = new Map([";
-        assertContains(jsOutput, mapDeclaration);
-        assertEquals(1, jsOutput.currentDepth());
-    }
-
-    @Test
     @DisplayName("join lines using comma")
     void joinLinesWithComma() {
         CodeLine first = CodeLine.of("entry1");
@@ -263,16 +254,6 @@ class CodeLinesTest {
         assertThat(code).contains(second + ",");
         assertThat(code).contains(last.content());
         assertThat(code).doesNotContain(last + ",");
-    }
-
-    @Test
-    @DisplayName("quit exported map declaration")
-    void quitMapDeclaration() {
-        jsOutput.exportMap(MAP_NAME);
-        jsOutput.quitMapDeclaration();
-        String mapDeclarationExit = "]);";
-        assertContains(jsOutput, mapDeclarationExit);
-        assertEquals(0, jsOutput.currentDepth());
     }
 
     @Test

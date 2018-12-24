@@ -23,6 +23,7 @@ package io.spine.js.generate.type;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.BytesValue;
@@ -41,8 +42,8 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.MapExportSnippet;
 import io.spine.type.TypeUrl;
 
 import java.util.List;
@@ -51,7 +52,6 @@ import java.util.Map.Entry;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
-import static io.spine.js.generate.output.CodeLines.commaSeparated;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -62,7 +62,7 @@ import static java.util.stream.Collectors.toList;
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
-public final class WellKnownTypeParsers implements Snippet {
+public final class ExportStandardParsersMap implements Snippet {
 
     /**
      * The exported map name.
@@ -104,34 +104,35 @@ public final class WellKnownTypeParsers implements Snippet {
     public CodeLines value() {
         CodeLines out = new CodeLines();
         out.append(emptyLine());
-        out.exportMap(MAP_NAME);
-        storeParsersToMap(out);
-        out.quitMapDeclaration();
+        out.append(exportMap());
         return out;
     }
 
-    /**
-     * Adds entries to the declared parsers {@code Map}.
-     */
-    private static void storeParsersToMap(CodeLines output) {
+    private static MapExportSnippet exportMap() {
+        MapExportSnippet.Builder builder = MapExportSnippet.newBuilder(MAP_NAME);
+        for (Entry<String, String> entry : mapEntries()) {
+            builder.withEntry(entry.getKey(), entry.getValue());
+        }
+        return builder.build();
+    }
+
+    private static List<Entry<String, String>> mapEntries() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
-        List<CodeLine> entryLiterals = entries.stream()
-                                              .map(WellKnownTypeParsers::mapEntry)
-                                              .collect(toList());
-        CodeLines mergedLiterals = commaSeparated(entryLiterals);
-        output.append(mergedLiterals);
+        List<Entry<String, String>> entryLiterals = entries.stream()
+                                                           .map(ExportStandardParsersMap::mapEntry)
+                                                           .collect(toList());
+        return entryLiterals;
     }
 
     /**
      * Converts the {@linkplain Entry Java Map Entry} from the {@link #parsers} to the JS
      * {@code Map} entry.
      */
-    private static CodeLine mapEntry(Entry<TypeUrl, String> typeToParser) {
+    private static Entry<String, String> mapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
-        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), newParserCall);
-        return mapEntry;
+        return Maps.immutableEntry(typeUrl.value(), newParserCall);
     }
 
     /**

@@ -45,9 +45,8 @@ import static java.lang.System.lineSeparator;
  * <p>The writable representation of the output may be obtained through the {@link #toString()}
  * method.
  */
-@SuppressWarnings({"DuplicateStringLiteralInspection"
-        /* The generated code duplicates the code used in test that checks it. */,
-        "ClassWithTooManyMethods" /* A lot of simple utility methods for code generation. */})
+@SuppressWarnings("DuplicateStringLiteralInspection" /* The generated code duplicates the code
+                                                        used in test that checks it. */)
 public final class CodeLines {
 
     @VisibleForTesting
@@ -147,7 +146,8 @@ public final class CodeLines {
      * @param codeLine
      *         the code to add
      */
-    public void appendIndented(IndentedLine codeLine) {
+    @VisibleForTesting // otherwise private
+    void appendIndented(IndentedLine codeLine) {
         checkNotNull(codeLine);
         codeLines.add(codeLine);
     }
@@ -261,26 +261,6 @@ public final class CodeLines {
     public void ifNotNullOrUndefined(String value) {
         checkNotNull(value);
         enterIfBlock(value + " !== undefined && " + value + " !== null");
-    }
-
-    /**
-     * Exports the JS map with a given name and enters its declaration body.
-     *
-     * @param mapName
-     *         the name of the map
-     */
-    public void exportMap(String mapName) {
-        checkNotNull(mapName);
-        append("module.exports." + mapName + " = new Map([");
-        increaseDepth();
-    }
-
-    /**
-     * Exits the exported map declaration.
-     */
-    public void quitMapDeclaration() {
-        decreaseDepth();
-        append("]);");
     }
 
     /**

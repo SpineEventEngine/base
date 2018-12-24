@@ -24,8 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.output.FileWriter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,7 +108,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     @VisibleForTesting
     void writeKnownTypeParsers() {
         copyParsersCode();
-        WellKnownTypeParsers generator = new WellKnownTypeParsers();
+        ExportStandardParsersMap generator = new ExportStandardParsersMap();
         FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
         writer.append(generator.value());
     }

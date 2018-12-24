@@ -20,10 +20,10 @@
 
 package io.spine.js.generate.type;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
@@ -33,8 +33,6 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 
@@ -73,12 +71,19 @@ class KnownTypesMapTest {
     @Test
     @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        List<FileDescriptor> files = ImmutableList.of(ANY.getFile(), STRING_VALUE.getFile());
-        CodeLines entries = KnownTypesMap.knownTypeEntries(files);
+        CodeLines entries = generator.generateKnownTypesMap();
         String expectedForAny = expectedEntry(ANY) + ',';
         String expectedForString = expectedEntry(STRING_VALUE) + ',';
         assertContains(entries, expectedForAny);
         assertContains(entries, expectedForString);
+    }
+
+    @Test
+    @DisplayName("include enum types")
+    void includeEnums() {
+        CodeLines entries = generator.generateKnownTypesMap();
+        TypeUrl enumTypeUrl = TypeUrl.from(NullValue.getDescriptor());
+        assertContains(entries, enumTypeUrl.toString());
     }
 
     private static String expectedEntry(Descriptor message) {
