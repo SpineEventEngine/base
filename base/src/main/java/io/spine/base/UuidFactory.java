@@ -64,7 +64,7 @@ class UuidFactory<I extends Message> {
      *         the type of the Protobuf message
      * @return a new factory instance
      * @throws IllegalStateException
-     *         if a passed ID class does not obey {@link UuidValue} contract
+     *         if the passed ID class does not obey {@link UuidValue} contract
      */
     static <I extends Message> UuidFactory<I> forClass(Class<I> idClass) {
         Descriptor message = Messages.newInstance(idClass)
