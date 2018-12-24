@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -189,9 +188,6 @@ final class FieldValue {
             "ChainOfInstanceofChecks" // No other possible way to check the value type.
     })
     <T> ImmutableList<T> asList() {
-        if (isDefault()) {
-            return ImmutableList.of();
-        }
         if (value instanceof Collection) {
             Collection<T> result = (Collection<T>) value;
             return ImmutableList.copyOf(result);
@@ -212,13 +208,6 @@ final class FieldValue {
     /** Returns the context of the value. */
     FieldContext context() {
         return context;
-    }
-
-    private boolean isDefault(){
-        FieldDescriptorProto defaultValue = declaration.descriptor()
-                                                       .toProto()
-                                                       .getDefaultInstanceForType();
-        return value.equals(defaultValue);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")

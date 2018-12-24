@@ -56,7 +56,6 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
-    private final boolean setOnce;
 
     /**
      * If set the validator would assume that the field is required even
@@ -82,7 +81,6 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
-        this.setOnce = fieldValue.valueOf(OptionsProto.setOnce);
     }
 
     /**
@@ -93,7 +91,6 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
     boolean fieldValueNotSet() {
-        List<V> values = value.asList();
         boolean valueNotSet =
                 values.isEmpty()
                         || (declaration.isNotCollection() && isNotSet(values.get(0)));

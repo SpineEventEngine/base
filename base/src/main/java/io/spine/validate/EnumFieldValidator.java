@@ -33,7 +33,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
      * @param fieldValue
      *         the value to validate
      */
-    protected EnumFieldValidator(FieldValue fieldValue) {
+    EnumFieldValidator(FieldValue fieldValue) {
         super(fieldValue, false);
     }
 
