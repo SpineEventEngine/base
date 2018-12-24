@@ -18,18 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 /**
- * A convenience class for creating {@link MarkerInterfaceParameter} instances.
+ * A marker interface extending {@link com.google.protobuf.Message}.
+ *
+ * @author Dmytro Dashenkov
  */
-final class ParameterFactory {
+public interface MarkerInterface {
 
-    /** Prevents instantiation of this class. */
-    private ParameterFactory() {
-    }
+    /**
+     * Obtains a fully-qualified name of the interface.
+     */
+    String name();
 
-    static MarkerInterfaceParameter messageItself() {
-        return new MessageItself();
-    }
+    /**
+     * Obtains the generic params of the interface.
+     */
+    MarkerInterfaceParameters parameters();
 }

@@ -18,21 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
-import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
- * Output of the Protobuf compiler plugin.
+ * The marker interface parameter whose value is the implementing {@code Message} itself.
  *
- * @author Dmytro Dashenkov
+ * <p>For example, for the {@code ProjectId} class, the value of the parameter will be:
+ * {@code ProjectId}.
  */
-public interface CompilerOutput {
+final class MessageItself implements MarkerInterfaceParameter {
 
-    /**
-     * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
-     *
-     * @return compiler output as a {@link File}
-     */
-    File asFile();
+    @Override
+    public String valueFor(DescriptorProto target) {
+        return target.getName();
+    }
 }

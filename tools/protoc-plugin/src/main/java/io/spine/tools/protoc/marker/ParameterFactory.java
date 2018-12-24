@@ -18,23 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+package io.spine.tools.protoc.marker;
 
 /**
- * The generic parameter of the {@link MarkerInterface}.
- *
- * <p>Parameter value is presented as a {@code String} for usage in the generated code.
+ * A convenience class for creating {@link MarkerInterfaceParameter} instances.
  */
-interface MarkerInterfaceParameter {
+final class ParameterFactory {
 
-    /**
-     * Obtains a parameter value based on who is the marker interface target.
-     *
-     * @param target
-     *         the {@code Message} class implementing the marker interface
-     * @return the value of the generic parameter
-     */
-    String valueFor(DescriptorProto target);
+    /** Prevents instantiation of this class. */
+    private ParameterFactory() {
+    }
+
+    static MarkerInterfaceParameter messageItself() {
+        return new MessageItself();
+    }
 }

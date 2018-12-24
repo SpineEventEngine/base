@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.protoc.AbstractCompilerOutput;
 
 import static io.spine.code.java.PackageName.delimiter;
 import static java.lang.String.format;

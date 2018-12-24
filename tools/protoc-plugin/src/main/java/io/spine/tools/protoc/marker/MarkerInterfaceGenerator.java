@@ -18,19 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.SpineProtoGenerator;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import static io.spine.tools.protoc.BuiltInMarkerInterface.scanForBuiltIns;
-import static io.spine.tools.protoc.MessageAndInterface.scanFileOption;
-import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
+import static io.spine.tools.protoc.marker.BuiltInMarkerInterface.scanForBuiltIns;
+import static io.spine.tools.protoc.marker.MessageAndInterface.scanFileOption;
+import static io.spine.tools.protoc.marker.MessageAndInterface.scanMsgOption;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.option.IsOption;
 import io.spine.option.Options;
+import io.spine.tools.protoc.CompilerOutput;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
@@ -36,7 +37,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
+import static io.spine.tools.protoc.marker.MarkerInterfaceSpec.prepareInterface;
 
 /**
  * A tuple of two {@link File} instances representing a message and the marker interface

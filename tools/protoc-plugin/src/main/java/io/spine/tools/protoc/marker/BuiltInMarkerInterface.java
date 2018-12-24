@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
@@ -26,6 +26,7 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.proto.MessageDeclaration;
+import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -33,7 +34,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import static io.spine.tools.protoc.InsertionPoint.implementInterface;
+import static io.spine.tools.protoc.marker.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
 import static java.util.stream.Stream.of;
 

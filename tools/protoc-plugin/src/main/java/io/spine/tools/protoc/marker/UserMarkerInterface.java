@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.protoc.AbstractCompilerOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

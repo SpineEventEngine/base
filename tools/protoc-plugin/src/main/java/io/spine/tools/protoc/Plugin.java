@@ -24,6 +24,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.Options;
+import io.spine.tools.protoc.marker.MarkerInterfaceGenerator;
 
 import java.io.IOException;
 

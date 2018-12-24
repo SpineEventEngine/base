@@ -18,22 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
 /**
- * A marker interface extending {@link com.google.protobuf.Message}.
- *
- * @author Dmytro Dashenkov
+ * This package contains the mechanism of generating marker interfaces for the Proto messages.
  */
-public interface MarkerInterface {
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.marker;
 
-    /**
-     * Obtains the generic params of the interface.
-     */
-    MarkerInterfaceParameters parameters();
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

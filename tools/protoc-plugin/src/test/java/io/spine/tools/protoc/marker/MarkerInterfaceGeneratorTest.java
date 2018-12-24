@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.marker;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -33,6 +33,21 @@ import io.spine.base.UuidValue;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.protoc.EveryIsGeneratedProto;
+import io.spine.tools.protoc.EveryIsInOneFileProto;
+import io.spine.tools.protoc.EveryIsTestProto;
+import io.spine.tools.protoc.IsGeneratedProto;
+import io.spine.tools.protoc.IsInOneFileProto;
+import io.spine.tools.protoc.IsTestProto;
+import io.spine.tools.protoc.NonUuidValues;
+import io.spine.tools.protoc.ProjectId;
+import io.spine.tools.protoc.Rejections;
+import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.TestCommandsProto;
+import io.spine.tools.protoc.TestEventsProto;
+import io.spine.tools.protoc.UserNameProto;
+import io.spine.tools.protoc.UserProto;
+import io.spine.tools.protoc.UuidValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +59,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.marker.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
