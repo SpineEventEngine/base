@@ -25,12 +25,11 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.code.proto.MessageDeclaration;
 import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.stream.Stream;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -72,10 +71,9 @@ public class BuiltInMarkerInterface implements MarkerInterface {
      */
     static Optional<CompilerOutput> scanForBuiltIns(FileDescriptorProto file,
                                                     DescriptorProto message) {
-        MessageDeclaration declaration = MessageDeclaration.create(message, file);
         Optional<Type> foundInterface =
                 Stream.of(Type.values())
-                        .filter(contract -> contract.matches(declaration))
+                        .filter(contract -> contract.matches(message, file))
                         .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
@@ -109,11 +107,11 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         UUID_VALUE(UuidValue.class, UuidValue.predicate(), new IdentityParameter());
 
         private final Class<? extends Message> interfaceClass;
-        private final Predicate<MessageDeclaration> predicate;
+        private final BiPredicate<DescriptorProto, FileDescriptorProto> predicate;
         private final MarkerInterfaceParameters interfaceParams;
 
         Type(Class<? extends Message> interfaceClass,
-             Predicate<MessageDeclaration> predicate,
+             BiPredicate<DescriptorProto, FileDescriptorProto> predicate,
              MarkerInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
             this.predicate = predicate;
@@ -123,13 +121,15 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         /**
          * Checks if a given message declaration matches the contract of this interface.
          *
-         * @param declaration
-         *         the declaration to check
+         * @param message
+         *         the descriptor of a message to check
+         * @param file
+         *         the descriptor of the message's declaring file
          * @return {@code true} if a message declaration matches the interface contract,
          *         {@code false} otherwise
          */
-        public boolean matches(MessageDeclaration declaration) {
-            return predicate.test(declaration);
+        public boolean matches(DescriptorProto message, FileDescriptorProto file) {
+            return predicate.test(message, file);
         }
     }
 }

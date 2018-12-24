@@ -21,9 +21,10 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.MessageDeclaration;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 /**
  * A common interface for command messages.
@@ -36,14 +37,16 @@ import java.util.function.Predicate;
 public interface CommandMessage extends SerializableMessage {
 
     /**
-     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
+     * Provides a predicate which checks whether a given message declaration represents a
      * command message.
+     *
+     * <p>The predicate accepts a message descriptor and the declaring file descriptor.
      *
      * @return the predicate to distinguish command messages
      */
-    static Predicate<MessageDeclaration> predicate() {
-        return messageDeclaration -> File.predicate()
-                                         .test(messageDeclaration.getFile());
+    static BiPredicate<DescriptorProto, FileDescriptorProto> predicate() {
+        return (message, file) -> File.predicate()
+                                      .test(file);
     }
 
     /**

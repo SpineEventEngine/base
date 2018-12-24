@@ -23,9 +23,10 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
-import io.spine.code.proto.MessageDeclaration;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -61,13 +62,15 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
     String FIELD_NAME = "uuid";
 
     /**
-     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
+     * Provides a predicate which checks whether a given message declaration represents a
      * UUID-based identifier.
+     *
+     * <p>The predicate accepts a message descriptor and the declaring file descriptor.
      *
      * @return the predicate to distinguish UUID values
      */
-    static Predicate<MessageDeclaration> predicate() {
-        return new Matcher();
+    static BiPredicate<DescriptorProto, FileDescriptorProto> predicate() {
+        return (message, file) -> new Matcher().test(message);
     }
 
     /**
@@ -95,14 +98,9 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
     /**
      * Checks if the given message declaration matches the {@code UuidValue} contract.
      */
-    class Matcher implements Predicate<MessageDeclaration> {
+    class Matcher implements Predicate<DescriptorProto> {
 
         @Override
-        public boolean test(MessageDeclaration messageDeclaration) {
-            checkNotNull(messageDeclaration);
-            return test(messageDeclaration.getMessage());
-        }
-
         public boolean test(DescriptorProto message) {
             checkNotNull(message);
             int fieldCount = message.getFieldCount();
