@@ -123,7 +123,7 @@ extend google.protobuf.FieldOptions {
     // A typical use-case would include a value of an ID, which doesn't change over the course of
     // the life of an entity.
     //
-    // So for:
+    // Example:
     // message User {
     //
     //     UserId id = 1 [(set_once) = true];
