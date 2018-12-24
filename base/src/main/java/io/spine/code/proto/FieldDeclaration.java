@@ -130,7 +130,7 @@ public final class FieldDeclaration implements Logging {
                            Joiner.on(newLine)
                                  .join(allUrls));
 
-            throw new RuntimeException(message, e);
+            throw new IllegalStateException(message, e);
         }
     }
 

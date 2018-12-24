@@ -61,21 +61,22 @@ abstract class FieldValidator<V> implements Logging {
      * If set the validator would assume that the field is required even
      * if the {@code required} option is not set.
      */
-    private final boolean strict;
+    private final boolean assumeRequired;
 
     /**
      * Creates a new validator instance.
      *
      * @param fieldValue
      *         the value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
      */
-    protected FieldValidator(FieldValue fieldValue, boolean strict) {
+    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
-        this.strict = strict;
+        this.assumeRequired = assumeRequired;
         this.required = fieldValue.valueOf(OptionsProto.required);
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
@@ -176,7 +177,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} if the field has required attribute or validation is strict.
      */
     protected boolean isRequiredField() {
-        boolean result = required || strict;
+        boolean result = required || assumeRequired;
         return result;
     }
 
