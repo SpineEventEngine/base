@@ -26,6 +26,7 @@ import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.Task;
+import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -166,7 +167,7 @@ class ValidatingBuilderTest {
     @DisplayName("not allow to mutate a (set_once) marked field via the setter method")
     void testSetDoesNotAllowMutate() {
         TaskVBuilder builder = TaskVBuilder
-                .newBuiler()
+                .newBuilder()
                 .setId(Identifier.newUuid());
         assertThrows(ValidationException.class, () -> builder.setId(Identifier.newUuid()));
     }
@@ -174,12 +175,11 @@ class ValidatingBuilderTest {
     @Test
     @DisplayName("not allow to mutate a (set_once) marked field via the `clear` method")
     void testSetOnceDoesNotAllowClear() {
-        TasVBuilder builder = TaskVBuilder
+        TaskVBuilder builder = TaskVBuilder
                 .newBuilder()
                 .setId(Identifier.newUuid());
-        assertThrows(ValidationException.class, () -> builder.clearId());
+        assertThrows(ValidationException.class, builder::clearId);
     }
-
     /**
      * Creates a valid {@link ProjectVBuilder} instance.
      */
