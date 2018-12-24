@@ -206,8 +206,6 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * @param visitor
      *         the source visitor
      */
-    @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
-                                     for `AbstractJavaSource.class` value. */)
     static <T extends JavaSource<T>>
     void rewriteSource(String sourcePathPrefix, SourceFile sourcePath, SourceVisitor<T> visitor) {
         AbstractJavaSource<T> javaSource;
@@ -219,7 +217,11 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         }
 
         try {
-            javaSource = Roaster.parse(AbstractJavaSource.class, absoluteSourcePath.toFile());
+            @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
+                                     for `AbstractJavaSource.class` value. */)
+            AbstractJavaSource<T> parsed = Roaster.parse(AbstractJavaSource.class,
+                                                         absoluteSourcePath.toFile());
+            javaSource = parsed;
         } catch (FileNotFoundException e) {
             throw illegalStateWithCauseOf(e);
         }
