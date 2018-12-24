@@ -106,7 +106,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         COMMAND_MESSAGE(CommandMessage.class, CommandMessage.predicate()),
         REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.predicate()),
 
-        UUID_VALUE(UuidValue.class, UuidValue.predicate(), ParameterFactory.messageItself());
+        UUID_VALUE(UuidValue.class, UuidValue.predicate(), new IdentityParameter());
 
         private final Class<? extends Message> interfaceClass;
         private final Predicate<MessageDeclaration> predicate;

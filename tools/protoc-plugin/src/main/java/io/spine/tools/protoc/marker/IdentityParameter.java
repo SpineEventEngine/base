@@ -20,16 +20,18 @@
 
 package io.spine.tools.protoc.marker;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+
 /**
- * A convenience class for creating {@link MarkerInterfaceParameter} instances.
+ * The marker interface parameter whose value is the target {@code Message} itself.
+ *
+ * <p>So, for the {@code ProjectId} class implementing some marker interface, the value of the
+ * parameter will be {@code ProjectId}.
  */
-final class ParameterFactory {
+final class IdentityParameter implements MarkerInterfaceParameter {
 
-    /** Prevents instantiation of this class. */
-    private ParameterFactory() {
-    }
-
-    static MarkerInterfaceParameter messageItself() {
-        return new MessageItself();
+    @Override
+    public String valueFor(DescriptorProto target) {
+        return target.getName();
     }
 }
