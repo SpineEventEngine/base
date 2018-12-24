@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.Timestamp;
+import io.spine.base.Identifier;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
@@ -159,6 +160,24 @@ class ValidatingBuilderTest {
     void dispense_with_unchecked_map_fields() {
         builder.clearLabel();
         builder.build();
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked field via the setter method")
+    void testSetDoesNotAllowMutate() {
+        TaskVBuilder builder = TaskVBuilder
+                .newBuiler()
+                .setId(Identifier.newUuid());
+        assertThrows(ValidationException.class, () -> builder.setId(Identifier.newUuid()));
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked field via the `clear` method")
+    void testSetOnceDoesNotAllowClear() {
+        TasVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setId(Identifier.newUuid());
+        assertThrows(ValidationException.class, () -> builder.clearId());
     }
 
     /**

@@ -93,7 +93,7 @@ message Project {
 
 message Task {
 
-    string id = 1 [(required) = true];
+    string id = 1 [(required) = true, (set_once) = true];
 
     string name = 2 [(required) = true];
 }
@@ -115,3 +115,4 @@ message Attachment {
 
     spine.net.Url url = 3 [(required) = true, (valid) = true];
 }
+
