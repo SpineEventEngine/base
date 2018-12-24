@@ -75,6 +75,17 @@ public class IndentLevel {
         return of(value - 1);
     }
 
+    /**
+     * Obtains the total indent for the level.
+     *
+     * @param indentPerLevel
+     *         the indent per a level
+     */
+    public Indent totalIndent(Indent indentPerLevel) {
+        int totalSize = indentPerLevel.getSize() * value;
+        return Indent.of(totalSize);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

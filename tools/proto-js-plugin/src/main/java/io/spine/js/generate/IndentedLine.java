@@ -87,7 +87,7 @@ final class IndentedLine extends CodeLine {
      */
     @Override
     public String content() {
-        Indent totalIndent = indent.ofDepth(depth);
+        Indent totalIndent = depth.totalIndent(indent);
         String result = totalIndent + unaliagned.content();
         return result;
     }

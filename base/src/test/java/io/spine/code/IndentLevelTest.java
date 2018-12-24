@@ -65,4 +65,13 @@ class IndentLevelTest {
                                  .decremented()
         );
     }
+
+    @Test
+    @DisplayName("provide the total indent")
+    void indentDepth() {
+        Indent indent = Indent.of4();
+        IndentLevel level = IndentLevel.of(2);
+        Indent totalIndent = level.totalIndent(indent);
+        assertEquals(8, totalIndent.getSize());
+    }
 }
