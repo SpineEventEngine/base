@@ -36,6 +36,27 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
+     * <p>Returned validator validates the change of the field, as opposed to just a new value for
+     * it, like the {@linkplain #StringFieldValidator(FieldValue, boolean) the other constructor}.
+     *
+     *
+     * @param fieldValueChange
+     *         the change of the field value that is going to be validated
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     */
+    StringFieldValidator(FieldValueChange fieldValueChange, boolean strict) {
+        super(fieldValueChange, strict);
+        this.patternOption = fieldValueChange.newValue()
+                                             .valueOf(OptionsProto.pattern);
+        this.regex = patternOption.getRegex();
+    }
+
+    /**
+     * Creates a new validator instance.
+     *
+     * <p>Returned validator validates the new specified value of the field.
+     *
      * @param fieldValue
      *         the value to validate
      * @param assumeRequired

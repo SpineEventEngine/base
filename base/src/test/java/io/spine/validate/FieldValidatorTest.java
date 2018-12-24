@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -103,6 +104,45 @@ public abstract class FieldValidatorTest<V> {
     protected abstract FieldValidator<V> emptyMapFieldValidator();
 
     /**
+     * Creates a validator for a field with {@code (set_once) = true}, that is being
+     * set more than once.
+     *
+     * <p>It should result in a constraint violation.
+     *
+     * @return new instance of a field validator
+     */
+    protected abstract FieldValidator<V> setOnceViolatedValidator();
+
+    /**
+     * Creates a validator for a field with {@code (set_once) = true}, that is being set only once.
+     *
+     * <p>It should result in no constraint violations.
+     *
+     * @return new instance of a field validator
+     */
+    protected abstract FieldValidator<?> validSetOnceValidator();
+
+    /**
+     * Creates a validator for a field with {@code (set_once) = false}, that is being set multiple
+     * times.
+     *
+     * <p>It should result in no constraint violations.
+     *
+     * @return new instance of a field validator
+     */
+    protected abstract FieldValidator<?> setOnceFalseValidator();
+
+    /**
+     * Creates a validator for a field with {@code (set_once) = true}.
+     *
+     * <p>The field then is being set to the same value twice.
+     * This should result in a constraint violation.
+     *
+     * @return new instance of a field validator
+     */
+    protected abstract FieldValidator<?> setOnceChangeToSameValueValidator();
+
+    /**
      * Generates a new non-default valid value of the type of the validated field.
      */
     protected abstract V newValue();
@@ -171,6 +211,38 @@ public abstract class FieldValidatorTest<V> {
     void flag_map_fields() {
         FieldValidator<?> validator = emptyMapFieldValidator();
         assertNotScalar(validator);
+    }
+
+    @Test
+    @DisplayName("pick up violations of a set_once option")
+    void testSetOnceViolated() {
+        FieldValidator<?> validator = setOnceViolatedValidator();
+        List<ConstraintViolation> violations = validator.validate();
+        assertEquals(1, violations.size());
+    }
+
+    @Test
+    @DisplayName("not pick up any violations if a (set_once) field has been set once")
+    void testSetOnceWorks() {
+        FieldValidator<?> validator = validSetOnceValidator();
+        List<ConstraintViolation> violations = validator.validate();
+        assertEmpty(violations);
+    }
+
+    @Test
+    @DisplayName("allow fields that are (set_once) = false to change the field value")
+    void testSetOnceFalse() {
+        FieldValidator<?> validator = setOnceFalseValidator();
+        List<ConstraintViolation> violations = validator.validate();
+        assertEmpty(violations);
+    }
+
+    @Test
+    @DisplayName("not allow fields that are (set_once) = true to be changed to the same value")
+    void testSetOnceChangeToSameValue() {
+        FieldValidator<?> validator = setOnceChangeToSameValueValidator();
+        List<ConstraintViolation> violations = validator.validate();
+        assertEquals(1, violations.size());
     }
 
     private static void assertNotScalar(FieldValidator<?> validator) {

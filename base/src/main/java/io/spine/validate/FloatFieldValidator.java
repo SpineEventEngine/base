@@ -37,6 +37,16 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
         super(fieldValue);
     }
 
+    /**
+     * Creates a new validator instance.
+     *
+     * @param fieldValueChange
+     *         the value to validate
+     */
+    FloatFieldValidator(FieldValueChange fieldValueChange) {
+        super(fieldValueChange);
+    }
+
     @Override
     protected Float toNumber(String value) {
         Float min = Float.valueOf(value);
