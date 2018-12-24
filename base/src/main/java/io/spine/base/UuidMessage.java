@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A message containing a single string field named {@link #FIELD_NAME "uuid"}.
  */
-class UuidMessage<I extends Message> {
+final class UuidMessage<I extends Message> {
 
     private static final String FIELD_NAME = "uuid";
     private static final String ERROR_MSG =
