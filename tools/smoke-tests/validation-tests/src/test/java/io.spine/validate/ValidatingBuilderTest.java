@@ -26,6 +26,7 @@ import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.Task;
+import io.spine.test.validate.msg.builder.TaskLabel;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -164,7 +165,7 @@ class ValidatingBuilderTest {
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked field via the setter method")
+    @DisplayName("not allow to mutate a (set_once) marked string field via the setter method")
     void testSetDoesNotAllowMutate() {
         TaskVBuilder builder = TaskVBuilder
                 .newBuilder()
@@ -173,13 +174,56 @@ class ValidatingBuilderTest {
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked field via the `clear` method")
+    @DisplayName("not allow to mutate a (set_once) marked string field via the `clear` method")
     void testSetOnceDoesNotAllowClear() {
         TaskVBuilder builder = TaskVBuilder
                 .newBuilder()
                 .setId(Identifier.newUuid());
         assertThrows(ValidationException.class, builder::clearId);
     }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked enum field via the setter method")
+    void testSetOnceDoesNotAllowMutateEnumSetter() {
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setLabel(TaskLabel.CRITICAL);
+        assertThrows(ValidationException.class,
+                     () -> builder.setLabel(TaskLabel.OF_LITTLE_IMPORTANCE));
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked enum field via the `clear` method")
+    void testSetOnceDoesNotAllowMutateEnumClear() {
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setLabel(TaskLabel.IMPORTANT);
+        assertThrows(ValidationException.class, builder::clearLabel);
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked message field via the setter method")
+    void testSetOnceDoesNotAllowMutateMessageSetter() {
+        Member assignee = Member.getDefaultInstance();
+        Member anotherAssignee = Member.newBuilder()
+                                       .setId(Identifier.newUuid())
+                                       .build();
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setAssignee(assignee);
+        assertThrows(ValidationException.class, () -> builder.setAssignee(anotherAssignee));
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked message field via the clear method")
+    void testSetOnceDoesNotAllowMutateMessageClear() {
+        Member assignee = Member.getDefaultInstance();
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setAssignee(assignee);
+        assertThrows(ValidationException.class, builder::clearAssignee);
+    }
+
     /**
      * Creates a valid {@link ProjectVBuilder} instance.
      */
