@@ -37,7 +37,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A factory for creating UUID-based identifiers of the given {@link Message} type.
  *
- * <p>The created messages must contain a single {@code string} field named 'uuid'.
+ * <p>The passed message type must contain a single {@code string} field named 'uuid'.
  *
  * @param <I>
  *         the type of created messages
