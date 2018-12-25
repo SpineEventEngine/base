@@ -86,105 +86,105 @@ class ProtoAnnotatorPluginTest {
 
     @Test
     @DisplayName("annotate if file option is true")
-    void annotate_if_file_option_is_true() throws FileNotFoundException {
+    void annotateIfFileOptionIsTrue() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_ALL, true);
     }
 
     @Test
     @DisplayName("annotate service if file option if true")
-    void annotate_service_if_file_option_is_true() throws FileNotFoundException {
+    void annotateServiceIfFileOptionIsTrue() throws FileNotFoundException {
         assertServiceAnnotations(SPI_ALL_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate if file option if false")
-    void not_annotate_if_file_option_if_false() throws FileNotFoundException {
+    void notAnnotateIfFileOptionIfFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("not annotate service if file option is false")
-    void not_annotate_service_if_file_option_if_false() throws FileNotFoundException {
+    void notAnnotateServiceIfFileOptionIfFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if file option is true")
-    void annotate_multiple_files_if_file_option_is_true() throws FileNotFoundException {
+    void annotateMultipleFilesIfFileOptionIsTrue() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_ALL_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if file option is false")
-    void not_annotate_multiple_files_if_file_option_is_false() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate if message option is true")
-    void annotate_if_message_option_is_true() throws FileNotFoundException {
+    void annotateIfMessageOptionIsTrue() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_MESSAGE, true);
     }
 
     @Test
     @DisplayName("not annotate if message option is false")
-    void not_annotate_if_message_option_is_false() throws FileNotFoundException {
+    void notAnnotateIfMessageOptionIsFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if message option is true")
-    void annotate_multiple_files_if_message_option_is_true() throws FileNotFoundException {
+    void annotateMultipleFilesIfMessageOptionIsTrue() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_MESSAGE_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if message option is false")
-    void not_annotate_multiple_files_if_message_option_is_false() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate accessors if field option is true")
-    void annotate_accessors_if_field_option_is_true() throws FileNotFoundException {
+    void annotateAccessorsIfFieldOptionIsTrue() throws FileNotFoundException {
         assertFieldAnnotations(SPI_FIELD, true);
     }
 
     @Test
     @DisplayName("not annotate accessors if field option is false")
-    void not_annotate_accessors_if_field_option_is_false() throws FileNotFoundException {
+    void notAnnotateAccessorsIfFieldOptionIsFalse() throws FileNotFoundException {
         assertFieldAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate accessors in multiple files if field option is true")
-    void annotate_accessors_in_multiple_files_if_field_option_is_true()
+    void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(SPI_FIELD_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate accessors in multiple files if field option is false")
-    void not_annotate_accessors_in_multiple_files_if_field_option_is_false()
+    void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate GRPC services if section option is true")
-    void annotate_grpc_services_if_service_option_is_true() throws FileNotFoundException {
+    void annotateGrpcServicesIfServiceOptionIsTrue() throws FileNotFoundException {
         assertServiceAnnotations(SPI_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate GRPC services if service option is false")
-    void not_annotate_grpc_services_if_service_option_is_false() throws FileNotFoundException {
+    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws FileNotFoundException {
         assertServiceAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
-    void compile_generated_sources_with_potential_annotation_duplication() {
+    void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
