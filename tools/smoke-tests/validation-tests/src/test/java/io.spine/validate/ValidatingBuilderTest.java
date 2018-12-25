@@ -183,6 +183,15 @@ class ValidatingBuilderTest {
     }
 
     @Test
+    @DisplayName("not allow to mutate a (set_once) marked string field via the `mergeFrom` method")
+    void testSetOnceDesNotAllowMerge() {
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setId(Identifier.newUuid());
+        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
+    }
+
+    @Test
     @DisplayName("not allow to mutate a (set_once) marked enum field via the setter method")
     void testSetOnceDoesNotAllowMutateEnumSetter() {
         TaskVBuilder builder = TaskVBuilder
@@ -199,6 +208,15 @@ class ValidatingBuilderTest {
                 .newBuilder()
                 .setLabel(TaskLabel.IMPORTANT);
         assertThrows(ValidationException.class, builder::clearLabel);
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked enum field via the `mergeFrom` method")
+    void testSetOnceDoesNotAllowMutateEnumMergeFrom() {
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setLabel(TaskLabel.CRITICAL);
+        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
     }
 
     @Test
@@ -222,6 +240,17 @@ class ValidatingBuilderTest {
                 .newBuilder()
                 .setAssignee(assignee);
         assertThrows(ValidationException.class, builder::clearAssignee);
+    }
+
+    @Test
+    @DisplayName("not allow to mutate a (set_once) marked message field via the `mergeFrom` method")
+    void testSetOnceDoeNotAllowMutateMessageMergeFrom() {
+        Member assignee = Member.getDefaultInstance();
+        TaskVBuilder builder = TaskVBuilder
+                .newBuilder()
+                .setAssignee(assignee);
+        builder.mergeFrom(sampleTask());
+        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
     }
 
     /**
@@ -251,6 +280,16 @@ class ValidatingBuilderTest {
         return Task.newBuilder()
                    .setId(id)
                    .setName(name)
+                   .build();
+    }
+
+    private static Task sampleTask() {
+        Member member = Member.getDefaultInstance();
+        return Task.newBuilder()
+                   .setId(Identifier.newUuid())
+                   .setAssignee(member)
+                   .setLabel(TaskLabel.OF_LITTLE_IMPORTANCE)
+                   .setName("Do something unimportant")
                    .build();
     }
 
