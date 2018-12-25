@@ -122,13 +122,13 @@ final class VBuilderMethods {
      *
      * @return a statement like the following:
      *         <pre>
-     *                     {@code
-     *                     Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
-     *                     for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
-     *                         validateSetOnce(entry.getKey());
-     *                     }
-     *                     }
-     *                 </pre>
+     *         {@code
+     *             Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
+     *             for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
+     *                     validateSetOnce(entry.getKey());
+     *             }
+     *         }
+     *         </pre>
      */
     private static String checkAllFields() {
         String fieldsMap = "fieldsMap";
