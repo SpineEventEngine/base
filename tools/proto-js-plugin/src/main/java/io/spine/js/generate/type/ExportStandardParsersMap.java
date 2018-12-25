@@ -109,11 +109,10 @@ public final class ExportStandardParsersMap implements Snippet {
     }
 
     private static MapExportSnippet exportMap() {
-        MapExportSnippet.Builder builder = MapExportSnippet.newBuilder(MAP_NAME);
-        for (Entry<String, String> entry : mapEntries()) {
-            builder.withEntry(entry.getKey(), entry.getValue());
-        }
-        return builder.build();
+        return MapExportSnippet
+                .newBuilder(MAP_NAME)
+                .withEntries(mapEntries())
+                .build();
     }
 
     private static List<Entry<String, String>> mapEntries() {

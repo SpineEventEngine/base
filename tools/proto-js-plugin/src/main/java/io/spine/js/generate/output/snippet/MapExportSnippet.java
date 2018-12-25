@@ -26,6 +26,7 @@ import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
@@ -78,12 +79,23 @@ public class MapExportSnippet implements Snippet {
         }
 
         /**
-         * Appends an entry with the string literal key.
+         * Adds an entry with the string literal key.
          */
         @CanIgnoreReturnValue
         public Builder withEntry(String key, Object value) {
             CodeLine entry = mapEntry(key, value);
             entries.add(entry);
+            return this;
+        }
+
+        /**
+         * Adds several {@linkplain #withEntry(String, Object) entries}.
+         */
+        @CanIgnoreReturnValue
+        public <T> Builder withEntries(List<Entry<String, T>> entriesToAdd) {
+            for (Entry<String, ?> entry : entriesToAdd) {
+                withEntry(entry.getKey(), entry.getValue());
+            }
             return this;
         }
 

@@ -82,7 +82,7 @@ class GenerateKnownTypeParsersTest {
     @Test
     @DisplayName("write `fromJson` method into generated JS files")
     void writeFromJsonMethod() throws IOException {
-        writer.writeFromJsonMethod(fileSet);
+        writer.writeParseMethods(fileSet);
         checkProcessedFiles(fileSet);
     }
 

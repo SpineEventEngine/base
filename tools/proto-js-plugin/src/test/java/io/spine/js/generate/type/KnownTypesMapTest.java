@@ -59,31 +59,29 @@ class KnownTypesMapTest {
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-        CodeLines output = new CodeLines();
-        generator.generateImports(output);
         FileDescriptor file = Any.getDescriptor()
                                  .getFile();
         FileName fileName = FileName.from(file);
         String taskImport = "require('./" + fileName + "');";
-        assertContains(output, taskImport);
+        assertContains(generator.value(), taskImport);
     }
 
     @Test
     @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        CodeLines entries = generator.generateKnownTypesMap();
+        CodeLines generatedLines = generator.value();
         String expectedForAny = expectedEntry(ANY) + ',';
         String expectedForString = expectedEntry(STRING_VALUE) + ',';
-        assertContains(entries, expectedForAny);
-        assertContains(entries, expectedForString);
+        assertContains(generatedLines, expectedForAny);
+        assertContains(generatedLines, expectedForString);
     }
 
     @Test
     @DisplayName("include enum types")
     void includeEnums() {
-        CodeLines entries = generator.generateKnownTypesMap();
+        CodeLines generatedLines = generator.value();
         TypeUrl enumTypeUrl = TypeUrl.from(NullValue.getDescriptor());
-        assertContains(entries, enumTypeUrl.toString());
+        assertContains(generatedLines, enumTypeUrl.toString());
     }
 
     private static String expectedEntry(Descriptor message) {

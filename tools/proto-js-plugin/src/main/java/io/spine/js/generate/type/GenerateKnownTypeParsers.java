@@ -79,7 +79,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     protected void generateFor(FileSet fileSet) {
         writeKnownTypes(fileSet);
         writeKnownTypeParsers();
-        writeFromJsonMethod(fileSet);
+        writeParseMethods(fileSet);
     }
 
     /**
@@ -136,13 +136,13 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * <p>The standard Protobuf types are skipped.
      */
     @VisibleForTesting
-    void writeFromJsonMethod(FileSet fileSet) {
+    void writeParseMethods(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
-            writeFromJsonMethod(file);
+            writeParseMethods(file);
         }
     }
 
-    private void writeFromJsonMethod(FileDescriptor file) {
+    private void writeParseMethods(FileDescriptor file) {
         if (shouldSkip(file)) {
             return;
         }

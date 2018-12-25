@@ -20,7 +20,6 @@
 
 package io.spine.js.generate.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
@@ -81,30 +80,31 @@ public final class KnownTypesMap implements Snippet {
      */
     @Override
     public CodeLines value() {
-        CodeLines snippet = new CodeLines();
-        generateImports(snippet);
-        snippet.append(emptyLine());
-        snippet.append(generateKnownTypesMap());
-        return snippet;
+        CodeLines lines = new CodeLines();
+        lines.append(knownTypesImports());
+        lines.append(emptyLine());
+        lines.append(knownTypesMapExport());
+        return lines;
     }
 
     /**
      * Generates import statements for all files declaring generated messages.
      */
-    @VisibleForTesting
-    void generateImports(CodeLines output) {
+    private CodeLines knownTypesImports() {
         Collection<FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
-                                     .filter(file -> !file.getMessageTypes()
-                                                          .isEmpty())
+                                     .filter(file -> !TypeSet.messagesAndEnums(file)
+                                                             .isEmpty())
                                      .map(FileName::from)
                                      .collect(toSet());
+        CodeLines importLines = new CodeLines();
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
                 .setImports(imports)
-                .setJsOutput(output)
+                .setJsOutput(importLines)
                 .build();
         generator.generate();
+        return importLines;
     }
 
     /**
@@ -115,21 +115,18 @@ public final class KnownTypesMap implements Snippet {
      *
      * <p>The map is exported under the {@link #MAP_NAME}.
      */
-    @VisibleForTesting
-    CodeLines generateKnownTypesMap() {
+    private MapExportSnippet knownTypesMapExport() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        MapExportSnippet.Builder exportBuilder = MapExportSnippet.newBuilder(MAP_NAME);
-        for (Map.Entry<String, TypeName> entry : entries) {
-            exportBuilder.withEntry(entry.getKey(), entry.getValue());
-        }
-        return exportBuilder.build()
-                            .value();
+        return MapExportSnippet
+                .newBuilder(MAP_NAME)
+                .withEntries(entries)
+                .build();
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        TypeSet types = TypeSet.messagesAndEnums(fileSet);
-        List<Map.Entry<String, TypeName>> entries = types.types()
-                                                         .stream()
+        Set<Type<?, ?>> types = TypeSet.messagesAndEnums(fileSet)
+                                       .types();
+        List<Map.Entry<String, TypeName>> entries = types.stream()
                                                          .map(KnownTypesMap::mapEntry)
                                                          .collect(toList());
         return entries;
