@@ -233,8 +233,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
         boolean setOnce = Options.option(descriptor, OptionsProto.setOnce)
                                  .orElse(false);
-
-        if (descriptor.isRepeated() || descriptor.isMapField()) {
+        boolean setOnceNotRecommended = descriptor.isRepeated() || descriptor.isMapField();
+        if (setOnce && setOnceNotRecommended) {
             String containingTypeName = descriptor.getContainingType()
                                                   .getName();
             String fieldName = descriptor.getName();

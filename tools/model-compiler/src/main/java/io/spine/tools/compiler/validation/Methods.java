@@ -70,7 +70,7 @@ final class Methods {
     }
 
     /** Returns a call to the specified method of the parent class with the specified parameters. */
-    static String callToParentMethod(String methodName, String... parameters) {
+    static String callSuper(String methodName, String... parameters) {
         checkNotNull(methodName);
         checkNotNull(parameters);
         StringBuilder superMethodCall = new StringBuilder();

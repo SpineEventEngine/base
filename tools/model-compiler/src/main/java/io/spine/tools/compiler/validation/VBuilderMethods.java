@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.tools.compiler.validation.Methods.callToParentMethod;
+import static io.spine.tools.compiler.validation.Methods.callSuper;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 
 /**
@@ -109,7 +109,7 @@ final class VBuilderMethods {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
                 .addStatement(checkAllFields())
-                .addStatement(callToParentMethod(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
+                .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
                 .addStatement(returnThis())
                 .returns(className)
                 .build();
@@ -120,15 +120,17 @@ final class VBuilderMethods {
      * Returns a statement that loops over all fields in the specified {@code message},
      * and validates whether a {@code (set_once)} validation rule is being violated.
      *
-     * @return a statement like the following:
-     *         <pre>
-     *         {@code
-     *             Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
-     *             for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
-     *                     validateSetOnce(entry.getKey());
-     *             }
-     *         }
-     *         </pre>
+     * Example of a returned statement:
+     *          <pre>
+     *          {@code
+     *              Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
+     *              for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
+     *                      validateSetOnce(entry.getKey());
+     *              }
+     *          }
+     *          </pre>
+     *
+     * @return a statement that checks whether all fields are present during a {@code mergeFrom()}
      */
     private static String checkAllFields() {
         String fieldsMap = "fieldsMap";
