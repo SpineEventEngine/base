@@ -32,7 +32,6 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
 
-
 // Messages for general validation tests.
 
 message ProjectId {
@@ -68,7 +67,6 @@ message RequiredEnumFieldValue {
 message RequiredBooleanFieldValue {
     bool value = 1 [(required) = true];
 }
-
 
 // Messages for "if_missing" option tests.
 
@@ -114,7 +112,6 @@ message DecimalMaxNotIncNumberFieldValue {
     double value = 1 [(decimal_max).value = "64.5", (decimal_max).inclusive = false];
 }
 
-
 // Messages for "min" and "max" options tests.
 
 message MinNumberFieldValue {
@@ -125,13 +122,11 @@ message MaxNumberFieldValue {
     double value = 1 [(max).value = "64.5"];
 }
 
-
 // Messages for "digits" option tests.
 
 message DigitsCountNumberFieldValue {
     double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
 }
-
 
 // Messages for "time" option tests.
 
@@ -147,13 +142,11 @@ message TimeWithoutOptsFieldValue {
     google.protobuf.Timestamp value = 1;
 }
 
-
 // Messages for "pattern" option tests.
 
 message PatternStringFieldValue {
     string email = 1 [(pattern).regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"];
 }
-
 
 // Messages for "valid" option tests.
 
