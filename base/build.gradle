@@ -88,6 +88,7 @@ build.doLast {
     command.add('build')
     command.add('--console=plain')
     command.add('--debug')
+    command.add('--stacktrace')
 
     // Ensure build error output log. 
     // Since we're executing this task in another process, we redirect error output to 

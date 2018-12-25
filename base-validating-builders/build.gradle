@@ -27,8 +27,34 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.spine.tools:spine-model-compiler:$spineVersion"
+        classpath deps.build.protobuf
+        classpath deps.build.guava
+        classpath deps.build.slf4j
+        classpath deps.build.checkerAnnotations
+        classpath deps.build.errorProneAnnotations
+        classpath deps.build.jsr305Annotations
+        classpath deps.build.errorProneAnnotations
         classpath deps.build.gradlePlugins.protobuf
+
+        classpath deps.gen.javaPoet
+
+        // A library for parsing Java sources.
+        // Used for parsing Java sources generated from Protobuf files
+        // to make their annotation more convenient.
+        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-api', 
+                   version: deps.versions.roaster) {
+            exclude group: 'com.google.guava'
+        }
+        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', 
+                   version: deps.versions.roaster) {
+            exclude group: 'com.google.guava'
+        }
+
+        classpath files([
+                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
+                "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
+                "$projectDir/../base/build/libs/base-${spineVersion}.jar"
+        ])
     }
 }
 
@@ -45,12 +71,19 @@ repositories {
 }
 
 dependencies {
-    final def spineBase = "io.spine:spine-base:$spineVersion"
-
-    protobuf spineBase
-
     compileClasspath deps.build.protobuf
-    compileClasspath spineBase
+
+    protobuf files([
+            "$projectDir/../base/build/libs/base-${spineVersion}.jar"
+    ])
+
+    compileClasspath  deps.build.guava
+    compileClasspath  deps.build.slf4j
+    compileClasspath  deps.build.checkerAnnotations
+    compileClasspath  deps.build.errorProneAnnotations
+    compileClasspath  deps.build.jsr305Annotations
+    compileClasspath  deps.build.errorProneAnnotations
+    compileClasspath  deps.build.gradlePlugins.protobuf
 }
 
 sourceSets {
