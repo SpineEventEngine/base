@@ -115,7 +115,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                         .addParameter(parameter)
                         .addException(ValidationException.class)
                         .addStatement(descriptorDeclaration())
-                        .addStatement(validateImmutable())
+                        .addStatement(validateSetOnce())
                         .addStatement(validateStatement(fieldName, field.getName()))
                         .addStatement(setStatement)
                         .addStatement(returnThis())
@@ -146,7 +146,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addStatement(descriptorDeclaration())
-                        .addStatement(validateImmutable())
+                        .addStatement(validateSetOnce())
                         .addStatement(methodBody)
                         .addStatement(returnThis())
                         .build();

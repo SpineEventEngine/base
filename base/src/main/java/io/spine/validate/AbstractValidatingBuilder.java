@@ -26,11 +26,14 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
+import io.spine.logging.Logging;
+import io.spine.option.Options;
 import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -229,20 +232,34 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @SuppressWarnings("unused")
         // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
-        boolean setOnce = descriptor.getOptions()
-                                    .getExtension(OptionsProto.setOnce);
-        boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
-        if (setOnce && valueAlreadySet) {
-            throw setOnceViolation(descriptor);
+        boolean setOnce = Options.option(descriptor, OptionsProto.setOnce)
+                                 .orElse(false);
+        if (setOnce) {
+            boolean setOnceNotRecommended = descriptor.isRepeated() || descriptor.isMapField();
+            if (setOnceNotRecommended) {
+                String containingTypeName = descriptor.getContainingType()
+                                                      .getName();
+                String fieldName = descriptor.getName();
+                Logger logger = Logging.get(AbstractValidatingBuilder.class);
+                logger.warn("Error found in %s.%s. " +
+                            "Repeated and map fields can't be marked as `(set_once) = true`",
+                            containingTypeName,
+                            fieldName);
+            } else {
+                boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
+                if (valueAlreadySet) {
+                    throw violatedSetOnce(descriptor);
+                }
+            }
         }
     }
 
-    private static ValidationException setOnceViolation(FieldDescriptor descriptor) {
+    private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
         String fieldName = descriptor.getName();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("Attempted to change a value of the field %s that has " +
-                              "(set_once) = true and is already set")
+                .setMsgFormat("Attempted to change the value of the field %s which has " +
+                              "`(set_once) = true` and is already set")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
