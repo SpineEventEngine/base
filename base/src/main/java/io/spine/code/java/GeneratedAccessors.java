@@ -39,7 +39,7 @@ public final class GeneratedAccessors implements Serializable {
     private static final AccessorTemplate SET_TEMPLATE = prefixed("set");
     @SuppressWarnings("DuplicateStringLiteralInspection") // Same prefixes used in `VBuilder`s.
     private static final AccessorTemplate CLEAR_TEMPLATE = prefixed("clear");
-
+    private static final String BYTES = "Bytes";
 
     private final FieldName propertyName;
     private final Type type;
@@ -70,8 +70,9 @@ public final class GeneratedAccessors implements Serializable {
 
         SINGULAR(ImmutableSet.of(prefixed("has"),
                                  GET_TEMPLATE,
-                                 prefixedAndSuffixed("get", "Bytes"),
+                                 prefixedAndSuffixed("get", BYTES),
                                  SET_TEMPLATE,
+                                 prefixedAndSuffixed("set", BYTES),
                                  CLEAR_TEMPLATE)),
 
         REPEATED(ImmutableSet.of(GET_TEMPLATE,
