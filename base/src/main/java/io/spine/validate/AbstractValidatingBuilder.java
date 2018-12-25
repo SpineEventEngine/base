@@ -33,6 +33,7 @@ import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -46,7 +47,7 @@ import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
  */
 public abstract class AbstractValidatingBuilder<T extends Message, B extends Message.Builder>
-        implements ValidatingBuilder<T, B>, Logging {
+        implements ValidatingBuilder<T, B> {
 
     /**
      * The builder for the original {@code Message}.
@@ -239,15 +240,16 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                 String containingTypeName = descriptor.getContainingType()
                                                       .getName();
                 String fieldName = descriptor.getName();
-                log().warn("Error found in %s.%s. " +
-                                   "Repeated and map fields can't be marked as `(set_once) = true`",
-                           containingTypeName,
-                           fieldName);
-                return;
-            }
-            boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
-            if (valueAlreadySet) {
-                throw violatedSetOnce(descriptor);
+                Logger logger = Logging.get(AbstractValidatingBuilder.class);
+                logger.warn("Error found in %s.%s. " +
+                            "Repeated and map fields can't be marked as `(set_once) = true`",
+                            containingTypeName,
+                            fieldName);
+            } else {
+                boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
+                if (valueAlreadySet) {
+                    throw violatedSetOnce(descriptor);
+                }
             }
         }
     }

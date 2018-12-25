@@ -120,15 +120,15 @@ message Attachment {
     spine.net.Url url = 3 [(required) = true, (valid) = true];
 }
 
-message TaskContents {
+message Essay {
 
-    // Lines that describe a task in detal.
+    // Lines that describe the essay consists of.
     //
     // This field is marked with `set_once`, which, for repeated fields, is not recommended,
     // and should produce a warning.
     repeated string line = 1 [(set_once) = true];
 
-    // A table of contents, for when a task is sizable.
+    // A table of contents.
     //
     // Maps section titles to pages.
     //
