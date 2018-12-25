@@ -33,7 +33,6 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
-import static java.lang.String.format;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -57,6 +56,7 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
+    private final boolean canBeRequired;
 
     /**
      * If set the validator would assume that the field is required even
@@ -72,8 +72,11 @@ abstract class FieldValidator<V> implements Logging {
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
+     * @param canBeRequired
+     *         defines whether a field that is being validated can be {@code required}
      */
-    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
+        this.canBeRequired = canBeRequired;
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
@@ -128,6 +131,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
      */
     protected final List<ConstraintViolation> validate() {
+        checkCanBeRequired();
         checkIfRequiredAndNotSet();
         if (isRequiredId()) {
             validateEntityId();
@@ -137,6 +141,18 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
+    }
+
+    private void checkCanBeRequired() {
+        if (!canBeRequired && isRequiredField()) {
+            String messageFormat = "Fields of type %s can't be declared as `(required)`.";
+            String typeName = this.field()
+                                  .descriptor()
+                                  .getType()
+                                  .name();
+            Logging.get(FieldValidator.class)
+                   .warn(messageFormat, typeName);
+        }
     }
 
     /**
@@ -160,15 +176,6 @@ abstract class FieldValidator<V> implements Logging {
      * @see #isRequiredId()
      */
     protected void validateEntityId() {
-        if (canBeRequired()) {
-            String fieldType = this.field()
-                                   .descriptor()
-                                   .getMessageType()
-                                   .getName();
-            String errorMessage = format("Fields of type %s cannot be declared required",
-                                         fieldType);
-            log().warn(errorMessage);
-        }
         if (declaration.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
@@ -182,16 +189,6 @@ abstract class FieldValidator<V> implements Logging {
             addViolation(newViolation(ifMissingOption));
         }
     }
-
-    /**
-     * Determines whether the field that is being validated can be {@code required}.
-     *
-     * Since whether the field can or cannot be {@code required},  subclasses of
-     * {@code FieldValidator} define it themselves.
-     *
-     * @return {@code true if the field that is being validated can be required}
-     */
-    abstract boolean canBeRequired();
 
     /**
      * Returns {@code true} if the field has required attribute or validation is strict.

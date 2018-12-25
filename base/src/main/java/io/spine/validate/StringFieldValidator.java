@@ -43,7 +43,7 @@ class StringFieldValidator extends FieldValidator<String> {
      *         if this constraint is not set explicitly
      */
     StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired);
+        super(fieldValue, assumeRequired, true);
         this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
@@ -51,11 +51,6 @@ class StringFieldValidator extends FieldValidator<String> {
     @Override
     protected void validateOwnRules() {
         checkIfMatchesToRegexp();
-    }
-
-    @Override
-    boolean canBeRequired() {
-        return true;
     }
 
     private void checkIfMatchesToRegexp() {

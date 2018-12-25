@@ -32,7 +32,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *         the value to to validate
      */
     BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, false);
     }
 
     /**
@@ -50,15 +50,5 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
         if (isRequiredField()) {
             log().warn("'required' option not allowed for boolean field");
         }
-    }
-
-    /**
-     * Returns {@code false}.
-     *
-     * Boolean fields cannot be required, since enforcing their presence is impossible.
-     */
-    @Override
-    boolean canBeRequired() {
-        return false;
     }
 }

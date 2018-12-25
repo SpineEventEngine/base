@@ -34,7 +34,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
      *         the value to validate
      */
     EnumFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, true);
     }
 
     @Override
@@ -42,11 +42,6 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         int intValue = value.getNumber();
         boolean result = intValue <= 0;
         return result;
-    }
-
-    @Override
-    boolean canBeRequired() {
-        return true;
     }
 
     /**

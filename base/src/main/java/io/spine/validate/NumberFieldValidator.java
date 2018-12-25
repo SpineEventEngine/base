@@ -61,7 +61,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      *         the value to validate
      */
     NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, false);
         this.minDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
         this.maxDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMax);
@@ -93,16 +93,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
             validateRangeOptions(value);
             validateDigitsOption(value);
         }
-    }
-
-    /**
-     * Returns {@code false}.
-     *
-     * <p>Numeric fields cannot be required, since enforcing their presence is impossible.
-     */
-    @Override
-    boolean canBeRequired() {
-        return false;
     }
 
     /**
