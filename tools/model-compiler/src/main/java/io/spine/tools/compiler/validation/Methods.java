@@ -20,6 +20,8 @@
 
 package io.spine.tools.compiler.validation;
 
+import java.util.Arrays;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
@@ -66,6 +68,19 @@ final class Methods {
         checkState(!propertyName.isEmpty());
 
         return format(".clear%s()", propertyName);
+    }
+
+    /** Returns a call to the specified method of the parent class with the specified parameters. */
+    static String callToParentMethod(String methodName, String... parameters) {
+        StringBuilder superMethodCall = new StringBuilder();
+        superMethodCall.append(format("super.%s(", methodName));
+        Arrays.stream(parameters)
+              .limit(parameters.length - 1)
+              .forEach(parameter -> superMethodCall.append(parameter)
+                                                   .append(", "));
+        superMethodCall.append(parameters[parameters.length - 1])
+                       .append(')');
+        return superMethodCall.toString();
     }
 
     /** Returns the getter code fragment of the predefined {@code Message.Builder}. */

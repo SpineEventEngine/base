@@ -21,8 +21,12 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.MessageType;
 import io.spine.protobuf.Messages;
@@ -31,6 +35,10 @@ import io.spine.tools.compiler.field.type.FieldType;
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import static io.spine.tools.compiler.validation.Methods.callToParentMethod;
+import static io.spine.tools.compiler.validation.Methods.returnThis;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -38,6 +46,7 @@ import java.util.List;
 final class VBuilderMethods {
 
     private final MessageType type;
+    private static final String MERGE_FROM_METHOD_PARAMETER_NAME = "message";
 
     private VBuilderMethods(MessageType messageType) {
         this.type = messageType;
@@ -58,6 +67,7 @@ final class VBuilderMethods {
                 .add(privateConstructor())
                 .add(newBuilderMethod())
                 .addAll(fieldMethods())
+                .add(mergeFromMethod())
                 .build();
     }
 
@@ -84,6 +94,65 @@ final class VBuilderMethods {
         return ClassName.get(type.javaPackage()
                                  .value(), type.getValidatingBuilderClass()
                                                .value());
+    }
+
+    private MethodSpec mergeFromMethod() {
+        String methodName = "mergeFrom";
+        SimpleClassName vBuilderClass = this.type.getValidatingBuilderClass();
+        ClassName className = ClassName.bestGuess(vBuilderClass.toString());
+        String messageTypeName = type.toProto()
+                                     .getName();
+        ClassName messageClass = ClassName.bestGuess(messageTypeName);
+        MethodSpec mergeFrom = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(CanIgnoreReturnValue.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
+                .addStatement(checkAllFields())
+                .addStatement(callToParentMethod(methodName), MERGE_FROM_METHOD_PARAMETER_NAME)
+                .addStatement(returnThis())
+                .returns(className)
+                .build();
+        return mergeFrom;
+    }
+
+    /**
+     * Returns a statement that loops over all fields in the specified {@code message},
+     * and validates whether a {@code (set_once)} validation rule is being violated.
+     *
+     * @return a statement like the following:
+     *         <pre>
+     *                     {@code
+     *                     Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
+     *                     for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
+     *                         validateSetOnce(entry.getKey());
+     *                     }
+     *                     }
+     *                 </pre>
+     */
+    private static String checkAllFields() {
+        String fieldsMap = "fieldsMap";
+        String loopLocalVariable = "entry";
+        CodeBlock codeBlock = CodeBlock
+                .builder()
+                .addStatement(
+                        "$T<$T, $T> $N = $N.getAllFields()",
+                        ClassName.get(Map.class),
+                        ClassName.get(Descriptors.FieldDescriptor.class),
+                        ClassName.get(Object.class),
+                        fieldsMap,
+                        MERGE_FROM_METHOD_PARAMETER_NAME)
+                .beginControlFlow(
+                        "for ($T<$T, $T> $N : $N.entrySet())",
+                        ClassName.get(Map.Entry.class),
+                        ClassName.get(Descriptors.FieldDescriptor.class),
+                        ClassName.get(Object.class),
+                        loopLocalVariable,
+                        fieldsMap)
+                .addStatement("validateSetOnce($N.getKey())", loopLocalVariable)
+                .endControlFlow()
+                .build();
+        return codeBlock.toString();
     }
 
     private List<MethodSpec> fieldMethods() {
