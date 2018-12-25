@@ -109,7 +109,7 @@ final class VBuilderMethods {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
                 .addStatement(checkAllFields())
-                .addStatement(callToParentMethod(methodName), MERGE_FROM_METHOD_PARAMETER_NAME)
+                .addStatement(callToParentMethod(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
                 .addStatement(returnThis())
                 .returns(className)
                 .build();

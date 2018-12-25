@@ -20,10 +20,9 @@
 
 package io.spine.tools.compiler.validation;
 
-import java.util.Arrays;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
 /**
@@ -72,14 +71,12 @@ final class Methods {
 
     /** Returns a call to the specified method of the parent class with the specified parameters. */
     static String callToParentMethod(String methodName, String... parameters) {
+        checkNotEmptyOrBlank(methodName);
+        checkNotNull(parameters);
         StringBuilder superMethodCall = new StringBuilder();
         superMethodCall.append(format("super.%s(", methodName));
-        Arrays.stream(parameters)
-              .limit(parameters.length - 1)
-              .forEach(parameter -> superMethodCall.append(parameter)
-                                                   .append(", "));
-        superMethodCall.append(parameters[parameters.length - 1])
-                       .append(')');
+        String parameterList = String.join(", ", parameters);
+        superMethodCall.append(parameterList).append(')');
         return superMethodCall.toString();
     }
 
