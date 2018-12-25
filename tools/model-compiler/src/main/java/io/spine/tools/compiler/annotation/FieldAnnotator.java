@@ -40,9 +40,6 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
@@ -238,18 +235,11 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
                                    FieldDeclaration field) {
         ImmutableSet<String> names = GeneratedAccessors.forField(field)
                                                        .names();
-        try (PrintStream out = new PrintStream(new File("/Users/ddashenkov/Desktop/build.log"))) {
-            out.println("Lookup started");
-            javaSource.getMethods()
-                      .stream()
-                      .peek(method -> out.println("Checking method " + method))
-                      .filter(MethodSource::isPublic)
-                      .filter(method -> names.contains(method.getName()))
-                      .peek(method -> out.println("Marking method " + method))
-                      .forEach(this::addAnnotation);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        javaSource.getMethods()
+                  .stream()
+                  .filter(MethodSource::isPublic)
+                  .filter(method -> names.contains(method.getName()))
+                  .forEach(this::addAnnotation);
     }
 
     /**
