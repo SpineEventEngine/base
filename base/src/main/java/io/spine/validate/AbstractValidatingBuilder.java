@@ -233,21 +233,22 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
         boolean setOnce = Options.option(descriptor, OptionsProto.setOnce)
                                  .orElse(false);
-        boolean setOnceNotRecommended = descriptor.isRepeated() || descriptor.isMapField();
-        if (setOnce && setOnceNotRecommended) {
-            String containingTypeName = descriptor.getContainingType()
-                                                  .getName();
-            String fieldName = descriptor.getName();
-            log().warn("Error found in %s.%s. " +
-                       "Repeated and map fields can't be marked as `(set_once) = true`",
-                       containingTypeName,
-                       fieldName);
-            return;
-        }
-
-        boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
-        if (setOnce && valueAlreadySet) {
-            throw violatedSetOnce(descriptor);
+        if (setOnce) {
+            boolean setOnceNotRecommended = descriptor.isRepeated() || descriptor.isMapField();
+            if (setOnceNotRecommended) {
+                String containingTypeName = descriptor.getContainingType()
+                                                      .getName();
+                String fieldName = descriptor.getName();
+                log().warn("Error found in %s.%s. " +
+                                   "Repeated and map fields can't be marked as `(set_once) = true`",
+                           containingTypeName,
+                           fieldName);
+                return;
+            }
+            boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
+            if (valueAlreadySet) {
+                throw violatedSetOnce(descriptor);
+            }
         }
     }
 

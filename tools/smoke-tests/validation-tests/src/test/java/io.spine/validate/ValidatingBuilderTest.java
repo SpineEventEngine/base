@@ -22,21 +22,31 @@ package io.spine.validate;
 
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
+import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.Task;
+import io.spine.test.validate.msg.builder.TaskContentsVBuilder;
 import io.spine.test.validate.msg.builder.TaskLabel;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
+import org.slf4j.event.SubstituteLoggingEvent;
+import org.slf4j.helpers.SubstituteLogger;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -244,12 +254,44 @@ class ValidatingBuilderTest {
 
     @Test
     @DisplayName("not allow to mutate a (set_once) marked message field via the `mergeFrom` method")
-    void testSetOnceDoeNotAllowMutateMessageMergeFrom() {
+    void testSetOnceDoesNotAllowMutateMessageMergeFrom() {
         Member assignee = Member.getDefaultInstance();
         TaskVBuilder builder = TaskVBuilder
                 .newBuilder()
                 .setAssignee(assignee);
         assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
+    }
+
+    @Test
+    @DisplayName("produce a warning upon finding a repeated field that has `(set_once) = true`")
+    void testSetOnceRepeatedFieldsWarning() {
+        TaskContentsVBuilder contents = TaskContentsVBuilder
+                .newBuilder();
+        Queue<SubstituteLoggingEvent> loggedMessages = redirectLoggingFor(contents);
+        contents.addLine("First line of the task");
+        assertFalse(loggedMessages.isEmpty());
+        assertEquals(loggedMessages.peek()
+                                   .getLevel(), Level.WARN);
+    }
+
+    @Test
+    @DisplayName("produce a warning upon finding a map field that has `(set_once) = true`")
+    void testSetOnceMapFieldWarning() {
+        TaskContentsVBuilder contents = TaskContentsVBuilder
+                .newBuilder();
+        Queue<SubstituteLoggingEvent> loggedMessages = redirectLoggingFor(contents);
+        contents.putTableOfContents("Synopsis", 0);
+        assertFalse(loggedMessages.isEmpty());
+        assertEquals(loggedMessages.peek()
+                                   .getLevel(), Level.WARN);
+    }
+
+    private static Queue<SubstituteLoggingEvent> redirectLoggingFor(
+            AbstractValidatingBuilder<?, ?> contents) {
+        SubstituteLogger logger = (SubstituteLogger) contents.log();
+        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
+        Logging.redirect(logger, loggedMessages);
+        return loggedMessages;
     }
 
     /**

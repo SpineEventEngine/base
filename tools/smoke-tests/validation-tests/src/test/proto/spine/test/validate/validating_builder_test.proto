@@ -120,7 +120,25 @@ message Attachment {
     spine.net.Url url = 3 [(required) = true, (valid) = true];
 }
 
+message TaskContents {
+
+    // Lines that describe a task in detal.
+    //
+    // This field is marked with `set_once`, which, for repeated fields, is not recommended,
+    // and should produce a warning.
+    repeated string line = 1 [(set_once) = true];
+
+    // A table of contents, for when a task is sizable.
+    //
+    // Maps section titles to pages.
+    //
+    // This field is marked with `set_once`, which, for map fields, is not recommended,
+    // and should produce a warning
+    map<string, int32> table_of_contents = 2 [(set_once) = true];
+}
+
 enum TaskLabel {
+
     NO_LABEL = 0;
     OF_LITTLE_IMPORTANCE = 1;
     IMPORTANT = 2;
