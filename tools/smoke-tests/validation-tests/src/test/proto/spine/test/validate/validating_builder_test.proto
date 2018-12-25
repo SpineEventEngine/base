@@ -122,7 +122,7 @@ message Attachment {
 
 message Essay {
 
-    // Lines that describe the essay consists of.
+    // Lines that the essay consists of.
     //
     // This field is marked with `set_once`, which, for repeated fields, is not recommended,
     // and should produce a warning.

@@ -24,10 +24,10 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.Attachment;
+import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.Task;
-import io.spine.test.validate.msg.builder.TaskContentsVBuilder;
 import io.spine.test.validate.msg.builder.TaskLabel;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -265,9 +265,9 @@ class ValidatingBuilderTest {
     @Test
     @DisplayName("produce a warning upon finding a repeated field that has `(set_once) = true`")
     void testSetOnceRepeatedFieldsWarning() {
-        TaskContentsVBuilder contents = TaskContentsVBuilder
+        EssayVBuilder contents = EssayVBuilder
                 .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectLoggingFor(contents);
+        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
         contents.addLine("First line of the task");
         assertFalse(loggedMessages.isEmpty());
         assertEquals(loggedMessages.peek()
@@ -277,18 +277,18 @@ class ValidatingBuilderTest {
     @Test
     @DisplayName("produce a warning upon finding a map field that has `(set_once) = true`")
     void testSetOnceMapFieldWarning() {
-        TaskContentsVBuilder contents = TaskContentsVBuilder
+        EssayVBuilder essay = EssayVBuilder
                 .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectLoggingFor(contents);
-        contents.putTableOfContents("Synopsis", 0);
+        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
+        essay.putTableOfContents("Synopsis", 0);
         assertFalse(loggedMessages.isEmpty());
         assertEquals(loggedMessages.peek()
                                    .getLevel(), Level.WARN);
     }
 
-    private static Queue<SubstituteLoggingEvent> redirectLoggingFor(
-            AbstractValidatingBuilder<?, ?> contents) {
-        SubstituteLogger logger = (SubstituteLogger) contents.log();
+    /** Redirects logging of all validating builders to the queue that is returned. */
+    private static Queue<SubstituteLoggingEvent> redirectVBuildersLogging() {
+        SubstituteLogger logger = (SubstituteLogger) Logging.get(AbstractValidatingBuilder.class);
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect(logger, loggedMessages);
         return loggedMessages;
