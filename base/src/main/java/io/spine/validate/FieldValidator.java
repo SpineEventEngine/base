@@ -144,7 +144,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private void checkCanBeRequired() {
-        boolean fieldIsRequired = isRequiredField() || field().isFirstField();
+        boolean fieldIsRequired = isRequiredField();
         if (!canBeRequired && fieldIsRequired) {
             String messageFormat = "Fields of type %s can't be declared as `(required)`.";
             String typeName = this.field()
