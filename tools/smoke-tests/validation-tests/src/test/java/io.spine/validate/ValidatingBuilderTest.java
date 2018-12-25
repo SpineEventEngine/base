@@ -249,7 +249,6 @@ class ValidatingBuilderTest {
         TaskVBuilder builder = TaskVBuilder
                 .newBuilder()
                 .setAssignee(assignee);
-        builder.mergeFrom(sampleTask());
         assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
     }
 
