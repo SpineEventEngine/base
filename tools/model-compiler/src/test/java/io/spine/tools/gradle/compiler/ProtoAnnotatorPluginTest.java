@@ -273,7 +273,6 @@ class ProtoAnnotatorPluginTest {
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
                             .addProtoFile(protoFileName.value())
-                            .enableDebug()
                             .build();
     }
 

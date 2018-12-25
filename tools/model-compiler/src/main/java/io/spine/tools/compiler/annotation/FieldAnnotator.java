@@ -148,15 +148,13 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
          * Annotates the accessors, which should be annotated, within the specified input.
          *
          * @param input the {@link AbstractJavaSource} for the {@link #fileDescriptor}
-         * @return {@code Void}
          */
         @Override
-        public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
+        public void accept(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
             for (Descriptor messageType : fileDescriptor.getMessageTypes()) {
                 processMessageDescriptor(input, messageType);
             }
-            return null;
         }
 
         private void processMessageDescriptor(AbstractJavaSource<T> input,
@@ -194,17 +192,15 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
          * Annotates the accessors, which should be annotated, within the specified input.
          *
          * @param input the {@link AbstractJavaSource} for the {@link #message}
-         * @return {@code Void}
          */
         @Override
-        public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
+        public void accept(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
             for (FieldDescriptor field : message.getFields()) {
                 if (shouldAnnotate(field)) {
                     annotateMessageField(asClassSource(input), new FieldDeclaration(field));
                 }
             }
-            return null;
         }
     }
 

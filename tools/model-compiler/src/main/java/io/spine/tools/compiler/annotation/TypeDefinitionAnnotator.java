@@ -129,7 +129,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
         }
 
         @Override
-        public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             for (D definition : getDefinitions(file)) {
                 if (shouldAnnotate(definition)) {
@@ -143,7 +143,6 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
                     addAnnotation(messageOrBuilder);
                 }
             }
-            return null;
         }
     }
 }

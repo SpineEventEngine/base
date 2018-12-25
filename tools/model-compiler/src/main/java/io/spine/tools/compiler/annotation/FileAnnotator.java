@@ -28,10 +28,6 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -92,16 +88,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptor> {
      */
     private void annotateNestedTypes(FileDescriptor file) {
         SourceFile filePath = SourceFile.forOuterClassOf(file.toProto());
-        rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
-            @Override
-            public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
-                checkNotNull(input);
-                for (JavaSource nestedType : input.getNestedTypes()) {
-                    addAnnotation(nestedType);
-                }
-                return null;
-            }
-        });
+        rewriteSource(filePath, input -> input.getNestedTypes().forEach(this::addAnnotation));
     }
 
     /**
