@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors;
+import io.spine.test.validate.RequiredLongFieldValue;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("LongFieldValidator should")
@@ -28,6 +30,17 @@ class LongFieldValidatorTest extends NumberFieldValidatorTest<Long, LongFieldVal
     private static final long TRES = 3L;
 
     LongFieldValidatorTest() {
-        super(TRES, -TRES, new LongFieldValidator(FieldValue.of(TRES, fieldContext)));
+        super(TRES, -TRES, new LongFieldValidator(FieldValue.of(TRES, fieldContext)),
+              requiredValidator());
+    }
+
+    private static LongFieldValidator requiredValidator() {
+        Descriptors.FieldDescriptor descriptor = RequiredLongFieldValue.getDescriptor()
+                                                                       .getFields()
+                                                                       .get(0);
+        FieldContext context = FieldContext.create(descriptor);
+        FieldValue value = FieldValue.of(TRES, context);
+        LongFieldValidator requiredValidator = new LongFieldValidator(value);
+        return requiredValidator;
     }
 }

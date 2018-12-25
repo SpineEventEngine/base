@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.test.validate.RequiredDoubleFieldValue;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("DoubleFieldValidator should")
@@ -27,7 +29,18 @@ class DoubleFieldValidatorTest extends NumberFieldValidatorTest<Double, DoubleFi
 
     private static final double PI = 3.14159;
 
-    DoubleFieldValidatorTest() {
-        super(PI, -PI, new DoubleFieldValidator(FieldValue.of(PI, fieldContext)));
+    private DoubleFieldValidatorTest() {
+        super(PI, -PI, new DoubleFieldValidator(FieldValue.of(PI, fieldContext)),
+              requiredFieldValidator());
+    }
+
+    private static DoubleFieldValidator requiredFieldValidator() {
+        FieldDescriptor requiredFieldDescriptor = RequiredDoubleFieldValue.getDescriptor()
+                                                                          .getFields()
+                                                                          .get(0);
+        FieldContext context = FieldContext.create(requiredFieldDescriptor);
+        FieldValue value = FieldValue.of(PI, context);
+        DoubleFieldValidator requiredValidator = new DoubleFieldValidator(value);
+        return requiredValidator;
     }
 }
