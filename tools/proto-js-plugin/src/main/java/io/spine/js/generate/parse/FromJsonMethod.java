@@ -142,7 +142,7 @@ public class FromJsonMethod implements Snippet {
     private static Method fromJson(Descriptor message) {
         TypeName typeName = TypeName.from(message);
         MethodReference reference = MethodReference.onType(typeName, FROM_JSON);
-        return Method.newBuilder(reference.value())
+        return Method.newBuilder(reference)
                      .appendToBody(parsedValue())
                      .appendToBody(fromJsonReturn(typeName))
                      .build();

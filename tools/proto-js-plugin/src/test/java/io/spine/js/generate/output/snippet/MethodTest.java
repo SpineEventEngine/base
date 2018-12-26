@@ -25,12 +25,11 @@ import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.js.generate.given.GivenMethod.methodReference;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("Method should")
 class MethodTest {
-
-    private static final String NAME = "testMethod";
 
     @Test
     @DisplayName("assemble an empty no args method")
@@ -48,7 +47,8 @@ class MethodTest {
         Method method = newMethod()
                 .withArguments(argument)
                 .build();
-        String expectedRepresentation = "testMethod = function(methodArgument) {" + lineSeparator()
+        String expectedRepresentation = methodReference() + " = function(methodArgument) {"
+                + lineSeparator()
                 + "};";
         assertThat(method).isEqualTo(expectedRepresentation);
     }
@@ -68,11 +68,11 @@ class MethodTest {
     }
 
     private static String expectedNoArgsDeclaration() {
-        return "testMethod = function() {";
+        return methodReference() + " = function() {";
     }
 
     private static Method.Builder newMethod() {
-        return Method.newBuilder(NAME);
+        return Method.newBuilder(methodReference());
     }
 
     private static StringSubject assertThat(Method method) {

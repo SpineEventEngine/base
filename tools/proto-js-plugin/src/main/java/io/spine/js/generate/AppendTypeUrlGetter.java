@@ -80,10 +80,9 @@ public class AppendTypeUrlGetter extends GenerationTask {
     @VisibleForTesting
     static Method typeUrlMethod(Type type) {
         TypeName typeName = TypeName.from(type.descriptor());
-        String methodName = MethodReference.onType(typeName, METHOD_NAME)
-                                           .value();
+        MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
         Method method = Method
-                .newBuilder(methodName)
+                .newBuilder(reference)
                 .appendToBody(returnTypeUrl(type))
                 .build();
         return method;

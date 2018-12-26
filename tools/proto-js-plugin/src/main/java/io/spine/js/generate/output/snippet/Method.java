@@ -20,6 +20,7 @@
 
 package io.spine.js.generate.output.snippet;
 
+import io.spine.code.js.MethodReference;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
@@ -28,7 +29,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static java.lang.String.join;
 
 /**
@@ -36,12 +36,12 @@ import static java.lang.String.join;
  */
 public class Method implements Snippet {
 
-    private final String name;
+    private final MethodReference reference;
     private final List<String> arguments;
     private final List<CodeLine> bodyLines;
 
     private Method(Builder builder) {
-        this.name = builder.name;
+        this.reference = builder.methodReference;
         this.arguments = builder.arguments;
         this.bodyLines = builder.body;
     }
@@ -68,18 +68,18 @@ public class Method implements Snippet {
      */
     private String declaration() {
         String argString = join(", ", arguments);
-        return name + " = function(" + argString + ") {";
+        return reference + " = function(" + argString + ") {";
     }
 
     /**
      * Obtains the builder to compose a method.
      *
-     * @param methodName
-     *         the name of the method
+     * @param methodReference
+     *         the reference to identify the method by
      * @return the builder
      */
-    public static Builder newBuilder(String methodName) {
-        return new Builder(methodName);
+    public static Builder newBuilder(MethodReference methodReference) {
+        return new Builder(methodReference);
     }
 
     /**
@@ -87,13 +87,13 @@ public class Method implements Snippet {
      */
     public static class Builder {
 
-        private final String name;
+        private final MethodReference methodReference;
         private final List<CodeLine> body = newArrayList();
         private List<String> arguments = newArrayList();
 
-        Builder(String name) {
-            checkNotEmptyOrBlank(name, "name");
-            this.name = name;
+        Builder(MethodReference methodReference) {
+            checkNotNull(methodReference);
+            this.methodReference = methodReference;
         }
 
         /**
