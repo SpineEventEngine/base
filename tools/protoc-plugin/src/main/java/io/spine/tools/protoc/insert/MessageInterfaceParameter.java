@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 /**
  * The generic parameter of the {@link MessageInterface}.
  *
- * <p>Parameter value is presented as {@code String} for the usage in the generated code.
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
 interface MessageInterfaceParameter {
 

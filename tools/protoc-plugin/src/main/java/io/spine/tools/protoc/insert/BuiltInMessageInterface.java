@@ -41,7 +41,7 @@ import static java.util.Optional.empty;
  * A built-in message interface.
  *
  * <p>Such interfaces mark special message types, such as unique IDs, events, commands, and are
- * assigned automatically by the Spine Protoc plugin.
+ * assigned to messages automatically.
  */
 final class BuiltInMessageInterface implements MessageInterface {
 
