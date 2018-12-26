@@ -30,7 +30,9 @@ class DoubleFieldValidatorTest extends NumberFieldValidatorTest<Double, DoubleFi
     private static final double PI = 3.14159;
 
     private DoubleFieldValidatorTest() {
-        super(PI, -PI, new DoubleFieldValidator(FieldValue.of(PI, fieldContext)),
+        super(PI,
+              -PI,
+              new DoubleFieldValidator(FieldValue.of(PI, fieldContext)),
               requiredFieldValidator());
     }
 

@@ -30,7 +30,9 @@ class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatField
     private static final float HALF = 0.5F;
 
     FloatFieldValidatorTest() {
-        super(HALF, -HALF, new FloatFieldValidator(FieldValue.of(HALF, fieldContext)),
+        super(HALF,
+              -HALF,
+              new FloatFieldValidator(FieldValue.of(HALF, fieldContext)),
               requiredFieldValidator());
     }
 

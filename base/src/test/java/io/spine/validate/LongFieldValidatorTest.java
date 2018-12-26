@@ -30,7 +30,9 @@ class LongFieldValidatorTest extends NumberFieldValidatorTest<Long, LongFieldVal
     private static final long TRES = 3L;
 
     LongFieldValidatorTest() {
-        super(TRES, -TRES, new LongFieldValidator(FieldValue.of(TRES, fieldContext)),
+        super(TRES,
+              -TRES,
+              new LongFieldValidator(FieldValue.of(TRES, fieldContext)),
               requiredValidator());
     }
 
