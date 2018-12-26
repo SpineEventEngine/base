@@ -45,10 +45,10 @@ import static io.spine.option.OptionsProto.is;
 final class MessageAndInterface {
 
     private final InsertionPoint messageFile;
-    private final @Nullable UserMarkerInterface interfaceFile;
+    private final @Nullable CustomMarkerInterface interfaceFile;
 
     private MessageAndInterface(InsertionPoint messageFile,
-                                @Nullable UserMarkerInterface interfaceFile) {
+                                @Nullable CustomMarkerInterface interfaceFile) {
         this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
     }
@@ -90,11 +90,11 @@ final class MessageAndInterface {
                                                     DescriptorProto msg,
                                                     IsOption optionValue) {
         MarkerInterfaceSpec interfaceSpec = MarkerInterfaceSpec.prepareInterface(optionValue, file);
-        UserMarkerInterface markerInterface = UserMarkerInterface.from(interfaceSpec);
+        CustomMarkerInterface markerInterface = CustomMarkerInterface.from(interfaceSpec);
         InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
-        UserMarkerInterface interfaceToGenerate = optionValue.getGenerate()
-                                                  ? markerInterface
-                                                  : null;
+        CustomMarkerInterface interfaceToGenerate = optionValue.getGenerate()
+                                                    ? markerInterface
+                                                    : null;
         MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
         return result;
     }

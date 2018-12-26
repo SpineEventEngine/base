@@ -34,23 +34,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
  */
-final class UserMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
+final class CustomMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
 
     private final String interfaceFqn;
 
-    private UserMarkerInterface(File file, String interfaceFqn) {
+    private CustomMarkerInterface(File file, String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
 
     /**
-     * Creates a {@code UserMarkerInterface} from the given spec.
+     * Creates a {@code CustomMarkerInterface} from the given spec.
      *
      * @param spec
      *         the interface spec to create an interface from
-     * @return new instance of {@code UserMarkerInterface}
+     * @return new instance of {@code CustomMarkerInterface}
      */
-    static UserMarkerInterface from(MarkerInterfaceSpec spec) {
+    static CustomMarkerInterface from(MarkerInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
@@ -60,7 +60,7 @@ final class UserMarkerInterface extends AbstractCompilerOutput implements Marker
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.getFqn();
-        return new UserMarkerInterface(interfaceFile, fqn);
+        return new CustomMarkerInterface(interfaceFile, fqn);
     }
 
     @Override
