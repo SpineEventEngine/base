@@ -93,9 +93,13 @@ message Project {
 
 message Task {
 
-    string id = 1 [(required) = true];
+    string id = 1 [(required) = true, (set_once) = true];
 
     string name = 2 [(required) = true];
+
+    TaskLabel label = 3 [(set_once) = true];
+
+    Member assignee = 4 [(set_once) = true];
 }
 
 message Member {
@@ -114,4 +118,29 @@ message Attachment {
     string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
 
     spine.net.Url url = 3 [(required) = true, (valid) = true];
+}
+
+message Essay {
+
+    // Lines that the essay consists of.
+    //
+    // This field is marked with `set_once`, which, for repeated fields, is not recommended,
+    // and should produce a warning.
+    repeated string line = 1 [(set_once) = true];
+
+    // A table of contents.
+    //
+    // Maps section titles to pages.
+    //
+    // This field is marked with `set_once`, which, for map fields, is not recommended,
+    // and should produce a warning
+    map<string, int32> table_of_contents = 2 [(set_once) = true];
+}
+
+enum TaskLabel {
+
+    NO_LABEL = 0;
+    OF_LITTLE_IMPORTANCE = 1;
+    IMPORTANT = 2;
+    CRITICAL = 3;
 }
