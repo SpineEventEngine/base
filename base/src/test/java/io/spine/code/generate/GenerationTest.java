@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.generate;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
+import io.spine.code.generate.Generation.ModelCompilerAnnotation;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

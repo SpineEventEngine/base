@@ -18,25 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output;
+/**
+ * This package contains language-neutral classes and interfaces for code generation.
+ */
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.generate;
 
-import io.spine.code.generate.Indent;
-import io.spine.code.generate.IndentLevel;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
-
-    @Test
-    @DisplayName("create indent for code based on depth and indentation")
-    void createIndent() {
-        IndentLevel depth = IndentLevel.of(2);
-        Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
-        String expected = "    content";
-        assertEquals(expected, line.content());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.generate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
