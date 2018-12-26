@@ -91,7 +91,7 @@ sourceSets {
 }
 
 modelCompiler {
-    mainProtoSrcDir = "/Users/sanders/Projects/Spine/base/src/main/proto"
+    mainProtoSrcDir = "$projectDir/../base/src/main/proto"
 }
 
 protobuf {
