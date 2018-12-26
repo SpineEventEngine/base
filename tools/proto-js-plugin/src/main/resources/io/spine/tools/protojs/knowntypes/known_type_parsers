@@ -223,3 +223,31 @@ class AnyParser {
         return anyMsg;
     }
 }
+
+/**
+ * Parses a plain Javascript object to a Protobuf message.
+ *
+ * The class is abstract and should be implemented for every message type.
+ */
+class ObjectParser {
+
+    /**
+     * Creates a new instance.
+     */
+    constructor() {
+        if (this.fromObject === undefined) {
+            throw new Error('Cannot instantiate abstract ObjectParser class.');
+        }
+    }
+
+    /**
+     * Converts an object to a message.
+     *
+     * @abstract
+     * @param {!Object} the object representing a Protobuf message
+     * @return {!Message} the parsed Protobuf message
+     */
+    fromObject(object) {
+        throw new Error('The method is abstract and should be implemented by a subclass');
+    }
+}
