@@ -119,9 +119,7 @@ public final class GradleProject {
 
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
-        Path resultingPath = gradleRunner.getProjectDir()
-                                         .toPath()
-                                         .resolve(filePath);
+        Path resultingPath = testRoot().resolve(filePath);
         String fullyQualifiedPath = name + '/' + filePath;
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(fullyQualifiedPath);
@@ -133,14 +131,12 @@ public final class GradleProject {
     private void writeGradleScripts() throws IOException {
         writeBuildGradle();
         Path projectRoot = findRoot();
-        copyExtGradle(projectRoot);
+        copyVersionGradle(projectRoot);
         copyConfig(projectRoot);
     }
 
     private void writeBuildGradle() throws IOException {
-        Path resultingPath = gradleRunner.getProjectDir()
-                                         .toPath()
-                                         .resolve(BUILD_GRADLE_NAME);
+        Path resultingPath = testRoot().resolve(BUILD_GRADLE_NAME);
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
@@ -149,14 +145,12 @@ public final class GradleProject {
     }
 
     /**
-     * Copies the {@code ext.gradle} file from the root of the project
+     * Copies the {@code version.gradle} file from the root of the project
      * into the root of the test project.
      */
-    private void copyExtGradle(Path projectRoot) throws IOException {
+    private void copyVersionGradle(Path projectRoot) throws IOException {
         Path sourcePath = projectRoot.resolve(VERSION_GRADLE_NAME);
-        Path targetPath = gradleRunner.getProjectDir()
-                                      .toPath()
-                                      .resolve(VERSION_GRADLE_NAME);
+        Path targetPath = testRoot().resolve(VERSION_GRADLE_NAME);
         Files.copy(sourcePath, targetPath);
     }
 
@@ -166,9 +160,7 @@ public final class GradleProject {
      */
     private void copyConfig(Path projectRoot) {
         Path sourcePath = projectRoot.resolve(CONFIG_DIR_NAME);
-        Path targetPath = gradleRunner.getProjectDir()
-                                      .toPath()
-                                      .resolve(CONFIG_DIR_NAME);
+        Path targetPath = testRoot().resolve(CONFIG_DIR_NAME);
         copyFolder(sourcePath, targetPath);
     }
 
@@ -189,6 +181,11 @@ public final class GradleProject {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    private Path testRoot() {
+        return gradleRunner.getProjectDir()
+                           .toPath();
     }
 
     /**
