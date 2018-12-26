@@ -32,6 +32,7 @@ public class Comment extends CodeLine {
     private final String text;
 
     private Comment(String text) {
+        super();
         checkNotNull(text);
         this.text = text;
     }

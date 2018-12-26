@@ -36,7 +36,7 @@ public class IndentLevel {
     private final int value;
 
     private IndentLevel(int value) {
-        checkArgument(value >= 0, "An indent level cannot be negative");
+        checkArgument(value >= 0, "An indent level cannot be negative.");
         this.value = value;
     }
 
@@ -55,7 +55,7 @@ public class IndentLevel {
     }
 
     /**
-     * Obtains the value of the indent  level.
+     * Obtains the value of the level.
      */
     public int value() {
         return value;
@@ -94,8 +94,8 @@ public class IndentLevel {
         if (!(o instanceof IndentLevel)) {
             return false;
         }
-        IndentLevel depth = (IndentLevel) o;
-        return value == depth.value;
+        IndentLevel level = (IndentLevel) o;
+        return value == level.value;
     }
 
     @Override

@@ -26,7 +26,7 @@ import io.spine.code.proto.FileSet;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A generation task for Protobuf declarations.
+ * A code generation task for Protobuf declarations.
  *
  * <p>The class operates on the provided set of Protobuf files
  * and enhances their JavaScript counterparts by generating additional code.

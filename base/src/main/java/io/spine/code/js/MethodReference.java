@@ -24,6 +24,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A reference to a method.
+ *
+ * <p>Includes the type on which the method is defined.
  */
 public class MethodReference {
 
@@ -56,6 +58,9 @@ public class MethodReference {
         return new MethodReference(typeName, methodName, true);
     }
 
+    /**
+     * Obtains the value of the reference.
+     */
     public String value() {
         String delimiter = onPrototype
                            ? ".prototype."
