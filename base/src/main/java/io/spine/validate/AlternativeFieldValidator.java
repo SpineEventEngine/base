@@ -142,7 +142,6 @@ final class AlternativeFieldValidator implements Logging {
         FieldValidator<?> fieldValidator = fieldValue.get()
                                                      .createValidatorAssumingRequired();
         List<ConstraintViolation> violations = fieldValidator.validate();
-
         // Do not add violations to the results because we have options.
         // The violation would be that none of the field or combinations is defined.
 

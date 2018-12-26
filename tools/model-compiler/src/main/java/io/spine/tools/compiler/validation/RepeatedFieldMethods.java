@@ -261,6 +261,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration)
+                .addStatement(validateSetOnce())
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addValue)
                 .addStatement(returnThis())
