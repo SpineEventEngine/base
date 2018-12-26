@@ -28,8 +28,8 @@ import java.util.Collection;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
-import static io.spine.code.java.AccessorTemplate.prefixed;
-import static io.spine.code.java.AccessorTemplate.prefixedAndPostfixed;
+import static io.spine.code.java.AccessorTemplate.prefix;
+import static io.spine.code.java.AccessorTemplate.prefixAndPostfix;
 import static io.spine.code.java.AccessorTemplates.adder;
 import static io.spine.code.java.AccessorTemplates.allAdder;
 import static io.spine.code.java.AccessorTemplates.allPutter;
@@ -51,7 +51,7 @@ public final class GeneratedAccessors implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
-    private static final AccessorTemplate COUNT_GETTER = prefixedAndPostfixed("get", "Count");
+    private static final AccessorTemplate COUNT_GETTER = prefixAndPostfix("get", "Count");
     private static final String BYTES = "Bytes";
 
     private final FieldName propertyName;
@@ -104,7 +104,7 @@ public final class GeneratedAccessors implements Serializable {
          *
          * @see #SINGULAR_STRING
          */
-        SINGULAR(ImmutableSet.of(prefixed("has"),
+        SINGULAR(ImmutableSet.of(prefix("has"),
                                  getter(),
                                  setter(),
                                  clearer())),
@@ -114,11 +114,11 @@ public final class GeneratedAccessors implements Serializable {
          *
          * <p>All the accessors of a generic {@link #SINGULAR} field are guaranteed to be included.
          */
-        SINGULAR_STRING(ImmutableSet.of(prefixed("has"),
+        SINGULAR_STRING(ImmutableSet.of(prefix("has"),
                                         getter(),
-                                        prefixedAndPostfixed("get", BYTES),
+                                        prefixAndPostfix("get", BYTES),
                                         setter(),
-                                        prefixedAndPostfixed("set", BYTES),
+                                        prefixAndPostfix("set", BYTES),
                                         clearer())),
 
         /**
@@ -138,9 +138,9 @@ public final class GeneratedAccessors implements Serializable {
         MAP(ImmutableSet.of(getter(),
                             COUNT_GETTER,
                             mapGetter(),
-                            prefixedAndPostfixed("get", "OrDefault"),
-                            prefixedAndPostfixed("get", "OrThrow"),
-                            prefixed("contains"),
+                            prefixAndPostfix("get", "OrDefault"),
+                            prefixAndPostfix("get", "OrThrow"),
+                            prefix("contains"),
                             clearer(),
                             putter(),
                             remover(),

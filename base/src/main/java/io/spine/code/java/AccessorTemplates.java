@@ -22,8 +22,8 @@ package io.spine.code.java;
 
 import io.spine.annotation.Internal;
 
-import static io.spine.code.java.AccessorTemplate.prefixed;
-import static io.spine.code.java.AccessorTemplate.prefixedAndPostfixed;
+import static io.spine.code.java.AccessorTemplate.prefix;
+import static io.spine.code.java.AccessorTemplate.prefixAndPostfix;
 
 /**
  * A factory of commonly used {@link AccessorTemplate} instances.
@@ -31,17 +31,17 @@ import static io.spine.code.java.AccessorTemplate.prefixedAndPostfixed;
 @Internal
 public final class AccessorTemplates {
 
-    private static final AccessorTemplate GET = prefixed("get");
-    private static final AccessorTemplate GET_LIST = prefixedAndPostfixed("get", "List");
-    private static final AccessorTemplate GET_MAP = prefixedAndPostfixed("get", "Map");
+    private static final AccessorTemplate GET = prefix("get");
+    private static final AccessorTemplate GET_LIST = prefixAndPostfix("get", "List");
+    private static final AccessorTemplate GET_MAP = prefixAndPostfix("get", "Map");
 
-    private static final AccessorTemplate SET = prefixed("set");
-    private static final AccessorTemplate ADD = prefixed("add");
-    private static final AccessorTemplate PUT = prefixed("put");
-    private static final AccessorTemplate REMOVE = prefixed("remove");
-    private static final AccessorTemplate ADD_ALL = prefixed("addAll");
-    private static final AccessorTemplate PUT_ALL = prefixed("putAll");
-    private static final AccessorTemplate CLEAR = prefixed("clear");
+    private static final AccessorTemplate SET = prefix("set");
+    private static final AccessorTemplate ADD = prefix("add");
+    private static final AccessorTemplate PUT = prefix("put");
+    private static final AccessorTemplate REMOVE = prefix("remove");
+    private static final AccessorTemplate ADD_ALL = prefix("addAll");
+    private static final AccessorTemplate PUT_ALL = prefix("putAll");
+    private static final AccessorTemplate CLEAR = prefix("clear");
 
     /**
      * Prevents the utility class instantiation.

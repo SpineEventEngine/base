@@ -53,7 +53,7 @@ public final class AccessorTemplate implements Serializable {
     /**
      * Creates a new template with the given prefix and an empty postfix.
      */
-    public static AccessorTemplate prefixed(String prefix) {
+    public static AccessorTemplate prefix(String prefix) {
         checkNotNull(prefix);
         return new AccessorTemplate(prefix, "");
     }
@@ -61,7 +61,7 @@ public final class AccessorTemplate implements Serializable {
     /**
      * Creates a new template with the given prefix and postfix.
      */
-    public static AccessorTemplate prefixedAndPostfixed(String prefix, String suffix) {
+    public static AccessorTemplate prefixAndPostfix(String prefix, String suffix) {
         checkNotNull(prefix);
         checkNotNull(suffix);
         return new AccessorTemplate(prefix, suffix);
@@ -79,13 +79,23 @@ public final class AccessorTemplate implements Serializable {
         return name;
     }
 
+    private String template() {
+        return prefix + "%s" + postfix;
+    }
+
+    /**
+     * Obtains the same template but with the {@code Raw} infix right after the prefix.
+     *
+     * <p>The original template is not changed.
+     *
+     * <p>This operation is NOT idempotent, i.e. when calling {@code toRaw()} on a result of
+     * {@code toRaw()}, the infix is added once more.
+     *
+     * @return template with the {@code Raw} infix
+     */
     public AccessorTemplate toRaw() {
         String prefix = this.prefix + RAW_INFIX;
         return new AccessorTemplate(prefix, postfix);
-    }
-
-    private String template() {
-        return prefix + "%s" + postfix;
     }
 
     @Override
