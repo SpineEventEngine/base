@@ -42,7 +42,7 @@ import static java.util.Optional.empty;
  *
  * <p>This interface marks special message types, such as unique IDs, events, commands, etc.
  */
-public class BuiltInMarkerInterface implements MarkerInterface {
+final class BuiltInMarkerInterface implements MarkerInterface {
 
     private final Class<? extends Message> type;
     private final MarkerInterfaceParameters genericParams;
