@@ -61,7 +61,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     /**
      * The name of the property represented by this field.
      */
-    private final io.spine.code.java.FieldName javaFieldName;
+    private final FieldName javaFieldName;
     private final TypeName keyTypeName;
     private final TypeName valueTypeName;
     private final MapFieldType fieldType;
