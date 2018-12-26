@@ -104,21 +104,11 @@ public class FromJsonMethod implements Snippet {
      */
     @Override
     public CodeLines value() {
-        CodeLines snippet = generateFromJsonMethod();
-        snippet.append(generateFromObjectMethod());
-        return snippet;
-    }
-
-    /**
-     * Generates the {@code fromJson} method which parses the JSON string via the {@code JSON.parse}
-     * functionality and then calls {@code fromObject} for the parsed JS object.
-     */
-    @VisibleForTesting
-    CodeLines generateFromJsonMethod() {
-        Method fromJson = fromJson(message);
         CodeLines lines = new CodeLines();
         lines.append(emptyLine());
-        lines.append(fromJson);
+        lines.append(fromJsonMethod());
+        lines.append(emptyLine());
+        lines.append(fromObjectMethod());
         return lines;
     }
 
@@ -129,17 +119,29 @@ public class FromJsonMethod implements Snippet {
      * <p>If the object is {@code null}, the returned value will be {@code null}.
      */
     @VisibleForTesting
-    CodeLines generateFromObjectMethod() {
-        CodeLines snippet = new CodeLines();
-        snippet.append(emptyLine());
-        addFromObjectCode(message, snippet);
-        return snippet;
+    CodeLines fromObjectMethod() {
+        TypeName typeName = TypeName.from(message);
+        String methodName = MethodReference.onType(typeName, FROM_OBJECT)
+                                           .value();
+        CodeLines lines = new CodeLines();
+        lines.enterMethod(methodName, FROM_OBJECT_ARG);
+        checkParsedObject(lines);
+        lines.append(emptyLine());
+        lines.append(initializedMessageInstance(typeName));
+        handleMessageFields(lines, message);
+        lines.append(Return.value(MESSAGE));
+        lines.exitMethod();
+        return lines;
     }
 
     /**
      * Obtains {@code fromJson} method for the specified message.
+     *
+     * The {@code fromJson} parses the JSON string via the {@code JSON.parse}
+     * functionality and then calls {@code fromObject} for the parsed JS object.
      */
-    private static Method fromJson(Descriptor message) {
+    @VisibleForTesting
+    Method fromJsonMethod() {
         TypeName typeName = TypeName.from(message);
         MethodReference reference = MethodReference.onType(typeName, FROM_JSON);
         return Method.newBuilder(reference.value())
@@ -156,22 +158,6 @@ public class FromJsonMethod implements Snippet {
     private static Return fromJsonReturn(TypeName typeName) {
         String value = typeName.value() + '.' + FROM_OBJECT + "(jsObject)";
         return Return.value(value);
-    }
-
-    /**
-     * Adds the {@code fromObject} code to the {@code jsOutput}.
-     */
-    private static void addFromObjectCode(Descriptor message, CodeLines output) {
-        TypeName typeName = TypeName.from(message);
-        String methodName = MethodReference.onType(typeName, FROM_OBJECT)
-                                           .value();
-        output.enterMethod(methodName, FROM_OBJECT_ARG);
-        checkParsedObject(output);
-        output.append(emptyLine());
-        output.append(initializedMessageInstance(typeName));
-        handleMessageFields(output, message);
-        output.append(Return.value(MESSAGE));
-        output.exitMethod();
     }
 
     private static VariableDeclaration initializedMessageInstance(TypeName typeName) {

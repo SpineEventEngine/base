@@ -64,7 +64,8 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
-        CodeLines snippet = generator.generateFromJsonMethod();
+        CodeLines snippet = generator.fromJsonMethod()
+                                     .value();
         String methodDeclaration = TypeName.from(message) + "." + FROM_JSON;
         assertContains(snippet, methodDeclaration);
     }
@@ -72,7 +73,8 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("parse JSON into JS object in `fromJson` method")
     void parseJsonIntoObject() {
-        CodeLines snippet = generator.generateFromJsonMethod();
+        CodeLines snippet = generator.fromJsonMethod()
+                                     .value();
         String parseStatement = "JSON.parse(" + FROM_JSON_ARG + ')';
         assertContains(snippet, parseStatement);
     }
@@ -80,7 +82,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
-        CodeLines snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.fromObjectMethod();
         String methodDeclaration = TypeName.from(message) + "." + FROM_OBJECT;
         assertContains(snippet, methodDeclaration);
     }
@@ -88,7 +90,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("check parsed object for null in `fromObject` method")
     void checkJsObjectForNull() {
-        CodeLines snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.fromObjectMethod();
         String check = "if (" + FROM_OBJECT_ARG + " === null) {";
         assertContains(snippet, check);
     }
@@ -98,7 +100,7 @@ class FromJsonMethodTest {
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
         FromJsonMethod generator = spy(this.generator);
-        CodeLines snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.fromObjectMethod();
         verify(generator, times(1))
                 .handleMessageFields(new CodeLines(), message);
         assertNotNull(snippet);
