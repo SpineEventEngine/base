@@ -17,32 +17,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.java.AccessorTemplate;
 import io.spine.code.java.PrimitiveType;
+import io.spine.code.proto.FieldDeclaration;
 
 import java.util.List;
 import java.util.Optional;
+
+import static io.spine.code.java.AccessorTemplates.allAdder;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
 public final class RepeatedFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "addAll";
-
     private final TypeName typeName;
 
     /**
      * Constructs a new instance based on component type.
      *
-     * @param componentTypeName the component type name
+     * @param declaration
+     *         the declaration of the field
      */
-    RepeatedFieldType(String componentTypeName) {
-        this.typeName = constructTypeNameFor(componentTypeName);
+    RepeatedFieldType(FieldDeclaration declaration) {
+        this.typeName = constructTypeNameFor(declaration.javaTypeName());
     }
 
     @Override
@@ -55,8 +59,8 @@ public final class RepeatedFieldType implements FieldType {
      * used to initialize a repeated field using with a call to Protobuf message builder.
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return allAdder();
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {

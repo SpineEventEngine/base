@@ -22,6 +22,7 @@ package io.spine.code.java;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.Internal;
 
 import java.io.Serializable;
 
@@ -34,9 +35,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * (e.g. {@code ...Count}).
  */
 @Immutable
-final class AccessorTemplate implements Serializable {
+@Internal
+public final class AccessorTemplate implements Serializable {
 
     private static final long serialVersionUID = 0L;
+
+    private static final String RAW_INFIX = "Raw";
 
     private final String prefix;
     private final String postfix;
@@ -49,7 +53,7 @@ final class AccessorTemplate implements Serializable {
     /**
      * Creates a new template with the given prefix and an empty postfix.
      */
-    static AccessorTemplate prefixed(String prefix) {
+    public static AccessorTemplate prefixed(String prefix) {
         checkNotNull(prefix);
         return new AccessorTemplate(prefix, "");
     }
@@ -57,7 +61,7 @@ final class AccessorTemplate implements Serializable {
     /**
      * Creates a new template with the given prefix and postfix.
      */
-    static AccessorTemplate prefixedAndPostfix(String prefix, String suffix) {
+    public static AccessorTemplate prefixedAndPostfixed(String prefix, String suffix) {
         checkNotNull(prefix);
         checkNotNull(suffix);
         return new AccessorTemplate(prefix, suffix);
@@ -70,9 +74,14 @@ final class AccessorTemplate implements Serializable {
      *         the name of the field to access
      * @return the method name
      */
-    String format(FieldName field) {
+    public String format(FieldName field) {
         String name = String.format(template(), field.capitalize());
         return name;
+    }
+
+    public AccessorTemplate toRaw() {
+        String prefix = this.prefix + RAW_INFIX;
+        return new AccessorTemplate(prefix, postfix);
     }
 
     private String template() {

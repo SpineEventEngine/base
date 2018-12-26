@@ -25,19 +25,19 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.java.AccessorTemplate;
 import io.spine.code.proto.FieldDeclaration;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.spine.code.java.AccessorTemplates.allPutter;
 
 /**
  * Represents map {@linkplain FieldType field type}.
  */
 public final class MapFieldType implements FieldType {
-
-    private static final String SETTER_PREFIX = "putAll";
 
     private final TypeName typeName;
     private final TypeName keyTypeName;
@@ -78,8 +78,8 @@ public final class MapFieldType implements FieldType {
      * {@inheritDoc}
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return allPutter();
     }
 
     private static TypeName boxIfPrimitive(TypeName typeName) {

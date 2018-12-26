@@ -17,30 +17,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.java.AccessorTemplate;
 import io.spine.code.java.PrimitiveType;
+import io.spine.code.proto.FieldDeclaration;
 
 import java.util.Optional;
+
+import static io.spine.code.java.AccessorTemplates.setter;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
  */
 public final class SingularFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "set";
-
     private final TypeName typeName;
 
     /**
      * Creates a new instance based on field type name.
      *
-     * @param name the field type name
+     * @param declaration
+     *         the field declaration
      */
-    SingularFieldType(String name) {
-        this.typeName = constructTypeNameFor(name);
+    SingularFieldType(FieldDeclaration declaration) {
+        this.typeName = constructTypeNameFor(declaration.javaTypeName());
     }
 
     @Override
@@ -49,14 +53,14 @@ public final class SingularFieldType implements FieldType {
     }
 
     /**
-     * Returns "set" setter prefix,
-     * used to initialize a singular field using a protobuf message builder.
+     * Returns "set" setter template used to initialize a singular field using a Protobuf message
+     * builder.
      *
-     * Call should be like `builder.setFieldName(FieldType)`.
+     * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return setter();
     }
 
     private static TypeName constructTypeNameFor(String name) {

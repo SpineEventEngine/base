@@ -17,9 +17,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
 import com.squareup.javapoet.TypeName;
+import io.spine.code.java.AccessorTemplate;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
@@ -39,7 +41,7 @@ public interface FieldType {
      *
      * @return the setter prefix
      */
-    String getSetterPrefix();
+    AccessorTemplate primarySetterTemplate();
 
     /**
      * Creates a an instances basing on the type of the field.
@@ -47,11 +49,10 @@ public interface FieldType {
     static FieldType create(FieldDeclaration field) {
         if (field.isMap()) {
             return new MapFieldType(field);
+        } else if (field.isRepeated()) {
+            return new RepeatedFieldType(field);
         } else {
-            String fieldTypeName = field.javaTypeName();
-            return field.isRepeated()
-                   ? new RepeatedFieldType(fieldTypeName)
-                   : new SingularFieldType(fieldTypeName);
+            return new SingularFieldType(field);
         }
     }
 }

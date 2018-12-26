@@ -38,6 +38,7 @@ class VBuilderMethodsTest {
     class CollectMethods {
 
         @Test
+        @DisplayName("a top level message")
         void topLevelMessage() {
             MessageType type = MessageType.of(VbtProject.getDescriptor());
 

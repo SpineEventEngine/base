@@ -28,20 +28,19 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.proto.FieldName;
+import io.spine.code.java.AccessorTemplates;
+import io.spine.code.java.FieldName;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
-import javax.lang.model.element.Modifier;
 import java.util.Collection;
 
-import static io.spine.tools.compiler.validation.Methods.clearPrefix;
-import static io.spine.tools.compiler.validation.Methods.clearProperty;
+import static io.spine.code.java.AccessorTemplates.clearer;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
-import static io.spine.tools.compiler.validation.Methods.rawSuffix;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * A method constructor of the {@code MethodSpec} objects for the
@@ -51,14 +50,12 @@ import static java.lang.String.format;
  */
 class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
-    private static final String GETTER_PREFIX = "get";
     private static final ClassName STRING_CLASS_NAME = ClassName.get(String.class);
 
-    private final String fieldName;
-    private final String methodNamePart;
     private final FieldType fieldType;
     private final TypeName fieldTypeName;
     private final FieldDescriptor field;
+    private final FieldName javaFieldName;
 
     /**
      * Constructs the instance by the passed builder.
@@ -72,9 +69,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
         this.fieldTypeName = fieldType.getTypeName();
-        FieldName fieldName = FieldName.of(field.toProto());
-        this.fieldName = fieldName.javaCase();
-        this.methodNamePart = fieldName.toCamelCase();
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
     }
 
     /**
@@ -88,8 +83,6 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     @Override
     public Collection<MethodSpec> generate() {
-        String javaFieldName = FieldName.of(field.toProto())
-                                        .javaCase();
         _debug("The method construction for the {} singular field is started.", javaFieldName);
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(setter());
@@ -106,17 +99,17 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec setter() {
         _debug("The setters construction for the singular field is started.");
-        String methodName = fieldType.getSetterPrefix() + methodNamePart;
+        String methodName = fieldType.primarySetterTemplate().format(javaFieldName);
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
-        String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
+        String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, javaFieldName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addParameter(parameter)
                         .addException(ValidationException.class)
                         .addStatement(descriptorDeclaration())
                         .addStatement(validateSetOnce())
-                        .addStatement(validateStatement(fieldName, field.getName()))
+                        .addStatement(validateStatement(javaFieldName.value(), javaFieldName))
                         .addStatement(setStatement)
                         .addStatement(returnThis())
                         .build();
@@ -126,11 +119,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec getter() {
         _debug("The getter construction for the singular field is started.");
-        String methodName = GETTER_PREFIX + methodNamePart;
+        String methodName = AccessorTemplates.getter().format(javaFieldName);
 
-        @SuppressWarnings("DuplicateStringLiteralInspection") MethodSpec methodSpec =
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
-                          .addModifiers(Modifier.PUBLIC)
+                          .addModifiers(PUBLIC)
                           .returns(fieldTypeName)
                           .addStatement("return " + getMessageBuilder() + '.' + methodName + "()")
                           .build();
@@ -140,9 +134,8 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec clearMethod() {
         _debug("The 'clear..()' method construction for the singular field is started.");
-        String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
-
-        String methodName = clearPrefix() + methodNamePart;
+        String methodName = clearer().format(javaFieldName);
+        String methodBody = format("%s.%s()", getMessageBuilder(), methodName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addStatement(descriptorDeclaration())
@@ -156,11 +149,14 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec rawSetterMethod() {
         _debug("The raw setters construction is started.");
-        String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
-        String methodName = messageBuilderSetter + rawSuffix();
+        String messageBuilderSetter = fieldType.primarySetterTemplate().format(javaFieldName);
+        String methodName = fieldType.primarySetterTemplate()
+                                     .toRaw()
+                                     .format(javaFieldName);
         ParameterSpec parameter = createParameterSpec(field.toProto(), true);
 
-        ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldTypeName);
+        ConvertStatement convertStatement =
+                ConvertStatement.of(javaFieldName.value(), fieldTypeName);
         String convertedVariableName = convertStatement.convertedVariableName();
         String setStatement = format("%s.%s(%s)",
                                      getMessageBuilder(),
@@ -173,7 +169,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addException(ConversionException.class)
                           .addStatement(descriptorDeclaration())
                           .addStatement(convertStatement.value())
-                          .addStatement(validateStatement(convertedVariableName, field.getName()))
+                          .addStatement(validateStatement(convertedVariableName, javaFieldName))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -183,10 +179,9 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private ParameterSpec createParameterSpec(FieldDescriptorProto field, boolean raw) {
         TypeName methodParamType = raw
-                                     ? stringClassName()
-                                     : fieldTypeName;
-        String paramName = FieldName.of(field)
-                                    .javaCase();
+                                 ? stringClassName()
+                                 : fieldTypeName;
+        String paramName = io.spine.code.proto.FieldName.of(field).javaCase();
         ParameterSpec result = ParameterSpec.builder(methodParamType, paramName)
                                             .build();
         return result;
