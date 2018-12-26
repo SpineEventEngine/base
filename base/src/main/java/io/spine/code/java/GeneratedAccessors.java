@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
 import static io.spine.code.java.AccessorTemplate.prefixed;
 import static io.spine.code.java.AccessorTemplate.prefixedAndSuffixed;
 
@@ -70,10 +71,15 @@ public final class GeneratedAccessors implements Serializable {
 
         SINGULAR(ImmutableSet.of(prefixed("has"),
                                  GET_TEMPLATE,
-                                 prefixedAndSuffixed("get", BYTES),
                                  SET_TEMPLATE,
-                                 prefixedAndSuffixed("set", BYTES),
                                  CLEAR_TEMPLATE)),
+
+        SINGULAR_STRING(ImmutableSet.of(prefixed("has"),
+                                        GET_TEMPLATE,
+                                        prefixedAndSuffixed("get", BYTES),
+                                        SET_TEMPLATE,
+                                        prefixedAndSuffixed("set", BYTES),
+                                        CLEAR_TEMPLATE)),
 
         REPEATED(ImmutableSet.of(GET_TEMPLATE,
                                  prefixedAndSuffixed("get", "List"),
@@ -105,6 +111,8 @@ public final class GeneratedAccessors implements Serializable {
                 return MAP;
             } else if (declaration.isRepeated()) {
                 return REPEATED;
+            } else if (declaration.javaType() == STRING) {
+                return SINGULAR_STRING;
             } else {
                 return SINGULAR;
             }
