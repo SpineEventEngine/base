@@ -68,6 +68,17 @@ final class Methods {
         return format(".clear%s()", propertyName);
     }
 
+    /** Returns a call to the specified method of the parent class with the specified parameters. */
+    static String callSuper(String methodName, String... parameters) {
+        checkNotNull(methodName);
+        checkNotNull(parameters);
+        StringBuilder superMethodCall = new StringBuilder();
+        superMethodCall.append(format("super.%s(", methodName));
+        String parameterList = String.join(", ", parameters);
+        superMethodCall.append(parameterList).append(')');
+        return superMethodCall.toString();
+    }
+
     /** Returns the getter code fragment of the predefined {@code Message.Builder}. */
     static String getMessageBuilder() {
         return "getMessageBuilder()";

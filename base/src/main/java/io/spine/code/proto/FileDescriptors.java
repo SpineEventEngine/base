@@ -197,6 +197,17 @@ public final class FileDescriptors {
     }
 
     /**
+     * Tells if two descriptors represent the same file.
+     */
+    static boolean sameFiles(FileDescriptor f1, FileDescriptor f2) {
+        boolean sameName = f2.getFullName()
+                             .equals(f1.getFullName());
+        boolean samePackage = f2.getPackage()
+                                .equals(f1.getPackage());
+        return sameName && samePackage;
+    }
+
+    /**
      * Verifies if the passed file declares types NOT under the "google" package.
      */
     public static boolean isNotGoogle(FileDescriptor file) {
