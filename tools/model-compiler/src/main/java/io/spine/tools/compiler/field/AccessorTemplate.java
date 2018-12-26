@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.compiler.field;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.Internal;
+import io.spine.code.java.FieldName;
 
 import java.io.Serializable;
 

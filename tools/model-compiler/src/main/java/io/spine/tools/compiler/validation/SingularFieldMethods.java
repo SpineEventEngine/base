@@ -28,15 +28,15 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.java.AccessorTemplates;
 import io.spine.code.java.FieldName;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
 import java.util.Collection;
 
-import static io.spine.code.java.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;

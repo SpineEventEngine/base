@@ -198,7 +198,7 @@ class RejectionBuilderWriter {
         List<MethodSpec> methods = newArrayList();
         ImmutableList<FieldDeclaration> fields = rejection.fields();
         for (FieldDeclaration field : fields) {
-            FieldType fieldType = FieldType.create(field);
+            FieldType fieldType = FieldType.of(field);
             MethodSpec setter = fieldSetter(field, fieldType);
             methods.add(setter);
         }

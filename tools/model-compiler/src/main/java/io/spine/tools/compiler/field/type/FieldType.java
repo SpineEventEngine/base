@@ -20,9 +20,10 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.java.AccessorTemplate;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 /**
  * The type information of a field for a code-generation.
@@ -44,9 +45,16 @@ public interface FieldType {
     AccessorTemplate primarySetterTemplate();
 
     /**
+     * Obtains the templates of the generated Java accessors for a field of this type.
+     *
+     * @return the accessor templates
+     */
+    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
+
+    /**
      * Creates a an instances basing on the type of the field.
      */
-    static FieldType create(FieldDeclaration field) {
+    static FieldType of(FieldDeclaration field) {
         if (field.isMap()) {
             return new MapFieldType(field);
         } else if (field.isRepeated()) {

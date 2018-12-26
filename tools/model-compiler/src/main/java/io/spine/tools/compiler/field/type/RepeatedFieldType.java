@@ -20,22 +20,39 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.java.AccessorTemplate;
 import io.spine.code.java.PrimitiveType;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.code.java.AccessorTemplates.allAdder;
+import static io.spine.tools.compiler.field.AccessorTemplates.adder;
+import static io.spine.tools.compiler.field.AccessorTemplates.allAdder;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.countGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.listGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.setter;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
 public final class RepeatedFieldType implements FieldType {
+
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS = ImmutableSet.of(
+            getter(),
+            listGetter(),
+            countGetter(),
+            setter(),
+            adder(),
+            allAdder(),
+            clearer()
+    );
 
     private final TypeName typeName;
 
@@ -52,6 +69,11 @@ public final class RepeatedFieldType implements FieldType {
     @Override
     public TypeName getTypeName() {
         return typeName;
+    }
+
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return GENERATED_ACCESSORS;
     }
 
     /**

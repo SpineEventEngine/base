@@ -24,9 +24,9 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.java.AccessorTemplates;
 import io.spine.code.java.FieldName;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.MapFieldType;
 import io.spine.validate.ValidationException;
 
@@ -35,10 +35,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.code.java.AccessorTemplates.allPutter;
-import static io.spine.code.java.AccessorTemplates.clearer;
-import static io.spine.code.java.AccessorTemplates.putter;
-import static io.spine.code.java.AccessorTemplates.remover;
+import static io.spine.tools.compiler.field.AccessorTemplates.allPutter;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.putter;
+import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;

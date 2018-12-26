@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.compiler.field;
 
 import io.spine.annotation.Internal;
 
-import static io.spine.code.java.AccessorTemplate.prefix;
-import static io.spine.code.java.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
 
 /**
  * A factory of commonly used {@link AccessorTemplate} instances.
@@ -34,6 +34,7 @@ public final class AccessorTemplates {
     private static final AccessorTemplate GET = prefix("get");
     private static final AccessorTemplate GET_LIST = prefixAndPostfix("get", "List");
     private static final AccessorTemplate GET_MAP = prefixAndPostfix("get", "Map");
+    private static final AccessorTemplate GET_COUNT = prefixAndPostfix("get", "Count");
 
     private static final AccessorTemplate SET = prefix("set");
     private static final AccessorTemplate ADD = prefix("add");
@@ -62,6 +63,11 @@ public final class AccessorTemplates {
     /** Obtains {@code get...Map} template. */
     public static AccessorTemplate mapGetter() {
         return GET_MAP;
+    }
+
+    /** Obtains {@code get...Count} template. */
+    public static AccessorTemplate countGetter() {
+        return GET_COUNT;
     }
 
     /** Obtains {@code set...} template. */

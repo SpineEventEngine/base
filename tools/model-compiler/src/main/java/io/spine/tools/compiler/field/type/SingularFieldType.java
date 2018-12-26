@@ -20,22 +20,45 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.java.AccessorTemplate;
 import io.spine.code.java.PrimitiveType;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.Optional;
 
-import static io.spine.code.java.AccessorTemplates.setter;
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.setter;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
  */
 public final class SingularFieldType implements FieldType {
 
+    private static final String BYTES = "Bytes";
+
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS = ImmutableSet.of(
+            prefix("has"),
+            getter(),
+            setter(),
+            clearer()
+    );
+
+    private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
+            ImmutableSet.of(
+                    prefixAndPostfix("get", BYTES),
+                    prefixAndPostfix("set", BYTES)
+            );
+
     private final TypeName typeName;
+    private final JavaType javaType;
 
     /**
      * Creates a new instance based on field type name.
@@ -45,11 +68,22 @@ public final class SingularFieldType implements FieldType {
      */
     SingularFieldType(FieldDeclaration declaration) {
         this.typeName = constructTypeNameFor(declaration.javaTypeName());
+        this.javaType = declaration.javaType();
     }
 
     @Override
     public TypeName getTypeName() {
         return typeName;
+    }
+
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return javaType == STRING
+             ? ImmutableSet.<AccessorTemplate>builder()
+                       .addAll(GENERATED_ACCESSORS)
+                       .addAll(GENERATED_STRING_ACCESSORS)
+                       .build()
+             : GENERATED_ACCESSORS;
     }
 
     /**
