@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
@@ -42,6 +43,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.lang.String.format;
 import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
@@ -57,6 +59,7 @@ public final class GradleProject {
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String VERSION_GRADLE_NAME = "version.gradle";
+    private static final String TEST_ENV_GRADLE_NAME = "testEnv.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
     private static final String CONFIG_DIR_NAME = "config";
@@ -131,8 +134,27 @@ public final class GradleProject {
     private void writeGradleScripts() throws IOException {
         writeBuildGradle();
         Path projectRoot = findRoot();
+        createTestEnvExt(projectRoot);
         copyVersionGradle(projectRoot);
         copyConfig(projectRoot);
+    }
+
+    /**
+     * Creates an extension file, which provides information about the project
+     * running this test project.
+     *
+     * <p>In particular, it includes the root of the project running this test project.
+     */
+    private void createTestEnvExt(Path projectRoot) throws IOException {
+        Path testEnvPath = testRoot().resolve(TEST_ENV_GRADLE_NAME);
+        String unixLikeRootPath = projectRoot.toString()
+                                             .replace('\\', '/');
+        List<String> lines = ImmutableList.of(
+                "ext {",
+                format("    enclosingRootDir = '%s'", unixLikeRootPath),
+                "}"
+        );
+        Files.write(testEnvPath, lines);
     }
 
     private void writeBuildGradle() throws IOException {

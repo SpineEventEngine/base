@@ -21,6 +21,7 @@
 buildscript {
     apply from: "$rootDir/config/gradle/dependencies.gradle"
     apply from: "$rootDir/version.gradle"
+    apply from: "$rootDir/testEnv.gradle"
 
     repositories {
         google()
@@ -76,6 +77,6 @@ protobuf {
 build.dependsOn compileProtoToJs
 
 dependencies {
-    protobuf "io.spine:spine-base:${spineVersion}"
+    protobuf files("${enclosingRootDir}/base/src/main/proto")
     implementation "io.spine:spine-base:$spineVersion"
 }
