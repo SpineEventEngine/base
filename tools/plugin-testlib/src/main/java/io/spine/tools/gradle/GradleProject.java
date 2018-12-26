@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -62,7 +61,6 @@ public final class GradleProject {
     private static final String TEST_ENV_GRADLE_NAME = "testEnv.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
-    private static final String CONFIG_DIR_NAME = "config";
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
     private static final String DEBUG_CLI_OPTION = "--debug";
@@ -135,8 +133,6 @@ public final class GradleProject {
         writeBuildGradle();
         Path projectRoot = findRoot();
         createTestEnvExt(projectRoot);
-        copyVersionGradle(projectRoot);
-        copyConfig(projectRoot);
     }
 
     /**
@@ -164,45 +160,6 @@ public final class GradleProject {
         Files.createDirectories(resultingPath.getParent());
         checkNotNull(fileContent);
         Files.copy(fileContent, resultingPath);
-    }
-
-    /**
-     * Copies the {@code version.gradle} file from the root of the project
-     * into the root of the test project.
-     */
-    private void copyVersionGradle(Path projectRoot) throws IOException {
-        Path sourcePath = projectRoot.resolve(VERSION_GRADLE_NAME);
-        Path targetPath = testRoot().resolve(VERSION_GRADLE_NAME);
-        Files.copy(sourcePath, targetPath);
-    }
-
-    /**
-     * Copies the content of the {@code config} directory from the root of
-     * this project into the root of the test project.
-     */
-    private void copyConfig(Path projectRoot) {
-        Path sourcePath = projectRoot.resolve(CONFIG_DIR_NAME);
-        Path targetPath = testRoot().resolve(CONFIG_DIR_NAME);
-        copyFolder(sourcePath, targetPath);
-    }
-
-    /**
-     * Copies the content of the {@code src} directory into {@code dest} directory.
-     */
-    private static void copyFolder(Path src, Path dest) {
-        try (Stream<Path> stream = Files.walk(src)) {
-            stream.forEach(sourcePath -> {
-                try {
-                    Path destPath = dest.resolve(src.relativize(sourcePath));
-                    Files.copy(sourcePath, destPath);
-                } catch (IOException e) {
-                    throw illegalStateWithCauseOf(e);
-                }
-
-            });
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
     }
 
     private Path testRoot() {

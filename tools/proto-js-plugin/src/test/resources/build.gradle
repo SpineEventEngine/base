@@ -19,9 +19,12 @@
  */
 
 buildscript {
-    apply from: "$rootDir/config/gradle/dependencies.gradle"
-    apply from: "$rootDir/version.gradle"
+
+    // NOTE: this file is copied from the root project in the test setup.
     apply from: "$rootDir/testEnv.gradle"
+    
+    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
+    apply from: "$enclosingRootDir/version.gradle"
 
     repositories {
         google()
