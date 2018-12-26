@@ -19,32 +19,29 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc.marker;
+package spine.tools.protoc.insert;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = false;
-option java_outer_classname = "IsInOneFileProto";
-option java_package = "io.spine.tools.protoc.marker";
+option java_multiple_files = true;
+option java_outer_classname = "IsTestProto";
+option java_package = "io.spine.tools.protoc.insert";
 
-message ProtocAddressUpdated {
-    option (is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerEvent";
-
-    string uid = 1;
-    string new_address = 2;
-}
-
-message ProtocPlanUpdated {
-    option (is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerEvent";
+message ProtocNameUpdated {
+    option (is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
 
     string uid = 1;
-    Plan new_plan = 2;
+    Name new_name = 2;
 }
 
-enum Plan {
-    PLAN_UNDEFINED = 0;
-    FREE = 1;
-    TRIAL = 2;
-    FULL = 3;
+message ProtocUpdateName {
+    option (is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerCommand";
+
+    string uid = 1;
+    Name new_name = 2;
+}
+
+message Name {
+    string value = 1;
 }

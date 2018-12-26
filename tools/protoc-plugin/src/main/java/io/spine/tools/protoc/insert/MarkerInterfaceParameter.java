@@ -18,14 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc.insert;
+
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+
 /**
- * This package contains the routines of generating marker interfaces for the Proto messages.
+ * The generic parameter of the {@link MarkerInterface}.
+ *
+ * <p>Parameter value is presented as a {@code String} for usage in the generated code.
  */
+interface MarkerInterfaceParameter {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.marker;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains a parameter value based on who is the marker interface target.
+     *
+     * @param target
+     *         the {@code Message} class implementing the marker interface
+     * @return the value of the generic parameter
+     */
+    String valueFor(DescriptorProto target);
+}

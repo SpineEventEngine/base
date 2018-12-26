@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.marker;
+package io.spine.tools.protoc.insert;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -29,10 +29,6 @@ import io.spine.tools.protoc.SpineProtoGenerator;
 
 import java.util.Collection;
 import java.util.Optional;
-
-import static io.spine.tools.protoc.marker.BuiltInMarkerInterface.scanForBuiltIns;
-import static io.spine.tools.protoc.marker.MessageAndInterface.scanFileOption;
-import static io.spine.tools.protoc.marker.MessageAndInterface.scanMsgOption;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
@@ -85,14 +81,14 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     processMessage(FileDescriptorProto file, DescriptorProto message) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
+        Optional<CompilerOutput> builtInMarkedInterface = BuiltInMarkerInterface.scanForBuiltIns(file, message);
         builtInMarkedInterface.ifPresent(result::add);
 
-        Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
+        Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(file, message);
         result.addAll(fromMsgOption);
 
         if (fromMsgOption.isEmpty()) {
-            Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
+            Collection<CompilerOutput> fromFileOption = MessageAndInterface.scanFileOption(file, message);
             result.addAll(fromFileOption);
         }
         return result.build();

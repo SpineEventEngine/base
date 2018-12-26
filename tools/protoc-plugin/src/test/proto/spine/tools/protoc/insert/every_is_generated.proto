@@ -19,15 +19,25 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc.marker;
+package spine.tools.protoc.insert;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.marker";
-option java_outer_classname = "UuidValues";
 option java_multiple_files = true;
+option java_outer_classname = "EveryIsGeneratedProto";
+option java_package = "io.spine.tools.protoc.insert";
 
-message ProjectId {
-    string uuid = 1;
+//option (every_is) = {java_type: "io.spine.tools.protoc.insert.ProtocProjectEvent" generate: true};
+option (every_is).java_type = "io.spine.tools.protoc.insert.ProtocProjectEvent";
+option (every_is).generate = true;
+
+message ProtocProjectCreated {
+
+    string uid = 1;
+}
+
+message ProtocProjectDeleted {
+
+    string uid = 1;
 }

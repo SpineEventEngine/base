@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.marker;
+package io.spine.tools.protoc.insert;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -37,7 +37,6 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.protoc.marker.MarkerInterfaceSpec.prepareInterface;
 
 /**
  * A tuple of two {@link File} instances representing a message and the marker interface
@@ -90,7 +89,7 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(FileDescriptorProto file,
                                                     DescriptorProto msg,
                                                     IsOption optionValue) {
-        MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        MarkerInterfaceSpec interfaceSpec = MarkerInterfaceSpec.prepareInterface(optionValue, file);
         UserMarkerInterface markerInterface = UserMarkerInterface.from(interfaceSpec);
         InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
         UserMarkerInterface interfaceToGenerate = optionValue.getGenerate()

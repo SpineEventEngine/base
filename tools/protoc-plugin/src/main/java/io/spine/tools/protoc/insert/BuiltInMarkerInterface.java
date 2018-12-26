@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.marker;
+package io.spine.tools.protoc.insert;
 
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import static io.spine.tools.protoc.marker.InsertionPoint.implementInterface;
+import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
 
 /**

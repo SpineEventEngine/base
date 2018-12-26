@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.marker;
+package io.spine.tools.protoc.insert;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;

@@ -19,16 +19,16 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc.marker;
+package spine.tools.protoc.insert;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = false;
 option java_outer_classname = "EveryIsInOneFileProto";
-option java_package = "io.spine.tools.protoc.marker";
+option java_package = "io.spine.tools.protoc.insert";
 
-option (every_is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerEvent";
+option (every_is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
 
 message ProtocCustomerNotified {
 

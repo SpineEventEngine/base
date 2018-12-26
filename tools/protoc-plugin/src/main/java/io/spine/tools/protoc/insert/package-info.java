@@ -18,20 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.marker;
-
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-
 /**
- * The marker interface parameter whose value is the target {@code Message} itself.
- *
- * <p>So, for the {@code ProjectId} class implementing some marker interface, the value of the
- * parameter will be {@code ProjectId}.
+ * This package contains the routines of generating marker interfaces for the Proto messages.
  */
-final class IdentityParameter implements MarkerInterfaceParameter {
 
-    @Override
-    public String valueFor(DescriptorProto target) {
-        return target.getName();
-    }
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.insert;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

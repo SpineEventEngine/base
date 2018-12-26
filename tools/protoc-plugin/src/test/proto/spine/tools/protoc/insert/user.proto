@@ -19,16 +19,16 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc.marker;
+package spine.tools.protoc.insert;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "UserProto";
-option java_package = "io.spine.tools.protoc.marker";
+option java_package = "io.spine.tools.protoc.insert";
 
-import "spine/tools/protoc/marker/user_name.proto";
+import "spine/tools/protoc/insert/user_name.proto";
 
 message User {
     option (is).java_type = "LawSubject";

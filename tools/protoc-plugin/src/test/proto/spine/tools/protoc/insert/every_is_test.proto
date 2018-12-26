@@ -19,26 +19,23 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc.marker;
+package spine.tools.protoc.insert;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.marker";
-option java_outer_classname = "NonUuidValues";
 option java_multiple_files = true;
+option java_outer_classname = "EveryIsTestProto";
+option java_package = "io.spine.tools.protoc.insert";
 
-import "google/protobuf/timestamp.proto";
+option (every_is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
 
-message IdWrongFieldCount {
-    string name = 1;
-    google.protobuf.Timestamp timestamp = 2;
+message ProtocCustomerCreated {
+
+    string uid = 1;
 }
 
-message IdWrongFieldType {
-    google.protobuf.Timestamp uuid = 1;
-}
+message ProtocCustomerDeleted {
 
-message IdWrongFieldName {
-    string random_field = 1;
+    string uid = 1;
 }
