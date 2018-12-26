@@ -24,11 +24,11 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
-import io.spine.js.generate.type.ExportStandardParsersMap;
+import io.spine.js.generate.parse.ExportStandardParsersMap;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.type.ParseMethodsSnippet.PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**

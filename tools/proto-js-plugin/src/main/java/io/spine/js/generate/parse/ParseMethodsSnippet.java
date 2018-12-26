@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.type;
+package io.spine.js.generate.parse;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -58,7 +58,7 @@ public final class ParseMethodsSnippet implements Snippet {
     private final FileDescriptor file;
 
     /**
-     * Creates the new {@code FileGenerator} which will process the given file descriptor.
+     * Creates the new instance for the given file descriptor.
      *
      * @param file
      *         the {@code FileDescriptor} whose messages to process

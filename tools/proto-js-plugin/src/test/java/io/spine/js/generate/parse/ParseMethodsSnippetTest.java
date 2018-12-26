@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.type;
+package io.spine.js.generate.parse;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Test;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_JSON;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.type.ParseMethodsSnippet.COMMENT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.COMMENT;
 
 @DisplayName("ParseMethodsSnippet should")
 class ParseMethodsSnippetTest {

@@ -25,7 +25,7 @@ import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;
-import io.spine.js.generate.type.GenerateKnownTypeParsers;
+import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;

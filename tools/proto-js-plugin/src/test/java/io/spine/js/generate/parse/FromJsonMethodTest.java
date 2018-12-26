@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.type;
+package io.spine.js.generate.parse;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.message;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_JSON;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_JSON_ARG;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON_ARG;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.spy;

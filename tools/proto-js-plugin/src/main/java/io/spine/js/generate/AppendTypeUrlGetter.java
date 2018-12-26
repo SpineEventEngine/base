@@ -54,11 +54,11 @@ public class AppendTypeUrlGetter extends GenerationTask {
     @Override
     protected void generateFor(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
-            processFile(file);
+            generateFor(file);
         }
     }
 
-    private void processFile(FileDescriptor file) {
+    private void generateFor(FileDescriptor file) {
         CodeLines typeUrlMethods = typeUrlMethods(file);
         FileWriter writer = FileWriter.createFor(generatedRoot(), file);
         writer.append(typeUrlMethods);

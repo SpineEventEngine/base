@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.type.ExportStandardParsersMap;
+import io.spine.js.generate.parse.ExportStandardParsersMap;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -65,7 +65,7 @@ public abstract class GenerationTask {
     }
 
     /**
-     * Checks if the {@code JsonParsersWriter} has any files to process.
+     * Checks if the task has any files to process.
      *
      * <p>Will return {@code false} either if there are no known types to process or the generated
      * files for them cannot be found.
