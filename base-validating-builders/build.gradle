@@ -41,11 +41,11 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-api', 
+        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-api',
                    version: deps.versions.roaster) {
             exclude group: 'com.google.guava'
         }
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', 
+        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-jdt',
                    version: deps.versions.roaster) {
             exclude group: 'com.google.guava'
         }
@@ -73,10 +73,6 @@ repositories {
 dependencies {
     compileClasspath deps.build.protobuf
 
-    protobuf files([
-            "$projectDir/../base/build/libs/base-${spineVersion}.jar"
-    ])
-
     compileClasspath  deps.build.guava
     compileClasspath  deps.build.slf4j
     compileClasspath  deps.build.checkerAnnotations
@@ -86,12 +82,13 @@ dependencies {
     compileClasspath  deps.build.gradlePlugins.protobuf
 }
 
-sourceSets {
-    main.java.srcDirs "$projectDir/generated/main/spine"
-}
-
 modelCompiler {
     mainProtoSrcDir = "$projectDir/../base/src/main/proto"
+}
+
+sourceSets {
+    main.java.srcDirs "$projectDir/generated/main/spine"
+    main.proto.srcDirs = [modelCompiler.mainProtoSrcDir]
 }
 
 protobuf {

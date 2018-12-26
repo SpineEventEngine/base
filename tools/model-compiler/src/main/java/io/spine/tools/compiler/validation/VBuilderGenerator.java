@@ -44,7 +44,7 @@ import static java.lang.String.format;
  * <p>An instance-per-scope is usually created. E.g. test sources and main source are
  * generated with different instances of this class.
  */
-public class VBuilderGenerator implements Logging {
+public final class VBuilderGenerator implements Logging {
 
     private final File protoSrcDir;
 
@@ -58,21 +58,22 @@ public class VBuilderGenerator implements Logging {
      * Creates new instance of the generator.
      *
      * @param protoSrcDir
-     *          the directory with proto source files
+     *         the directory with proto source files
      * @param targetDir
      *         an absolute path to the folder, serving as a target for the code generation
      * @param indent
-     *          the indentation for generated code
+     *         the indentation for generated code
      */
-    public VBuilderGenerator(File protoSrcDir, String targetDir, Indent indent) {
+    public VBuilderGenerator(File protoSrcDir, File targetDir, Indent indent) {
         this.protoSrcDir = protoSrcDir;
-        this.targetDir = new File(targetDir);
+        this.targetDir = targetDir;
         this.indent = indent;
+        _debug("Initiating generation of validating builders. " +
+                       "Proto src dir: {} Target dir: {}", protoSrcDir, targetDir);
     }
 
     public void process(File descriptorSetFile) {
-        Logger log = log();
-        log.debug("Generating validating builders for types from {}.", descriptorSetFile);
+        _debug("Generating validating builders for types from {}.", descriptorSetFile);
 
         FileSet fileSet = FileSet.parse(descriptorSetFile);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
@@ -134,8 +135,10 @@ public class VBuilderGenerator implements Logging {
         @Override
         public boolean apply(@Nullable MessageType input) {
             checkNotNull(input);
+            // A path obtained from DescriptorSet file for which `src/proto` is the root.
             SourceFile sourceFile = input.sourceFile();
-            boolean belongsToModule = sourceFile.isUnder(rootPath);
+            File absoluteFile = new File(rootPath, sourceFile.toString());
+            boolean belongsToModule = absoluteFile.exists();
             _debug("Source file {} tested if under {} with the result: {}",
                    sourceFile, rootPath, belongsToModule);
             return belongsToModule;

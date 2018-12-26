@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.code.Indent;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.validation.VBuilderGenerator;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -30,6 +31,8 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
@@ -85,9 +88,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
         log.debug("Preparing to generate validating builders.");
         Action<Task> mainScopeAction =
                 createAction(project,
-                             getMainDescriptorSetPath(project),
-                             getTargetGenValidatorsRootDir(project),
-                             getMainProtoSrcDir(project));
+                             () -> getMainDescriptorSetPath(project),
+                             () -> getTargetGenValidatorsRootDir(project),
+                             () -> getMainProtoSrcDir(project));
 
         GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
@@ -97,9 +100,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
         log.debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
                 createAction(project,
-                             getTestDescriptorSetPath(project),
-                             getTargetTestGenValidatorsRootDir(project),
-                             getTestProtoSrcDir(project));
+                             () -> getTestDescriptorSetPath(project),
+                             () -> getTargetTestGenValidatorsRootDir(project),
+                             () -> getTestProtoSrcDir(project));
 
         GradleTask generateTestValidator =
                 newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
@@ -111,13 +114,20 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
     }
 
     private Action<Task> createAction(Project project,
-                                      String descriptorPath,
-                                      String targetDirPath,
-                                      String protoSrcDirPath) {
+                                      Supplier<String> descriptorPath,
+                                      Supplier<String> targetDirPath,
+                                      Supplier<String> protoSrcDirPath) {
         return new GenAction(this, project, descriptorPath, targetDirPath, protoSrcDirPath);
     }
 
-    private static class GenAction implements Action<Task> {
+    /**
+     * Code generation task.
+     *
+     * @implNote This class uses {@code Supplier}s instead of direct values because at the time
+     *           of creation Gradle project is not fully evaluated, and the values
+     *           are not yet defined.
+     */
+    private static class GenAction implements Action<Task>, Logging {
 
         private final ValidatingBuilderGenPlugin plugin;
 
@@ -127,26 +137,27 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
         private final Project project;
 
         /**
-         * Path to the generated Protobuf descriptor {@code .desc} file.
+         * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
          */
-        private final String descriptorPath;
+        private final Supplier<String> descriptorPath;
 
         /**
-         * An absolute path to the folder, serving as a target
+         * Obtains an absolute path to the folder, serving as a target
          * for the generation for the given scope.
          */
-        private final String targetDirPath;
+        private final Supplier<String> targetDirPath;
 
         /**
-         * An absolute path to the folder, containing the {@code .proto} files for the given scope.
+         * Obtains an absolute path to the folder, containing the {@code .proto} files for
+         * the given scope.
          */
-        private final String protoSrcDirPath;
+        private final Supplier<String> protoSrcDirPath;
 
         private GenAction(ValidatingBuilderGenPlugin plugin,
                           Project project,
-                          String descriptorPath,
-                          String targetDirPath,
-                          String protoSrcDirPath) {
+                          Supplier<String> descriptorPath,
+                          Supplier<String> targetDirPath,
+                          Supplier<String> protoSrcDirPath) {
             this.plugin = plugin;
             this.project = project;
             this.descriptorPath = descriptorPath;
@@ -159,16 +170,27 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             if (!isGenerateValidatingBuilders(project)) {
                 return;
             }
-            File setFile = new File(descriptorPath);
+            File setFile = resolve(descriptorPath);
             if (!setFile.exists()) {
                 plugin.logMissingDescriptorSetFile(setFile);
                 return;
             }
 
             Indent indent = getIndent(project);
-            File protoSrcDir = new File(protoSrcDirPath);
-            VBuilderGenerator generator = new VBuilderGenerator(protoSrcDir, targetDirPath, indent);
+            File protoSrcDir = resolve(protoSrcDirPath);
+            File targetDir = resolve(targetDirPath);
+            VBuilderGenerator generator = new VBuilderGenerator(protoSrcDir, targetDir, indent);
             generator.process(setFile);
+        }
+
+        private File resolve(Supplier<String> path) {
+            String pathname = path.get();
+            _debug("Resolving path: {}", pathname);
+            Path normalized = new File(pathname).toPath()
+                                                .normalize();
+            File result = normalized.toAbsolutePath()
+                                    .toFile();
+            return result;
         }
     }
 
