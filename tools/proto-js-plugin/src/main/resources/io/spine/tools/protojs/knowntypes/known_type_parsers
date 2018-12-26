@@ -37,117 +37,117 @@ let any = require("google-protobuf/google/protobuf/any_pb.js");
  * https://developers.google.com/protocol-buffers/docs/proto3#json.
  */
 
-class BoolValueParser {
+class BoolValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let boolValue = new wrappers.BoolValue();
-        boolValue.setValue(value);
+        boolValue.setValue(object);
         return boolValue;
     }
 }
 
-class BytesValueParser {
+class BytesValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let bytesValue = new wrappers.BytesValue();
-        bytesValue.setValue(value);
+        bytesValue.setValue(object);
         return bytesValue;
     }
 }
 
-class DoubleValueParser {
+class DoubleValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let doubleValue = new wrappers.DoubleValue();
-        doubleValue.setValue(value);
+        doubleValue.setValue(object);
         return doubleValue;
     }
 }
 
-class FloatValueParser {
+class FloatValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let floatValue = new wrappers.FloatValue();
-        floatValue.setValue(value);
+        floatValue.setValue(object);
         return floatValue;
     }
 }
 
-class Int32ValueParser {
+class Int32ValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let int32Value = new wrappers.Int32Value();
-        int32Value.setValue(value);
+        int32Value.setValue(object);
         return int32Value;
     }
 }
 
-class Int64ValueParser {
+class Int64ValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let int64Value = new wrappers.Int64Value();
-        int64Value.setValue(value);
+        int64Value.setValue(object);
         return int64Value;
     }
 }
 
-class StringValueParser {
+class StringValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let stringValue = new wrappers.StringValue();
-        stringValue.setValue(value);
+        stringValue.setValue(object);
         return stringValue;
     }
 }
 
-class UInt32ValueParser {
+class UInt32ValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let uInt32Value = new wrappers.UInt32Value();
-        uInt32Value.setValue(value);
+        uInt32Value.setValue(object);
         return uInt32Value;
     }
 }
 
-class UInt64ValueParser {
+class UInt64ValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let uInt64Value = new wrappers.UInt64Value();
-        uInt64Value.setValue(value);
+        uInt64Value.setValue(object);
         return uInt64Value;
     }
 }
 
-class ListValueParser {
+class ListValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let listValue = new struct.ListValue;
-        value.forEach(
+        object.forEach(
             function callback(currentValue, index, array) {
                 let valueParser = new ValueParser();
                 array[index] = valueParser.parse(currentValue);
             }
         );
-        listValue.setValuesList(value);
+        listValue.setValuesList(object);
         return listValue;
     }
 }
 
-class ValueParser {
+class ValueParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let result = new struct.Value();
-        if (value === null) {
+        if (object === null) {
             result.setNullValue(struct.NullValue.NULL_VALUE);
-        } else if (typeof value === "number") {
-            result.setNumberValue(value);
-        } else if (typeof value === "string") {
-            result.setStringValue(value);
-        } else if (typeof value === "boolean") {
-            result.setBoolValue(value);
-        } else if (Array.isArray(value)) {
-            let parser = new ListValueParser(value);
-            let listValue = parser.parse(value);
+        } else if (typeof object === "number") {
+            result.setNumberValue(object);
+        } else if (typeof object === "string") {
+            result.setStringValue(object);
+        } else if (typeof object === "boolean") {
+            result.setBoolValue(object);
+        } else if (Array.isArray(object)) {
+            let parser = new ListValueParser(object);
+            let listValue = parser.parse(object);
             result.setListValue(listValue);
         } else {
             // Is a Struct, unhandled for now.
@@ -156,29 +156,29 @@ class ValueParser {
     }
 }
 
-class EmptyParser {
+class EmptyParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let emptyValue = new empty.Empty();
         return emptyValue;
     }
 }
 
-class TimestampParser {
+class TimestampParser extends ObjectParser {
 
-    parse(value) {
-        let date = new Date(value);
+    fromObject(object) {
+        let date = new Date(object);
         let result = new timestamp.Timestamp();
         result.fromDate(date);
         return result;
     }
 }
 
-class DurationParser {
+class DurationParser extends ObjectParser {
 
-    parse(value) {
-        value = value.substring(0, value.length - 1);
-        let values = value.split(".");
+    fromObject(object) {
+        object = object.substring(0, object.length - 1);
+        let values = object.split(".");
         let result = new duration.Duration();
         if (values.length === 1) {
             result.setSeconds(values[0]);
@@ -195,26 +195,26 @@ class DurationParser {
     }
 }
 
-class FieldMaskParser {
+class FieldMaskParser extends ObjectParser {
 
-    parse(value) {
+    fromObject(object) {
         let fieldMask = new fieldMask.FieldMask();
-        fieldMask.setPathsList(value.split(","));
+        fieldMask.setPathsList(object.split(","));
         return fieldMask;
     }
 }
 
-class AnyParser {
+class AnyParser extends ObjectParser {
 
-    parse(value) {
-        let typeUrl = value["@type"];
+    fromObject(object) {
+        let typeUrl = object["@type"];
         let messageValue;
         let parser = parsers.get(typeUrl);
         if (parser) {
-            messageValue = parser.parse(value["value"]);
+            messageValue = parser.parse(object["value"]);
         } else {
             let type = knownTypes.types.get(typeUrl);
-            messageValue = type.fromObject(value);
+            messageValue = type.fromObject(object);
         }
         let bytes = messageValue.serializeBinary();
         let anyMsg = new any.Any;
