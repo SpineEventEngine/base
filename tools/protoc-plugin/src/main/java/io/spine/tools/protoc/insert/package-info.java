@@ -19,7 +19,8 @@
  */
 
 /**
- * This package contains the routines of generating marker interfaces for the Proto messages.
+ * This package contains the routines of manipulating the Protoc Insertion Point to alter the
+ * generated Protobuf messages.
  */
 
 @CheckReturnValue

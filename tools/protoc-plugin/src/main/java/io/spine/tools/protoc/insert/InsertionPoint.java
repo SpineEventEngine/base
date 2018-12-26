@@ -32,7 +32,7 @@ import static java.lang.String.format;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
- * message class to implement a given marker interface.
+ * message class to implement a given interface.
  */
 final class InsertionPoint extends AbstractCompilerOutput {
 
@@ -49,19 +49,19 @@ final class InsertionPoint extends AbstractCompilerOutput {
      * @param containingFile
      *         the file which contains the given {@code message}
      * @param message
-     *         the message to mark with an interface
-     * @param markerInterface
+     *         the message which should be altered
+     * @param messageInterface
      *         the interface to implement
      * @return new instance of {@code InsertionPoint}
      */
     static InsertionPoint implementInterface(FileDescriptorProto containingFile,
                                              DescriptorProto message,
-                                             MarkerInterface markerInterface) {
+                                             MessageInterface messageInterface) {
         File.Builder file = prepareFile(containingFile, message);
         String messageFqn = containingFile.getPackage() + delimiter() + message.getName();
         String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageFqn);
         String content =
-                markerInterface.name() + initGenericParams(markerInterface, message) + ',';
+                messageInterface.name() + initGenericParams(messageInterface, message) + ',';
         File result = file.setInsertionPoint(insertionPoint)
                           .setContent(content)
                           .build();
@@ -78,9 +78,9 @@ final class InsertionPoint extends AbstractCompilerOutput {
         return srcFile;
     }
 
-    private static String initGenericParams(MarkerInterface markerInterface,
+    private static String initGenericParams(MessageInterface messageInterface,
                                             DescriptorProto message) {
-        MarkerInterfaceParameters parameters = markerInterface.parameters();
+        MessageInterfaceParameters parameters = messageInterface.parameters();
         String result = parameters.getAsStringFor(message);
         return result;
     }

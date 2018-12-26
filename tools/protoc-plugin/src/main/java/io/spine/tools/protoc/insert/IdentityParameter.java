@@ -23,15 +23,15 @@ package io.spine.tools.protoc.insert;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
- * The marker interface parameter whose value is the target {@code Message} itself.
+ * The message interface parameter whose value is the target {@code Message} itself.
  *
- * <p>So, for the {@code ProjectId} class implementing some marker interface, the value of the
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
  * parameter will be {@code ProjectId}.
  */
-final class IdentityParameter implements MarkerInterfaceParameter {
+final class IdentityParameter implements MessageInterfaceParameter {
 
     @Override
-    public String valueFor(DescriptorProto target) {
-        return target.getName();
+    public String valueFor(DescriptorProto descendant) {
+        return descendant.getName();
     }
 }

@@ -55,13 +55,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MarkerInterfaceGenerator should")
-class MarkerInterfaceGeneratorTest {
+@DisplayName("MessageInterfaceGenerator should")
+class MessageInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.insert.";
 
     private static final PackageName PACKAGE_NAME =
-            PackageName.of(MarkerInterfaceGeneratorTest.class);
+            PackageName.of(MessageInterfaceGeneratorTest.class);
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.insert\\.ProtocCustomerEvent\\s*,\\s*$");
     private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
@@ -85,7 +85,7 @@ class MarkerInterfaceGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        codeGenerator = MarkerInterfaceGenerator.instance();
+        codeGenerator = MessageInterfaceGenerator.instance();
     }
 
     @Test
@@ -93,7 +93,7 @@ class MarkerInterfaceGeneratorTest {
     void notAcceptNulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
-                .testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
+                .testAllPublicStaticMethods(MessageInterfaceGenerator.class);
     }
 
     @Test
@@ -317,8 +317,8 @@ class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate marker interfaces for (is) if `generate = true`")
-    void generateMarkersForIs() {
+    @DisplayName("generate message interfaces for (is) if `generate = true`")
+    void generateInterfacesForIs() {
         String filePath = "spine/tools/protoc/insert/is_generated.proto";
 
         FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
@@ -351,8 +351,8 @@ class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate marker interfaces for (every_is) if `generate = true`")
-    void generateMarkersForEveryIs() {
+    @DisplayName("generate message interfaces for (every_is) if `generate = true`")
+    void generateInterfacesForEveryIs() {
         String filePath = "spine/tools/protoc/insert/every_is_generated.proto";
 
         FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()

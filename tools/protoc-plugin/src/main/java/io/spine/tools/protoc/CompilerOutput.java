@@ -24,8 +24,6 @@ import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.Fi
 
 /**
  * Output of the Protobuf compiler plugin.
- *
- * @author Dmytro Dashenkov
  */
 public interface CompilerOutput {
 

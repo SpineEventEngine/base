@@ -28,29 +28,29 @@ import io.spine.tools.protoc.AbstractCompilerOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A user-defined marker interface.
+ * A user-defined message interface.
  *
  * <p>This interface is declared with an {@link io.spine.option.OptionsProto#is (is)} or
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
  */
-final class CustomMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
+final class CustomMessageInterface extends AbstractCompilerOutput implements MessageInterface {
 
     private final String interfaceFqn;
 
-    private CustomMarkerInterface(File file, String interfaceFqn) {
+    private CustomMessageInterface(File file, String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
 
     /**
-     * Creates a {@code CustomMarkerInterface} from the given spec.
+     * Creates a {@code CustomMessageInterface} from the given spec.
      *
      * @param spec
      *         the interface spec to create an interface from
-     * @return new instance of {@code CustomMarkerInterface}
+     * @return new instance of {@code CustomMessageInterface}
      */
-    static CustomMarkerInterface from(MarkerInterfaceSpec spec) {
+    static CustomMessageInterface from(MessageInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
@@ -60,7 +60,7 @@ final class CustomMarkerInterface extends AbstractCompilerOutput implements Mark
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.getFqn();
-        return new CustomMarkerInterface(interfaceFile, fqn);
+        return new CustomMessageInterface(interfaceFile, fqn);
     }
 
     @Override
@@ -69,10 +69,10 @@ final class CustomMarkerInterface extends AbstractCompilerOutput implements Mark
     }
 
     /**
-     * Generic params are currently not supported for user-defined marker interfaces.
+     * Generic params are currently not supported for user-defined message interfaces.
      */
     @Override
-    public MarkerInterfaceParameters parameters() {
-        return MarkerInterfaceParameters.empty();
+    public MessageInterfaceParameters parameters() {
+        return MessageInterfaceParameters.empty();
     }
 }

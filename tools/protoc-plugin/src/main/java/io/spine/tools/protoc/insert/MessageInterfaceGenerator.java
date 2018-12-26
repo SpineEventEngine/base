@@ -30,6 +30,10 @@ import io.spine.tools.protoc.SpineProtoGenerator;
 import java.util.Collection;
 import java.util.Optional;
 
+import static io.spine.tools.protoc.insert.BuiltInMessageInterface.scanForBuiltIns;
+import static io.spine.tools.protoc.insert.MessageAndInterface.scanFileOption;
+import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
+
 /**
  * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
  * some message types.
@@ -37,25 +41,22 @@ import java.util.Optional;
  * <p>The generator produces two types of {@link File CodeGeneratorResponse.File} instances
  * representing:
  * <ul>
- *     <li>the marker interfaces derived from
- *         {@link com.google.protobuf.Message com.google.protobuf.Message}
+ *     <li>the interfaces derived from {@link com.google.protobuf.Message}
  *     <li>the insertion entries to the existing messages (see
  *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
- *
- * @author Dmytro Dashenkov
  */
-public class MarkerInterfaceGenerator extends SpineProtoGenerator {
+public class MessageInterfaceGenerator extends SpineProtoGenerator {
 
-    private static final SpineProtoGenerator instance = new MarkerInterfaceGenerator();
+    private static final SpineProtoGenerator instance = new MessageInterfaceGenerator();
 
     /** Prevents singleton class instantiation. */
-    private MarkerInterfaceGenerator() {
+    private MessageInterfaceGenerator() {
         super();
     }
 
     /**
-     * Retrieves the single instance of the {@code MarkerInterfaceGenerator} type.
+     * Retrieves the single instance of the {@code MessageInterfaceGenerator} type.
      */
     public static SpineProtoGenerator instance() {
         return instance;
@@ -64,15 +65,17 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     /**
      * {@inheritDoc}
      *
-     * <p>The {@code MarkerInterfaceGenerator} implementation performs the message processing
+     * <p>The {@code MessageInterfaceGenerator} implementation performs the message processing
      * as follows:
      * <ol>
-     *     <li>Checks the message has {@code (is)} option. If it does, the marker interface name is
-     *         extracted from it and both the marker interface and the message insertion point are
+     *     <li>Checks the message declaration matches any built-in interface contract. If it does,
+     *         the message insertion point with the appropriate interface name is generated.
+     *     <li>Checks the message has {@code (is)} option. If it does, the interface name is
+     *         extracted from it and both the interface and the message insertion point are
      *         generated.
-     *     <li>Checks the message file has {@code (every_is)} option. If it does, the marker
-     *         interface name is extracted from it and both the marker interface and the message
-     *         insertion point are generated.
+     *     <li>Checks the message file has {@code (every_is)} option. If it does, the interface
+     *         name is extracted from it and both the interface and the message insertion point are
+     *         generated.
      *     <li>Otherwise, no compiler response is generated for this message type.
      * </ol>
      */
@@ -81,14 +84,14 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     processMessage(FileDescriptorProto file, DescriptorProto message) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Optional<CompilerOutput> builtInMarkedInterface = BuiltInMarkerInterface.scanForBuiltIns(file, message);
+        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
         builtInMarkedInterface.ifPresent(result::add);
 
-        Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(file, message);
+        Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
         result.addAll(fromMsgOption);
 
         if (fromMsgOption.isEmpty()) {
-            Collection<CompilerOutput> fromFileOption = MessageAndInterface.scanFileOption(file, message);
+            Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
             result.addAll(fromFileOption);
         }
         return result.build();

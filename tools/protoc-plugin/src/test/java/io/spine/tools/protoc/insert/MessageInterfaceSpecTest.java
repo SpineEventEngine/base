@@ -20,21 +20,29 @@
 
 package io.spine.tools.protoc.insert;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * The generic parameter of the {@link MarkerInterface}.
- *
- * <p>Parameter value is presented as a {@code String} for usage in the generated code.
- */
-interface MarkerInterfaceParameter {
+import javax.annotation.Generated;
 
-    /**
-     * Obtains a parameter value based on who is the marker interface target.
-     *
-     * @param target
-     *         the {@code Message} class implementing the marker interface
-     * @return the value of the generic parameter
-     */
-    String valueFor(DescriptorProto target);
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("MessageInterfaceSpec should")
+class MessageInterfaceSpecTest {
+
+    @Test
+    @DisplayName("generate interfaces")
+    void generate_interfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new MessageInterfaceSpec(packageName, interfaceName).toJavaCode();
+
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
+
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
+    }
 }

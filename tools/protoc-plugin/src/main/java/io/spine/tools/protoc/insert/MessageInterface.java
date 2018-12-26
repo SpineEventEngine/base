@@ -20,29 +20,21 @@
 
 package io.spine.tools.protoc.insert;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+/**
+ * An interface to be implemented by the Protobuf message.
+ *
+ * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
+ * generated code.
+ */
+public interface MessageInterface {
 
-import javax.annotation.Generated;
+    /**
+     * Obtains a fully-qualified name of the interface.
+     */
+    String name();
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@DisplayName("MarkerInterfaceSpec should")
-class MarkerInterfaceSpecTest {
-
-    @Test
-    @DisplayName("generate interfaces")
-    void generate_interfaces() {
-        String packageName = "io.spine.test";
-        String interfaceName = "CustomerEvent";
-        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
-
-        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
-        assertEquals(Generated.class.getName(), generated.type.toString());
-
-        assertEquals(packageName, javaFile.packageName);
-        assertEquals(interfaceName, javaFile.typeSpec.name);
-    }
+    /**
+     * Obtains the generic params of the interface.
+     */
+    MessageInterfaceParameters parameters();
 }

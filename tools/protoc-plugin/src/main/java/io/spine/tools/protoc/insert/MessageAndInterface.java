@@ -37,18 +37,19 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
+import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
 
 /**
- * A tuple of two {@link File} instances representing a message and the marker interface
- * resolved for that message.
+ * A tuple of two {@link File} instances representing a message and the interface resolved for that
+ * message.
  */
 final class MessageAndInterface {
 
     private final InsertionPoint messageFile;
-    private final @Nullable CustomMarkerInterface interfaceFile;
+    private final @Nullable CustomMessageInterface interfaceFile;
 
     private MessageAndInterface(InsertionPoint messageFile,
-                                @Nullable CustomMarkerInterface interfaceFile) {
+                                @Nullable CustomMessageInterface interfaceFile) {
         this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
     }
@@ -89,13 +90,14 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(FileDescriptorProto file,
                                                     DescriptorProto msg,
                                                     IsOption optionValue) {
-        MarkerInterfaceSpec interfaceSpec = MarkerInterfaceSpec.prepareInterface(optionValue, file);
-        CustomMarkerInterface markerInterface = CustomMarkerInterface.from(interfaceSpec);
-        InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
-        CustomMarkerInterface interfaceToGenerate = optionValue.getGenerate()
-                                                    ? markerInterface
-                                                    : null;
-        MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
+        MessageInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
+        InsertionPoint message = InsertionPoint.implementInterface(file, msg, messageInterface);
+        CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
+                                                     ? messageInterface
+                                                     : null;
+        @SuppressWarnings("ConstantConditions") // OK as param is nullable.
+                MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
         return result;
     }
 

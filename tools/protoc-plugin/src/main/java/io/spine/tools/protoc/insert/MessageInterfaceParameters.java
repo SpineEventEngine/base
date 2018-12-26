@@ -26,47 +26,47 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import java.util.stream.Collectors;
 
 /**
- * The generic parameters of the {@link MarkerInterface}.
+ * The generic parameters of the {@link MessageInterface}.
  *
  * <p>Contrary to the type information contained in a {@link Class} instance, the
- * {@code MarkerInterfaceParameter} carries the logic on how to initialize itself based on the
- * marker interface target.
+ * {@code MessageInterfaceParameter} carries the logic on how to initialize itself based on the
+ * message interface descendant.
  */
-final class MarkerInterfaceParameters {
+final class MessageInterfaceParameters {
 
-    private final ImmutableList<MarkerInterfaceParameter> params;
+    private final ImmutableList<MessageInterfaceParameter> params;
 
-    private MarkerInterfaceParameters(ImmutableList<MarkerInterfaceParameter> params) {
+    private MessageInterfaceParameters(ImmutableList<MessageInterfaceParameter> params) {
         this.params = params;
     }
 
-    static MarkerInterfaceParameters of(MarkerInterfaceParameter... parameters) {
-        ImmutableList<MarkerInterfaceParameter> params = ImmutableList.copyOf(parameters);
-        return new MarkerInterfaceParameters(params);
+    static MessageInterfaceParameters of(MessageInterfaceParameter... parameters) {
+        ImmutableList<MessageInterfaceParameter> params = ImmutableList.copyOf(parameters);
+        return new MessageInterfaceParameters(params);
     }
 
-    static MarkerInterfaceParameters empty() {
-        return new MarkerInterfaceParameters(ImmutableList.of());
+    static MessageInterfaceParameters empty() {
+        return new MessageInterfaceParameters(ImmutableList.of());
     }
 
     /**
-     * Initializes parameter values based on the marker interface target.
+     * Initializes parameter values based on the message interface descendant.
      *
      * <p>The values are then concatenated to a {@code String} of generated code.
      *
      * <p>Example output: {@code <ProjectId, String>}.
      */
-    String getAsStringFor(DescriptorProto target) {
+    String getAsStringFor(DescriptorProto descendant) {
         if (params.isEmpty()) {
             return "";
         }
-        String result = '<' + initParams(target) + '>';
+        String result = '<' + initParams(descendant) + '>';
         return result;
     }
 
-    private String initParams(DescriptorProto target) {
+    private String initParams(DescriptorProto descendant) {
         return params.stream()
-                     .map(param -> param.valueFor(target))
+                     .map(param -> param.valueFor(descendant))
                      .collect(Collectors.joining(", "));
     }
 }

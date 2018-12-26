@@ -38,29 +38,30 @@ import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
 
 /**
- * A built-in marked interface.
+ * A built-in message interface.
  *
- * <p>This interface marks special message types, such as unique IDs, events, commands, etc.
+ * <p>Such interfaces mark special message types, such as unique IDs, events, commands, and are
+ * assigned automatically by the Spine Protoc plugin.
  */
-final class BuiltInMarkerInterface implements MarkerInterface {
+final class BuiltInMessageInterface implements MessageInterface {
 
     private final Class<? extends Message> type;
-    private final MarkerInterfaceParameters genericParams;
+    private final MessageInterfaceParameters genericParams;
 
-    private BuiltInMarkerInterface(Class<? extends Message> type,
-                                   MarkerInterfaceParameters genericParams) {
+    private BuiltInMessageInterface(Class<? extends Message> type,
+                                    MessageInterfaceParameters genericParams) {
         this.type = type;
         this.genericParams = genericParams;
     }
 
-    private static BuiltInMarkerInterface from(Type type) {
+    private static BuiltInMessageInterface from(Type type) {
         checkNotNull(type);
-        return new BuiltInMarkerInterface(type.interfaceClass, type.interfaceParams);
+        return new BuiltInMessageInterface(type.interfaceClass, type.interfaceParams);
     }
 
     /**
      * Obtains the {@link CompilerOutput} item which generates Java sources for the given message
-     * to implement a built-in marker interface.
+     * to implement a built-in interface.
      *
      * @param file
      *         the file containing the given {@code message} definition
@@ -79,8 +80,8 @@ final class BuiltInMarkerInterface implements MarkerInterface {
             return empty();
         }
         Type type = foundInterface.get();
-        MarkerInterface markerInterface = from(type);
-        InsertionPoint insertionPoint = implementInterface(file, message, markerInterface);
+        MessageInterface messageInterface = from(type);
+        InsertionPoint insertionPoint = implementInterface(file, message, messageInterface);
         return Optional.of(insertionPoint);
     }
 
@@ -90,7 +91,7 @@ final class BuiltInMarkerInterface implements MarkerInterface {
     }
 
     @Override
-    public MarkerInterfaceParameters parameters() {
+    public MessageInterfaceParameters parameters() {
         return genericParams;
     }
 
@@ -108,14 +109,14 @@ final class BuiltInMarkerInterface implements MarkerInterface {
 
         private final Class<? extends Message> interfaceClass;
         private final BiPredicate<DescriptorProto, FileDescriptorProto> predicate;
-        private final MarkerInterfaceParameters interfaceParams;
+        private final MessageInterfaceParameters interfaceParams;
 
         Type(Class<? extends Message> interfaceClass,
              BiPredicate<DescriptorProto, FileDescriptorProto> predicate,
-             MarkerInterfaceParameter... interfaceParams) {
+             MessageInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
             this.predicate = predicate;
-            this.interfaceParams = MarkerInterfaceParameters.of(interfaceParams);
+            this.interfaceParams = MessageInterfaceParameters.of(interfaceParams);
         }
 
         /**
