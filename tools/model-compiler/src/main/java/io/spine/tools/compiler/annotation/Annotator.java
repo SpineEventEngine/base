@@ -178,7 +178,6 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      * @param descriptor
      *         the descriptor to extract {@link #option} value.
      * @return the option value
-     * @see #shouldAnnotate(GenericDescriptor)
      */
     protected abstract Optional<Boolean> getOptionValue(D descriptor);
 

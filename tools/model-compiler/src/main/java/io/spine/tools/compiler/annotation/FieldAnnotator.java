@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -32,10 +31,8 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.Options;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.FieldHolderSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
@@ -45,9 +42,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * Annotates field accessor in a generated Java code.
@@ -76,20 +73,17 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
 
     @Override
     protected void annotateOneFile(FileDescriptor file) {
-        if (!shouldAnnotate(file)) {
-            return;
+        if (shouldAnnotate(file)) {
+            SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
+            rewriteSource(outerClass, new FileFieldAnnotation(file));
         }
-
-        SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
-        rewriteSource(outerClass, new FileFieldAnnotation<JavaClassSource>(file));
     }
 
     @Override
     protected void annotateMultipleFiles(FileDescriptor file) {
         for (Descriptor messageType : file.getMessageTypes()) {
             if (shouldAnnotate(messageType)) {
-                SourceVisitor<JavaClassSource> annotation =
-                        new MessageFieldAnnotation<>(messageType);
+                SourceVisitor<JavaClassSource> annotation = new MessageFieldAnnotation(messageType);
                 SourceFile filePath = SourceFile.forMessage(messageType.toProto(), file.toProto());
                 rewriteSource(filePath, annotation);
             }
@@ -101,14 +95,6 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
         return Options.option(file, getOption());
     }
 
-    @VisibleForTesting
-    static JavaClassSource getBuilder(JavaSource messageSource) {
-        JavaClassSource messageClass = asClassSource(messageSource);
-        JavaSource builderSource = messageClass.getNestedType(SimpleClassName.ofBuilder()
-                                                                             .value());
-        return asClassSource(builderSource);
-    }
-
     /**
      * Casts a {@link JavaType} to a {@link JavaClassSource}.
      *
@@ -116,23 +102,15 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
      * @return a casted instance
      * @throws IllegalStateException if the specified source is not a class
      */
-    private static JavaClassSource asClassSource(JavaType<?> javaType) {
-        if (!javaType.isClass()) {
-            String errMsg = format("`%s expected to be a class.",
-                                   javaType.getQualifiedName());
-            throw new IllegalStateException(errMsg);
-        }
-
+    private static JavaClassSource castToClass(JavaType<?> javaType) {
+        checkState(javaType.isClass(), "`%s expected to be a class.", javaType.getQualifiedName());
         return (JavaClassSource) javaType;
     }
 
     /**
      * An annotation function for the {@link #fileDescriptor}.
-     *
-     * @param <T> the type of a Java source, that may contains field definitions
      */
-    private class FileFieldAnnotation<T extends JavaSource<T> & FieldHolderSource<T>>
-            implements SourceVisitor<T> {
+    private class FileFieldAnnotation implements SourceVisitor<JavaClassSource> {
 
         /**
          * A file descriptor, that has {@code false} value for a {@code java_multiple_files} option.
@@ -150,19 +128,19 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
          * @param input the {@link AbstractJavaSource} for the {@link #fileDescriptor}
          */
         @Override
-        public void accept(@Nullable AbstractJavaSource<T> input) {
+        public void accept(AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             for (Descriptor messageType : fileDescriptor.getMessageTypes()) {
                 processMessageDescriptor(input, messageType);
             }
         }
 
-        private void processMessageDescriptor(AbstractJavaSource<T> input,
+        private void processMessageDescriptor(AbstractJavaSource<JavaClassSource> input,
                                               Descriptor messageType) {
             for (FieldDescriptor field : messageType.getFields()) {
                 if (shouldAnnotate(field)) {
                     JavaSource message = findNestedType(input, messageType.getName());
-                    annotateMessageField(asClassSource(message), new FieldDeclaration(field));
+                    annotateMessageField(castToClass(message), new FieldDeclaration(field));
                 }
             }
         }
@@ -170,11 +148,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
 
     /**
      * An annotation function for a {@link #message}.
-     *
-     * @param <T> the type of a Java source, that may contains field definitions
      */
-    private class MessageFieldAnnotation<T extends JavaSource<T> & FieldHolderSource<T>>
-            implements SourceVisitor<T> {
+    class MessageFieldAnnotation implements SourceVisitor<JavaClassSource> {
 
         /**
          * A message descriptor for a file descriptor,
@@ -194,11 +169,11 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
          * @param input the {@link AbstractJavaSource} for the {@link #message}
          */
         @Override
-        public void accept(@Nullable AbstractJavaSource<T> input) {
+        public void accept(AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             for (FieldDescriptor field : message.getFields()) {
                 if (shouldAnnotate(field)) {
-                    annotateMessageField(asClassSource(input), new FieldDeclaration(field));
+                    annotateMessageField(castToClass(input), new FieldDeclaration(field));
                 }
             }
         }
@@ -214,9 +189,15 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
      */
     private void annotateMessageField(JavaClassSource message,
                                       FieldDeclaration field) {
-        JavaClassSource messageBuilder = getBuilder(message);
+        JavaClassSource messageBuilder = builderOf(message);
         annotateAccessors(message, field);
         annotateAccessors(messageBuilder, field);
+    }
+
+    private static JavaClassSource builderOf(JavaClassSource messageSource) {
+        JavaSource builderSource = messageSource.getNestedType(SimpleClassName.ofBuilder()
+                                                                              .value());
+        return castToClass(builderSource);
     }
 
     /**
