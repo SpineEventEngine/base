@@ -62,7 +62,7 @@ import static java.util.stream.Collectors.toList;
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
-public final class ExportStandardParsersMap implements Snippet {
+public final class ExportStandardParsers implements Snippet {
 
     /**
      * The exported map name.
@@ -118,7 +118,7 @@ public final class ExportStandardParsersMap implements Snippet {
     private static List<Entry<String, String>> mapEntries() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         List<Entry<String, String>> entryLiterals = entries.stream()
-                                                           .map(ExportStandardParsersMap::mapEntry)
+                                                           .map(ExportStandardParsers::mapEntry)
                                                            .collect(toList());
         return entryLiterals;
     }

@@ -23,9 +23,10 @@ package io.spine.code.js;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A reference to a method.
+ * A reference to a method of a Protobuf type.
  *
- * <p>Includes the type on which the method is defined.
+ * <p>The reference allows to identify a method in code
+ * since it includes a type name and a method name.
  */
 public class MethodReference {
 

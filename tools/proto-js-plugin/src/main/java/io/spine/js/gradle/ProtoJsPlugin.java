@@ -134,8 +134,8 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateCode(Directory generatedRoot, File descriptors) {
         FileSet fileSet = parseOrEmpty(descriptors);
         GenerationTask generateParsers = GenerateKnownTypeParsers.createFor(generatedRoot);
-        generateParsers.perform(fileSet);
+        generateParsers.performFor(fileSet);
         GenerationTask appendTypeUrlGetter = new AppendTypeUrlGetter(generatedRoot);
-        appendTypeUrlGetter.perform(fileSet);
+        appendTypeUrlGetter.performFor(fileSet);
     }
 }

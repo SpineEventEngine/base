@@ -33,25 +33,25 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ExportStandardParsersMap should")
-class ExportStandardParsersMapTest {
+@DisplayName("ExportStandardParsers should")
+class ExportStandardParsersTest {
 
-    private final ExportStandardParsersMap generator = new ExportStandardParsersMap();
+    private final ExportStandardParsers generator = new ExportStandardParsers();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ExportStandardParsersMap.class);
+        new NullPointerTester().testAllPublicStaticMethods(ExportStandardParsers.class);
     }
 
     @Test
     @DisplayName("tell if parser for type URL is present")
     void tellIfHasParser() {
         TypeUrl timestamp = TypeUrl.of(Timestamp.class);
-        assertTrue(ExportStandardParsersMap.hasParser(timestamp));
+        assertTrue(ExportStandardParsers.hasParser(timestamp));
 
         TypeUrl validationError = TypeUrl.of(ValidationError.class);
-        assertFalse(ExportStandardParsersMap.hasParser(validationError));
+        assertFalse(ExportStandardParsers.hasParser(validationError));
     }
 
     @Test

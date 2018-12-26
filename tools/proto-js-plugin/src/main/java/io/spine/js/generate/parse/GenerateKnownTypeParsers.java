@@ -108,7 +108,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     @VisibleForTesting
     void writeKnownTypeParsers() {
         copyParsersCode();
-        ExportStandardParsersMap generator = new ExportStandardParsersMap();
+        ExportStandardParsers generator = new ExportStandardParsers();
         FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
         writer.append(generator.value());
     }
