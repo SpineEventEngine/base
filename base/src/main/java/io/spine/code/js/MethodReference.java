@@ -20,14 +20,17 @@
 
 package io.spine.code.js;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A reference to a method.
+ * A reference to a method of a Protobuf type.
  *
- * <p>Includes the type on which the method is defined.
+ * <p>The reference allows to identify a method in code
+ * since it includes a type name and a method name.
  */
-public class MethodReference {
+public final class MethodReference {
 
     /** The type declaring the method. */
     private final TypeName typeName;
@@ -66,5 +69,29 @@ public class MethodReference {
                            ? ".prototype."
                            : ".";
         return typeName + delimiter + methodName;
+    }
+
+    @Override
+    public String toString() {
+        return value();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MethodReference)) {
+            return false;
+        }
+        MethodReference reference = (MethodReference) o;
+        return onPrototype == reference.onPrototype &&
+                typeName.equals(reference.typeName) &&
+                methodName.equals(reference.methodName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeName, methodName, onPrototype);
     }
 }

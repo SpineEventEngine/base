@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.RejectionType;
@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;

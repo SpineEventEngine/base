@@ -26,7 +26,7 @@ import com.squareup.javapoet.CodeBlock;
 
 import javax.annotation.Generated;
 
-import static io.spine.code.Generation.compilerAnnotation;
+import static io.spine.code.generate.Generation.compilerAnnotation;
 
 /**
  * A factory for Java annotation specs.

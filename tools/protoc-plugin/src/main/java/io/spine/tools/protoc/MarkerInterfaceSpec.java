@@ -34,7 +34,7 @@ import io.spine.option.IsOption;
 import javax.annotation.Generated;
 import java.util.Objects;
 
-import static io.spine.code.Generation.compilerAnnotation;
+import static io.spine.code.generate.Generation.compilerAnnotation;
 import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 

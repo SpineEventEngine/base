@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.tools.compiler.validation.VBuilderGenerator;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;

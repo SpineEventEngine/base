@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;

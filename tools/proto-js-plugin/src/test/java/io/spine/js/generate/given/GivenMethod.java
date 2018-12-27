@@ -18,25 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output;
+package io.spine.js.generate.given;
 
-import io.spine.code.generate.Indent;
-import io.spine.code.generate.IndentLevel;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Any;
+import io.spine.code.js.MethodReference;
+import io.spine.code.js.TypeName;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+public final class GivenMethod {
 
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
+    /** Prevents instantiation of this utility class. */
+    private GivenMethod() {
+    }
 
-    @Test
-    @DisplayName("create indent for code based on depth and indentation")
-    void createIndent() {
-        IndentLevel depth = IndentLevel.of(2);
-        Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
-        String expected = "    content";
-        assertEquals(expected, line.content());
+    public static MethodReference methodReference() {
+        TypeName typeName = TypeName.from(Any.getDescriptor());
+        return MethodReference.onType(typeName, "testMethodName");
     }
 }

@@ -45,9 +45,9 @@ public abstract class GenerationTask {
      * @param fileSet
      *         the Protobuf files to generate code for
      */
-    public final void perform(FileSet fileSet) {
+    public final void performFor(FileSet fileSet) {
         checkNotNull(fileSet);
-        if (shouldPerform(fileSet)) {
+        if (hasFiles(fileSet)) {
             generateFor(fileSet);
         }
     }
@@ -72,7 +72,7 @@ public abstract class GenerationTask {
      *
      * @return {@code true} if there are files to process and {@code false} otherwise
      */
-    private boolean shouldPerform(FileSet fileSet) {
+    private boolean hasFiles(FileSet fileSet) {
         boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
     }

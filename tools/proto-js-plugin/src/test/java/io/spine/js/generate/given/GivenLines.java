@@ -20,8 +20,8 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.Indent;
-import io.spine.code.IndentLevel;
+import io.spine.code.generate.Indent;
+import io.spine.code.generate.IndentLevel;
 import io.spine.js.generate.output.CodeLines;
 
 public final class GivenLines {

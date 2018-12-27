@@ -73,7 +73,7 @@ class GenerationTaskTest {
     private static void assertPerformed(TestGenerationTask task,
                                         FileSet fileSet,
                                         boolean expectedToBePerformed) {
-        task.perform(fileSet);
+        task.performFor(fileSet);
         assertEquals(expectedToBePerformed, task.isSourcesProcessed());
     }
 }

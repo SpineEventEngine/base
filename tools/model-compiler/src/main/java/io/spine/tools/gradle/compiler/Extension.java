@@ -20,7 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import org.gradle.api.Project;
