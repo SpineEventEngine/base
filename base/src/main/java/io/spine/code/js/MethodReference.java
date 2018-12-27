@@ -20,6 +20,7 @@
 
 package io.spine.code.js;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,14 +34,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class MethodReference {
 
     /** The type declaring the method. */
+    @Nullable
     private final TypeName typeName;
     /** The name of the method. */
     private final String methodName;
     /** Whether the method is defined on the prototype or not. */
     private final boolean onPrototype;
 
-    private MethodReference(TypeName typeName, String methodName, boolean onPrototype) {
-        checkNotNull(typeName);
+    private MethodReference(@Nullable TypeName typeName, String methodName, boolean onPrototype) {
         checkNotNull(methodName);
         this.typeName = typeName;
         this.methodName = methodName;
@@ -62,9 +63,19 @@ public final class MethodReference {
     }
 
     /**
+     * Obtains the reference to the constructor with the specified name.
+     */
+    public static MethodReference constructor(String name) {
+        return new MethodReference(null, name, false);
+    }
+
+    /**
      * Obtains the value of the reference.
      */
     public String value() {
+        if (typeName == null) {
+            return methodName;
+        }
         String delimiter = onPrototype
                            ? ".prototype."
                            : ".";
@@ -86,7 +97,7 @@ public final class MethodReference {
         }
         MethodReference reference = (MethodReference) o;
         return onPrototype == reference.onPrototype &&
-                typeName.equals(reference.typeName) &&
+                Objects.equals(typeName, reference.typeName) &&
                 methodName.equals(reference.methodName);
     }
 
