@@ -20,11 +20,7 @@
 
 package io.spine.code;
 
-import java.io.File;
 import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for source code files.
@@ -33,29 +29,5 @@ public abstract class AbstractSourceFile extends FsObject {
 
     protected AbstractSourceFile(Path path) {
         super(path);
-    }
-
-    /**
-     * Tells if this source file belongs to the passed directory.
-     *
-     * @param directory
-     *         the passed instance must be a {@linkplain java.io.File#isDirectory() directory}
-     * @return {@code true} if the file belongs to the directory,
-     *         {@code false} if the directory does not exist, or the file is in another directory
-     */
-    public boolean isUnder(File directory) {
-        checkNotNull(directory);
-
-        if(!directory.exists()) {
-            return false;
-        }
-
-        checkArgument(directory.isDirectory(), "%s is not a directory.", directory);
-
-        String thisFile = getPath().toAbsolutePath()
-                                   .toString();
-        String dir = directory.getAbsolutePath();
-        boolean result = thisFile.startsWith(dir);
-        return result;
     }
 }
