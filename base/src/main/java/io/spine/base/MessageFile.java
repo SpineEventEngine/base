@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
@@ -65,6 +66,7 @@ public enum MessageFile {
      *
      * <p>Tests if a given file matches a {@linkplain MessageFile file type}.
      */
+    @Immutable
     public static final class Predicate implements Serializable {
 
         private static final long serialVersionUID = 0L;
