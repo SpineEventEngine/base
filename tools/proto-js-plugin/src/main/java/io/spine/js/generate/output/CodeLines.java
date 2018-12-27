@@ -55,7 +55,7 @@ public final class CodeLines {
     private static final Indent STANDARD_INDENTATION = Indent.of2();
 
     /**
-     * The indentation of the code, i.e. how many spaces each depth level takes.
+     * The indentation of the code, i.e. how many spaces each indent level takes.
      */
     private final Indent indentation;
 
@@ -65,9 +65,9 @@ public final class CodeLines {
     private final List<IndentedLine> codeLines;
 
     /**
-     * The current depth of the code on which the next line will be added.
+     * The current indent level of the code on which the next line will be added.
      */
-    private IndentLevel currentDepth;
+    private IndentLevel currentLevel;
 
     /**
      * Creates an instance of the {@code JsOutput} with the default indentation.
@@ -84,17 +84,17 @@ public final class CodeLines {
      */
     public CodeLines(Indent indentation) {
         this.codeLines = new ArrayList<>();
-        this.currentDepth = IndentLevel.zero();
+        this.currentLevel = IndentLevel.zero();
         this.indentation = indentation;
     }
 
     /**
      * Appends another code lines to this code.
      *
-     * <p>If the appended lines have different depth, then their depth is adjusted
-     * to match the depth of the current lines.
+     * <p>If the appended lines have different indent level, then the level
+     * of appended lines is adjusted to match the level of the current lines.
      *
-     * <p>The depth is adjusted by the difference of current depths.
+     * <p>The indent level is adjusted by the difference of the levels.
      *
      * @param appended
      *         the code to append
@@ -102,9 +102,9 @@ public final class CodeLines {
     public void append(CodeLines appended) {
         checkArgument(indentation.equals(appended.indentation),
                       "Cannot merge code parts with different indentation.");
-        int depthDifference = currentDepth.value() - appended.currentDepth.value();
+        int levelDifference = currentLevel.value() - appended.currentLevel.value();
         for (IndentedLine appendedLine : appended.codeLines) {
-            IndentedLine adjusted = appendedLine.adjustDepthBy(depthDifference);
+            IndentedLine adjusted = appendedLine.adjustLevelBy(levelDifference);
             appendIndented(adjusted);
         }
     }
@@ -117,31 +117,31 @@ public final class CodeLines {
     }
 
     /**
-     * Appends the line of code on the current depth.
+     * Appends the line of code on the current indent level.
      *
      * @param codeLine
      *         the code to add
      */
     public void append(String codeLine) {
         checkNotNull(codeLine);
-        IndentedLine indented = IndentedLine.of(codeLine, currentDepth, indentation);
+        IndentedLine indented = IndentedLine.of(codeLine, currentLevel, indentation);
         codeLines.add(indented);
     }
 
     /**
-     * Appends the code line and indents it to the current depth.
+     * Appends the code line and indents it to the current indent level.
      *
      * @param line
      *         the line to append
      */
     public void append(CodeLine line) {
         checkNotNull(line);
-        IndentedLine indented = IndentedLine.of(line, currentDepth, indentation);
+        IndentedLine indented = IndentedLine.of(line, currentLevel, indentation);
         appendIndented(indented);
     }
 
     /**
-     * Appends the code line without changing its depth.
+     * Appends the code line without changing its indent level.
      *
      * @param codeLine
      *         the code to add
@@ -264,17 +264,17 @@ public final class CodeLines {
     }
 
     /**
-     * Manually increases the current depth.
+     * Manually increases the current indent level.
      */
     public void increaseDepth() {
-        currentDepth = currentDepth.incremented();
+        currentLevel = currentLevel.incremented();
     }
 
     /**
-     * Manually decreases the current depth.
+     * Manually decreases the current indent level.
      */
     public void decreaseDepth() {
-        currentDepth = currentDepth.decremented();
+        currentLevel = currentLevel.decremented();
     }
 
     /**
@@ -309,7 +309,7 @@ public final class CodeLines {
 
     @VisibleForTesting
     int currentDepth() {
-        return currentDepth.value();
+        return currentLevel.value();
     }
 
     @VisibleForTesting

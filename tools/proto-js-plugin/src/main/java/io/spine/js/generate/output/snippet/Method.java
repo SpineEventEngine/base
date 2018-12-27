@@ -37,13 +37,14 @@ import static java.lang.String.join;
 public class Method implements Snippet {
 
     private final MethodReference reference;
-    private final List<String> arguments;
-    private final List<CodeLine> bodyLines;
+    /** Names of the method parameters. */
+    private final List<String> parameters;
+    private final List<CodeLine> body;
 
     private Method(Builder builder) {
         this.reference = builder.methodReference;
-        this.arguments = builder.arguments;
-        this.bodyLines = builder.body;
+        this.parameters = builder.parameters;
+        this.body = builder.body;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class Method implements Snippet {
 
     private void appendBody(CodeLines output) {
         output.increaseDepth();
-        for (CodeLine bodyLine : bodyLines) {
+        for (CodeLine bodyLine : body) {
             output.append(bodyLine);
         }
         output.decreaseDepth();
@@ -67,7 +68,7 @@ public class Method implements Snippet {
      * Declares JS method and enters its body.
      */
     private String declaration() {
-        String argString = join(", ", arguments);
+        String argString = join(", ", parameters);
         return reference + " = function(" + argString + ") {";
     }
 
@@ -89,7 +90,7 @@ public class Method implements Snippet {
 
         private final MethodReference methodReference;
         private final List<CodeLine> body = newArrayList();
-        private List<String> arguments = newArrayList();
+        private List<String> parameters = newArrayList();
 
         Builder(MethodReference methodReference) {
             checkNotNull(methodReference);
@@ -97,10 +98,10 @@ public class Method implements Snippet {
         }
 
         /**
-         * Specifies the argument names of the method.
+         * Specifies the parameter names of the method.
          */
-        public Builder withArguments(String... arguments) {
-            this.arguments = newArrayList(arguments);
+        public Builder withParameters(String... parameters) {
+            this.parameters = newArrayList(parameters);
             return this;
         }
 

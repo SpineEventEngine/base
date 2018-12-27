@@ -31,11 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class IndentedLineTest {
 
     @Test
-    @DisplayName("create indent for code based on depth and indentation")
+    @DisplayName("create indent for code based on the level of indent")
     void createIndent() {
-        IndentLevel depth = IndentLevel.of(2);
-        Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
+        IndentLevel level = IndentLevel.of(2);
+        Indent indentPerLevel = Indent.of2();
+        IndentedLine line = IndentedLine.of("content", level, indentPerLevel);
         String expected = "    content";
         assertEquals(expected, line.content());
     }

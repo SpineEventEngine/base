@@ -25,16 +25,16 @@ import io.spine.js.generate.output.CodeLine;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A single-lined comment.
+ * A single-line comment.
  */
 public class Comment extends CodeLine {
 
-    private final String text;
+    private final String content;
 
     private Comment(String text) {
         super();
         checkNotNull(text);
-        this.text = text;
+        this.content = "// " + text;
     }
 
     /**
@@ -53,6 +53,6 @@ public class Comment extends CodeLine {
 
     @Override
     public String content() {
-        return "// " + text;
+        return content;
     }
 }

@@ -45,7 +45,7 @@ class MethodTest {
     void emptyWithArgs() {
         String argument = "methodArgument";
         Method method = newMethod()
-                .withArguments(argument)
+                .withParameters(argument)
                 .build();
         String expectedRepresentation = methodReference() + " = function(methodArgument) {"
                 + lineSeparator()
