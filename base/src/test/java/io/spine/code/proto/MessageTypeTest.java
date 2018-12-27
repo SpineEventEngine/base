@@ -64,5 +64,12 @@ class MessageTypeTest {
             MessageType type = MessageType.of(TestRejections.MttSampleRejection.getDescriptor());
             assertTrue(type.isRejection());
         }
+
+        @DisplayName("is a non-Google or a Spine options type")
+        @Test
+        void custom() {
+            MessageType type = MessageType.of(Url.getDescriptor());
+            assertTrue(type.isCustom());
+        }
     }
 }
