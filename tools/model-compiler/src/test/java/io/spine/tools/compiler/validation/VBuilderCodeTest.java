@@ -25,9 +25,11 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.FileName;
 import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.TheOuterProto;
 import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;
+import io.spine.test.tools.validation.builder.VbtTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,6 +40,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
+import static io.spine.code.proto.MessageType.VBUILDER_SUFFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -115,8 +118,26 @@ class VBuilderCodeTest {
         @Test
         @DisplayName("top-level class name")
         void topLevel() {
-            assertFileName(VbtProject.class.getSimpleName() +
-                                   MessageType.VBUILDER_SUFFIX, VbtProject.getDescriptor());
+            assertFileName(VbtProject.class.getSimpleName() + VBUILDER_SUFFIX,
+                           VbtProject.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("nested class message")
+        void nested() {
+            assertFileName(VbtTree.class.getSimpleName() +
+                           VbtTree.Branch.class.getSimpleName() +
+                           VbtTree.Branch.Leaf.class.getSimpleName() + VBUILDER_SUFFIX,
+                           VbtTree.Branch.Leaf.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("outer class name")
+        void outerClass() {
+            assertFileName(TheOuterProto.class.getSimpleName() +
+                           TheOuterProto.VbtTopLevel.class.getSimpleName() +
+                           TheOuterProto.VbtTopLevel.Nested.class.getSimpleName() + VBUILDER_SUFFIX,
+                           TheOuterProto.VbtTopLevel.Nested.getDescriptor());
         }
     }
 }

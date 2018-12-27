@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.VBuilderClassName;
 import io.spine.option.IsOption;
 import io.spine.type.TypeUrl;
 
@@ -195,7 +196,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         if (!isCustom()) {
             return Optional.empty();
         }
-        return Optional.of(javaClassName().toSimple().with(VBUILDER_SUFFIX));
+        SimpleClassName result = VBuilderClassName.of(this);
+        return Optional.of(result);
     }
 
     /**

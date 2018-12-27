@@ -27,11 +27,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Deque;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -51,7 +48,7 @@ public final class ClassName extends StringTypeValue {
      * Separates class name from package, and outer class name with nested when such a class is
      * referenced as a parameter.
      */
-    private static final char DOT_SEPARATOR = '.';
+    static final char DOT_SEPARATOR = '.';
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -106,14 +103,13 @@ public final class ClassName extends StringTypeValue {
      * <p>The resulting class name is the name of the Java class which represents the given Protobuf
      * type.
      *
-     * @param descriptor
+     * @param messageType
      *         the Protobuf message type descriptor
      * @return new instance of {@code ClassName}
      */
-    public static ClassName from(Descriptor descriptor) {
-        return construct(descriptor.getName(),
-                         descriptor.getFile(),
-                         descriptor.getContainingType());
+    public static ClassName from(Descriptor messageType) {
+        return construct(messageType.getFile(), messageType.getName(),
+                         messageType.getContainingType());
     }
 
     /**
@@ -122,14 +118,26 @@ public final class ClassName extends StringTypeValue {
      * <p>The resulting class name is the name of the Java enum which represents the given Protobuf
      * type.
      *
-     * @param descriptor
+     * @param enumType
      *         the Protobuf enum type descriptor
      * @return new instance of {@code ClassName}
      */
-    public static ClassName from(EnumDescriptor descriptor) {
-        return construct(descriptor.getName(),
-                         descriptor.getFile(),
-                         descriptor.getContainingType());
+    public static ClassName from(EnumDescriptor enumType) {
+        return construct(enumType.getFile(), enumType.getName(),
+                         enumType.getContainingType());
+    }
+
+    private static String javaPackageName(FileDescriptor file) {
+        String javaPackage = file.getOptions()
+                                 .getJavaPackage()
+                                 .trim();
+        String packageName = javaPackage.isEmpty()
+                             ? file.getPackage()
+                             : javaPackage;
+        String result = packageName.isEmpty()
+                        ? ""
+                        : packageName + DOT_SEPARATOR;
+        return result;
     }
 
     /**
@@ -169,53 +177,14 @@ public final class ClassName extends StringTypeValue {
         return of(value() + suffix);
     }
 
-    private static ClassName construct(String typeName,
-                                       FileDescriptor file,
-                                       @Nullable Descriptor parent) {
+    private static ClassName construct(FileDescriptor file,
+                                       String typeName,
+                                       @Nullable Descriptor enclosing) {
         String packageName = javaPackageName(file);
-        String outerClass = outerClassPrefix(file);
-        String parentTypes = parentClassPrefix(parent);
-        String result = packageName + outerClass + parentTypes + typeName;
+        String outerClass = Names.outerClassPrefix(file);
+        String enclosingTypes = Names.containingClassPrefix(enclosing);
+        String result = packageName + outerClass + enclosingTypes + typeName;
         return of(result);
-    }
-
-    private static String javaPackageName(FileDescriptor file) {
-        String javaPackage = file.getOptions()
-                                 .getJavaPackage()
-                                 .trim();
-        String packageName = javaPackage.isEmpty()
-                             ? file.getPackage()
-                             : javaPackage;
-        String result = packageName.isEmpty()
-                        ? ""
-                        : packageName + DOT_SEPARATOR;
-        return result;
-    }
-
-    private static String parentClassPrefix(@Nullable Descriptor parent) {
-        if (parent == null) {
-            return "";
-        }
-        Deque<String> parentClassNames = newLinkedList();
-        Descriptor current = parent;
-        while (current != null) {
-            parentClassNames.addFirst(current.getName() + OUTER_CLASS_DELIMITER);
-            current = current.getContainingType();
-        }
-        String result = String.join("", parentClassNames);
-        return result;
-    }
-
-    private static String outerClassPrefix(FileDescriptor file) {
-        boolean multipleFiles = file.getOptions()
-                                    .getJavaMultipleFiles();
-        if (multipleFiles) {
-            return "";
-        } else {
-            String className = SimpleClassName.outerOf(file)
-                                              .value();
-            return className + OUTER_CLASS_DELIMITER;
-        }
     }
 
     /**
