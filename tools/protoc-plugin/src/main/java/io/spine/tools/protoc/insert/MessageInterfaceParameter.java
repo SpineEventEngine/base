@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc.insert;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
@@ -27,6 +28,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
  *
  * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
+@Immutable
 interface MessageInterfaceParameter {
 
     /**

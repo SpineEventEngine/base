@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc.insert;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
@@ -28,6 +29,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
  * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
  * parameter will be {@code ProjectId}.
  */
+@Immutable
 final class IdentityParameter implements MessageInterfaceParameter {
 
     @Override
