@@ -23,12 +23,12 @@ package io.spine.js.generate.field;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.JsCodeGenerator;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
@@ -108,7 +108,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     private void merge(String value) {
         String mergeFormat = mergeFormat();
         String setValue = format(mergeFormat, value);
-        jsOutput().addLine(setValue);
+        jsOutput().append(setValue);
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
         private FieldDescriptor field;
         private FieldPrecondition precondition;
         private FieldParser parser;
-        private JsOutput jsOutput;
+        private CodeLines jsOutput;
 
         B setField(FieldDescriptor field) {
             this.field = checkNotNull(field);
@@ -150,7 +150,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
             return self();
         }
 
-        B setJsOutput(JsOutput jsOutput) {
+        B setJsOutput(CodeLines jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
             return self();
         }

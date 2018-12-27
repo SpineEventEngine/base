@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
@@ -34,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,6 +42,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.lang.String.format;
 import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
@@ -57,9 +58,9 @@ public final class GradleProject {
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String VERSION_GRADLE_NAME = "version.gradle";
+    private static final String TEST_ENV_GRADLE_NAME = "testEnv.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
-    private static final String CONFIG_DIR_NAME = "config";
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
     private static final String DEBUG_CLI_OPTION = "--debug";
@@ -119,9 +120,7 @@ public final class GradleProject {
 
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
-        Path resultingPath = gradleRunner.getProjectDir()
-                                         .toPath()
-                                         .resolve(filePath);
+        Path resultingPath = testRoot().resolve(filePath);
         String fullyQualifiedPath = name + '/' + filePath;
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(fullyQualifiedPath);
@@ -133,14 +132,29 @@ public final class GradleProject {
     private void writeGradleScripts() throws IOException {
         writeBuildGradle();
         Path projectRoot = findRoot();
-        copyExtGradle(projectRoot);
-        copyConfig(projectRoot);
+        createTestEnvExt(projectRoot);
+    }
+
+    /**
+     * Creates an extension file, which provides information about the project
+     * running this test project.
+     *
+     * <p>In particular, it includes the root of the project running this test project.
+     */
+    private void createTestEnvExt(Path projectRoot) throws IOException {
+        Path testEnvPath = testRoot().resolve(TEST_ENV_GRADLE_NAME);
+        String unixLikeRootPath = projectRoot.toString()
+                                             .replace('\\', '/');
+        List<String> lines = ImmutableList.of(
+                "ext {",
+                format("    enclosingRootDir = '%s'", unixLikeRootPath),
+                "}"
+        );
+        Files.write(testEnvPath, lines);
     }
 
     private void writeBuildGradle() throws IOException {
-        Path resultingPath = gradleRunner.getProjectDir()
-                                         .toPath()
-                                         .resolve(BUILD_GRADLE_NAME);
+        Path resultingPath = testRoot().resolve(BUILD_GRADLE_NAME);
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
@@ -148,47 +162,9 @@ public final class GradleProject {
         Files.copy(fileContent, resultingPath);
     }
 
-    /**
-     * Copies the {@code ext.gradle} file from the root of the project
-     * into the root of the test project.
-     */
-    private void copyExtGradle(Path projectRoot) throws IOException {
-        Path sourcePath = projectRoot.resolve(VERSION_GRADLE_NAME);
-        Path targetPath = gradleRunner.getProjectDir()
-                                      .toPath()
-                                      .resolve(VERSION_GRADLE_NAME);
-        Files.copy(sourcePath, targetPath);
-    }
-
-    /**
-     * Copies the content of the {@code config} directory from the root of
-     * this project into the root of the test project.
-     */
-    private void copyConfig(Path projectRoot) {
-        Path sourcePath = projectRoot.resolve(CONFIG_DIR_NAME);
-        Path targetPath = gradleRunner.getProjectDir()
-                                      .toPath()
-                                      .resolve(CONFIG_DIR_NAME);
-        copyFolder(sourcePath, targetPath);
-    }
-
-    /**
-     * Copies the content of the {@code src} directory into {@code dest} directory.
-     */
-    private static void copyFolder(Path src, Path dest) {
-        try (Stream<Path> stream = Files.walk(src)) {
-            stream.forEach(sourcePath -> {
-                try {
-                    Path destPath = dest.resolve(src.relativize(sourcePath));
-                    Files.copy(sourcePath, destPath);
-                } catch (IOException e) {
-                    throw illegalStateWithCauseOf(e);
-                }
-
-            });
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
+    private Path testRoot() {
+        return gradleRunner.getProjectDir()
+                           .toPath();
     }
 
     /**

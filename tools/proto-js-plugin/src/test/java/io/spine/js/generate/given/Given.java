@@ -20,32 +20,21 @@
 
 package io.spine.js.generate.given;
 
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.DefaultJsProject;
-import io.spine.tools.gradle.GradleProject;
+import com.google.protobuf.NullValue;
+import com.google.protobuf.StringValue;
+import io.spine.code.proto.Type;
+import io.spine.code.proto.TypeSet;
+import io.spine.type.TypeName;
 import spine.test.js.Fields.FieldContainer;
 
-import java.io.File;
-import java.util.List;
-
-import static com.google.common.io.Files.createTempDir;
-import static io.spine.js.generate.given.FieldContainerEntry.ENUM_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.MAP_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.MESSAGE_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.PRIMITIVE_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.REPEATED_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.TIMESTAMP_FIELD;
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static java.util.Collections.singletonList;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 public final class Given {
 
-    private static final String TASK_PROTO = "task.proto";
-    private static final String PROJECT_NAME = "proto-js-plugin-test";
-    private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
-
+    /** Prevents instantiation of this utility class. */
     private Given() {
     }
 
@@ -59,55 +48,22 @@ public final class Given {
         return message;
     }
 
-    public static FieldDescriptor primitiveField() {
-        return field(PRIMITIVE_FIELD);
+    public static Type typeFor(Descriptors.GenericDescriptor descriptor) {
+        TypeName typeName = TypeName.of(descriptor.getFullName());
+        FileDescriptor file = descriptor.getFile();
+        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        return typeSet
+                .find(typeName)
+                .orElseThrow(() -> newIllegalStateException("Cannot find Type %s.", typeName));
     }
 
-    public static FieldDescriptor enumField() {
-        return field(ENUM_FIELD);
+    public static Type messageType() {
+        Descriptor descriptor = StringValue.getDescriptor();
+        return typeFor(descriptor);
     }
 
-    public static FieldDescriptor messageField() {
-        return field(MESSAGE_FIELD);
-    }
-
-    public static FieldDescriptor timestampField() {
-        return field(TIMESTAMP_FIELD);
-    }
-
-    public static FieldDescriptor singularField() {
-        return field(MESSAGE_FIELD);
-    }
-
-    public static FieldDescriptor repeatedField() {
-        return field(REPEATED_FIELD);
-    }
-
-    public static FieldDescriptor mapField() {
-        return field(MAP_FIELD);
-    }
-
-    private static FieldDescriptor field(FieldContainerEntry entry) {
-        String fieldName = entry.protoName();
-        FieldDescriptor field = message().findFieldByName(fieldName);
-        return field;
-    }
-
-    public static DefaultJsProject project() {
-        File projectDir = createTempDir();
-        compileProject(projectDir);
-        DefaultJsProject project = DefaultJsProject.at(projectDir);
-        return project;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
-    private static void compileProject(File projectDir) {
-        GradleProject gradleProject = GradleProject
-                .newBuilder()
-                .setProjectName(PROJECT_NAME)
-                .setProjectFolder(projectDir)
-                .addProtoFiles(PROTO_FILES)
-                .build();
-        gradleProject.executeTask(BUILD);
+    public static Type enumType() {
+        Descriptors.EnumDescriptor descriptor = NullValue.getDescriptor();
+        return typeFor(descriptor);
     }
 }

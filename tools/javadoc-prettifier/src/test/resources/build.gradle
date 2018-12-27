@@ -20,15 +20,11 @@
 
 buildscript {
 
-    // Applying from `config/dependencies.gradle` inside the `buildscript` section to reuse
-    // the properties.
-    //
-    // As long as `buildscript` section is always evaluated first, we need to apply
-    // `dependencies.gradle` explicitly here.
-    //
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$projectDir/config/gradle/dependencies.gradle"
-    apply from: "$projectDir/version.gradle"
+    apply from: "$rootDir/testEnv.gradle"
+
+    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
+    apply from: "$enclosingRootDir/version.gradle"
 
     repositories {
         mavenLocal()
