@@ -24,8 +24,6 @@ import java.nio.file.Path;
 
 /**
  * Abstract base for source code files.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class AbstractSourceFile extends FsObject {
 

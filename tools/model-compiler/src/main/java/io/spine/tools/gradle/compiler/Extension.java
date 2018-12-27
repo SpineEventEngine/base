@@ -158,7 +158,12 @@ public class Extension {
     }
 
     public static String getMainProtoSrcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
+        Logger log = log();
+        Extension extension = spineProtobuf(project);
+        log.debug("Extension is {}", extension);
+        String protoDir = extension.mainProtoSrcDir;
+        log.debug("modelCompiler.mainProtoSrcDir is {}", protoDir);
+        return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
     }

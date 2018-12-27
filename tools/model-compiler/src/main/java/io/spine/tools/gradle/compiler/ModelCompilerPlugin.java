@@ -45,7 +45,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     @SuppressWarnings("OverlyCoupledMethod") // OK as we need to launch all sub-plugins.
     @Override
     public void apply(Project project) {
-        log().debug("Adding the extension to the project.");
+        _debug("Adding the extension to the project.");
         project.getExtensions()
                .create(extensionName(), Extension.class);
 
@@ -66,7 +66,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     }
 
     private void apply(SpinePlugin plugin, Project project) {
-        log().debug("Applying {}", plugin.getClass()
+        _debug("Applying {}", plugin.getClass()
                                          .getName());
         plugin.apply(project);
     }
