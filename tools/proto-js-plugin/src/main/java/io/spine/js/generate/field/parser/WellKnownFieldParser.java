@@ -40,6 +40,8 @@ import static java.lang.String.format;
 final class WellKnownFieldParser implements FieldParser {
 
     private static final String PARSER_VARIABLE = "parser";
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
+    private static final String PARSE_METHOD = "fromObject";
 
     private final TypeUrl typeUrl;
     private final CodeLines jsOutput;
@@ -86,7 +88,7 @@ final class WellKnownFieldParser implements FieldParser {
     }
 
     private static VariableDeclaration parsedVariable(String name, String valueToParse) {
-        String initializer = format("%s.parse(%s)", PARSER_VARIABLE, valueToParse);
+        String initializer = format("%s.%s(%s)", PARSER_VARIABLE, PARSE_METHOD, valueToParse);
         return VariableDeclaration.initialized(name, initializer);
     }
 }
