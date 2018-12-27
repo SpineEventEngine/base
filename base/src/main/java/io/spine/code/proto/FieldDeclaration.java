@@ -318,8 +318,8 @@ public final class FieldDeclaration implements Logging {
 
     private int getFieldIndex(FieldDescriptorProto field) {
         return message.descriptor()
-                          .toProto()
-                          .getFieldList()
-                          .indexOf(field);
+                      .toProto()
+                      .getFieldList()
+                      .indexOf(field);
     }
 }
