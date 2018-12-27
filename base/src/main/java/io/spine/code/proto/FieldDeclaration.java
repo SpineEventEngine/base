@@ -21,8 +21,8 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -286,7 +286,7 @@ public final class FieldDeclaration implements Logging {
      *         the descriptor of the field
      * @return the field leading comments or {@code Optional.empty()} if there are no comments
      */
-    public Optional<String> fieldLeadingComments(DescriptorProtos.FieldDescriptorProto field) {
+    public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
         //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
         if (message.isNested()) {
             return Optional.empty();
@@ -306,7 +306,7 @@ public final class FieldDeclaration implements Logging {
      *         the field to get location path
      * @return the field location path
      */
-    private LocationPath fieldPath(DescriptorProtos.FieldDescriptorProto field) {
+    private LocationPath fieldPath(FieldDescriptorProto field) {
         LocationPath locationPath = new LocationPath();
 
         locationPath.addAll(message.documentation()
@@ -316,7 +316,7 @@ public final class FieldDeclaration implements Logging {
         return locationPath;
     }
 
-    private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
+    private int getFieldIndex(FieldDescriptorProto field) {
         return message.descriptor()
                           .toProto()
                           .getFieldList()
