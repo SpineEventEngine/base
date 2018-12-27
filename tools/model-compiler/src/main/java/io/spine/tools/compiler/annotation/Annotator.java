@@ -206,8 +206,6 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * @param visitor
      *         the source visitor
      */
-    @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
-                                     for `AbstractJavaSource.class` value. */)
     static <T extends JavaSource<T>>
     void rewriteSource(String sourcePathPrefix, SourceFile sourcePath, SourceVisitor<T> visitor) {
         AbstractJavaSource<T> javaSource;
@@ -219,7 +217,11 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         }
 
         try {
-            javaSource = Roaster.parse(AbstractJavaSource.class, absoluteSourcePath.toFile());
+            @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
+                                     for `AbstractJavaSource.class` value. */)
+            AbstractJavaSource<T> parsed = Roaster.parse(AbstractJavaSource.class,
+                                                         absoluteSourcePath.toFile());
+            javaSource = parsed;
         } catch (FileNotFoundException e) {
             throw illegalStateWithCauseOf(e);
         }
@@ -241,12 +243,13 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      *
      * @param source the program element to annotate
      */
-    protected final void addAnnotation(AnnotationTargetSource source) {
-        if (source.getAnnotation(annotation) != null) {
+    protected final void addAnnotation(AnnotationTargetSource<?, ?> source) {
+        AnnotationSource<?> annotation = source.getAnnotation(this.annotation);
+        if (annotation != null) {
             return;
         }
 
-        String annotationFQN = annotation.getCanonicalName();
+        String annotationFQN = this.annotation.getCanonicalName();
         AnnotationSource newAnnotation = source.addAnnotation();
         newAnnotation.setName(annotationFQN);
     }

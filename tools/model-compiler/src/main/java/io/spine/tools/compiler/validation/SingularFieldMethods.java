@@ -109,14 +109,16 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
+        String descriptorDeclaration = descriptorDeclaration();
+        String validateStatement = validateStatement(fieldName, field.getName());
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addParameter(parameter)
                         .addException(ValidationException.class)
-                        .addStatement(descriptorDeclaration())
+                        .addStatement(descriptorDeclaration)
                         .addStatement(validateSetOnce())
-                        .addStatement(validateStatement(fieldName, field.getName()))
+                        .addStatement(validateStatement)
                         .addStatement(setStatement)
                         .addStatement(returnThis())
                         .build();
