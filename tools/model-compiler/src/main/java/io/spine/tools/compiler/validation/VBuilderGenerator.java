@@ -20,17 +20,21 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.SourceFile;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 import java.io.File;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.format;
 
@@ -40,7 +44,9 @@ import static java.lang.String.format;
  * <p>An instance-per-scope is usually created. E.g. test sources and main source are
  * generated with different instances of this class.
  */
-public class VBuilderGenerator implements Logging {
+public final class VBuilderGenerator implements Logging {
+
+    private final File protoSrcDir;
 
     /** Code will be generated into this directory. */
     private final File targetDir;
@@ -51,19 +57,23 @@ public class VBuilderGenerator implements Logging {
     /**
      * Creates new instance of the generator.
      *
+     * @param protoSrcDir
+     *         the directory with proto source files
      * @param targetDir
-     *        an absolute path to the folder, serving as a target for the code generation
+     *         an absolute path to the folder, serving as a target for the code generation
      * @param indent
-     *        indentation for the generated code
+     *         the indentation for generated code
      */
-    public VBuilderGenerator(String targetDir, Indent indent) {
-        this.targetDir = new File(targetDir);
+    public VBuilderGenerator(File protoSrcDir, File targetDir, Indent indent) {
+        this.protoSrcDir = protoSrcDir;
+        this.targetDir = targetDir;
         this.indent = indent;
+        _debug("Initiating generation of validating builders. " +
+                       "Proto src dir: {} Target dir: {}", protoSrcDir, targetDir);
     }
 
     public void process(File descriptorSetFile) {
-        Logger log = log();
-        log.debug("Generating validating builders for types from {}.", descriptorSetFile);
+        _debug("Generating validating builders for types from {}.", descriptorSetFile);
 
         FileSet fileSet = FileSet.parse(descriptorSetFile);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
@@ -71,6 +81,7 @@ public class VBuilderGenerator implements Logging {
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
                             .filter(MessageType::isNotRejection)
+                            .filter(new SourceProtoBelongsToModule(protoSrcDir))
                             //TODO:2018-12-20:alexander.yevsyukov: Support generation of nested builders.
                             .filter(MessageType::isTopLevel)
                             .collect(toImmutableList());
@@ -100,6 +111,37 @@ public class VBuilderGenerator implements Logging {
             log.debug(message, e);
         } else {
             log.warn(message);
+        }
+    }
+
+    /**
+     * A predicate determining if the given message type has been collected from the source
+     * file in the specified module.
+     *
+     * <p>Each predicate instance requires to specify the root folder of Protobuf definitions
+     * for the module. This value is used to match the given {@code VBMetadata}.
+     */
+    private static class SourceProtoBelongsToModule implements Predicate<MessageType>, Logging {
+
+        /**
+         *  An absolute path to the root folder for the {@code .proto} files in the module.
+         */
+        private final File rootPath;
+
+        private SourceProtoBelongsToModule(File rootPath) {
+            this.rootPath = rootPath;
+        }
+
+        @Override
+        public boolean apply(@Nullable MessageType input) {
+            checkNotNull(input);
+            // A path obtained from DescriptorSet file for which `src/proto` is the root.
+            SourceFile sourceFile = input.sourceFile();
+            File absoluteFile = new File(rootPath, sourceFile.toString());
+            boolean belongsToModule = absoluteFile.exists();
+            _debug("Source file {} tested if under {} with the result: {}",
+                   sourceFile, rootPath, belongsToModule);
+            return belongsToModule;
         }
     }
 }

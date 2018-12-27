@@ -28,10 +28,9 @@ import org.gradle.api.Project;
  * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
  * project.
  *
- * @author Dmytro Kuzmin
  * @see Severity
  */
-@SuppressWarnings({"PublicField", "WeakerAccess", "TypeMayBeWeakened"})
+@SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
 public class ErrorProneChecksExtension {
 
     public Severity useValidatingBuilder;

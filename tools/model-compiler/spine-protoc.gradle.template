@@ -139,8 +139,9 @@ protobuf {
             }
             task.generateDescriptorSet = true
             final def tests = task.sourceSet.name.contains("test")
-            final def descPath = (tests ? project.extensions.getByName("modelCompiler").testDescriptorSetPath
-                                        : project.extensions.getByName("modelCompiler").mainDescriptorSetPath) ?:
+            final def extension = project.extensions.getByName("modelCompiler")
+            final def descPath = (tests ? extension.testDescriptorSetPath
+                                        : extension.mainDescriptorSetPath) ?:
                                  "${buildDir}/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.path = descPath
             task.descriptorSetOptions.includeImports = true

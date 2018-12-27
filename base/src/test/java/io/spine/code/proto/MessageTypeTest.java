@@ -20,49 +20,88 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.Predicates;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Timestamp;
 import io.spine.net.Uri;
 import io.spine.net.Url;
+import io.spine.option.EntityOption;
+import io.spine.option.GoesOption;
+import io.spine.option.MinOption;
 import io.spine.test.code.proto.rejections.TestRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageType should")
 class MessageTypeTest {
 
+    @SuppressWarnings("Guava")
+      // Using `Predicates.not()` is more concise until `Predicate.not()` is available from Java 11.
     @Nested
     @DisplayName("Tell if message is")
     class Tell {
 
+        /** Tests a certain method of {@code MessageType} created on the passed descriptor. */
+        void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
+            MessageType type = MessageType.of(descriptor);
+            boolean result = method.test(type);
+            assertTrue(result);
+        }
+
         @DisplayName("nested")
         @Test
         void nested() {
-            assertQuality(Uri.Protocol.getDescriptor(), MessageType::isNested);
+            assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
+            assertQuality(Predicates.not(MessageType::isNested), Url.getDescriptor());
         }
 
         @DisplayName("top-level")
         @Test
         void topLevel() {
-            assertQuality(Url.getDescriptor(), MessageType::isTopLevel);
-        }
-
-        /** Tests a certain method of {@code MessageType} created on the passed descriptor. */
-        void assertQuality(Descriptor descriptor, Function<MessageType, Boolean> method) {
-            MessageType type = MessageType.of(descriptor);
-            boolean result = method.apply(type);
-            assertTrue(result);
+            assertQuality(MessageType::isTopLevel, Url.getDescriptor());
+            assertQuality(Predicates.not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
         }
 
         @DisplayName("a rejection")
         @Test
         void rejection() {
-            MessageType type = MessageType.of(TestRejections.MttSampleRejection.getDescriptor());
-            assertTrue(type.isRejection());
+            assertQuality(MessageType::isRejection,
+                          TestRejections.MttSampleRejection.getDescriptor()
+            );
+        }
+
+        @Nested
+        @DisplayName("a non-Google or a Spine options type")
+        class Custom {
+
+            @Test
+            @DisplayName("positively for a custom type")
+            void custom() {
+                assertQuality(MessageType::isCustom, Url.getDescriptor());
+            }
+
+            @Test
+            @DisplayName("negatively for Google type")
+            void google() {
+                assertNotCustom(Timestamp.getDescriptor());
+            }
+
+            @Test
+            @DisplayName("negatively for Spine options type")
+            void options() {
+                assertNotCustom(GoesOption.getDescriptor());
+                assertNotCustom(EntityOption.getDescriptor());
+                assertNotCustom(MinOption.getDescriptor());
+            }
+
+            void assertNotCustom(Descriptor descriptor) {
+                assertQuality(Predicates.not(MessageType::isCustom), descriptor);
+            }
         }
     }
 }

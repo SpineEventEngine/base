@@ -231,25 +231,27 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
     @SuppressWarnings("unused")
         // Called by all actual validating builder subclasses.
-    protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
-        boolean setOnce = Options.option(descriptor, OptionsProto.setOnce)
+    protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
+        boolean setOnce = Options.option(field, OptionsProto.setOnce)
                                  .orElse(false);
-        if (setOnce) {
-            boolean setOnceNotRecommended = descriptor.isRepeated() || descriptor.isMapField();
-            if (setOnceNotRecommended) {
-                String containingTypeName = descriptor.getContainingType()
-                                                      .getName();
-                String fieldName = descriptor.getName();
-                Logger logger = Logging.get(AbstractValidatingBuilder.class);
-                logger.warn("Error found in %s.%s. " +
-                            "Repeated and map fields can't be marked as `(set_once) = true`",
-                            containingTypeName,
-                            fieldName);
-            } else {
-                boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
-                if (valueAlreadySet) {
-                    throw violatedSetOnce(descriptor);
-                }
+        if (!setOnce) {
+            return;
+        }
+
+        boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
+        if (setOnceNotRecommended) {
+            String containingTypeName = field.getContainingType()
+                                             .getName();
+            String fieldName = field.getName();
+            Logger logger = Logging.get(AbstractValidatingBuilder.class);
+            logger.warn("Error found in %s.%s. " +
+                        "Repeated and map fields can't be marked as `(set_once) = true`",
+                        containingTypeName,
+                        fieldName);
+        } else {
+            boolean valueAlreadySet = getMessageBuilder().hasField(field);
+            if (valueAlreadySet) {
+                throw violatedSetOnce(field);
             }
         }
     }

@@ -111,6 +111,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     /**
+     * Obtains source file with the declaration of this message type.
+     */
+    public SourceFile sourceFile() {
+        return SourceFile.from(descriptor().getFile());
+    }
+
+    /**
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
