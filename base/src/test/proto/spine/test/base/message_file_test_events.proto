@@ -21,17 +21,13 @@ syntax = "proto3";
 
 package spine.test.base;
 
-//
-// Defines types for `FieldValidatorTest` test suite. Hence the funny file name.
-//
-
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.base.given";
+option java_package = "io.spine.base.given";
 option java_multiple_files = true;
-option java_outer_classname = "MessageFileTestProto";
+option java_outer_classname = "MessageFileEventsProto";
 
-message SomeMessage {
+message SomeEvent {
     string value = 1;
 }

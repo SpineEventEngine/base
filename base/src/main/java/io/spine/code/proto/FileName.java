@@ -29,9 +29,9 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.StandardFile.COMMANDS_FILE;
-import static io.spine.base.StandardFile.EVENTS_FILE;
-import static io.spine.base.StandardFile.REJECTIONS_FILE;
+import static io.spine.base.MessageFile.COMMANDS_FILE;
+import static io.spine.base.MessageFile.EVENTS_FILE;
+import static io.spine.base.MessageFile.REJECTIONS_FILE;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**

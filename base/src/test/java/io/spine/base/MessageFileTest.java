@@ -23,29 +23,18 @@ package io.spine.base;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.MessageFile.Predicate;
-import io.spine.base.given.MessageFileTestProto;
+import io.spine.base.given.MessageFileEventsProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.base.MessageFile.EVENTS_FILE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageFile should")
 class MessageFileTest {
-
-    private static final String SUFFIX = "file_test";
-
-    private MessageFile file;
-
-    @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass") // OK for test.
-    @BeforeEach
-    void setUp() {
-        file = new MessageFile(SUFFIX) {
-            private static final long serialVersionUID = 0L;
-        };
-    }
 
     @Nested
     @DisplayName("provide a predicate that")
@@ -55,13 +44,13 @@ class MessageFileTest {
 
         @BeforeEach
         void setUp() {
-            predicate = file.predicate();
+            predicate = EVENTS_FILE.predicate();
         }
 
         @Test
         @DisplayName("accepts the file with matching suffix")
         void acceptingEligibleFile() {
-            FileDescriptor descriptor = MessageFileTestProto.getDescriptor();
+            FileDescriptor descriptor = MessageFileEventsProto.getDescriptor();
             assertTrue(predicate.test(descriptor));
         }
 
