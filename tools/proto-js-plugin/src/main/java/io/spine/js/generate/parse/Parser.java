@@ -62,7 +62,7 @@ public class Parser implements Snippet {
      */
     public static final String MESSAGE = "msg";
     /**
-     * The argument name of the {@code fromObject} method.
+     * The parameter name of the {@code fromObject} method.
      */
     public static final String FROM_OBJECT_ARG = "obj";
 

@@ -106,14 +106,14 @@ public final class FromJsonMethod implements Snippet {
     Method fromObjectMethod() {
         TypeName typeName = TypeName.from(message);
         MethodReference reference = MethodReference.onType(typeName, FROM_OBJECT);
-        String argumentName = "obj";
+        String parameterName = "obj";
         String parserVariable = "parser";
         VariableDeclaration newParser =
                 VariableDeclaration.newInstance(parserVariable, parser.typeName());
-        String callParser = format("%s.%s(%s)", parserVariable, PARSE_METHOD, argumentName);
+        String callParser = format("%s.%s(%s)", parserVariable, PARSE_METHOD, parameterName);
         return Method
                 .newBuilder(reference)
-                .withArguments(argumentName)
+                .withParameters(parameterName)
                 .appendToBody(newParser)
                 .appendToBody(Return.value(callParser))
                 .build();
