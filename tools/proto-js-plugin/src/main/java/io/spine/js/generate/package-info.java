@@ -19,7 +19,7 @@
  */
 
 /**
- * The tools which assist in generating and writing the JavaScript code.
+ * The classes generating and writing the JavaScript code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

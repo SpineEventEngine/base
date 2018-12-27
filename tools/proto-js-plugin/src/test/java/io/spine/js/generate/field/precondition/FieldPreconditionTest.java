@@ -20,15 +20,15 @@
 
 package io.spine.js.generate.field.precondition;
 
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.js.generate.field.given.Given.messageField;
+import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.precondition.FieldPreconditions.preconditionFor;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.primitiveField;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -39,11 +39,11 @@ class FieldPreconditionTest {
     private static final String FIELD_VALUE = "value";
     private static final String SETTER_FORMAT = "set(%s)";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

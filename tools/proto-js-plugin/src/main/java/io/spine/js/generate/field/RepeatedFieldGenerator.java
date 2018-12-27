@@ -23,7 +23,7 @@ package io.spine.js.generate.field;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.FieldName;
 
-import static io.spine.js.generate.message.MessageGenerator.MESSAGE;
+import static io.spine.js.generate.parse.FromJsonMethod.MESSAGE;
 
 /**
  * The generator for the {@code repeated} Protobuf fields.
@@ -79,7 +79,7 @@ final class RepeatedFieldGenerator extends FieldGenerator {
     @VisibleForTesting
     void iterateListValues(String jsObject) {
         jsOutput().ifNotNullOrUndefined(jsObject);
-        jsOutput().addLine(jsObject + ".forEach(");
+        jsOutput().append(jsObject + ".forEach(");
         jsOutput().increaseDepth();
         jsOutput().enterBlock('(' + LIST_ITEM + ", index, array) =>");
     }
@@ -92,7 +92,7 @@ final class RepeatedFieldGenerator extends FieldGenerator {
     private void exitListValueIteration() {
         jsOutput().exitBlock();
         jsOutput().decreaseDepth();
-        jsOutput().addLine(");");
+        jsOutput().append(");");
         jsOutput().exitBlock();
     }
 

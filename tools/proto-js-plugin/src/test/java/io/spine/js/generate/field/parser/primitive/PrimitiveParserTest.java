@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.field.parser.primitive;
 
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,11 +41,11 @@ class PrimitiveParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

@@ -22,9 +22,9 @@ package io.spine.js.generate.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.field.parser.primitive.PrimitiveParser;
 import io.spine.js.generate.field.parser.primitive.PrimitiveParsers;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,9 +37,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class PrimitiveFieldParser implements FieldParser {
 
     private final Type fieldType;
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
-    private PrimitiveFieldParser(Type fieldType, JsOutput jsOutput) {
+    private PrimitiveFieldParser(Type fieldType, CodeLines jsOutput) {
         this.fieldType = fieldType;
         this.jsOutput = jsOutput;
     }
@@ -52,7 +52,7 @@ final class PrimitiveFieldParser implements FieldParser {
      * @param jsOutput
      *         the {@code JsOutput} to store the generated code
      */
-    static PrimitiveFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static PrimitiveFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Type fieldType = field.getType();

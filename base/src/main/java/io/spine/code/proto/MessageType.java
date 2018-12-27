@@ -192,7 +192,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      *         from the "google" package
      */
     public Optional<SimpleClassName> validatingBuilderClass() {
-        if (isGoogle()) {
+        if (!isCustom()) {
             return Optional.empty();
         }
         return Optional.of(javaClassName().toSimple().with(VBUILDER_SUFFIX));
