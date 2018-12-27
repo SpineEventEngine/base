@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -29,6 +30,7 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 /**
  * Checks if the given message definition is a {@link UuidValue}.
  */
+@Immutable
 final class UuidValueClassifier extends MessageClassifier {
 
     static final String FIELD_NAME = "uuid";

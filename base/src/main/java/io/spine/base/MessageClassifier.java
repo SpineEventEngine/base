@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.annotation.Internal;
@@ -33,6 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Evaluates the message Proto definition against some contract.
  */
 @Internal
+@Immutable
 public abstract class MessageClassifier
         implements BiPredicate<DescriptorProto, FileDescriptorProto> {
 

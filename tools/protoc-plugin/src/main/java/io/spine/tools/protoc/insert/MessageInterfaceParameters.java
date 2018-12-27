@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * {@code MessageInterfaceParameter} carries the logic on how to initialize itself based on the
  * message interface descendant.
  */
+@Immutable
 final class MessageInterfaceParameters {
 
     private final ImmutableList<MessageInterfaceParameter> params;

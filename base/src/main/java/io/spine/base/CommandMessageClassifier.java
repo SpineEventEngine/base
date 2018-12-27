@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
@@ -28,6 +29,7 @@ import static io.spine.base.MessageFile.COMMANDS_FILE;
 /**
  * Checks if the given message definition is a {@link CommandMessage}.
  */
+@Immutable
 final class CommandMessageClassifier extends MessageClassifier {
 
     @Override
