@@ -21,16 +21,8 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -59,20 +51,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 @Immutable
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
-    String FIELD_NAME = "uuid";
-
-    /**
-     * Provides a predicate which checks whether the given message declaration represents a
-     * UUID-based identifier.
-     *
-     * <p>The predicate accepts a message descriptor and the declaring file descriptor.
-     *
-     * @return the predicate to distinguish UUID-based messages
-     */
-    static BiPredicate<DescriptorProto, FileDescriptorProto> predicate() {
-        return (message, file) -> new Matcher().test(message);
-    }
-
     /**
      * Generates a new identifier instance using a random {@code String}.
      */
@@ -93,26 +71,5 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
         Class<I> thisClass = (Class<I>) this.getClass();
         UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
         return uuidFactory.newUuidOf(value);
-    }
-
-    /**
-     * Checks if the given message definition matches the {@code UuidValue} contract.
-     */
-    class Matcher implements Predicate<DescriptorProto> {
-
-        @Override
-        public boolean test(DescriptorProto message) {
-            checkNotNull(message);
-            int fieldCount = message.getFieldCount();
-            if (fieldCount != 1) {
-                return false;
-            }
-            FieldDescriptorProto theField = message.getFieldList()
-                                                   .get(0);
-            boolean nameMatches = theField.getName()
-                                          .equals(FIELD_NAME);
-            boolean typeMatches = theField.getType() == TYPE_STRING;
-            return nameMatches && typeMatches;
-        }
     }
 }

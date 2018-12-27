@@ -23,17 +23,19 @@ package io.spine.tools.protoc.insert;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
+import io.spine.base.MessageClassifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.SerializableMessage;
 import io.spine.base.UuidValue;
 import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
-import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import static io.spine.base.MessageClassifiers.forInterface;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
 
@@ -101,21 +103,20 @@ final class BuiltInMessageInterface implements MessageInterface {
     @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for this enum.
     private enum Type {
 
-        EVENT_MESSAGE(EventMessage.class, EventMessage.predicate()),
-        COMMAND_MESSAGE(CommandMessage.class, CommandMessage.predicate()),
-        REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.predicate()),
+        EVENT_MESSAGE(EventMessage.class),
+        COMMAND_MESSAGE(CommandMessage.class),
+        REJECTION_MESSAGE(RejectionMessage.class),
 
-        UUID_VALUE(UuidValue.class, UuidValue.predicate(), new IdentityParameter());
+        UUID_VALUE(UuidValue.class, new IdentityParameter());
 
         private final Class<? extends Message> interfaceClass;
-        private final BiPredicate<DescriptorProto, FileDescriptorProto> predicate;
+        private final MessageClassifier classifier;
         private final MessageInterfaceParameters interfaceParams;
 
-        Type(Class<? extends Message> interfaceClass,
-             BiPredicate<DescriptorProto, FileDescriptorProto> predicate,
+        Type(Class<? extends SerializableMessage> interfaceClass,
              MessageInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
-            this.predicate = predicate;
+            this.classifier = forInterface(interfaceClass);
             this.interfaceParams = MessageInterfaceParameters.of(interfaceParams);
         }
 
@@ -130,7 +131,7 @@ final class BuiltInMessageInterface implements MessageInterface {
          *         {@code false} otherwise
          */
         public boolean matches(DescriptorProto message, FileDescriptorProto file) {
-            return predicate.test(message, file);
+            return classifier.test(message, file);
         }
     }
 }

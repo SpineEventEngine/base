@@ -20,20 +20,17 @@
 
 package io.spine.base;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-
-import java.io.Serializable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 /**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
- *
- * <p>This interface deliberately declares no methods. Its purpose  is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
+ * Checks if the given message definition is a {@link RejectionMessage}.
  */
-@Internal
-@Immutable
-public interface SerializableMessage extends Message, Serializable {
+final class RejectionMessageClassifier extends MessageClassifier {
+
+    @Override
+    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
+        return RejectionMessage.File.predicate()
+                                    .test(declaringFile);
+    }
 }

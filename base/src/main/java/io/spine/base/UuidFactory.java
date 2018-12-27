@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.base.UuidValue.FIELD_NAME;
+import static io.spine.base.UuidValueClassifier.FIELD_NAME;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -103,7 +103,7 @@ class UuidFactory<I extends Message> {
 
     private static boolean isUuidMessage(Descriptor message) {
         DescriptorProto messageProto = message.toProto();
-        return new UuidValue.Matcher().test(messageProto);
+        return new UuidValueClassifier().doTest(messageProto);
     }
 
     /**

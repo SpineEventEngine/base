@@ -21,11 +21,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.base.MessageFile.Predicate;
-
-import java.util.function.BiPredicate;
 
 /**
  * A common interface for event messages.
@@ -36,19 +32,6 @@ import java.util.function.BiPredicate;
  */
 @Immutable
 public interface EventMessage extends SerializableMessage {
-
-    /**
-     * Provides a predicate which checks whether the given message declaration represents an
-     * event message.
-     *
-     * <p>The predicate accepts a message descriptor and the declaring file descriptor.
-     *
-     * @return the predicate to distinguish event messages
-     */
-    static BiPredicate<DescriptorProto, FileDescriptorProto> predicate() {
-        return (message, file) -> File.predicate()
-                                      .test(file);
-    }
 
     /**
      * Provides the predicate for finding proto files with event message declarations.
