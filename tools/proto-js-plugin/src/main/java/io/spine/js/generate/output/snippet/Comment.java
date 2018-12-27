@@ -31,17 +31,17 @@ public class Comment extends CodeLine {
 
     private final String content;
 
-    private Comment(String content) {
+    private Comment(String text) {
         super();
-        checkNotNull(content);
-        this.content = content;
+        checkNotNull(text);
+        this.content = "// " + text;
     }
 
     /**
      * Obtains the comment from the specified text.
      */
     public static Comment of(String text) {
-        return new Comment("// " + text);
+        return new Comment(text);
     }
 
     /**
