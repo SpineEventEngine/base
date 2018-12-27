@@ -20,14 +20,21 @@
 
 package io.spine.js.generate.parse;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.Snippet;
+import io.spine.js.generate.field.FieldGenerator;
+import io.spine.js.generate.field.FieldGenerators;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Method;
+import io.spine.js.generate.output.snippet.Return;
+import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.lang.String.format;
 
 /**
@@ -40,18 +47,38 @@ import static java.lang.String.format;
  * <p>Code provided by the class is in {@code ES5} standard. It is not generated
  * in {@code ES6} since Protobuf compiler generates Javascript in {@code ES5}
  * and we want to be fully compatible with standard generated code.
+ *
+ * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
+ * purposes.
  */
-final class Parser implements Snippet {
+@SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
+public class Parser implements Snippet {
+
+    /**
+     * The name of the {@code fromObject} method return value.
+     *
+     * <p>This value represents the generated JS message whose fields are parsed and set from the
+     * JS object.
+     */
+    public static final String MESSAGE = "msg";
+    /**
+     * The argument name of the {@code fromObject} method.
+     */
+    public static final String FROM_OBJECT_ARG = "obj";
 
     /** The name of the abstract parser to extend from. */
     private static final String ABSTRACT_PARSER = "ObjectParser";
+    /** The name of the method declared on an abstract parser. */
+    private static final String PARSE_OBJECT = "fromObject";
 
     /** The message to generate the parser for. */
     private final Descriptor message;
+    private final TypeName messageName;
 
     Parser(Descriptor message) {
         checkNotNull(message);
         this.message = message;
+        this.messageName = TypeName.from(message);
     }
 
     @Override
@@ -67,9 +94,7 @@ final class Parser implements Snippet {
     /**
      * Obtains the name of the parser to be generated.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Intersects with handcrafted parsers. */)
     private String parserName() {
-        TypeName messageName = TypeName.from(message);
         return messageName + "Parser";
     }
 
@@ -93,8 +118,49 @@ final class Parser implements Snippet {
         return result;
     }
 
-    private CodeLines fromObjectMethod() {
-        return new CodeLines();
+    /**
+     * Generates the {@code fromObject} method, going through the JS object fields iteratively,
+     * adding the code to parse them and assign to the JS message.
+     *
+     * <p>If the object is {@code null}, the returned value will be {@code null}.
+     */
+    @VisibleForTesting
+    CodeLines fromObjectMethod() {
+        String methodName = prototypeReference() + '.' + PARSE_OBJECT;
+        CodeLines lines = new CodeLines();
+        lines.enterMethod(methodName, FROM_OBJECT_ARG);
+        checkParsedObject(lines);
+        lines.append(emptyLine());
+        lines.append(initializedMessageInstance(messageName));
+        handleMessageFields(lines, message);
+        lines.append(Return.value(MESSAGE));
+        lines.exitMethod();
+        return lines;
+    }
+
+    /**
+     * Adds the code checking that {@code fromObject} argument is not null.
+     */
+    private static void checkParsedObject(CodeLines output) {
+        output.ifNull(FROM_OBJECT_ARG);
+        output.append(Return.nullReference());
+        output.exitBlock();
+    }
+
+    private static VariableDeclaration initializedMessageInstance(TypeName typeName) {
+        return VariableDeclaration.newInstance(MESSAGE, typeName);
+    }
+
+    /**
+     * Adds the code necessary to parse and set the message fields.
+     */
+    @VisibleForTesting
+    static void handleMessageFields(CodeLines output, Descriptor message) {
+        for (Descriptors.FieldDescriptor field : message.getFields()) {
+            output.append(emptyLine());
+            FieldGenerator generator = FieldGenerators.createFor(field, output);
+            generator.generate();
+        }
     }
 
     /**

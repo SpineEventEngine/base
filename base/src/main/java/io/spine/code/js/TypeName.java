@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents the Protobuf type in the JavaScript code.
  *
  * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
- *
- * @author Dmytro Kuzmin
  */
 public final class TypeName extends StringTypeValue {
 

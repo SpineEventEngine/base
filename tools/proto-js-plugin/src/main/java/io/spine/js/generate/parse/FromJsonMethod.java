@@ -22,12 +22,9 @@ package io.spine.js.generate.parse;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.field.FieldGenerator;
-import io.spine.js.generate.field.FieldGenerators;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Method;
 import io.spine.js.generate.output.snippet.Return;
@@ -41,13 +38,10 @@ import static io.spine.js.generate.output.CodeLine.emptyLine;
  *
  * <p>The class also generates the {@code fromObject(obj)} method which is used inside the
  * {@code fromJson} and can be called to parse the generated JS message from the JS object.
- *
- * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
- * purposes.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.
-public class FromJsonMethod implements Snippet {
+public final class FromJsonMethod implements Snippet {
 
     /**
      * The {@code fromJson} method name.
@@ -60,28 +54,17 @@ public class FromJsonMethod implements Snippet {
     public static final String FROM_OBJECT = "fromObject";
 
     /**
-     * The argument name of the {@code fromObject} method.
-     */
-    public static final String FROM_OBJECT_ARG = "obj";
-
-    /**
-     * The name of the {@code fromObject} method return value.
-     *
-     * <p>This value represents the generated JS message whose fields are parsed and set from the
-     * JS object.
-     */
-    public static final String MESSAGE = "msg";
-
-    /**
      * The argument name of the {@code fromJson} method.
      */
     @VisibleForTesting
     static final String FROM_JSON_ARG = "json";
 
     private final Descriptor message;
+    private final Parser parser;
 
     private FromJsonMethod(Descriptor message) {
         this.message = message;
+        this.parser = new Parser(message);
     }
 
     /**
@@ -109,28 +92,18 @@ public class FromJsonMethod implements Snippet {
         lines.append(fromJsonMethod());
         lines.append(emptyLine());
         lines.append(fromObjectMethod());
+        lines.append(emptyLine());
+        lines.append(parser);
         return lines;
     }
 
     /**
-     * Generates the {@code fromObject} method, going through the JS object fields iteratively,
-     * adding the code to parse them and assign to the JS message.
-     *
-     * <p>If the object is {@code null}, the returned value will be {@code null}.
+     * Generates the {@code fromObject} method, that calls the parser for the type.
      */
     @VisibleForTesting
     CodeLines fromObjectMethod() {
-        TypeName typeName = TypeName.from(message);
-        String methodName = MethodReference.onType(typeName, FROM_OBJECT)
-                                           .value();
         CodeLines lines = new CodeLines();
-        lines.enterMethod(methodName, FROM_OBJECT_ARG);
-        checkParsedObject(lines);
-        lines.append(emptyLine());
-        lines.append(initializedMessageInstance(typeName));
-        handleMessageFields(lines, message);
-        lines.append(Return.value(MESSAGE));
-        lines.exitMethod();
+        //TODO:2018-12-27:dmytro.grankin: instantiate the parser and call the method
         return lines;
     }
 
@@ -158,30 +131,5 @@ public class FromJsonMethod implements Snippet {
     private static Return fromJsonReturn(TypeName typeName) {
         String value = typeName.value() + '.' + FROM_OBJECT + "(jsObject)";
         return Return.value(value);
-    }
-
-    private static VariableDeclaration initializedMessageInstance(TypeName typeName) {
-        return VariableDeclaration.newInstance(MESSAGE, typeName);
-    }
-
-    /**
-     * Adds the code checking that {@code fromObject} argument is not null.
-     */
-    private static void checkParsedObject(CodeLines output) {
-        output.ifNull(FROM_OBJECT_ARG);
-        output.append(Return.nullReference());
-        output.exitBlock();
-    }
-
-    /**
-     * Adds the code necessary to parse and set the message fields.
-     */
-    @VisibleForTesting
-    static void handleMessageFields(CodeLines output, Descriptor message) {
-        for (FieldDescriptor field : message.getFields()) {
-            output.append(emptyLine());
-            FieldGenerator generator = FieldGenerators.createFor(field, output);
-            generator.generate();
-        }
     }
 }

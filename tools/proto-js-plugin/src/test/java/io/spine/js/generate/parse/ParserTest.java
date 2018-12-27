@@ -28,14 +28,52 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
 import static java.lang.System.lineSeparator;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("Parser should")
 class ParserTest {
 
+    private final Descriptor message = Any.getDescriptor();
+    private final Parser parser = new Parser(message);
+
     @Test
-    @DisplayName("generate code")
-    void generateCode() {
+    @DisplayName("generate `fromObject` method for message")
+    void generateFromObject() {
+        CodeLines snippet = parser.fromObjectMethod();
+        String expectedName = expectedParserName(message) + ".prototype." + FROM_OBJECT;
+        String methodDeclaration = expectedName + " = function(" + FROM_OBJECT_ARG;
+        assertContains(snippet, methodDeclaration);
+    }
+
+    @Test
+    @DisplayName("check parsed object for null in `fromObject` method")
+    void checkJsObjectForNull() {
+        CodeLines snippet = parser.fromObjectMethod();
+        String check = "if (" + FROM_OBJECT_ARG + " === null) {";
+        assertContains(snippet, check);
+    }
+
+    @SuppressWarnings("AccessStaticViaInstance") // For the testing purpose.
+    @Test
+    @DisplayName("handle message fields in `fromObject` method")
+    void handleMessageFields() {
+        Parser generator = spy(this.parser);
+        CodeLines snippet = generator.fromObjectMethod();
+        verify(generator, times(1))
+                .handleMessageFields(new CodeLines(), message);
+        assertNotNull(snippet);
+    }
+
+    @Test
+    @DisplayName("generate whole snippet")
+    void generateWholeSnippet() {
         Descriptor message = Any.getDescriptor();
         Parser parser = new Parser(message);
         CodeLines lines = parser.value();
@@ -66,8 +104,8 @@ class ParserTest {
     }
 
     private static void assertParseMethod(CodeLines lines, Descriptor message) {
-        String expectedName = expectedParserName(message);
-        String expected = expectedName + ".prototype.fromObject = function(object) {";
+        String expected = new Parser(message).fromObjectMethod()
+                                             .toString();
         assertThat(lines.toString()).contains(expected);
     }
 

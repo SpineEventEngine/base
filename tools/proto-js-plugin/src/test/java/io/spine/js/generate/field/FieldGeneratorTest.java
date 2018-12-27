@@ -36,7 +36,7 @@ import static io.spine.js.generate.field.given.Given.repeatedField;
 import static io.spine.js.generate.field.given.Given.singularField;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
