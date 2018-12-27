@@ -69,7 +69,7 @@ public class Parser implements Snippet {
     /** The name of the abstract parser to extend from. */
     private static final String ABSTRACT_PARSER = "ObjectParser";
     /** The name of the method declared on an abstract parser. */
-    private static final String PARSE_OBJECT = "fromObject";
+    static final String PARSE_METHOD = "fromObject";
 
     /** The message to generate the parser for. */
     private final Descriptor message;
@@ -92,14 +92,14 @@ public class Parser implements Snippet {
     }
 
     /**
-     * Obtains the name of the parser to be generated.
+     * Obtains the type of the parser to be generated.
      */
-    private String parserName() {
+    String typeName() {
         return messageName + "Parser";
     }
 
     private Method constructor() {
-        MethodReference reference = MethodReference.constructor(parserName());
+        MethodReference reference = MethodReference.constructor(typeName());
         String callSuper = format("%s.call(this);", superClass());
         return Method
                 .newBuilder(reference)
@@ -114,7 +114,7 @@ public class Parser implements Snippet {
     }
 
     private String initConstructor() {
-        String result = format("%s = %s;", constructorReference(), parserName());
+        String result = format("%s = %s;", constructorReference(), typeName());
         return result;
     }
 
@@ -126,7 +126,7 @@ public class Parser implements Snippet {
      */
     @VisibleForTesting
     CodeLines fromObjectMethod() {
-        String methodName = prototypeReference() + '.' + PARSE_OBJECT;
+        String methodName = prototypeReference() + '.' + PARSE_METHOD;
         CodeLines lines = new CodeLines();
         lines.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(lines);
@@ -167,7 +167,7 @@ public class Parser implements Snippet {
      * Obtains the reference to the prototype of the parser.
      */
     private String prototypeReference() {
-        return parserName() + ".prototype";
+        return typeName() + ".prototype";
     }
 
     /**

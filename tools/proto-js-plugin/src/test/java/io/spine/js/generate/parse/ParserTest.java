@@ -64,9 +64,9 @@ class ParserTest {
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
-        Parser generator = spy(this.parser);
-        CodeLines snippet = generator.fromObjectMethod();
-        verify(generator, times(1))
+        Parser spy = spy(parser);
+        CodeLines snippet = spy.fromObjectMethod();
+        verify(spy, times(1))
                 .handleMessageFields(new CodeLines(), message);
         assertNotNull(snippet);
     }
@@ -74,8 +74,6 @@ class ParserTest {
     @Test
     @DisplayName("generate whole snippet")
     void generateWholeSnippet() {
-        Descriptor message = Any.getDescriptor();
-        Parser parser = new Parser(message);
         CodeLines lines = parser.value();
         assertCtorDeclaration(lines, message);
         assertPrototypeInitialization(lines, message);
