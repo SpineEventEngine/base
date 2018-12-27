@@ -23,6 +23,8 @@ package io.spine.base;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
+import static io.spine.base.StandardFile.REJECTIONS_FILE;
+
 /**
  * Checks if the given message definition is a {@link RejectionMessage}.
  */
@@ -30,7 +32,7 @@ final class RejectionMessageClassifier extends MessageClassifier {
 
     @Override
     public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return RejectionMessage.File.predicate()
-                                    .test(declaringFile);
+        return REJECTIONS_FILE.predicate()
+                              .test(declaringFile);
     }
 }

@@ -20,19 +20,40 @@
 
 package io.spine.base;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-
-import static io.spine.base.StandardFile.EVENTS_FILE;
+import io.spine.annotation.Internal;
+import io.spine.base.MessageFile.Predicate;
 
 /**
- * Checks if the given message definition is an {@link EventMessage}.
+ * A enumeration of standard Proto files for events, commands, etc.
+ *
+ * <p>File names reflect the Spine naming conventions for the given file types.
  */
-final class EventMessageClassifier extends MessageClassifier {
+@Internal
+public enum StandardFile {
 
-    @Override
-    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return EVENTS_FILE.predicate()
-                          .test(declaringFile);
+    EVENTS_FILE("events"),
+    COMMANDS_FILE("commands"),
+    REJECTIONS_FILE("rejections");
+
+    private final MessageFile file;
+
+    StandardFile(String suffix) {
+        file = new MessageFile(suffix) {
+            private static final long serialVersionUID = 0L;
+        };
+    }
+
+    /**
+     * Provides the predicate for finding proto files with the appropriate message declarations.
+     */
+    public Predicate predicate() {
+        return file.predicate();
+    }
+
+    /**
+     * Provides a suffix by which such file can be located.
+     */
+    public String suffix() {
+        return file.value();
     }
 }
