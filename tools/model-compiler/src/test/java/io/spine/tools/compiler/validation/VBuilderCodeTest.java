@@ -20,8 +20,10 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.Indent;
+import io.spine.code.java.FileName;
 import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
@@ -36,10 +38,11 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("VBuilderCode should generate code for")
+@DisplayName("VBuilderCode should")
 class VBuilderCodeTest {
 
     private File targetDir;
@@ -49,39 +52,71 @@ class VBuilderCodeTest {
         targetDir = tempDirPath.toFile();
     }
 
-    @Nested
-    @DisplayName("top-level message")
-    class TopLevel {
-
-        @Test
-        @DisplayName("with message fields")
-        void messageFields() {
-            assertGeneratesFor(VbtProject.getDescriptor());
-        }
-
-        @Test
-        @DisplayName("with scalar fields")
-        void scalarFields() {
-            assertGeneratesFor(VbtScalarFields.getDescriptor());
-        }
-
-    }
-
-    @Nested
-    @DisplayName("a message nested into another message")
-    class NestedSecondLevel {
-
-        @Test
-        @DisplayName("2nd level")
-        void doSomething() {
-            assertGeneratesFor(VbtProcess.Point.getDescriptor());
-        }
-    }
-
-    private void assertGeneratesFor(Descriptor descriptor) {
+    /**
+     * Attempts to generate a Validating Builder for the passed type, and
+     * asserts that the file is created.
+     *
+     * @param descriptor the type for which to generate Validating Builder
+     * @return created file
+     */
+    @CanIgnoreReturnValue
+    private File assertGeneratesFor(Descriptor descriptor) {
         MessageType type = MessageType.of(descriptor);
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
         File file = code.write();
         assertTrue(file.exists());
+        return file;
+    }
+
+    @Nested
+    @DisplayName("generate code for")
+    class Generate {
+
+        @Nested
+        @DisplayName("top-level message")
+        class TopLevel {
+
+            @Test
+            @DisplayName("with message fields")
+            void messageFields() {
+                assertGeneratesFor(VbtProject.getDescriptor());
+            }
+
+            @Test
+            @DisplayName("with scalar fields")
+            void scalarFields() {
+                assertGeneratesFor(VbtScalarFields.getDescriptor());
+            }
+
+        }
+
+        @Nested
+        @DisplayName("a message nested into another message")
+        class NestedSecondLevel {
+
+            @Test
+            @DisplayName("2nd level")
+            void doSomething() {
+                assertGeneratesFor(VbtProcess.Point.getDescriptor());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("produce file with")
+    class NameOfFile {
+
+        void assertFileName(String expected, Descriptor descriptor) {
+            File file = assertGeneratesFor(descriptor);
+            String nameOnly = FileName.nameOnly(file);
+            assertEquals(expected, nameOnly);
+        }
+
+        @Test
+        @DisplayName("top-level class name")
+        void topLevel() {
+            assertFileName(VbtProject.class.getSimpleName() +
+                                   MessageType.VBUILDER_SUFFIX, VbtProject.getDescriptor());
+        }
     }
 }
