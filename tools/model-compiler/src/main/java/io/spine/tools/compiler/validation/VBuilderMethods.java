@@ -46,6 +46,7 @@ import static io.spine.tools.compiler.validation.Methods.returnThis;
 final class VBuilderMethods {
 
     private final MessageType type;
+    @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic.
     private static final String MERGE_FROM_METHOD_PARAMETER_NAME = "message";
 
     private VBuilderMethods(MessageType messageType) {
@@ -98,11 +99,9 @@ final class VBuilderMethods {
 
     private MethodSpec mergeFromMethod() {
         String methodName = "mergeFrom";
-        SimpleClassName vBuilderClass = this.type.getValidatingBuilderClass();
+        SimpleClassName vBuilderClass = type.getValidatingBuilderClass();
         ClassName className = ClassName.bestGuess(vBuilderClass.toString());
-        String messageTypeName = type.toProto()
-                                     .getName();
-        ClassName messageClass = ClassName.bestGuess(messageTypeName);
+        ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(CanIgnoreReturnValue.class)
@@ -172,6 +171,13 @@ final class VBuilderMethods {
         return result.build();
     }
 
+    private ClassName messageClass() {
+        String fullyQualifiedDotted = type.javaClassName()
+                                          .toDotted()
+                                          .value();
+        return ClassName.bestGuess(fullyQualifiedDotted);
+    }
+
     /**
      * A factory for the method constructors.
      */
@@ -187,18 +193,17 @@ final class VBuilderMethods {
          */
         private MethodGroup create(FieldDeclaration field, int index) {
             FieldType fieldType = FieldType.create(field);
-            MethodGroup methodGroup =
-                    builderFor(field)
-                            .setField(field.descriptor())
-                            .setFieldType(fieldType)
-                            .setFieldIndex(index)
-                            // The name of the Validating Builder class.
-                            .setJavaClass(type.getValidatingBuilderClass()
-                                              .value())
-                            .setJavaPackage(type.javaPackage()
-                                                .value())
-                            .setGenericClassName(messageClass())
-                            .build();
+            MethodGroup methodGroup = builderFor(field)
+                    .setField(field.descriptor())
+                    .setFieldType(fieldType)
+                    .setFieldIndex(index)
+                    // The name of the Validating Builder class.
+                    .setJavaClass(type.getValidatingBuilderClass()
+                                      .value())
+                    .setJavaPackage(type.javaPackage()
+                                        .value())
+                    .setGenericClassName(messageClass())
+                    .build();
             return methodGroup;
         }
 
@@ -212,11 +217,5 @@ final class VBuilderMethods {
             return SingularFieldMethods.newBuilder();
         }
 
-        private ClassName messageClass() {
-            String fullyQualifiedDotted = type.javaClassName()
-                                              .toDotted()
-                                              .value();
-            return ClassName.bestGuess(fullyQualifiedDotted);
-        }
     }
 }
