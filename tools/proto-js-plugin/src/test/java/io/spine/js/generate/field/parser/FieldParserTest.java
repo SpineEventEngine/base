@@ -23,18 +23,18 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.js.generate.field.given.Given.enumField;
+import static io.spine.js.generate.field.given.Given.messageField;
+import static io.spine.js.generate.field.given.Given.primitiveField;
+import static io.spine.js.generate.field.given.Given.timestampField;
 import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.given.Given.enumField;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.primitiveField;
-import static io.spine.js.generate.given.Given.timestampField;
-import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
@@ -44,11 +44,11 @@ class FieldParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

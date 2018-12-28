@@ -23,7 +23,7 @@ package io.spine.tools.compiler.validation;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.SourceFile;

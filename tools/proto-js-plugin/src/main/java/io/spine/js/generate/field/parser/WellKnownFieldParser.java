@@ -22,12 +22,14 @@ package io.spine.js.generate.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
-import io.spine.js.generate.type.ProtoParsersGenerator;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.VariableDeclaration;
+import io.spine.js.generate.parse.ExportStandardParsers;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.file.FileGenerator.PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.PARSERS_IMPORT_NAME;
+import static java.lang.String.format;
 
 /**
  * The value parser for the proto fields of well-known {@code message} types.
@@ -37,10 +39,12 @@ import static io.spine.js.generate.file.FileGenerator.PARSERS_IMPORT_NAME;
  */
 final class WellKnownFieldParser implements FieldParser {
 
-    private final TypeUrl typeUrl;
-    private final JsOutput jsOutput;
+    private static final String PARSER_VARIABLE = "parser";
 
-    private WellKnownFieldParser(TypeUrl typeUrl, JsOutput jsOutput) {
+    private final TypeUrl typeUrl;
+    private final CodeLines jsOutput;
+
+    private WellKnownFieldParser(TypeUrl typeUrl, CodeLines jsOutput) {
         this.typeUrl = typeUrl;
         this.jsOutput = jsOutput;
     }
@@ -53,7 +57,7 @@ final class WellKnownFieldParser implements FieldParser {
      * @param jsOutput
      *         the {@code JsOutput} to store the generated code
      */
-    static WellKnownFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static WellKnownFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor fieldType = field.getMessageType();
@@ -71,8 +75,18 @@ final class WellKnownFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String parserMap = PARSERS_IMPORT_NAME + '.' + ProtoParsersGenerator.MAP_NAME;
-        jsOutput.declareVariable("parser", parserMap + ".get('" + typeUrl + "')");
-        jsOutput.declareVariable(variable, "parser.parse(" + value + ')');
+        jsOutput.append(parserDeclaration());
+        jsOutput.append(parsedVariable(variable, value));
+    }
+
+    private VariableDeclaration parserDeclaration() {
+        String parserMap = PARSERS_IMPORT_NAME + '.' + ExportStandardParsers.MAP_NAME;
+        String value = parserMap + ".get('" + typeUrl + "')";
+        return VariableDeclaration.initialized(PARSER_VARIABLE, value);
+    }
+
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = format("%s.parse(%s)", PARSER_VARIABLE, valueToParse);
+        return VariableDeclaration.initialized(name, initializer);
     }
 }

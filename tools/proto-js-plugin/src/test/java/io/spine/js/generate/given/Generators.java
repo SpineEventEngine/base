@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -33,12 +33,12 @@ public final class Generators {
     private Generators() {
     }
 
-    public static void assertContains(JsOutput jsOutput, CharSequence toSearch) {
+    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
         String codeString = jsOutput.toString();
         assertThat(codeString).contains(toSearch);
     }
 
-    public static void assertNotContains(JsOutput jsOutput, CharSequence toSearch) {
+    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
         String codeString = jsOutput.toString();
         assertThat(codeString).doesNotContain(toSearch);
     }

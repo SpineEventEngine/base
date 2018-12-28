@@ -27,6 +27,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.generate.GeneratedBySpine;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
 import io.spine.option.IsOption;
@@ -34,7 +35,6 @@ import io.spine.option.IsOption;
 import javax.annotation.Generated;
 import java.util.Objects;
 
-import static io.spine.code.Generation.compilerAnnotation;
 import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -47,8 +47,8 @@ final class MessageInterfaceSpec {
 
     private static final AnnotationSpec BY_MODEL_COMPILER =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(compilerAnnotation().getFieldName(),
-                                     CodeBlock.of(compilerAnnotation().getCodeBlock()))
+                          .addMember(GeneratedBySpine.instance().getFieldName(),
+                                     CodeBlock.of(GeneratedBySpine.instance().getCodeBlock()))
                           .build();
 
     private final String packageName;
