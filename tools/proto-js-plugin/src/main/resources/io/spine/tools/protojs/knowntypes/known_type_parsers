@@ -21,7 +21,7 @@
 "use strict";
 
 let knownTypes = require("./known_types.js");
-let ObjectParser = require(".object_parser.js);
+let ObjectParser = require("./object_parser.js");
 
 let wrappers = require("google-protobuf/google/protobuf/wrappers_pb.js");
 let struct = require("google-protobuf/google/protobuf/struct_pb.js");

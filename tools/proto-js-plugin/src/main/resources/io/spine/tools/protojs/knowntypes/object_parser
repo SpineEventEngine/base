@@ -48,4 +48,4 @@ class ObjectParser {
     }
 }
 
-module.exports.ObjectParser = ObjectParser;
+module.exports = ObjectParser;
