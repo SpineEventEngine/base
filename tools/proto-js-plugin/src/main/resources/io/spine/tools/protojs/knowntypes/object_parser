@@ -18,45 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+"use strict";
 
 /**
- * The enumeration of project files provided by the Spine framework.
+ * Parses a plain Javascript object to a Protobuf message.
+ *
+ * The class is abstract and should be implemented for every message type.
  */
-public enum LibraryFile {
+class ObjectParser {
 
     /**
-     * The file declaring Spine Options.
+     * Creates a new instance.
      */
-    SPINE_OPTIONS("spine/options_pb.js"),
-
-    /**
-     * The file containing map of all known types with their {@linkplain io.spine.type.TypeUrl URL}.
-     */
-    KNOWN_TYPES("known_types.js"),
-
-    /**
-     * The file containing the number of predefined JSON parsers for various types.
-     */
-    KNOWN_TYPE_PARSERS("known_type_parsers.js"),
-
-    /**
-     * The file containing the abstract base for all parsers.
-     */
-    OBJECT_PARSER("object_parser.js");
-
-    private final FileName fileName;
-
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
+    constructor() {
+        if (this.constructor === ObjectParser) {
+            throw new Error('Cannot instantiate abstract ObjectParser class.');
+        }
     }
 
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
+    /**
+     * Converts an object to a message.
+     *
+     * @abstract
+     * @param {!Object} object the object representing a Protobuf message
+     * @return {!Message} the parsed Protobuf message
+     */
+    fromObject(object) {
+        throw new Error('The method is abstract and should be implemented by a subclass');
     }
 }
+
+module.exports.ObjectParser = ObjectParser;

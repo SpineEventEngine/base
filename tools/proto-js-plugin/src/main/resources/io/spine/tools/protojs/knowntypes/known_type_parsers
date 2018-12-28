@@ -21,6 +21,7 @@
 "use strict";
 
 let knownTypes = require("./known_types.js");
+let ObjectParser = require(".object_parser.js);
 
 let wrappers = require("google-protobuf/google/protobuf/wrappers_pb.js");
 let struct = require("google-protobuf/google/protobuf/struct_pb.js");
@@ -36,34 +37,6 @@ let any = require("google-protobuf/google/protobuf/any_pb.js");
  * For the details about how the parsers work, see
  * https://developers.google.com/protocol-buffers/docs/proto3#json.
  */
-
-/**
- * Parses a plain Javascript object to a Protobuf message.
- *
- * The class is abstract and should be implemented for every message type.
- */
-class ObjectParser {
-
-    /**
-     * Creates a new instance.
-     */
-    constructor() {
-        if (this.constructor === ObjectParser) {
-            throw new Error('Cannot instantiate abstract ObjectParser class.');
-        }
-    }
-
-    /**
-     * Converts an object to a message.
-     *
-     * @abstract
-     * @param {!Object} object the object representing a Protobuf message
-     * @return {!Message} the parsed Protobuf message
-     */
-    fromObject(object) {
-        throw new Error('The method is abstract and should be implemented by a subclass');
-    }
-}
 
 class BoolValueParser extends ObjectParser {
 

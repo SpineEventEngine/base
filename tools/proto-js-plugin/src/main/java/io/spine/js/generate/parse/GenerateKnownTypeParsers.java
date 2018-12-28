@@ -23,6 +23,7 @@ package io.spine.js.generate.parse;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
+import io.spine.code.js.LibraryFile;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.js.generate.Snippet;
@@ -36,6 +37,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -62,6 +64,11 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      */
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
+    /**
+     * The path to the {@code object_parser} resource which contains the abstract parser definition.
+     */
+    private static final String ABSTRACT_PARSER_RESOURCE =
+            "io/spine/tools/protojs/knowntypes/object_parser";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
@@ -107,23 +114,24 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      */
     @VisibleForTesting
     void writeKnownTypeParsers() {
-        copyParsersCode();
+        copyResource(PARSERS_RESOURCE, KNOWN_TYPE_PARSERS);
+        copyResource(ABSTRACT_PARSER_RESOURCE, OBJECT_PARSER);
         ExportStandardParsers generator = new ExportStandardParsers();
         FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
         writer.append(generator.value());
     }
 
     /**
-     * Copies the {@code known_type_parsers.js} resource content and stores it in the target file.
+     * Copies the specified resource content and stores it in the target file.
      *
      * <p>Possible {@link IOException} when copying the resource is wrapped as the
      * {@link IllegalStateException}.
      */
-    private void copyParsersCode() {
+    private void copyResource(String resourceName, LibraryFile targetFile) {
         try (InputStream in = GenerateKnownTypeParsers.class
                 .getClassLoader()
-                .getResourceAsStream(PARSERS_RESOURCE)) {
-            Path path = generatedRoot().resolve(KNOWN_TYPE_PARSERS);
+                .getResourceAsStream(resourceName)) {
+            Path path = generatedRoot().resolve(targetFile);
             Files.copy(in, path, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
