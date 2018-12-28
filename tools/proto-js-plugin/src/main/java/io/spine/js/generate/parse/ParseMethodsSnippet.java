@@ -30,7 +30,9 @@ import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
+import static io.spine.js.generate.parse.Parser.ABSTRACT_PARSER;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
@@ -84,32 +86,22 @@ public final class ParseMethodsSnippet implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines out = new CodeLines();
-        out.append(generateComment());
-        out.append(generateParsersImport());
-        out.append(generateMethods());
+        out.append(emptyLine());
+        out.append(COMMENT);
+        out.append(emptyLine());
+        out.append(imports());
+        out.append(parseMethods());
         return out;
     }
 
     /**
-     * Generates comment explaining the generated code.
-     */
-    @VisibleForTesting
-    CodeLines generateComment() {
-        CodeLines snippet = new CodeLines();
-        snippet.append(emptyLine());
-        snippet.append(COMMENT);
-        return snippet;
-    }
-
-    /**
-     * Generates the {@code known_type_parsers.js} import.
+     * Generates the {@code known_type_parsers.js} and {@code object_parser.js} imports.
      *
      * <p>The import path is relative to the processed {@code file}.
      */
     @VisibleForTesting
-    CodeLines generateParsersImport() {
+    CodeLines imports() {
         CodeLines snippet = new CodeLines();
-        snippet.append(emptyLine());
         FileName fileName = FileName.from(file);
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
@@ -117,6 +109,7 @@ public final class ParseMethodsSnippet implements Snippet {
                 .setJsOutput(snippet)
                 .build();
         generator.importFile(KNOWN_TYPE_PARSERS.fileName(), PARSERS_IMPORT_NAME);
+        generator.importFile(OBJECT_PARSER.fileName(), ABSTRACT_PARSER);
         return snippet;
     }
 
@@ -125,10 +118,11 @@ public final class ParseMethodsSnippet implements Snippet {
      * the file.
      */
     @VisibleForTesting
-    CodeLines generateMethods() {
+    CodeLines parseMethods() {
         CodeLines snippet = new CodeLines();
         for (Descriptor message : file.getMessageTypes()) {
             FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
+            snippet.append(emptyLine());
             snippet.append(fromJsonMethod);
         }
         return snippet;

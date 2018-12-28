@@ -90,7 +90,6 @@ public final class FromJsonMethod implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines lines = new CodeLines();
-        lines.append(emptyLine());
         lines.append(fromJsonMethod());
         lines.append(emptyLine());
         lines.append(fromObjectMethod());

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
@@ -42,22 +43,24 @@ class ParseMethodsSnippetTest {
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        CodeLines comment = generator.generateComment();
+        CodeLines comment = generator.value();
         assertContains(comment, COMMENT.content());
     }
 
     @Test
-    @DisplayName("generate known type parsers imports")
+    @DisplayName("generate imports")
     void generateImports() {
-        CodeLines snippet = generator.generateParsersImport();
+        CodeLines snippet = generator.imports();
         String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
+        String abstractParserImport = "require('../../" + OBJECT_PARSER + "');";
         assertContains(snippet, knownTypeParsersImport);
+        assertContains(snippet, abstractParserImport);
     }
 
     @Test
     @DisplayName("generate `fromJson` and `fromObject` methods for all messages in file")
     void generateMethods() {
-        CodeLines snippet = generator.generateMethods();
+        CodeLines snippet = generator.parseMethods();
         for (Descriptor message : file.getMessageTypes()) {
             String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
             assertContains(snippet, fromJsonDeclaration);

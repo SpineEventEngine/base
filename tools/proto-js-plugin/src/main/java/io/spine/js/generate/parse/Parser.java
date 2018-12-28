@@ -67,7 +67,7 @@ public class Parser implements Snippet {
     public static final String FROM_OBJECT_ARG = "obj";
 
     /** The name of the abstract parser to extend from. */
-    private static final String ABSTRACT_PARSER = "ObjectParser";
+    static final String ABSTRACT_PARSER = "ObjectParser";
     /** The name of the method declared on an abstract parser. */
     static final String PARSE_METHOD = "fromObject";
 
