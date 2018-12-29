@@ -66,15 +66,8 @@ public class VariableDeclaration extends CodeLine {
      * Obtains the declaration of a variable initialized by instantiation of the type.
      */
     public static VariableDeclaration newInstance(String name, TypeName type) {
-        return newInstance(name, type.value());
-    }
-
-    /**
-     * Obtains the declaration of a variable initialized by instantiation of the type.
-     */
-    public static VariableDeclaration newInstance(String name, String type) {
         checkNotNull(name);
-        checkNotNull(type);
+        checkNotNull(type.value());
         String initializer = "new " + type + "()";
         return initialized(name, initializer);
     }

@@ -52,8 +52,8 @@ class MethodReferenceTest {
     @Test
     @DisplayName("provide reference to a constructor")
     void constructor() {
-        String constructorName = "CustomType";
-        MethodReference reference = MethodReference.constructor(constructorName);
-        assertEquals(constructorName, reference.value());
+        MethodReference reference = MethodReference.constructor(typeName);
+        String expected = "proto.google.protobuf.Any";
+        assertEquals(expected, reference.value());
     }
 }

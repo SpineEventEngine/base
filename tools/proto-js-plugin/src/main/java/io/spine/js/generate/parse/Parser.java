@@ -94,8 +94,8 @@ public class Parser implements Snippet {
     /**
      * Obtains the type of the parser to be generated.
      */
-    String typeName() {
-        return messageName + "Parser";
+    TypeName typeName() {
+        return TypeName.of(messageName + "Parser");
     }
 
     private Method constructor() {

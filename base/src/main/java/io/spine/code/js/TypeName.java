@@ -26,9 +26,7 @@ import io.spine.value.StringTypeValue;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Represents the Protobuf type in the JavaScript code.
- *
- * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
+ * The name of a type in the JavaScript code.
  */
 public final class TypeName extends StringTypeValue {
 
@@ -43,10 +41,23 @@ public final class TypeName extends StringTypeValue {
         super(value);
     }
 
+    /**
+     * Obtains the type name of the specified Protobuf declaration.
+     *
+     * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
+     */
     public static TypeName from(GenericDescriptor descriptor) {
         checkNotNull(descriptor);
         String typeName = descriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return new TypeName(nameWithPrefix);
+    }
+
+    /**
+     * Obtains the type name with the specified value.
+     */
+    public static TypeName of(String value) {
+        checkNotNull(value);
+        return new TypeName(value);
     }
 }
