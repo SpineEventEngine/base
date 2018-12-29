@@ -22,7 +22,10 @@ package io.spine.js.gradle;
 
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.js.generate.JsonParsersWriter;
+import io.spine.code.proto.FileSet;
+import io.spine.js.generate.AppendTypeUrlGetter;
+import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -31,6 +34,7 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
+import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
@@ -113,8 +117,7 @@ public class ProtoJsPlugin extends SpinePlugin {
         Directory generatedRoot = jsProject.proto()
                                            .mainJs();
         File descriptors = jsProject.mainDescriptors();
-        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
-        writer.write();
+        generateCode(generatedRoot, descriptors);
     }
 
     /**
@@ -125,7 +128,14 @@ public class ProtoJsPlugin extends SpinePlugin {
         Directory generatedRoot = jsProject.proto()
                                            .testJs();
         File descriptors = jsProject.testDescriptors();
-        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
-        writer.write();
+        generateCode(generatedRoot, descriptors);
+    }
+
+    private static void generateCode(Directory generatedRoot, File descriptors) {
+        FileSet fileSet = parseOrEmpty(descriptors);
+        GenerationTask generateParsers = GenerateKnownTypeParsers.createFor(generatedRoot);
+        generateParsers.performFor(fileSet);
+        GenerationTask appendTypeUrlGetter = new AppendTypeUrlGetter(generatedRoot);
+        appendTypeUrlGetter.performFor(fileSet);
     }
 }

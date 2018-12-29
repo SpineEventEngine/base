@@ -62,10 +62,13 @@ protobuf {
 sourceSets {
     main {
         resources.srcDirs += "$buildDir/descriptors/main"
+        proto.srcDirs = ["$projectDir/src/main/proto"]
     }
     test {
         resources.srcDirs += "$buildDir/descriptors/test"
+        proto.srcDirs = ["$projectDir/src/test/proto"]
     }
+
 }
 
 jar {
@@ -84,6 +87,8 @@ build.doLast {
     }
     command.add('build')
     command.add('--console=plain')
+    command.add('--debug')
+    command.add('--stacktrace')
 
     // Ensure build error output log. 
     // Since we're executing this task in another process, we redirect error output to 
@@ -93,11 +98,13 @@ build.doLast {
         buildDir.mkdir()
     }
     final File errorOut = new File(buildDir, 'error-out.txt')
+    final File debugOut = new File(buildDir, 'debug-out.txt')
 
     final def process = new ProcessBuilder()
             .command(command)
             .directory(file(directory))
             .redirectError(errorOut)
+            .redirectOutput(debugOut)
             .start()
     if (process.waitFor() != 0) {
         throw new GradleException("Unable to build validating builders. See $errorOut for details.")
