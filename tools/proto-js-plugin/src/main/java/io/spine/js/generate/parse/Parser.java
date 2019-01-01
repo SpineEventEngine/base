@@ -44,9 +44,8 @@ import static java.lang.String.format;
  * like {@code Any}, {@code int32}, {@code Timestamp}. The parsers for these
  * standard types are manually created and require no code generation.
  *
- * <p>Code provided by the class is in {@code ES5} standard. It is not generated
- * in {@code ES6} since Protobuf compiler generates Javascript in {@code ES5}
- * and we want to be fully compatible with standard generated code.
+ * <p>Code provided by the class is in {@code ES5} standard
+ * since Protobuf compiler generates Javascript in {@code ES5}.
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.
@@ -61,11 +60,8 @@ public class Parser implements Snippet {
      * JS object.
      */
     public static final String MESSAGE = "msg";
-    /**
-     * The parameter name of the {@code fromObject} method.
-     */
+    /** The parameter name of the {@code fromObject} method. */
     public static final String FROM_OBJECT_ARG = "obj";
-
     /** The name of the abstract parser to extend from. */
     static final String ABSTRACT_PARSER = "ObjectParser";
     /** The name of the method declared on an abstract parser. */

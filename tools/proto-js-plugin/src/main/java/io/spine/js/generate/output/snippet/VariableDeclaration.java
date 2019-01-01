@@ -67,7 +67,7 @@ public class VariableDeclaration extends CodeLine {
      */
     public static VariableDeclaration newInstance(String name, TypeName type) {
         checkNotNull(name);
-        checkNotNull(type.value());
+        checkNotNull(type);
         String initializer = "new " + type + "()";
         return initialized(name, initializer);
     }
