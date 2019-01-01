@@ -114,7 +114,8 @@ public class Parser implements Snippet {
     }
 
     private String initConstructor() {
-        String result = format("%s = %s;", constructorReference(), typeName());
+        MethodReference reference = MethodReference.onPrototype(typeName(), "constructor");
+        String result = format("%s = %s;", reference, typeName());
         return result;
     }
 
@@ -126,7 +127,8 @@ public class Parser implements Snippet {
      */
     @VisibleForTesting
     CodeLines fromObjectMethod() {
-        String methodName = prototypeReference() + '.' + PARSE_METHOD;
+        String methodName = MethodReference.onPrototype(typeName(), PARSE_METHOD)
+                                           .value();
         CodeLines lines = new CodeLines();
         lines.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(lines);
@@ -168,13 +170,6 @@ public class Parser implements Snippet {
      */
     private String prototypeReference() {
         return typeName() + ".prototype";
-    }
-
-    /**
-     * Obtains the reference to the constructor of the parser.
-     */
-    private String constructorReference() {
-        return prototypeReference() + ".constructor";
     }
 
     private static String superClass() {
