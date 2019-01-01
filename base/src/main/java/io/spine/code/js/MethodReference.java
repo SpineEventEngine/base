@@ -20,9 +20,9 @@
 
 package io.spine.code.js;
 
-import java.util.Objects;
+import io.spine.value.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A reference to a method of a Protobuf type.
@@ -30,77 +30,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The reference allows to identify a method in code
  * since it includes a type name and a method name.
  */
-public final class MethodReference {
+public final class MethodReference extends StringTypeValue {
 
-    /** The type declaring the method. */
-    private final TypeName typeName;
-    /** The name of the method. */
-    private final String methodName;
-    /** Whether the method is defined on the prototype or not. */
-    private final boolean onPrototype;
+    private static final long serialVersionUID = 0L;
 
-    private MethodReference(TypeName typeName, String methodName, boolean onPrototype) {
-        checkNotNull(methodName);
-        this.typeName = typeName;
-        this.methodName = methodName;
-        this.onPrototype = onPrototype;
+    private MethodReference(String value) {
+        super(value);
     }
 
     /**
      * Obtains the reference to the instance method of the specified type.
      */
     public static MethodReference onType(TypeName typeName, String methodName) {
-        return new MethodReference(typeName, methodName, false);
+        String value = format("%s.%s", typeName, methodName);
+        return new MethodReference(value);
     }
 
     /**
      * Obtains the reference to the static method of the specified type.
      */
     public static MethodReference onPrototype(TypeName typeName, String methodName) {
-        return new MethodReference(typeName, methodName, true);
+        String value = format("%s.prototype.%s", typeName, methodName);
+        return new MethodReference(value);
     }
 
     /**
      * Obtains the reference to the constructor of the specified type.
      */
-    public static MethodReference constructor(TypeName name) {
-        return new MethodReference(name, "", false);
-    }
-
-    /**
-     * Obtains the value of the reference.
-     */
-    public String value() {
-        if (methodName.isEmpty()) {
-            return typeName.toString();
-        }
-        String delimiter = onPrototype
-                           ? ".prototype."
-                           : ".";
-        return typeName + delimiter + methodName;
-    }
-
-    @Override
-    public String toString() {
-        return value();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MethodReference)) {
-            return false;
-        }
-        MethodReference reference = (MethodReference) o;
-        return onPrototype == reference.onPrototype &&
-                typeName.equals(reference.typeName) &&
-                methodName.equals(reference.methodName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(typeName, methodName, onPrototype);
+    public static MethodReference constructor(TypeName typeName) {
+        return new MethodReference(typeName.value());
     }
 }
