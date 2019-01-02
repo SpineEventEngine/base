@@ -35,7 +35,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
- * Validates messages according to Spine custom protobuf options and
+ * Validates messages according to Spine custom Protobuf options and
  * provides constraint violations found.
  *
  * @param <V>
@@ -56,6 +56,7 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
+    private final boolean canBeRequired;
 
     /**
      * If set the validator would assume that the field is required even
@@ -71,8 +72,11 @@ abstract class FieldValidator<V> implements Logging {
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
+     * @param canBeRequired
+     *         defines whether a field that is being validated can be {@code required}
      */
-    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
+        this.canBeRequired = canBeRequired;
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
@@ -127,6 +131,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
      */
     protected final List<ConstraintViolation> validate() {
+        checkCanBeRequired();
         checkIfRequiredAndNotSet();
         if (isRequiredId()) {
             validateEntityId();
@@ -136,6 +141,14 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
+    }
+
+    private void checkCanBeRequired() {
+        boolean fieldIsRequired = isRequiredField();
+        if (!canBeRequired && fieldIsRequired) {
+            String messageFormat = "Fields of type %s should not be declared as `(required)`.";
+            _warn(messageFormat, field().typeName());
+        }
     }
 
     /**
