@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
@@ -87,7 +88,8 @@ public class LocationPath {
         path.addAll(checkPath(locationPath.path));
     }
 
-    private List<Integer> toList() {
+    @VisibleForTesting
+    List<Integer> toList() {
         return Collections.unmodifiableList(path);
     }
 

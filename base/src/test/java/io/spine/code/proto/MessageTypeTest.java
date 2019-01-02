@@ -21,6 +21,8 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Predicates;
+import com.google.common.truth.IterableSubject;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Timestamp;
 import io.spine.net.Uri;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageType should")
@@ -102,6 +105,22 @@ class MessageTypeTest {
             void assertNotCustom(Descriptor descriptor) {
                 assertQuality(Predicates.not(MessageType::isCustom), descriptor);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("Obtain path for")
+    class Path {
+
+        @Test
+        @DisplayName("top-level message")
+        void topLevel() {
+            Descriptor descriptor = Url.getDescriptor();
+            MessageType type = MessageType.of(descriptor);
+            LocationPath path = type.path();
+            IterableSubject assertPath = assertThat(path.toList());
+            assertPath.contains(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+            assertPath.contains(descriptor.getIndex());
         }
     }
 }

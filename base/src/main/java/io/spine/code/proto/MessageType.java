@@ -30,6 +30,7 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
+import io.spine.logging.Logging;
 import io.spine.option.IsOption;
 import io.spine.type.TypeUrl;
 
@@ -43,13 +44,12 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static java.lang.String.format;
 
 /**
  * A message type as declared in a proto file.
  */
 @Internal
-public class MessageType extends Type<Descriptor, DescriptorProto> {
+public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
      * Standard suffix for a Validating Builder class name.
@@ -279,29 +279,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         LocationPath path = new LocationPath();
         path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
         if (isTopLevel()) {
-            path.add(topLevelIndex());
+            path.add(descriptor().getIndex());
         }
         return path;
-    }
-
-    private int topLevelIndex() {
-        Descriptor descriptor = descriptor();
-
-        List<DescriptorProto> messages = descriptor.getFile()
-                                                   .toProto()
-                                                   .getMessageTypeList();
-        for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(descriptor.toProto())) {
-                return messages.indexOf(descriptor.toProto());
-            }
-        }
-
-        String msg = format("Unable to locate message `%s` in the file `%s`.",
-                            descriptor.toProto()
-                                      .getName(),
-                            descriptor.getFile()
-                                      .getName()
-        );
-        throw new IllegalStateException(msg);
     }
 }
