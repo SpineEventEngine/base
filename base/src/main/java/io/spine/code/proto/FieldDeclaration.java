@@ -261,7 +261,7 @@ public final class FieldDeclaration implements Logging {
      * @return {@code true} if the field is the first in the containing declaration,
      *         {@code false} otherwise
      */
-    private boolean isFirstField() {
+    public boolean isFirstField() {
         return field.getIndex() == 0;
     }
 

@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
 import io.spine.option.OptionsProto;
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
@@ -229,29 +231,55 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         checkViolations(violations);
     }
 
+    /**
+     * Validates the {@code set_once} field option.
+     *
+     * <p>A field can only be set once if it either declares an explicit option value
+     * (e.g {@code string name = 2 [(set_once) = true];}), or if it's the first value of a message.
+     *
+     * <p>Example:
+     * in the message
+     * <pre>
+     * {@code
+     * message User {
+     *     string id = 2;
+     *     string name = 1;
+     * }
+     * }
+     * </pre>
+     * the {@code id} field is implicitly {@code (set_once) = true}, since it's the first one
+     * in the message, regardless of the declared number.
+     * To avoid this, the declaration of the field should be
+     * {@code string id = 1[(set_once) = false];}.
+     *
+     * @param field
+     *         a field that is being validated
+     * @throws ValidationException
+     *         if the value of the  field that is {@code (set_once) = true} is being changed
+     */
     @SuppressWarnings("unused")
         // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
-        boolean setOnce = Options.option(field, OptionsProto.setOnce)
-                                 .orElse(false);
-        if (!setOnce) {
-            return;
-        }
-
-        boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
-        if (setOnceNotRecommended) {
-            String containingTypeName = field.getContainingType()
-                                             .getName();
-            String fieldName = field.getName();
-            Logger logger = Logging.get(AbstractValidatingBuilder.class);
-            logger.warn("Error found in %s.%s. " +
-                        "Repeated and map fields can't be marked as `(set_once) = true`",
-                        containingTypeName,
-                        fieldName);
-        } else {
-            boolean valueAlreadySet = getMessageBuilder().hasField(field);
-            if (valueAlreadySet) {
-                throw violatedSetOnce(field);
+        Optional<Boolean> setOnceDeclaration = Options.option(field, OptionsProto.setOnce);
+        boolean setOnceValue = setOnceDeclaration.orElse(false);
+        boolean firstField = new FieldDeclaration(field).isFirstField();
+        boolean fieldIsSetOnce = (firstField && !setOnceDeclaration.isPresent()) || setOnceValue;
+        if (fieldIsSetOnce) {
+            boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
+            if (setOnceNotRecommended) {
+                String containingTypeName = field.getContainingType()
+                                                 .getName();
+                String fieldName = field.getName();
+                Logger logger = Logging.get(AbstractValidatingBuilder.class);
+                logger.warn("Error found in %s.%s. " +
+                                    "Repeated and map fields can't be marked as `(set_once) = true`",
+                            containingTypeName,
+                            fieldName);
+            } else {
+                boolean valueAlreadySet = getMessageBuilder().hasField(field);
+                if (valueAlreadySet) {
+                    throw violatedSetOnce(field);
+                }
             }
         }
     }
