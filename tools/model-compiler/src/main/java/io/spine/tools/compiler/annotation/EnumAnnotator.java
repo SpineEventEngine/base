@@ -20,9 +20,9 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumOptions;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
@@ -39,33 +39,33 @@ import java.util.Optional;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.EnumOptions enum option}
  * value is {@code true}.
  */
-class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorProto> {
+class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptor> {
 
     EnumAnnotator(Class<? extends Annotation> annotation,
                   GeneratedExtension<EnumOptions, Boolean> option,
-                  Collection<FileDescriptorProto> files,
+                  Collection<FileDescriptor> files,
                   String genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
     @Override
-    protected List<EnumDescriptorProto> getDefinitions(FileDescriptorProto file) {
-        return file.getEnumTypeList();
+    protected List<EnumDescriptor> getDefinitions(FileDescriptor file) {
+        return file.getEnumTypes();
     }
 
     @Override
-    protected String getDefinitionName(EnumDescriptorProto enumType) {
+    protected String getDefinitionName(EnumDescriptor enumType) {
         return enumType.getName();
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(EnumDescriptorProto descriptor) {
+    protected Optional<Boolean> getOptionValue(EnumDescriptor descriptor) {
         return Options.option(descriptor, getOption());
     }
 
     @Override
-    protected void annotateDefinition(EnumDescriptorProto enumType, FileDescriptorProto file) {
-        SourceFile enumFile = SourceFile.forEnum(enumType, file);
+    protected void annotateDefinition(EnumDescriptor enumType, FileDescriptor file) {
+        SourceFile enumFile = SourceFile.forEnum(enumType.toProto(), file.toProto());
         annotate(enumFile);
     }
 }

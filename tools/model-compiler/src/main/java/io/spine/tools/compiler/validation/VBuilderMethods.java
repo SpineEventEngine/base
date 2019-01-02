@@ -186,7 +186,7 @@ final class VBuilderMethods {
          * @return the method constructor instance
          */
         private MethodGroup create(FieldDeclaration field, int index) {
-            FieldType fieldType = FieldType.create(field);
+            FieldType fieldType = FieldType.of(field);
             MethodGroup methodGroup =
                     builderFor(field)
                             .setField(field.descriptor())
