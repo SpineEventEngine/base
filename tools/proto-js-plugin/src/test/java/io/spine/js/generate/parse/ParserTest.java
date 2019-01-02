@@ -31,14 +31,14 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.GeneratedParser.FROM_OBJECT_ARG;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("Parser should")
 class ParserTest {
 
     private final Descriptor message = Any.getDescriptor();
-    private final Parser parser = new Parser(message);
+    private final GeneratedParser parser = new GeneratedParser(message);
 
     @Test
     @DisplayName("generate `fromObject` method for message")
@@ -79,7 +79,7 @@ class ParserTest {
     @Test
     @DisplayName("allow to call the parse object method")
     void callParseObjectMethod() {
-        String call = Parser.parseMethodCall("someParser", "{}");
+        String call = GeneratedParser.parseMethodCall("someParser", "{}");
         String expected = "someParser.fromObject({})";
         assertThat(call).isEqualTo(expected);
     }
@@ -105,8 +105,8 @@ class ParserTest {
     }
 
     private static void assertParseMethod(CodeLines lines, Descriptor message) {
-        String expected = new Parser(message).fromObjectMethod()
-                                             .toString();
+        String expected = new GeneratedParser(message).fromObjectMethod()
+                                                      .toString();
         assertThat(lines.toString()).contains(expected);
     }
 

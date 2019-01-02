@@ -38,7 +38,7 @@ import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.lang.String.format;
 
 /**
- * A parser of a generated Protobuf message.
+ * The code of a generated parser for a Protobuf message.
  *
  * <p>This parser should be generated for all messages except standard ones
  * like {@code Any}, {@code int32}, {@code Timestamp}. The parsers for these
@@ -48,7 +48,7 @@ import static java.lang.String.format;
  * since Protobuf compiler generates Javascript in {@code ES5}.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-public final class Parser implements Snippet {
+public final class GeneratedParser implements Snippet {
 
     /**
      * The name of the {@code fromObject} method return value.
@@ -66,7 +66,7 @@ public final class Parser implements Snippet {
     /** The message to generate the parser for. */
     private final Descriptor message;
 
-    Parser(Descriptor message) {
+    GeneratedParser(Descriptor message) {
         checkNotNull(message);
         this.message = message;
     }
@@ -83,6 +83,9 @@ public final class Parser implements Snippet {
 
     /**
      * Obtains the string representing a call to a method parsing an object into a message.
+     *
+     * <p>The method can be used to reference the a call to a handcrafted parser as well
+     * as for a generated parser.
      *
      * @param parserVariable
      *         the name of the parser variable

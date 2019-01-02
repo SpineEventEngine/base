@@ -60,11 +60,11 @@ public final class FromJsonMethod implements Snippet {
     static final String FROM_JSON_ARG = "json";
 
     private final Descriptor message;
-    private final Parser parser;
+    private final GeneratedParser parser;
 
     private FromJsonMethod(Descriptor message) {
         this.message = message;
-        this.parser = new Parser(message);
+        this.parser = new GeneratedParser(message);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class FromJsonMethod implements Snippet {
         String parserVariable = "parser";
         VariableDeclaration newParser =
                 VariableDeclaration.newInstance(parserVariable, parser.typeName());
-        String callParser = Parser.parseMethodCall(parserVariable, parameterName);
+        String callParser = GeneratedParser.parseMethodCall(parserVariable, parameterName);
         return Method
                 .newBuilder(reference)
                 .withParameters(parameterName)

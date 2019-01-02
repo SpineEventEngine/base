@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
 import io.spine.js.generate.parse.ExportStandardParsers;
-import io.spine.js.generate.parse.Parser;
+import io.spine.js.generate.parse.GeneratedParser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -87,7 +87,7 @@ final class WellKnownFieldParser implements FieldParser {
     }
 
     private static VariableDeclaration parsedVariable(String name, String valueToParse) {
-        String initializer = Parser.parseMethodCall(PARSER_VARIABLE, valueToParse);
+        String initializer = GeneratedParser.parseMethodCall(PARSER_VARIABLE, valueToParse);
         return VariableDeclaration.initialized(name, initializer);
     }
 }

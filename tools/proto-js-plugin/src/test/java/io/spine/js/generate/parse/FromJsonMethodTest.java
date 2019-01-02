@@ -86,8 +86,8 @@ class FromJsonMethodTest {
     @DisplayName("generate a message parser")
     void checkJsObjectForNull() {
         CodeLines lines = generator.value();
-        String expected = new Parser(message).value()
-                                             .toString();
+        String expected = new GeneratedParser(message).value()
+                                                      .toString();
         assertContains(lines, expected);
     }
 
