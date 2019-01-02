@@ -29,6 +29,7 @@ import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.parse.ParseMethodsSnippet.PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.Parser.PARSE_METHOD;
 import static java.lang.String.format;
 
 /**
@@ -39,9 +40,8 @@ import static java.lang.String.format;
  */
 final class WellKnownFieldParser implements FieldParser {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
     private static final String PARSER_VARIABLE = "parser";
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
-    private static final String PARSE_METHOD = "fromObject";
 
     private final TypeUrl typeUrl;
     private final CodeLines jsOutput;

@@ -24,7 +24,6 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,14 +40,9 @@ import static java.lang.System.lineSeparator;
 @DisplayName("MessageGenerator should")
 class FromJsonMethodTest {
 
-    private Descriptor message;
-    private FromJsonMethod generator;
-
-    @BeforeEach
-    void setUp() {
-        message = message();
-        generator = FromJsonMethod.createFor(message);
-    }
+    private final Descriptor message = message();
+    private final TypeName messageType = TypeName.from(message);
+    private final FromJsonMethod generator = FromJsonMethod.createFor(message);
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
@@ -62,7 +56,7 @@ class FromJsonMethodTest {
     void generateFromJson() {
         CodeLines snippet = generator.fromJsonMethod()
                                      .value();
-        String methodDeclaration = TypeName.from(message) + "." + FROM_JSON;
+        String methodDeclaration = messageType + "." + FROM_JSON;
         assertContains(snippet, methodDeclaration);
     }
 
@@ -81,7 +75,7 @@ class FromJsonMethodTest {
         CodeLines lines = generator.fromObjectMethod()
                                    .value();
         String expected =
-                TypeName.from(message) + "." + FROM_OBJECT + " = function(obj) {" + newLine() +
+                messageType + "." + FROM_OBJECT + " = function(obj) {" + newLine() +
                         "  let parser = new " + expectedParser().typeName() + "();" + newLine() +
                         "  return parser.fromObject(obj);" + newLine() +
                         "};";
