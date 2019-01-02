@@ -277,23 +277,12 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        return fieldLeadingComments(field.toProto());
-    }
-
-    /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
         //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
         if (message.isNested()) {
             return Optional.empty();
         }
 
-        LocationPath fieldPath = fieldPath(field);
+        LocationPath fieldPath = fieldPath();
         return message.documentation()
                       .leadingComments(fieldPath);
     }
@@ -303,24 +292,24 @@ public final class FieldDeclaration implements Logging {
      *
      * <p>Protobuf extensions are not supported.
      *
-     * @param field
-     *         the field to get location path
      * @return the field location path
      */
-    private LocationPath fieldPath(FieldDescriptorProto field) {
+    private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
 
         locationPath.addAll(message.documentation()
                                    .messagePath());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
+        int fieldIndex = fieldIndex();
+        locationPath.add(fieldIndex);
         return locationPath;
     }
 
-    private int getFieldIndex(FieldDescriptorProto field) {
+    private int fieldIndex() {
+        FieldDescriptorProto fproto = this.field.toProto();
         return message.descriptor()
                       .toProto()
                       .getFieldList()
-                      .indexOf(field);
+                      .indexOf(fproto);
     }
 }
