@@ -168,6 +168,9 @@ public class Parser implements Snippet {
         return typeName() + ".prototype";
     }
 
+    /**
+     * Obtains the name of the imported abstract parser.
+     */
     private static String superClass() {
         return ABSTRACT_PARSER;
     }
