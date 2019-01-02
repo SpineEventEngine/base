@@ -72,7 +72,7 @@ final class LocationPath {
      * Appends the path item to the end of this path.
      */
     void add(Integer item) {
-        checkPathItem(item);
+        checkItem(item);
         path.add(item);
     }
 
@@ -82,7 +82,6 @@ final class LocationPath {
      * @param locationPath the location path
      */
     void addAll(LocationPath locationPath) {
-        checkNotNull(locationPath);
         path.addAll(checkPath(locationPath.path));
     }
 
@@ -96,16 +95,14 @@ final class LocationPath {
         return Collections.unmodifiableList(path);
     }
 
-    private static Collection<Integer> checkPath(Collection<Integer> locationPath) {
-        checkNotNull(locationPath);
-        for (Integer pathItem : locationPath) {
-            checkPathItem(pathItem);
-        }
-        return locationPath;
+    private static Collection<Integer> checkPath(Collection<Integer> items) {
+        checkNotNull(items);
+        items.forEach(LocationPath::checkItem);
+        return items;
     }
 
-    private static void checkPathItem(Integer pathItem) {
-        checkArgument(pathItem >= 0);
+    private static void checkItem(Integer item) {
+        checkArgument(item >= 0);
     }
 
     /**

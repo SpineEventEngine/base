@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -37,6 +38,7 @@ import io.spine.type.TypeUrl;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -56,12 +58,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
-    private final MessageDocumentation documentation;
-
-    @SuppressWarnings("ThisEscapedInObjectConstruction") // OK since fully initialized.
     protected MessageType(Descriptor descriptor) {
         super(descriptor);
-        this.documentation = new MessageDocumentation(this);
     }
 
     @VisibleForTesting // Otherwise package-private
@@ -230,13 +228,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Obtains message documentation.
-     */
-    public MessageDocumentation documentation() {
-        return documentation;
-    }
-
-    /**
      * Obtains fields declared in the message type.
      */
     public ImmutableList<FieldDeclaration> fields() {
@@ -268,5 +259,55 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         }
         path.add(descriptor.getIndex());
         return path;
+    }
+
+    /**
+     * Obtains the comments going before a rejection declaration.
+     *
+     * <p>Requires the following Protobuf plugin configuration:
+     * <pre> {@code
+     * generateProtoTasks {
+     *     all().each { final task ->
+     *         // If true, the descriptor set will contain line number information
+     *         // and comments. Default is false.
+     *         task.descriptorSetOptions.includeSourceInfo = true
+     *         // ...
+     *     }
+     * }
+     * }</pre>
+     *
+     * @return the comments text or {@code Optional.empty()} if there are no comments
+     *
+     * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
+     *         Protobuf plugin configuration</a>
+     */
+    public Optional<String> leadingComments() {
+        LocationPath messagePath = path();
+        return leadingComments(messagePath);
+    }
+
+    /**
+     * Obtains a leading comments by the {@link LocationPath}.
+     *
+     * @param locationPath
+     *         the location path to get leading comments
+     * @return the leading comments or empty {@code Optional} if there are no such comments or
+     *         a descriptor was generated without source code information
+     */
+    Optional<String> leadingComments(LocationPath locationPath) {
+        FileDescriptorProto file = descriptor()
+                .getFile()
+                .toProto();
+        if (!file.hasSourceCodeInfo()) {
+            _warn("Unable to obtain proto source code info. " +
+                          "Please configure the Gradle Protobuf plugin as follows:%n%s",
+                  "`task.descriptorSetOptions.includeSourceInfo = true`.");
+            return Optional.empty();
+        }
+
+        DescriptorProtos.SourceCodeInfo.Location location = locationPath.toLocation(file);
+        return location.hasLeadingComments()
+               ? Optional.of(location.getLeadingComments())
+               : Optional.empty();
     }
 }

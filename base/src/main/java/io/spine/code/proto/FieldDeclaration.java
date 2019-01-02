@@ -278,12 +278,11 @@ public final class FieldDeclaration implements Logging {
      */
     public Optional<String> leadingComments() {
         LocationPath fieldPath = fieldPath();
-        return message.documentation()
-                      .leadingComments(fieldPath);
+        return message.leadingComments(fieldPath);
     }
 
     /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
+     * Returns the path to the field inside a message declaration.
      *
      * <p>Protobuf extensions are not supported.
      *
