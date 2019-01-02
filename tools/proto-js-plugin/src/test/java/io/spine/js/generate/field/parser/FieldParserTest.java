@@ -127,7 +127,7 @@ class FieldParserTest {
     void parseWellKnown() {
         FieldParser parser = parserFor(timestampField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        String expectedStatement = "let " + VARIABLE + " = " + parseMethodCall(VARIABLE, VALUE);
+        String expectedStatement = "let " + VARIABLE + " = " + parseMethodCall("parser", VALUE);
         assertContains(jsOutput, expectedStatement);
     }
 }

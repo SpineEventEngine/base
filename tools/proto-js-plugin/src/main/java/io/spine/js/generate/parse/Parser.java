@@ -59,7 +59,7 @@ public class Parser implements Snippet {
      * <p>This value represents the generated JS message whose fields are parsed and set from the
      * JS object.
      */
-    public static final String MESSAGE = "msg";
+    private static final String MESSAGE = "msg";
     /** The parameter name of the {@code fromObject} method. */
     public static final String FROM_OBJECT_ARG = "obj";
     /** The name of the abstract parser to extend from. */
@@ -168,7 +168,7 @@ public class Parser implements Snippet {
     static void handleMessageFields(CodeLines output, Descriptor message) {
         for (FieldDescriptor field : message.getFields()) {
             output.append(emptyLine());
-            FieldGenerator generator = FieldGenerators.createFor(field, output);
+            FieldGenerator generator = FieldGenerators.createFor(field, output, MESSAGE);
             generator.generate();
         }
     }

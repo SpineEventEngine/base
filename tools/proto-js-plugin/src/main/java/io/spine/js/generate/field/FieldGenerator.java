@@ -52,12 +52,14 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     private final FieldDescriptor field;
     private final FieldPrecondition precondition;
     private final FieldParser parser;
+    private final String targetVariable;
 
     FieldGenerator(Builder builder) {
         super(builder.jsOutput);
         this.field = builder.field;
         this.precondition = builder.precondition;
         this.parser = builder.parser;
+        this.targetVariable = builder.targetVariable;
     }
 
     /**
@@ -93,6 +95,13 @@ public abstract class FieldGenerator extends JsCodeGenerator {
 
     FieldDescriptor field() {
         return field;
+    }
+
+    /**
+     * Obtains the name of the variable to set the field value on.
+     */
+    String targetVariable() {
+        return targetVariable;
     }
 
     /**
@@ -134,6 +143,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
         private FieldPrecondition precondition;
         private FieldParser parser;
         private CodeLines jsOutput;
+        private String targetVariable;
 
         B setField(FieldDescriptor field) {
             this.field = checkNotNull(field);
@@ -152,6 +162,14 @@ public abstract class FieldGenerator extends JsCodeGenerator {
 
         B setJsOutput(CodeLines jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
+            return self();
+        }
+
+        /**
+         * Specifies the variable name to set the parsed field for.
+         */
+        B setTargetVariable(String targetVariable) {
+            this.targetVariable = checkNotNull(targetVariable);
             return self();
         }
 

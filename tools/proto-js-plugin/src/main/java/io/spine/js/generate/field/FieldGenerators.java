@@ -21,9 +21,9 @@
 package io.spine.js.generate.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FieldTypes.isMap;
@@ -50,18 +50,22 @@ public final class FieldGenerators {
      *         the descriptor of the field to be handled by the generator
      * @param jsOutput
      *         the {@code JsOutput} to accumulate all the generated code
+     * @param targetVariable
+     *         the name of the message variable to set the parsed value for
      * @return the new {@code FieldGenerator} of the appropriate type
      */
-    public static FieldGenerator createFor(FieldDescriptor field, CodeLines jsOutput) {
+    public static FieldGenerator createFor(FieldDescriptor field,
+                                           CodeLines jsOutput,
+                                           String targetVariable) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMap(field)) {
-            return mapGenerator(field, jsOutput);
+            return mapGenerator(field, jsOutput, targetVariable);
         }
         if (isRepeated(field)) {
-            return repeatedGenerator(field, jsOutput);
+            return repeatedGenerator(field, jsOutput, targetVariable);
         }
-        return singularGenerator(field, jsOutput);
+        return singularGenerator(field, jsOutput, targetVariable);
     }
 
     /**
@@ -78,7 +82,9 @@ public final class FieldGenerators {
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
-    private static FieldGenerator mapGenerator(FieldDescriptor field, CodeLines jsOutput) {
+    private static FieldGenerator mapGenerator(FieldDescriptor field,
+                                               CodeLines jsOutput,
+                                               String targetVariable) {
         FieldParser keyParser = mapKeyParser(field, jsOutput);
         FieldParser valueParser = mapValueParser(field, jsOutput);
         FieldPrecondition valuePrecondition = mapValuePrecondition(field, jsOutput);
@@ -90,6 +96,7 @@ public final class FieldGenerators {
                 .setKeyParser(keyParser)
                 .setParser(valueParser)
                 .setJsOutput(jsOutput)
+                .setTargetVariable(targetVariable)
                 .build();
         return generator;
     }
@@ -97,7 +104,9 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain RepeatedFieldGenerator generator} for the {@code repeated} proto field.
      */
-    private static FieldGenerator repeatedGenerator(FieldDescriptor field, CodeLines jsOutput) {
+    private static FieldGenerator repeatedGenerator(FieldDescriptor field,
+                                                    CodeLines jsOutput,
+                                                    String targetVariable) {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
@@ -107,6 +116,7 @@ public final class FieldGenerators {
                 .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
+                .setTargetVariable(targetVariable)
                 .build();
         return generator;
     }
@@ -114,7 +124,9 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain SingularFieldGenerator generator} for the ordinary proto field.
      */
-    private static FieldGenerator singularGenerator(FieldDescriptor field, CodeLines jsOutput) {
+    private static FieldGenerator singularGenerator(FieldDescriptor field,
+                                                    CodeLines jsOutput,
+                                                    String targetVariable) {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
@@ -124,6 +136,7 @@ public final class FieldGenerators {
                 .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
+                .setTargetVariable(targetVariable)
                 .build();
         return generator;
     }

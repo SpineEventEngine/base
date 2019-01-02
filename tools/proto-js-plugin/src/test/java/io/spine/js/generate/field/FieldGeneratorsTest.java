@@ -74,6 +74,6 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     }
 
     private FieldGenerator generatorFor(FieldDescriptor field) {
-        return FieldGenerators.createFor(field, jsOutput);
+        return FieldGenerators.createFor(field, jsOutput, "messageAfterParse");
     }
 }

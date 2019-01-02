@@ -24,8 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.field.parser.FieldParser;
 
-import static io.spine.js.generate.parse.Parser.MESSAGE;
-
 /**
  * The generator for the {@code map} Protobuf fields.
  *
@@ -84,7 +82,7 @@ final class MapFieldGenerator extends FieldGenerator {
         FieldName fieldName = FieldName.from(field());
         String getMap = "get" + fieldName + "Map()";
         String setMapValue = "set(" + MAP_KEY + ", %s)";
-        String addToMapFormat = MESSAGE + '.' + getMap + '.' + setMapValue + ';';
+        String addToMapFormat = targetVariable() + '.' + getMap + '.' + setMapValue + ';';
         return addToMapFormat;
     }
 
