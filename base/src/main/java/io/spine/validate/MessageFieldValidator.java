@@ -56,7 +56,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *         such constraint is not explicitly set
      */
     MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired);
+        super(fieldValue, assumeRequired, true);
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 
