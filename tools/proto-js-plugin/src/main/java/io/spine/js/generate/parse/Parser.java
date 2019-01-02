@@ -21,8 +21,8 @@
 package io.spine.js.generate.parse;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.Snippet;
@@ -154,7 +154,7 @@ public class Parser implements Snippet {
      */
     @VisibleForTesting
     static void handleMessageFields(CodeLines output, Descriptor message) {
-        for (Descriptors.FieldDescriptor field : message.getFields()) {
+        for (FieldDescriptor field : message.getFields()) {
             output.append(emptyLine());
             FieldGenerator generator = FieldGenerators.createFor(field, output);
             generator.generate();
