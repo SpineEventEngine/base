@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
-import io.spine.people.PersonNameVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
@@ -201,14 +200,6 @@ class ValidatingBuilderTest {
         testFields(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
         testFields(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
         testFields(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a message field that is implicitly (set_once) = true")
-    void testImplicitSetOnceDoesNotAllowMutation() {
-        testSetOnce(PersonNameVBuilder.newBuilder(),
-                    taskVBuilder -> taskVBuilder.setHonorificPrefix("Dr."),
-                    taskVBuilder -> taskVBuilder.setHonorificPrefix("Prof"));
     }
 
     /**
