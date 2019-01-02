@@ -58,7 +58,8 @@ public final class Parser implements Snippet {
      */
     private static final String MESSAGE = "msg";
     /** The parameter name of the {@code fromObject} method. */
-    public static final String FROM_OBJECT_ARG = "obj";
+    @VisibleForTesting
+    static final String FROM_OBJECT_ARG = "obj";
     /** The name of the abstract parser to extend from. */
     static final String ABSTRACT_PARSER = "ObjectParser";
     /** The name of the method declared on an abstract parser. */
@@ -165,7 +166,8 @@ public final class Parser implements Snippet {
         CodeLines lines = new CodeLines();
         for (FieldDescriptor field : message.getFields()) {
             lines.append(emptyLine());
-            FieldGenerator generator = FieldGenerators.createFor(field, lines, MESSAGE);
+            FieldToParse fieldToParse = new FieldToParse(field, FROM_OBJECT_ARG, MESSAGE);
+            FieldGenerator generator = FieldGenerators.createFor(fieldToParse, lines);
             generator.generate();
         }
         return lines;

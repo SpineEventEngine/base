@@ -23,6 +23,7 @@ package io.spine.js.generate.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.parse.FieldToParse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,7 +38,6 @@ import static io.spine.js.generate.field.given.Given.repeatedField;
 import static io.spine.js.generate.field.given.Given.singularField;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,6 +47,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FieldGeneratorTest {
 
     private static final String JS_OBJECT = "jsObject";
+    private static final String MESSAGE_NAME = "messageName";
+    private static final String OBJECT_NAME = "objectName";
 
     private CodeLines jsOutput;
 
@@ -66,7 +68,7 @@ class FieldGeneratorTest {
     @DisplayName("acquire field value by field JSON name")
     void acquireJsObject() {
         String fieldValue = singularGenerator.acquireFieldValue();
-        String expected = FROM_OBJECT_ARG + '.' + singularField().getJsonName();
+        String expected = OBJECT_NAME + '.' + singularField().getJsonName();
         assertEquals(expected, fieldValue);
     }
 
@@ -169,6 +171,7 @@ class FieldGeneratorTest {
     }
 
     private FieldGenerator fieldGenerator(FieldDescriptor descriptor) {
-        return FieldGenerators.createFor(descriptor, jsOutput, "resultMessage");
+        FieldToParse fieldToParse = new FieldToParse(descriptor, OBJECT_NAME, MESSAGE_NAME);
+        return FieldGenerators.createFor(fieldToParse, jsOutput);
     }
 }

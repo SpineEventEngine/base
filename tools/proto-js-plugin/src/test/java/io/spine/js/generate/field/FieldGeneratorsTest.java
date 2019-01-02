@@ -23,6 +23,7 @@ package io.spine.js.generate.field;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.parse.FieldToParse;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +45,7 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
     @Override
     protected void configure(NullPointerTester tester) {
-        tester.setDefault(FieldDescriptor.class, messageField());
+        tester.setDefault(FieldToParse.class, fieldToParse(messageField()));
     }
 
     @BeforeEach
@@ -74,6 +75,11 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     }
 
     private FieldGenerator generatorFor(FieldDescriptor field) {
-        return FieldGenerators.createFor(field, jsOutput, "messageAfterParse");
+        FieldToParse fieldToParse = fieldToParse(field);
+        return FieldGenerators.createFor(fieldToParse, jsOutput);
+    }
+
+    private static FieldToParse fieldToParse(FieldDescriptor field) {
+        return new FieldToParse(field, "inputVar", "outputVar");
     }
 }

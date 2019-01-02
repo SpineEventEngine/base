@@ -26,9 +26,9 @@ import io.spine.js.generate.JsCodeGenerator;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.parse.FieldToParse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
@@ -49,17 +49,15 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     @VisibleForTesting
     static final String FIELD_VALUE = "value";
 
-    private final FieldDescriptor field;
+    private final FieldToParse field;
     private final FieldPrecondition precondition;
     private final FieldParser parser;
-    private final String targetVariable;
 
     FieldGenerator(Builder builder) {
         super(builder.jsOutput);
         this.field = builder.field;
         this.precondition = builder.precondition;
         this.parser = builder.parser;
-        this.targetVariable = builder.targetVariable;
     }
 
     /**
@@ -69,9 +67,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      * @return the field value as parsed from the JSON
      */
     String acquireFieldValue() {
-        String fieldJsonName = field.getJsonName();
-        String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
-        return jsObject;
+        return field.value();
     }
 
     /**
@@ -94,14 +90,14 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     }
 
     FieldDescriptor field() {
-        return field;
+        return field.descriptor();
     }
 
     /**
      * Obtains the name of the variable to set the field value on.
      */
     String targetVariable() {
-        return targetVariable;
+        return field.messageVariable();
     }
 
     /**
@@ -139,13 +135,12 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      */
     abstract static class Builder<B extends Builder<B>> {
 
-        private FieldDescriptor field;
+        private FieldToParse field;
         private FieldPrecondition precondition;
         private FieldParser parser;
         private CodeLines jsOutput;
-        private String targetVariable;
 
-        B setField(FieldDescriptor field) {
+        B setField(FieldToParse field) {
             this.field = checkNotNull(field);
             return self();
         }
@@ -162,14 +157,6 @@ public abstract class FieldGenerator extends JsCodeGenerator {
 
         B setJsOutput(CodeLines jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
-            return self();
-        }
-
-        /**
-         * Specifies the variable name to set the parsed field for.
-         */
-        B setTargetVariable(String targetVariable) {
-            this.targetVariable = checkNotNull(targetVariable);
             return self();
         }
 
