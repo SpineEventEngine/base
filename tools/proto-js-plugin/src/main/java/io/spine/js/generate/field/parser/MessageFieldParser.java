@@ -23,10 +23,11 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 
 /**
  * The value parser for the proto fields of {@code message} type.
@@ -37,9 +38,9 @@ import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
 final class MessageFieldParser implements FieldParser {
 
     private final TypeName typeName;
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
-    private MessageFieldParser(TypeName typeName, JsOutput jsOutput) {
+    private MessageFieldParser(TypeName typeName, CodeLines jsOutput) {
         this.typeName = typeName;
         this.jsOutput = jsOutput;
     }
@@ -52,7 +53,7 @@ final class MessageFieldParser implements FieldParser {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    static MessageFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static MessageFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor messageType = field.getMessageType();
@@ -70,7 +71,11 @@ final class MessageFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String recursiveCall = typeName.value() + '.' + FROM_OBJECT + '(' + value + ')';
-        jsOutput.declareVariable(variable, recursiveCall);
+        jsOutput.append(parsedVariable(variable, value));
+    }
+
+    private VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String recursiveCall = typeName.value() + '.' + FROM_OBJECT + '(' + valueToParse + ')';
+        return VariableDeclaration.initialized(name, recursiveCall);
     }
 }

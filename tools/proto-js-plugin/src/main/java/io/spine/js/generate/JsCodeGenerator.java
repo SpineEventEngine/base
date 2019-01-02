@@ -20,21 +20,23 @@
 
 package io.spine.js.generate;
 
+import io.spine.js.generate.output.CodeLines;
+
 /**
- * The common base for JavaScript code generators which operate on the {@link JsOutput}.
+ * The common base for JavaScript code generators which operate on the {@link io.spine.js.generate.output.CodeLines}.
  */
 public abstract class JsCodeGenerator {
 
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
-    protected JsCodeGenerator(JsOutput jsOutput) {
+    protected JsCodeGenerator(CodeLines jsOutput) {
         this.jsOutput = jsOutput;
     }
 
     /**
      * The {@code JsOutput} which accumulates all the generated code.
      */
-    protected JsOutput jsOutput() {
+    protected CodeLines jsOutput() {
         return jsOutput;
     }
 

@@ -23,10 +23,9 @@ package io.spine.tools.compiler.annotation;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
+import io.spine.code.generate.GeneratedBySpine;
 
 import javax.annotation.Generated;
-
-import static io.spine.code.Generation.compilerAnnotation;
 
 /**
  * A factory for Java annotation specs.
@@ -35,8 +34,8 @@ public final class Annotations {
 
     private static final AnnotationSpec GENERATED =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(compilerAnnotation().getFieldName(),
-                                     CodeBlock.of(compilerAnnotation().getCodeBlock()))
+                          .addMember(GeneratedBySpine.instance().getFieldName(),
+                                     CodeBlock.of(GeneratedBySpine.instance().getCodeBlock()))
                           .build();
 
     private static final AnnotationSpec CAN_IGNORE_RETURN_VALUE =

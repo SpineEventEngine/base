@@ -20,7 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import org.gradle.api.Project;
@@ -158,7 +158,12 @@ public class Extension {
     }
 
     public static String getMainProtoSrcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
+        Logger log = log();
+        Extension extension = spineProtobuf(project);
+        log.debug("Extension is {}", extension);
+        String protoDir = extension.mainProtoSrcDir;
+        log.debug("modelCompiler.mainProtoSrcDir is {}", protoDir);
+        return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
     }

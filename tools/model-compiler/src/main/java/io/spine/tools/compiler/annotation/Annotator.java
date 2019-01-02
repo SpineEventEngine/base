@@ -255,12 +255,13 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      * @param source
      *         the program element to annotate
      */
-    protected final void addAnnotation(AnnotationTargetSource source) {
-        if (source.getAnnotation(annotation) != null) {
+    protected final void addAnnotation(AnnotationTargetSource<?, ?> source) {
+        AnnotationSource<?> annotation = source.getAnnotation(this.annotation);
+        if (annotation != null) {
             return;
         }
 
-        String annotationFQN = annotation.getCanonicalName();
+        String annotationFQN = this.annotation.getCanonicalName();
         AnnotationSource newAnnotation = source.addAnnotation();
         newAnnotation.setName(annotationFQN);
     }

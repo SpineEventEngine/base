@@ -20,8 +20,10 @@
 
 package io.spine.tools.compiler.validation;
 
-import io.spine.code.Indent;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.generate.Indent;
 import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +39,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("VBuilderCode should")
+@DisplayName("VBuilderCode should generate code for")
 class VBuilderCodeTest {
 
     private File targetDir;
@@ -48,26 +50,36 @@ class VBuilderCodeTest {
     }
 
     @Nested
-    @DisplayName("generate code for top-level message")
+    @DisplayName("top-level message")
     class TopLevel {
 
         @Test
         @DisplayName("with message fields")
         void messageFields() {
-            MessageType type = MessageType.of(VbtProject.getDescriptor());
-            assertGeneratesFor(type);
+            assertGeneratesFor(VbtProject.getDescriptor());
         }
 
         @Test
         @DisplayName("with scalar fields")
         void scalarFields() {
-            MessageType type = MessageType.of(VbtScalarFields.getDescriptor());
-            assertGeneratesFor(type);
+            assertGeneratesFor(VbtScalarFields.getDescriptor());
         }
 
     }
 
-    private void assertGeneratesFor(MessageType type) {
+    @Nested
+    @DisplayName("a message nested into another message")
+    class NestedSecondLevel {
+
+        @Test
+        @DisplayName("2nd level")
+        void doSomething() {
+            assertGeneratesFor(VbtProcess.Point.getDescriptor());
+        }
+    }
+
+    private void assertGeneratesFor(Descriptor descriptor) {
+        MessageType type = MessageType.of(descriptor);
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
         File file = code.write();
         assertTrue(file.exists());

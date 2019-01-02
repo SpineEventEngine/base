@@ -21,7 +21,7 @@
 package io.spine.js.generate.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 
@@ -52,7 +52,7 @@ public final class FieldGenerators {
      *         the {@code JsOutput} to accumulate all the generated code
      * @return the new {@code FieldGenerator} of the appropriate type
      */
-    public static FieldGenerator createFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldGenerator createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMap(field)) {
@@ -78,7 +78,7 @@ public final class FieldGenerators {
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
-    private static FieldGenerator mapGenerator(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldGenerator mapGenerator(FieldDescriptor field, CodeLines jsOutput) {
         FieldParser keyParser = mapKeyParser(field, jsOutput);
         FieldParser valueParser = mapValueParser(field, jsOutput);
         FieldPrecondition valuePrecondition = mapValuePrecondition(field, jsOutput);
@@ -97,7 +97,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain RepeatedFieldGenerator generator} for the {@code repeated} proto field.
      */
-    private static FieldGenerator repeatedGenerator(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldGenerator repeatedGenerator(FieldDescriptor field, CodeLines jsOutput) {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
@@ -114,7 +114,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain SingularFieldGenerator generator} for the ordinary proto field.
      */
-    private static FieldGenerator singularGenerator(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldGenerator singularGenerator(FieldDescriptor field, CodeLines jsOutput) {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
@@ -132,7 +132,7 @@ public final class FieldGenerators {
      * Creates a {@code FieldPrecondition} for the value of the map field.
      */
     private static FieldPrecondition
-    mapValuePrecondition(FieldDescriptor field, JsOutput jsOutput) {
+    mapValuePrecondition(FieldDescriptor field, CodeLines jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldPrecondition precondition = preconditionFor(valueDescriptor, jsOutput);
         return precondition;
@@ -141,7 +141,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldParser} for the key of the map field.
      */
-    private static FieldParser mapKeyParser(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldParser mapKeyParser(FieldDescriptor field, CodeLines jsOutput) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
         FieldParser parser = parserFor(keyDescriptor, jsOutput);
         return parser;
@@ -150,7 +150,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldParser} for the value of the map field.
      */
-    private static FieldParser mapValueParser(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldParser mapValueParser(FieldDescriptor field, CodeLines jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldParser parser = parserFor(valueDescriptor, jsOutput);
         return parser;

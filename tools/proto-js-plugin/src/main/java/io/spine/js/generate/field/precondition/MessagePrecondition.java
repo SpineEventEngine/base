@@ -22,7 +22,7 @@ package io.spine.js.generate.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class MessagePrecondition implements FieldPrecondition {
 
     private final FieldDescriptor field;
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
     /**
      * Creates a new {@code MessagePrecondition} for the given {@code field}.
@@ -42,7 +42,7 @@ final class MessagePrecondition implements FieldPrecondition {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all generated code
      */
-    MessagePrecondition(FieldDescriptor field, JsOutput jsOutput) {
+    MessagePrecondition(FieldDescriptor field, CodeLines jsOutput) {
         this.field = field;
         this.jsOutput = jsOutput;
     }
@@ -67,7 +67,7 @@ final class MessagePrecondition implements FieldPrecondition {
         }
         jsOutput.ifNull(value);
         String mergeNull = String.format(mergeFieldFormat, "null");
-        jsOutput.addLine(mergeNull);
+        jsOutput.append(mergeNull);
         jsOutput.enterElseBlock();
     }
 

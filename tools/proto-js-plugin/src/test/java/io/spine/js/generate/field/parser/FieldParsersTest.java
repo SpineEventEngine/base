@@ -22,26 +22,26 @@ package io.spine.js.generate.field.parser;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.field.given.Given.enumField;
+import static io.spine.js.generate.field.given.Given.messageField;
+import static io.spine.js.generate.field.given.Given.primitiveField;
+import static io.spine.js.generate.field.given.Given.timestampField;
 import static io.spine.js.generate.field.parser.FieldParser.parserFor;
-import static io.spine.js.generate.given.Given.enumField;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.primitiveField;
-import static io.spine.js.generate.given.Given.timestampField;
 
 @DisplayName("FieldParsers utility should")
 class FieldParsersTest  {
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test
