@@ -77,8 +77,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                                                     String descriptorSetPath) {
         return task -> {
             File descriptorSet = new File(descriptorSetPath);
-            Project project = task.getProject();
-            FileDescriptorSuperset superset = new FileDescriptorSuperset(archive -> project.zipTree(archive).getFiles());
+            FileDescriptorSuperset superset = new FileDescriptorSuperset();
             configuration.forEach(superset::addFromDependency);
             if (descriptorSet.exists()) {
                 superset.addFromDependency(descriptorSet);

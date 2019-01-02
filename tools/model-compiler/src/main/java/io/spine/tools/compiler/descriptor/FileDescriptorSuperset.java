@@ -24,24 +24,22 @@ import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.archive.ArchiveFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.google.common.io.ByteStreams.readFully;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.option.Options.registry;
+import static io.spine.tools.compiler.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toSet;
@@ -51,19 +49,12 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class FileDescriptorSuperset implements Logging {
 
-    private final ArchiveUnpacker fullUnpacker;
-
     private final Collection<FileDescriptorSet> descriptors;
 
     /**
      * Creates a new instance of {@code FileDescriptorSuperset}.
-     *
-     * @param unpacker
-     *         an {@link ArchiveUnpacker} to tackle archive files which cannot be comprehended
-     *         via their ZIP tree
      */
-    public FileDescriptorSuperset(ArchiveUnpacker unpacker) {
-        this.fullUnpacker = checkNotNull(unpacker);
+    public FileDescriptorSuperset() {
         this.descriptors = newLinkedList();
     }
 
@@ -92,7 +83,7 @@ public final class FileDescriptorSuperset implements Logging {
         log().debug("Merging descriptors from `{}`.", file);
         if (file.isDirectory()) {
             return mergeDirectory(file);
-        } else if (ZipArchiveExtension.anyMatch(file)) {
+        } else if (isArchive(file)) {
             return readFromArchive(file);
         } else {
             return readFromPlainFile(file);
@@ -114,58 +105,10 @@ public final class FileDescriptorSuperset implements Logging {
         }
     }
 
-    private Optional<FileDescriptorSet> readFromArchive(File archive) {
-        try (
-                FileInputStream fileStream = new FileInputStream(archive);
-                ZipInputStream stream = new ZipInputStream(fileStream)
-        ) {
-            return readFromArchive(stream, archive);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
-
-    private Optional<FileDescriptorSet> readFromArchive(ZipInputStream stream, File archive)
-            throws IOException {
-        for (ZipEntry entry = stream.getNextEntry();
-             entry != null;
-             entry = stream.getNextEntry()) {
-            if (KNOWN_TYPES.equals(entry.getName())) {
-                log().debug("Merging ZIP entry `{}` of size: {}.", entry, entry.getSize());
-                return readFromEntry(entry, stream, archive);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<FileDescriptorSet> readFromEntry(ZipEntry entry, ZipInputStream stream,
-                                                      File archive)
-            throws IOException {
-        @SuppressWarnings("NumericCastThatLosesPrecision") // The expected file should fit.
-        int size = (int) entry.getSize();
-        if (size < 0) { // Cannot read the entry size correctly.
-            return readFromArchiveByUnpacking(archive);
-        } else {
-            return Optional.of(readFromCurrentEntry(stream, size));
-        }
-    }
-
-    private static FileDescriptorSet readFromCurrentEntry(ZipInputStream stream, int entrySize)
-            throws IOException {
-        byte[] buffer = new byte[entrySize];
-        readFully(stream, buffer);
-        FileDescriptorSet parsed = parseDescriptorSet(buffer);
-        return parsed;
-    }
-
-    private Optional<FileDescriptorSet> readFromArchiveByUnpacking(File archive) {
-        Optional<FileDescriptorSet> result = fullUnpacker
-                .unpack(archive)
-                .stream()
-                .filter(file -> KNOWN_TYPES.equals(file.getName()))
-                .findAny()
-                .map(FileDescriptorSuperset::read);
-        return result;
+    private static Optional<FileDescriptorSet> readFromArchive(File archiveFile) {
+        ArchiveFile archive = ArchiveFile.from(archiveFile);
+        return archive.findEntry(KNOWN_TYPES)
+                      .map(entry -> parseDescriptorSet(entry.bytes()));
     }
 
     private static FileDescriptorSet read(File file) {

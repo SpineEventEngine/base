@@ -18,22 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.descriptor;
+package io.spine.tools.compiler.archive;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.Arrays;
 
-/**
- * Unpacks {@code ZIP} archive files.
- */
-public interface ArchiveUnpacker {
+public final class ArchiveEntry {
 
-    /**
-     * Unpacks the given {@code archive} onto the disk.
-     *
-     * @param archive
-     *         a {@code ZIP} archive file
-     * @return a collection of the unpacked files
-     */
-    Collection<File> unpack(File archive);
+    private final byte[] bytes;
+
+    private ArchiveEntry(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    public static ArchiveEntry of(byte[] bytes) {
+        byte[] copiedBytes = Arrays.copyOf(bytes, bytes.length);
+        return new ArchiveEntry(copiedBytes);
+    }
+
+    public byte[] bytes() {
+        return Arrays.copyOf(bytes, bytes.length);
+    }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.descriptor;
+package io.spine.tools.compiler.archive;
 
 import java.io.File;
 import java.util.Optional;
