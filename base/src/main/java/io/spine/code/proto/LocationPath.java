@@ -39,7 +39,7 @@ import static java.lang.String.format;
  * <p>A location path represents {@linkplain Location#getPathList() list of
  * integers}, that used to identify a {@linkplain Location location} in a ".proto" file.
  */
-public class LocationPath {
+final class LocationPath {
 
     private final List<Integer> path;
 
@@ -64,7 +64,7 @@ public class LocationPath {
      */
     @SuppressWarnings("unused")
         // Included for future use and being able to reference `Location` in Javadoc directly.
-    public LocationPath(Location location) {
+    LocationPath(Location location) {
         this(location.getPathList());
     }
 
@@ -73,7 +73,7 @@ public class LocationPath {
      *
      * @param pathItem the path item
      */
-    public void add(Integer pathItem) {
+    void add(Integer pathItem) {
         checkPathItem(pathItem);
         path.add(pathItem);
     }
@@ -83,9 +83,14 @@ public class LocationPath {
      *
      * @param locationPath the location path
      */
-    public void addAll(LocationPath locationPath) {
+    void addAll(LocationPath locationPath) {
         checkNotNull(locationPath);
         path.addAll(checkPath(locationPath.path));
+    }
+
+    void addAll(List<Integer> path) {
+        checkNotNull(path);
+        path.addAll(checkPath(path));
     }
 
     @VisibleForTesting
