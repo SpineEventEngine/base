@@ -32,8 +32,6 @@ import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
-import static io.spine.js.generate.parse.Parser.PARSE_METHOD;
-import static java.lang.String.format;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
@@ -109,7 +107,7 @@ public final class FromJsonMethod implements Snippet {
         String parserVariable = "parser";
         VariableDeclaration newParser =
                 VariableDeclaration.newInstance(parserVariable, parser.typeName());
-        String callParser = format("%s.%s(%s)", parserVariable, PARSE_METHOD, parameterName);
+        String callParser = Parser.parseMethodCall(parserVariable, parameterName);
         return Method
                 .newBuilder(reference)
                 .withParameters(parameterName)

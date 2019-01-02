@@ -81,6 +81,14 @@ class ParserTest {
         assertParseMethod(lines, message);
     }
 
+    @Test
+    @DisplayName("allow to call the parse object method")
+    void callParseObjectMethod() {
+        String call = Parser.parseMethodCall("someParser", "{}");
+        String expected = "someParser.fromObject({})";
+        assertThat(call).isEqualTo(expected);
+    }
+
     private static void assertCtorDeclaration(CodeLines lines, Descriptor message) {
         String expected = expectedParserName(message) + " = function() {" + lineSeparator()
                 + "  ObjectParser.call(this);" + lineSeparator()

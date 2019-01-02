@@ -38,8 +38,7 @@ import static io.spine.js.generate.field.given.Given.timestampField;
 import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.Parser.PARSE_METHOD;
-import static java.lang.String.format;
+import static io.spine.js.generate.parse.Parser.parseMethodCall;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
@@ -128,8 +127,7 @@ class FieldParserTest {
     void parseWellKnown() {
         FieldParser parser = parserFor(timestampField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        String expectedStatement = format("let %s = parser.%s(%s);",
-                                          VARIABLE, PARSE_METHOD, VALUE);
+        String expectedStatement = "let " + VARIABLE + " = " + parseMethodCall(VARIABLE, VALUE);
         assertContains(jsOutput, expectedStatement);
     }
 }

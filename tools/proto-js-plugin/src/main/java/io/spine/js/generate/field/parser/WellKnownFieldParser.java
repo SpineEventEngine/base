@@ -25,12 +25,11 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
 import io.spine.js.generate.parse.ExportStandardParsers;
+import io.spine.js.generate.parse.Parser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.parse.ParseMethodsSnippet.PARSERS_IMPORT_NAME;
-import static io.spine.js.generate.parse.Parser.PARSE_METHOD;
-import static java.lang.String.format;
 
 /**
  * The value parser for the proto fields of well-known {@code message} types.
@@ -88,7 +87,7 @@ final class WellKnownFieldParser implements FieldParser {
     }
 
     private static VariableDeclaration parsedVariable(String name, String valueToParse) {
-        String initializer = format("%s.%s(%s)", PARSER_VARIABLE, PARSE_METHOD, valueToParse);
+        String initializer = Parser.parseMethodCall(PARSER_VARIABLE, valueToParse);
         return VariableDeclaration.initialized(name, initializer);
     }
 }
