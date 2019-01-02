@@ -18,32 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.validation;
+/**
+ * Contains classes working with Java fields generated from Protobuf.
+ */
 
-import com.google.common.collect.ImmutableList;
-import com.squareup.javapoet.MethodSpec;
-import io.spine.code.proto.MessageType;
-import io.spine.test.tools.validation.builder.VbtProject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.field;
 
-import static com.google.common.truth.Truth.assertThat;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("VBuilderMethods should")
-class VBuilderMethodsTest {
-
-    @Nested
-    @DisplayName("collect methods of")
-    class CollectMethods {
-
-        @Test
-        @DisplayName("a top level message")
-        void topLevelMessage() {
-            MessageType type = MessageType.of(VbtProject.getDescriptor());
-
-            ImmutableList<MethodSpec> specs = VBuilderMethods.methodsOf(type);
-            assertThat(specs).isNotEmpty();
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
