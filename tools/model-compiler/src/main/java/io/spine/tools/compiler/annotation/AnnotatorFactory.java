@@ -22,15 +22,17 @@ package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.code.proto.FileDescriptors;
+import io.spine.code.proto.FileSet;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -39,7 +41,6 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.code.proto.FileDescriptors.parseSkipGoogle;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -53,6 +54,7 @@ import static io.spine.option.OptionsProto.sPI;
 import static io.spine.option.OptionsProto.sPIAll;
 import static io.spine.option.OptionsProto.sPIService;
 import static io.spine.option.OptionsProto.sPIType;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A factory for {@linkplain Annotator Annotators}.
@@ -62,7 +64,7 @@ public final class AnnotatorFactory {
     /**
      * Protobuf file descriptors to process.
      */
-    private final ImmutableList<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptor> fileDescriptors;
 
     /**
      * An absolute path to the Java sources directory,
@@ -76,7 +78,7 @@ public final class AnnotatorFactory {
      */
     private final String genGrpcDir;
 
-    private AnnotatorFactory(Collection<FileDescriptorProto> fileDescriptors,
+    private AnnotatorFactory(Collection<FileDescriptor> fileDescriptors,
                              String genProtoDir,
                              String genGrpcDir) {
         checkNotNull(fileDescriptors);
@@ -90,7 +92,12 @@ public final class AnnotatorFactory {
     public static void process(File descriptorSetFile,
                                String generatedProtoDir,
                                String generatedGrpcDir) {
-        Collection<FileDescriptorProto> descriptors = parseSkipGoogle(descriptorSetFile);
+        Collection<FileDescriptor> descriptors = FileSet
+                .parse(descriptorSetFile)
+                .files()
+                .stream()
+                .filter(FileDescriptors::isNotGoogle)
+                .collect(toSet());
         AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 
