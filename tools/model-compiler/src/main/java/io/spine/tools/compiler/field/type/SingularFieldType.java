@@ -44,12 +44,13 @@ public final class SingularFieldType implements FieldType {
 
     private static final String BYTES = "Bytes";
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS = ImmutableSet.of(
-            prefix("has"),
-            getter(),
-            setter(),
-            clearer()
-    );
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    prefix("has"),
+                    getter(),
+                    setter(),
+                    clearer()
+            );
 
     private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
             ImmutableSet.of(
@@ -80,9 +81,9 @@ public final class SingularFieldType implements FieldType {
     public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
         return javaType == STRING
              ? ImmutableSet.<AccessorTemplate>builder()
-                       .addAll(GENERATED_ACCESSORS)
-                       .addAll(GENERATED_STRING_ACCESSORS)
-                       .build()
+                           .addAll(GENERATED_ACCESSORS)
+                           .addAll(GENERATED_STRING_ACCESSORS)
+                           .build()
              : GENERATED_ACCESSORS;
     }
 

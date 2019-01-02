@@ -44,15 +44,16 @@ import static io.spine.tools.compiler.field.AccessorTemplates.setter;
  */
 public final class RepeatedFieldType implements FieldType {
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS = ImmutableSet.of(
-            getter(),
-            listGetter(),
-            countGetter(),
-            setter(),
-            adder(),
-            allAdder(),
-            clearer()
-    );
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    getter(),
+                    listGetter(),
+                    countGetter(),
+                    setter(),
+                    adder(),
+                    allAdder(),
+                    clearer()
+            );
 
     private final TypeName typeName;
 
@@ -77,8 +78,8 @@ public final class RepeatedFieldType implements FieldType {
     }
 
     /**
-     * Returns "addAll" setter prefix,
-     * used to initialize a repeated field using with a call to Protobuf message builder.
+     * Returns "addAll" setter prefix, used to initialize a repeated field using with a call to
+     * Protobuf message builder.
      */
     @Override
     public AccessorTemplate primarySetterTemplate() {

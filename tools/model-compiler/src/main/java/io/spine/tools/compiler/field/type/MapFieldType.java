@@ -48,18 +48,19 @@ import static io.spine.tools.compiler.field.AccessorTemplates.remover;
  */
 public final class MapFieldType implements FieldType {
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS = ImmutableSet.of(
-            getter(),
-            countGetter(),
-            mapGetter(),
-            prefixAndPostfix("get", "OrDefault"),
-            prefixAndPostfix("get", "OrThrow"),
-            prefix("contains"),
-            clearer(),
-            putter(),
-            remover(),
-            allPutter()
-    );
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    getter(),
+                    countGetter(),
+                    mapGetter(),
+                    prefixAndPostfix("get", "OrDefault"),
+                    prefixAndPostfix("get", "OrThrow"),
+                    prefix("contains"),
+                    clearer(),
+                    putter(),
+                    remover(),
+                    allPutter()
+            );
 
     private final TypeName typeName;
     private final TypeName keyTypeName;
