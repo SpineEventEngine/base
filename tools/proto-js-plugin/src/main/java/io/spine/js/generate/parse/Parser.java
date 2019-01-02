@@ -69,12 +69,10 @@ public class Parser implements Snippet {
 
     /** The message to generate the parser for. */
     private final Descriptor message;
-    private final TypeName messageName;
 
     Parser(Descriptor message) {
         checkNotNull(message);
         this.message = message;
-        this.messageName = TypeName.from(message);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class Parser implements Snippet {
      * Obtains the type of the parser to be generated.
      */
     TypeName typeName() {
-        return TypeName.of(messageName + "Parser");
+        return TypeName.ofParser(message);
     }
 
     private Method constructor() {
@@ -129,7 +127,7 @@ public class Parser implements Snippet {
         lines.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(lines);
         lines.append(emptyLine());
-        lines.append(initializedMessageInstance(messageName));
+        lines.append(initializedMessageInstance(message));
         handleMessageFields(lines, message);
         lines.append(Return.value(MESSAGE));
         lines.exitMethod();
@@ -145,7 +143,8 @@ public class Parser implements Snippet {
         output.exitBlock();
     }
 
-    private static VariableDeclaration initializedMessageInstance(TypeName typeName) {
+    private static VariableDeclaration initializedMessageInstance(Descriptor message) {
+        TypeName typeName = TypeName.from(message);
         return VariableDeclaration.newInstance(MESSAGE, typeName);
     }
 

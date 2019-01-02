@@ -20,6 +20,7 @@
 
 package io.spine.code.js;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.value.StringTypeValue;
 
@@ -54,10 +55,12 @@ public final class TypeName extends StringTypeValue {
     }
 
     /**
-     * Obtains the type name with the specified value.
+     * Obtains the type name of the parser of the specified message.
      */
-    public static TypeName of(String value) {
-        checkNotNull(value);
-        return new TypeName(value);
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
+    public static TypeName ofParser(Descriptor message) {
+        checkNotNull(message);
+        TypeName messageType = from(message);
+        return new TypeName(messageType + "Parser");
     }
 }

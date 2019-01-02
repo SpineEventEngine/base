@@ -76,7 +76,7 @@ class FromJsonMethodTest {
                                    .value();
         String expected =
                 messageType + "." + FROM_OBJECT + " = function(obj) {" + newLine() +
-                        "  let parser = new " + expectedParser().typeName() + "();" + newLine() +
+                        "  let parser = new " + TypeName.ofParser(message) + "();" + newLine() +
                         "  return parser.fromObject(obj);" + newLine() +
                         "};";
         assertContains(lines, expected);
@@ -86,13 +86,9 @@ class FromJsonMethodTest {
     @DisplayName("generate a message parser")
     void checkJsObjectForNull() {
         CodeLines lines = generator.value();
-        String expected = expectedParser().value()
-                                          .toString();
+        String expected = new Parser(message).value()
+                                             .toString();
         assertContains(lines, expected);
-    }
-
-    private Parser expectedParser() {
-        return new Parser(message);
     }
 
     private static String newLine() {

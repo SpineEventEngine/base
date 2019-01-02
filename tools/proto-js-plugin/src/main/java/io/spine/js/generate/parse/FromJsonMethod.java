@@ -121,7 +121,7 @@ public final class FromJsonMethod implements Snippet {
     /**
      * Obtains {@code fromJson} method for the specified message.
      *
-     * The {@code fromJson} parses the JSON string via the {@code JSON.parse}
+     * <p>The {@code fromJson} parses the JSON string via the {@code JSON.parse}
      * functionality and then calls {@code fromObject} for the parsed JS object.
      */
     @VisibleForTesting

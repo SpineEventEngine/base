@@ -57,4 +57,11 @@ class TypeNameTest {
         String expected = "proto.google.protobuf.Syntax";
         assertEquals(expected, typeName.value());
     }
+
+    @Test
+    @DisplayName("provide a name for a message parser")
+    void messageParserName() {
+        TypeName anyParser = TypeName.ofParser(Any.getDescriptor());
+        assertEquals("proto.google.protobuf.AnyParser", anyParser.value());
+    }
 }
