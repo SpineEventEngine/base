@@ -66,17 +66,22 @@ public final class VBuilderClassName {
 
     private SimpleClassName get() {
         if (type.isTopLevel()) {
-            SimpleClassName result = type.javaClassName().toSimple().with(VBUILDER_SUFFIX);
+            SimpleClassName result = type.javaClassName()
+                                         .toSimple()
+                                         .with(VBUILDER_SUFFIX);
             return result;
         }
 
         // Nested: either with outer class, or with enclosing message, or both.
         Descriptor descriptor = type.descriptor();
-        String outerPrefix = outerClassPrefix(descriptor.getFile())
-                .replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
-        String enclosingPrefix = containingClassPrefix(descriptor.getContainingType())
-                .replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
+        String delimiter = String.valueOf(OUTER_CLASS_DELIMITER);
+        String outerPrefix =
+                outerClassPrefix(descriptor.getFile()).replace(delimiter, "");
+        String enclosingPrefix =
+                containingClassPrefix(descriptor.getContainingType()).replace(delimiter, "");
         String typeName = descriptor.getName();
-        return SimpleClassName.create(outerPrefix + enclosingPrefix + typeName + VBUILDER_SUFFIX);
+        SimpleClassName result =
+                SimpleClassName.create(outerPrefix + enclosingPrefix + typeName + VBUILDER_SUFFIX);
+        return result;
     }
 }
