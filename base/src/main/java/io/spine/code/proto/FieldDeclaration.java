@@ -36,7 +36,6 @@ import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -278,10 +277,7 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        @Nullable String leadingComments = fieldLeadingComments(field.toProto())
-                .orElse(null);
-
-        return Optional.ofNullable(leadingComments);
+        return fieldLeadingComments(field.toProto());
     }
 
     /**
@@ -323,8 +319,8 @@ public final class FieldDeclaration implements Logging {
 
     private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
         return message.descriptor()
-                          .toProto()
-                          .getFieldList()
-                          .indexOf(field);
+                      .toProto()
+                      .getFieldList()
+                      .indexOf(field);
     }
 }

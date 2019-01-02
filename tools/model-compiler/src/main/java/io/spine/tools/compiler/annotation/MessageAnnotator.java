@@ -20,9 +20,9 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.Options;
 
@@ -37,32 +37,32 @@ import java.util.Optional;
  * <p>Annotates generated top-level messages from a {@code .proto} file,
  * if a specified {@linkplain MessageOptions message option} value is {@code true}.
  */
-class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, DescriptorProto> {
+class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descriptor> {
 
     MessageAnnotator(Class<? extends Annotation> annotation,
                      GeneratedExtension<MessageOptions, Boolean> option,
-                     Collection<FileDescriptorProto> files,
+                     Collection<FileDescriptor> files,
                      String genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
     @Override
-    protected List<DescriptorProto> getDefinitions(FileDescriptorProto file) {
-        return file.getMessageTypeList();
+    protected List<Descriptor> getDefinitions(FileDescriptor file) {
+        return file.getMessageTypes();
     }
 
     @Override
-    protected String getDefinitionName(DescriptorProto definition) {
+    protected String getDefinitionName(Descriptor definition) {
         return definition.getName();
     }
 
     @Override
-    protected void annotateDefinition(DescriptorProto definition, FileDescriptorProto file) {
+    protected void annotateDefinition(Descriptor definition, FileDescriptor file) {
         annotateMessageTypes(definition, file);
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(DescriptorProto definition) {
+    protected Optional<Boolean> getOptionValue(Descriptor definition) {
         return Options.option(definition, getOption());
     }
 }

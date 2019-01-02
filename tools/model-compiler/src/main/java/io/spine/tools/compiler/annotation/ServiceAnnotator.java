@@ -20,9 +20,9 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
@@ -31,6 +31,8 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 
+import static io.spine.code.java.SourceFile.forService;
+
 /**
  * An annotator for {@code gRPC} services.
  *
@@ -38,43 +40,43 @@ import java.util.Optional;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
  */
-class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto> {
+class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptor> {
 
     ServiceAnnotator(Class<? extends Annotation> annotation,
                      GeneratedExtension<ServiceOptions, Boolean> option,
-                     Collection<FileDescriptorProto> fileDescriptors,
+                     Collection<FileDescriptor> fileDescriptors,
                      String genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 
     @Override
     public void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
+        for (FileDescriptor fileDescriptor : fileDescriptors()) {
             annotate(fileDescriptor);
         }
     }
 
     @Override
-    protected void annotateOneFile(FileDescriptorProto fileDescriptor) {
+    protected void annotateOneFile(FileDescriptor fileDescriptor) {
         annotateServices(fileDescriptor);
     }
 
     @Override
-    protected void annotateMultipleFiles(FileDescriptorProto fileDescriptor) {
+    protected void annotateMultipleFiles(FileDescriptor fileDescriptor) {
         annotateServices(fileDescriptor);
     }
 
-    private void annotateServices(FileDescriptorProto file) {
-        for (ServiceDescriptorProto serviceDescriptor : file.getServiceList()) {
+    private void annotateServices(FileDescriptor file) {
+        for (ServiceDescriptor serviceDescriptor : file.getServices()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
+                SourceFile serviceClass = forService(serviceDescriptor.toProto(), file.toProto());
                 annotate(serviceClass);
             }
         }
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(ServiceDescriptorProto descriptor) {
+    protected Optional<Boolean> getOptionValue(ServiceDescriptor descriptor) {
         return Options.option(descriptor, getOption());
     }
 }

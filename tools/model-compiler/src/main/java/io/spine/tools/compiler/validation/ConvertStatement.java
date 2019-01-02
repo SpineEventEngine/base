@@ -29,8 +29,6 @@ import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;
 
 /**
  * A statement to convert a {@linkplain String raw} value.
- *
- * @see io.spine.validate.AbstractValidatingBuilder#convert(String, Class)
  */
 final class ConvertStatement {
 
