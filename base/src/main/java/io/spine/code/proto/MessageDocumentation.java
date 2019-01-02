@@ -124,10 +124,10 @@ public final class MessageDocumentation implements Logging {
             }
         }
 
-        String msg = format("Unable to locate message `%s` in the file file `%s`.",
+        String msg = format("Unable to locate message `%s` in the file `%s`.",
                             descriptor.toProto()
                                       .getName(),
-                            descriptor.toProto()
+                            descriptor.getFile()
                                       .getName()
         );
         throw new IllegalStateException(msg);
