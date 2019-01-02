@@ -140,7 +140,7 @@ build.doLast {
 }
 
 task cleanGenerated(type: Delete) {
-    delete = files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", buildersDir)
+    delete files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", buildersDir)
 }
 
 clean.dependsOn cleanGenerated
