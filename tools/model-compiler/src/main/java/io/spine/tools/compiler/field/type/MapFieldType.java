@@ -20,30 +20,58 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
+import java.util.AbstractMap;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplates.allPutter;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.countGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.mapGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.putter;
+import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 
 /**
  * Represents map {@linkplain FieldType field type}.
  */
-public class MapFieldType implements FieldType {
+public final class MapFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "putAll";
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    getter(),
+                    countGetter(),
+                    mapGetter(),
+                    prefixAndPostfix("get", "OrDefault"),
+                    prefixAndPostfix("get", "OrThrow"),
+                    prefix("contains"),
+                    clearer(),
+                    putter(),
+                    remover(),
+                    allPutter()
+            );
 
     private final TypeName typeName;
     private final TypeName keyTypeName;
     private final TypeName valueTypeName;
 
     /**
-     * Constructs the {@link MapFieldType} based on
-     * the key and the value type names.
-     *
-     * @param entryTypeNames the entry containing the key and the value type names.
+     * Constructs the new instance based on the key and the value type names.
      */
-    MapFieldType(Map.Entry<TypeName, TypeName> entryTypeNames) {
+    MapFieldType(FieldDeclaration field) {
+        Map.Entry<TypeName, TypeName> entryTypeNames = getEntryTypeNames(field);
+
         this.keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
         this.valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
         this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
@@ -51,9 +79,6 @@ public class MapFieldType implements FieldType {
                                                   valueTypeName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
@@ -73,11 +98,16 @@ public class MapFieldType implements FieldType {
      *
      * <p>Call should be like `builder.putAllFieldName({@link Map})`.
      *
-     * @return {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return allPutter();
+    }
+
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return GENERATED_ACCESSORS;
     }
 
     private static TypeName boxIfPrimitive(TypeName typeName) {
@@ -91,5 +121,31 @@ public class MapFieldType implements FieldType {
     @Override
     public String toString() {
         return typeName.toString();
+    }
+
+    /**
+     * Returns the key and the value type names for the map field
+     * based on the passed nested types.
+     */
+    private static Map.Entry<TypeName, TypeName> getEntryTypeNames(FieldDeclaration mapField) {
+        checkArgument(mapField.isMap());
+
+        int keyFieldIndex = 0;
+        int valueFieldIndex = 1;
+
+        Descriptor mapEntry = mapField.descriptor()
+                                      .getMessageType();
+
+        FieldDescriptor keyField = mapEntry.getFields()
+                                           .get(keyFieldIndex);
+        FieldDescriptor valueField = mapEntry.getFields()
+                                             .get(valueFieldIndex);
+
+        TypeName keyTypeName = FieldType.of(new FieldDeclaration(keyField))
+                                        .getTypeName();
+        TypeName valueTypeName = FieldType.of(new FieldDeclaration(valueField))
+                                          .getTypeName();
+
+        return new AbstractMap.SimpleEntry<>(keyTypeName, valueTypeName);
     }
 }

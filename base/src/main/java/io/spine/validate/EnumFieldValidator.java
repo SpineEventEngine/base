@@ -30,13 +30,11 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    EnumFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext,
-              FieldValidator.<EnumValueDescriptor>toValueList(fieldValues),
-              false);
+    EnumFieldValidator(FieldValue fieldValue) {
+        super(fieldValue, false, true);
     }
 
     @Override

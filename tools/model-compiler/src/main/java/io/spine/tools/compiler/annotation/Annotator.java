@@ -21,9 +21,10 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,7 +45,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.java.SourceFile.forMessage;
+import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.Files.exists;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
@@ -59,11 +63,12 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * <p>Depending on the option type, an annotator manages a corresponding Protobuf descriptor
  * (e.g. {@code FileDescriptorProto} for {@code FileOptions}).
  *
- * @param <O> the type of Protobuf option, which is managed by the annotator
- * @param <D> the proto descriptor type used to receive {@link #option} value
- * @author Dmytro Grankin
+ * @param <O>
+ *         the type of Protobuf option, which is managed by the annotator
+ * @param <D>
+ *         the proto descriptor type used to receive {@link #option} value
  */
-public abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessageV3> {
+public abstract class Annotator<O extends ExtendableMessage, D extends GenericDescriptor> {
 
     /**
      * An annotation class.
@@ -80,7 +85,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     /**
      * Protobuf file descriptors to process.
      */
-    private final ImmutableList<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptor> fileDescriptors;
 
     /**
      * An absolute path to the Java sources, generated basing on {@link #fileDescriptors}.
@@ -89,7 +94,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     protected Annotator(Class<? extends Annotation> annotation,
                         GeneratedExtension<O, Boolean> option,
-                        Collection<FileDescriptorProto> fileDescriptors,
+                        Collection<FileDescriptor> fileDescriptors,
                         String genProtoDir) {
         this.annotation = checkNotNull(annotation);
         this.option = checkNotNull(option);
@@ -97,8 +102,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         this.genProtoDir = checkNotNull(genProtoDir);
     }
 
-    @SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK to return immutable impl.
-    protected Iterable<FileDescriptorProto> fileDescriptors() {
+    protected Iterable<FileDescriptor> fileDescriptors() {
         return fileDescriptors;
     }
 
@@ -111,8 +115,9 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     /**
      * Annotates the Java sources generated from the specified file descriptor.
      */
-    protected final void annotate(FileDescriptorProto fileDescriptor) {
-        if (fileDescriptor.getOptions().getJavaMultipleFiles()) {
+    protected final void annotate(FileDescriptor fileDescriptor) {
+        if (fileDescriptor.getOptions()
+                          .getJavaMultipleFiles()) {
             annotateMultipleFiles(fileDescriptor);
         } else {
             annotateOneFile(fileDescriptor);
@@ -121,27 +126,28 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
-     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#getJavaMultipleFiles()
-     * FileOptions#getJavaMultipleFiles()} is {@code false}.
+     * if {@code java_multiple_files} proto file option is set to {@code false}.
      *
-     * @param fileDescriptor the file descriptor
+     * @param fileDescriptor
+     *         the file descriptor
      */
-    protected abstract void annotateOneFile(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateOneFile(FileDescriptor fileDescriptor);
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
-     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#hasJavaMultipleFiles()
-     * FileOptions#hasJavaMultipleFiles()} is {@code true}.
+     * if {@code java_multiple_files} proto file option is {@code true}.
      *
-     * @param fileDescriptor the file descriptor
+     * @param fileDescriptor
+     *         the file descriptor
      */
-    protected abstract void annotateMultipleFiles(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateMultipleFiles(FileDescriptor fileDescriptor);
 
     /**
      * Tells whether the generated program elements
      * from the specified descriptor should be annotated.
      *
-     * @param descriptor the descriptor to extract {@link #option} value.
+     * @param descriptor
+     *         the descriptor to extract {@link #option} value.
      * @return {@code true} if generated element should be annotated, {@code false} otherwise
      */
     protected final boolean shouldAnnotate(D descriptor) {
@@ -149,11 +155,29 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     }
 
     /**
+     * Annotates message class and MessageOrBuilder interface that correspond to the passed type.
+     */
+    protected final void annotateMessageTypes(Descriptor type, FileDescriptor file) {
+        SourceFile messageClass = forMessage(type.toProto(), file.toProto());
+        annotate(messageClass);
+
+        SourceFile messageOrBuilderInterface = forMessageOrBuilder(type.toProto(), file.toProto());
+        annotate(messageOrBuilderInterface);
+    }
+
+    /**
+     * Rewrites the file applying {@link TypeDeclarationAnnotation}.
+     */
+    protected final void annotate(SourceFile relativeSourcePath) {
+        rewriteSource(relativeSourcePath, new TypeDeclarationAnnotation());
+    }
+
+    /**
      * Obtains the value of {@link #option} in the specified descriptor.
      *
-     * @param descriptor the descriptor to extract {@link #option} value.
+     * @param descriptor
+     *         the descriptor to extract {@link #option} value.
      * @return the option value
-     * @see #shouldAnnotate(GeneratedMessageV3)
      */
     protected abstract Optional<Boolean> getOptionValue(D descriptor);
 
@@ -170,12 +194,14 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * Rewrites a generated Java source with the specified
      * relative path after applying a {@link SourceVisitor}.
      *
-     * @param relativeSourcePath the relative path to a source file
-     * @param sourceVisitor      the source visitor
+     * @param relativeSourcePath
+     *         the relative path to a source file
+     * @param visitor
+     *         the source visitor
      */
-    protected <T extends JavaSource<T>> void rewriteSource(SourceFile relativeSourcePath,
-                                                           SourceVisitor<T> sourceVisitor) {
-        rewriteSource(genProtoDir, relativeSourcePath, sourceVisitor);
+    protected <T extends JavaSource<T>>
+    void rewriteSource(SourceFile relativeSourcePath, SourceVisitor<T> visitor) {
+        rewriteSource(genProtoDir, relativeSourcePath, visitor);
     }
 
     /**
@@ -183,34 +209,39 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      *
      * <p>If the specified path does not exist, does nothing.
      *
-     * @param sourcePathPrefix the prefix for the relative source path
-     * @param sourcePath       the relative path to a source file
-     * @param sourceVisitor    the source visitor
+     * @param sourcePathPrefix
+     *         the prefix for the relative source path
+     * @param sourcePath
+     *         the relative path to a source file
+     * @param visitor
+     *         the source visitor
      */
-    @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
-                                     for `AbstractJavaSource.class` value. */)
-    protected static <T extends JavaSource<T>> void rewriteSource(String sourcePathPrefix,
-                                                                  SourceFile sourcePath,
-                                                                  SourceVisitor<T> sourceVisitor) {
-        AbstractJavaSource<T> javaSource;
+    static <T extends JavaSource<T>>
+    void rewriteSource(String sourcePathPrefix, SourceFile sourcePath, SourceVisitor<T> visitor) {
         Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
-
-        if (!Files.exists(absoluteSourcePath)) {
-            // Do nothing.
-            return;
+        if (exists(absoluteSourcePath)) {
+            @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
+                                             for `AbstractJavaSource.class` value. */)
+            AbstractJavaSource<T> javaSource = (AbstractJavaSource<T>) parse(absoluteSourcePath);
+            visitor.accept(javaSource);
+            rewrite(javaSource, absoluteSourcePath);
         }
+    }
 
-        try {
-            javaSource = Roaster.parse(AbstractJavaSource.class, absoluteSourcePath.toFile());
-        } catch (FileNotFoundException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-
-        sourceVisitor.apply(javaSource);
+    private static <T extends JavaSource<T>> void rewrite(AbstractJavaSource<T> javaSource,
+                                                          Path destination) {
         String resultingSource = javaSource.toString();
         try {
-            Files.write(absoluteSourcePath, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);
+            Files.write(destination, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);
         } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static AbstractJavaSource<?> parse(Path sourcePath) {
+        try {
+            return Roaster.parse(AbstractJavaSource.class, sourcePath.toFile());
+        } catch (FileNotFoundException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
@@ -221,14 +252,16 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * <p>If the specified source already has the {@link #annotation},
      * does nothing to avoid annotation duplication and a compilation error as a result.
      *
-     * @param source the program element to annotate
+     * @param source
+     *         the program element to annotate
      */
-    protected final void addAnnotation(AnnotationTargetSource source) {
-        if (source.getAnnotation(annotation) != null) {
+    protected final void addAnnotation(AnnotationTargetSource<?, ?> source) {
+        AnnotationSource<?> annotation = source.getAnnotation(this.annotation);
+        if (annotation != null) {
             return;
         }
 
-        String annotationFQN = annotation.getCanonicalName();
+        String annotationFQN = this.annotation.getCanonicalName();
         AnnotationSource newAnnotation = source.addAnnotation();
         newAnnotation.setName(annotationFQN);
     }
@@ -240,10 +273,9 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     protected class TypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
 
         @Override
-        public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             addAnnotation(input);
-            return null;
         }
     }
 }

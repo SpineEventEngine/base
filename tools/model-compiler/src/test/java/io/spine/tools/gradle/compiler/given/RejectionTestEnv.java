@@ -35,9 +35,6 @@ import static java.lang.String.format;
 
 public class RejectionTestEnv {
 
-    /** Javadocs received using {@link org.jboss.forge.roaster.Roaster} have no line separators. */
-    @SuppressWarnings("HardcodedLineSeparator")
-    private static final String JAVADOC_LINE_SEPARATOR = "";
     private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
@@ -77,13 +74,13 @@ public class RejectionTestEnv {
                 "option java_package = \"" + JAVA_PACKAGE + "\";",
                 "option java_multiple_files = false;",
 
-                "//" + CLASS_COMMENT,
+                "// " + CLASS_COMMENT,
                 "message " + REJECTION_NAME + " {",
 
-                    "//" + FIRST_FIELD_COMMENT,
+                    "// " + FIRST_FIELD_COMMENT,
                     "int32 " + FIRST_FIELD + " = 1; // Is not a part of Javadoc.",
 
-                    "//" + SECOND_FIELD_COMMENT,
+                    "// " + SECOND_FIELD_COMMENT,
                     "string " + SECOND_FIELD + " = 2;",
 
                     "bool hasNoComment = 3;",
@@ -92,9 +89,9 @@ public class RejectionTestEnv {
     }
 
     public static String getExpectedClassComment() {
-        return wrappedInPreTag(CLASS_COMMENT) + JAVADOC_LINE_SEPARATOR
-                + " Rejection based on proto type  {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
-                + '}' + JAVADOC_LINE_SEPARATOR;
+        return wrappedInPreTag(CLASS_COMMENT)
+                + " Rejection based on proto type  " +
+                "{@code " + JAVA_PACKAGE + '.' + REJECTION_NAME+ '}';
     }
 
     public static String getExpectedBuilderClassComment() {
@@ -111,8 +108,6 @@ public class RejectionTestEnv {
     }
 
     private static String wrappedInPreTag(String commentText) {
-        return "<pre>" + JAVADOC_LINE_SEPARATOR
-                + ' ' + commentText + JAVADOC_LINE_SEPARATOR
-                + " </pre>" + JAVADOC_LINE_SEPARATOR;
+        return "<pre> " + commentText + " </pre>";
     }
 }

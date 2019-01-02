@@ -20,8 +20,7 @@
 
 package io.spine.code.js;
 
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -46,16 +45,9 @@ public final class TypeName extends StringTypeValue {
         super(value);
     }
 
-    public static TypeName from(Descriptor messageDescriptor) {
-        checkNotNull(messageDescriptor);
-        String typeName = messageDescriptor.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return new TypeName(nameWithPrefix);
-    }
-
-    public static TypeName from(EnumDescriptor enumDescriptor) {
-        checkNotNull(enumDescriptor);
-        String typeName = enumDescriptor.getFullName();
+    public static TypeName from(GenericDescriptor descriptor) {
+        checkNotNull(descriptor);
+        String typeName = descriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return new TypeName(nameWithPrefix);
     }

@@ -17,67 +17,100 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PrimitiveType;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.Optional;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.setter;
+
 /**
  * Represents singular {@linkplain FieldType field type}.
- *
- * @author Dmytro Grankin
  */
-public class SingularFieldType implements FieldType {
+public final class SingularFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "set";
+    private static final String BYTES = "Bytes";
+
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    prefix("has"),
+                    getter(),
+                    setter(),
+                    clearer()
+            );
+
+    private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
+            ImmutableSet.of(
+                    prefixAndPostfix("get", BYTES),
+                    prefixAndPostfix("set", BYTES)
+            );
 
     private final TypeName typeName;
+    private final JavaType javaType;
 
     /**
-     * Constructs the {@link SingularFieldType} based on field type name.
+     * Creates a new instance based on field type name.
      *
-     * @param name the field type name
+     * @param declaration
+     *         the field declaration
      */
-    SingularFieldType(String name) {
-        this.typeName = constructTypeNameFor(name);
+    SingularFieldType(FieldDeclaration declaration) {
+        this.typeName = constructTypeNameFor(declaration.javaTypeName());
+        this.javaType = declaration.javaType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
     }
 
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return javaType == STRING
+             ? ImmutableSet.<AccessorTemplate>builder()
+                           .addAll(GENERATED_ACCESSORS)
+                           .addAll(GENERATED_STRING_ACCESSORS)
+                           .build()
+             : GENERATED_ACCESSORS;
+    }
+
     /**
-     * Returns "set" setter prefix,
-     * used to initialize a singular field using a protobuf message builder.
+     * Returns "set" setter template used to initialize a singular field using a Protobuf message
+     * builder.
      *
-     * Call should be like `builder.setFieldName(FieldType)`.
-     *
-     * @return {@inheritDoc}
+     * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return setter();
     }
 
     private static TypeName constructTypeNameFor(String name) {
         Optional<? extends Class<?>> boxedScalarPrimitive =
                 PrimitiveType.getWrapperClass(name);
 
-        return boxedScalarPrimitive.isPresent()
-               ? TypeName.get(boxedScalarPrimitive.get())
-                         .unbox()
-               : ClassName.bestGuess(name);
-    }
+        if (boxedScalarPrimitive.isPresent()) {
+            TypeName unboxed = TypeName.get(boxedScalarPrimitive.get())
+                                       .unbox();
+            return unboxed;
+        }
 
-    @Override
-    public String toString() {
-        return typeName.toString();
+        // Make a possibly nested class name use the dot notation.
+        String dottedName = name.replace('$', '.');
+        ClassName result = ClassName.bestGuess(dottedName);
+        return result;
     }
 }

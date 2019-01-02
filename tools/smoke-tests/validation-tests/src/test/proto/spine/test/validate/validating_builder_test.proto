@@ -1,0 +1,146 @@
+//
+// Copyright 2018, TeamDev. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package spine.test.validate.msg;
+
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "ValidatingBuilderTestProto";
+option java_package = "io.spine.test.validate.msg.builder";
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/options.proto";
+
+import "spine/net/email_address.proto";
+import "spine/net/url.proto";
+import "spine/people/person_name.proto";
+
+// The test definitions for the `ValidatingBuilder` tests.
+//
+// Use in `ValidatingBuilderTest` only
+
+message Project {
+
+    // The tasks contained in this project
+    //
+    // This field is both required and validated.
+    //
+    repeated Task task = 1 [(valid) = true, (required) = true];
+
+    // The emails of the project subscribers.
+    //
+    // This field is validated but not required.
+    repeated string subscriber_email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+
+    // The members of the project.
+    //
+    // This field is required, but the contents of the messages are never validated.
+    //
+    repeated Member member = 3 [(required) = true];
+
+    // A set of descriptions which are added to this project.
+    //
+    // This field is neither required, nor validated.
+    //
+    repeated string description = 4;
+
+    // The map of the roles of the members in this project.
+    //
+    // This field is required but never validated.
+    //
+    map<string, Member> role = 5 [(required) = true, (valid) = true];
+
+    // A map of the task IDs to the task attachments.
+    //
+    // This field validated but not required.
+    //
+    map<string, Attachment> attachment = 6 [(valid) = true, (required) = false];
+
+    // The map of the task IDs to the time when the task was deleted.
+    //
+    // This field is required, but the contents of the messages are never validated.
+    //
+    // Note that the `when` option is redundant.
+    //
+    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true, (when).in = PAST];
+
+    // The map of the task IDs to the labels of the task.
+    //
+    // This field is neither required, nor validated.
+    //
+    map<string, string> label = 8;
+}
+
+message Task {
+
+    string id = 1 [(required) = true, (set_once) = true];
+
+    string name = 2 [(required) = true];
+
+    TaskLabel label = 3 [(set_once) = true];
+
+    Member assignee = 4 [(set_once) = true];
+}
+
+message Member {
+
+    string id = 1 [(required) = true];
+
+    string name = 2 [(pattern).regex = ".+\\s+.+"];
+
+    bytes avatar_image = 3 [(required) = true];
+}
+
+message Attachment {
+
+    string id = 1 [(required) = true];
+
+    string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
+
+    spine.net.Url url = 3 [(required) = true, (valid) = true];
+}
+
+message Essay {
+
+    // Lines that the essay consists of.
+    //
+    // This field is marked with `set_once`, which, for repeated fields, is not recommended,
+    // and should produce a warning.
+    repeated string line = 1 [(set_once) = true];
+
+    // A table of contents.
+    //
+    // Maps section titles to pages.
+    //
+    // This field is marked with `set_once`, which, for map fields, is not recommended,
+    // and should produce a warning
+    map<string, int32> table_of_contents = 2 [(set_once) = true];
+}
+
+enum TaskLabel {
+
+    NO_LABEL = 0;
+    OF_LITTLE_IMPORTANCE = 1;
+    IMPORTANT = 2;
+    CRITICAL = 3;
+}

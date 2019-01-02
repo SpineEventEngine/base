@@ -28,9 +28,7 @@ option java_multiple_files = true;
 option java_outer_classname = "EveryIsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-option (every_is) = "io.spine.tools.protoc.ProtocCustomerEvent";
-
-import "google/protobuf/descriptor.proto";
+option (every_is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
 
 message ProtocCustomerCreated {
 

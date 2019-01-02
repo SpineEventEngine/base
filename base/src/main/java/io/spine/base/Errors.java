@@ -27,12 +27,10 @@ import static com.google.common.base.Throwables.getStackTraceAsString;
 
 /**
  * Utility class for working with {@link Error}s.
- *
- * @author Alexander Yevsyukov
  */
 public final class Errors {
 
-    /** Prevent instantiation of this utility class. */
+    /** Prevents instantiation of this utility class. */
     private Errors() {
     }
 

@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.code.proto.FieldDeclaration;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -114,8 +115,9 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("validate repeated fields if specified")
     void validate_repeated_fields_if_specified() {
-        FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(of(newValue(),
-                                                                                 defaultValue()));
+        FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(
+                ImmutableList.of(newValue(), defaultValue())
+        );
         List<ConstraintViolation> violations = validator.validate();
 
         assertFalse(violations.isEmpty());
@@ -124,9 +126,9 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("skip repeated fields if not specified")
     void skip_repeated_fields_if_not_specified() {
-        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of(defaultValue(),
-                                                                         defaultValue(),
-                                                                         defaultValue()));
+        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(
+                ImmutableList.of(defaultValue(), defaultValue(), defaultValue())
+        );
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
@@ -134,7 +136,7 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("skip empty repeated fields if not required")
     void skip_empty_repeated_fields_if_not_required() {
-        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of());
+        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(ImmutableList.of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
@@ -142,7 +144,7 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("skip empty repeated validated not required fields")
     void skip_empty_repeated_validated_not_required_fields() {
-        FieldValidator<V> validator = validatedRepeatedFieldValidator(of());
+        FieldValidator<V> validator = validatedRepeatedFieldValidator(ImmutableList.of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
@@ -150,8 +152,9 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("not validate elements of repeated fields")
     void not_validate_elements_of_repeated_field() {
-        FieldValidator<V> validator = requiredRepeatedFieldValidator(of(defaultValue(),
-                                                                        defaultValue()));
+        FieldValidator<V> validator = requiredRepeatedFieldValidator(
+                ImmutableList.of(defaultValue(), defaultValue())
+        );
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
@@ -159,15 +162,20 @@ public abstract class FieldValidatorTest<V> {
     @Test
     @DisplayName("flag repeated fields")
     void flag_repeated_fields() {
-        FieldValidator<?> validator = uncheckedRepeatedFieldValidator(of());
-        assertTrue(validator.isRepeatedOrMap());
+        FieldValidator<?> validator = uncheckedRepeatedFieldValidator(ImmutableList.of());
+        assertNotScalar(validator);
     }
 
     @Test
     @DisplayName("flag map fields")
     void flag_map_fields() {
         FieldValidator<?> validator = emptyMapFieldValidator();
-        assertTrue(validator.isRepeatedOrMap());
+        assertNotScalar(validator);
+    }
+
+    private static void assertNotScalar(FieldValidator<?> validator) {
+        FieldDeclaration declaration = validator.field();
+        assertTrue(declaration.isCollection());
     }
 
     private static <T> void assertEmpty(Collection<T> emptyIterable) {

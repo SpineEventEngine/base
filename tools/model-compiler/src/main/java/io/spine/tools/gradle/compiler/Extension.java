@@ -20,7 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import org.gradle.api.Project;
@@ -38,8 +38,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
- *
- * @author Alex Tymchenko
  */
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
@@ -139,14 +137,6 @@ public class Extension {
     public Indent indent = Indent.of4();
 
     /**
-     * The flag which enables the generation of validating builders for all Protobuf
-     * messages in the classpath.
-     *
-     * <p>By default, only the Protobuf messages from the current module are generated.
-     */
-    public boolean generateBuildersFromClasspath = false;
-
-    /**
      * The absolute paths to directories to delete.
      *
      * <p>Either this property OR {@code dirToClean} property is used.
@@ -168,7 +158,12 @@ public class Extension {
     }
 
     public static String getMainProtoSrcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
+        Logger log = log();
+        Extension extension = spineProtobuf(project);
+        log.debug("Extension is {}", extension);
+        String protoDir = extension.mainProtoSrcDir;
+        log.debug("modelCompiler.mainProtoSrcDir is {}", protoDir);
+        return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
     }
@@ -265,20 +260,6 @@ public class Extension {
         Indent result = spineProtobuf(project).indent;
         log().debug("The current indent is {}", result.getSize());
         return result;
-    }
-
-    public static boolean isGenerateValidatingBuildersFromClasspath(Project project) {
-        boolean result = spineProtobuf(project).generateBuildersFromClasspath;
-        log().debug("Validating builder are generated from  {}",
-                    (result ? "the classpath" : "this module only"));
-        return result;
-    }
-
-    @SuppressWarnings({"InstanceMethodNamingConvention", "unused"})
-    public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
-        this.generateBuildersFromClasspath = generateFromClasspath;
-        log().debug("Validating builder are set to be generated from  {}",
-                    (generateFromClasspath ? "the whole classpath" : "the current module only"));
     }
 
     @SuppressWarnings("unused")

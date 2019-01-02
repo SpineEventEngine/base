@@ -27,13 +27,14 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.generate.GeneratedBySpine;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
+import io.spine.option.IsOption;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
-import static io.spine.code.Generation.compilerAnnotation;
 import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -48,8 +49,8 @@ final class MarkerInterfaceSpec {
 
     private static final AnnotationSpec BY_MODEL_COMPILER =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(compilerAnnotation().getFieldName(),
-                                     CodeBlock.of(compilerAnnotation().getCodeBlock()))
+                          .addMember(GeneratedBySpine.instance().getFieldName(),
+                                     CodeBlock.of(GeneratedBySpine.instance().getCodeBlock()))
                           .build();
 
     private final String packageName;
@@ -61,15 +62,16 @@ final class MarkerInterfaceSpec {
         this.name = name;
     }
 
-    static MarkerInterfaceSpec prepareInterface(String optionValue,
+    static MarkerInterfaceSpec prepareInterface(IsOption optionValue,
                                                 FileDescriptorProto srcFile) {
+        String javaType = optionValue.getJavaType();
         MarkerInterfaceSpec spec;
-        if (optionValue.contains(delimiter())) {
-            spec = from(optionValue);
+        if (javaType.contains(delimiter())) {
+            spec = from(javaType);
         } else {
             String javaPackage = PackageName.resolve(srcFile)
                                             .value();
-            spec = new MarkerInterfaceSpec(javaPackage, optionValue);
+            spec = new MarkerInterfaceSpec(javaPackage, javaType);
         }
         return spec;
     }

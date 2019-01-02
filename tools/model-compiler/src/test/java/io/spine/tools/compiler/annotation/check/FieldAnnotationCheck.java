@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.annotation.check;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
@@ -39,10 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class FieldAnnotationCheck implements SourceCheck {
 
-    private final DescriptorProtos.FieldDescriptorProto fieldDescriptor;
+    private final FieldDescriptor fieldDescriptor;
     private final boolean shouldBeAnnotated;
 
-    public FieldAnnotationCheck(DescriptorProtos.FieldDescriptorProto fieldDescriptor,
+    public FieldAnnotationCheck(FieldDescriptor fieldDescriptor,
                                 boolean shouldBeAnnotated) {
         this.fieldDescriptor = fieldDescriptor;
         this.shouldBeAnnotated = shouldBeAnnotated;
@@ -59,7 +59,7 @@ public class FieldAnnotationCheck implements SourceCheck {
     }
 
     private void checkAccessorsAnnotation(JavaClassSource message) {
-        String fieldName = FieldName.of(fieldDescriptor)
+        String fieldName = FieldName.of(fieldDescriptor.toProto())
                                     .toCamelCase();
         for (MethodSource method : message.getMethods()) {
             if (method.isPublic() && method.getName()

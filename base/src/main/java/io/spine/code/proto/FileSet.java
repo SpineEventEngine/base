@@ -21,7 +21,10 @@
 package io.spine.code.proto;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
@@ -32,17 +35,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
-import static com.google.common.collect.ImmutableSet.copyOf;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static io.spine.code.proto.Linker.link;
 import static java.util.stream.Collectors.toList;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Internal
 public final class FileSet {
@@ -88,25 +91,50 @@ public final class FileSet {
      * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
-        return parse(descriptorSet.getAbsolutePath());
+        checkNotNull(descriptorSet);
+        checkState(descriptorSet.exists(), "File %s does not exist.", descriptorSet);
+        return doParse(descriptorSet);
+    }
+
+    /**
+     * Creates file set by parsing the descriptor set file with the passed name.
+     */
+    public static FileSet parse(String descriptorSetFile) {
+        checkNotNull(descriptorSetFile);
+        File file = new File(descriptorSetFile);
+        return parse(file);
     }
 
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
-    private static FileSet parse(String descriptorSetFile) {
+    private static FileSet doParse(File descriptorSetFile) {
         Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
-        FileSet result = Linker.link(files);
-        return result;
+        return link(files);
     }
 
     /**
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        FileSet fileSet = Linker.link(fileSets);
-        return fileSet;
+        Collection<FileDescriptorProto> files = FileDescriptors.load();
+        return link(files);
+    }
+
+    /**
+     * Obtains message declarations, that match the specified {@link java.util.function.Predicate}.
+     *
+     * @param predicate the predicate to test a message
+     * @return the message declarations
+     */
+    public List<MessageType> findMessageTypes(Predicate<DescriptorProto> predicate) {
+        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
+        for (FileDescriptor file : files()) {
+            SourceFile sourceFile = SourceFile.from(file);
+            Collection<MessageType> declarations = sourceFile.allThat(predicate);
+            result.addAll(declarations);
+        }
+        return result.build();
     }
 
     /**
@@ -131,7 +159,7 @@ public final class FileSet {
      * Obtains immutable view of the files in this set.
      */
     public Collection<FileDescriptor> files() {
-        return copyOf(files.values());
+        return ImmutableSet.copyOf(files.values());
     }
 
     /**

@@ -20,13 +20,23 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.logging.Logging;
+import io.spine.test.validate.RequiredBooleanFieldValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.SubstituteLoggingEvent;
+import org.slf4j.helpers.SubstituteLogger;
 
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Queue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.slf4j.event.Level.WARN;
 
 @DisplayName("BooleanFieldValidator should")
 class BooleanFieldValidatorTest {
@@ -34,13 +44,34 @@ class BooleanFieldValidatorTest {
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
                                                        .getFields()
                                                        .get(0);
+    private final FieldContext fieldContext = FieldContext.create(fieldDescriptor);
     private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
-                                      ImmutableList.of(false));
+            new BooleanFieldValidator(FieldValue.of(false, fieldContext));
 
     @Test
     @DisplayName("convert string to number")
     void convert_string_to_number() {
         assertFalse(validator.isNotSet(false));
+    }
+
+    @Test
+    @DisplayName("produce a warning upon finding a required boolean field")
+    void testRequiredBooleanFieldWarning() {
+        FieldDescriptor descriptor = RequiredBooleanFieldValue
+                .getDescriptor()
+                .getFields()
+                .get(0);
+        FieldContext context = FieldContext.create(descriptor);
+        FieldValue fieldValue = FieldValue.of(true, context);
+        BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
+
+        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
+        Logging.redirect((SubstituteLogger) validator.log(), loggedMessages);
+        List<ConstraintViolation> validate = validator.validate();
+
+        assertTrue(validate.isEmpty());
+        assertFalse(loggedMessages.isEmpty());
+        assertEquals(1, loggedMessages.size());
+        assertEquals(WARN, loggedMessages.peek().getLevel());
     }
 }

@@ -35,10 +35,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * A {@linkplain io.spine.option.OptionsProto#validationOf validation rule}.
  *
  * <p>Contains descriptors related to a particular validation rule.
- *
- * @author Dmytro Grankin
  */
-class ValidationRule {
+final class ValidationRule {
 
     /**
      * The delimiter in a full field name reference.
@@ -53,7 +51,7 @@ class ValidationRule {
     /**
      * Descriptors for the target fields of the validation rule.
      */
-    private final Collection<FieldDescriptor> targets;
+    private final ImmutableCollection<FieldDescriptor> targets;
 
     /**
      * Creates a new instance.
@@ -78,14 +76,13 @@ class ValidationRule {
      *
      * @return an immutable collection of the targets
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As return value is
-                                                        // an immutable collection.
-    Collection<FieldDescriptor> getTargets() {
+    ImmutableCollection<FieldDescriptor> getTargets() {
         return targets;
     }
 
-    private static Collection<FieldDescriptor> constructTargets(Descriptor ruleDescriptor,
-                                                                Iterable<String> targetPaths) {
+    private static
+    ImmutableCollection<FieldDescriptor> constructTargets(Descriptor ruleDescriptor,
+                                                          Iterable<String> targetPaths) {
         ImmutableCollection.Builder<FieldDescriptor> targets = ImmutableSet.builder();
         for (String targetPath : targetPaths) {
             FieldDescriptor target = getTargetDescriptor(targetPath);

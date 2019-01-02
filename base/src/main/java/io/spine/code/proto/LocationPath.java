@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,17 +30,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Encapsulates a
- * {@linkplain com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location#getPathList() location
- * path}.
+ * Encapsulates a {@linkplain Location#getPathList() location path}.
  *
- * <p>A location path represents
- * {@linkplain com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location#getPathList() list of
- * integers}, that used to identify a
- * {@linkplain com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location location} in
- * a ".proto" file.
- *
- * @author Dmytro Grankin
+ * <p>A location path represents {@linkplain Location#getPathList() list of
+ * integers}, that used to identify a {@linkplain Location location} in a ".proto" file.
  */
 public class LocationPath {
 
@@ -58,6 +53,15 @@ public class LocationPath {
      */
     public LocationPath(List<Integer> locationPath) {
         this.path = checkPath(locationPath);
+    }
+
+    /**
+     * Creates an instance by source code location.
+     */
+    @SuppressWarnings("unused")
+        // Included for future use and being able to reference `Location` in Javadoc directly.
+    public LocationPath(Location location) {
+        this(location.getPathList());
     }
 
     /**
@@ -101,7 +105,7 @@ public class LocationPath {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof LocationPath)) {
             return false;
         }
 

@@ -20,14 +20,29 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.test.validate.RequiredFloatFieldValue;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("FloatFieldValidator should")
 class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatFieldValidator> {
 
     private static final float HALF = 0.5F;
+
     FloatFieldValidatorTest() {
-        super(HALF, -HALF, new FloatFieldValidator(fieldContext, ImmutableList.of(HALF)));
+        super(HALF,
+              -HALF,
+              new FloatFieldValidator(FieldValue.of(HALF, fieldContext)),
+              requiredFieldValidator());
+    }
+
+    private static FloatFieldValidator requiredFieldValidator() {
+        FieldDescriptor descriptor = RequiredFloatFieldValue.getDescriptor()
+                                                            .getFields()
+                                                            .get(0);
+        FieldContext context = FieldContext.create(descriptor);
+        FieldValue value = FieldValue.of(HALF, context);
+        FloatFieldValidator requiredValidator = new FloatFieldValidator(value);
+        return requiredValidator;
     }
 }

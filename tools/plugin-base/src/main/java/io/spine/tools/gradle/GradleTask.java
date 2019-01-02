@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -33,7 +34,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -106,7 +106,7 @@ public final class GradleTask {
          * a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "before" anchor
-         * @return the current instance of {@link Builder}
+         * @return the current instance of {@code Builder}
          */
         public Builder insertBeforeTask(TaskName target) {
             checkNotNull(target, "task after the new one");
@@ -125,7 +125,7 @@ public final class GradleTask {
          * to a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "after" anchor
-         * @return the current instance of {@link Builder}
+         * @return the current instance of {@code Builder}
          */
         public Builder insertAfterTask(TaskName target) {
             checkNotNull(target, "task before the new one");
@@ -153,7 +153,7 @@ public final class GradleTask {
          * the Gradle task graph.
          *
          * @param target the name of the tasks, serving as "after" anchor
-         * @return the current instance of {@link Builder}
+         * @return the current instance of {@code Builder}
          */
         public Builder insertAfterAllTasks(TaskName target) {
             checkNotNull(target, "tasks before the new one");
@@ -170,11 +170,11 @@ public final class GradleTask {
          * <p>Multiple invocations appends the new files to the existing ones.
          *
          * @param inputs the task input files
-         * @return the current instance of {@link Builder}
+         * @return the current instance of {@code Builder}
          */
         public Builder withInputFiles(Path... inputs) {
             checkNotNull(inputs, "task inputs");
-            this.inputs.addAll(copyOf(inputs));
+            this.inputs.addAll(ImmutableSet.copyOf(inputs));
             return this;
         }
 

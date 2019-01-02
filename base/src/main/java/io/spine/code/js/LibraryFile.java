@@ -20,34 +20,30 @@
 
 package io.spine.code.js;
 
-import static io.spine.code.js.FileName.of;
-
 /**
  * The enumeration of project files provided by the Spine framework.
- *
- * @author Dmytro Kuzmin
  */
 public enum LibraryFile {
 
     /**
      * The file declaring Spine Options.
      */
-    SPINE_OPTIONS(of("spine/options_pb.js")),
+    SPINE_OPTIONS("spine/options_pb.js"),
 
     /**
      * The file containing map of all known types with their {@linkplain io.spine.type.TypeUrl URL}.
      */
-    KNOWN_TYPES(of("known_types.js")),
+    KNOWN_TYPES("known_types.js"),
 
     /**
      * The file containing the number of predefined JSON parsers for various types.
      */
-    KNOWN_TYPE_PARSERS(of("known_type_parsers.js"));
+    KNOWN_TYPE_PARSERS("known_type_parsers.js");
 
     private final FileName fileName;
 
-    LibraryFile(FileName fileName) {
-        this.fileName = fileName;
+    LibraryFile(String fileName) {
+        this.fileName = FileName.of(fileName);
     }
 
     public FileName fileName() {

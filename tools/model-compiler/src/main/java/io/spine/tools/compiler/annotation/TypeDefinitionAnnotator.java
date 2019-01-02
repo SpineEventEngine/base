@@ -21,8 +21,9 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
@@ -41,36 +42,32 @@ import static java.lang.String.format;
 /**
  * Abstract base class for {@linkplain Annotator Annotators}
  * for a particular kind of type definition.
- *
- * @param <L> {@inheritDoc}
- * @param <D> {@inheritDoc}
- * @author Dmytro Grankin
  */
-abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GeneratedMessageV3>
+abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GenericDescriptor>
          extends Annotator<L, D> {
 
     TypeDefinitionAnnotator(Class<? extends Annotation> annotation,
                             GeneratedExtension<L, Boolean> option,
-                            Collection<FileDescriptorProto> files,
+                            Collection<FileDescriptor> files,
                             String genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
     @Override
     public final void annotate() {
-        for (FileDescriptorProto file : fileDescriptors()) {
+        for (FileDescriptor file : fileDescriptors()) {
             annotate(file);
         }
     }
 
     @Override
-    protected final void annotateOneFile(FileDescriptorProto file) {
-        SourceFile outerClass = SourceFile.forOuterClassOf(file);
+    protected final void annotateOneFile(FileDescriptor file) {
+        SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
         rewriteSource(outerClass, new AnnotateNestedType(file));
     }
 
     @Override
-    protected final void annotateMultipleFiles(FileDescriptorProto file) {
+    protected final void annotateMultipleFiles(FileDescriptor file) {
         for (D definitionDescriptor : getDefinitions(file)) {
             if (shouldAnnotate(definitionDescriptor)) {
                 annotateDefinition(definitionDescriptor, file);
@@ -84,7 +81,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      * @param file the file descriptor from which to get definition list
      * @return the definitions list
      */
-    protected abstract List<D> getDefinitions(FileDescriptorProto file);
+    protected abstract List<D> getDefinitions(FileDescriptor file);
 
     /**
      * Obtains a definition name for the specified descriptor.
@@ -104,10 +101,10 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      * @param definition the definition descriptor
      * @param file       the descriptor of the file containing the definition
      */
-    protected abstract void annotateDefinition(D definition, FileDescriptorProto file);
+    protected abstract void annotateDefinition(D definition, FileDescriptor file);
 
-    static <T extends JavaSource<T>> JavaSource findNestedType(AbstractJavaSource<T> enclosingClass,
-                                                               String typeName) {
+    static <T extends JavaSource<T>>
+    JavaSource findNestedType(AbstractJavaSource<T> enclosingClass, String typeName) {
         for (JavaSource nestedType : enclosingClass.getNestedTypes()) {
             if (nestedType.getName()
                           .equals(typeName)) {
@@ -125,14 +122,14 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      */
     private class AnnotateNestedType implements SourceVisitor<JavaClassSource> {
 
-        private final FileDescriptorProto file;
+        private final FileDescriptor file;
 
-        private AnnotateNestedType(FileDescriptorProto file) {
+        private AnnotateNestedType(FileDescriptor file) {
             this.file = file;
         }
 
         @Override
-        public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             for (D definition : getDefinitions(file)) {
                 if (shouldAnnotate(definition)) {
@@ -146,7 +143,6 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
                     addAnnotation(messageOrBuilder);
                 }
             }
-            return null;
         }
     }
 }

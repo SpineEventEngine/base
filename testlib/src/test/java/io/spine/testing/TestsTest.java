@@ -35,7 +35,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.UUID;
 
+import static io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER;
+import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
+import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
+import static io.spine.testing.Prescription.PRESCRIBED_DRUG_FIELD_NUMBER;
+import static io.spine.testing.Prescription.PRESCRIBED_ON_FIELD_NUMBER;
+import static io.spine.testing.Prescription.getDefaultInstance;
+import static io.spine.testing.PrescriptionHistory.PRESCRIPTION_RECEIVER_FIELD_NUMBER;
+import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_NUMBER;
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
@@ -120,6 +129,7 @@ class TestsTest extends UtilityClassTest<Tests> {
     @Nested
     @DisplayName("Assert true")
     class AssertTrue {
+
         @Test
         @DisplayName("when true")
         void onTrue() {
@@ -180,6 +190,113 @@ class TestsTest extends UtilityClassTest<Tests> {
 
             assertThrows(AssertionError.class,
                          () -> assertMatchesMask(Timestamp.getDefaultInstance(), fieldMask));
+        }
+
+        @Nested
+        @DisplayName("with repeated fields")
+        class RepeatedFields {
+
+            private final PatientId patientId = newPatient();
+
+            @DisplayName("match existing repeated primitive fields")
+            @Test
+            void matchRepeatedPrimitiveFields() {
+                Prescription prescription = prescribeFromCold();
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                                     PRESCRIBED_DRUG_FIELD_NUMBER,
+                                                                     PRESCRIBED_ON_FIELD_NUMBER);
+                assertMatchesMask(prescription, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated primitive fields")
+            @Test
+            void notMatchAbsentRepeatedPrimitiveFields() {
+                Prescription emptyPrescription = getDefaultInstance();
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                                     PRESCRIBED_DRUG_FIELD_NUMBER);
+                assertThrows(AssertionError.class,
+                             () -> assertMatchesMask(emptyPrescription, fieldMask));
+            }
+
+            @DisplayName("match existing repeated non-default message fields")
+            @Test
+            void matchRepeatedNonDefaultMessageFields() {
+                PrescriptionHistory history = PrescriptionHistory
+                        .newBuilder()
+                        .addReceivedPrescription(prescribeFromCold())
+                        .setPrescriptionReceiver(patientId)
+                        .build();
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                       PRESCRIPTION_RECEIVER_FIELD_NUMBER,
+                                                       RECEIVED_PRESCRIPTION_FIELD_NUMBER);
+                assertMatchesMask(history, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated message fields")
+            @Test
+            void notMatchAbsentRepeatedMessageFields() {
+                PrescriptionHistory history = PrescriptionHistory
+                        .newBuilder()
+                        .setPrescriptionReceiver(patientId)
+                        .build();
+
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                       PRESCRIPTION_RECEIVER_FIELD_NUMBER,
+                                                       RECEIVED_PRESCRIPTION_FIELD_NUMBER);
+                assertThrows(AssertionError.class, () -> assertMatchesMask(history, fieldMask));
+            }
+
+            @DisplayName("match existing repeated enum fields")
+            @Test
+            void matchPresentRepeatedEnumFields() {
+                HospitalPolicy policy = HospitalPolicy
+                        .newBuilder()
+                        .addAcceptedCondition(CRITICAL)
+                        .addAcceptedCondition(CRITICAL_BUT_STABLE)
+                        .build();
+
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
+                                                       ACCEPTED_CONDITION_FIELD_NUMBER);
+                assertMatchesMask(policy, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated enum fields")
+            @Test
+            void notMatchAbsentRepeatedEnumFields() {
+                HospitalPolicy emptyPolicy = HospitalPolicy.getDefaultInstance();
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
+                                                       ACCEPTED_CONDITION_FIELD_NUMBER);
+                assertThrows(AssertionError.class, () -> assertMatchesMask(emptyPolicy, fieldMask));
+            }
+
+            private Prescription prescribeFromCold() {
+                long currentTime = Instant.now()
+                                          .toEpochMilli();
+                Timestamp now = Timestamp
+                        .newBuilder()
+                        .setSeconds(currentTime)
+                        .build();
+                return Prescription
+                        .newBuilder()
+                        .setPrescribedOn(now)
+                        .addPrescribedDrug("Paracetamol")
+                        .addPrescribedDrug("Aspirin")
+                        .addPrescribedDrug("Tylenol")
+                        .build();
+            }
+
+            private PatientId newPatient() {
+                String uuid = UUID.randomUUID()
+                                  .toString();
+                return PatientId
+                        .newBuilder()
+                        .setValue(uuid)
+                        .build();
+            }
         }
     }
 

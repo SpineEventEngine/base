@@ -20,14 +20,12 @@
 
 package io.spine.js.generate.field.precondition;
 
-import io.spine.js.generate.JsOutput;
-
 /**
  * The generator of the code which performs various checks on the proto field value.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
- * methods are not returning any generated code.
+ * The descendants are supposed to operate on the provided {@link io.spine.js.generate.output.CodeLines},
+ * so the interface methods are not returning any generated code.
  */
 public interface FieldPrecondition {
 

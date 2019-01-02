@@ -22,8 +22,10 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.compiler.descriptor.Merger;
+import io.spine.code.proto.MergedDescriptorSet;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.type.MoreKnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -36,7 +38,6 @@ import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
@@ -45,6 +46,9 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from
  * the project runtime classpath.
+ *
+ * <p>The merge result is used to {@linkplain
+ * io.spine.tools.type.MoreKnownTypes#extendWith(java.io.File) extend the known type registry}.
  */
 public class DescriptorSetMergerPlugin extends SpinePlugin {
 
@@ -55,21 +59,14 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     }
 
     private void createMainTask(Project project) {
-        logDependingTask(MERGE_DESCRIPTOR_SET,
-                         GENERATE_VALIDATING_BUILDERS,
-                         GENERATE_PROTO);
         newTask(MERGE_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, RUNTIME),
                                     getMainDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_PROTO)
-                .insertBeforeTask(GENERATE_VALIDATING_BUILDERS)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
-        logDependingTask(MERGE_TEST_DESCRIPTOR_SET,
-                         GENERATE_TEST_VALIDATING_BUILDERS,
-                         GENERATE_TEST_PROTO);
         newTask(MERGE_TEST_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, TEST_RUNTIME),
                                     getTestDescriptorSetPath(project)))
@@ -92,6 +89,10 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
             Merger merger = new Merger(archive -> project.zipTree(archive).getFiles());
             merger.merge(files.build())
                   .writeTo(descriptorSet);
+
+            // Extend `KnownTypes` with all the type definitions from all the descriptors
+            // found in the classpath of the project being built.
+            MoreKnownTypes.extendWith(descriptorSet);
         };
     }
 

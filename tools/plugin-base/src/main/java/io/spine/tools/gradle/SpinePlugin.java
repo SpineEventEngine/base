@@ -19,12 +19,11 @@
  */
 package io.spine.tools.gradle;
 
+import io.spine.logging.Logging;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -32,10 +31,8 @@ import java.io.File;
  * Abstract base for Spine plugins.
  *
  * <p>Brings helper functionality to operate the Gradle build lifecycle.
- *
- * @author Alex Tymchenko
  */
-public abstract class SpinePlugin implements Plugin<Project> {
+public abstract class SpinePlugin implements Plugin<Project>, Logging {
 
     /**
      * Create a new instance of {@link GradleTask.Builder}.
@@ -53,16 +50,9 @@ public abstract class SpinePlugin implements Plugin<Project> {
         return result;
     }
 
-    /**
-     * Instance method for obtaining class-specific logger.
-     */
-    protected Logger log() {
-        return LoggerFactory.getLogger(getClass());
-    }
-
     @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
     protected void logMissingDescriptorSetFile(File setFile) {
-        log().debug(
+        _debug(
                 "Missing descriptor set file {}.\n" +
                         "Please enable descriptor set generation. See: " +
                         "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
@@ -71,20 +61,4 @@ public abstract class SpinePlugin implements Plugin<Project> {
         );
     }
 
-    protected void logDependingTask(TaskName taskName, TaskName beforeTask, TaskName afterTask) {
-        log().debug(
-                "Adding the Gradle task {} to the lifecycle: after {}, before {}",
-                taskName.getValue(),
-                afterTask.getValue(),
-                beforeTask.getValue()
-                );
-    }
-
-    protected void logDependingTask(TaskName taskName, TaskName beforeTask) {
-        log().debug(
-                "Adding the Gradle task {} to the lifecycle: before {}",
-                taskName.getValue(),
-                beforeTask.getValue()
-        );
-    }
 }

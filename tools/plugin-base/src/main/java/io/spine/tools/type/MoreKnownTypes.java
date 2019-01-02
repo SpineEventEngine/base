@@ -45,8 +45,8 @@ public final class MoreKnownTypes {
     }
 
     /**
-     * Reads a {@code FileDescriptorSet} from the given file and adds the described types to
-     * the known types.
+     * Reads a {@code FileDescriptorSet} from the given file and adds the described types
+     * to the known types.
      *
      * @param descriptorSetFile
      *         the descriptor file to read

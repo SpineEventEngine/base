@@ -21,7 +21,8 @@
 package io.spine.js.generate.field.parser.primitive;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.js.generate.importado.JsImportGenerator;
+import io.spine.js.generate.output.snippet.JsImportGenerator;
+import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,7 +53,6 @@ final class BytesParser extends AbstractPrimitiveParser {
         super(builder);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
@@ -62,8 +62,13 @@ final class BytesParser extends AbstractPrimitiveParser {
                 .setJsOutput(jsOutput())
                 .build();
         generator.importLib(BASE64_LIB, BASE64_VAR);
-        String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
-        jsOutput().declareVariable(variable, valueToByteArray);
+        jsOutput().append(parsedVariable(variable, value));
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = BASE64_VAR + ".toByteArray(" + valueToParse + ')';
+        return VariableDeclaration.initialized(name, initializer);
     }
 
     static Builder newBuilder() {

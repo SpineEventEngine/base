@@ -25,6 +25,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;

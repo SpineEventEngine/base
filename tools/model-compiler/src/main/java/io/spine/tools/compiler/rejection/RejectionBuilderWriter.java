@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -30,14 +31,12 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.RejectionType;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import io.spine.validate.Validate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -58,21 +57,18 @@ class RejectionBuilderWriter {
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
 
-    private final RejectionDeclaration rejection;
+    private final RejectionType rejection;
     private final ClassName messageClass;
     private final ClassName throwableClass;
     private final SimpleClassName name;
-    private final FieldTypeFactory fieldTypeFactory;
 
-    RejectionBuilderWriter(RejectionDeclaration rejection,
+    RejectionBuilderWriter(RejectionType rejection,
                            ClassName messageClass,
-                           ClassName throwableClass,
-                           Map<String, String> messageTypeMap) {
+                           ClassName throwableClass) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
         this.name = SimpleClassName.ofBuilder();
-        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), messageTypeMap);
     }
 
     /**
@@ -81,6 +77,9 @@ class RejectionBuilderWriter {
      * @return the {@code newInstance} specification
      */
     MethodSpec newBuilder() {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // The duplicated string is in
+                // tests of the code which cannot share common constants with this class.
+                // For the time being let's keep it as is.
         JavadocText javadoc = JavadocText.fromEscaped("@return a new builder for the rejection")
                                          .withNewLine();
         return MethodSpec
@@ -175,7 +174,8 @@ class RejectionBuilderWriter {
     }
 
     private JavadocText classJavadoc() {
-        String rejectionName = rejection.getSimpleTypeName();
+        String rejectionName = rejection.simpleJavaClassName()
+                                        .value();
         String javadocText = CodeBlock
                 .builder()
                 .add("The builder for the {@code $L} rejection.", rejectionName)
@@ -196,20 +196,21 @@ class RejectionBuilderWriter {
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        List<FieldDeclaration> fields = rejection.fields();
+        ImmutableList<FieldDeclaration> fields = rejection.fields();
         for (FieldDeclaration field : fields) {
-            FieldType fieldType = fieldTypeFactory.create(field.descriptor());
+            FieldType fieldType = FieldType.of(field);
             MethodSpec setter = fieldSetter(field, fieldType);
             methods.add(setter);
         }
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclaration field,
-                                   FieldType fieldType) {
+    private MethodSpec fieldSetter(FieldDeclaration field, FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
-        String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();
+        String methodName = fieldType.primarySetterTemplate()
+                                     .format(io.spine.code.java.FieldName.from(fieldName));
+        @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)

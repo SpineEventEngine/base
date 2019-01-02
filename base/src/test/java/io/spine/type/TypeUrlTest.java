@@ -33,6 +33,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
 import io.spine.testing.Tests;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -172,6 +173,7 @@ class TypeUrlTest {
         }
 
         @Test
+        @Disabled("Until we decide if there may be URLs without type prefix")
         @DisplayName("empty prefix")
         void emptyPrefix() {
             assertThrows(

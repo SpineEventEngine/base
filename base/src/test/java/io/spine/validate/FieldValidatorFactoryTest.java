@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
@@ -43,7 +44,6 @@ import io.spine.test.validate.RequiredMsgFieldValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.collect.ImmutableMap.of;
 import static com.google.protobuf.Descriptors.FieldDescriptor;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -180,8 +180,7 @@ class FieldValidatorFactoryTest {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
                                                          .getFields()
                                                          .get(0);
-        FieldValidator<?> validator = create(field,
-                                             of("key", "value"));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", "value"));
 
         assertThat(validator, instanceOf(StringFieldValidator.class));
     }
@@ -194,7 +193,7 @@ class FieldValidatorFactoryTest {
                                                          .get(0);
         FieldValidator<?> validator = create(field, emptyMap());
 
-        assertThat(validator, instanceOf(EmptyMapFieldValidator.class));
+        assertThat(validator, instanceOf(StringFieldValidator.class));
     }
 
     @Test
@@ -204,7 +203,7 @@ class FieldValidatorFactoryTest {
                                                              .getFields()
                                                              .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", ByteString.EMPTY));
+                                             ImmutableMap.of("key", ByteString.EMPTY));
 
         assertThat(validator, instanceOf(ByteStringFieldValidator.class));
     }
@@ -216,7 +215,7 @@ class FieldValidatorFactoryTest {
                                                           .getFields()
                                                           .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", Any.getDefaultInstance()));
+                                             ImmutableMap.of("key", Any.getDefaultInstance()));
 
         assertThat(validator, instanceOf(MessageFieldValidator.class));
     }
@@ -228,7 +227,7 @@ class FieldValidatorFactoryTest {
                                                       .getFields()
                                                       .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", 0));
+                                             ImmutableMap.of("key", 0));
 
         assertThat(validator, instanceOf(IntegerFieldValidator.class));
     }
@@ -240,7 +239,7 @@ class FieldValidatorFactoryTest {
                                                        .getFields()
                                                        .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", 1L));
+                                             ImmutableMap.of("key", 1L));
 
         assertThat(validator, instanceOf(LongFieldValidator.class));
     }
@@ -252,7 +251,7 @@ class FieldValidatorFactoryTest {
                                                         .getFields()
                                                         .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", 0.0f));
+                                             ImmutableMap.of("key", 0.0f));
 
         assertThat(validator, instanceOf(FloatFieldValidator.class));
     }
@@ -264,7 +263,7 @@ class FieldValidatorFactoryTest {
                                                          .getFields()
                                                          .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", 0.0));
+                                             ImmutableMap.of("key", 0.0));
 
         assertThat(validator, instanceOf(DoubleFieldValidator.class));
     }
@@ -276,13 +275,14 @@ class FieldValidatorFactoryTest {
                                                        .getFields()
                                                        .get(0);
         FieldValidator<?> validator = create(field,
-                                             of("key", true));
+                                             ImmutableMap.of("key", true));
 
         assertThat(validator, instanceOf(BooleanFieldValidator.class));
     }
 
     private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
         FieldContext context = FieldContext.create(fieldDescriptor);
-        return FieldValidatorFactory.create(context, value);
+        FieldValue wrappedValue = FieldValue.of(value, context);
+        return wrappedValue.createValidator();
     }
 }

@@ -20,15 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
-import com.google.protobuf.Value;
-import io.spine.annotation.Internal;
-import io.spine.base.Error;
-import io.spine.type.MessageClass;
-
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -39,8 +31,8 @@ import static java.lang.System.lineSeparator;
  */
 public final class ConstraintViolations {
 
+    /** Prevent instantiation of this utility class. */
     private ConstraintViolations() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -77,11 +69,12 @@ public final class ConstraintViolations {
     public static String toText(Iterable<ConstraintViolation> violations) {
         checkNotNull(violations);
 
-        StringBuilder resultBuilder = new StringBuilder("Violation list:");
+        StringBuilder resultBuilder = new StringBuilder("Violations:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();
@@ -128,107 +121,13 @@ public final class ConstraintViolations {
 
         StringBuilder resultBuilder = new StringBuilder("Violations:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(format, childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();
     }
 
-    /**
-     * A helper class for building exceptions used to report invalid {@code Message}s,
-     * which have fields that violate validation constraint(s).
-     *
-     * @param <E> type of {@code Exception} to build
-     * @param <M> type of the {@code Message}
-     * @param <C> type of the {@linkplain MessageClass} of {@code |M|}.
-     * @param <R> type of an error code to use for error reporting; must be a Protobuf enum value
-     */
-    @Internal
-    public abstract static class ExceptionFactory<E extends Exception,
-                                                  M extends Message,
-                                                  C extends MessageClass<?>,
-                                                  R extends ProtocolMessageEnum> {
-
-        private final Iterable<ConstraintViolation> constraintViolations;
-        private final M message;
-
-        /**
-         * Creates an {@code ExceptionFactory} instance for a given message and
-         * constraint violations.
-         *
-         * @param message              an invalid event message
-         * @param constraintViolations constraint violations for the event message
-         */
-        protected ExceptionFactory(M message,
-                                   Iterable<ConstraintViolation> constraintViolations) {
-            this.constraintViolations = constraintViolations;
-            this.message = message;
-        }
-
-        /**
-         * Obtains a {@code MessageClass} for an invalid {@code Message}.
-         */
-        protected abstract C getMessageClass();
-
-        /**
-         * Obtains an error code to use for error reporting.
-         */
-        protected abstract R getErrorCode();
-
-        /**
-         * Obtains an error text to use for error reporting.
-         *
-         * <p>This text will also be used as a base for an exception message to generate.
-         */
-        protected abstract String getErrorText();
-
-        /**
-         * Obtains the {@code Message}-specific type attributes for error reporting.
-         */
-        protected abstract Map<String, Value> getMessageTypeAttribute(Message message);
-
-        /**
-         * Defines the way to create an instance of exception, basing on the source {@code Message},
-         * exception text and a generated {@code Error}.
-         */
-        protected abstract E createException(String exceptionMsg, M message, Error error);
-
-        private String formatExceptionMessage() {
-            return format("%s. Message class: %s. " +
-                                  "See Error.getValidationError() for details.",
-                          getErrorText(), getMessageClass());
-        }
-
-        private Error createError() {
-            ValidationError validationError =
-                    ValidationError.newBuilder()
-                                   .addAllConstraintViolation(constraintViolations)
-                                   .build();
-            R errorCode = getErrorCode();
-            String typeName = errorCode.getDescriptorForType()
-                                       .getFullName();
-            String errorTextTemplate = getErrorText();
-            String errorText = format("%s %s",
-                                      errorTextTemplate,
-                                      toText(constraintViolations));
-
-            Error.Builder error = Error.newBuilder()
-                                       .setType(typeName)
-                                       .setCode(errorCode.getNumber())
-                                       .setValidationError(validationError)
-                                       .setMessage(errorText)
-                                       .putAllAttributes(getMessageTypeAttribute(message));
-            return error.build();
-        }
-
-        /**
-         * Creates an exception instance for an invalid message, which has fields that
-         * violate validation constraint(s).
-         */
-        public E newException() {
-            return createException(formatExceptionMessage(), message, createError());
-        }
-    }
 }

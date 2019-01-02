@@ -35,9 +35,9 @@ final class InternetDomainStringifier extends NetStringifier<InternetDomain> {
     private InternetDomainStringifier() {
         super("NetStringifiers.forInternetDomain()",
               InternetDomain::getValue,
-              (s -> InternetDomain.newBuilder()
-                                  .setValue(s)
-                                  .build()));
+              s -> InternetDomain.newBuilder()
+                                 .setValue(s)
+                                 .build());
     }
 
     static InternetDomainStringifier getInstance() {

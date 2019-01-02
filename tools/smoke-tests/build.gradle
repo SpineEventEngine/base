@@ -53,23 +53,23 @@ buildscript {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    jcenter()
-}
-
 allprojects {
     apply from: EXT
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'project-report'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
 }
 
 subprojects {
     apply plugin: 'com.google.protobuf'
     apply plugin: 'io.spine.tools.spine-model-compiler'
     apply plugin: 'idea'
+    apply from: "$rootDir/../../config/gradle/test-output.gradle"
 
     dependencies {
         // TODO:2018-06-23:dmytro.dashenkov: Migrate to the `implementation` config when resolved:
@@ -77,7 +77,11 @@ subprojects {
         // todo Spine issue: https://github.com/SpineEventEngine/base/issues/126
         compile "io.spine:spine-base:$spineVersion"
 
+        implementation deps.build.errorProneCore
+        implementation deps.build.errorProneAnnotations
+
         testImplementation "io.spine:spine-testlib:$spineVersion"
+        testRuntimeOnly deps.test.junit5Runner
     }
 
     idea.module {
@@ -104,6 +108,14 @@ subprojects {
                          "$projectDir/src/test/java"
             resources.srcDirs "$projectDir/generated/test/resources"
         }
+    }
+
+    test {
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter'
+        }
+
+        include "**/*Test.class"
     }
 }
 

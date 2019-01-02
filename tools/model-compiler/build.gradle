@@ -35,10 +35,6 @@ dependencies {
     implementation project(':plugin-base')
     implementation project(':base')
 
-    implementation (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
-        exclude group: 'com.google.guava'
-    }
-
     implementation deps.gen.javaPoet
 
     // A library for parsing Java sources.
@@ -67,6 +63,26 @@ protobuf {
 
     protoc {
         artifact = deps.build.protoc
+    }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+        }
+    }
+}
+
+sourceSets {
+    main{
+        java.srcDirs += "$projectDir/generated/main/spine"
+        resources.srcDirs += "$buildDir/descriptors/main"
+    }
+    test {
+        java.srcDirs += "$projectDir/generated/test/spine"
+        resources.srcDirs += "$buildDir/descriptors/test"
     }
 }
 

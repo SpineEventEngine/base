@@ -50,8 +50,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <li>{@code .spine} — temporary build artifacts directory used by the Spine Model Compiler.
  * </ul>
- *
- * @author Alexander Yevsyukov
  */
 public final class DefaultJavaProject extends DefaultProject {
 
@@ -70,7 +68,6 @@ public final class DefaultJavaProject extends DefaultProject {
         return at(projectDir.toPath());
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
     public HandmadeCodeRoot src() {
         return new HandmadeCodeRoot(this, "src");
     }

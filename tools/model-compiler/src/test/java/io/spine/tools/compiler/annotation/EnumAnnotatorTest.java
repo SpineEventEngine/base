@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import io.spine.annotation.Experimental;
 import io.spine.ui.Language;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +50,7 @@ class EnumAnnotatorTest {
     @Test
     @DisplayName("not annotate enum without option")
     void not_annotate_enum_without_option() {
-        EnumDescriptorProto descriptorWithoutOption = Language.getDescriptor()
-                                                              .toProto();
+        EnumDescriptor descriptorWithoutOption = Language.getDescriptor();
         boolean shouldAnnotate = annotator.shouldAnnotate(descriptorWithoutOption);
         assertFalse(shouldAnnotate);
     }

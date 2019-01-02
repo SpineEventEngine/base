@@ -36,16 +36,15 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required even if the corresponding option is not set
+     * @param fieldValue
+     *         the value to validate
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldContext fieldContext,
-                         Object fieldValues,
-                         boolean strict) {
-        super(fieldContext, FieldValidator.<String>toValueList(fieldValues), strict);
-        this.patternOption = optionValue(OptionsProto.pattern);
+    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired, true);
+        this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
 
@@ -67,13 +66,13 @@ class StringFieldValidator extends FieldValidator<String> {
 
     private ConstraintViolation newViolation(String fieldValue) {
         String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        ConstraintViolation violation =
-                ConstraintViolation.newBuilder()
-                                   .setMsgFormat(msg)
-                                   .addParam(regex)
-                                   .setFieldPath(getFieldPath())
-                                   .setFieldValue(toAny(fieldValue))
-                                   .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .addParam(regex)
+                .setFieldPath(getFieldPath())
+                .setFieldValue(toAny(fieldValue))
+                .build();
         return violation;
     }
 
