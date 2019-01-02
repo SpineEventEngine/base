@@ -32,7 +32,6 @@ import io.spine.js.generate.output.snippet.JsImportGenerator;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
-import static io.spine.js.generate.parse.Parser.ABSTRACT_PARSER;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
@@ -49,6 +48,8 @@ public final class ParseMethodsSnippet implements Snippet {
      * {@linkplain io.spine.js.generate.field.FieldGenerator field} can use the import.
      */
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
+    /** The name of the {@code object_parser.js} import. */
+    static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
 
     /**
      * The comment inserted before the generated code.
@@ -109,7 +110,7 @@ public final class ParseMethodsSnippet implements Snippet {
                 .setJsOutput(snippet)
                 .build();
         generator.importFile(KNOWN_TYPE_PARSERS.fileName(), PARSERS_IMPORT_NAME);
-        generator.importFile(OBJECT_PARSER.fileName(), ABSTRACT_PARSER);
+        generator.importFile(OBJECT_PARSER.fileName(), ABSTRACT_PARSER_IMPORT_NAME);
         return snippet;
     }
 

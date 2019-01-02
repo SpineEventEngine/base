@@ -60,8 +60,6 @@ public final class Parser implements Snippet {
     /** The parameter name of the {@code fromObject} method. */
     @VisibleForTesting
     static final String FROM_OBJECT_ARG = "obj";
-    /** The name of the abstract parser to extend from. */
-    static final String ABSTRACT_PARSER = "ObjectParser";
     /** The name of the method declared on an abstract parser. */
     private static final String PARSE_METHOD = "fromObject";
 
@@ -184,6 +182,6 @@ public final class Parser implements Snippet {
      * Obtains the name of the imported abstract parser.
      */
     private static String superClass() {
-        return ABSTRACT_PARSER;
+        return ParseMethodsSnippet.ABSTRACT_PARSER_IMPORT_NAME;
     }
 }
