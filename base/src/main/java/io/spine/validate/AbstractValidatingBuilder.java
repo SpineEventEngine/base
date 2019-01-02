@@ -261,10 +261,10 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
         Optional<Boolean> setOnceDeclaration = Options.option(field, OptionsProto.setOnce);
+        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean firstField = new FieldDeclaration(field).isFirstField();
-        boolean fieldIsSetOnce = (firstField && !setOnceDeclaration.isPresent()) || setOnceValue;
-        if (fieldIsSetOnce) {
+        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        if (setOnceValue || requiredByDefault) {
             boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
             if (setOnceNotRecommended) {
                 String containingTypeName = field.getContainingType()
@@ -272,7 +272,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                 String fieldName = field.getName();
                 Logger logger = Logging.get(AbstractValidatingBuilder.class);
                 logger.warn("Error found in %s.%s. " +
-                                    "Repeated and map fields can't be marked as `(set_once) = true`",
+                            "Repeated and map fields can't be marked as `(set_once) = true`",
                             containingTypeName,
                             fieldName);
             } else {

@@ -24,6 +24,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.Attachment;
+import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
@@ -215,7 +216,8 @@ class ValidatingBuilderTest {
      * @param violatingOperation
      *         an operation that is supposed to be illegal against a
      *         {@code set_once} field
-     * @param <E> type of the builder
+     * @param <E>
+     *         type of the builder
      */
     private static <E extends AbstractValidatingBuilder<?, ?>>
     void testSetOnce(E builder, Function<E, E> builderSetup, Function<E, ?> violatingOperation) {
@@ -251,6 +253,14 @@ class ValidatingBuilderTest {
         assertFalse(loggedMessages.isEmpty());
         assertEquals(loggedMessages.peek()
                                    .getLevel(), Level.WARN);
+    }
+
+    @Test
+    @DisplayName("not allow to change a state of an implicitly `(set_once)` field")
+    void testSetOnceImplicitForEntities() {
+        testSetOnce(EditTaskStateVBuilder.newBuilder(),
+                    builder -> builder.setEditId(newUuid()),
+                    builder -> builder.setEditId(newUuid()));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */

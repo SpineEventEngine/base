@@ -120,6 +120,12 @@ message Attachment {
     spine.net.Url url = 3 [(required) = true, (valid) = true];
 }
 
+message EditTaskState {
+    option (entity).kind = ENTITY;
+
+    string edit_id = 1;
+}
+
 message Essay {
 
     // Lines that the essay consists of.
