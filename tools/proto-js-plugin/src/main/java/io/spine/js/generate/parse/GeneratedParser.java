@@ -28,6 +28,7 @@ import io.spine.code.js.TypeName;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.field.FieldGenerator;
 import io.spine.js.generate.field.FieldGenerators;
+import io.spine.js.generate.field.FieldToParse;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Method;
 import io.spine.js.generate.output.snippet.Return;

@@ -26,7 +26,6 @@ import io.spine.js.generate.JsCodeGenerator;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.parse.FieldToParse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

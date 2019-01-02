@@ -23,7 +23,6 @@ package io.spine.js.generate.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.parse.FieldToParse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

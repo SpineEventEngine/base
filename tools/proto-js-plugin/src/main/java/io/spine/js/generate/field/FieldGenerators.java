@@ -24,7 +24,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.parse.FieldToParse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FieldTypes.isMap;
