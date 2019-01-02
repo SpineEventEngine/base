@@ -34,8 +34,8 @@ import io.spine.logging.Logging;
 import io.spine.option.IsOption;
 import io.spine.type.TypeUrl;
 
-import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -281,10 +281,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
         Descriptor descriptor = descriptor();
         if (isNested()) {
-            List<Integer> parentPath = new ArrayList<>();
+            LinkedList<Integer> parentPath = new LinkedList<>();
             Descriptor containingType = descriptor.getContainingType();
             while (containingType != null) {
-                parentPath.add(0, containingType.getIndex());
+                parentPath.addFirst(containingType.getIndex());
                 containingType = containingType.getContainingType();
             }
             path.addAll(parentPath);

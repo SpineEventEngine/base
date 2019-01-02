@@ -44,42 +44,39 @@ final class LocationPath {
     private final List<Integer> path;
 
     /**
-     * Creates an empty location path.
+     * Creates a new instance.
+     *
+     * @param items the list of path items
      */
-    LocationPath() {
-        this.path = new ArrayList<>();
+    private LocationPath(List<Integer> items) {
+        this.path = checkPath(items);
     }
 
     /**
-     * Creates a new instance.
-     *
-     * @param locationPath the list of path items
+     * Creates an empty location path.
      */
-    private LocationPath(List<Integer> locationPath) {
-        this.path = checkPath(locationPath);
+    LocationPath() {
+        this(new ArrayList<>());
     }
 
     /**
      * Creates an instance by source code location.
      */
-    @SuppressWarnings("unused")
-        // Included for future use and being able to reference `Location` in Javadoc directly.
+    @SuppressWarnings("unused") // Included for referencing `Location` in Javadoc.
     LocationPath(Location location) {
         this(location.getPathList());
     }
 
     /**
-     * Appends the path item to the end of this path location.
-     *
-     * @param pathItem the path item
+     * Appends the path item to the end of this path.
      */
-    void add(Integer pathItem) {
-        checkPathItem(pathItem);
-        path.add(pathItem);
+    void add(Integer item) {
+        checkPathItem(item);
+        path.add(item);
     }
 
     /**
-     * Appends the location path to the end of this path location.
+     * Appends the location path to the end of this path.
      *
      * @param locationPath the location path
      */
@@ -90,7 +87,7 @@ final class LocationPath {
 
     void addAll(List<Integer> path) {
         checkNotNull(path);
-        path.addAll(checkPath(path));
+        this.path.addAll(checkPath(path));
     }
 
     @VisibleForTesting
