@@ -21,13 +21,23 @@
 package io.spine.validate;
 
 import com.google.protobuf.Any;
+import io.spine.logging.Logging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.SubstituteLoggingEvent;
+import org.slf4j.helpers.SubstituteLogger;
+
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.slf4j.event.Level.WARN;
 
 abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
                                         T extends NumberFieldValidator<V>> {
@@ -42,8 +52,10 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
     private final V positiveValue;
     private final V negativeValue;
     private final T validator;
+    private final T requiredFieldValidator;
 
-    NumberFieldValidatorTest(V positiveValue, V negativeValue, T validator) {
+    NumberFieldValidatorTest(V positiveValue, V negativeValue,
+                             T validator, T requiredFieldValidator) {
         checkArgument(positiveValue.doubleValue() > 0);
         checkArgument(negativeValue.doubleValue() < 0);
         checkArgument(Double.valueOf(positiveValue.doubleValue())
@@ -53,6 +65,7 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
         this.positiveValue = positiveValue;
         this.negativeValue = negativeValue;
         this.validator = validator;
+        this.requiredFieldValidator = requiredFieldValidator;
     }
 
     @Test
@@ -73,5 +86,18 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
     void wrapToAny() {
         Any any = validator.wrap(positiveValue);
         assertThat(any).isNotEqualToDefaultInstance();
+    }
+
+    @Test
+    @DisplayName("produce a warning upon finding a required double fieled")
+    void testRequiredDoubleFieldWarning() {
+        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
+        SubstituteLogger log = (SubstituteLogger) requiredFieldValidator.log();
+        Logging.redirect(log, loggedMessages);
+        List<ConstraintViolation> validate = requiredFieldValidator.validate();
+        assertTrue(validate.isEmpty());
+        assertFalse(loggedMessages.isEmpty());
+        assertEquals(1, loggedMessages.size());
+        assertEquals(WARN, loggedMessages.peek().getLevel());
     }
 }

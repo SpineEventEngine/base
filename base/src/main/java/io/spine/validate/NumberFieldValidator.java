@@ -61,7 +61,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      *         the value to validate
      */
     NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, false);
         this.minDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
         this.maxDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMax);
@@ -95,11 +95,14 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
     }
 
+    /**
+     * Returns {@code false}.
+     *
+     * <p>There's no way to define whether a Protobuf numeric field is {@code 0} or not set.
+     */
     @Override
     protected boolean isNotSet(V value) {
-        int intValue = value.intValue();
-        boolean result = intValue == 0;
-        return result;
+        return false;
     }
 
     private void validateRangeOptions(V value) {

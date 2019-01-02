@@ -36,7 +36,6 @@ import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -234,6 +233,11 @@ public final class FieldDeclaration implements Logging {
         return new FieldDeclaration(valueDescriptor);
     }
 
+    /** Returns the name of the type of this field. */
+    public String typeName(){
+        return field.getType().name();
+    }
+
     private boolean isEntityField() {
         EntityOption entityOption = field.getContainingType()
                                          .getOptions()
@@ -273,10 +277,7 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        @Nullable String leadingComments = fieldLeadingComments(field.toProto())
-                .orElse(null);
-
-        return Optional.ofNullable(leadingComments);
+        return fieldLeadingComments(field.toProto());
     }
 
     /**

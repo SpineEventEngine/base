@@ -23,11 +23,10 @@ package io.spine.code.java;
 import io.spine.code.AbstractFieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Character.toUpperCase;
 
 /**
  * A name of a field declared in a Java class.
- * 
- * @author Alexander Yevsyukov
  */
 public final class FieldName extends AbstractFieldName {
 
@@ -45,6 +44,13 @@ public final class FieldName extends AbstractFieldName {
         checkNotNull(protoField);
         String fieldName = protoField.javaCase();
         FieldName result = new FieldName(fieldName);
+        return result;
+    }
+
+    /** Obtains this name starting with a capital letter. */
+    public String capitalize() {
+        String name = value();
+        String result = toUpperCase(name.charAt(0)) + name.substring(1);
         return result;
     }
 
