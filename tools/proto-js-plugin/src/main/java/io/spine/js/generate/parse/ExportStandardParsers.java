@@ -143,7 +143,7 @@ public final class ExportStandardParsers implements Snippet {
      *
      * For the implementation of parsers, please see the resource file at this path:
      * <pre>
-     *     proto-js-plugin/src/main/resources/io/spine/tools/protojs/knowntypes/known_types_parsers
+     *     proto-js-plugin/src/main/resources/io/spine/tools/protojs/knowntypes/known_types_parsers_template
      * </pre>
      */
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for the listed Protobuf types.

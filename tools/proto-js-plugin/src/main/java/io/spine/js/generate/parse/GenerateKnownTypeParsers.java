@@ -63,12 +63,12 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * The path to the {@code known_type_parsers} resource which contains the parser definitions.
      */
     private static final String PARSERS_RESOURCE =
-            "io/spine/tools/protojs/knowntypes/known_type_parsers";
+            "io/spine/tools/protojs/knowntypes/known_type_parsers_template";
     /**
      * The path to the {@code object_parser} resource which contains the abstract parser definition.
      */
     private static final String ABSTRACT_PARSER_RESOURCE =
-            "io/spine/tools/protojs/knowntypes/object_parser";
+            "io/spine/tools/protojs/knowntypes/object_parser_template";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
