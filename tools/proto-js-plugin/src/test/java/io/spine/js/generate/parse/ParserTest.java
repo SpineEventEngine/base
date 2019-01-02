@@ -22,6 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
@@ -32,10 +33,6 @@ import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.js.generate.parse.Parser.FROM_OBJECT_ARG;
 import static java.lang.System.lineSeparator;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @DisplayName("Parser should")
 class ParserTest {
@@ -60,15 +57,13 @@ class ParserTest {
         assertContains(snippet, check);
     }
 
-    @SuppressWarnings("AccessStaticViaInstance") // For the testing purpose.
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
-        Parser spy = spy(parser);
-        CodeLines snippet = spy.fromObjectMethod();
-        verify(spy, times(1))
-                .handleMessageFields(new CodeLines(), message);
-        assertNotNull(snippet);
+        CodeLines lines = parser.fromObjectMethod();
+        for (FieldDescriptor fieldDescriptor : message.getFields()) {
+            assertContains(lines, fieldDescriptor.getJsonName());
+        }
     }
 
     @Test

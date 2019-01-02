@@ -46,12 +46,9 @@ import static java.lang.String.format;
  *
  * <p>Code provided by the class is in {@code ES5} standard
  * since Protobuf compiler generates Javascript in {@code ES5}.
- *
- * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
- * purposes.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-public class Parser implements Snippet {
+public final class Parser implements Snippet {
 
     /**
      * The name of the {@code fromObject} method return value.
@@ -141,7 +138,7 @@ public class Parser implements Snippet {
         checkParsedObject(lines);
         lines.append(emptyLine());
         lines.append(initializedMessageInstance(message));
-        handleMessageFields(lines, message);
+        lines.append(parseFields(message));
         lines.append(Return.value(MESSAGE));
         lines.exitMethod();
         return lines;
@@ -162,15 +159,16 @@ public class Parser implements Snippet {
     }
 
     /**
-     * Adds the code necessary to parse and set the message fields.
+     * Obtains the code necessary to parse and set the message fields.
      */
-    @VisibleForTesting
-    static void handleMessageFields(CodeLines output, Descriptor message) {
+    private static CodeLines parseFields(Descriptor message) {
+        CodeLines lines = new CodeLines();
         for (FieldDescriptor field : message.getFields()) {
-            output.append(emptyLine());
-            FieldGenerator generator = FieldGenerators.createFor(field, output, MESSAGE);
+            lines.append(emptyLine());
+            FieldGenerator generator = FieldGenerators.createFor(field, lines, MESSAGE);
             generator.generate();
         }
+        return lines;
     }
 
     /**
