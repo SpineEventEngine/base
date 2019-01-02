@@ -277,11 +277,6 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        if (message.isNested()) {
-            return Optional.empty();
-        }
-
         LocationPath fieldPath = fieldPath();
         return message.documentation()
                       .leadingComments(fieldPath);

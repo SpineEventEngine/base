@@ -93,13 +93,13 @@ final class VBuilderMethods {
 
     private ClassName validatingBuilderClass() {
         return ClassName.get(type.javaPackage()
-                                 .value(), type.getValidatingBuilderClass()
+                                 .value(), type.validatingBuilderClass()
                                                .value());
     }
 
     private MethodSpec mergeFromMethod() {
         String methodName = "mergeFrom";
-        SimpleClassName vBuilderClass = type.getValidatingBuilderClass();
+        SimpleClassName vBuilderClass = type.validatingBuilderClass();
         ClassName className = ClassName.bestGuess(vBuilderClass.toString());
         ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
@@ -198,7 +198,7 @@ final class VBuilderMethods {
                     .setFieldType(fieldType)
                     .setFieldIndex(index)
                     // The name of the Validating Builder class.
-                    .setJavaClass(type.getValidatingBuilderClass()
+                    .setJavaClass(type.validatingBuilderClass()
                                       .value())
                     .setJavaPackage(type.javaPackage()
                                         .value())

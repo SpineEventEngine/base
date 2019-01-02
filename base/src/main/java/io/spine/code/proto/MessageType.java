@@ -34,17 +34,16 @@ import io.spine.logging.Logging;
 import io.spine.option.IsOption;
 import io.spine.type.TypeUrl;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A message type as declared in a proto file.
@@ -182,37 +181,15 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Obtains the name of the builder class for this message type.
-     */
-    public ClassName builderClass() {
-        ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
-        return result;
-    }
-
-    /**
-     * Obtains the name of a Validating Builder class that corresponds to this message type.
-     *
-     * @return the class name of the builder, or empty optional if this message type is
-     *         from the "google" package
-     */
-    public Optional<SimpleClassName> validatingBuilderClass() {
-        if (!isCustom()) {
-            return Optional.empty();
-        }
-        SimpleClassName result = VBuilderClassName.of(this);
-        return Optional.of(result);
-    }
-
-    /**
      * Obtains the name of a Validating Builder class for the type.
      *
      * @throws java.lang.IllegalStateException if the message type does not have a corresponding
      *  a Validating Builder class, for example, because it's a Google Protobuf message
      */
-    public SimpleClassName getValidatingBuilderClass() {
-        return validatingBuilderClass()
-                .orElseThrow(() -> newIllegalArgumentException(
-                        "No validating builder class available for the type `%s`.", this));
+    public SimpleClassName validatingBuilderClass() {
+        checkState(isCustom(), "No validating builder class available for the type `%s`.", this);
+        SimpleClassName result = VBuilderClassName.of(this);
+        return result;
     }
 
     /**
@@ -281,7 +258,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
         Descriptor descriptor = descriptor();
         if (isNested()) {
-            LinkedList<Integer> parentPath = new LinkedList<>();
+            Deque<Integer> parentPath = new ArrayDeque<>();
             Descriptor containingType = descriptor.getContainingType();
             while (containingType != null) {
                 parentPath.addFirst(containingType.getIndex());

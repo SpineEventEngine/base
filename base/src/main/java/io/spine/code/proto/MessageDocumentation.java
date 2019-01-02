@@ -61,13 +61,8 @@ public final class MessageDocumentation implements Logging {
      */
     public Optional<String> leadingComments() {
         LocationPath messagePath = type.path();
-        if (type.isTopLevel()) {
-            return leadingComments(messagePath);
-        }
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        return Optional.empty();
+        return leadingComments(messagePath);
     }
-
 
     /**
      * Obtains a leading comments by the {@link LocationPath}.

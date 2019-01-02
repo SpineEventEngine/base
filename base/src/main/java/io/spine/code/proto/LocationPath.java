@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,7 +50,7 @@ final class LocationPath {
      * @param items the list of path items
      */
     private LocationPath(List<Integer> items) {
-        this.path = checkPath(items);
+        this.path = (List<Integer>) checkPath(items);
     }
 
     /**
@@ -85,7 +86,7 @@ final class LocationPath {
         path.addAll(checkPath(locationPath.path));
     }
 
-    void addAll(List<Integer> path) {
+    void addAll(Collection<Integer> path) {
         checkNotNull(path);
         this.path.addAll(checkPath(path));
     }
@@ -95,7 +96,7 @@ final class LocationPath {
         return Collections.unmodifiableList(path);
     }
 
-    private static List<Integer> checkPath(List<Integer> locationPath) {
+    private static Collection<Integer> checkPath(Collection<Integer> locationPath) {
         checkNotNull(locationPath);
         for (Integer pathItem : locationPath) {
             checkPathItem(pathItem);
