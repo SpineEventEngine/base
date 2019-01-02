@@ -103,7 +103,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
         String descriptorDeclaration = descriptorDeclaration();
-        String validateStatement = validateStatement(fieldName, field.getName());
+        String validateStatement = validateStatement(javaFieldName.value(), javaFieldName);
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, javaFieldName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
@@ -122,8 +122,6 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     private MethodSpec getter() {
         _debug("The getter construction for the singular field is started.");
         String methodName = AccessorTemplates.getter().format(javaFieldName);
-
-        @SuppressWarnings("DuplicateStringLiteralInspection")
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
