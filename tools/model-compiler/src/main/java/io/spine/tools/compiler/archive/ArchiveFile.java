@@ -20,8 +20,6 @@
 
 package io.spine.tools.compiler.archive;
 
-import io.spine.logging.Logging;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +33,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-public final class ArchiveFile implements Logging {
+/**
+ * A ZIP archive file.
+ */
+public final class ArchiveFile {
 
     private final File file;
 
@@ -43,6 +44,18 @@ public final class ArchiveFile implements Logging {
         this.file = file;
     }
 
+    /**
+     * Wraps the given {@code File} into an {@code ArchiveFile}.
+     *
+     * <p>If the file does not exist or is not a ZIP archive, an {@code IllegalArgumentException}
+     * is thrown.
+     *
+     * <p>A file may be considered a ZIP archive if it has one of {@link ZipArchiveExtension}s.
+     *
+     * @param file
+     *         the archive file
+     * @return new instance
+     */
     public static ArchiveFile from(File file) {
         checkArchive(file);
         return new ArchiveFile(file);
@@ -56,24 +69,45 @@ public final class ArchiveFile implements Logging {
                       Arrays.toString(ZipArchiveExtension.values()));
     }
 
-    public static boolean isArchive(File file) {
-        return ZipArchiveExtension.anyMatch(file);
-    }
-
-    public Optional<ArchiveEntry> findEntry(String path) {
-        checkNotNull(path);
+    /**
+     * Finds a ZIP entry with the given name according to {@code ZipEntry.getName()}.
+     *
+     * @param name
+     *         name of the entry to find
+     * @return the found entry or {@code Optional.empty()} if there is no such entry in this archive
+     */
+    public Optional<ArchiveEntry> findEntry(String name) {
+        checkNotNull(name);
         try (EntryLookup open = EntryLookup.open(this)) {
-            return open.findEntry(path);
+            return open.findEntry(name);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
+    /**
+     * Opens an {@code InputStream} from this file.
+     *
+     * <p>It is a responsibility of the client to close the stream when it is no longer needed.
+     *
+     * @return a buffered stream of the archive content
+     */
     InputStream open() {
         try {
             return new BufferedInputStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    /**
+     * Defines if the given file is acknowledged as an archive or not.
+     *
+     * @param file
+     *         file to check
+     * @return {@code true} if the file is an archive, {@code false} otherwise
+     */
+    public static boolean isArchive(File file) {
+        return ZipArchiveExtension.anyMatch(file);
     }
 }

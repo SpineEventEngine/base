@@ -33,6 +33,9 @@ import static com.google.common.io.ByteStreams.readFully;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A process of an entry lookup inside of an archive.
+ */
 final class EntryLookup implements Closeable, Logging {
 
     private final ZipInputStream stream;
@@ -41,26 +44,41 @@ final class EntryLookup implements Closeable, Logging {
         this.stream = stream;
     }
 
+    /**
+     * Opens the given archive for a lookup.
+     *
+     * @return new instance of {@code EntryLookup}
+     */
     static EntryLookup open(ArchiveFile archiveFile) {
         checkNotNull(archiveFile);
         ZipInputStream stream = new ZipInputStream(archiveFile.open());
         return new EntryLookup(stream);
     }
 
-    Optional<ArchiveEntry> findEntry(String path) {
+    /**
+     * Finds an entry with the given name in the archive.
+     *
+     * <p>This method should only be called once in the lifetime of an {@code EntryLookup}.
+     * All subsequent calls will always return an empty result.
+     *
+     * @param name
+     *         the name of the entry in terms of {@code ZipEntry.getName()}
+     * @return a snapshot of the found entry or {@code Optional.empty()} if there is no such entry
+     */
+    Optional<ArchiveEntry> findEntry(String name) {
         try {
-            return doFindEntry(path);
+            return doFindEntry(name);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    private Optional<ArchiveEntry> doFindEntry(String path)
+    private Optional<ArchiveEntry> doFindEntry(String name)
             throws IOException {
         for (ZipEntry entry = stream.getNextEntry();
              entry != null;
              entry = stream.getNextEntry()) {
-            if (path.equals(entry.getName())) {
+            if (name.equals(entry.getName())) {
                 _debug("Reading ZIP entry `{}` of size: {}.", entry, entry.getSize());
                 ArchiveEntry read = readEntry(entry);
                 return Optional.of(read);
@@ -89,6 +107,14 @@ final class EntryLookup implements Closeable, Logging {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Closes the underlying file stream.
+     *
+     * @throws IOException
+     *         if {@code InputStream.close()} throws an {@code IOException}
+     */
     @Override
     public void close() throws IOException {
         stream.close();

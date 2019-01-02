@@ -22,6 +22,9 @@ package io.spine.tools.compiler.archive;
 
 import java.util.Arrays;
 
+/**
+ * A snapshot of an archive entry.
+ */
 public final class ArchiveEntry {
 
     private final byte[] bytes;
@@ -30,11 +33,15 @@ public final class ArchiveEntry {
         this.bytes = bytes;
     }
 
-    public static ArchiveEntry of(byte[] bytes) {
+    /**
+     * Creates a new instance of {@code ArchiveEntry}.
+     */
+    static ArchiveEntry of(byte[] bytes) {
         byte[] copiedBytes = Arrays.copyOf(bytes, bytes.length);
         return new ArchiveEntry(copiedBytes);
     }
 
+    /** Obtains the raw bytes of the entry. */
     public byte[] bytes() {
         return Arrays.copyOf(bytes, bytes.length);
     }
