@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
@@ -42,6 +43,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.lang.String.format;
 
 /**
  * A message type as declared in a proto file.
@@ -266,5 +268,40 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                             .map(d -> new FieldDeclaration(d, this))
                             .collect(toImmutableList());
         return result;
+    }
+
+    /**
+     * Returns the message location path for a top-level message definition.
+     *
+     * @return the message location path
+     */
+    LocationPath path() {
+        LocationPath path = new LocationPath();
+        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+        if (isTopLevel()) {
+            path.add(topLevelIndex());
+        }
+        return path;
+    }
+
+    private int topLevelIndex() {
+        Descriptor descriptor = descriptor();
+
+        List<DescriptorProto> messages = descriptor.getFile()
+                                                   .toProto()
+                                                   .getMessageTypeList();
+        for (DescriptorProto currentMessage : messages) {
+            if (currentMessage.equals(descriptor.toProto())) {
+                return messages.indexOf(descriptor.toProto());
+            }
+        }
+
+        String msg = format("Unable to locate message `%s` in the file `%s`.",
+                            descriptor.toProto()
+                                      .getName(),
+                            descriptor.getFile()
+                                      .getName()
+        );
+        throw new IllegalStateException(msg);
     }
 }

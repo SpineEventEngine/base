@@ -21,16 +21,11 @@
 package io.spine.code.proto;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
-import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.logging.Logging;
 
-import java.util.List;
 import java.util.Optional;
-
-import static java.lang.String.format;
 
 /**
  * The documentation of a message in a {@code .proto} file.
@@ -53,10 +48,10 @@ import static java.lang.String.format;
 @Immutable
 public final class MessageDocumentation implements Logging {
 
-    private final MessageType declaration;
+    private final MessageType type;
 
-    MessageDocumentation(MessageType declaration) {
-        this.declaration = declaration;
+    MessageDocumentation(MessageType type) {
+        this.type = type;
     }
 
     /**
@@ -65,8 +60,8 @@ public final class MessageDocumentation implements Logging {
      * @return the comments text or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        LocationPath messagePath = messagePath();
-        if (declaration.isTopLevel()) {
+        LocationPath messagePath = type.path();
+        if (type.isTopLevel()) {
             return leadingComments(messagePath);
         }
         //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
@@ -82,78 +77,19 @@ public final class MessageDocumentation implements Logging {
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
     Optional<String> leadingComments(LocationPath locationPath) {
-        if (!declaration.descriptor()
-                        .getFile()
-                        .toProto()
-                        .hasSourceCodeInfo()) {
+        FileDescriptorProto file = type.descriptor()
+                                       .getFile()
+                                       .toProto();
+        if (!file.hasSourceCodeInfo()) {
             _warn("Unable to obtain proto source code info. " +
                             "Please configure the Gradle Protobuf plugin as follows:%n%s",
                     "`task.descriptorSetOptions.includeSourceInfo = true`.");
             return Optional.empty();
         }
 
-        SourceCodeInfo.Location location = toLocation(locationPath);
+        SourceCodeInfo.Location location = locationPath.toLocation(file);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
-    }
-
-    /**
-     * Returns the message location path for a top-level message definition.
-     *
-     * @return the message location path
-     */
-    LocationPath messagePath() {
-        LocationPath path = new LocationPath();
-        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
-        if (declaration.isTopLevel()) {
-            path.add(getTopLevelMessageIndex());
-        }
-        return path;
-    }
-
-    private int getTopLevelMessageIndex() {
-        Descriptor descriptor = declaration.descriptor();
-
-        List<DescriptorProto> messages = descriptor.getFile()
-                                                   .toProto()
-                                                   .getMessageTypeList();
-        for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(descriptor.toProto())) {
-                return messages.indexOf(descriptor.toProto());
-            }
-        }
-
-        String msg = format("Unable to locate message `%s` in the file `%s`.",
-                            descriptor.toProto()
-                                      .getName(),
-                            descriptor.getFile()
-                                      .getName()
-        );
-        throw new IllegalStateException(msg);
-    }
-
-    /**
-     * Converts {@link LocationPath} related to the message to {@link SourceCodeInfo.Location}.
-     *
-     * @param locationPath
-     *         the location path
-     * @return the location for the path
-     */
-    private SourceCodeInfo.Location toLocation(LocationPath locationPath) {
-        FileDescriptorProto declarationFile = declaration.descriptor()
-                                                         .getFile()
-                                                         .toProto();
-        for (SourceCodeInfo.Location location : declarationFile.getSourceCodeInfo()
-                                                               .getLocationList()) {
-            if (location.getPathList()
-                        .equals(locationPath.getPath())) {
-                return location;
-            }
-        }
-
-        String msg = format("The location with %s path should be present in \"%s\".",
-                            locationPath, declarationFile.getName());
-        throw new IllegalStateException(msg);
     }
 }

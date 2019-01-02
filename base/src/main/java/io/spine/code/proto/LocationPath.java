@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Encapsulates a {@linkplain Location#getPathList() location path}.
@@ -42,7 +45,7 @@ public class LocationPath {
     /**
      * Creates an empty location path.
      */
-    public LocationPath() {
+    LocationPath() {
         this.path = new ArrayList<>();
     }
 
@@ -51,7 +54,7 @@ public class LocationPath {
      *
      * @param locationPath the list of path items
      */
-    public LocationPath(List<Integer> locationPath) {
+    private LocationPath(List<Integer> locationPath) {
         this.path = checkPath(locationPath);
     }
 
@@ -84,7 +87,7 @@ public class LocationPath {
         path.addAll(checkPath(locationPath.path));
     }
 
-    public List<Integer> getPath() {
+    private List<Integer> toList() {
         return Collections.unmodifiableList(path);
     }
 
@@ -99,6 +102,24 @@ public class LocationPath {
     private static void checkPathItem(Integer pathItem) {
         checkArgument(pathItem >= 0);
     }
+
+    /**
+     * Converts the instance to the {@link SourceCodeInfo.Location} in the given file.
+     */
+    SourceCodeInfo.Location toLocation(FileDescriptorProto file) {
+        List<Integer> thisPath = toList();
+        for (SourceCodeInfo.Location location : file.getSourceCodeInfo()
+                                                    .getLocationList()) {
+            if (thisPath.equals(location.getPathList())) {
+                return location;
+            }
+        }
+
+        String msg = format("The location with %s path should be present in \"%s\".",
+                            this, file.getName());
+        throw new IllegalStateException(msg);
+    }
+
 
     @Override
     public boolean equals(Object o) {

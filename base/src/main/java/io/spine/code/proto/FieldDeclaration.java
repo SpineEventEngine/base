@@ -296,9 +296,7 @@ public final class FieldDeclaration implements Logging {
      */
     private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(message.documentation()
-                                   .messagePath());
+        locationPath.addAll(message.path());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
         int fieldIndex = fieldIndex();
         locationPath.add(fieldIndex);
