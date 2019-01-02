@@ -20,9 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.tools.compiler.descriptor.Merger;
-import io.spine.code.proto.MergedDescriptorSet;
+import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.type.MoreKnownTypes;
@@ -80,15 +78,13 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         return task -> {
             File descriptorSet = new File(descriptorSetPath);
             Project project = task.getProject();
-            ImmutableSet.Builder<File> files = ImmutableSet
-                    .<File>builder()
-                    .addAll(configuration.getFiles());
+            FileDescriptorSuperset superset = new FileDescriptorSuperset(archive -> project.zipTree(archive).getFiles());
+            configuration.forEach(superset::addFromDependency);
             if (descriptorSet.exists()) {
-                files.add(descriptorSet);
+                superset.addFromDependency(descriptorSet);
             }
-            Merger merger = new Merger(archive -> project.zipTree(archive).getFiles());
-            merger.merge(files.build())
-                  .writeTo(descriptorSet);
+            superset.merge()
+                    .writeTo(descriptorSet);
 
             // Extend `KnownTypes` with all the type definitions from all the descriptors
             // found in the classpath of the project being built.

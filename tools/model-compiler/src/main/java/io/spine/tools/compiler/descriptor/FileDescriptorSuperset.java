@@ -20,17 +20,14 @@
 
 package io.spine.tools.compiler.descriptor;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.spine.logging.Logging;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -41,86 +38,65 @@ import java.util.zip.ZipInputStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.io.ByteStreams.readFully;
-import static com.google.common.io.Files.createParentDirs;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.option.Options.registry;
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.stream.Collectors.toSet;
 
 /**
- * A descriptor set merger.
+ * A set of {@code FileDescriptorSet}s.
  */
-public final class Merger implements Logging {
+public final class FileDescriptorSuperset implements Logging {
 
     private final ArchiveUnpacker fullUnpacker;
 
+    private final Collection<FileDescriptorSet> descriptors;
+
     /**
-     * Creates a new instance of {@code Merger}.
+     * Creates a new instance of {@code FileDescriptorSuperset}.
      *
      * @param unpacker
      *         an {@link ArchiveUnpacker} to tackle archive files which cannot be comprehended
      *         via their ZIP tree
      */
-    public Merger(ArchiveUnpacker unpacker) {
+    public FileDescriptorSuperset(ArchiveUnpacker unpacker) {
         this.fullUnpacker = checkNotNull(unpacker);
+        this.descriptors = newLinkedList();
     }
 
-    /**
-     * Merges the descriptors collected from a project dependencies.
-     *
-     * <p>If a dependency is descriptor set file (a file named
-     * {@link io.spine.code.proto.FileDescriptors#KNOWN_TYPES known_types.desc}), the descriptors
-     * of that file are added to the result descriptor set.
-     *
-     * <p>If a dependency is a directory, the mentioned file is looked up in the directory
-     * <b>root</b>.
-     *
-     * <p>If a dependency is a JAR (or ZIP) archive, the descriptor set is looked up in
-     * the <b>root</b> of the archive tree.
-     *
-     * @param dependencies
-     *         the dependency files to merge
-     * @return the {@link MergedDescriptorSet}
-     */
-    public MergedDescriptorSet merge(Collection<File> dependencies) {
-        FileDescriptorSet merged = readAllDescriptors(dependencies)
+    public MergedDescriptorSet merge() {
+        Set<DescriptorProtos.FileDescriptorProto> allFiles = descriptors
                 .stream()
-                .reduce(FileDescriptorSet.newBuilder(),
-                        FileDescriptorSet.Builder::mergeFrom,
-                        (right, left) -> right.addAllFile(left.getFileList()))
+                .flatMap(set -> set.getFileList().stream())
+                .collect(toSet());
+        FileDescriptorSet descriptorSet = FileDescriptorSet
+                .newBuilder()
+                .addAllFile(allFiles)
                 .build();
-        MergedDescriptorSet result = new MergedDescriptorSet(merged);
-        return result;
+        return new MergedDescriptorSet(descriptorSet);
     }
 
-    private static FileDescriptorSet parseDescriptorSet(byte[] fileDescriptorSet) {
-        try {
-            return FileDescriptorSet.parseFrom(fileDescriptorSet, registry());
-        } catch (InvalidProtocolBufferException e) {
-            throw illegalStateWithCauseOf(e);
-        }
+    public void addFromDependency(File dependencyFile) {
+        readDependency(dependencyFile)
+                .ifPresent(this::addFiles);
     }
 
-    private Set<FileDescriptorSet> readAllDescriptors(Collection<File> dependencies) {
-        ImmutableSet.Builder<FileDescriptorSet> result = ImmutableSet.builder();
-        for (File file : dependencies) {
-            log().debug("Merging descriptors from `{}`.", file);
-            if (file.isDirectory()) {
-                mergeDirectory(file)
-                        .ifPresent(result::add);
-            } else {
-                if (ZipArchiveExtension.anyMatch(file)) {
-                    readFromArchive(file)
-                            .ifPresent(result::add);
-                } else {
-                    readFromPlainFile(file)
-                            .ifPresent(result::add);
-                }
-            }
+    private void addFiles(FileDescriptorSet fileSet) {
+        descriptors.add(fileSet);
+    }
+
+    private Optional<FileDescriptorSet> readDependency(File file) {
+        log().debug("Merging descriptors from `{}`.", file);
+        if (file.isDirectory()) {
+            return mergeDirectory(file);
+        } else if (ZipArchiveExtension.anyMatch(file)) {
+            return readFromArchive(file);
+        } else {
+            return readFromPlainFile(file);
         }
-        return result.build();
     }
 
     private static Optional<FileDescriptorSet> mergeDirectory(File directory) {
@@ -188,7 +164,7 @@ public final class Merger implements Logging {
                 .stream()
                 .filter(file -> KNOWN_TYPES.equals(file.getName()))
                 .findAny()
-                .map(Merger::read);
+                .map(FileDescriptorSuperset::read);
         return result;
     }
 
@@ -212,59 +188,11 @@ public final class Merger implements Logging {
         }
     }
 
-    /**
-     * Unpacks {@code ZIP} archive files.
-     */
-    public interface ArchiveUnpacker {
-
-        /**
-         * Unpacks the given {@code archive} onto the disk.
-         *
-         * @param archive
-         *         a {@code ZIP} archive file
-         * @return a collection of the unpacked files
-         */
-        Collection<File> unpack(File archive);
-    }
-
-    /**
-     * A view on a {@link FileDescriptorSet} after merging.
-     */
-    public static final class MergedDescriptorSet {
-
-        private final FileDescriptorSet descriptorSet;
-
-        private MergedDescriptorSet(FileDescriptorSet descriptorSet) {
-            this.descriptorSet = descriptorSet;
-        }
-
-        /**
-         * Writes this descriptor set into the given file.
-         *
-         * <p>If the file exists, it will be overridden. Otherwise, the file (and all its parent
-         * directories if necessary) will be created.
-         *
-         * @param destination
-         *         the file to write this descriptor set into
-         */
-        public void writeTo(File destination) {
-            checkNotNull(destination);
-            prepareFile(destination);
-            try (OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
-                descriptorSet.writeTo(out);
-            } catch (IOException e) {
-                throw illegalStateWithCauseOf(e);
-            }
-        }
-
-        private static void prepareFile(File destination) {
-            try {
-                destination.delete();
-                createParentDirs(destination);
-                destination.createNewFile();
-            } catch (IOException e) {
-                throw illegalArgumentWithCauseOf(e);
-            }
+    private static FileDescriptorSet parseDescriptorSet(byte[] fileDescriptorSet) {
+        try {
+            return FileDescriptorSet.parseFrom(fileDescriptorSet, registry());
+        } catch (InvalidProtocolBufferException e) {
+            throw illegalStateWithCauseOf(e);
         }
     }
 }

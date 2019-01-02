@@ -20,22 +20,20 @@
 
 package io.spine.tools.compiler.descriptor;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.util.Collection;
 
-import java.io.IOException;
+/**
+ * Unpacks {@code ZIP} archive files.
+ */
+public interface ArchiveUnpacker {
 
-@DisplayName("Merger should")
-class MergerTest {
-
-    @BeforeAll
-    static void setUp() throws IOException {
-
-    }
-
-    @Test
-    @DisplayName("merge descriptors from ZIP, folder, and standalone file")
-    void mergeFromAllSources() {
-    }
+    /**
+     * Unpacks the given {@code archive} onto the disk.
+     *
+     * @param archive
+     *         a {@code ZIP} archive file
+     * @return a collection of the unpacked files
+     */
+    Collection<File> unpack(File archive);
 }
