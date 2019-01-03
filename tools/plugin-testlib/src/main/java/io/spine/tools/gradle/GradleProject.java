@@ -41,16 +41,13 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static java.util.Arrays.asList;
 
 /**
- * {@code GradleProject} for the test needs.
+ * Allows to configure a Gradle project for testing needs.
  *
- * <p>{@code GradleProject} operates in the given {@linkplain File test project directory} and
- * allows to execute Gradle tasks.
+ * <p>The project operates in the given test project directory and allows to execute Gradle tasks.
  */
 public final class GradleProject {
 
     public static final String JAVA_PLUGIN_ID = "java";
-
-    private static final String BUILD_GRADLE_NAME = "build.gradle";
 
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
@@ -58,6 +55,13 @@ public final class GradleProject {
     private final String name;
     private final GradleRunner gradleRunner;
     private final boolean debug;
+
+    /**
+     * Creates new builder for the project.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
     private GradleProject(Builder builder) throws IOException {
         this.name = builder.name;
@@ -68,6 +72,15 @@ public final class GradleProject {
         writeGradleScripts();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
+    }
+
+    private void writeGradleScripts() throws IOException {
+        BuildGradle buildGradle = new BuildGradle(testProjectRoot());
+        buildGradle.createFile();
+
+        Path projectRoot = ProjectRoot.find();
+        TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
+        testEnvGradle.createFile();
     }
 
     private void writeProtoFiles(Iterable<String> fileNames) throws IOException {
@@ -117,41 +130,14 @@ public final class GradleProject {
         Files.copy(fileContent, resultingPath);
     }
 
-    private void writeGradleScripts() throws IOException {
-        writeBuildGradle();
-        Path projectRoot = ProjectRoot.find();
-        createTestEnvScript(projectRoot);
-    }
-
-    /**
-     * Creates an extension file, which provides information about the project
-     * running this test project.
-     *
-     * <p>In particular, it includes the root of the project running this test project.
-     */
-    private void createTestEnvScript(Path projectRoot) throws IOException {
-        TestEnvGradle script = new TestEnvGradle(projectRoot, testProjectRoot());
-        script.createFile();
-    }
-
-    private void writeBuildGradle() throws IOException {
-        Path resultingPath = testProjectRoot().resolve(BUILD_GRADLE_NAME);
-        InputStream fileContent = getClass().getClassLoader()
-                                            .getResourceAsStream(BUILD_GRADLE_NAME);
-        Files.createDirectories(resultingPath.getParent());
-        checkNotNull(fileContent);
-        Files.copy(fileContent, resultingPath);
-    }
-
     private Path testProjectRoot() {
         return gradleRunner.getProjectDir()
                            .toPath();
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
+    /**
+     * A builder for new {@code GradleProject}.
+     */
     public static class Builder {
 
         private String name;
