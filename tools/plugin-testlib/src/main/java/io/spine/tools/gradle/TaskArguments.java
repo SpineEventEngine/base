@@ -23,18 +23,18 @@ package io.spine.tools.gradle;
 /**
  * Create Gradle Runner arguments for a task.
  */
-final class Arguments {
+final class TaskArguments {
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
     private static final String DEBUG_CLI_OPTION = "--debug";
 
     private final boolean debug;
 
-    static Arguments mode(boolean debug) {
-        return new Arguments(debug);
+    static TaskArguments mode(boolean debug) {
+        return new TaskArguments(debug);
     }
 
-    private Arguments(boolean debug) {
+    private TaskArguments(boolean debug) {
         this.debug = debug;
     }
 
