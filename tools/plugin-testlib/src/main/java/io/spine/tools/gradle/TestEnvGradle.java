@@ -35,7 +35,7 @@ import static java.lang.String.format;
  * <p>The variable {@link #VAR_NAME} should be later used for referencing dependencies
  * in the test Gradle sub-projects.
  */
-final class TestEnvScript {
+final class TestEnvGradle {
 
     private static final String VAR_NAME = "enclosingRootDir";
     private static final String FILE_NAME = "testEnv.gradle";
@@ -43,7 +43,7 @@ final class TestEnvScript {
     private final Path projectRoot;
     private final Path testProjectRoot;
 
-    TestEnvScript(Path projectRoot, Path testProjectRoot) {
+    TestEnvGradle(Path projectRoot, Path testProjectRoot) {
         this.projectRoot = projectRoot;
         this.testProjectRoot = testProjectRoot;
     }

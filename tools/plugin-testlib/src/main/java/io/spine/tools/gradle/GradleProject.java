@@ -130,7 +130,7 @@ public final class GradleProject {
      * <p>In particular, it includes the root of the project running this test project.
      */
     private void createTestEnvScript(Path projectRoot) throws IOException {
-        TestEnvScript script = new TestEnvScript(projectRoot, testProjectRoot());
+        TestEnvGradle script = new TestEnvGradle(projectRoot, testProjectRoot());
         script.createFile();
     }
 
