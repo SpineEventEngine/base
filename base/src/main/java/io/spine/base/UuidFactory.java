@@ -42,7 +42,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * @param <I>
  *         the type of created messages
  */
-class UuidFactory<I extends Message> {
+final class UuidFactory<I extends Message> {
 
     private static final String ERROR_MESSAGE =
             "A UUID message should have a single string field named %s.";
