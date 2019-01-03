@@ -20,6 +20,9 @@
 
 package io.spine.tools.compiler.descriptor;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.annotation.Internal;
 
@@ -63,6 +66,11 @@ public final class MergedDescriptorSet {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    @VisibleForTesting
+    ImmutableSet<FileDescriptorProto> descriptors() {
+        return ImmutableSet.copyOf(descriptorSet.getFileList());
     }
 
     private static void prepareFile(File destination) {

@@ -20,22 +20,66 @@
 
 package io.spine.tools.compiler.descriptor;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.google.common.truth.IterableSubject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 
+import static com.google.common.io.Files.createParentDirs;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
+import static java.nio.file.Files.copy;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@ExtendWith(TempDirectory.class)
 @DisplayName("FileDescriptorSuperset should")
 class FileDescriptorSupersetTest {
 
-    @BeforeAll
-    static void setUp() throws IOException {
+    private Path directoryDependency;
+    private Path fileDependency;
+    private Path archiveDependency;
 
+    @BeforeEach
+    void setUp(@TempDir Path sandbox) throws IOException {
+        directoryDependency = sandbox.resolve("dir").resolve(KNOWN_TYPES);
+        fileDependency = sandbox.resolve(KNOWN_TYPES);
+        archiveDependency = sandbox.resolve("zipped_descriptors.zip");
+        writeResource("descriptors/dir/known_types.desc", directoryDependency);
+        writeResource("descriptors/known_types.desc", fileDependency);
+        writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
     }
 
     @Test
     @DisplayName("merge descriptors from ZIP, folder, and standalone file")
     void mergeFromAllSources() {
+        FileDescriptorSuperset superset = new FileDescriptorSuperset();
+        superset.addFromDependency(directoryDependency.toFile());
+        superset.addFromDependency(fileDependency.toFile());
+        superset.addFromDependency(archiveDependency.toFile());
+
+        MergedDescriptorSet mergedSet = superset.merge();
+        IterableSubject assertDescriptors = assertThat(mergedSet.descriptors());
+        assertDescriptors.hasSize(3);
+        assertDescriptors.contains(Task.getDescriptor().getFile().toProto());
+        assertDescriptors.contains(Person.getDescriptor().getFile().toProto());
+        assertDescriptors.contains(Project.getDescriptor().getFile().toProto());
+    }
+
+    private static void writeResource(String resourceName, Path destination) throws IOException {
+        File destinationFile = destination.toFile();
+        createParentDirs(destinationFile);
+        InputStream resource = FileDescriptorSupersetTest.class.getClassLoader()
+                                                               .getResourceAsStream(resourceName);
+        assertNotNull(resource);
+        copy(resource, destination, REPLACE_EXISTING);
     }
 }
