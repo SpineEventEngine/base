@@ -61,9 +61,6 @@ public final class GradleProject {
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
 
-    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
-    private static final String DEBUG_CLI_OPTION = "--debug";
-
     private final String name;
     private final GradleRunner gradleRunner;
     private final boolean debug;
@@ -102,10 +99,8 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        String task = taskName.getValue();
-        String[] args = debug
-                        ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
-                        : new String[]{task, STACKTRACE_CLI_OPTION};
+        String[] args = Arguments.mode(debug)
+                                 .of(taskName);
         return gradleRunner.withArguments(args);
     }
 
