@@ -169,7 +169,7 @@ public final class GradleProject {
 
     /**
      * Finds a root directory of the project by searching for the file
-     * named {@link #VERSION_GRADLE_NAME ext.gradle}.
+     * named {@link #VERSION_GRADLE_NAME version.gradle}.
      *
      * <p>Starts from the current directory, climbing up, if the file is not found.
      *
