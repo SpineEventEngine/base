@@ -25,8 +25,6 @@ import com.google.common.base.MoreObjects;
  * Task names in Gradle build lifecycle.
  *
  * <p>Spine `tools` library uses some of 3rd-party Gradle tasks as anchors for own execution.
- *
- * @author Alex Tymchenko
  */
 public enum TaskName {
 

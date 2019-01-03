@@ -47,7 +47,13 @@ import static java.util.Arrays.asList;
  */
 public final class GradleProject {
 
-    public static final String JAVA_PLUGIN_ID = "java";
+    /**
+     * The name of the Gradle Java plugin.
+     *
+     * @deprecated use {@link #javaPlugin()}
+     */
+    @Deprecated
+    public static final String JAVA_PLUGIN_ID = javaPlugin();
 
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
@@ -61,6 +67,13 @@ public final class GradleProject {
      */
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    /**
+     * Obtains the name of the Java Gradle plugin.
+     */
+    public static String javaPlugin() {
+        return "java";
     }
 
     private GradleProject(Builder builder) throws IOException {
@@ -78,7 +91,8 @@ public final class GradleProject {
         BuildGradle buildGradle = new BuildGradle(testProjectRoot());
         buildGradle.createFile();
 
-        Path projectRoot = ProjectRoot.find();
+        Path projectRoot = ProjectRoot.instance()
+                                      .toPath();
         TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
         testEnvGradle.createFile();
     }

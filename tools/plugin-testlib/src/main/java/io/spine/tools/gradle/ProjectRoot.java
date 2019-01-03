@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -27,25 +28,29 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.nio.file.Files.exists;
 
 /**
- * Finds a root of a project by presence of the {@link #VERSION_GRADLE_NAME} file.
+ * Finds a root of a project by presence of the {@link #VERSION_GRADLE_NAME version.gradle} file.
+ *
+ * <p>Starts from the current directory, climbing up, until the file is found. By convention
+ * a project should have only one {@link #VERSION_GRADLE_NAME version.gradle} file, which is
+ * placed in the root directory of the project.
  */
-final class ProjectRoot {
+enum ProjectRoot {
+
+    INSTANCE;
 
     private static final String VERSION_GRADLE_NAME = "version.gradle";
 
-    /** Prevents instantiation of this utility class. */
-    private ProjectRoot() {
+    static ProjectRoot instance() {
+        return INSTANCE;
     }
 
     /**
-     * Finds a root directory of the project by searching for the file
-     * named {@link #VERSION_GRADLE_NAME version.gradle}.
+     * Obtains a root directory of the project.
      *
-     * <p>Starts from the current directory, climbing up, if the file is not found.
-     *
-     * @throws IllegalStateException if the file is not found
+     * @throws IllegalStateException
+     *         if the {@link #VERSION_GRADLE_NAME version.gradle} file is not found
      */
-    static Path find() {
+    Path toPath() {
         Path workingFolderPath = Paths.get(".")
                                       .toAbsolutePath();
         Path extGradleDirPath = workingFolderPath;
@@ -58,5 +63,16 @@ final class ProjectRoot {
                    VERSION_GRADLE_NAME,
                    workingFolderPath);
         return extGradleDirPath;
+    }
+
+    /**
+     * Obtains root directory of the project.
+     *
+     * @throws IllegalStateException
+     *         if the {@link #VERSION_GRADLE_NAME version.gradle} file is not found
+     * @see #toPath()
+     */
+    File toFile() {
+        return toPath().toFile();
     }
 }

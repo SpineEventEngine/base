@@ -36,7 +36,7 @@ class ProjectRootTest extends UtilityClassTest<ProjectRoot> {
     @Test
     @DisplayName("locate the project root")
     void find() {
-        assertThat(ProjectRoot.find()
+        assertThat(ProjectRoot.instance()
                               .toFile()
                               .exists()).isTrue();
     }

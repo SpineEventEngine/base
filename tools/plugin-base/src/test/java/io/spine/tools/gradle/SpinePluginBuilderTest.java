@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import static io.spine.tools.gradle.GradleProject.javaPlugin;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.CLASSES;
 import static io.spine.tools.gradle.TaskName.CLEAN;
@@ -57,7 +58,7 @@ class SpinePluginBuilderTest {
         project = ProjectBuilder.builder()
                                 .build();
         project.getPluginManager()
-               .apply(GradleProject.JAVA_PLUGIN_ID);
+               .apply(javaPlugin());
     }
 
     @Test
@@ -67,7 +68,7 @@ class SpinePluginBuilderTest {
                                            .withParent(project)
                                            .build();
         subProject.getPluginManager()
-                  .apply(GradleProject.JAVA_PLUGIN_ID);
+                  .apply(javaPlugin());
         SpinePlugin plugin = TestPlugin.INSTANCE;
         GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.action())
                                 .insertAfterAllTasks(COMPILE_JAVA)
