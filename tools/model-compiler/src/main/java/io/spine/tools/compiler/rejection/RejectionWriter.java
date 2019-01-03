@@ -151,8 +151,7 @@ public class RejectionWriter implements Logging {
      */
     private CodeBlock classJavadoc() {
         JavadocText leadingComments =
-                declaration.documentation()
-                           .leadingComments()
+                declaration.leadingComments()
                            .map(text -> JavadocText.fromUnescaped(text)
                                                    .inPreTags()
                                                    .withNewLine())

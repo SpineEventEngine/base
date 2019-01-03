@@ -79,8 +79,6 @@ public final class SimpleClassName extends StringTypeValue {
     /**
      * Creates an instance with the outer class name for the types declared in the file specified
      * by the passed descriptor.
-     *
-     * @see #outerOf(com.google.protobuf.DescriptorProtos.FileDescriptorProto)
      */
     public static SimpleClassName outerOf(FileDescriptor file) {
         return outerOf(file.toProto());

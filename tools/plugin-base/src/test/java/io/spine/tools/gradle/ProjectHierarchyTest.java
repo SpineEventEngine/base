@@ -89,7 +89,7 @@ class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
         Project project = mock(Project.class);
         when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
         assertThrows(IllegalArgumentException.class,
-                     () -> ProjectHierarchy.applyToAll(project, GradleProject.NoOp.action()));
+                     () -> ProjectHierarchy.applyToAll(project, NoOp.action()));
     }
 
 }
