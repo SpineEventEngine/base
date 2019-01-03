@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.GradleProject.NoOp;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;

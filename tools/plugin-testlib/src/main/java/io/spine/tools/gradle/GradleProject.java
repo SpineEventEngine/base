@@ -23,7 +23,6 @@ package io.spine.tools.gradle;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 
@@ -192,20 +191,6 @@ public final class GradleProject {
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public enum NoOp implements Action<Object> {
-        ACTION;
-
-        @Override
-        public void execute(Object ignored) {
-            // NoOp
-        }
-
-        @SuppressWarnings("unchecked") // No matter, as the action is NoOp.
-        public static <T> Action<T> action() {
-            return ((Action<T>) ACTION);
-        }
     }
 
     public static class Builder {
