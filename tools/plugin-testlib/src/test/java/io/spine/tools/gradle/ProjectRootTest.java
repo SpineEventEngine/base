@@ -20,18 +20,13 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("ProjectRoot utility should")
-class ProjectRootTest extends UtilityClassTest<ProjectRoot> {
-
-    ProjectRootTest() {
-        super(ProjectRoot.class);
-    }
+class ProjectRootTest {
 
     @Test
     @DisplayName("locate the project root")
