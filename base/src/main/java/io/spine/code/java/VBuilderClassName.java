@@ -62,18 +62,16 @@ public final class VBuilderClassName {
     }
 
     private SimpleClassName toSimple() {
+        SimpleClassName topLevelName;
         ClassName className = type.javaClassName();
         if (type.isTopLevel()) {
-            SimpleClassName result = className.toSimple()
-                                              .with(VBUILDER_SUFFIX);
-            return result;
+            topLevelName = className.toSimple();
+        } else {
+            // Nested: either with outer class, or with enclosing message, or both.
+            String nestedName = ClassName.afterDot(className.value());
+            String mergedNames = nestedName.replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
+            topLevelName = SimpleClassName.create(mergedNames);
         }
-
-        // Nested: either with outer class, or with enclosing message, or both.
-        String nestedName = ClassName.afterDot(className.value());
-        String mergedNames = nestedName.replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
-        SimpleClassName result = SimpleClassName.create(mergedNames)
-                                                .with(VBUILDER_SUFFIX);
-        return result;
+        return topLevelName.with(VBUILDER_SUFFIX);
     }
 }
