@@ -87,6 +87,8 @@ final class EntryLookup implements Closeable, Logging {
     }
 
     private ArchiveEntry readEntry() throws IOException {
+        // When being read, a `ZipStream` reports to be out of data when the *current entry* is
+        // over, not when the whole archive is read.
         byte[] bytes = toByteArray(stream);
         return ArchiveEntry.of(bytes);
     }
