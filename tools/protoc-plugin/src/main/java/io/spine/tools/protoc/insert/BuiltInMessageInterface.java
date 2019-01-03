@@ -18,13 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
 
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.MessageFile.Predicate;
+import io.spine.base.MessageClassifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.SerializableMessage;
+import io.spine.base.UuidValue;
+import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -32,30 +35,35 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import static io.spine.tools.protoc.InsertionPoint.implementInterface;
+import static io.spine.base.MessageClassifiers.forInterface;
+import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
 
 /**
- * A built-in marked interface.
+ * A built-in message interface.
  *
- * <p>This interface marks special message types, such as events, commands, etc.
+ * <p>Such interfaces mark special message types, such as unique IDs, events, commands, and are
+ * assigned to messages automatically.
  */
-public class BuiltInMarkerInterface implements MarkerInterface {
+final class BuiltInMessageInterface implements MessageInterface {
 
     private final Class<? extends Message> type;
+    private final MessageInterfaceParameters genericParams;
 
-    private BuiltInMarkerInterface(Class<? extends Message> type) {
+    private BuiltInMessageInterface(Class<? extends Message> type,
+                                    MessageInterfaceParameters genericParams) {
         this.type = type;
+        this.genericParams = genericParams;
     }
 
-    private static BuiltInMarkerInterface from(Class<? extends Message> type) {
+    private static BuiltInMessageInterface from(Type type) {
         checkNotNull(type);
-        return new BuiltInMarkerInterface(type);
+        return new BuiltInMessageInterface(type.interfaceClass, type.interfaceParams);
     }
 
     /**
      * Obtains the {@link CompilerOutput} item which generates Java sources for the given message
-     * to implement a built-in marker interface.
+     * to implement a built-in interface.
      *
      * @param file
      *         the file containing the given {@code message} definition
@@ -68,14 +76,14 @@ public class BuiltInMarkerInterface implements MarkerInterface {
                                                     DescriptorProto message) {
         Optional<Type> foundInterface =
                 Stream.of(Type.values())
-                      .filter(contract -> contract.matches(file))
+                      .filter(contract -> contract.matches(message, file))
                       .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
         }
         Type type = foundInterface.get();
-        MarkerInterface markerInterface = from(type.interfaceClass);
-        InsertionPoint insertionPoint = implementInterface(file, message, markerInterface);
+        MessageInterface messageInterface = from(type);
+        InsertionPoint insertionPoint = implementInterface(file, message, messageInterface);
         return Optional.of(insertionPoint);
     }
 
@@ -84,33 +92,46 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         return type.getName();
     }
 
+    @Override
+    public MessageInterfaceParameters parameters() {
+        return genericParams;
+    }
+
     /**
      * The enumeration of built-in interfaces.
      */
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for this enum.
     private enum Type {
 
-        EVENT_MESSAGE(EventMessage.class, EventMessage.File.predicate()),
-        COMMAND_MESSAGE(CommandMessage.class, CommandMessage.File.predicate()),
-        REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.File.predicate());
+        EVENT_MESSAGE(EventMessage.class),
+        COMMAND_MESSAGE(CommandMessage.class),
+        REJECTION_MESSAGE(RejectionMessage.class),
+
+        UUID_VALUE(UuidValue.class, new IdentityParameter());
 
         private final Class<? extends Message> interfaceClass;
-        private final Predicate filePredicate;
+        private final MessageClassifier classifier;
+        private final MessageInterfaceParameters interfaceParams;
 
-        Type(Class<? extends Message> interfaceClass, Predicate filePredicate) {
+        Type(Class<? extends SerializableMessage> interfaceClass,
+             MessageInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
-            this.filePredicate = filePredicate;
+            this.classifier = forInterface(interfaceClass);
+            this.interfaceParams = MessageInterfaceParameters.of(interfaceParams);
         }
 
         /**
-         * Checks if the given file contains messages of this interface.
+         * Checks if a given message declaration matches the contract of this interface.
          *
+         * @param message
+         *         the descriptor of a message to check
          * @param file
-         *         the file to check
-         * @return {@code true} if the given file contains messages of this type, {@code false}
-         *         otherwise
+         *         the descriptor of the message's declaring file
+         * @return {@code true} if the message declaration matches the interface contract,
+         *         {@code false} otherwise
          */
-        private boolean matches(FileDescriptorProto file) {
-            return filePredicate.test(file);
+        public boolean matches(DescriptorProto message, FileDescriptorProto file) {
+            return classifier.test(message, file);
         }
     }
 }

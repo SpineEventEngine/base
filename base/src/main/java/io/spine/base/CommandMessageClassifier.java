@@ -18,31 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.base;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
-import javax.annotation.Generated;
+import static io.spine.base.MessageFile.COMMANDS_FILE;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * Checks if the given message definition is a {@link CommandMessage}.
+ */
+@Immutable
+final class CommandMessageClassifier extends MessageClassifier {
 
-@DisplayName("MarkerInterfaceSpec should")
-class MarkerInterfaceSpecTest {
-
-    @Test
-    @DisplayName("generate interfaces")
-    void generate_interfaces() {
-        String packageName = "io.spine.test";
-        String interfaceName = "CustomerEvent";
-        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
-
-        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
-        assertEquals(Generated.class.getName(), generated.type.toString());
-
-        assertEquals(packageName, javaFile.packageName);
-        assertEquals(interfaceName, javaFile.typeSpec.name);
+    @Override
+    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
+        return COMMANDS_FILE.predicate()
+                            .test(declaringFile);
     }
 }

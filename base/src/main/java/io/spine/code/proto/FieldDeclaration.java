@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.CommandMessage;
+import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
@@ -43,6 +43,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static io.spine.base.MessageFile.COMMANDS_FILE;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -158,7 +159,7 @@ public final class FieldDeclaration implements Logging {
      * Determines whether the field is a command ID.
      *
      * <p>A command ID is the first field of a message declared in a
-     * {@link io.spine.base.CommandMessage.File command file}.
+     * {@link MessageFile#COMMANDS_FILE commands file}.
      *
      * @return {@code true} if the field is a command ID, {@code false} otherwise
      */
@@ -266,8 +267,8 @@ public final class FieldDeclaration implements Logging {
 
     private boolean isCommandsFile() {
         FileDescriptor file = field.getFile();
-        boolean commandsFile = CommandMessage.File.predicate()
-                                                  .test(file);
+        boolean commandsFile = COMMANDS_FILE.predicate()
+                                            .test(file);
         return commandsFile;
     }
 

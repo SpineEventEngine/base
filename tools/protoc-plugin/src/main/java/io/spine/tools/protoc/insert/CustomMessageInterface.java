@@ -18,40 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.protoc.AbstractCompilerOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A user-defined marker interface.
+ * A user-defined message interface.
  *
  * <p>This interface is declared with an {@link io.spine.option.OptionsProto#is (is)} or
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
- *
- * @author Dmytro Dashenkov
  */
-final class UserMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
+final class CustomMessageInterface extends AbstractCompilerOutput implements MessageInterface {
 
     private final String interfaceFqn;
 
-    private UserMarkerInterface(File file, String interfaceFqn) {
+    private CustomMessageInterface(File file, String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
 
     /**
-     * Creates a {@code UserMarkerInterface} from the given spec.
+     * Creates a {@code CustomMessageInterface} from the given spec.
      *
      * @param spec
      *         the interface spec to create an interface from
-     * @return new instance of {@code UserMarkerInterface}
+     * @return new instance of {@code CustomMessageInterface}
      */
-    static UserMarkerInterface from(MarkerInterfaceSpec spec) {
+    static CustomMessageInterface from(MessageInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
@@ -61,11 +60,19 @@ final class UserMarkerInterface extends AbstractCompilerOutput implements Marker
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.getFqn();
-        return new UserMarkerInterface(interfaceFile, fqn);
+        return new CustomMessageInterface(interfaceFile, fqn);
     }
 
     @Override
     public String name() {
         return interfaceFqn;
+    }
+
+    /**
+     * Generic params are currently not supported for user-defined message interfaces.
+     */
+    @Override
+    public MessageInterfaceParameters parameters() {
+        return MessageInterfaceParameters.empty();
     }
 }

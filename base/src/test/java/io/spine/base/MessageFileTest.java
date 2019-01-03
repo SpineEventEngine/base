@@ -18,40 +18,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.StringValue;
-import io.spine.base.CommandMessage;
-import io.spine.base.given.CommandFromCommands;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.MessageFile.Predicate;
+import io.spine.base.given.MessageFileEventsProto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.base.MessageFile.EVENTS_FILE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("CommandMessage should")
-class CommandMessageTest {
+@DisplayName("MessageFile should")
+class MessageFileTest {
 
-    @Test
-    @DisplayName("have utility ctor for File")
-    void have_utility_ctor_for_File_class() {
-        assertHasPrivateParameterlessCtor(CommandMessage.File.class);
-    }
+    @Nested
+    @DisplayName("provide a predicate that")
+    class ProvidePredicate {
 
-    @Test
-    @DisplayName("tell commands file by descriptor")
-    void tell_commands_file_by_its_descriptor() {
-        Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
-                                                             .getFile();
-        assertTrue(CommandMessage.File.predicate()
-                                      .test(file));
+        private Predicate predicate;
 
-        file = StringValue.getDescriptor()
-                          .getFile();
+        @BeforeEach
+        void setUp() {
+            predicate = EVENTS_FILE.predicate();
+        }
 
-        assertFalse(CommandMessage.File.predicate()
-                                       .test(file));
+        @Test
+        @DisplayName("accepts the file with matching suffix")
+        void acceptingEligibleFile() {
+            FileDescriptor descriptor = MessageFileEventsProto.getDescriptor();
+            assertTrue(predicate.test(descriptor));
+        }
+
+        @Test
+        @DisplayName("rejects the file with non-matching suffix")
+        void rejectingNonEligibleFile() {
+            FileDescriptor descriptor = Any.getDescriptor()
+                                           .getFile();
+            assertFalse(predicate.test(descriptor));
+        }
     }
 }

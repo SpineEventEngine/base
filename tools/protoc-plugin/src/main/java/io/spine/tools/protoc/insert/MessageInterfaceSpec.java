@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -39,13 +39,11 @@ import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * The specification of the marker interface to be produces by the generator.
+ * The specification of the message interface to be produces by the generator.
  *
  * <p>The specification includes the package name and the type name.
- *
- * @author Dmytro Dashenkov
  */
-final class MarkerInterfaceSpec {
+final class MessageInterfaceSpec {
 
     private static final AnnotationSpec BY_MODEL_COMPILER =
             AnnotationSpec.builder(Generated.class)
@@ -57,33 +55,33 @@ final class MarkerInterfaceSpec {
     private final String name;
 
     @VisibleForTesting
-    MarkerInterfaceSpec(String packageName, String name) {
+    MessageInterfaceSpec(String packageName, String name) {
         this.packageName = packageName;
         this.name = name;
     }
 
-    static MarkerInterfaceSpec prepareInterface(IsOption optionValue,
-                                                FileDescriptorProto srcFile) {
+    static MessageInterfaceSpec prepareInterface(IsOption optionValue,
+                                                 FileDescriptorProto srcFile) {
         String javaType = optionValue.getJavaType();
-        MarkerInterfaceSpec spec;
+        MessageInterfaceSpec spec;
         if (javaType.contains(delimiter())) {
             spec = from(javaType);
         } else {
             String javaPackage = PackageName.resolve(srcFile)
                                             .value();
-            spec = new MarkerInterfaceSpec(javaPackage, javaType);
+            spec = new MessageInterfaceSpec(javaPackage, javaType);
         }
         return spec;
     }
 
     /**
-     * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
+     * Parses a {@code MessageInterfaceSpec} from the given type fully qualified name.
      */
-    private static MarkerInterfaceSpec from(String fullName) {
+    private static MessageInterfaceSpec from(String fullName) {
         int index = fullName.lastIndexOf(delimiter());
         String name = fullName.substring(index + 1);
         String packageName = fullName.substring(0, index);
-        return new MarkerInterfaceSpec(packageName, name);
+        return new MessageInterfaceSpec(packageName, name);
     }
 
     /**
@@ -133,7 +131,7 @@ final class MarkerInterfaceSpec {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        MarkerInterfaceSpec other = (MarkerInterfaceSpec) obj;
+        MessageInterfaceSpec other = (MessageInterfaceSpec) obj;
         return Objects.equals(this.packageName, other.packageName)
                 && Objects.equals(this.name, other.name);
     }
