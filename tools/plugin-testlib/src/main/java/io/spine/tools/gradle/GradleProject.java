@@ -30,17 +30,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
 /**
@@ -54,7 +51,6 @@ public final class GradleProject {
     public static final String JAVA_PLUGIN_ID = "java";
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
-    private static final String VERSION_GRADLE_NAME = "version.gradle";
 
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
@@ -123,7 +119,7 @@ public final class GradleProject {
 
     private void writeGradleScripts() throws IOException {
         writeBuildGradle();
-        Path projectRoot = findRoot();
+        Path projectRoot = ProjectRoot.find();
         createTestEnvScript(projectRoot);
     }
 
@@ -152,29 +148,6 @@ public final class GradleProject {
                            .toPath();
     }
 
-    /**
-     * Finds a root directory of the project by searching for the file
-     * named {@link #VERSION_GRADLE_NAME version.gradle}.
-     *
-     * <p>Starts from the current directory, climbing up, if the file is not found.
-     *
-     * @throws IllegalStateException if the file is not found
-     */
-    private static Path findRoot() {
-        Path workingFolderPath = Paths.get(".")
-                                      .toAbsolutePath();
-        Path extGradleDirPath = workingFolderPath;
-        while (extGradleDirPath != null
-                && !exists(extGradleDirPath.resolve(VERSION_GRADLE_NAME))) {
-            extGradleDirPath = extGradleDirPath.getParent();
-        }
-        checkState(extGradleDirPath != null,
-                   "%s file not found in %s or parent directories.",
-                   VERSION_GRADLE_NAME,
-                   workingFolderPath);
-        return extGradleDirPath;
-    }
-
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -196,8 +169,8 @@ public final class GradleProject {
         private final List<String> protoFileNames = newLinkedList();
         private final List<String> javaFileNames = newLinkedList();
 
+        /** Prevents direct instantiation of this class. */
         private Builder() {
-            // Prevent direct instantiation of this class.
         }
 
         public Builder setProjectName(String name) {
