@@ -20,14 +20,25 @@
 
 package io.spine.tools.gradle;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
  * Create Gradle Runner arguments for a task.
  */
 final class TaskArguments {
 
+    /** Gradle command line argument to turn stacktrace output. */
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
+
+    /** Gradle command line argument to turn debug level of logging. */
     private static final String DEBUG_CLI_OPTION = "--debug";
 
+    /** Provides type information for list-to-array conversion. */
+    private static final String[] OF_STRING = new String[0];
+
+    /** If true debug level of logging will be turned for a task. */
     private final boolean debug;
 
     static TaskArguments mode(boolean debug) {
@@ -40,8 +51,10 @@ final class TaskArguments {
 
     String[] of(TaskName taskName) {
         String task = taskName.getValue();
-        return debug
-               ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
-               : new String[]{task, STACKTRACE_CLI_OPTION};
+        List<String> result = Lists.newArrayList(task, STACKTRACE_CLI_OPTION);
+        if (debug) {
+            result.add(DEBUG_CLI_OPTION);
+        }
+        return result.toArray(OF_STRING);
     }
 }
