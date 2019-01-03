@@ -21,12 +21,12 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.CommandMessage;
+import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
@@ -43,6 +43,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static io.spine.base.MessageFile.COMMANDS_FILE;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -158,7 +159,7 @@ public final class FieldDeclaration implements Logging {
      * Determines whether the field is a command ID.
      *
      * <p>A command ID is the first field of a message declared in a
-     * {@link io.spine.base.CommandMessage.File command file}.
+     * {@link MessageFile#COMMANDS_FILE commands file}.
      *
      * @return {@code true} if the field is a command ID, {@code false} otherwise
      */
@@ -266,8 +267,8 @@ public final class FieldDeclaration implements Logging {
 
     private boolean isCommandsFile() {
         FileDescriptor file = field.getFile();
-        boolean commandsFile = CommandMessage.File.predicate()
-                                                  .test(file);
+        boolean commandsFile = COMMANDS_FILE.predicate()
+                                            .test(file);
         return commandsFile;
     }
 
@@ -277,50 +278,31 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        return fieldLeadingComments(field.toProto());
+        LocationPath fieldPath = fieldPath();
+        return message.leadingComments(fieldPath);
     }
 
     /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(DescriptorProtos.FieldDescriptorProto field) {
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        if (message.isNested()) {
-            return Optional.empty();
-        }
-
-        LocationPath fieldPath = fieldPath(field);
-        return message.documentation()
-                      .leadingComments(fieldPath);
-    }
-
-    /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
+     * Returns the path to the field inside a message declaration.
      *
      * <p>Protobuf extensions are not supported.
      *
-     * @param field
-     *         the field to get location path
      * @return the field location path
      */
-    private LocationPath fieldPath(DescriptorProtos.FieldDescriptorProto field) {
+    private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(message.documentation()
-                                   .messagePath());
+        locationPath.addAll(message.path());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
+        int fieldIndex = fieldIndex();
+        locationPath.add(fieldIndex);
         return locationPath;
     }
 
-    private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
+    private int fieldIndex() {
+        FieldDescriptorProto fproto = this.field.toProto();
         return message.descriptor()
                       .toProto()
                       .getFieldList()
-                      .indexOf(field);
+                      .indexOf(fproto);
     }
 }

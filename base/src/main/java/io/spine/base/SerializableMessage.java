@@ -30,10 +30,8 @@ import java.io.Serializable;
  * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
  * standard serialization mechanism.
  *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the framework
- * marker interfaces. See the known subtypes for more details.
- *
- * @author Dmytro Dashenkov
+ * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
+ * message interfaces. See the known subtypes for more details.
  */
 @Internal
 @Immutable

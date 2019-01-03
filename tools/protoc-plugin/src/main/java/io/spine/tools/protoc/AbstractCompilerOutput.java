@@ -26,8 +26,6 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
  * An implementation base for a Protobuf compiler output items.
- *
- * @author Dmytro Dashenkov
  */
 public abstract class AbstractCompilerOutput implements CompilerOutput {
 

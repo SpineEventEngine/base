@@ -24,32 +24,41 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
-import io.spine.value.StringTypeValue;
 
 import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Describes a file containing proto message declarations.
+ * A enumeration of standard Proto files for events, commands, etc.
  *
- * @author Alexander Yevsyukov
+ * <p>File names reflect the Spine naming conventions for the given file types.
  */
-public abstract class MessageFile extends StringTypeValue {
+public enum MessageFile {
 
-    private static final long serialVersionUID = 0L;
+    EVENTS_FILE("events"),
+    COMMANDS_FILE("commands"),
+    REJECTIONS_FILE("rejections");
+
+    private final Predicate predicate;
 
     MessageFile(String name) {
-        super(checkNotNull(name) + FileName.EXTENSION);
+        String suffix = checkNotNull(name) + FileName.EXTENSION;
+        predicate = new Predicate(suffix);
     }
 
     /**
-     * Obtains the predicate for filtering files containing message declarations
-     * of the required type.
+     * Provides the predicate for finding proto files with the appropriate message declarations.
      */
-    public final Predicate predicate() {
-        String suffix = value();
-        return new Predicate(suffix);
+    public Predicate predicate() {
+        return predicate;
+    }
+
+    /**
+     * Provides a suffix by which such file can be located.
+     */
+    public String suffix() {
+        return predicate.suffix;
     }
 
     /**
@@ -76,7 +85,7 @@ public abstract class MessageFile extends StringTypeValue {
         }
 
         /**
-         * Checks if given file upon this predicate.
+         * Checks the given file upon this predicate.
          *
          * @param file
          *         the file descriptor message
@@ -89,7 +98,7 @@ public abstract class MessageFile extends StringTypeValue {
         }
 
         /**
-         * Checks if given file upon this predicate.
+         * Checks the given file upon this predicate.
          *
          * @param file
          *         the file descriptor
