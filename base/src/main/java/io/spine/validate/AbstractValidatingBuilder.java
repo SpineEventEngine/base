@@ -235,20 +235,23 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * Validates the {@code set_once} field option.
      *
      * <p>A field can only be set once if it either declares an explicit option value
-     * (e.g {@code string name = 2 [(set_once) = true];}), or if it's the first value of a message.
+     * (e.g {@code string name = 2 [(set_once) = true];}), or if it's the first value of a an
+     * entity message.
      *
      * <p>Example:
      * in the message
      * <pre>
      * {@code
      * message User {
+     *     option (entity).kind = ENTITY;
+     *
      *     string id = 2;
      *     string name = 1;
      * }
      * }
      * </pre>
      * the {@code id} field is implicitly {@code (set_once) = true}, since it's the first one
-     * in the message, regardless of the declared number.
+     * in the entity message, regardless of the declared number.
      * To avoid this, the declaration of the field should be
      * {@code string id = 1[(set_once) = false];}.
      *
@@ -260,21 +263,11 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @SuppressWarnings("unused")
         // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
-        Optional<Boolean> setOnceDeclaration = Options.option(field, OptionsProto.setOnce);
-        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
-        boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
-        if (setOnceValue || requiredByDefault) {
+        boolean shouldValidate = isSetOnce(field);
+        if (shouldValidate) {
             boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
             if (setOnceNotRecommended) {
-                String containingTypeName = field.getContainingType()
-                                                 .getName();
-                String fieldName = field.getName();
-                Logger logger = Logging.get(AbstractValidatingBuilder.class);
-                logger.warn("Error found in %s.%s. " +
-                            "Repeated and map fields can't be marked as `(set_once) = true`",
-                            containingTypeName,
-                            fieldName);
+                logTypeWarning(field);
             } else {
                 boolean valueAlreadySet = getMessageBuilder().hasField(field);
                 if (valueAlreadySet) {
@@ -282,6 +275,25 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                 }
             }
         }
+    }
+
+    private static boolean isSetOnce(FieldDescriptor field) {
+        Optional<Boolean> setOnceDeclaration = Options.option(field, OptionsProto.setOnce);
+        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
+        boolean setOnceValue = setOnceDeclaration.orElse(false);
+        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        return setOnceValue || requiredByDefault;
+    }
+
+    private static void logTypeWarning(FieldDescriptor field) {
+        String containingTypeName = field.getContainingType()
+                                         .getName();
+        String fieldName = field.getName();
+        Logger logger = Logging.get(AbstractValidatingBuilder.class);
+        logger.warn("Error found in %s.%s. " +
+                    "Repeated and map fields can't be marked as `(set_once) = true`",
+                    containingTypeName,
+                    fieldName);
     }
 
     private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {

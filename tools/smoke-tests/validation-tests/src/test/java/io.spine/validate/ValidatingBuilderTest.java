@@ -180,27 +180,42 @@ class ValidatingBuilderTest {
     }
 
     @Test
-    @DisplayName("not allow to change the value of a (set_once) field")
-    void testSetOnceFieldOption() {
-        Stream<Function<TaskVBuilder, ?>> stringFieldMutations = Stream.of(
-                taskVBuilder -> taskVBuilder.setId(newUuid()),
-                taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
-                TaskVBuilder::clearId
-        );
+    @DisplayName("not allow to change the value of a (set_once) message field")
+    void testMessageFieldMutations() {
         Stream<Function<TaskVBuilder, ?>> enumFieldMutations = Stream.of(
                 taskVBuilder -> taskVBuilder.setLabel(CRITICAL),
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearLabel
         );
+        testFields(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
+    }
+
+    @Test
+    @DisplayName("not allow to change the value of a (set_once) string field")
+    void testStringFieldMutations() {
+        Stream<Function<TaskVBuilder, ?>> stringFieldMutations = Stream.of(
+                taskVBuilder -> taskVBuilder.setId(newUuid()),
+                taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
+                TaskVBuilder::clearId
+        );
+        testFields(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
+    }
+
+    @Test
+    @DisplayName("not allow to change the value of a (set_once) enum field")
+    void testEnumFieldMutations() {
         Stream<Function<TaskVBuilder, ?>> messageFieldMutations = Stream.of(
                 taskVBuilder -> taskVBuilder.setAssignee(Member.getDefaultInstance()),
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearAssignee
         );
-
-        testFields(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
-        testFields(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
         testFields(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
+    }
+
+    private static void testFields(Function<TaskVBuilder, TaskVBuilder> setup,
+                                   Stream<Function<TaskVBuilder, ?>> mutateOperations) {
+        mutateOperations.forEach(
+                operation -> testSetOnce(TaskVBuilder.newBuilder(), setup, operation));
     }
 
     /**
@@ -223,12 +238,6 @@ class ValidatingBuilderTest {
     void testSetOnce(E builder, Function<E, E> builderSetup, Function<E, ?> violatingOperation) {
         E initialBuilder = builderSetup.apply(builder);
         assertThrows(ValidationException.class, () -> violatingOperation.apply(initialBuilder));
-    }
-
-    private static void testFields(Function<TaskVBuilder, TaskVBuilder> setup,
-                                   Stream<Function<TaskVBuilder, ?>> mutateOperations) {
-        mutateOperations.forEach(
-                operation -> testSetOnce(TaskVBuilder.newBuilder(), setup, operation));
     }
 
     @Test
