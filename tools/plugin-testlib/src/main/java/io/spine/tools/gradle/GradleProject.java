@@ -184,7 +184,8 @@ public final class GradleProject {
             extGradleDirPath = extGradleDirPath.getParent();
         }
         checkState(extGradleDirPath != null,
-                   "ext.gradle file not found in %s or parent directories.",
+                   "%s file not found in %s or parent directories.",
+                   VERSION_GRADLE_NAME,
                    workingFolderPath);
         return extGradleDirPath;
     }
@@ -303,15 +304,16 @@ public final class GradleProject {
             try {
                 checkNotNull(name, "Project name");
                 checkNotNull(folder, "Project folder");
-                return new GradleProject(this);
+                GradleProject result = new GradleProject(this);
+                return result;
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
             }
         }
-    }
 
-    private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
-        Throwable rootCause = getRootCause(throwable);
-        throw new IllegalStateException(rootCause);
+        private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
+            Throwable rootCause = getRootCause(throwable);
+            throw new IllegalStateException(rootCause);
+        }
     }
 }
