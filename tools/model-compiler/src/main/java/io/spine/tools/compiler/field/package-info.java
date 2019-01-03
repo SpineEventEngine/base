@@ -18,40 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
-
 /**
- * Validates fields of type {@link Boolean}.
+ * Contains classes working with Java fields generated from Protobuf.
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to to validate
-     */
-    BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.field;
 
-    /**
-     * In Protobuf there is no way to tell if the value is {@code false} or was not set.
-     *
-     * @return false
-     */
-    @Override
-    protected boolean isNotSet(Boolean value) {
-        return false;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action, since {@code boolean} fields require no additional validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NOP
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

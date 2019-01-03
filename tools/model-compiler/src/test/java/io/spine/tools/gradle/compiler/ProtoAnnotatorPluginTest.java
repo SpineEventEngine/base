@@ -20,11 +20,12 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FileName;
@@ -52,6 +53,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.code.java.SourceFile.forMessage;
+import static io.spine.code.java.SourceFile.forMessageOrBuilder;
+import static io.spine.code.java.SourceFile.forOuterClassOf;
+import static io.spine.code.java.SourceFile.forService;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
@@ -81,124 +86,125 @@ class ProtoAnnotatorPluginTest {
 
     @Test
     @DisplayName("annotate if file option is true")
-    void annotate_if_file_option_is_true() throws FileNotFoundException {
+    void annotateIfFileOptionIsTrue() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_ALL, true);
     }
 
     @Test
     @DisplayName("annotate service if file option if true")
-    void annotate_service_if_file_option_is_true() throws FileNotFoundException {
+    void annotateServiceIfFileOptionIsTrue() throws FileNotFoundException {
         assertServiceAnnotations(SPI_ALL_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate if file option if false")
-    void not_annotate_if_file_option_if_false() throws FileNotFoundException {
+    void notAnnotateIfFileOptionIfFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("not annotate service if file option is false")
-    void not_annotate_service_if_file_option_if_false() throws FileNotFoundException {
+    void notAnnotateServiceIfFileOptionIfFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if file option is true")
-    void annotate_multiple_files_if_file_option_is_true() throws FileNotFoundException {
+    void annotateMultipleFilesIfFileOptionIsTrue() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_ALL_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if file option is false")
-    void not_annotate_multiple_files_if_file_option_is_false() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate if message option is true")
-    void annotate_if_message_option_is_true() throws FileNotFoundException {
+    void annotateIfMessageOptionIsTrue() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_MESSAGE, true);
     }
 
     @Test
     @DisplayName("not annotate if message option is false")
-    void not_annotate_if_message_option_is_false() throws FileNotFoundException {
+    void notAnnotateIfMessageOptionIsFalse() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if message option is true")
-    void annotate_multiple_files_if_message_option_is_true() throws FileNotFoundException {
+    void annotateMultipleFilesIfMessageOptionIsTrue() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_MESSAGE_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if message option is false")
-    void not_annotate_multiple_files_if_message_option_is_false() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate accessors if field option is true")
-    void annotate_accessors_if_field_option_is_true() throws FileNotFoundException {
+    void annotateAccessorsIfFieldOptionIsTrue() throws FileNotFoundException {
         assertFieldAnnotations(SPI_FIELD, true);
     }
 
     @Test
     @DisplayName("not annotate accessors if field option is false")
-    void not_annotate_accessors_if_field_option_is_false() throws FileNotFoundException {
+    void notAnnotateAccessorsIfFieldOptionIsFalse() throws FileNotFoundException {
         assertFieldAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate accessors in multiple files if field option is true")
-    void annotate_accessors_in_multiple_files_if_field_option_is_true()
+    void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(SPI_FIELD_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate accessors in multiple files if field option is false")
-    void not_annotate_accessors_in_multiple_files_if_field_option_is_false()
+    void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate GRPC services if section option is true")
-    void annotate_grpc_services_if_service_option_is_true() throws FileNotFoundException {
+    void annotateGrpcServicesIfServiceOptionIsTrue() throws FileNotFoundException {
         assertServiceAnnotations(SPI_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate GRPC services if service option is false")
-    void not_annotate_grpc_services_if_service_option_is_false() throws FileNotFoundException {
+    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws FileNotFoundException {
         assertServiceAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
-    void compile_generated_sources_with_potential_annotation_duplication() {
+    void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
     private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
-        FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
-        List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
-        for (ServiceDescriptorProto serviceDescriptor : services) {
-            SourceFile serviceFile = SourceFile.forService(serviceDescriptor, fileDescriptor);
+        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        List<ServiceDescriptor> services = fileDescriptor.getServices();
+        for (ServiceDescriptor serviceDescriptor : services) {
+            SourceFile serviceFile = forService(serviceDescriptor.toProto(),
+                                                fileDescriptor.toProto());
             checkGrpcService(serviceFile, new MainDefinitionAnnotationCheck(shouldBeAnnotated));
         }
     }
 
     private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
-        FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
-        DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-        Path sourcePath = SourceFile.forMessage(messageDescriptor, fileDescriptor)
-                                    .getPath();
+        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
+        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
+                .getPath();
         NestedTypeFieldsAnnotationCheck check =
                 new NestedTypeFieldsAnnotationCheck(messageDescriptor, shouldBeAnnotated);
         check(sourcePath, check);
@@ -206,26 +212,23 @@ class ProtoAnnotatorPluginTest {
 
     private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
-        FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
-        DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-        FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
-        Path sourcePath = SourceFile.forMessage(messageDescriptor, fileDescriptor)
+        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
+        FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
+        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
                                     .getPath();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
     private void assertMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
-        FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
-        for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            Path messagePath =
-                    SourceFile.forMessage(messageDescriptor, fileDescriptor)
-                              .getPath();
-            Path messageOrBuilderPath =
-                    SourceFile.forMessageOrBuilder(messageDescriptor, fileDescriptor)
-                              .getPath();
-            SourceCheck annotationCheck =
-                    new MainDefinitionAnnotationCheck(shouldBeAnnotated);
+        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
+            DescriptorProto messageProto = messageDescriptor.toProto();
+            DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
+            Path messagePath = forMessage(messageProto, fileProto).getPath();
+            Path messageOrBuilderPath = forMessageOrBuilder(messageProto, fileProto).getPath();
+            SourceCheck annotationCheck = new MainDefinitionAnnotationCheck(shouldBeAnnotated);
             check(messagePath, annotationCheck);
             check(messageOrBuilderPath, annotationCheck);
         }
@@ -233,9 +236,8 @@ class ProtoAnnotatorPluginTest {
 
     private void assertNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
-        FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
-        Path sourcePath = SourceFile.forOuterClassOf(fileDescriptor)
-                                    .getPath();
+        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        Path sourcePath = forOuterClassOf(fileDescriptor.toProto()).getPath();
         check(sourcePath, new NestedTypesAnnotationCheck(shouldBeAnnotated));
     }
 
@@ -274,20 +276,19 @@ class ProtoAnnotatorPluginTest {
                             .build();
     }
 
-    private FileDescriptorProto compileAndAnnotate(FileName testFile) {
+    private FileDescriptor compileAndAnnotate(FileName testFile) {
         GradleProject gradleProject = newProjectWithFile(testFile);
         gradleProject.executeTask(ANNOTATE_PROTO);
-        FileDescriptorProto result = getDescriptor(testFile);
+        FileDescriptor result = getDescriptor(testFile);
         return result;
     }
 
-    private FileDescriptorProto getDescriptor(FileName fileName) {
+    private FileDescriptor getDescriptor(FileName fileName) {
         File descriptorSet = DefaultJavaProject.at(testProjectDir)
                                                .mainDescriptors();
         FileSet fileSet = FileSet.parse(descriptorSet);
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);
-        return file.get()
-                   .toProto();
+        return file.get();
     }
 }
