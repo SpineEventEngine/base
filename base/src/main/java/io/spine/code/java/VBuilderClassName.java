@@ -62,8 +62,8 @@ public final class VBuilderClassName {
     }
 
     private SimpleClassName toSimple() {
-        SimpleClassName topLevelName;
         ClassName className = type.javaClassName();
+        SimpleClassName topLevelName;
         if (type.isTopLevel()) {
             topLevelName = className.toSimple();
         } else {
