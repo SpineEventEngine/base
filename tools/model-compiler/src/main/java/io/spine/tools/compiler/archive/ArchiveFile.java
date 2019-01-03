@@ -34,7 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
- * A ZIP archive file.
+ * Representation of a archive file contents.
+ *
+ * The file represented by an instance of this type is of one of the {@link ArchiveExtension}s, i.e.
+ * a ZIP or a JAR.
  */
 public final class ArchiveFile {
 
@@ -47,10 +50,10 @@ public final class ArchiveFile {
     /**
      * Wraps the given {@code File} into an {@code ArchiveFile}.
      *
-     * <p>If the file does not exist or is not a ZIP archive, an {@code IllegalArgumentException}
+     * <p>If the file does not exist or is not an archive, an {@code IllegalArgumentException}
      * is thrown.
      *
-     * <p>A file may be considered a ZIP archive if it has one of {@link ZipArchiveExtension}s.
+     * <p>A file may be considered an archive if it has one of {@link ArchiveExtension}s.
      *
      * @param file
      *         the archive file
@@ -66,7 +69,7 @@ public final class ArchiveFile {
         checkArgument(file.exists(), "Archive file %s does not exist.", file);
         checkArgument(isArchive(file),
                       "File %s must be have one of extensions: %s.",
-                      Arrays.toString(ZipArchiveExtension.values()));
+                      Arrays.toString(ArchiveExtension.values()));
     }
 
     /**
@@ -108,6 +111,6 @@ public final class ArchiveFile {
      * @return {@code true} if the file is an archive, {@code false} otherwise
      */
     public static boolean isArchive(File file) {
-        return ZipArchiveExtension.anyMatch(file);
+        return ArchiveExtension.anyMatch(file);
     }
 }

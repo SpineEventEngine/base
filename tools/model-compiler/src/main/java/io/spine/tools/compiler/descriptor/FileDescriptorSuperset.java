@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.descriptor;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.code.proto.FileDescriptorSets;
 import io.spine.logging.Logging;
@@ -59,7 +59,7 @@ public final class FileDescriptorSuperset implements Logging {
     }
 
     public MergedDescriptorSet merge() {
-        Set<DescriptorProtos.FileDescriptorProto> allFiles = descriptors
+        Set<FileDescriptorProto> allFiles = descriptors
                 .stream()
                 .flatMap(set -> set.getFileList().stream())
                 .collect(toSet());

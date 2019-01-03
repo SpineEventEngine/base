@@ -30,22 +30,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ArchiveEntry {
 
-    private final FileDescriptorSet descriptorSet;
+    private final byte[] bytes;
 
-    private ArchiveEntry(FileDescriptorSet descriptorSet) {
-        this.descriptorSet = descriptorSet;
+    private ArchiveEntry(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     /**
      * Creates a new instance of {@code ArchiveEntry}.
+     *
+     * <p>Note that the passed {@code bytes} are not copied. Do not edit the array after calling
+     * this method.
      */
     static ArchiveEntry of(byte[] bytes) {
         checkNotNull(bytes);
-        FileDescriptorSet descriptorSet = FileDescriptorSets.parse(bytes);
-        return new ArchiveEntry(descriptorSet);
+        return new ArchiveEntry(bytes);
     }
 
+    /**
+     * Attempts to {@linkplain FileDescriptorSets#parse parse} this entry as
+     * a {@code FileDescriptorSet}.
+     *
+     * @return the parsed set
+     * @throws java.lang.IllegalStateException if parsing fails
+     */
     public FileDescriptorSet asDescriptorSet() {
+        FileDescriptorSet descriptorSet = FileDescriptorSets
+                .tryParse(bytes)
+                .orElseThrow(() -> new IllegalStateException("Failed to parse a descriptor set."));
         return descriptorSet;
     }
 }

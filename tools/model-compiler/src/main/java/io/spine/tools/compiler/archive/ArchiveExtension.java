@@ -31,16 +31,16 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 
 /**
- * The enumeration of acknowledged ZIP archive file extensions.
+ * The enumeration of acknowledged archive file extensions.
  */
-enum ZipArchiveExtension {
+enum ArchiveExtension {
 
     ZIP("zip"),
     JAR("jar");
 
     private final Pattern pattern;
 
-    ZipArchiveExtension(String extensionName) {
+    ArchiveExtension(String extensionName) {
         String regex = format("^.*\\.%s$", extensionName);
         this.pattern = compile(regex, CASE_INSENSITIVE);
     }
@@ -51,7 +51,7 @@ enum ZipArchiveExtension {
      * @return {@code true} if the file is a ZIP archive, {@code false} otherwise
      */
     static boolean anyMatch(File file) {
-        Optional<ZipArchiveExtension> matchingExtension =
+        Optional<ArchiveExtension> matchingExtension =
                 Stream.of(values())
                       .filter(ext -> ext.matchesFile(file))
                       .findAny();

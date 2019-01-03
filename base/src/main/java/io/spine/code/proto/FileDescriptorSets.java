@@ -25,6 +25,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import static io.spine.option.Options.registry;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
@@ -54,6 +55,23 @@ public final class FileDescriptorSets {
             return FileDescriptorSet.parseFrom(bytes, registry());
         } catch (InvalidProtocolBufferException e) {
             throw illegalArgumentWithCauseOf(e);
+        }
+    }
+
+    /**
+     * Attempts to parse a descriptor set from the given byte array.
+     *
+     * @param bytes
+     *         raw data to parse
+     * @return instance of {@code FileDescriptorSet} encoded in the bytes or
+     *         {@code Optional.empty()} if parsing fails
+     */
+    public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
+        try {
+            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, registry());
+            return Optional.of(descriptorSet);
+        } catch (InvalidProtocolBufferException e) {
+            return Optional.empty();
         }
     }
 
