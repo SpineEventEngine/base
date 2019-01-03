@@ -29,8 +29,6 @@ import io.spine.base.MessageFile.Predicate;
  * <p>This interface is used by the Model Compiler for marking command messages.
  * By convention, command messages are defined in a proto file, which name ends
  * with {@code commands.proto}.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public interface CommandMessage extends SerializableMessage {

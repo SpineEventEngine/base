@@ -82,8 +82,6 @@ public final class VBuilderGenerator implements Logging {
                             .filter(MessageType::isCustom)
                             .filter(MessageType::isNotRejection)
                             .filter(new SourceProtoBelongsToModule(protoSrcDir))
-                            //TODO:2018-12-20:alexander.yevsyukov: Support generation of nested builders.
-                            .filter(MessageType::isTopLevel)
                             .collect(toImmutableList());
         generate(customTypes);
     }

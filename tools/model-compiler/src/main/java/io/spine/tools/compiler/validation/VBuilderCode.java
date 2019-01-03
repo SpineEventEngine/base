@@ -64,7 +64,7 @@ final class VBuilderCode implements Logging {
         this.targetDir = checkNotNull(targetDir);
         this.indent = checkNotNull(indent);
         this.type = checkNotNull(type);
-        this.vbClass = type.getValidatingBuilderClass();
+        this.vbClass = type.validatingBuilderClass();
         this.classBuilder = TypeSpec.classBuilder(vbClass.value());
         this.javaPackage = type.javaPackage()
                                .value();
