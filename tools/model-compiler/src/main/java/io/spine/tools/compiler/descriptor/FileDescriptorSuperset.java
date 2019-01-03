@@ -22,8 +22,9 @@ package io.spine.tools.compiler.descriptor;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.InvalidProtocolBufferException;
+import io.spine.code.proto.FileDescriptorSets;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.archive.ArchiveEntry;
 import io.spine.tools.compiler.archive.ArchiveFile;
 
 import java.io.File;
@@ -38,7 +39,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.option.Options.registry;
 import static io.spine.tools.compiler.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -108,7 +108,7 @@ public final class FileDescriptorSuperset implements Logging {
     private static Optional<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
         return archive.findEntry(KNOWN_TYPES)
-                      .map(entry -> parseDescriptorSet(entry.bytes()));
+                      .map(ArchiveEntry::asDescriptorSet);
     }
 
     private static FileDescriptorSet read(File file) {
@@ -116,7 +116,7 @@ public final class FileDescriptorSuperset implements Logging {
         Path path = file.toPath();
         try {
             byte[] bytes = Files.readAllBytes(path);
-            return parseDescriptorSet(bytes);
+            return FileDescriptorSets.parse(bytes);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
@@ -128,14 +128,6 @@ public final class FileDescriptorSuperset implements Logging {
             return Optional.of(result);
         } else {
             return Optional.empty();
-        }
-    }
-
-    private static FileDescriptorSet parseDescriptorSet(byte[] fileDescriptorSet) {
-        try {
-            return FileDescriptorSet.parseFrom(fileDescriptorSet, registry());
-        } catch (InvalidProtocolBufferException e) {
-            throw illegalStateWithCauseOf(e);
         }
     }
 }

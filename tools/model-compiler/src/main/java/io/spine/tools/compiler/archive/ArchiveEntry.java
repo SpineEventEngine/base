@@ -20,29 +20,32 @@
 
 package io.spine.tools.compiler.archive;
 
-import java.util.Arrays;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import io.spine.code.proto.FileDescriptorSets;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A snapshot of an archive entry.
  */
 public final class ArchiveEntry {
 
-    private final byte[] bytes;
+    private final FileDescriptorSet descriptorSet;
 
-    private ArchiveEntry(byte[] bytes) {
-        this.bytes = bytes;
+    private ArchiveEntry(FileDescriptorSet descriptorSet) {
+        this.descriptorSet = descriptorSet;
     }
 
     /**
      * Creates a new instance of {@code ArchiveEntry}.
      */
     static ArchiveEntry of(byte[] bytes) {
-        byte[] copiedBytes = Arrays.copyOf(bytes, bytes.length);
-        return new ArchiveEntry(copiedBytes);
+        checkNotNull(bytes);
+        FileDescriptorSet descriptorSet = FileDescriptorSets.parse(bytes);
+        return new ArchiveEntry(descriptorSet);
     }
 
-    /** Obtains the raw bytes of the entry. */
-    public byte[] bytes() {
-        return Arrays.copyOf(bytes, bytes.length);
+    public FileDescriptorSet asDescriptorSet() {
+        return descriptorSet;
     }
 }
