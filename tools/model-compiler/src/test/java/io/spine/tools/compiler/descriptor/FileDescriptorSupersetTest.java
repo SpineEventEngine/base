@@ -69,9 +69,9 @@ class FileDescriptorSupersetTest {
         MergedDescriptorSet mergedSet = superset.merge();
         IterableSubject assertDescriptors = assertThat(mergedSet.descriptors());
         assertDescriptors.hasSize(3);
-        assertDescriptors.contains(Task.getDescriptor().getFile().toProto());
-        assertDescriptors.contains(Person.getDescriptor().getFile().toProto());
-        assertDescriptors.contains(Project.getDescriptor().getFile().toProto());
+        assertDescriptors.contains(TaskProto.getDescriptor().toProto());
+        assertDescriptors.contains(PersonProto.getDescriptor().toProto());
+        assertDescriptors.contains(ProjectProto.getDescriptor().toProto());
     }
 
     private static void writeResource(String resourceName, Path destination) throws IOException {
