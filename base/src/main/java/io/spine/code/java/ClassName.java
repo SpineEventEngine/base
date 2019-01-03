@@ -27,8 +27,11 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Deque;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -141,6 +144,41 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
+     * Obtains outer class prefix, if the file has {@code java_multiple_files} set to {@code false}.
+     * If the option is set, returns an empty string.
+     */
+    private static String outerClassPrefix(FileDescriptor file) {
+        checkNotNull(file);
+        boolean multipleFiles = file.getOptions()
+                                    .getJavaMultipleFiles();
+        if (multipleFiles) {
+            return "";
+        } else {
+            String className = SimpleClassName.outerOf(file)
+                                              .value();
+            return className + OUTER_CLASS_DELIMITER;
+        }
+    }
+
+    /**
+     * Obtains prefix for a type which is enclosed into the passed message.
+     * If null value is passed, returns an empty string.
+     */
+    private static String containingClassPrefix(@Nullable Descriptor containingMessage) {
+        if (containingMessage == null) {
+            return "";
+        }
+        Deque<String> parentClassNames = newLinkedList();
+        Descriptor current = containingMessage;
+        while (current != null) {
+            parentClassNames.addFirst(current.getName() + OUTER_CLASS_DELIMITER);
+            current = current.getContainingType();
+        }
+        String result = String.join("", parentClassNames);
+        return result;
+    }
+
+    /**
      * Obtains the name of a nested class.
      *
      * @param className
@@ -181,8 +219,8 @@ public final class ClassName extends StringTypeValue {
                                        String typeName,
                                        @Nullable Descriptor enclosing) {
         String packageName = javaPackageName(file);
-        String outerClass = Names.outerClassPrefix(file);
-        String enclosingTypes = Names.containingClassPrefix(enclosing);
+        String outerClass = outerClassPrefix(file);
+        String enclosingTypes = containingClassPrefix(enclosing);
         String result = packageName + outerClass + enclosingTypes + typeName;
         return of(result);
     }

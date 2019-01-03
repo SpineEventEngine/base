@@ -20,15 +20,12 @@
 
 package io.spine.code.java;
 
-import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.MessageType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
-import static io.spine.code.java.Names.containingClassPrefix;
-import static io.spine.code.java.Names.outerClassPrefix;
 import static io.spine.code.proto.MessageType.VBUILDER_SUFFIX;
 
 /**
@@ -50,38 +47,33 @@ public final class VBuilderClassName {
      * Obtains the name of a Validating Builder class that corresponds to the passed message.
      *
      * @throws java.lang.IllegalArgumentException
-     *  if the passed message type cannot have a validating builder
+     *         if the passed message type cannot have a validating builder
      */
     public static SimpleClassName of(MessageType type) {
         checkNotNull(type);
         checkArgument(type.isCustom(), "Validating Builder is not available for `%s`", type.name());
 
         VBuilderClassName name = new VBuilderClassName(type);
-        return name.get();
+        return name.toSimple();
     }
 
     private VBuilderClassName(MessageType type) {
         this.type = type;
     }
 
-    private SimpleClassName get() {
+    private SimpleClassName toSimple() {
+        ClassName className = type.javaClassName();
         if (type.isTopLevel()) {
-            SimpleClassName result = type.javaClassName()
-                                         .toSimple()
-                                         .with(VBUILDER_SUFFIX);
+            SimpleClassName result = className.toSimple()
+                                              .with(VBUILDER_SUFFIX);
             return result;
         }
 
         // Nested: either with outer class, or with enclosing message, or both.
-        Descriptor descriptor = type.descriptor();
-        String delimiter = String.valueOf(OUTER_CLASS_DELIMITER);
-        String outerPrefix =
-                outerClassPrefix(descriptor.getFile()).replace(delimiter, "");
-        String enclosingPrefix =
-                containingClassPrefix(descriptor.getContainingType()).replace(delimiter, "");
-        String typeName = descriptor.getName();
-        SimpleClassName result =
-                SimpleClassName.create(outerPrefix + enclosingPrefix + typeName + VBUILDER_SUFFIX);
+        String nestedName = ClassName.afterDot(className.value());
+        String mergedNames = nestedName.replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
+        SimpleClassName result = SimpleClassName.create(mergedNames)
+                                                .with(VBUILDER_SUFFIX);
         return result;
     }
 }
