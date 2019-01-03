@@ -54,6 +54,7 @@ class FileDescriptorSupersetTest {
         fileDependency = sandbox.resolve(KNOWN_TYPES);
         archiveDependency = sandbox.resolve("zipped_descriptors.zip");
         writeResource("descriptors/dir/known_types.desc", directoryDependency);
+        directoryDependency = directoryDependency.getParent();
         writeResource("descriptors/known_types.desc", fileDependency);
         writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
     }
