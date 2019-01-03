@@ -37,6 +37,7 @@ import static com.google.common.io.Files.createParentDirs;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -47,16 +48,24 @@ class FileDescriptorSupersetTest {
     private Path directoryDependency;
     private Path fileDependency;
     private Path archiveDependency;
+    private Path emptyFileDependency;
+
+    private Path nonDescriptorFile;
 
     @BeforeEach
     void setUp(@TempDir Path sandbox) throws IOException {
         directoryDependency = sandbox.resolve("dir").resolve(KNOWN_TYPES);
         fileDependency = sandbox.resolve(KNOWN_TYPES);
         archiveDependency = sandbox.resolve("zipped_descriptors.zip");
+        emptyFileDependency = sandbox.resolve("empty-descriptor").resolve(KNOWN_TYPES);
         writeResource("descriptors/dir/known_types.desc", directoryDependency);
         directoryDependency = directoryDependency.getParent();
         writeResource("descriptors/known_types.desc", fileDependency);
         writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
+        writeResource("descriptors/empty.desc", emptyFileDependency);
+
+        nonDescriptorFile = sandbox.resolve("non-desc");
+        createFile(nonDescriptorFile);
     }
 
     @Test
@@ -73,6 +82,24 @@ class FileDescriptorSupersetTest {
         assertDescriptors.contains(TaskProto.getDescriptor().toProto());
         assertDescriptors.contains(PersonProto.getDescriptor().toProto());
         assertDescriptors.contains(ProjectProto.getDescriptor().toProto());
+    }
+
+    @Test
+    @DisplayName("ignore empty files")
+    void ignoreEmptyFiles() {
+        FileDescriptorSuperset superset = new FileDescriptorSuperset();
+        superset.addFromDependency(emptyFileDependency.toFile());
+        MergedDescriptorSet mergedSet = superset.merge();
+        assertThat(mergedSet.descriptors()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ignore non-descriptor files")
+    void ignoreNonDescriptorFiles() {
+        FileDescriptorSuperset superset = new FileDescriptorSuperset();
+        superset.addFromDependency(nonDescriptorFile.toFile());
+        MergedDescriptorSet mergedSet = superset.merge();
+        assertThat(mergedSet.descriptors()).isEmpty();
     }
 
     private static void writeResource(String resourceName, Path destination) throws IOException {
