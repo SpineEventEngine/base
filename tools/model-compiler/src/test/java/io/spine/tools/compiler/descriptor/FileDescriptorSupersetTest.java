@@ -45,14 +45,45 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("FileDescriptorSuperset should")
 class FileDescriptorSupersetTest {
 
+    /**
+     * A directory with a {@code known_types.desc} file in it.
+     */
     private Path directoryDependency;
-    private Path fileDependency;
-    private Path archiveDependency;
-    private Path emptyFileDependency;
-    private Path archiveDependencyWithNoDescriptors;
 
+    /**
+     * A {@code known_types.desc} file.
+     */
+    private Path fileDependency;
+
+    /**
+     * A ZIP archive with a {@code known_types.desc} file in it.
+     */
+    private Path archiveDependency;
+
+    /**
+     * An empty {@code known_types.desc} file.
+     */
+    private Path emptyFileDependency;
+
+    /**
+     * A ZIP archive with NO {@code known_types.desc} file in it.
+     */
+    private Path archiveWithNoDescriptors;
+
+    /**
+     * A file which is NOT a {@code known_types.desc} file.
+     */
     private Path nonDescriptorFile;
 
+    /**
+     * Copies the test data from the resources of this test suite to the specified temp directory.
+     *
+     * <p>The test cases may access the created files via the fields of this class. Each field of
+     * type {@code Path} represents an existing file system object which may or may not contain
+     * a descriptor set file.
+     *
+     * @param sandbox a temp directory created by the {@code TempDirectory} extension
+     */
     @BeforeEach
     void setUp(@TempDir Path sandbox) throws IOException {
         Path directoryDependencyFile = sandbox.resolve("dir").resolve(KNOWN_TYPES);
@@ -61,11 +92,11 @@ class FileDescriptorSupersetTest {
         emptyFileDependency = sandbox.resolve("empty-descriptor").resolve(KNOWN_TYPES);
         writeResource("descriptors/dir/known_types.desc", directoryDependencyFile);
         directoryDependency = directoryDependencyFile.getParent();
-        archiveDependencyWithNoDescriptors = sandbox.resolve("irrelevant.zip");
+        archiveWithNoDescriptors = sandbox.resolve("irrelevant.zip");
         writeResource("descriptors/known_types.desc", fileDependency);
         writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
         writeResource("descriptors/empty.desc", emptyFileDependency);
-        writeResource("descriptors/irrelevant.zip", archiveDependencyWithNoDescriptors);
+        writeResource("descriptors/irrelevant.zip", archiveWithNoDescriptors);
 
         nonDescriptorFile = sandbox.resolve("non-desc");
         createFile(nonDescriptorFile);
@@ -100,7 +131,7 @@ class FileDescriptorSupersetTest {
     @DisplayName("ignore ZIPs with no descriptors files")
     void ignoreIrrelevantZips() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
-        superset.addFromDependency(archiveDependencyWithNoDescriptors.toFile());
+        superset.addFromDependency(archiveWithNoDescriptors.toFile());
         MergedDescriptorSet mergedSet = superset.merge();
         assertThat(mergedSet.descriptors()).isEmpty();
     }
