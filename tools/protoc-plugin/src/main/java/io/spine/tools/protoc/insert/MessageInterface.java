@@ -18,22 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
-
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-
-import java.io.Serializable;
+package io.spine.tools.protoc.insert;
 
 /**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
+ * An interface to be implemented by the Protobuf message.
  *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
+ * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
+ * generated code.
  */
-@Internal
-@Immutable
-public interface SerializableMessage extends Message, Serializable {
+public interface MessageInterface {
+
+    /**
+     * Obtains a fully-qualified name of the interface.
+     */
+    String name();
+
+    /**
+     * Obtains the generic params of the interface.
+     */
+    MessageInterfaceParameters parameters();
 }

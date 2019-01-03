@@ -18,22 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.tools.protoc.insert;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
+import javax.annotation.Generated;
 
-/**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
- *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
- */
-@Internal
-@Immutable
-public interface SerializableMessage extends Message, Serializable {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("MessageInterfaceSpec should")
+class MessageInterfaceSpecTest {
+
+    @Test
+    @DisplayName("generate interfaces")
+    void generate_interfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new MessageInterfaceSpec(packageName, interfaceName).toJavaCode();
+
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
+
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
+    }
 }

@@ -21,19 +21,35 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
-import java.io.Serializable;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 /**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
- *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
+ * Checks if the given message definition is a {@link UuidValue}.
  */
-@Internal
 @Immutable
-public interface SerializableMessage extends Message, Serializable {
+final class UuidValueClassifier extends MessageClassifier {
+
+    static final String FIELD_NAME = "uuid";
+
+    @Override
+    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
+        return doTest(message);
+    }
+
+    boolean doTest(DescriptorProto message) {
+        int fieldCount = message.getFieldCount();
+        if (fieldCount != 1) {
+            return false;
+        }
+        FieldDescriptorProto theField = message.getFieldList()
+                                               .get(0);
+        boolean nameMatches = theField.getName()
+                                      .equals(FIELD_NAME);
+        boolean typeMatches = theField.getType() == TYPE_STRING;
+        return nameMatches && typeMatches;
+    }
 }

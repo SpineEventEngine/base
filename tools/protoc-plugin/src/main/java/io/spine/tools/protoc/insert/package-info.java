@@ -18,22 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
-
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-
-import java.io.Serializable;
-
 /**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
- *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
+ * This package contains the routines of manipulating the Protoc Insertion Point to alter the
+ * generated Protobuf messages.
  */
-@Internal
-@Immutable
-public interface SerializableMessage extends Message, Serializable {
-}
+
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.insert;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,17 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
- * A marker interface extending {@link com.google.protobuf.Message}.
+ * The generic parameter of the {@link MessageInterface}.
  *
- * @author Dmytro Dashenkov
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
-public interface MarkerInterface {
+@Immutable
+interface MessageInterfaceParameter {
 
     /**
-     * Obtains a fully-qualified name of the interface.
+     * Obtains a parameter value based on who is the message interface descendant.
+     *
+     * @param descendant
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
      */
-    String name();
+    String valueFor(DescriptorProto descendant);
 }

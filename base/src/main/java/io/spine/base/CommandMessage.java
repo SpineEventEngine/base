@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for command messages.
@@ -32,29 +31,4 @@ import io.spine.base.MessageFile.Predicate;
  */
 @Immutable
 public interface CommandMessage extends SerializableMessage {
-
-    /**
-     * Provides the predicate for finding proto files with command message declarations.
-     */
-    class File {
-
-        private static final MessageFile INSTANCE = new MessageFile("commands") {
-            private static final long serialVersionUID = 0L;
-        };
-
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
-        public static Predicate predicate() {
-            return INSTANCE.predicate();
-        }
-
-        /**
-         * Obtains the suffix common for proto files containing command message declarations.
-         */
-        public static String suffix() {
-            return INSTANCE.value();
-        }
-    }
 }

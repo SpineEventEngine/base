@@ -18,22 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.tools.protoc.insert;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-
-import java.io.Serializable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 /**
- * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
- * standard serialization mechanism.
+ * The message interface parameter whose value is the target {@code Message} itself.
  *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
+ * parameter will be {@code ProjectId}.
  */
-@Internal
 @Immutable
-public interface SerializableMessage extends Message, Serializable {
+final class IdentityParameter implements MessageInterfaceParameter {
+
+    @Override
+    public String valueFor(DescriptorProto descendant) {
+        return descendant.getName();
+    }
 }

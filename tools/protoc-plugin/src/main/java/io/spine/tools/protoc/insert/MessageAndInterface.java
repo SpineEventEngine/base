@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.option.IsOption;
 import io.spine.option.Options;
+import io.spine.tools.protoc.CompilerOutput;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
@@ -36,19 +37,19 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
+import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
 
 /**
- * A tuple of two {@link File} instances representing a message and the marker interface
- * resolved for that message.
+ * A tuple of two {@link File} instances representing a message and the interface resolved for that
+ * message.
  */
 final class MessageAndInterface {
 
     private final InsertionPoint messageFile;
-    private final @Nullable UserMarkerInterface interfaceFile;
+    private final @Nullable CustomMessageInterface interfaceFile;
 
     private MessageAndInterface(InsertionPoint messageFile,
-                                @Nullable UserMarkerInterface interfaceFile) {
+                                @Nullable CustomMessageInterface interfaceFile) {
         this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
     }
@@ -89,13 +90,14 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(FileDescriptorProto file,
                                                     DescriptorProto msg,
                                                     IsOption optionValue) {
-        MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
-        UserMarkerInterface markerInterface = UserMarkerInterface.from(interfaceSpec);
-        InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
-        UserMarkerInterface interfaceToGenerate = optionValue.getGenerate()
-                                                  ? markerInterface
-                                                  : null;
-        MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
+        MessageInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
+        InsertionPoint message = InsertionPoint.implementInterface(file, msg, messageInterface);
+        CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
+                                                     ? messageInterface
+                                                     : null;
+        @SuppressWarnings("ConstantConditions") // OK as param is nullable.
+                MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
         return result;
     }
 
