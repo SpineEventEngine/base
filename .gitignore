@@ -64,3 +64,4 @@ hs_err_pid*
 
 # Test data
 !tools/model-compiler/src/test/resources/descriptors/zipped_descriptors.zip
+!tools/model-compiler/src/test/resources/descriptors/irrelevant.zip
