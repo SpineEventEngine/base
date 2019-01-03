@@ -49,20 +49,23 @@ class FileDescriptorSupersetTest {
     private Path fileDependency;
     private Path archiveDependency;
     private Path emptyFileDependency;
+    private Path archiveDependencyWithNoDescriptors;
 
     private Path nonDescriptorFile;
 
     @BeforeEach
     void setUp(@TempDir Path sandbox) throws IOException {
-        directoryDependency = sandbox.resolve("dir").resolve(KNOWN_TYPES);
+        Path directoryDependencyFile = sandbox.resolve("dir").resolve(KNOWN_TYPES);
         fileDependency = sandbox.resolve(KNOWN_TYPES);
         archiveDependency = sandbox.resolve("zipped_descriptors.zip");
         emptyFileDependency = sandbox.resolve("empty-descriptor").resolve(KNOWN_TYPES);
-        writeResource("descriptors/dir/known_types.desc", directoryDependency);
-        directoryDependency = directoryDependency.getParent();
+        writeResource("descriptors/dir/known_types.desc", directoryDependencyFile);
+        directoryDependency = directoryDependencyFile.getParent();
+        archiveDependencyWithNoDescriptors = sandbox.resolve("irrelevant.zip");
         writeResource("descriptors/known_types.desc", fileDependency);
         writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
         writeResource("descriptors/empty.desc", emptyFileDependency);
+        writeResource("descriptors/irrelevant.zip", archiveDependencyWithNoDescriptors);
 
         nonDescriptorFile = sandbox.resolve("non-desc");
         createFile(nonDescriptorFile);
@@ -89,6 +92,15 @@ class FileDescriptorSupersetTest {
     void ignoreEmptyFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(emptyFileDependency.toFile());
+        MergedDescriptorSet mergedSet = superset.merge();
+        assertThat(mergedSet.descriptors()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ignore ZIPs with no descriptors files")
+    void ignoreIrrelevantZips() {
+        FileDescriptorSuperset superset = new FileDescriptorSuperset();
+        superset.addFromDependency(archiveDependencyWithNoDescriptors.toFile());
         MergedDescriptorSet mergedSet = superset.merge();
         assertThat(mergedSet.descriptors()).isEmpty();
     }
