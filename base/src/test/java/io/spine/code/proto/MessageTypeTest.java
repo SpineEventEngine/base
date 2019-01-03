@@ -20,7 +20,9 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Predicates;
+import com.google.common.truth.IterableSubject;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Timestamp;
 import io.spine.net.Uri;
@@ -35,18 +37,29 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageType should")
 class MessageTypeTest {
 
-    @SuppressWarnings("Guava")
-      // Using `Predicates.not()` is more concise until `Predicate.not()` is available from Java 11.
+    /**
+     * Negates the passed predicate.
+     *
+     * @apiNote Provided for brevity of tests, avoiding avoiding using {@code Predicates.not()}
+     * from Guava, util similar method is provided by Java 11.
+     */
+    static <T> Predicate<T> not(Predicate<T> yes) {
+        return yes.negate();
+    }
+
     @Nested
     @DisplayName("Tell if message is")
     class Tell {
 
-        /** Tests a certain method of {@code MessageType} created on the passed descriptor. */
+        /**
+         * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
+         */
         void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
             MessageType type = MessageType.of(descriptor);
             boolean result = method.test(type);
@@ -57,14 +70,14 @@ class MessageTypeTest {
         @Test
         void nested() {
             assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
-            assertQuality(Predicates.not(MessageType::isNested), Url.getDescriptor());
+            assertQuality(not(MessageType::isNested), Url.getDescriptor());
         }
 
         @DisplayName("top-level")
         @Test
         void topLevel() {
             assertQuality(MessageType::isTopLevel, Url.getDescriptor());
-            assertQuality(Predicates.not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
+            assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
         }
 
         @DisplayName("a rejection")
@@ -100,8 +113,38 @@ class MessageTypeTest {
             }
 
             void assertNotCustom(Descriptor descriptor) {
-                assertQuality(Predicates.not(MessageType::isCustom), descriptor);
+                assertQuality(not(MessageType::isCustom), descriptor);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("Obtain path for")
+    class Path {
+
+        @Test
+        @DisplayName("top-level message")
+        void topLevel() {
+            assertPath(Url.getDescriptor());
+        }
+
+        @CanIgnoreReturnValue
+        private IterableSubject assertPath(Descriptor descriptor) {
+            MessageType type = MessageType.of(descriptor);
+            LocationPath path = type.path();
+
+            IterableSubject assertPath = assertThat(path.toList());
+            assertPath.contains(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+            assertPath.contains(descriptor.getIndex());
+
+            return assertPath;
+        }
+
+        @Test
+        @DisplayName("second-level message")
+        void secondLevel() {
+            IterableSubject assertPath = assertPath(Uri.Protocol.getDescriptor());
+            assertPath.contains(Uri.getDescriptor().getIndex());
         }
     }
 }

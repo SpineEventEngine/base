@@ -23,8 +23,8 @@ package io.spine.js.generate.output.snippet;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.output.CodeLines;
 
 import java.util.Collection;
 

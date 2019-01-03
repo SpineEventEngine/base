@@ -21,8 +21,8 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -277,50 +277,31 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        return fieldLeadingComments(field.toProto());
+        LocationPath fieldPath = fieldPath();
+        return message.leadingComments(fieldPath);
     }
 
     /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(DescriptorProtos.FieldDescriptorProto field) {
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        if (message.isNested()) {
-            return Optional.empty();
-        }
-
-        LocationPath fieldPath = fieldPath(field);
-        return message.documentation()
-                      .leadingComments(fieldPath);
-    }
-
-    /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
+     * Returns the path to the field inside a message declaration.
      *
      * <p>Protobuf extensions are not supported.
      *
-     * @param field
-     *         the field to get location path
      * @return the field location path
      */
-    private LocationPath fieldPath(DescriptorProtos.FieldDescriptorProto field) {
+    private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(message.documentation()
-                                   .messagePath());
+        locationPath.addAll(message.path());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
+        int fieldIndex = fieldIndex();
+        locationPath.add(fieldIndex);
         return locationPath;
     }
 
-    private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
+    private int fieldIndex() {
+        FieldDescriptorProto fproto = this.field.toProto();
         return message.descriptor()
                       .toProto()
                       .getFieldList()
-                      .indexOf(field);
+                      .indexOf(fproto);
     }
 }

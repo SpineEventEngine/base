@@ -21,9 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 
@@ -32,42 +30,51 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.lang.String.format;
-import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
 /**
- * {@code GradleProject} for the test needs.
+ * Allows to configure a Gradle project for testing needs.
  *
- * <p>{@code GradleProject} operates in the given {@linkplain File test project directory} and
- * allows to execute Gradle tasks.
+ * <p>The project operates in the given test project directory and allows to execute Gradle tasks.
  */
 public final class GradleProject {
 
-    public static final String JAVA_PLUGIN_ID = "java";
+    /**
+     * The name of the Gradle Java plugin.
+     *
+     * @deprecated use {@link #javaPlugin()}
+     */
+    @Deprecated
+    public static final String JAVA_PLUGIN_ID = javaPlugin();
 
-    private static final String BUILD_GRADLE_NAME = "build.gradle";
-    private static final String VERSION_GRADLE_NAME = "version.gradle";
-    private static final String TEST_ENV_GRADLE_NAME = "testEnv.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
-
-    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
-    private static final String DEBUG_CLI_OPTION = "--debug";
 
     private final String name;
     private final GradleRunner gradleRunner;
     private final boolean debug;
+
+    /**
+     * Creates new builder for the project.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Obtains the name of the Java Gradle plugin.
+     */
+    public static String javaPlugin() {
+        return "java";
+    }
 
     private GradleProject(Builder builder) throws IOException {
         this.name = builder.name;
@@ -78,6 +85,16 @@ public final class GradleProject {
         writeGradleScripts();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
+    }
+
+    private void writeGradleScripts() throws IOException {
+        BuildGradle buildGradle = new BuildGradle(testProjectRoot());
+        buildGradle.createFile();
+
+        Path projectRoot = ProjectRoot.instance()
+                                      .toPath();
+        TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
+        testEnvGradle.createFile();
     }
 
     private void writeProtoFiles(Iterable<String> fileNames) throws IOException {
@@ -103,10 +120,8 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        String task = taskName.getValue();
-        String[] args = debug
-                        ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
-                        : new String[]{task, STACKTRACE_CLI_OPTION};
+        String[] args = TaskArguments.mode(debug)
+                                     .of(taskName);
         return gradleRunner.withArguments(args);
     }
 
@@ -120,7 +135,7 @@ public final class GradleProject {
 
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
-        Path resultingPath = testRoot().resolve(filePath);
+        Path resultingPath = testProjectRoot().resolve(filePath);
         String fullyQualifiedPath = name + '/' + filePath;
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(fullyQualifiedPath);
@@ -129,84 +144,14 @@ public final class GradleProject {
         Files.copy(fileContent, resultingPath);
     }
 
-    private void writeGradleScripts() throws IOException {
-        writeBuildGradle();
-        Path projectRoot = findRoot();
-        createTestEnvExt(projectRoot);
-    }
-
-    /**
-     * Creates an extension file, which provides information about the project
-     * running this test project.
-     *
-     * <p>In particular, it includes the root of the project running this test project.
-     */
-    private void createTestEnvExt(Path projectRoot) throws IOException {
-        Path testEnvPath = testRoot().resolve(TEST_ENV_GRADLE_NAME);
-        String unixLikeRootPath = projectRoot.toString()
-                                             .replace('\\', '/');
-        List<String> lines = ImmutableList.of(
-                "ext {",
-                format("    enclosingRootDir = '%s'", unixLikeRootPath),
-                "}"
-        );
-        Files.write(testEnvPath, lines);
-    }
-
-    private void writeBuildGradle() throws IOException {
-        Path resultingPath = testRoot().resolve(BUILD_GRADLE_NAME);
-        InputStream fileContent = getClass().getClassLoader()
-                                            .getResourceAsStream(BUILD_GRADLE_NAME);
-        Files.createDirectories(resultingPath.getParent());
-        checkNotNull(fileContent);
-        Files.copy(fileContent, resultingPath);
-    }
-
-    private Path testRoot() {
+    private Path testProjectRoot() {
         return gradleRunner.getProjectDir()
                            .toPath();
     }
 
     /**
-     * Finds a root directory of the project by searching for the file
-     * named {@link #VERSION_GRADLE_NAME ext.gradle}.
-     *
-     * <p>Starts from the current directory, climbing up, if the file is not found.
-     *
-     * @throws IllegalStateException if the file is not found
+     * A builder for new {@code GradleProject}.
      */
-    private static Path findRoot() {
-        Path workingFolderPath = Paths.get(".")
-                                      .toAbsolutePath();
-        Path extGradleDirPath = workingFolderPath;
-        while (extGradleDirPath != null
-                && !exists(extGradleDirPath.resolve(VERSION_GRADLE_NAME))) {
-            extGradleDirPath = extGradleDirPath.getParent();
-        }
-        checkState(extGradleDirPath != null,
-                   "ext.gradle file not found in %s or parent directories.",
-                   workingFolderPath);
-        return extGradleDirPath;
-    }
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public enum NoOp implements Action<Object> {
-        ACTION;
-
-        @Override
-        public void execute(Object ignored) {
-            // NoOp
-        }
-
-        @SuppressWarnings("unchecked") // No matter, as the action is NoOp.
-        public static <T> Action<T> action() {
-            return ((Action<T>) ACTION);
-        }
-    }
-
     public static class Builder {
 
         private String name;
@@ -224,8 +169,8 @@ public final class GradleProject {
         private final List<String> protoFileNames = newLinkedList();
         private final List<String> javaFileNames = newLinkedList();
 
+        /** Prevents direct instantiation of this class. */
         private Builder() {
-            // Prevent direct instantiation of this class.
         }
 
         public Builder setProjectName(String name) {
@@ -303,15 +248,16 @@ public final class GradleProject {
             try {
                 checkNotNull(name, "Project name");
                 checkNotNull(folder, "Project folder");
-                return new GradleProject(this);
+                GradleProject result = new GradleProject(this);
+                return result;
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
             }
         }
-    }
 
-    private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
-        Throwable rootCause = getRootCause(throwable);
-        throw new IllegalStateException(rootCause);
+        private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
+            Throwable rootCause = getRootCause(throwable);
+            throw new IllegalStateException(rootCause);
+        }
     }
 }

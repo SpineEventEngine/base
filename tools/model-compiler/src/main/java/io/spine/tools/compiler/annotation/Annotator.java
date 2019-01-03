@@ -228,8 +228,8 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
         }
     }
 
-    private static <T extends JavaSource<T>> void rewrite(AbstractJavaSource<T> javaSource,
-                                                          Path destination) {
+    private static <T extends JavaSource<T>>
+    void rewrite(AbstractJavaSource<T> javaSource, Path destination) {
         String resultingSource = javaSource.toString();
         try {
             Files.write(destination, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);

@@ -32,8 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Describes a file containing proto message declarations.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class MessageFile extends StringTypeValue {
 
