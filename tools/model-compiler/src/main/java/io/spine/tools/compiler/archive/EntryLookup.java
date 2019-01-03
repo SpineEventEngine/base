@@ -29,9 +29,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.io.ByteStreams.readFully;
+import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A process of an entry lookup inside of an archive.
@@ -73,38 +72,23 @@ final class EntryLookup implements Closeable, Logging {
         }
     }
 
-    private Optional<ArchiveEntry> doFindEntry(String name)
-            throws IOException {
+    private Optional<ArchiveEntry> doFindEntry(String name) throws IOException {
         for (ZipEntry entry = stream.getNextEntry();
              entry != null;
              entry = stream.getNextEntry()) {
-            if (name.equals(entry.getName())) {
-                _debug("Reading ZIP entry `{}` of size: {}.", entry, entry.getSize());
-                ArchiveEntry read = readEntry(entry);
+            String entryName = entry.getName();
+            if (name.equals(entryName)) {
+                _debug("Reading ZIP entry `{}`.", entryName);
+                ArchiveEntry read = readEntry();
                 return Optional.of(read);
             }
         }
         return Optional.empty();
     }
 
-    private ArchiveEntry readEntry(ZipEntry entry) {
-        long size = entry.getSize();
-        if (size < 0 || size > Integer.MAX_VALUE) {
-            throw newIllegalStateException("Unable to read ZIP entry {}.", entry.getName());
-        } else {
-            int entrySize = (int) size;
-            byte[] buffer = new byte[entrySize];
-            readEntryTo(buffer);
-            return ArchiveEntry.of(buffer);
-        }
-    }
-
-    private void readEntryTo(byte[] buffer) {
-        try {
-            readFully(stream, buffer);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
+    private ArchiveEntry readEntry() throws IOException {
+        byte[] bytes = toByteArray(stream);
+        return ArchiveEntry.of(bytes);
     }
 
     /**
