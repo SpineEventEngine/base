@@ -249,7 +249,7 @@ class ValidatingBuilderTest {
         contents.addLine("First line of the task");
         assertFalse(loggedMessages.isEmpty());
         assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.WARN);
+                                   .getLevel(), Level.ERROR);
     }
 
     @Test
@@ -261,7 +261,7 @@ class ValidatingBuilderTest {
         essay.putTableOfContents("Synopsis", 0);
         assertFalse(loggedMessages.isEmpty());
         assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.WARN);
+                                   .getLevel(), Level.ERROR);
     }
 
     @Test
