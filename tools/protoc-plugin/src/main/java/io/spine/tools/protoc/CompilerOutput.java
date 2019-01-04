@@ -24,10 +24,8 @@ import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.Fi
 
 /**
  * Output of the Protobuf compiler plugin.
- *
- * @author Dmytro Dashenkov
  */
-interface CompilerOutput {
+public interface CompilerOutput {
 
     /**
      * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
