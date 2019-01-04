@@ -50,6 +50,7 @@ dependencies {
 
     testImplementation project(':testlib')
     testImplementation deps.test.hamcrest
+    testImplementation deps.test.junitPioneer
     testImplementation gradleTestKit()
     testImplementation project(':plugin-testlib')
 
