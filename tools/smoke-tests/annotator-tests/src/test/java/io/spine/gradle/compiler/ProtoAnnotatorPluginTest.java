@@ -20,6 +20,9 @@
 
 package io.spine.gradle.compiler;
 
+import io.spine.test.annotation.Alpha;
+import io.spine.test.annotation.Attempt;
+import io.spine.test.annotation.Private;
 import io.spine.test.annotation.ServiceProviderInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,19 +46,113 @@ class ProtoAnnotatorPluginTest {
         assertSpi(ImplicitlySpiServiceGrpc.class);
     }
 
+    @Test
+    @DisplayName("not annotate non-SPI elements")
+    void notAnnotateSpi() {
+        assertNotSpi(InternalMessage.class);
+        assertNotSpi(ImplicitlyInternalMessage.class);
+        assertNotSpi(ImplicitlyInternalServiceGrpc.class);
+    }
+
     private static void assertSpi(AnnotatedElement element) {
         assertAnnotated(element, ServiceProviderInterface.class);
+    }
+
+    private static void assertNotSpi(AnnotatedElement element) {
+        assertNotAnnotated(element, ServiceProviderInterface.class);
+    }
+
+    @Test
+    @DisplayName("annotate internal API elements with provided annotation")
+    void annotateInternal() throws NoSuchMethodException {
+        assertInternal(InternalMessage.class);
+        assertInternal(Scaffolding.class.getDeclaredMethod("getHidden"));
+        assertInternal(ImplicitlyInternalMessage.class);
+        assertInternal(ImplicitlyInternalServiceGrpc.class);
+    }
+
+    @Test
+    @DisplayName("not annotate non-internal API elements")
+    void notAnnotateInternal() throws NoSuchMethodException {
+        assertNotInternal(SpiMessage.class);
+        assertNotInternal(Scaffolding.class.getDeclaredMethod("getExperiment"));
+        assertNotInternal(SpiServiceGrpc.class);
+        assertNotInternal(ImplicitlySpiMessage.class);
+        assertNotInternal(ImplicitlySpiServiceGrpc.class);
+    }
+
+    private static void assertInternal(AnnotatedElement element) {
+        assertAnnotated(element, Private.class);
+    }
+
+    private static void assertNotInternal(AnnotatedElement element) {
+        assertNotAnnotated(element, Private.class);
+    }
+
+    @Test
+    @DisplayName("annotate experimental API elements with provided annotation")
+    void annotateExperimental() throws NoSuchMethodException {
+        assertExperimental(ExperimentalMessage.class);
+        assertExperimental(Scaffolding.class.getDeclaredMethod("getExperiment"));
+        assertExperimental(ImplicitlyExperimentalMessage.class);
+        assertExperimental(ImplicitlyExperimentalServiceGrpc.class);
+    }
+
+    @Test
+    @DisplayName("not annotate non-experimental API elements")
+    void notAnnotateExperimental() throws NoSuchMethodException {
+        assertNotExperimental(SpiMessage.class);
+        assertNotExperimental(Scaffolding.class.getDeclaredMethod("getHidden"));
+        assertNotExperimental(SpiServiceGrpc.class);
+        assertNotExperimental(ImplicitlySpiMessage.class);
+        assertNotExperimental(ImplicitlySpiServiceGrpc.class);
+    }
+
+    private static void assertExperimental(AnnotatedElement element) {
+        assertAnnotated(element, Attempt.class);
+    }
+
+    private static void assertNotExperimental(AnnotatedElement element) {
+        assertNotAnnotated(element, Attempt.class);
+    }
+
+    @Test
+    @DisplayName("annotate beta API elements with provided annotation")
+    void annotateBeta() throws NoSuchMethodException {
+        assertBeta(BetaMessage.class);
+        assertBeta(Scaffolding.class.getDeclaredMethod("getLatinLetter"));
+        assertBeta(ImplicitlyBetaMessage.class);
+        assertBeta(ImplicitlyBetaServiceGrpc.class);
+    }
+
+    @Test
+    @DisplayName("not annotate non-beta API elements")
+    void notAnnotateBeta() throws NoSuchMethodException {
+        assertNotBeta(ExperimentalMessage.class);
+        assertNotBeta(Scaffolding.class.getDeclaredMethod("getHidden"));
+        assertNotBeta(ImplicitlyExperimentalMessage.class);
+        assertNotBeta(ImplicitlyExperimentalServiceGrpc.class);
+    }
+
+    private static void assertBeta(AnnotatedElement element) {
+        assertAnnotated(element, Alpha.class);
+    }
+
+    private static void assertNotBeta(AnnotatedElement element) {
+        assertNotAnnotated(element, Alpha.class);
     }
 
     private static void assertAnnotated(AnnotatedElement element,
                                         Class<? extends Annotation> expected) {
         assertTrue(element.isAnnotationPresent(expected),
-                   format("%s must be %s.", element, expected));
+                   format("%s must be annotated with %s.", element, expected.getSimpleName()));
     }
 
     private static void assertNotAnnotated(AnnotatedElement element,
                                            Class<? extends Annotation> notExpected) {
         assertFalse(element.isAnnotationPresent(notExpected),
-                    format("%s must NOT be %s.", element, notExpected));
+                    format("%s must NOT be annotated with %s.",
+                           element,
+                           notExpected.getSimpleName()));
     }
 }
