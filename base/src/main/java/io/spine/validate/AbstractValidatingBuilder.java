@@ -43,6 +43,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.option.Options.option;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
@@ -278,7 +279,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     private static boolean isSetOnce(FieldDescriptor field) {
-        Optional<Boolean> setOnceDeclaration = Options.option(field, OptionsProto.setOnce);
+        Optional<Boolean> setOnceDeclaration = option(field, OptionsProto.setOnce);
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
         boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
@@ -290,7 +291,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                                          .getName();
         String fieldName = field.getName();
         Logger logger = Logging.get(AbstractValidatingBuilder.class);
-        logger.warn("Error found in %s.%s. " +
+        logger.error("Error found in %s.%s. " +
                     "Repeated and map fields can't be marked as `(set_once) = true`",
                     containingTypeName,
                     fieldName);
