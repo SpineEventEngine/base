@@ -20,8 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MergedDescriptorSet;
+import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.type.MoreKnownTypes;
@@ -31,9 +30,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
-import java.util.Collection;
 
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -43,7 +40,6 @@ import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from
@@ -77,27 +73,17 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                 .applyNowTo(project);
     }
 
-    private Action<Task> createMergingAction(Configuration configuration,
-                                             String descriptorSetPath) {
+    private static Action<Task> createMergingAction(Configuration configuration,
+                                                    String descriptorSetPath) {
         return task -> {
             File descriptorSet = new File(descriptorSetPath);
-            Collection<File> descriptors =
-                    configuration.getFiles()
-                                 .stream()
-                                 .map(task.getProject()::zipTree)
-                                 .flatMap(fileTree -> fileTree.getFiles()
-                                                              .stream())
-                                 .filter(file -> KNOWN_TYPES.equals(file.getName()))
-                                 .peek(file -> log().debug("Merging descriptors from {}", file))
-                                 .collect(toList());
-            ImmutableSet.Builder<File> files = ImmutableSet
-                    .<File>builder()
-                    .addAll(descriptors);
+            FileDescriptorSuperset superset = new FileDescriptorSuperset();
+            configuration.forEach(superset::addFromDependency);
             if (descriptorSet.exists()) {
-                files.add(descriptorSet);
+                superset.addFromDependency(descriptorSet);
             }
-            MergedDescriptorSet.create(files.build())
-                               .writeTo(descriptorSet);
+            superset.merge()
+                    .writeTo(descriptorSet);
 
             // Extend `KnownTypes` with all the type definitions from all the descriptors
             // found in the classpath of the project being built.

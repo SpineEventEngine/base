@@ -42,7 +42,6 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.option.Options.registry;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -111,8 +110,8 @@ public final class FileDescriptors {
         }
 
         List<FileDescriptorProto> files;
-        try (final FileInputStream fis = new FileInputStream(descriptorSet)) {
-            FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis, registry());
+        try (FileInputStream fis = new FileInputStream(descriptorSet)) {
+            FileDescriptorSet fileSet = FileDescriptorSets.parse(fis);
             files = fileSet.getFileList()
                            .stream()
                            .filter(filter)
@@ -178,7 +177,7 @@ public final class FileDescriptors {
     private static FileDescriptorSet loadFrom(URL file) {
         checkNotNull(file);
         try (InputStream stream = file.openStream()) {
-            FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream, registry());
+            FileDescriptorSet parsed = FileDescriptorSets.parse(stream);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
