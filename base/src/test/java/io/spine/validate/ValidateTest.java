@@ -25,6 +25,7 @@ import com.google.protobuf.StringValue;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeName;
+import io.spine.validate.diags.ConstraintViolations;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

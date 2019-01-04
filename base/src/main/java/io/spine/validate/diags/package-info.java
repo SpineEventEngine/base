@@ -17,24 +17,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate.violations;
 
-import com.google.common.testing.NullPointerTester;
-import io.spine.testing.UtilityClassTest;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.diags.ConstraintViolations;
-import org.junit.jupiter.api.DisplayName;
+/**
+ * Provides classes for explaining found violations of validation constraints.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.validate.diags;
 
-@DisplayName("ConstraintViolations utility class should")
-class ConstraintViolationsTest extends UtilityClassTest<ConstraintViolations> {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    ConstraintViolationsTest() {
-        super(ConstraintViolations.class);
-    }
-
-    @Override
-    protected void configure(NullPointerTester tester) {
-        super.configure(tester);
-        tester.setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

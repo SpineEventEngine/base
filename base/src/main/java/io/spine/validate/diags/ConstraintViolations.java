@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.diags;
+
+import io.spine.validate.ConstraintViolation;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
 /**
- * Utility class for working with {@link ConstraintViolation}s.
+ * Utility class for working with {@link io.spine.validate.ConstraintViolation}s.
  */
 public final class ConstraintViolations {
 

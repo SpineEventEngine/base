@@ -29,7 +29,7 @@ import io.spine.type.MessageClass;
 
 import java.util.Map;
 
-import static io.spine.validate.ConstraintViolations.toText;
+import static io.spine.validate.diags.ConstraintViolations.toText;
 import static java.lang.String.format;
 
 /**
