@@ -34,6 +34,7 @@ import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
@@ -201,7 +202,10 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                 logMissingDescriptorSetFile(setFile);
                 return;
             }
-            AnnotatorFactory.process(setFile, generatedProtoDir, generatedGrpcDir);
+            AnnotatorFactory.process(setFile,
+                                     generatedProtoDir,
+                                     generatedGrpcDir,
+                                     getCodeGenAnnotations(project));
         };
     }
 }

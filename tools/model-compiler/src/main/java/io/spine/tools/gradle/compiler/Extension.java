@@ -153,6 +153,8 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
+    public GenerateAnnotations generateAnnotations;
+
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
     }
@@ -301,6 +303,12 @@ public class Extension {
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;
+    }
+
+    public static GenerateAnnotations getCodeGenAnnotations(Project project) {
+        GenerateAnnotations annotations = spineProtobuf(project).generateAnnotations;
+        annotations = annotations != null ? annotations : new GenerateAnnotations();
+        return annotations;
     }
 
     private static Iterable<String> spineDirs(Project project) {

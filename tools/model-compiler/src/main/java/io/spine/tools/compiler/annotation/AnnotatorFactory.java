@@ -27,13 +27,10 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.gradle.compiler.GenerateAnnotations;
 
 import java.io.File;
 import java.util.Collection;
@@ -91,7 +88,8 @@ public final class AnnotatorFactory {
 
     public static void process(File descriptorSetFile,
                                String generatedProtoDir,
-                               String generatedGrpcDir) {
+                               String generatedGrpcDir,
+                               GenerateAnnotations annotations) {
         Collection<FileDescriptor> descriptors = FileSet
                 .parse(descriptorSetFile)
                 .files()
@@ -100,51 +98,47 @@ public final class AnnotatorFactory {
                 .collect(toSet());
         AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
-        annotateExperimentalApi(factory);
-        annotateBetaApi(factory);
-        annotateSpi(factory);
-        annotateInternalApi(factory);
+        annotateExperimentalApi(factory, annotations.experimentalClassName());
+        annotateBetaApi(factory, annotations.betaClassName());
+        annotateSpi(factory, annotations.spiClassName());
+        annotateInternalApi(factory, annotations.internalClassName());
     }
 
-    private static void annotateInternalApi(AnnotatorFactory factory) {
-        ClassName internalName = ClassName.of(Internal.class);
-        factory.createFileAnnotator(internalName, internalAll)
+    private static void annotateExperimentalApi(AnnotatorFactory factory, ClassName annotation) {
+        factory.createFileAnnotator(annotation, experimentalAll)
                .annotate();
-        factory.createMessageAnnotator(internalName, internalType)
+        factory.createMessageAnnotator(annotation, experimentalType)
                .annotate();
-        factory.createFieldAnnotator(internalName, internal)
-               .annotate();
-    }
-
-    private static void annotateSpi(AnnotatorFactory factory) {
-        ClassName spiName = ClassName.of(SPI.class);
-        factory.createFileAnnotator(spiName, sPIAll)
-               .annotate();
-        factory.createMessageAnnotator(spiName, sPIType)
-               .annotate();
-        factory.createServiceAnnotator(spiName, sPIService)
-               .annotate();
-        factory.createFieldAnnotator(spiName, sPI)
+        factory.createFieldAnnotator(annotation, experimental)
                .annotate();
     }
 
-    private static void annotateBetaApi(AnnotatorFactory factory) {
-        ClassName betaName = ClassName.of(Beta.class);
-        factory.createFileAnnotator(betaName, betaAll)
+    private static void annotateBetaApi(AnnotatorFactory factory, ClassName annotation) {
+        factory.createFileAnnotator(annotation, betaAll)
                .annotate();
-        factory.createMessageAnnotator(betaName, betaType)
+        factory.createMessageAnnotator(annotation, betaType)
                .annotate();
-        factory.createFieldAnnotator(betaName, beta)
+        factory.createFieldAnnotator(annotation, beta)
                .annotate();
     }
 
-    private static void annotateExperimentalApi(AnnotatorFactory factory) {
-        ClassName experimentalName = ClassName.of(Experimental.class);
-        factory.createFileAnnotator(experimentalName, experimentalAll)
+    private static void annotateSpi(AnnotatorFactory factory, ClassName annotation) {
+        factory.createFileAnnotator(annotation, sPIAll)
                .annotate();
-        factory.createMessageAnnotator(experimentalName, experimentalType)
+        factory.createMessageAnnotator(annotation, sPIType)
                .annotate();
-        factory.createFieldAnnotator(experimentalName, experimental)
+        factory.createServiceAnnotator(annotation, sPIService)
+               .annotate();
+        factory.createFieldAnnotator(annotation, sPI)
+               .annotate();
+    }
+
+    private static void annotateInternalApi(AnnotatorFactory factory, ClassName annotation) {
+        factory.createFileAnnotator(annotation, internalAll)
+               .annotate();
+        factory.createMessageAnnotator(annotation, internalType)
+               .annotate();
+        factory.createFieldAnnotator(annotation, internal)
                .annotate();
     }
 
