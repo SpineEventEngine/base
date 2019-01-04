@@ -20,16 +20,17 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.Value;
 import io.spine.annotation.Internal;
 import io.spine.base.Error;
 import io.spine.type.MessageClass;
+import io.spine.validate.diags.ViolationText;
 
 import java.util.Map;
 
-import static io.spine.validate.diags.ConstraintViolations.toText;
 import static java.lang.String.format;
 
 /**
@@ -48,7 +49,7 @@ public abstract class ExceptionFactory<E extends Exception,
                                        C extends MessageClass<?>,
                                        R extends ProtocolMessageEnum> {
 
-    private final Iterable<ConstraintViolation> constraintViolations;
+    private final ImmutableList<ConstraintViolation> constraintViolations;
     private final M message;
 
     /**
@@ -61,7 +62,7 @@ public abstract class ExceptionFactory<E extends Exception,
      *         constraint violations for the event message
      */
     protected ExceptionFactory(M message, Iterable<ConstraintViolation> violations) {
-        this.constraintViolations = violations;
+        this.constraintViolations = ImmutableList.copyOf(violations);
         this.message = message;
     }
 
@@ -128,7 +129,7 @@ public abstract class ExceptionFactory<E extends Exception,
     }
 
     private String violationsText() {
-        return toText(constraintViolations);
+        return ViolationText.ofAll(constraintViolations);
     }
 
     /**

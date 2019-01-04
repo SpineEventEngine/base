@@ -22,18 +22,68 @@ package io.spine.validate.diags;
 
 import io.spine.validate.ConstraintViolation;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Iterator;
+import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
+
+/**
+ * Provides error diagnostic text for a violation of a validation constraint.
+ *
+ * <p>If a {@link ConstraintViolation} has nested violations, they are listed in separate lines.
+ */
 public final class ViolationText {
 
     private final ConstraintViolation violation;
 
+    /**
+     * Creates a new instance of the text for the passed violation.
+     */
     public static ViolationText of(ConstraintViolation violation) {
         checkNotNull(violation);
         return new ViolationText(violation);
     }
 
+    /**
+     * Creates text with diagnostics for the passed violations, starting each of them from
+     * a new line.
+     */
+    public static String ofAll(Iterable<ConstraintViolation> violations) {
+        StringBuilder builder = new StringBuilder(100);
+        Iterator<ConstraintViolation> iterator = violations.iterator();
+        // List the first item without new line.
+        if (iterator.hasNext()) {
+            builder.append(of(iterator.next()));
+        }
+        // Prefix all following with line separator.
+        while (iterator.hasNext()) {
+            builder.append(lineSeparator());
+            builder.append(of(iterator.next()));
+        }
+        return builder.toString();
+    }
+
     private ViolationText(ConstraintViolation violation) {
         this.violation = violation;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(formattedMessage());
+        for (ConstraintViolation v : violation.getViolationList()) {
+            builder.append(lineSeparator());
+            ViolationText nested = of(v);
+            builder.append(nested.toString());
+        }
+        return builder.toString();
+    }
+
+    private String formattedMessage() {
+        String format = violation.getMsgFormat();
+        List<String> params = violation.getParamList();
+        String result = format(format, params.toArray());
+        return result;
     }
 }

@@ -152,12 +152,13 @@ class MessageFieldValidator extends FieldValidator<Message> {
         String when = timeConstraint.getIn()
                                     .toString()
                                     .toLowerCase();
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(msg)
-                                                           .addParam(when)
-                                                           .setFieldPath(getFieldPath())
-                                                           .setFieldValue(pack(fieldValue))
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .addParam(when)
+                .setFieldPath(getFieldPath())
+                .setFieldValue(pack(fieldValue))
+                .build();
         return violation;
     }
 
@@ -165,12 +166,13 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                                   Iterable<ConstraintViolation> violations) {
         IfInvalidOption ifInvalid = ifInvalid();
         String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(msg)
-                                                           .setFieldPath(getFieldPath())
-                                                           .setFieldValue(pack(fieldValue))
-                                                           .addAllViolation(violations)
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .setFieldPath(getFieldPath())
+                .setFieldValue(pack(fieldValue))
+                .addAllViolation(violations)
+                .build();
         return violation;
     }
 
