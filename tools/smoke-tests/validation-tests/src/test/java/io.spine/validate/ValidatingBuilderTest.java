@@ -298,7 +298,7 @@ class ValidatingBuilderTest {
                 .newBuilder()
                 .addTask(task())
                 .addMember(member())
-                .putRole("Ownner", member())
+                .putRole("Owner", member())
                 .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
