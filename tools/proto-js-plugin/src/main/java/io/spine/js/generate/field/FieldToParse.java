@@ -25,7 +25,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Protobuf field, which is parsed from a plain Javascript object to a Protobuf-specific type.
+ * A Protobuf field, which is going to be parsed from a plain Javascript
+ * {@linkplain #objectVariable object} to a Protobuf-specific {@linkplain #messageVariable type}.
  */
 public final class FieldToParse {
 
