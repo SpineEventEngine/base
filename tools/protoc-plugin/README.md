@@ -6,10 +6,10 @@ a plugin into a Protobuf compiler (a.k.a. `protoc`) is implemented.
 
 ## Features
 
-### Marker interfaces
+### Message interfaces
 
-Spine `protoc` plugin enables the user to mark certain message classes with marker interfaces 
-extended from `com.google.protobuf.Message`.
+Spine `protoc` plugin enables the user to mark certain message classes with interfaces extended 
+from the `com.google.protobuf.Message`.
 
 To mark a certain message type, add the `(is)` option for the type:
 
@@ -68,7 +68,8 @@ message Mouse {
 }
 ```
 
-In the example above, the Java FQN of the generated marker interface is `org.example.pet.SmallPet`.
+In the example above, the Java FQN of the generated message interface is 
+`org.example.pet.SmallPet`.
 If `java_package` option is absent, the Protobuf package is used instead.
 
 ## Usage
@@ -136,8 +137,8 @@ This level of indirectness is required since operating system does not treat JAR
 executables, so a special CLI command is required to start a JAR. 
 
 On the Protobuf compile time, the plugin handles the code generation requests from `protoc`.
-The response contains the Java code to be written. For example, for generating marker interfaces, 
-plugin responds with the code of the marker interfaces themselves and the insertion points, which 
+The response contains the Java code to be written. For example, for generating message interfaces, 
+plugin responds with the code of the message interfaces themselves and the insertion points, which 
 make the message types implement the requested interfaces.  
  
 If the passed code gen request is not interesting to the Spine plugin, the response is empty.

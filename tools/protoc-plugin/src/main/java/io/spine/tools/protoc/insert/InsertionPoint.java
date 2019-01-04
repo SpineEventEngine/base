@@ -18,22 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.insert;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.protoc.AbstractCompilerOutput;
 
 import static io.spine.code.java.PackageName.delimiter;
 import static java.lang.String.format;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
- * message class to implement a given marker interface.
- *
- * @author Dmytro Dashenkov
+ * message class to implement a given interface.
  */
 final class InsertionPoint extends AbstractCompilerOutput {
 
@@ -50,19 +49,21 @@ final class InsertionPoint extends AbstractCompilerOutput {
      * @param containingFile
      *         the file which contains the given {@code message}
      * @param message
-     *         the message to mark with an interface
-     * @param markerInterface
+     *         the message which should be altered
+     * @param messageInterface
      *         the interface to implement
      * @return new instance of {@code InsertionPoint}
      */
     static InsertionPoint implementInterface(FileDescriptorProto containingFile,
                                              DescriptorProto message,
-                                             MarkerInterface markerInterface) {
+                                             MessageInterface messageInterface) {
         File.Builder file = prepareFile(containingFile, message);
         String messageFqn = containingFile.getPackage() + delimiter() + message.getName();
         String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageFqn);
+        String content =
+                messageInterface.name() + initGenericParams(messageInterface, message) + ',';
         File result = file.setInsertionPoint(insertionPoint)
-                          .setContent(markerInterface.name() + ',')
+                          .setContent(content)
                           .build();
         return new InsertionPoint(result);
     }
@@ -75,5 +76,12 @@ final class InsertionPoint extends AbstractCompilerOutput {
         File.Builder srcFile = File.newBuilder()
                                    .setName(uriStyleName);
         return srcFile;
+    }
+
+    private static String initGenericParams(MessageInterface messageInterface,
+                                            DescriptorProto message) {
+        MessageInterfaceParameters parameters = messageInterface.parameters();
+        String result = parameters.getAsStringFor(message);
+        return result;
     }
 }
