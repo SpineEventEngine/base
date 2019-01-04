@@ -22,6 +22,7 @@ package io.spine.tools.compiler.annotation;
 
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import io.spine.annotation.Experimental;
+import io.spine.code.java.ClassName;
 import io.spine.ui.Language;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class EnumAnnotatorTest {
 
     private static final String INVALID_GEN_PROTO_DIR = "";
 
-    private final EnumAnnotator annotator = new EnumAnnotator(Experimental.class,
+    private final EnumAnnotator annotator = new EnumAnnotator(ClassName.of(Experimental.class),
                                                               experimentalType,
                                                               Collections.emptySet(),
                                                               INVALID_GEN_PROTO_DIR);

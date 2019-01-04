@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +33,6 @@ import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,7 +46,7 @@ import static java.lang.String.format;
 abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GenericDescriptor>
          extends Annotator<L, D> {
 
-    TypeDefinitionAnnotator(Class<? extends Annotation> annotation,
+    TypeDefinitionAnnotator(ClassName annotation,
                             GeneratedExtension<L, Boolean> option,
                             Collection<FileDescriptor> files,
                             String genProtoDir) {

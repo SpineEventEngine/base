@@ -31,11 +31,11 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -100,54 +100,70 @@ public final class AnnotatorFactory {
                 .collect(toSet());
         AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
+        annotateExperimentalApi(factory);
+        annotateBetaApi(factory);
+        annotateSpi(factory);
+        annotateInternalApi(factory);
+    }
 
-        factory.createFileAnnotator(Experimental.class, experimentalAll)
+    private static void annotateInternalApi(AnnotatorFactory factory) {
+        ClassName internalName = ClassName.of(Internal.class);
+        factory.createFileAnnotator(internalName, internalAll)
                .annotate();
-        factory.createMessageAnnotator(Experimental.class, experimentalType)
+        factory.createMessageAnnotator(internalName, internalType)
                .annotate();
-        factory.createFieldAnnotator(Experimental.class, experimental)
-               .annotate();
-
-        factory.createFileAnnotator(Beta.class, betaAll)
-               .annotate();
-        factory.createMessageAnnotator(Beta.class, betaType)
-               .annotate();
-        factory.createFieldAnnotator(Beta.class, beta)
-               .annotate();
-
-        factory.createFileAnnotator(SPI.class, sPIAll)
-               .annotate();
-        factory.createMessageAnnotator(SPI.class, sPIType)
-               .annotate();
-        factory.createServiceAnnotator(SPI.class, sPIService)
-               .annotate();
-        factory.createFieldAnnotator(SPI.class, sPI)
-               .annotate();
-
-        factory.createFileAnnotator(Internal.class, internalAll)
-               .annotate();
-        factory.createMessageAnnotator(Internal.class, internalType)
-               .annotate();
-        factory.createFieldAnnotator(Internal.class, internal)
+        factory.createFieldAnnotator(internalName, internal)
                .annotate();
     }
 
-    private Annotator createFileAnnotator(Class<? extends Annotation> annotation,
+    private static void annotateSpi(AnnotatorFactory factory) {
+        ClassName spiName = ClassName.of(SPI.class);
+        factory.createFileAnnotator(spiName, sPIAll)
+               .annotate();
+        factory.createMessageAnnotator(spiName, sPIType)
+               .annotate();
+        factory.createServiceAnnotator(spiName, sPIService)
+               .annotate();
+        factory.createFieldAnnotator(spiName, sPI)
+               .annotate();
+    }
+
+    private static void annotateBetaApi(AnnotatorFactory factory) {
+        ClassName betaName = ClassName.of(Beta.class);
+        factory.createFileAnnotator(betaName, betaAll)
+               .annotate();
+        factory.createMessageAnnotator(betaName, betaType)
+               .annotate();
+        factory.createFieldAnnotator(betaName, beta)
+               .annotate();
+    }
+
+    private static void annotateExperimentalApi(AnnotatorFactory factory) {
+        ClassName experimentalName = ClassName.of(Experimental.class);
+        factory.createFileAnnotator(experimentalName, experimentalAll)
+               .annotate();
+        factory.createMessageAnnotator(experimentalName, experimentalType)
+               .annotate();
+        factory.createFieldAnnotator(experimentalName, experimental)
+               .annotate();
+    }
+
+    private Annotator createFileAnnotator(ClassName annotation,
                                           GeneratedExtension<FileOptions, Boolean> option) {
         return new FileAnnotator(annotation, option, fileDescriptors, genProtoDir, genGrpcDir);
     }
 
-    private Annotator createMessageAnnotator(Class<? extends Annotation> annotation,
+    private Annotator createMessageAnnotator(ClassName annotation,
                                              GeneratedExtension<MessageOptions, Boolean> option) {
         return new MessageAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    private Annotator createFieldAnnotator(Class<? extends Annotation> annotation,
+    private Annotator createFieldAnnotator(ClassName annotation,
                                            GeneratedExtension<FieldOptions, Boolean> option) {
         return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    private Annotator createServiceAnnotator(Class<? extends Annotation> annotation,
+    private Annotator createServiceAnnotator(ClassName annotation,
                                              GeneratedExtension<ServiceOptions, Boolean> option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
     }

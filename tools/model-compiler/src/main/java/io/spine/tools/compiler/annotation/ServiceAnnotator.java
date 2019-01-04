@@ -24,10 +24,10 @@ import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ import static io.spine.code.java.SourceFile.forService;
  */
 class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptor> {
 
-    ServiceAnnotator(Class<? extends Annotation> annotation,
+    ServiceAnnotator(ClassName annotation,
                      GeneratedExtension<ServiceOptions, Boolean> option,
                      Collection<FileDescriptor> fileDescriptors,
                      String genProtoDir) {

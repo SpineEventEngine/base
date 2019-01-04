@@ -24,9 +24,9 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.option.Options;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +39,7 @@ import java.util.Optional;
  */
 class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descriptor> {
 
-    MessageAnnotator(Class<? extends Annotation> annotation,
+    MessageAnnotator(ClassName annotation,
                      GeneratedExtension<MessageOptions, Boolean> option,
                      Collection<FileDescriptor> files,
                      String genProtoDir) {

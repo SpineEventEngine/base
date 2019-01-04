@@ -24,10 +24,10 @@ import com.google.protobuf.DescriptorProtos.EnumOptions;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import java.util.Optional;
  */
 class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptor> {
 
-    EnumAnnotator(Class<? extends Annotation> annotation,
+    EnumAnnotator(ClassName annotation,
                   GeneratedExtension<EnumOptions, Boolean> option,
                   Collection<FileDescriptor> files,
                   String genProtoDir) {

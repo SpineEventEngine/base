@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;
@@ -37,7 +38,6 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,9 +71,9 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 public abstract class Annotator<O extends ExtendableMessage, D extends GenericDescriptor> {
 
     /**
-     * An annotation class.
+     * The name of the Java class of the annotation to apply.
      */
-    private final Class<? extends Annotation> annotation;
+    private final ClassName annotation;
 
     /**
      * An Protobuf option, that tells whether generated program elements should be annotated.
@@ -92,7 +92,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      */
     private final String genProtoDir;
 
-    protected Annotator(Class<? extends Annotation> annotation,
+    protected Annotator(ClassName annotation,
                         GeneratedExtension<O, Boolean> option,
                         Collection<FileDescriptor> fileDescriptors,
                         String genProtoDir) {
@@ -256,14 +256,12 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      *         the program element to annotate
      */
     protected final void addAnnotation(AnnotationTargetSource<?, ?> source) {
-        AnnotationSource<?> annotation = source.getAnnotation(this.annotation);
-        if (annotation != null) {
-            return;
+        String annotationFQN = annotation.value();
+        AnnotationSource<?> annotation = source.getAnnotation(annotationFQN);
+        if (annotation == null) {
+            AnnotationSource newAnnotation = source.addAnnotation();
+            newAnnotation.setName(annotationFQN);
         }
-
-        String annotationFQN = this.annotation.getCanonicalName();
-        AnnotationSource newAnnotation = source.addAnnotation();
-        newAnnotation.setName(annotationFQN);
     }
 
     /**

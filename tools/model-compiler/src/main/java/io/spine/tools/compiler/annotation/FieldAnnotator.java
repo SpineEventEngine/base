@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FieldDeclaration;
@@ -38,7 +39,6 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -58,7 +58,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
 
-    FieldAnnotator(Class<? extends Annotation> annotation,
+    FieldAnnotator(ClassName annotation,
                    GeneratedExtension<FieldOptions, Boolean> option,
                    Collection<FileDescriptor> fileDescriptors,
                    String genProtoDir) {

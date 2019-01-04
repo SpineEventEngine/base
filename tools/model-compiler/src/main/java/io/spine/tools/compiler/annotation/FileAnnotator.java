@@ -26,10 +26,10 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -47,7 +47,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptor> {
 
     private final String genGrpcDir;
 
-    FileAnnotator(Class<? extends Annotation> annotation,
+    FileAnnotator(ClassName annotation,
                   GeneratedExtension<FileOptions, Boolean> option,
                   Collection<FileDescriptor> files,
                   String genProtoDir,
