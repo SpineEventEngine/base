@@ -28,8 +28,11 @@ import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@SuppressWarnings("PublicField") // Expose fields as a Gradle extension
-public class GenerateAnnotations {
+/**
+ * Type names of Java annotations used to mark generated code.
+ */
+@SuppressWarnings("PublicField") // Expose fields as a part of Gradle extension
+public class CodeGenAnnotations {
 
     public String experimental = Experimental.class.getCanonicalName();
     public String beta = Beta.class.getCanonicalName();

@@ -153,7 +153,7 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
-    public GenerateAnnotations generateAnnotations;
+    public CodeGenAnnotations generateAnnotations;
 
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
@@ -305,9 +305,9 @@ public class Extension {
         return result;
     }
 
-    public static GenerateAnnotations getCodeGenAnnotations(Project project) {
-        GenerateAnnotations annotations = spineProtobuf(project).generateAnnotations;
-        annotations = annotations != null ? annotations : new GenerateAnnotations();
+    public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
+        CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
+        annotations = annotations != null ? annotations : new CodeGenAnnotations();
         return annotations;
     }
 

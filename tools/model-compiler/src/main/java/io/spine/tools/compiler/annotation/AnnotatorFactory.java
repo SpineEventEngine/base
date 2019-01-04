@@ -30,7 +30,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.gradle.compiler.GenerateAnnotations;
+import io.spine.tools.gradle.compiler.CodeGenAnnotations;
 
 import java.io.File;
 import java.util.Collection;
@@ -89,7 +89,7 @@ public final class AnnotatorFactory {
     public static void process(File descriptorSetFile,
                                String generatedProtoDir,
                                String generatedGrpcDir,
-                               GenerateAnnotations annotations) {
+                               CodeGenAnnotations annotations) {
         Collection<FileDescriptor> descriptors = FileSet
                 .parse(descriptorSetFile)
                 .files()
