@@ -19,15 +19,10 @@
  */
 package io.spine.validate;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
-import io.spine.string.Stringifiers;
+import io.spine.validate.diags.ViolationText;
 
 import java.util.List;
-
-import static com.google.common.base.Joiner.on;
-import static java.util.stream.Collectors.toList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
@@ -42,7 +37,7 @@ public final class ValidationException extends RuntimeException {
     private final ImmutableList<ConstraintViolation> constraintViolations;
 
     public ValidationException(Iterable<ConstraintViolation> violations) {
-        super("Validation constraints violated");
+        super();
         this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
@@ -53,13 +48,6 @@ public final class ValidationException extends RuntimeException {
 
     @Override
     public String toString() {
-        ToStringHelper helper = MoreObjects.toStringHelper(this);
-        List<String> violations =
-                constraintViolations.stream()
-                                    .map(Stringifiers::toString)
-                                    .collect(toList());
-        String violationContent = '[' + on(", ").join(violations) + ']';
-        return helper.add("constraintViolations", violationContent)
-                     .toString();
+        return getClass().getSimpleName() + ": " + ViolationText.ofAll(constraintViolations);
     }
 }

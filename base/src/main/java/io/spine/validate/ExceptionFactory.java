@@ -95,7 +95,7 @@ public abstract class ExceptionFactory<E extends Exception,
     protected abstract E createException(String exceptionMsg, M message, Error error);
 
     private String formatExceptionMessage() {
-        return format("%s. Message class: `%s`. %s.",
+        return format("%s. Message class: `%s`. %s",
                       getErrorText(), getMessageClass(), violationsText());
     }
 
@@ -117,9 +117,10 @@ public abstract class ExceptionFactory<E extends Exception,
     }
 
     private ValidationError error() {
-        return ValidationError.newBuilder()
-                              .addAllConstraintViolation(constraintViolations)
-                              .build();
+        return ValidationError
+                .newBuilder()
+                .addAllConstraintViolation(constraintViolations)
+                .build();
     }
 
     private String errorText() {
