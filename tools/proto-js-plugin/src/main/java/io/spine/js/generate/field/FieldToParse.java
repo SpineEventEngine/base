@@ -27,14 +27,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Protobuf field, which is going to be parsed from a plain Javascript
  * {@linkplain #objectVariable object} to a Protobuf-specific {@linkplain #messageVariable type}.
+ *
+ * <p>The class contains the data required to generate code for parsing of a field,
+ * such as a field descriptor, names of variables involved in code for parsing.
  */
 public final class FieldToParse {
 
-    /** The name of the object variable to get the field value. */
     private final String objectVariable;
     private final String messageVariable;
     private final FieldDescriptor descriptor;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param descriptor
+     *         the descriptor of the field to be parsed
+     * @param objectVariable
+     *         the name of the object to get the field value to be parsed
+     * @param messageVariable
+     *         the name of the message to set the parsed field
+     */
     public FieldToParse(FieldDescriptor descriptor, String objectVariable, String messageVariable) {
         checkNotNull(descriptor);
         checkNotNull(objectVariable);
