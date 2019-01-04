@@ -18,37 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'enrichment-tests'
-include 'known-types-tests'
-include 'validation-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.gradle.compiler;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
- */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
