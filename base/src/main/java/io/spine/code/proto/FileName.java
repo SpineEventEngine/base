@@ -23,15 +23,13 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.MessageFile;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.MessageFile.COMMANDS_FILE;
-import static io.spine.base.MessageFile.EVENTS_FILE;
-import static io.spine.base.MessageFile.REJECTIONS_FILE;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -114,27 +112,29 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
         return result;
     }
 
+    private boolean matches(MessageFile file) {
+        boolean result = value().endsWith(file.suffix());
+        return result;
+    }
+
     /**
      * Returns {@code true} if the name of the file matches convention for command message files.
      */
     public boolean isCommands() {
-        boolean result = value().endsWith(COMMANDS_FILE.suffix());
-        return result;
+        return matches(MessageFile.COMMANDS);
     }
 
     /**
      * Returns {@code true} if the name of the file matches convention for event message files.
      */
     public boolean isEvents() {
-        boolean result = value().endsWith(EVENTS_FILE.suffix());
-        return result;
+        return matches(MessageFile.EVENTS);
     }
 
     /**
      * Returns {@code true} if the name of the file matches convention for rejection message files.
      */
     public boolean isRejections() {
-        boolean result = value().endsWith(REJECTIONS_FILE.suffix());
-        return result;
+        return matches(MessageFile.REJECTIONS);
     }
 }
