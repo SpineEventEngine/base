@@ -65,6 +65,13 @@ public final class FileDescriptorSuperset implements Logging {
         this.descriptors = newArrayList();
     }
 
+    /**
+     * Flattens this superset into a single descriptor set.
+     *
+     * <p>The descriptors in the output set are de-duplicated and unordered.
+     *
+     * @return the result of the sets merging
+     */
     public MergedDescriptorSet merge() {
         Set<FileDescriptorProto> allFiles = descriptors
                 .stream()
