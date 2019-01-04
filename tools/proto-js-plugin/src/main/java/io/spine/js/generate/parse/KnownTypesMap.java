@@ -29,7 +29,7 @@ import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.snippet.JsImportGenerator;
+import io.spine.js.generate.output.snippet.Import;
 import io.spine.js.generate.output.snippet.MapExportSnippet;
 import io.spine.type.TypeUrl;
 
@@ -98,12 +98,10 @@ public final class KnownTypesMap implements Snippet {
                                      .map(FileName::from)
                                      .collect(toSet());
         CodeLines importLines = new CodeLines();
-        JsImportGenerator generator = JsImportGenerator
-                .newBuilder()
-                .setImports(imports)
-                .setJsOutput(importLines)
-                .build();
-        generator.generate();
+        for (FileName fileName : imports) {
+            Import fileImport = Import.fileRelativeToRoot(fileName);
+            importLines.append(fileImport);
+        }
         return importLines;
     }
 

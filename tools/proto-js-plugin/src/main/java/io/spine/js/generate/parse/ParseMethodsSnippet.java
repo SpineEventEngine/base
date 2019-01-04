@@ -27,7 +27,7 @@ import io.spine.code.js.FileName;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Comment;
-import io.spine.js.generate.output.snippet.JsImportGenerator;
+import io.spine.js.generate.output.snippet.Import;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
@@ -102,16 +102,15 @@ public final class ParseMethodsSnippet implements Snippet {
      */
     @VisibleForTesting
     CodeLines imports() {
-        CodeLines snippet = new CodeLines();
         FileName fileName = FileName.from(file);
-        JsImportGenerator generator = JsImportGenerator
-                .newBuilder()
-                .setFileName(fileName)
-                .setJsOutput(snippet)
-                .build();
-        generator.importFile(KNOWN_TYPE_PARSERS.fileName(), PARSERS_IMPORT_NAME);
-        generator.importFile(OBJECT_PARSER.fileName(), ABSTRACT_PARSER_IMPORT_NAME);
-        return snippet;
+        String parsersImport = Import.fileRelativeTo(KNOWN_TYPE_PARSERS.fileName(), fileName)
+                                     .namedAs(PARSERS_IMPORT_NAME);
+        String abstractParserImport = Import.fileRelativeTo(OBJECT_PARSER.fileName(), fileName)
+                                            .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        CodeLines lines = new CodeLines();
+        lines.append(parsersImport);
+        lines.append(abstractParserImport);
+        return lines;
     }
 
     /**

@@ -30,7 +30,6 @@ import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,22 +47,18 @@ class KnownTypesMapTest {
     private static final Descriptor ANY = Any.getDescriptor();
     private static final Descriptor STRING_VALUE = StringValue.getDescriptor();
 
-    private KnownTypesMap generator;
-
-    @BeforeEach
-    void setUp() {
-        FileSet fileSet = FileSet.load();
-        generator = new KnownTypesMap(fileSet);
-    }
+    private final FileSet fileSet = FileSet.load();
+    private final KnownTypesMap generator = new KnownTypesMap(fileSet);
 
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-        FileDescriptor file = Any.getDescriptor()
-                                 .getFile();
-        FileName fileName = FileName.from(file);
-        String taskImport = "require('./" + fileName + "');";
-        assertContains(generator.value(), taskImport);
+        CodeLines generatedCode = generator.value();
+        for (FileDescriptor file : fileSet.files()) {
+            FileName fileName = FileName.from(file);
+            String fileImport = "require('./" + fileName + "');";
+            assertContains(generatedCode, fileImport);
+        }
     }
 
     @Test
