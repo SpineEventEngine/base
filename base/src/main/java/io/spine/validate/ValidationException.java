@@ -46,7 +46,7 @@ public final class ValidationException extends RuntimeException {
         this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
-    @SuppressWarnings({"unused" /* part of public API of the exception. */})
+    @SuppressWarnings("unused" /* part of public API of the exception. */)
     public List<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
     }
@@ -58,7 +58,7 @@ public final class ValidationException extends RuntimeException {
                 constraintViolations.stream()
                                     .map(Stringifiers::toString)
                                     .collect(toList());
-        String violationContent = "[" + on(", ").join(violations) + ']';
+        String violationContent = '[' + on(", ").join(violations) + ']';
         return helper.add("constraintViolations", violationContent)
                      .toString();
     }
