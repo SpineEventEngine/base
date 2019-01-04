@@ -31,13 +31,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.compiler.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -49,13 +49,20 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class FileDescriptorSuperset implements Logging {
 
-    private final Collection<FileDescriptorSet> descriptors;
+    /**
+     * The list of descriptor sets belonging to this superset.
+     *
+     * <p>Duplication of the list entries is not probable in real life. Thus, a {@code List} is used
+     * instead of a {@code Set}. Perform de-duplication on the level of separate
+     * {@code FileDescriptor}s rather then the sets.
+     */
+    private final List<FileDescriptorSet> descriptors;
 
     /**
      * Creates a new instance of {@code FileDescriptorSuperset}.
      */
     public FileDescriptorSuperset() {
-        this.descriptors = newLinkedList();
+        this.descriptors = newArrayList();
     }
 
     public MergedDescriptorSet merge() {
