@@ -18,8 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.tools.compiler.descriptor;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.annotation.Internal;
 
@@ -28,7 +31,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.Files.createParentDirs;
@@ -36,39 +38,15 @@ import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
- * A view on a {@link FileDescriptorSet} after merging.
+ * A view on a {@code FileDescriptorSet} after merging.
  */
 @Internal
 public final class MergedDescriptorSet {
 
     private final FileDescriptorSet descriptorSet;
 
-    private MergedDescriptorSet(FileDescriptorSet descriptorSet) {
-        this.descriptorSet = descriptorSet;
-    }
-
-    /**
-     * Merges the contents of the given files into a single descriptor set.
-     *
-     * <p>This method assumes that all the given files exist and contain instances of
-     * {@link FileDescriptorSet} Protobuf message.
-     *
-     * @param files
-     *         the files to merge
-     * @return merged set
-     */
-    public static MergedDescriptorSet create(Collection<File> files) {
-        FileDescriptorSet merged = files
-                .stream()
-                .map(FileDescriptors::parse)
-                .flatMap(Collection::stream)
-                .distinct()
-                .reduce(FileDescriptorSet.newBuilder(),
-                        FileDescriptorSet.Builder::addFile,
-                        (right, left) -> right.addAllFile(left.getFileList()))
-                .build();
-        MergedDescriptorSet result = new MergedDescriptorSet(merged);
-        return result;
+    MergedDescriptorSet(FileDescriptorSet descriptorSet) {
+        this.descriptorSet = checkNotNull(descriptorSet);
     }
 
     /**
@@ -88,6 +66,11 @@ public final class MergedDescriptorSet {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    @VisibleForTesting
+    ImmutableSet<FileDescriptorProto> descriptors() {
+        return ImmutableSet.copyOf(descriptorSet.getFileList());
     }
 
     private static void prepareFile(File destination) {
