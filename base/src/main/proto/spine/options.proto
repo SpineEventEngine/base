@@ -149,7 +149,7 @@ extend google.protobuf.FieldOptions {
     //
     bool internal = 73850;
 
-    // Indicates a file which contains elements of Service Provider Interface (SPI).
+    // Indicates a field which should be considered a part of a Service Provider Interface (SPI).
     //
     // SPI is used to enable framework extension and replaceable components (implement a new
     // storage, etc). See "Effective Java 2nd Edition", chapter 2, item 1 for more info about
