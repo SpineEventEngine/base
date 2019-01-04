@@ -47,7 +47,6 @@ import static io.spine.option.OptionsProto.experimentalType;
 import static io.spine.option.OptionsProto.internal;
 import static io.spine.option.OptionsProto.internalAll;
 import static io.spine.option.OptionsProto.internalType;
-import static io.spine.option.OptionsProto.sPI;
 import static io.spine.option.OptionsProto.sPIAll;
 import static io.spine.option.OptionsProto.sPIService;
 import static io.spine.option.OptionsProto.sPIType;
@@ -128,8 +127,6 @@ public final class AnnotatorFactory {
         factory.createMessageAnnotator(annotation, sPIType)
                .annotate();
         factory.createServiceAnnotator(annotation, sPIService)
-               .annotate();
-        factory.createFieldAnnotator(annotation, sPI)
                .annotate();
     }
 
