@@ -176,7 +176,6 @@ public final class DefaultJavaProject extends DefaultProject {
         /**
          * The directory for generated test resources.
          */
-        @SuppressWarnings("unused") // reserved for future use.
         public SourceCodeDirectory testResources() {
             return new SourceDir(getTest(), RESOURCES_DIR);
         }
