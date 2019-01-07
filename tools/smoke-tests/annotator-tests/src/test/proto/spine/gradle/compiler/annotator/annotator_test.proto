@@ -37,5 +37,3 @@ message Scaffolding {
 
     string hidden = 3 [(internal) = true];
 }
-
-
