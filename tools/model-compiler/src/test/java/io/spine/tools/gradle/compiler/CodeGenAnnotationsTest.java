@@ -24,38 +24,22 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.code.java.ClassName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Type names of Java annotations used to mark generated code.
- */
-@SuppressWarnings({"PublicField", "WeakerAccess"}) // Expose fields as a part of Gradle extension
-public class CodeGenAnnotations {
+@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
+class CodeGenAnnotationsTest {
 
-    public String experimental = Experimental.class.getCanonicalName();
-    public String beta = Beta.class.getCanonicalName();
-    public String spi = SPI.class.getCanonicalName();
-    public String internal = Internal.class.getCanonicalName();
+    @Test
+    @DisplayName("have default values")
+    void defaults() {
+        CodeGenAnnotations annotations = new CodeGenAnnotations();
 
-    public ClassName experimentalClassName() {
-        checkNotNull(experimental);
-        return ClassName.of(experimental);
-    }
-
-    public ClassName betaClassName() {
-        checkNotNull(beta);
-        return ClassName.of(beta);
-    }
-
-    public ClassName spiClassName() {
-        checkNotNull(spi);
-        return ClassName.of(spi);
-    }
-
-    public ClassName internalClassName() {
-        checkNotNull(internal);
-        return ClassName.of(internal);
+        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
+        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
+        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
+        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
     }
 }
