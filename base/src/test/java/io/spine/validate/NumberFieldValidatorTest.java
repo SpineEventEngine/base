@@ -89,14 +89,13 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
     }
 
     @Test
-    @DisplayName("produce a warning upon finding a required double fieled")
+    @DisplayName("produce a warning upon finding a required double field")
     void testRequiredDoubleFieldWarning() {
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         SubstituteLogger log = (SubstituteLogger) requiredFieldValidator.log();
         Logging.redirect(log, loggedMessages);
         List<ConstraintViolation> validate = requiredFieldValidator.validate();
         assertTrue(validate.isEmpty());
-        assertFalse(loggedMessages.isEmpty());
         assertEquals(1, loggedMessages.size());
         assertEquals(WARN, loggedMessages.peek().getLevel());
     }
