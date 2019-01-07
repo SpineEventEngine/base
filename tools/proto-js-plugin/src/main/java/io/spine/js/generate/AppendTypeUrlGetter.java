@@ -70,9 +70,9 @@ public class AppendTypeUrlGetter extends GenerationTask {
         TypeSet types = TypeSet.messagesAndEnums(file);
         for (Type type : types.types()) {
             Snippet method = typeUrlMethod(type);
+            output.append(emptyLine());
             output.append(Comment.generatedBySpine());
             output.append(method);
-            output.append(emptyLine());
         }
         return output;
     }
