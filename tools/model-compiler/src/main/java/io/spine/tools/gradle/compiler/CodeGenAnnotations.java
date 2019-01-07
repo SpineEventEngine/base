@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Type names of Java annotations used to mark generated code.
  */
-@SuppressWarnings({"PublicField", "WeakerAccess"}) // Expose fields as a part of Gradle extension
+@SuppressWarnings({"PublicField", "WeakerAccess"}) // Expose fields as a part of Gradle extension.
 public class CodeGenAnnotations {
 
     public String experimental = Experimental.class.getCanonicalName();

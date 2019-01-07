@@ -23,8 +23,6 @@ package io.spine.tools.compiler.annotation;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
@@ -43,11 +41,11 @@ import static java.lang.String.format;
  * Abstract base class for {@linkplain Annotator Annotators}
  * for a particular kind of type definition.
  */
-abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GenericDescriptor>
-         extends Annotator<L, D> {
+abstract class TypeDefinitionAnnotator<D extends GenericDescriptor>
+         extends Annotator<D> {
 
     TypeDefinitionAnnotator(ClassName annotation,
-                            GeneratedExtension<L, Boolean> option,
+                            ApiOption option,
                             Collection<FileDescriptor> files,
                             String genProtoDir) {
         super(annotation, option, files, genProtoDir);

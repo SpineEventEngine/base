@@ -22,12 +22,13 @@ package io.spine.tools.compiler.annotation.check;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
+import java.util.Optional;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
+import static io.spine.tools.compiler.annotation.check.Annotations.findInternalAnnotation;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -40,16 +41,15 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
     }
 
     @Override
-    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
-            AnnotationSource annotation = findSpiAnnotation(nestedType);
+            Optional<?> annotation = findInternalAnnotation(nestedType);
             if (shouldBeAnnotated) {
                 assertNotNull(annotation);
             } else {
                 assertNull(annotation);
             }
         }
-        return null;
     }
 }

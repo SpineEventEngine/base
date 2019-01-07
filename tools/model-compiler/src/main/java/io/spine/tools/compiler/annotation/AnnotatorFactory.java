@@ -21,16 +21,10 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.DescriptorProtos.FileOptions;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.gradle.compiler.CodeGenAnnotations;
 
 import java.io.File;
 import java.util.Collection;
@@ -38,19 +32,6 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.option.OptionsProto.beta;
-import static io.spine.option.OptionsProto.betaAll;
-import static io.spine.option.OptionsProto.betaType;
-import static io.spine.option.OptionsProto.experimental;
-import static io.spine.option.OptionsProto.experimentalAll;
-import static io.spine.option.OptionsProto.experimentalType;
-import static io.spine.option.OptionsProto.internal;
-import static io.spine.option.OptionsProto.internalAll;
-import static io.spine.option.OptionsProto.internalType;
-import static io.spine.option.OptionsProto.sPI;
-import static io.spine.option.OptionsProto.sPIAll;
-import static io.spine.option.OptionsProto.sPIService;
-import static io.spine.option.OptionsProto.sPIType;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -86,79 +67,32 @@ public final class AnnotatorFactory {
         this.genGrpcDir = genGrpcDir;
     }
 
-    public static void process(File descriptorSetFile,
-                               String generatedProtoDir,
-                               String generatedGrpcDir,
-                               CodeGenAnnotations annotations) {
+    public static AnnotatorFactory newInstance(File descriptorSetFile,
+                                               String generatedProtoDir,
+                                               String generatedGrpcDir) {
         Collection<FileDescriptor> descriptors = FileSet
                 .parse(descriptorSetFile)
                 .files()
                 .stream()
                 .filter(FileDescriptors::isNotGoogle)
                 .collect(toSet());
-        AnnotatorFactory factory =
-                new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
-        annotateExperimentalApi(factory, annotations.experimentalClassName());
-        annotateBetaApi(factory, annotations.betaClassName());
-        annotateSpi(factory, annotations.spiClassName());
-        annotateInternalApi(factory, annotations.internalClassName());
+        return new AnnotatorFactory(descriptors, generatedProtoDir,generatedGrpcDir);
     }
 
-    private static void annotateExperimentalApi(AnnotatorFactory factory, ClassName annotation) {
-        factory.createFileAnnotator(annotation, experimentalAll)
-               .annotate();
-        factory.createMessageAnnotator(annotation, experimentalType)
-               .annotate();
-        factory.createFieldAnnotator(annotation, experimental)
-               .annotate();
-    }
-
-    private static void annotateBetaApi(AnnotatorFactory factory, ClassName annotation) {
-        factory.createFileAnnotator(annotation, betaAll)
-               .annotate();
-        factory.createMessageAnnotator(annotation, betaType)
-               .annotate();
-        factory.createFieldAnnotator(annotation, beta)
-               .annotate();
-    }
-
-    private static void annotateSpi(AnnotatorFactory factory, ClassName annotation) {
-        factory.createFileAnnotator(annotation, sPIAll)
-               .annotate();
-        factory.createMessageAnnotator(annotation, sPIType)
-               .annotate();
-        factory.createServiceAnnotator(annotation, sPIService)
-               .annotate();
-        factory.createFieldAnnotator(annotation, sPI)
-               .annotate();
-    }
-
-    private static void annotateInternalApi(AnnotatorFactory factory, ClassName annotation) {
-        factory.createFileAnnotator(annotation, internalAll)
-               .annotate();
-        factory.createMessageAnnotator(annotation, internalType)
-               .annotate();
-        factory.createFieldAnnotator(annotation, internal)
-               .annotate();
-    }
-
-    private Annotator createFileAnnotator(ClassName annotation,
-                                          GeneratedExtension<FileOptions, Boolean> option) {
+    Annotator createFileAnnotator(ClassName annotation, ApiOption option) {
         return new FileAnnotator(annotation, option, fileDescriptors, genProtoDir, genGrpcDir);
     }
 
-    private Annotator createMessageAnnotator(ClassName annotation,
-                                             GeneratedExtension<MessageOptions, Boolean> option) {
+    Annotator createMessageAnnotator(ClassName annotation, ApiOption option) {
         return new MessageAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    private Annotator createFieldAnnotator(ClassName annotation,
-                                           GeneratedExtension<FieldOptions, Boolean> option) {
+    Annotator createFieldAnnotator(ClassName annotation, ApiOption option) {
         return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    private Annotator createServiceAnnotator(ClassName annotation,
-                                             GeneratedExtension<ServiceOptions, Boolean> option) {
+    Annotator createServiceAnnotator(ClassName annotation,
+                                     ApiOption option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
     }
 }

@@ -23,13 +23,10 @@ package io.spine.tools.compiler.annotation;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.ClassName;
-import io.spine.option.Options;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A message annotator.
@@ -37,10 +34,10 @@ import java.util.Optional;
  * <p>Annotates generated top-level messages from a {@code .proto} file,
  * if a specified {@linkplain MessageOptions message option} value is {@code true}.
  */
-class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descriptor> {
+class MessageAnnotator extends TypeDefinitionAnnotator<Descriptor> {
 
     MessageAnnotator(ClassName annotation,
-                     GeneratedExtension<MessageOptions, Boolean> option,
+                     ApiOption option,
                      Collection<FileDescriptor> files,
                      String genProtoDir) {
         super(annotation, option, files, genProtoDir);
@@ -62,7 +59,7 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(Descriptor definition) {
-        return Options.option(definition, getOption());
+    protected boolean shouldAnnotate(Descriptor descriptor) {
+        return option().isPresentAt(descriptor);
     }
 }

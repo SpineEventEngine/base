@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SourceFile.forMessage;
@@ -63,12 +60,10 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * <p>Depending on the option type, an annotator manages a corresponding Protobuf descriptor
  * (e.g. {@code FileDescriptorProto} for {@code FileOptions}).
  *
- * @param <O>
- *         the type of Protobuf option, which is managed by the annotator
  * @param <D>
  *         the proto descriptor type used to receive {@link #option} value
  */
-public abstract class Annotator<O extends ExtendableMessage, D extends GenericDescriptor> {
+public abstract class Annotator<D extends GenericDescriptor> {
 
     /**
      * The name of the Java class of the annotation to apply.
@@ -80,7 +75,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      *
      * <p>Can be of any option type, which is {@code boolean}.
      */
-    private final GeneratedExtension<O, Boolean> option;
+    private final ApiOption option;
 
     /**
      * Protobuf file descriptors to process.
@@ -93,7 +88,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
     private final String genProtoDir;
 
     protected Annotator(ClassName annotation,
-                        GeneratedExtension<O, Boolean> option,
+                        ApiOption option,
                         Collection<FileDescriptor> fileDescriptors,
                         String genProtoDir) {
         this.annotation = checkNotNull(annotation);
@@ -150,8 +145,10 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      *         the descriptor to extract {@link #option} value.
      * @return {@code true} if generated element should be annotated, {@code false} otherwise
      */
-    protected final boolean shouldAnnotate(D descriptor) {
-        return getOptionValue(descriptor).orElse(false);
+    protected abstract boolean shouldAnnotate(D descriptor);
+
+    protected final ApiOption option() {
+        return option;
     }
 
     /**
@@ -170,24 +167,6 @@ public abstract class Annotator<O extends ExtendableMessage, D extends GenericDe
      */
     protected final void annotate(SourceFile relativeSourcePath) {
         rewriteSource(relativeSourcePath, new TypeDeclarationAnnotation());
-    }
-
-    /**
-     * Obtains the value of {@link #option} in the specified descriptor.
-     *
-     * @param descriptor
-     *         the descriptor to extract {@link #option} value.
-     * @return the option value
-     */
-    protected abstract Optional<Boolean> getOptionValue(D descriptor);
-
-    /**
-     * Obtains the {@link #option} number.
-     *
-     * @return the option number
-     */
-    protected final GeneratedExtension<O, Boolean> getOption() {
-        return option;
     }
 
     /**

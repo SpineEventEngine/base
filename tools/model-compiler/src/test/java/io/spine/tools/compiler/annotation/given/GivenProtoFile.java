@@ -31,15 +31,15 @@ import io.spine.code.proto.FileName;
  */
 public class GivenProtoFile {
 
-    public static final FileName NO_SPI_OPTIONS = FileName.of("no_spi_options.proto");
-    public static final FileName NO_SPI_OPTIONS_MULTIPLE = FileName.of("no_spi_options_multiple.proto");
-    public static final FileName SPI_ALL = FileName.of("spi_all.proto");
-    public static final FileName SPI_ALL_SERVICE = FileName.of("spi_all_service.proto");
-    public static final FileName SPI_ALL_MULTIPLE = FileName.of("spi_all_multiple.proto");
-    public static final FileName SPI_MESSAGE = FileName.of("spi_message.proto");
-    public static final FileName SPI_MESSAGE_MULTIPLE = FileName.of("spi_message_multiple.proto");
-    public static final FileName SPI_FIELD = FileName.of("spi_field.proto");
-    public static final FileName SPI_FIELD_MULTIPLE = FileName.of("spi_field_multiple.proto");
+    public static final FileName NO_INTERNAL_OPTIONS = FileName.of("no_internal_options.proto");
+    public static final FileName NO_INTERNAL_OPTIONS_MULTIPLE = FileName.of("no_internal_options_multiple.proto");
+    public static final FileName INTERNAL_ALL = FileName.of("internal_all.proto");
+    public static final FileName INTERNAL_ALL_SERVICE = FileName.of("internal_all_service.proto");
+    public static final FileName INTERNAL_ALL_MULTIPLE = FileName.of("internal_all_multiple.proto");
+    public static final FileName INTERNAL_MESSAGE = FileName.of("internal_message.proto");
+    public static final FileName INTERNAL_MESSAGE_MULTIPLE = FileName.of("internal_message_multiple.proto");
+    public static final FileName INTERNAL_FIELD = FileName.of("internal_field.proto");
+    public static final FileName INTERNAL_FIELD_MULTIPLE = FileName.of("internal_field_multiple.proto");
     public static final FileName SPI_SERVICE = FileName.of("spi_service.proto");
     public static final FileName POTENTIAL_ANNOTATION_DUP = FileName.of("potential_annotation_duplication.proto");
 

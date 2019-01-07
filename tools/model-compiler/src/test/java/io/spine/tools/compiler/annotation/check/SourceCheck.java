@@ -23,12 +23,10 @@ package io.spine.tools.compiler.annotation.check;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * Interface for validation of a {@link JavaClassSource}.
- *
- * @author Dmytro Grankin
  */
-public interface SourceCheck extends Function<AbstractJavaSource<JavaClassSource>, Void> {
+public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
 }

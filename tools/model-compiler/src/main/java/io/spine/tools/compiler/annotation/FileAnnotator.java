@@ -25,13 +25,10 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
-import io.spine.option.Options;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SourceFile.forEnum;
@@ -43,12 +40,12 @@ import static io.spine.code.java.SourceFile.forService;
  * <p>Annotates generated top-level definitions from a {@code .proto} file,
  * if a specified {@linkplain FileOptions file option} value is {@code true}.
  */
-class FileAnnotator extends Annotator<FileOptions, FileDescriptor> {
+class FileAnnotator extends Annotator<FileDescriptor> {
 
     private final String genGrpcDir;
 
     FileAnnotator(ClassName annotation,
-                  GeneratedExtension<FileOptions, Boolean> option,
+                  ApiOption option,
                   Collection<FileDescriptor> files,
                   String genProtoDir,
                   String genGrpcDir) {
@@ -77,6 +74,11 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptor> {
         annotateMessages(file);
         annotateEnums(file);
         annotateServices(file);
+    }
+
+    @Override
+    protected boolean shouldAnnotate(FileDescriptor descriptor) {
+        return option().isPresentAt(descriptor);
     }
 
     /**
@@ -134,10 +136,5 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptor> {
             SourceFile serviceClass = forService(serviceDescriptor.toProto(), file.toProto());
             rewriteSource(genGrpcDir, serviceClass, new TypeDeclarationAnnotation());
         }
-    }
-
-    @Override
-    protected Optional<Boolean> getOptionValue(FileDescriptor file) {
-        return Options.option(file, getOption());
     }
 }
