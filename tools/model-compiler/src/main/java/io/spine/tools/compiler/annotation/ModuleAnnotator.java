@@ -28,6 +28,9 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 
+/**
+ * A source code annotation facade.
+ */
 public final class ModuleAnnotator {
 
     private final AnnotatorFactory annotatorFactory;
@@ -38,6 +41,9 @@ public final class ModuleAnnotator {
         this.jobs = ImmutableSet.copyOf(builder.jobs);
     }
 
+    /**
+     * Executes the {@linkplain Job annotation jobs}.
+     */
     public void annotate() {
         jobs.forEach(this::execute);
     }
@@ -59,12 +65,23 @@ public final class ModuleAnnotator {
         }
     }
 
+    /**
+     * Creates a new {@link JobBuilder}.
+     *
+     * <p>Start constructing a {@link Job} from this method.
+     */
     public static JobBuilder translate(ApiOption option) {
         checkNotNull(option);
         return new JobBuilder(option);
     }
 
-    public static final class Job {
+    /**
+     * A declaration of a unit annotation work.
+     *
+     * <p>Provides mapping between a Protobuf option and a Java annotation. The source code
+     * generated from Protobuf with such an option should be annotated with the given annotation.
+     */
+    private static final class Job {
 
         private final ApiOption protobufOption;
         private final ClassName javaAnnotation;
@@ -75,6 +92,13 @@ public final class ModuleAnnotator {
         }
     }
 
+    /**
+     * A builder of {@link Job} instances.
+     *
+     * <p>To receive an instance of the builder, call {@code ModuleAnnotator.translate(...)}.
+     * The builder completes the {@code Job} construction DSL with the {@link #as(ClassName)}
+     * method.
+     */
     public static final class JobBuilder {
 
         private final ApiOption targetOption;
@@ -83,6 +107,9 @@ public final class ModuleAnnotator {
             this.targetOption = targetOption;
         }
 
+        /**
+         * Builds an instance of {@code Job}.
+         */
         public Job as(ClassName annotation) {
             checkNotNull(annotation);
             return new Job(targetOption, annotation);
@@ -118,6 +145,11 @@ public final class ModuleAnnotator {
             return this;
         }
 
+        /**
+         * Adds a {@link Job} to execute.
+         *
+         * @see #translate(ApiOption) the {@code Job} construction DSL
+         */
         public Builder add(Job job) {
             checkNotNull(job);
             this.jobs.add(job);

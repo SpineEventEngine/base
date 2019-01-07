@@ -83,50 +83,103 @@ public final class ApiOption {
         this.fieldOption = fieldOption;
     }
 
+    /**
+     * Obtains an option which marks beta API.
+     */
     public static ApiOption beta() {
         return KnownOption.BETA.option;
     }
 
+    /**
+     * Obtains an option which marks beta service provider interface elements.
+     */
     public static ApiOption spi() {
         return KnownOption.SPI.option;
     }
 
+    /**
+     * Obtains an option which marks experimental API.
+     */
     public static ApiOption experimental() {
         return KnownOption.EXPERIMENTAL.option;
     }
 
+    /**
+     * Obtains an option which marks internal API.
+     */
     public static ApiOption internal() {
         return KnownOption.INTERNAL.option;
     }
 
-    public boolean isPresentAt(FileDescriptor descriptor) {
+    /**
+     * Checks if the given file is declared with this option.
+     *
+     * @param descriptor
+     *         the file descriptor to check
+     * @return {@code true} if the option is present in the declaration, {@code false} otherwise
+     */
+    boolean isPresentAt(FileDescriptor descriptor) {
         return option(descriptor, fileOption).orElse(false);
     }
 
-    public boolean isPresentAt(Descriptor descriptor) {
+    /**
+     * Checks if the given message is declared with this option.
+     *
+     * @param descriptor
+     *         the message descriptor to check
+     * @return {@code true} if the option is present in the declaration, {@code false} otherwise
+     */
+    boolean isPresentAt(Descriptor descriptor) {
         return option(descriptor, messageOption).orElse(false);
     }
 
-    public boolean isPresentAt(ServiceDescriptor descriptor) {
+    /**
+     * Checks if the given service is declared with this option.
+     *
+     * @param descriptor
+     *         the service descriptor to check
+     * @return {@code true} if the option is present in the declaration, {@code false} otherwise
+     */
+    boolean isPresentAt(ServiceDescriptor descriptor) {
         checkState(serviceOption != null,
                    "Option %s does not support services.", messageOption.getDescriptor().getName());
         return option(descriptor, serviceOption).orElse(false);
     }
 
-    public boolean supportsServices() {
+    /**
+     * Checks if Protobuf services may be defined with this option.
+     *
+     * @return {@code true} if the option supports services, {@code false} otherwise
+     */
+    boolean supportsServices() {
         return serviceOption != null;
     }
 
-    public boolean isPresentAt(FieldDescriptor descriptor) {
+    /**
+     * Checks if the given field is declared with this option.
+     *
+     * @param descriptor
+     *         the field descriptor to check
+     * @return {@code true} if the option is present in the declaration, {@code false} otherwise
+     */
+    boolean isPresentAt(FieldDescriptor descriptor) {
         checkState(fieldOption != null,
                    "Option %s does not support fields.", messageOption.getDescriptor().getName());
         return option(descriptor, fieldOption).orElse(false);
     }
 
-    public boolean supportsFields() {
+    /**
+     * Checks if message fields may be defined with this option.
+     *
+     * @return {@code true} if the option supports fields, {@code false} otherwise
+     */
+    boolean supportsFields() {
         return fieldOption != null;
     }
 
+    /**
+     * Enumeration of well known API options.
+     */
     private enum KnownOption {
 
         BETA(new ApiOption(betaAll, betaType, null, beta)),
