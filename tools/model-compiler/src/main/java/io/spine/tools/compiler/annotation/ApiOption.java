@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
@@ -57,11 +58,19 @@ import static io.spine.option.OptionsProto.sPIType;
  * respectively, fields, messages, and files, but all represent a single concept -
  * a <strong>beta API</strong> element.
  */
+@Immutable
 public final class ApiOption {
 
+    /*
+     * Fields of type `GeneratedExtension` are immutable, despite not being annotated.
+     */
+    @SuppressWarnings("Immutable")
     private final GeneratedExtension<FileOptions, Boolean> fileOption;
+    @SuppressWarnings("Immutable")
     private final GeneratedExtension<MessageOptions, Boolean> messageOption;
+    @SuppressWarnings("Immutable")
     private final @Nullable GeneratedExtension<ServiceOptions, Boolean> serviceOption;
+    @SuppressWarnings("Immutable")
     private final @Nullable GeneratedExtension<FieldOptions, Boolean> fieldOption;
 
     private ApiOption(GeneratedExtension<FileOptions, Boolean> fileOption,
