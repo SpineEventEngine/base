@@ -29,8 +29,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findInternalAnnotation;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NestedTypesAnnotationCheck implements SourceCheck {
 
@@ -46,9 +46,9 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
             Optional<?> annotation = findInternalAnnotation(nestedType);
             if (shouldBeAnnotated) {
-                assertNotNull(annotation);
+                assertTrue(annotation.isPresent());
             } else {
-                assertNull(annotation);
+                assertFalse(annotation.isPresent());
             }
         }
     }
