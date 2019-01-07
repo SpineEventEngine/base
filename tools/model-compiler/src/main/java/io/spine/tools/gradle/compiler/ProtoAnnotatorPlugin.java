@@ -191,7 +191,6 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
                                        : getMainGenProtoDir(project);
-
             String generatedGrpcDir = isTestTask
                                       ? getTestGenGrpcDir(project)
                                       : getMainGenGrpcDir(project);
