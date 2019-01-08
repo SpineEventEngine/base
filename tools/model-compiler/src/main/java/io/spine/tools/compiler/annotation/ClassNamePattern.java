@@ -20,32 +20,33 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors;
 import io.spine.code.java.ClassName;
+import org.checkerframework.checker.regex.qual.Regex;
 
-import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-final class PatternAnnotator extends Annotator {
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
-    private final ImmutableList<Descriptors.FileDescriptor> descriptors;
-    private final ClassNamePattern pattern;
+final class ClassNamePattern {
 
-    PatternAnnotator(ClassName annotation,
-                     Path genProtoDir,
-                     ImmutableList<Descriptors.FileDescriptor> fileDescriptors,
-                     ClassNamePattern pattern) {
-        super(annotation, genProtoDir);
-        this.descriptors = fileDescriptors;
+    private final Pattern pattern;
+
+    private ClassNamePattern(Pattern pattern) {
         this.pattern = pattern;
     }
 
-    @Override
-    public void annotate() {
-        descriptors.stream()
-                   .flatMap(file -> file.getMessageTypes().stream())
-                   .map(ClassName::from)
-                   .filter(pattern::matches);
-        // TODO:2019-01-08:dmytro.dashenkov: Complete.
+    static ClassNamePattern compile(@Regex String regex) {
+        checkArgument(!isNullOrEmpty(regex));
+        Pattern pattern = Pattern.compile(regex);
+        return new ClassNamePattern(pattern);
+    }
+
+    boolean matches(ClassName name) {
+        checkNotNull(name);
+        Matcher matcher = pattern.matcher(name.value());
+        return matcher.matches();
     }
 }

@@ -41,8 +41,7 @@ public final class SourceFile extends AbstractSourceFile {
         super(path);
     }
 
-    // TODO:2019-01-08:dmytro.dashenkov: Revert visibility.
-    public static SourceFile of(Path path) {
+    static SourceFile of(Path path) {
         checkNotNull(path);
         SourceFile result = new SourceFile(path);
         return result;
