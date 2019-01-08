@@ -132,6 +132,7 @@ public final class ModuleAnnotator {
 
         private final Set<Job> jobs;
         private AnnotatorFactory annotatorFactory;
+        private ImmutableSet<String> internalPatterns;
 
         /**
          * Prevents direct instantiation.
@@ -142,6 +143,7 @@ public final class ModuleAnnotator {
 
         public Builder setAnnotatorFactory(AnnotatorFactory annotatorFactory) {
             this.annotatorFactory = checkNotNull(annotatorFactory);
+            this.internalPatterns = ImmutableSet.of();
             return this;
         }
 
@@ -153,6 +155,12 @@ public final class ModuleAnnotator {
         public Builder add(Job job) {
             checkNotNull(job);
             this.jobs.add(job);
+            return this;
+        }
+
+        public Builder setInternalPatterns(ImmutableSet<String> patterns) {
+            checkNotNull(patterns);
+            this.internalPatterns = patterns;
             return this;
         }
 

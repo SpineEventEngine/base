@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,15 +41,15 @@ import static io.spine.code.java.SourceFile.forService;
  * <p>Annotates generated top-level definitions from a {@code .proto} file,
  * if a specified {@linkplain FileOptions file option} value is {@code true}.
  */
-class FileAnnotator extends Annotator<FileDescriptor> {
+class FileAnnotator extends OptionAnnotator<FileDescriptor> {
 
-    private final String genGrpcDir;
+    private final Path genGrpcDir;
 
     FileAnnotator(ClassName annotation,
                   ApiOption option,
                   Collection<FileDescriptor> files,
-                  String genProtoDir,
-                  String genGrpcDir) {
+                  Path genProtoDir,
+                  Path genGrpcDir) {
         super(annotation, option, files, genProtoDir);
         checkNotNull(genGrpcDir);
         this.genGrpcDir = genGrpcDir;

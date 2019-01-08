@@ -37,6 +37,7 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,12 +54,12 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * @author Dmytro Grankin
  */
-class FieldAnnotator extends Annotator<FieldDescriptor> {
+class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
 
     FieldAnnotator(ClassName annotation,
                    ApiOption option,
                    Collection<FileDescriptor> fileDescriptors,
-                   String genProtoDir) {
+                   Path genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 

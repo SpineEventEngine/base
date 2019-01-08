@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableSet;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
@@ -28,6 +29,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static io.spine.tools.compiler.annotation.ApiOption.beta;
 import static io.spine.tools.compiler.annotation.ApiOption.experimental;
@@ -205,9 +208,11 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                 logMissingDescriptorSetFile(setFile);
                 return;
             }
+            Path generatedProtoPath = Paths.get(generatedProtoDir);
+            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
             AnnotatorFactory annotatorFactory = AnnotatorFactory.newInstance(setFile,
-                                                                             generatedProtoDir,
-                                                                             generatedGrpcDir);
+                                                                             generatedProtoPath,
+                                                                             generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
             ModuleAnnotator moduleAnnotator = ModuleAnnotator
                     .newBuilder()
@@ -216,6 +221,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                     .add(translate(beta()).as(annotations.betaClassName()))
                     .add(translate(experimental()).as(annotations.experimentalClassName()))
                     .add(translate(internal()).as(annotations.internalClassName()))
+                    .setInternalPatterns(ImmutableSet.of("**/*OrBuilder.java"))
                     .build();
             moduleAnnotator.annotate();
         };

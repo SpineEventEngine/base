@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.code.java.SourceFile.forService;
@@ -36,12 +37,12 @@ import static io.spine.code.java.SourceFile.forService;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
  */
-class ServiceAnnotator extends Annotator<ServiceDescriptor> {
+class ServiceAnnotator extends OptionAnnotator<ServiceDescriptor> {
 
     ServiceAnnotator(ClassName annotation,
                      ApiOption option,
                      Collection<FileDescriptor> fileDescriptors,
-                     String genProtoDir) {
+                     Path genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 

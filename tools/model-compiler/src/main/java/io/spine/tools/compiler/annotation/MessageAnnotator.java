@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +40,7 @@ class MessageAnnotator extends TypeDefinitionAnnotator<Descriptor> {
     MessageAnnotator(ClassName annotation,
                      ApiOption option,
                      Collection<FileDescriptor> files,
-                     String genProtoDir) {
+                     Path genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 

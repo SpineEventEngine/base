@@ -31,6 +31,7 @@ import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,16 +39,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * Abstract base class for {@linkplain Annotator Annotators}
+ * Abstract base class for {@linkplain OptionAnnotator Annotators}
  * for a particular kind of type definition.
  */
 abstract class TypeDefinitionAnnotator<D extends GenericDescriptor>
-         extends Annotator<D> {
+        extends OptionAnnotator<D> {
 
     TypeDefinitionAnnotator(ClassName annotation,
                             ApiOption option,
                             Collection<FileDescriptor> files,
-                            String genProtoDir) {
+                            Path genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
