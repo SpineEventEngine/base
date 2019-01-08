@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "spine/options.proto";
 
-option (SPI_all) = true;
+option (internal_all) = true;
 
 service First {
 }

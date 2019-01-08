@@ -25,11 +25,10 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.option.Options;
 import io.spine.tools.compiler.field.GeneratedAccessors;
 import io.spine.tools.compiler.field.type.FieldType;
 import org.jboss.forge.roaster.model.JavaType;
@@ -38,9 +37,7 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -56,10 +53,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * @author Dmytro Grankin
  */
-class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
+class FieldAnnotator extends Annotator<FieldDescriptor> {
 
-    FieldAnnotator(Class<? extends Annotation> annotation,
-                   GeneratedExtension<FieldOptions, Boolean> option,
+    FieldAnnotator(ClassName annotation,
+                   ApiOption option,
                    Collection<FileDescriptor> fileDescriptors,
                    String genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
@@ -92,8 +89,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptor> {
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(FieldDescriptor file) {
-        return Options.option(file, getOption());
+    protected boolean shouldAnnotate(FieldDescriptor descriptor) {
+        return option().isPresentAt(descriptor);
     }
 
     /**

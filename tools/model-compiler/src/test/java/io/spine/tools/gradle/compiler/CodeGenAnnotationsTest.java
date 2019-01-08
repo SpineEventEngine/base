@@ -18,37 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'enrichment-tests'
-include 'known-types-tests'
-include 'validation-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
+package io.spine.tools.gradle.compiler;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import io.spine.annotation.Beta;
+import io.spine.annotation.Experimental;
+import io.spine.annotation.Internal;
+import io.spine.annotation.SPI;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
- */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
+class CodeGenAnnotationsTest {
+
+    @Test
+    @DisplayName("have default values")
+    void defaults() {
+        CodeGenAnnotations annotations = new CodeGenAnnotations();
+
+        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
+        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
+        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
+        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
     }
 }

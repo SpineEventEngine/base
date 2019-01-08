@@ -5,5 +5,5 @@ import "spine/options.proto";
 option java_multiple_files = true;
 
 message Experimental {
-    option (SPI_type) = true;
+    option (internal_type) = true;
 }

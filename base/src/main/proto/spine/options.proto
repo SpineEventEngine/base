@@ -145,17 +145,9 @@ extend google.protobuf.FieldOptions {
     // wired into the framework, you may use the internal parts. Please consult with the Spine
     // team, as the internal APIs do not have the same stability API guarantee as public ones.
     //
-    // See `SPI` option if you plan to write an extension of the framework.
-    //
     bool internal = 73850;
 
-    // Indicates a file which contains elements of Service Provider Interface (SPI).
-    //
-    // SPI is used to enable framework extension and replaceable components (implement a new
-    // storage, etc). See "Effective Java 2nd Edition", chapter 2, item 1 for more info about
-    // service provider framework pattern.
-    //
-    bool SPI = 73851;
+    // reserved 73851 for the deleted SPI option.
 
     // Indicates a field that can change at any time, and has no guarantee of API stability and
     // backward-compatibility.
