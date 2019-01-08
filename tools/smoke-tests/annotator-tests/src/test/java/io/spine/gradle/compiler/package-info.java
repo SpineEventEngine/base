@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package contains functional tests for the Protobuf annotator Gradle plugin.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.gradle.compiler;
