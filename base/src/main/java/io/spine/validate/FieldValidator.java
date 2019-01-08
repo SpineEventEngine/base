@@ -43,9 +43,6 @@ import static io.spine.validate.Validate.isNotDefault;
  */
 abstract class FieldValidator<V> implements Logging {
 
-    private static final String ENTITY_ID_REPEATED_FIELD_MSG =
-            "Entity ID must not be a repeated field.";
-
     private final FieldValue value;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
@@ -174,7 +171,9 @@ abstract class FieldValidator<V> implements Logging {
         if (declaration.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
-                    .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
+                    .setMsgFormat("Entity ID field `%s` must not be a repeated field.")
+                    .addParam(declaration.descriptor()
+                                         .getFullName())
                     .setFieldPath(getFieldPath())
                     .build();
             addViolation(violation);

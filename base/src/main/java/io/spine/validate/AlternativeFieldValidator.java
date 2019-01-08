@@ -84,11 +84,11 @@ final class AlternativeFieldValidator implements Logging {
                     if (!alternativeFound(fieldOptions)) {
                         String msgFormat =
                                 "None of the fields match the `required_field` definition: %s";
-                        ConstraintViolation requiredFieldNotFound =
-                                ConstraintViolation.newBuilder()
-                                                   .setMsgFormat(msgFormat)
-                                                   .addParam(requiredFieldExpression)
-                                                   .build();
+                        ConstraintViolation requiredFieldNotFound = ConstraintViolation
+                                .newBuilder()
+                                .setMsgFormat(msgFormat)
+                                .addParam(requiredFieldExpression)
+                                .build();
                         violations.add(requiredFieldNotFound);
                     }
                 } else {
@@ -133,7 +133,7 @@ final class AlternativeFieldValidator implements Logging {
         if (!fieldValue.isPresent()) {
             ConstraintViolation notFound = ConstraintViolation
                     .newBuilder()
-                    .setMsgFormat("Field %s not found")
+                    .setMsgFormat("Field named `%s` is not found.")
                     .addParam(fieldName)
                     .build();
             violations.add(notFound);
