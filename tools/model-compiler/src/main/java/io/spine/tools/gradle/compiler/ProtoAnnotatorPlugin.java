@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
@@ -214,14 +215,16 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                                                                              generatedProtoPath,
                                                                              generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+            ClassName internalClassName = annotations.internalClassName();
             ModuleAnnotator moduleAnnotator = ModuleAnnotator
                     .newBuilder()
                     .setAnnotatorFactory(annotatorFactory)
                     .add(translate(spi()).as(annotations.spiClassName()))
                     .add(translate(beta()).as(annotations.betaClassName()))
                     .add(translate(experimental()).as(annotations.experimentalClassName()))
-                    .add(translate(internal()).as(annotations.internalClassName()))
+                    .add(translate(internal()).as(internalClassName))
                     .setInternalPatterns(ImmutableSet.of("**/*OrBuilder.java"))
+                    .setInternalAnnotation(internalClassName)
                     .build();
             moduleAnnotator.annotate();
         };

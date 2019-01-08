@@ -50,10 +50,10 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
     }
 
     @Override
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
-        checkNotNull(input);
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> source) {
+        checkNotNull(source);
         Optional<? extends AnnotationSource<?>> annotationSource =
-                findAnnotation(input, this.annotation);
+                findAnnotation(source, annotation);
         if (shouldBeAnnotated) {
             assertTrue(annotationSource.isPresent());
         } else {

@@ -191,8 +191,25 @@ class ProtoAnnotatorPluginTest {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
-    private void assertServiceAnnotations(FileName testFile,
-                                      boolean shouldBeAnnotated)
+    @Test
+    @DisplayName("by default, mark MessageOrBuilder interfaces @Internal")
+    void markOrBuilderInternal() throws FileNotFoundException {
+        FileDescriptor fileDescriptor = compileAndAnnotate(NO_INTERNAL_OPTIONS_MULTIPLE);
+        for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
+            DescriptorProto messageProto = messageDescriptor.toProto();
+            DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
+
+            Path messagePath = forMessage(messageProto, fileProto).getPath();
+            SourceCheck annotationCheck = new MainDefinitionAnnotationCheck(false);
+            check(messagePath, annotationCheck);
+
+            Path messageOrBuilderPath = forMessageOrBuilder(messageProto, fileProto).getPath();
+            SourceCheck orBuilderAnnotationCheck = new MainDefinitionAnnotationCheck(true);
+            check(messageOrBuilderPath, orBuilderAnnotationCheck);
+        }
+    }
+
+    private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         assertServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
     }
@@ -215,7 +232,8 @@ class ProtoAnnotatorPluginTest {
     private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
+                                                     .get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
                 .getPath();
         NestedTypeFieldsAnnotationCheck check =
@@ -226,10 +244,12 @@ class ProtoAnnotatorPluginTest {
     private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
-        FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
+                                                     .get(0);
+        FieldDescriptor experimentalField = messageDescriptor.getFields()
+                                                             .get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
-                                    .getPath();
+                .getPath();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
@@ -240,10 +260,8 @@ class ProtoAnnotatorPluginTest {
             DescriptorProto messageProto = messageDescriptor.toProto();
             DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
             Path messagePath = forMessage(messageProto, fileProto).getPath();
-            Path messageOrBuilderPath = forMessageOrBuilder(messageProto, fileProto).getPath();
             SourceCheck annotationCheck = new MainDefinitionAnnotationCheck(shouldBeAnnotated);
             check(messagePath, annotationCheck);
-            check(messageOrBuilderPath, annotationCheck);
         }
     }
 

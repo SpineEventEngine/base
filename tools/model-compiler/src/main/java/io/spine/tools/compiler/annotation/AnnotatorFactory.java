@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * A factory for {@linkplain OptionAnnotator Annotators}.
+ * A factory for {@linkplain Annotator Annotators}.
  */
 public final class AnnotatorFactory {
 
@@ -75,23 +75,26 @@ public final class AnnotatorFactory {
                 .stream()
                 .filter(FileDescriptors::isNotGoogle)
                 .collect(toSet());
-        return new AnnotatorFactory(descriptors, generatedProtoDir,generatedGrpcDir);
+        return new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
     }
 
-    OptionAnnotator createFileAnnotator(ClassName annotation, ApiOption option) {
+    Annotator createFileAnnotator(ClassName annotation, ApiOption option) {
         return new FileAnnotator(annotation, option, fileDescriptors, genProtoDir, genGrpcDir);
     }
 
-    OptionAnnotator createMessageAnnotator(ClassName annotation, ApiOption option) {
+    Annotator createMessageAnnotator(ClassName annotation, ApiOption option) {
         return new MessageAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    OptionAnnotator createFieldAnnotator(ClassName annotation, ApiOption option) {
+    Annotator createFieldAnnotator(ClassName annotation, ApiOption option) {
         return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    OptionAnnotator createServiceAnnotator(ClassName annotation,
-                                           ApiOption option) {
+    Annotator createServiceAnnotator(ClassName annotation, ApiOption option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
+    }
+
+    Annotator createPatternAnnotator(ClassName annotation, GlobPattern pattern) {
+        return new PatternAnnotator(annotation, genProtoDir, pattern);
     }
 }

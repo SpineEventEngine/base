@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.java.ClassName;
 
 import java.util.Set;
@@ -45,24 +46,7 @@ public final class ModuleAnnotator {
      * Executes the {@linkplain Job annotation jobs}.
      */
     public void annotate() {
-        jobs.forEach(this::execute);
-    }
-
-    private void execute(Job job) {
-        ClassName annotation = job.javaAnnotation;
-        ApiOption option = job.protobufOption;
-        annotatorFactory.createFileAnnotator(annotation, option)
-                        .annotate();
-        annotatorFactory.createMessageAnnotator(annotation, option)
-                        .annotate();
-        if (option.supportsServices()) {
-            annotatorFactory.createServiceAnnotator(annotation, option)
-                            .annotate();
-        }
-        if (option.supportsFields()) {
-            annotatorFactory.createFieldAnnotator(annotation, option)
-                            .annotate();
-        }
+        jobs.forEach(job -> job.execute(annotatorFactory));
     }
 
     /**
@@ -75,20 +59,60 @@ public final class ModuleAnnotator {
         return new JobBuilder(option);
     }
 
+    private interface Job {
+
+        void execute(AnnotatorFactory factory);
+    }
+
     /**
      * A declaration of a unit annotation work.
      *
      * <p>Provides mapping between a Protobuf option and a Java annotation. The source code
      * generated from Protobuf with such an option should be annotated with the given annotation.
      */
-    private static final class Job {
+    private static final class OptionJob implements Job {
 
         private final ApiOption protobufOption;
         private final ClassName javaAnnotation;
 
-        private Job(ApiOption protobufOption, ClassName javaAnnotation) {
+        private OptionJob(ApiOption protobufOption, ClassName javaAnnotation) {
             this.protobufOption = protobufOption;
             this.javaAnnotation = javaAnnotation;
+        }
+
+        @Override
+        public void execute(AnnotatorFactory factory) {
+            ClassName annotation = javaAnnotation;
+            ApiOption option = protobufOption;
+            factory.createFileAnnotator(annotation, option)
+                   .annotate();
+            factory.createMessageAnnotator(annotation, option)
+                   .annotate();
+            if (option.supportsServices()) {
+                factory.createServiceAnnotator(annotation, option)
+                       .annotate();
+            }
+            if (option.supportsFields()) {
+                factory.createFieldAnnotator(annotation, option)
+                       .annotate();
+            }
+        }
+    }
+
+    private static final class PatternJob implements Job {
+
+        private final GlobPattern pattern;
+        private final ClassName javaAnnotation;
+
+        private PatternJob(GlobPattern pattern, ClassName annotation) {
+            this.javaAnnotation = annotation;
+            this.pattern = pattern;
+        }
+
+        @Override
+        public void execute(AnnotatorFactory factory) {
+            factory.createPatternAnnotator(javaAnnotation, pattern)
+                   .annotate();
         }
     }
 
@@ -112,7 +136,7 @@ public final class ModuleAnnotator {
          */
         public Job as(ClassName annotation) {
             checkNotNull(annotation);
-            return new Job(targetOption, annotation);
+            return new OptionJob(targetOption, annotation);
         }
     }
 
@@ -133,6 +157,7 @@ public final class ModuleAnnotator {
         private final Set<Job> jobs;
         private AnnotatorFactory annotatorFactory;
         private ImmutableSet<String> internalPatterns;
+        private ClassName internalAnnotation;
 
         /**
          * Prevents direct instantiation.
@@ -152,6 +177,7 @@ public final class ModuleAnnotator {
          *
          * @see #translate(ApiOption) the {@code Job} construction DSL
          */
+        @CanIgnoreReturnValue
         public Builder add(Job job) {
             checkNotNull(job);
             this.jobs.add(job);
@@ -164,6 +190,11 @@ public final class ModuleAnnotator {
             return this;
         }
 
+        public Builder setInternalAnnotation(ClassName internalAnnotation) {
+            this.internalAnnotation = internalAnnotation;
+            return this;
+        }
+
         /**
          * Creates a new instance of {@code ModuleAnnotator}.
          *
@@ -171,6 +202,11 @@ public final class ModuleAnnotator {
          */
         public ModuleAnnotator build() {
             checkNotNull(annotatorFactory);
+            checkNotNull(internalAnnotation);
+            internalPatterns.stream()
+                            .map(GlobPattern::compile)
+                            .map(pattern -> new PatternJob(pattern, internalAnnotation))
+                            .forEach(this::add);
             return new ModuleAnnotator(this);
         }
     }

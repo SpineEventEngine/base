@@ -59,13 +59,12 @@ public abstract class Annotator {
     }
 
     /**
-     * Annotates the Java sources generated from the passed
-     * {@linkplain #fileDescriptors file descriptors}.
+     * Annotates the Java sources generated from Protobuf.
      */
     public abstract void annotate();
 
     /**
-     * Rewrites the file applying {@link io.spine.tools.compiler.annotation.OptionAnnotator.TypeDeclarationAnnotation}.
+     * Rewrites the file applying {@link TypeDeclarationAnnotation}.
      */
     protected final void annotate(SourceFile relativeSourcePath) {
         rewriteSource(relativeSourcePath, new TypeDeclarationAnnotation());
@@ -143,6 +142,10 @@ public abstract class Annotator {
             AnnotationSource newAnnotation = source.addAnnotation();
             newAnnotation.setName(annotationFQN);
         }
+    }
+
+    protected final Path generatedProtobufDir() {
+        return genProtoDir;
     }
 
     /**

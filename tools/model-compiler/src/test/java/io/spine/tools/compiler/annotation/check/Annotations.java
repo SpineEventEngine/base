@@ -27,6 +27,8 @@ import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Utilities for working with annotations in the generated code.
  */
@@ -47,12 +49,8 @@ class Annotations {
     findAnnotation(AnnotationTargetSource<?, ?> javaSource,
                    Class<? extends Annotation> annotationType) {
         String annotationName = annotationType.getName();
-        Optional<? extends AnnotationSource<?>> annotation = javaSource
-                .getAnnotations()
-                .stream()
-                .filter(annotationSource -> annotationSource.getQualifiedName()
-                                                            .equals(annotationName))
-                .findAny();
-        return annotation;
+        AnnotationSource<?> annotation = javaSource
+                .getAnnotation(annotationName);
+        return ofNullable(annotation);
     }
 }
