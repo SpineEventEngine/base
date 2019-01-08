@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.AbstractMap;
 import java.util.Collection;
