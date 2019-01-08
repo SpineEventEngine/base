@@ -20,10 +20,13 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
+import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.util.ConfigureUtil;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -152,6 +155,8 @@ public class Extension {
      * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
     public Severity spineCheckSeverity;
+
+    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
@@ -301,6 +306,24 @@ public class Extension {
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateAnnotations(Closure closure) {
+        ConfigureUtil.configure(closure, generateAnnotations);
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateAnnotations(Action<? super CodeGenAnnotations> action) {
+        action.execute(generateAnnotations);
+    }
+
+    public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
+        CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
+        annotations = annotations != null ? annotations : new CodeGenAnnotations();
+        return annotations;
     }
 
     private static Iterable<String> spineDirs(Project project) {
