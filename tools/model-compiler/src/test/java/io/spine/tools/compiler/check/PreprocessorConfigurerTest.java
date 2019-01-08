@@ -75,11 +75,4 @@ class PreprocessorConfigurerTest {
         Configuration foundConfig = projectConfigs.findByName(PREPROCESSOR_CONFIG_NAME);
         assertEquals(preprocessorConfig, foundConfig);
     }
-
-    @Test
-    @DisplayName("add configure preprocessor action")
-    void add_configure_preprocessor_action() {
-        configurer.addConfigurePreprocessorAction(preprocessorConfig);
-        assertCompileTasksContain(project, PREPROCESSOR_ARG, preprocessorConfig.getAsPath());
-    }
 }
