@@ -40,17 +40,13 @@ public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
     }
 
     @Override
-    @SuppressWarnings({
-            "ResultOfMethodCallIgnored", // `Void` return type.
-            "unchecked"                  // Could not determine exact type for nested declaration.
-    })
-    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (FieldDescriptor fieldDescriptor : messageDescriptor.getFields()) {
             AbstractJavaSource nestedType = (AbstractJavaSource)
                     outerClass.getNestedType(messageDescriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).apply(nestedType);
+            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).accept(nestedType);
         }
-        return null;
     }
 }

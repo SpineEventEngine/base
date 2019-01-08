@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
+import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -28,12 +29,18 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
+import static io.spine.tools.compiler.annotation.ApiOption.beta;
+import static io.spine.tools.compiler.annotation.ApiOption.experimental;
+import static io.spine.tools.compiler.annotation.ApiOption.internal;
+import static io.spine.tools.compiler.annotation.ApiOption.spi;
+import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
@@ -186,22 +193,31 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private Action<Task> newAction(String descriptorSetFile, Project project, boolean isTestTask) {
-
-        String generatedProtoDir = isTestTask
-                                   ? getTestGenProtoDir(project)
-                                   : getMainGenProtoDir(project);
-
-        String generatedGrpcDir = isTestTask
-                                  ? getTestGenGrpcDir(project)
-                                  : getMainGenGrpcDir(project);
-
         return task -> {
+            String generatedProtoDir = isTestTask
+                                       ? getTestGenProtoDir(project)
+                                       : getMainGenProtoDir(project);
+            String generatedGrpcDir = isTestTask
+                                      ? getTestGenGrpcDir(project)
+                                      : getMainGenGrpcDir(project);
             File setFile = new File(descriptorSetFile);
             if (!setFile.exists()) {
                 logMissingDescriptorSetFile(setFile);
                 return;
             }
-            AnnotatorFactory.process(setFile, generatedProtoDir, generatedGrpcDir);
+            AnnotatorFactory annotatorFactory = AnnotatorFactory.newInstance(setFile,
+                                                                             generatedProtoDir,
+                                                                             generatedGrpcDir);
+            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+            ModuleAnnotator moduleAnnotator = ModuleAnnotator
+                    .newBuilder()
+                    .setAnnotatorFactory(annotatorFactory)
+                    .add(translate(spi()).as(annotations.spiClassName()))
+                    .add(translate(beta()).as(annotations.betaClassName()))
+                    .add(translate(experimental()).as(annotations.experimentalClassName()))
+                    .add(translate(internal()).as(annotations.internalClassName()))
+                    .build();
+            moduleAnnotator.annotate();
         };
     }
 }

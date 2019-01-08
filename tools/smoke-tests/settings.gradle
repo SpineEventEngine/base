@@ -18,6 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+include 'annotator-tests'
 include 'enrichment-tests'
 include 'known-types-tests'
 include 'validation-tests'

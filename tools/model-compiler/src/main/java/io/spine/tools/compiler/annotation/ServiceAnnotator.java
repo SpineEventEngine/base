@@ -20,16 +20,12 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
-import io.spine.option.Options;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Optional;
 
 import static io.spine.code.java.SourceFile.forService;
 
@@ -40,10 +36,10 @@ import static io.spine.code.java.SourceFile.forService;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
  */
-class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptor> {
+class ServiceAnnotator extends Annotator<ServiceDescriptor> {
 
-    ServiceAnnotator(Class<? extends Annotation> annotation,
-                     GeneratedExtension<ServiceOptions, Boolean> option,
+    ServiceAnnotator(ClassName annotation,
+                     ApiOption option,
                      Collection<FileDescriptor> fileDescriptors,
                      String genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
@@ -76,7 +72,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptor> {
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(ServiceDescriptor descriptor) {
-        return Options.option(descriptor, getOption());
+    protected boolean shouldAnnotate(ServiceDescriptor descriptor) {
+        return option().isPresentAt(descriptor);
     }
 }
