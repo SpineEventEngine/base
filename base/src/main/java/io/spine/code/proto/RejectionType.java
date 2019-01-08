@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,8 +22,8 @@ package io.spine.code.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
