@@ -27,8 +27,6 @@ import com.google.protobuf.ByteString;
  */
 class ByteStringFieldValidator extends FieldValidator<ByteString> {
 
-    private static final String INVALID_ID_TYPE_MSG = "Entity ID field must not be a ByteString.";
-
     /**
      * Creates a new validator instance.
      *
@@ -61,7 +59,9 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     protected void validateEntityId() {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat(INVALID_ID_TYPE_MSG)
+                .setMsgFormat("Entity ID field `%s` must not be a ByteString.")
+                .addParam(field().descriptor()
+                                 .getFullName())
                 .setFieldPath(getFieldPath())
                 .build();
         addViolation(violation);

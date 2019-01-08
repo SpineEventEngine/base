@@ -25,6 +25,7 @@ import com.google.protobuf.StringValue;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeName;
+import io.spine.validate.diags.ViolationText;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -179,20 +180,10 @@ class ValidateTest extends UtilityClassTest<Validate> {
                                                            .addParam("1")
                                                            .addParam("2")
                                                            .build();
-        String formatted = ConstraintViolations.toText(violation);
+        String formatted = ViolationText.of(violation)
+                                        .toString();
 
         assertEquals("test 1 test 2", formatted);
     }
 
-    @Test
-    @DisplayName("format message using parameters from constraint violation")
-    void format_message_using_params_from_constraint_violation() {
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .addParam("1")
-                                                           .addParam("2")
-                                                           .build();
-        String formatted = ConstraintViolations.toText("abc %s abc %s", violation);
-
-        assertEquals("abc 1 abc 2", formatted);
-    }
 }

@@ -24,8 +24,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
-import static io.spine.base.MessageFile.COMMANDS_FILE;
-
 /**
  * Checks if the given message definition is a {@link CommandMessage}.
  */
@@ -34,7 +32,6 @@ final class CommandMessageClassifier extends MessageClassifier {
 
     @Override
     public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return COMMANDS_FILE.predicate()
-                            .test(declaringFile);
+        return MessageFile.COMMANDS.test(declaringFile);
     }
 }
