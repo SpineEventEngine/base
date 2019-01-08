@@ -20,34 +20,39 @@
 
 package io.spine.tools.compiler.annotation.check;
 
-import io.spine.annotation.SPI;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.annotation.Internal;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 /**
  * Utilities for working with annotations in the generated code.
- * 
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  */
 class Annotations {
 
-    static final Class<? extends Annotation> ANNOTATION_CLASS = SPI.class;
+    private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
 
     /** Prevents instantiation of this utility class. */
     private Annotations() {
     }
 
-    static @Nullable AnnotationSource findSpiAnnotation(AnnotationTargetSource<?, ?> javaSource) {
-        for (AnnotationSource annotationSource : javaSource.getAnnotations()) {
-            if (annotationSource.getQualifiedName()
-                                .equals(ANNOTATION_CLASS.getName())) {
-                return annotationSource;
-            }
-        }
-        return null;
+    static Optional<? extends AnnotationSource<?>>
+    findInternalAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+        return findAnnotation(javaSource, ANNOTATION_CLASS);
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findAnnotation(AnnotationTargetSource<?, ?> javaSource,
+                   Class<? extends Annotation> annotationType) {
+        String annotationName = annotationType.getName();
+        Optional<? extends AnnotationSource<?>> annotation = javaSource
+                .getAnnotations()
+                .stream()
+                .filter(annotationSource -> annotationSource.getQualifiedName()
+                                                            .equals(annotationName))
+                .findAny();
+        return annotation;
     }
 }

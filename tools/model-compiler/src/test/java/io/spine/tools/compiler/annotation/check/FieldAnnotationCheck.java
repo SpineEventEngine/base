@@ -26,16 +26,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.TypeHolder;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
+import java.util.Optional;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SimpleClassName.ofBuilder;
-import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static io.spine.tools.compiler.annotation.check.Annotations.findInternalAnnotation;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FieldAnnotationCheck implements SourceCheck {
 
@@ -49,13 +50,12 @@ public class FieldAnnotationCheck implements SourceCheck {
     }
 
     @Override
-    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
         JavaClassSource message = (JavaClassSource) input;
         JavaClassSource messageBuilder = getBuilder(message);
         checkAccessorsAnnotation(message);
         checkAccessorsAnnotation(messageBuilder);
-        return null;
     }
 
     private void checkAccessorsAnnotation(JavaClassSource message) {
@@ -64,11 +64,11 @@ public class FieldAnnotationCheck implements SourceCheck {
         for (MethodSource method : message.getMethods()) {
             if (method.isPublic() && method.getName()
                                            .contains(fieldName)) {
-                AnnotationSource annotation = findSpiAnnotation(method);
+                Optional<?> annotation = findInternalAnnotation(method);
                 if (shouldBeAnnotated) {
-                    assertNotNull(annotation);
+                    assertTrue(annotation.isPresent());
                 } else {
-                    assertNull(annotation);
+                    assertFalse(annotation.isPresent());
                 }
             }
         }

@@ -26,6 +26,8 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import io.spine.annotation.Internal;
+import io.spine.annotation.SPI;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FileName;
@@ -48,6 +50,7 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -57,16 +60,16 @@ import static io.spine.code.java.SourceFile.forMessage;
 import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.code.java.SourceFile.forOuterClassOf;
 import static io.spine.code.java.SourceFile.forService;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL_SERVICE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_FIELD;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_FIELD_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_MESSAGE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_MESSAGE_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL_MULTIPLE;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL_SERVICE;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_FIELD;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_FIELD_MULTIPLE;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAGE;
-import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAGE_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -87,99 +90,99 @@ class ProtoAnnotatorPluginTest {
     @Test
     @DisplayName("annotate if file option is true")
     void annotateIfFileOptionIsTrue() throws FileNotFoundException {
-        assertNestedTypesAnnotations(SPI_ALL, true);
+        assertNestedTypesAnnotations(INTERNAL_ALL, true);
     }
 
     @Test
     @DisplayName("annotate service if file option if true")
     void annotateServiceIfFileOptionIsTrue() throws FileNotFoundException {
-        assertServiceAnnotations(SPI_ALL_SERVICE, true);
+        assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate if file option if false")
     void notAnnotateIfFileOptionIfFalse() throws FileNotFoundException {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
+        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("not annotate service if file option is false")
     void notAnnotateServiceIfFileOptionIfFalse() throws FileNotFoundException {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
+        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if file option is true")
     void annotateMultipleFilesIfFileOptionIsTrue() throws FileNotFoundException {
-        assertMainDefinitionAnnotations(SPI_ALL_MULTIPLE, true);
+        assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if file option is false")
     void notAnnotateMultipleFilesIfFileOptionIsFalse() throws FileNotFoundException {
-        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
+        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate if message option is true")
     void annotateIfMessageOptionIsTrue() throws FileNotFoundException {
-        assertNestedTypesAnnotations(SPI_MESSAGE, true);
+        assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
     }
 
     @Test
     @DisplayName("not annotate if message option is false")
     void notAnnotateIfMessageOptionIsFalse() throws FileNotFoundException {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
+        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if message option is true")
     void annotateMultipleFilesIfMessageOptionIsTrue() throws FileNotFoundException {
-        assertMainDefinitionAnnotations(SPI_MESSAGE_MULTIPLE, true);
+        assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if message option is false")
     void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws FileNotFoundException {
-        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
+        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate accessors if field option is true")
     void annotateAccessorsIfFieldOptionIsTrue() throws FileNotFoundException {
-        assertFieldAnnotations(SPI_FIELD, true);
+        assertFieldAnnotations(INTERNAL_FIELD, true);
     }
 
     @Test
     @DisplayName("not annotate accessors if field option is false")
     void notAnnotateAccessorsIfFieldOptionIsFalse() throws FileNotFoundException {
-        assertFieldAnnotations(NO_SPI_OPTIONS, false);
+        assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate accessors in multiple files if field option is true")
     void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
             throws FileNotFoundException {
-        assertFieldAnnotationsMultiple(SPI_FIELD_MULTIPLE, true);
+        assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate accessors in multiple files if field option is false")
     void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
             throws FileNotFoundException {
-        assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE, false);
+        assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate GRPC services if section option is true")
     void annotateGrpcServicesIfServiceOptionIsTrue() throws FileNotFoundException {
-        assertServiceAnnotations(SPI_SERVICE, true);
+        assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
     }
 
     @Test
     @DisplayName("not annotate GRPC services if service option is false")
     void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws FileNotFoundException {
-        assertServiceAnnotations(NO_SPI_OPTIONS, false);
+        assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
@@ -188,14 +191,24 @@ class ProtoAnnotatorPluginTest {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
-    private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private void assertServiceAnnotations(FileName testFile,
+                                      boolean shouldBeAnnotated)
+            throws FileNotFoundException {
+        assertServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
+    }
+
+    private void assertServiceAnnotations(FileName testFile,
+                                          Class<? extends Annotation> expectedAnnotation,
+                                          boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         List<ServiceDescriptor> services = fileDescriptor.getServices();
         for (ServiceDescriptor serviceDescriptor : services) {
             SourceFile serviceFile = forService(serviceDescriptor.toProto(),
                                                 fileDescriptor.toProto());
-            checkGrpcService(serviceFile, new MainDefinitionAnnotationCheck(shouldBeAnnotated));
+            SourceCheck check = new MainDefinitionAnnotationCheck(expectedAnnotation,
+                                                                  shouldBeAnnotated);
+            checkGrpcService(serviceFile, check);
         }
     }
 
@@ -249,7 +262,7 @@ class ProtoAnnotatorPluginTest {
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, filePath.toFile());
-        check.apply(javaSource);
+        check.accept(javaSource);
     }
 
     private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
@@ -261,7 +274,7 @@ class ProtoAnnotatorPluginTest {
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, fullPath.toFile());
-        check.apply(javaSource);
+        check.accept(javaSource);
     }
 
     /*

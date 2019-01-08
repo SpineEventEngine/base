@@ -5,5 +5,5 @@ import "spine/options.proto";
 option java_multiple_files = true;
 
 message ExperimentalField {
-    string value = 1 [(SPI) = true];
+    string value = 1 [(internal) = true];
 }
