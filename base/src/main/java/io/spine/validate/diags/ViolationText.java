@@ -22,12 +22,13 @@ package io.spine.validate.diags;
 
 import io.spine.validate.ConstraintViolation;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Provides error diagnostic text for a violation of a validation constraint.
@@ -51,18 +52,12 @@ public final class ViolationText {
      * a new line.
      */
     public static String ofAll(Iterable<ConstraintViolation> violations) {
-        StringBuilder builder = new StringBuilder(100);
-        Iterator<ConstraintViolation> iterator = violations.iterator();
-        // List the first item without new line.
-        if (iterator.hasNext()) {
-            builder.append(of(iterator.next()));
-        }
-        // Prefix all following with line separator.
-        while (iterator.hasNext()) {
-            builder.append(lineSeparator());
-            builder.append(of(iterator.next()));
-        }
-        return builder.toString();
+        String result =
+                StreamSupport.stream(violations.spliterator(), false)
+                             .map(ViolationText::of)
+                             .map(ViolationText::toString)
+                             .collect(joining(lineSeparator()));
+        return result;
     }
 
     private ViolationText(ConstraintViolation violation) {
