@@ -22,10 +22,8 @@ package io.spine.js.generate.index;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
-import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.output.CodeLines;
@@ -47,17 +45,6 @@ class KnownTypesMapTest {
 
     private final FileSet fileSet = FileSet.load();
     private final KnownTypesMap generator = new KnownTypesMap(fileSet);
-
-    @Test
-    @DisplayName("generate imports for known types")
-    void generateImports() {
-        CodeLines generatedCode = generator.value();
-        for (FileDescriptor file : fileSet.files()) {
-            FileName fileName = FileName.from(file);
-            String fileImport = "require('./" + fileName + "');";
-            assertContains(generatedCode, fileImport);
-        }
-    }
 
     @Test
     @DisplayName("generate known types map for several files")

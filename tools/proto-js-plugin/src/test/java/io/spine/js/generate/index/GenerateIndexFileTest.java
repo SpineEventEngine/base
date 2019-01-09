@@ -20,15 +20,19 @@
 
 package io.spine.js.generate.index;
 
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.GivenProject;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
 import static io.spine.code.js.LibraryFile.INDEX;
+import static io.spine.js.generate.given.Generators.assertContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,5 +49,16 @@ class GenerateIndexFileTest {
         task.performFor(fileSet);
         Path knownTypes = generatedProtoDir.resolve(INDEX);
         assertTrue(exists(knownTypes));
+    }
+
+    @Test
+    @DisplayName("generate imports for known types")
+    void generateImports() {
+        CodeLines generatedCode = GenerateIndexFile.codeFor(fileSet);
+        for (FileDescriptor file : fileSet.files()) {
+            FileName fileName = FileName.from(file);
+            String fileImport = "require('./" + fileName + "');";
+            assertContains(generatedCode, fileImport);
+        }
     }
 }

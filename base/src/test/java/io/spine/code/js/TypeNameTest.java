@@ -62,6 +62,6 @@ class TypeNameTest {
     @DisplayName("provide a name for a message parser")
     void messageParserName() {
         TypeName anyParser = TypeName.ofParser(Any.getDescriptor());
-        assertEquals("proto.google.protobuf.AnyParser", anyParser.value());
+        assertEquals("proto.google.protobuf.Any.Parser", anyParser.value());
     }
 }

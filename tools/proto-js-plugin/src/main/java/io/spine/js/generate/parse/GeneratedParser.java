@@ -29,7 +29,6 @@ import io.spine.js.generate.Snippet;
 import io.spine.js.generate.field.FieldGenerator;
 import io.spine.js.generate.field.FieldGenerators;
 import io.spine.js.generate.field.FieldToParse;
-import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Method;
 import io.spine.js.generate.output.snippet.Return;
@@ -81,7 +80,6 @@ public final class GeneratedParser implements Snippet {
         lines.append(initPrototype());
         lines.append(initConstructor());
         lines.append(fromObjectMethod());
-        lines.append(export());
         return lines;
     }
 
@@ -148,11 +146,6 @@ public final class GeneratedParser implements Snippet {
         lines.append(Return.value(MESSAGE));
         lines.exitMethod();
         return lines;
-    }
-
-    private CodeLine export() {
-        String export = format("goog.exportSymbol('%s', null, global);", typeName());
-        return CodeLine.of(export);
     }
 
     /**
