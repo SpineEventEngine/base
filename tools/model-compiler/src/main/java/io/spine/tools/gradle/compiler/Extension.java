@@ -20,6 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
@@ -155,6 +156,8 @@ public class Extension {
      * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
     public Severity spineCheckSeverity;
+
+    public List<String> internalClassPatterns = new ArrayList<>();
 
     public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
@@ -324,6 +327,11 @@ public class Extension {
         CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
         annotations = annotations != null ? annotations : new CodeGenAnnotations();
         return annotations;
+    }
+
+    public static ImmutableSet<String> getInternalClassPatterns(Project project) {
+        List<String> patterns = spineProtobuf(project).internalClassPatterns;
+        return ImmutableSet.copyOf(patterns);
     }
 
     private static Iterable<String> spineDirs(Project project) {

@@ -45,6 +45,7 @@ import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
+import static io.spine.tools.gradle.compiler.Extension.getInternalClassPatterns;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
@@ -216,6 +217,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                                                                              generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
             ClassName internalClassName = annotations.internalClassName();
+            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
             ModuleAnnotator moduleAnnotator = ModuleAnnotator
                     .newBuilder()
                     .setAnnotatorFactory(annotatorFactory)
@@ -223,7 +225,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                     .add(translate(beta()).as(annotations.betaClassName()))
                     .add(translate(experimental()).as(annotations.experimentalClassName()))
                     .add(translate(internal()).as(internalClassName))
-                    .setInternalPatterns(ImmutableSet.of(".*OrBuilder"))
+                    .setInternalPatterns(internalClassPatterns)
                     .setInternalAnnotation(internalClassName)
                     .build();
             moduleAnnotator.annotate();

@@ -57,7 +57,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.code.java.SourceFile.forMessage;
-import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.code.java.SourceFile.forOuterClassOf;
 import static io.spine.code.java.SourceFile.forService;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL;
@@ -189,24 +188,6 @@ class ProtoAnnotatorPluginTest {
     @DisplayName("compile generated source with potential annotation duplication")
     void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
-    }
-
-    @Test
-    @DisplayName("by default, mark MessageOrBuilder interfaces @Internal")
-    void markOrBuilderInternal() throws FileNotFoundException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(NO_INTERNAL_OPTIONS_MULTIPLE);
-        for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
-            DescriptorProto messageProto = messageDescriptor.toProto();
-            DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
-
-            Path messagePath = forMessage(messageProto, fileProto).getPath();
-            SourceCheck annotationCheck = new MainDefinitionAnnotationCheck(false);
-            check(messagePath, annotationCheck);
-
-            Path messageOrBuilderPath = forMessageOrBuilder(messageProto, fileProto).getPath();
-            SourceCheck orBuilderAnnotationCheck = new MainDefinitionAnnotationCheck(true);
-            check(messageOrBuilderPath, orBuilderAnnotationCheck);
-        }
     }
 
     private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
