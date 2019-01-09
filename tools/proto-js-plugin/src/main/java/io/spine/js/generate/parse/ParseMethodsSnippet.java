@@ -21,8 +21,9 @@
 package io.spine.js.generate.parse;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Comment;
@@ -121,8 +122,8 @@ public final class ParseMethodsSnippet implements Snippet {
     @VisibleForTesting
     CodeLines parseMethods() {
         CodeLines snippet = new CodeLines();
-        for (Descriptor message : file.getMessageTypes()) {
-            FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
+        for (MessageType message : TypeSet.onlyMessages(file)) {
+            FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message.descriptor());
             snippet.append(emptyLine());
             snippet.append(fromJsonMethod);
         }
