@@ -20,12 +20,23 @@
 
 package io.spine.js.generate.index;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors;
 import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;
+import io.spine.js.generate.output.snippet.Import;
+
+import java.util.Collection;
+import java.util.Set;
 
 import static io.spine.code.js.LibraryFile.INDEX;
+import static io.spine.js.generate.output.CodeLine.emptyLine;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * The task to generate the {@code index.js} for generated Protobuf types.
@@ -46,8 +57,37 @@ public final class GenerateIndexFile extends GenerationTask {
 
     @Override
     protected void generateFor(FileSet fileSet) {
-        KnownTypesMap typesMap = new KnownTypesMap(fileSet);
+        CodeLines code = codeFor(fileSet);
         FileWriter writer = FileWriter.createFor(generatedRoot(), INDEX);
-        writer.write(typesMap.value());
+        writer.write(code);
+    }
+
+    @VisibleForTesting
+    static CodeLines codeFor(FileSet fileSet) {
+        CodeLines lines = new CodeLines();
+        lines.append(knownTypesImports(fileSet));
+        lines.append(emptyLine());
+        lines.append(new KnownTypesMap(fileSet));
+        lines.append(emptyLine());
+        lines.append(new TypeParsersMap(fileSet));
+        return lines;
+    }
+
+    /**
+     * Generates import statements for all files declaring generated messages.
+     */
+    private static CodeLines knownTypesImports(FileSet fileSet) {
+        Collection<Descriptors.FileDescriptor> files = fileSet.files();
+        Set<FileName> imports = files.stream()
+                                     .filter(file -> !TypeSet.messagesAndEnums(file)
+                                                             .isEmpty())
+                                     .map(FileName::from)
+                                     .collect(toSet());
+        CodeLines importLines = new CodeLines();
+        for (FileName fileName : imports) {
+            Import fileImport = Import.fileRelativeToRoot(fileName);
+            importLines.append(fileImport);
+        }
+        return importLines;
     }
 }
