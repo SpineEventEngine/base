@@ -27,6 +27,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;
 import io.spine.js.generate.RegisterKnownTypes;
+import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -138,7 +139,8 @@ public class ProtoJsPlugin extends SpinePlugin {
         List<GenerationTask> tasks = ImmutableList.of(
                 GenerateKnownTypeParsers.createFor(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
-                new RegisterKnownTypes(generatedRoot)
+                new RegisterKnownTypes(generatedRoot),
+                new GenerateIndexFile(generatedRoot)
         );
         FileSet fileSet = parseOrEmpty(descriptors);
         for (GenerationTask task : tasks) {

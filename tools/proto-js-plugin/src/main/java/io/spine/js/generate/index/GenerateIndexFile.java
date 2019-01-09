@@ -18,30 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.js.generate.index;
+
+import io.spine.code.js.Directory;
+import io.spine.code.proto.FileSet;
+import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.output.FileWriter;
+
+import static io.spine.code.js.LibraryFile.INDEX;
 
 /**
- * The enumeration of project files provided by the Spine framework.
+ * The task to generate the {@code index.js} for generated Protobuf types.
+ *
+ * <p>The index file is used by Spine Web to register known types and their parsers.
+ *
+ * <p>The index file provides:
+ * <ul>
+ *     <li>The map of known types.
+ *     <li>The map of parsers for known types.
+ * </ul>
  */
-public enum LibraryFile {
+public final class GenerateIndexFile extends GenerationTask {
 
-    /**
-     * The index file containing maps with Protobuf types and their parsers.
-     */
-    INDEX("index.js");
-
-    private final FileName fileName;
-
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
-    }
-
-    public FileName fileName() {
-        return fileName;
+    public GenerateIndexFile(Directory generatedRoot) {
+        super(generatedRoot);
     }
 
     @Override
-    public String toString() {
-        return fileName.value();
+    protected void generateFor(FileSet fileSet) {
+        KnownTypesMap typesMap = new KnownTypesMap(fileSet);
+        FileWriter writer = FileWriter.createFor(generatedRoot(), INDEX);
+        writer.write(typesMap.value());
     }
 }

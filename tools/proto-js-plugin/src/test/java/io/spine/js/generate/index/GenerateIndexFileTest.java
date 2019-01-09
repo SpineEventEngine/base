@@ -18,30 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.js.generate.index;
 
-/**
- * The enumeration of project files provided by the Spine framework.
- */
-public enum LibraryFile {
+import io.spine.code.js.Directory;
+import io.spine.code.proto.FileSet;
+import io.spine.js.generate.given.GivenProject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * The index file containing maps with Protobuf types and their parsers.
-     */
-    INDEX("index.js");
+import java.nio.file.Path;
 
-    private final FileName fileName;
+import static io.spine.code.js.LibraryFile.INDEX;
+import static java.nio.file.Files.exists;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
-    }
+@DisplayName("GenerateIndexFile should")
+class GenerateIndexFileTest {
 
-    public FileName fileName() {
-        return fileName;
-    }
+    private final FileSet fileSet = GivenProject.mainFileSet();
+    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
+    private final GenerateIndexFile task = new GenerateIndexFile(generatedProtoDir);
 
-    @Override
-    public String toString() {
-        return fileName.value();
+    @Test
+    @DisplayName("write known types map to JS file")
+    void writeKnownTypes() {
+        task.performFor(fileSet);
+        Path knownTypes = generatedProtoDir.resolve(INDEX);
+        assertTrue(exists(knownTypes));
     }
 }

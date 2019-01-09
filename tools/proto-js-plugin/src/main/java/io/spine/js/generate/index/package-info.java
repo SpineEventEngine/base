@@ -18,30 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
-
 /**
- * The enumeration of project files provided by the Spine framework.
+ * The package contains classes performing writing of the index file
+ * for the generated Protobuf types.
  */
-public enum LibraryFile {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js.generate.index;
 
-    /**
-     * The index file containing maps with Protobuf types and their parsers.
-     */
-    INDEX("index.js");
-
-    private final FileName fileName;
-
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
-    }
-
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
-    }
-}
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

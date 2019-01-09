@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
+import static io.spine.code.js.LibraryFile.INDEX;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -64,8 +64,8 @@ class DirectoryTest {
     @Test
     @DisplayName("resolve LibraryFile")
     void resolveCommonFileName() {
-        Path resolved = directory.resolve(KNOWN_TYPES);
-        Path expected = DIRECTORY_PATH.resolve(KNOWN_TYPES.toString());
+        Path resolved = directory.resolve(INDEX);
+        Path expected = DIRECTORY_PATH.resolve(INDEX.toString());
         assertEquals(expected, resolved);
     }
 }

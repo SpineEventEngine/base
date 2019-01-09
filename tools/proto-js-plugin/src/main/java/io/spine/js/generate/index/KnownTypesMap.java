@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.index;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -48,7 +48,7 @@ import static java.util.stream.Collectors.toSet;
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
  */
-public final class KnownTypesMap implements Snippet {
+final class KnownTypesMap implements Snippet {
 
     /**
      * The exported map name.
@@ -65,7 +65,7 @@ public final class KnownTypesMap implements Snippet {
      * @param fileSet
      *         the {@code FileSet} containing all the known types
      */
-    public KnownTypesMap(FileSet fileSet) {
+    KnownTypesMap(FileSet fileSet) {
         this.fileSet = fileSet;
     }
 

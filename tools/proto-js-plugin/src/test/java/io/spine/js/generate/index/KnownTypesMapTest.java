@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.index;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -35,8 +35,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 
-@SuppressWarnings("DuplicateStringLiteralInspection")
-// Duplication necessary to check main class code.
 @DisplayName("KnownTypesMap should")
 class KnownTypesMapTest {
 
