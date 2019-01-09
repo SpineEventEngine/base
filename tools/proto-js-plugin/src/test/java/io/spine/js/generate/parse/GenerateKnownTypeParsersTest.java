@@ -37,13 +37,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.createFor;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,14 +58,6 @@ class GenerateKnownTypeParsersTest {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
                                .setDefault(FileSet.class, fileSet)
                                .testAllPublicStaticMethods(GenerateKnownTypeParsers.class);
-    }
-
-    @Test
-    @DisplayName("write known types map to JS file")
-    void writeKnownTypes() {
-        writer.writeKnownTypes(fileSet);
-        Path knownTypes = generatedProtoDir.resolve(KNOWN_TYPES);
-        assertTrue(exists(knownTypes));
     }
 
     @Test
