@@ -19,6 +19,3 @@
  */
 
 // No additional config is required. See smoke-tests/build.gradle for all the config of the project.
-dependencies {
-    testImplementation deps.test.slf4j
-}
