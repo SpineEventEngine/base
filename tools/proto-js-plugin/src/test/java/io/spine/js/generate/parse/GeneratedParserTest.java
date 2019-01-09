@@ -81,7 +81,7 @@ class GeneratedParserTest {
     @DisplayName("generate the export statement")
     void generateExportStatement() {
         CodeLines lines = parser.value();
-        String expected = format("module.exports.%s = %s;", parser.typeName(), parser.typeName());
+        String expected = format("goog.exportSymbol('%s', null, global);", parser.typeName());
         assertContains(lines, expected);
     }
 

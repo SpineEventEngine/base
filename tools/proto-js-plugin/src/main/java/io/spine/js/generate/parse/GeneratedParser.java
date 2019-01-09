@@ -151,7 +151,7 @@ public final class GeneratedParser implements Snippet {
     }
 
     private CodeLine export() {
-        String export = String.format("module.exports.%s = %s;", typeName(), typeName());
+        String export = format("goog.exportSymbol('%s', null, global);", typeName());
         return CodeLine.of(export);
     }
 
