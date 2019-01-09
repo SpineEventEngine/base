@@ -65,7 +65,10 @@ final class TypeParsersMap implements Snippet {
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Collection<MessageType> types = TypeSet.onlyMessages(fileSet);
+        Collection<MessageType> types = TypeSet.onlyMessages(fileSet)
+                                               .stream()
+                                               .filter(MessageType::isCustom)
+                                               .collect(toList());
         List<Map.Entry<String, TypeName>> entries = types.stream()
                                                          .map(TypeParsersMap::mapEntry)
                                                          .collect(toList());
