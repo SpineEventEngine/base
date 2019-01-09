@@ -59,7 +59,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
     protected MessageType(Descriptor descriptor) {
-        super(descriptor);
+        super(descriptor, true);
     }
 
     @VisibleForTesting // Otherwise package-private

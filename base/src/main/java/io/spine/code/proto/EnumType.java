@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     private EnumType(EnumDescriptor descriptor) {
-        super(descriptor);
+        super(descriptor, false);
     }
 
     @Override
