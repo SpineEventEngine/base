@@ -25,17 +25,13 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Method;
 import io.spine.js.generate.output.snippet.Return;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
-import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_IMPORT_NAME;
-import static java.lang.String.format;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
@@ -58,7 +54,6 @@ public final class FromJsonMethod implements Snippet {
      */
     @VisibleForTesting
     static final String FROM_OBJECT = "fromObject";
-    private static final String REGISTER_METHOD_NAME = "register";
 
     /**
      * The argument name of the {@code fromJson} method.
@@ -100,7 +95,6 @@ public final class FromJsonMethod implements Snippet {
         lines.append(fromObjectMethod());
         lines.append(emptyLine());
         lines.append(parser);
-        lines.append(registerParser());
         return lines;
     }
 
@@ -138,17 +132,6 @@ public final class FromJsonMethod implements Snippet {
                      .appendToBody(parsedValue())
                      .appendToBody(fromJsonReturn(typeName))
                      .build();
-    }
-
-    /**
-     * Obtains the code line registering the parser in the registry.
-     */
-    private CodeLine registerParser() {
-        TypeUrl typeUrl = TypeUrl.from(message);
-        String newParser = "new " + parser.typeName() + "()";
-        String registerLine = format("%s.%s(%s, '%s');", TYPE_PARSERS_IMPORT_NAME,
-                                     REGISTER_METHOD_NAME, newParser, typeUrl);
-        return CodeLine.of(registerLine);
     }
 
     private static VariableDeclaration parsedValue() {

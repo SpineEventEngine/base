@@ -24,7 +24,6 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,6 @@ import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON_ARG;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -91,15 +89,6 @@ class FromJsonMethodTest {
         CodeLines lines = generator.value();
         String expected = new GeneratedParser(message).value()
                                                       .toString();
-        assertContains(lines, expected);
-    }
-
-    @Test
-    @DisplayName("register a message parser")
-    void registerParser() {
-        CodeLines lines = generator.value();
-        String expected = format("TypeParsers.register(new %s(), '%s');",
-                                 parserType, TypeUrl.from(message));
         assertContains(lines, expected);
     }
 
