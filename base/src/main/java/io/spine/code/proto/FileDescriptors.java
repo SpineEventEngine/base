@@ -191,7 +191,7 @@ public final class FileDescriptors {
     /**
      * Verifies if the passed file declares types under the "google" package.
      */
-    static boolean isGoogle(FileDescriptor file) {
+    public static boolean isGoogle(FileDescriptor file) {
         return !IsNotGoogleProto.PREDICATE.test(file.toProto());
     }
 

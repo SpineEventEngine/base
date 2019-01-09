@@ -187,6 +187,6 @@ public final class GeneratedParser implements Snippet {
      * Obtains the name of the imported abstract parser.
      */
     private static String superClass() {
-        return ParseSnippet.ABSTRACT_PARSER_IMPORT_NAME;
+        return GenerateKnownTypeParsers.ABSTRACT_PARSER_IMPORT_NAME;
     }
 }

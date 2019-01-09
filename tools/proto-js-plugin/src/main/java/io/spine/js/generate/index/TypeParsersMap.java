@@ -21,13 +21,14 @@
 package io.spine.js.generate.index;
 
 import com.google.common.collect.Maps;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
-import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.MapExportSnippet;
+import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -65,13 +67,15 @@ final class TypeParsersMap implements Snippet {
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Collection<MessageType> types = TypeSet.onlyMessages(fileSet)
-                                               .stream()
-                                               .filter(MessageType::isCustom)
-                                               .collect(toList());
-        List<Map.Entry<String, TypeName>> entries = types.stream()
-                                                         .map(TypeParsersMap::mapEntry)
-                                                         .collect(toList());
+        Collection<MessageType> typesWithParsers = newArrayList();
+        for (FileDescriptor file : fileSet.files()) {
+            Collection<MessageType> typesInFile = GenerateKnownTypeParsers.targetTypes(file);
+            typesWithParsers.addAll(typesInFile);
+        }
+        List<Map.Entry<String, TypeName>> entries = typesWithParsers
+                .stream()
+                .map(TypeParsersMap::mapEntry)
+                .collect(toList());
         return entries;
     }
 

@@ -28,7 +28,7 @@ import io.spine.js.generate.parse.GeneratedParser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.ParseSnippet.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.GenerateKnownTypeParsers.TYPE_PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**
