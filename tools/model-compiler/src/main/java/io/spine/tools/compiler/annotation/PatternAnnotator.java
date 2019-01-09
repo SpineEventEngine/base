@@ -111,8 +111,8 @@ final class PatternAnnotator extends Annotator {
                             .filter(type -> type instanceof AbstractJavaSource)
                             .forEach(type -> {
                                 @SuppressWarnings("unchecked")
-                                // Due to inconvenience of Roaster API.
-                                        AbstractJavaSource<JavaClassSource> abstractJavaSource =
+                                    // Due to inconvenience of Roaster API.
+                                AbstractJavaSource<JavaClassSource> abstractJavaSource =
                                         (AbstractJavaSource<JavaClassSource>) type;
                                 classesToCheck.add(abstractJavaSource);
                             });
