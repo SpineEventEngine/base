@@ -49,6 +49,22 @@ class ImportTest {
     }
 
     @Test
+    @DisplayName("a library")
+    void library() {
+        Import importLine = Import.library("someJsLib");
+        String expected = "require('someJsLib');";
+        assertThat(importLine.content()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("a default library")
+    void defaultLibrary() {
+        Import importLine = Import.libraryDefault("someJsLib");
+        String expected = "require('someJsLib').default;";
+        assertThat(importLine.content()).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("with an alias")
     void named() {
         Import importLine = Import.fileRelativeToRoot(anyFile);

@@ -30,6 +30,7 @@ import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.output.snippet.Comment;
+import io.spine.js.generate.output.snippet.Import;
 
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.lang.String.format;
@@ -43,6 +44,7 @@ public final class RegisterKnownTypes extends GenerationTask {
 
     private static final String KNOWN_TYPES_NAME = "KnownTypes";
     private static final String REGISTER_METHOD_NAME = "register";
+    private static final String KNOWN_TYPES_FILE = "spine-web-client/client/known-types";
 
     public RegisterKnownTypes(Directory generatedRoot) {
         super(generatedRoot);
@@ -73,10 +75,8 @@ public final class RegisterKnownTypes extends GenerationTask {
     }
 
     private static CodeLine importKnownTypes() {
-        String line = format("let %s = require('%s').default;",
-                             KNOWN_TYPES_NAME,
-                             //TODO:2019-01-07:dmitry.grankin: Use the proper path.
-                             "/Users/dima/Work/Teamdev/Spine/web/client-js/src/client/known-types.js");
-        return CodeLine.of(line);
+        String importLine = Import.libraryDefault(KNOWN_TYPES_FILE)
+                                  .namedAs(KNOWN_TYPES_NAME);
+        return CodeLine.of(importLine);
     }
 }

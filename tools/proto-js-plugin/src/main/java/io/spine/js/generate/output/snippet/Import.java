@@ -47,10 +47,12 @@ public class Import extends CodeLine {
      */
     private static final String IMPORT_FORMAT = "require('%s');";
 
+    private static final String DEFAULT_IMPORT_FORMAT = "require('%s').default;";
+
     /**
      * The named import format.
      */
-    static final String NAMED_IMPORT_FORMAT = "let %s = %s";
+    private static final String NAMED_IMPORT_FORMAT = "let %s = %s";
 
     /**
      * The path to the current directory.
@@ -92,6 +94,15 @@ public class Import extends CodeLine {
     public static Import library(String libraryName) {
         checkNotNull(libraryName);
         String content = format(IMPORT_FORMAT, libraryName);
+        return new Import(content);
+    }
+
+    /**
+     * Obtains the default import of the library.
+     */
+    public static Import libraryDefault(String libraryName) {
+        checkNotNull(libraryName);
+        String content = format(DEFAULT_IMPORT_FORMAT, libraryName);
         return new Import(content);
     }
 
