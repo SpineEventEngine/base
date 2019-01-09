@@ -18,17 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    generateAnnotations {
-        internal = 'io.spine.test.annotation.Private'
-        experimental = 'io.spine.test.annotation.Attempt'
-        beta = 'io.spine.test.annotation.Alpha'
-        spi = 'io.spine.test.annotation.ServiceProviderInterface'
-    }
-    internalClassPatterns += [".*OrBuilder", ".*Proto"]
-}
+package io.spine.gradle.compiler;
 
-dependencies {
-    testImplementation deps.grpc.grpcStub
-    testImplementation deps.grpc.grpcProtobuf
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
+
+@DisplayName("ProtoAnnotatorPlugin should pick up `internalClassPatterns` and")
+class PatternWiseAnnotatorTest {
+
+    @Test
+    @DisplayName("mark specified top-level classes")
+    void markSpecifiedClasses() {
+        assertInternal(ScaffoldingOrBuilder.class);
+        assertInternal(BetaAllProto.class);
+    }
 }
