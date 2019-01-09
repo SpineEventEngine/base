@@ -32,6 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.parse.GeneratedParser.FROM_OBJECT_ARG;
 import static io.spine.js.generate.parse.GeneratedParser.PARSE_METHOD;
+import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("GeneratedParser should")
@@ -74,6 +75,14 @@ class GeneratedParserTest {
         assertPrototypeInitialization(lines, message);
         assertCtorInitialization(lines, message);
         assertParseMethod(lines, message);
+    }
+
+    @Test
+    @DisplayName("generate the export statement")
+    void generateExportStatement() {
+        CodeLines lines = parser.value();
+        String expected = format("module.exports.%s = %s;", parser.typeName(), parser.typeName());
+        assertContains(lines, expected);
     }
 
     @Test
