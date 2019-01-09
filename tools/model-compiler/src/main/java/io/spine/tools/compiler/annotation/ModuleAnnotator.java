@@ -60,16 +60,26 @@ public final class ModuleAnnotator {
         return new JobBuilder(option);
     }
 
-    private interface Job {
+    /**
+     * A job of the annotator.
+     *
+     * <p>Typically, represents a piece of routine source code annotation work to perform.
+     */
+    public interface Job {
 
+        /**
+         * Executes this job.
+         *
+         * @param factory
+         *         a factory of {@link Annotator} instances to use to create annotators suitable for
+         *         the job
+         */
         void execute(AnnotatorFactory factory);
     }
 
     /**
-     * A declaration of a unit annotation work.
-     *
-     * <p>Provides mapping between a Protobuf option and a Java annotation. The source code
-     * generated from Protobuf with such an option should be annotated with the given annotation.
+     * An annotation {@link Job} which covers Java sources generated from Protobuf marked with
+     * a certain {@link ApiOption}.
      */
     private static final class OptionJob implements Job {
 
@@ -100,6 +110,11 @@ public final class ModuleAnnotator {
         }
     }
 
+    /**
+     * An annotation {@link Job} which covers generated Java classes which have a certain naming.
+     *
+     * <p>For example, all classes ending with {@code OrBuilder}.
+     */
     private static final class PatternJob implements Job {
 
         private final ClassNamePattern pattern;
