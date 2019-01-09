@@ -21,20 +21,22 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
+import io.spine.code.proto.TypeSet;
 
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 final class PatternAnnotator extends Annotator {
 
-    private final ImmutableList<Descriptors.FileDescriptor> descriptors;
+    private final ImmutableList<FileDescriptor> descriptors;
     private final ClassNamePattern pattern;
 
     PatternAnnotator(ClassName annotation,
-                     Path genProtoDir,
-                     ImmutableList<Descriptors.FileDescriptor> fileDescriptors,
-                     ClassNamePattern pattern) {
+                     ClassNamePattern pattern,
+                     ImmutableList<FileDescriptor> fileDescriptors,
+                     Path genProtoDir) {
         super(annotation, genProtoDir);
         this.descriptors = fileDescriptors;
         this.pattern = pattern;
@@ -43,9 +45,20 @@ final class PatternAnnotator extends Annotator {
     @Override
     public void annotate() {
         descriptors.stream()
-                   .flatMap(file -> file.getMessageTypes().stream())
-                   .map(ClassName::from)
-                   .filter(pattern::matches);
-        // TODO:2019-01-08:dmytro.dashenkov: Complete.
+                   .flatMap(PatternAnnotator::allClasses)
+                   .filter(pattern::matches)
+                   .forEach(this::annotate);
+    }
+
+    private static Stream<ClassName> allClasses(FileDescriptor file) {
+        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        ClassName outerClass = ClassName.outerClass(file);
+        Stream.Builder<ClassName> result = Stream.builder();
+        result.accept(outerClass);
+        typeSet.toJavaClassNames()
+               .stream()
+               .flatMap(className -> Stream.of(className, className.orBuilder()))
+               .forEach(result);
+        return result.build();
     }
 }

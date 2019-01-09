@@ -29,13 +29,16 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
 import io.spine.type.TypeName;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
@@ -158,6 +161,17 @@ public final class TypeSet {
                     .map(Type::descriptor)
                     .forEach(registry::add);
         return registry.build();
+    }
+
+    public ImmutableSet<ClassName> toJavaClassNames() {
+        Stream<? extends Type> messages = messageTypes.values()
+                                                      .stream();
+        Stream<? extends Type> enums = enumTypes.values()
+                                                .stream();
+        ImmutableSet<ClassName> result = Stream.concat(messages, enums)
+                                               .map(Type::javaClassName)
+                                               .collect(toImmutableSet());
+        return result;
     }
 
     /**

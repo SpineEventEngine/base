@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findInternalAnnotation;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,9 +47,11 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
             Optional<?> annotation = findInternalAnnotation(nestedType);
             if (shouldBeAnnotated) {
-                assertTrue(annotation.isPresent());
+                assertTrue(annotation.isPresent(),
+                           format("%s is not annotated.", nestedType.getQualifiedName()));
             } else {
-                assertFalse(annotation.isPresent());
+                assertFalse(annotation.isPresent(),
+                            format("%s is annotated.", nestedType.getQualifiedName()));
             }
         }
     }

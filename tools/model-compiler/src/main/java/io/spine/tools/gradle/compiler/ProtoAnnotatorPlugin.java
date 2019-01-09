@@ -223,7 +223,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                     .add(translate(beta()).as(annotations.betaClassName()))
                     .add(translate(experimental()).as(annotations.experimentalClassName()))
                     .add(translate(internal()).as(internalClassName))
-                    .setInternalPatterns(ImmutableSet.of("**/*OrBuilder.java"))
+                    .setInternalPatterns(ImmutableSet.of(".*OrBuilder"))
                     .setInternalAnnotation(internalClassName)
                     .build();
             moduleAnnotator.annotate();

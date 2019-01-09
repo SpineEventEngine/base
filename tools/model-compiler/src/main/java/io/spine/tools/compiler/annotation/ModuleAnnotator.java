@@ -23,6 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.java.ClassName;
+import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Set;
 
@@ -101,10 +102,10 @@ public final class ModuleAnnotator {
 
     private static final class PatternJob implements Job {
 
-        private final GlobPattern pattern;
+        private final ClassNamePattern pattern;
         private final ClassName javaAnnotation;
 
-        private PatternJob(GlobPattern pattern, ClassName annotation) {
+        private PatternJob(ClassNamePattern pattern, ClassName annotation) {
             this.javaAnnotation = annotation;
             this.pattern = pattern;
         }
@@ -156,7 +157,7 @@ public final class ModuleAnnotator {
 
         private final Set<Job> jobs;
         private AnnotatorFactory annotatorFactory;
-        private ImmutableSet<String> internalPatterns;
+        private ImmutableSet<@Regex String> internalPatterns;
         private ClassName internalAnnotation;
 
         /**
@@ -184,7 +185,7 @@ public final class ModuleAnnotator {
             return this;
         }
 
-        public Builder setInternalPatterns(ImmutableSet<String> patterns) {
+        public Builder setInternalPatterns(ImmutableSet<@Regex String> patterns) {
             checkNotNull(patterns);
             this.internalPatterns = patterns;
             return this;
@@ -204,7 +205,7 @@ public final class ModuleAnnotator {
             checkNotNull(annotatorFactory);
             checkNotNull(internalAnnotation);
             internalPatterns.stream()
-                            .map(GlobPattern::compile)
+                            .map(ClassNamePattern::compile)
                             .map(pattern -> new PatternJob(pattern, internalAnnotation))
                             .forEach(this::add);
             return new ModuleAnnotator(this);

@@ -94,7 +94,7 @@ public final class AnnotatorFactory {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
     }
 
-    Annotator createPatternAnnotator(ClassName annotation, GlobPattern pattern) {
-        return new PatternAnnotator(annotation, genProtoDir, pattern);
+    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern) {
+        return new PatternAnnotator(annotation, pattern, fileDescriptors, genProtoDir);
     }
 }

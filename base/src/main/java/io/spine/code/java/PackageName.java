@@ -26,6 +26,7 @@ import io.spine.value.StringTypeValue;
 import java.io.File;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -78,8 +79,13 @@ public final class PackageName extends StringTypeValue {
      * Obtains a Java package name by the passed file descriptor.
      */
     public static PackageName resolve(FileDescriptorProto file) {
-        String javaPackage = resolveName(file);
-        PackageName result = new PackageName(javaPackage.trim());
+        String javaPackage = resolveName(file).trim();
+        checkArgument(!javaPackage.isEmpty(),
+                      "Message classes generated from file %s belong to the default package.%s"
+                    + "Use `option java_package` or `package` to specify the Java package.",
+                      file.getName(),
+                      System.lineSeparator());
+        PackageName result = new PackageName(javaPackage);
         return result;
     }
 

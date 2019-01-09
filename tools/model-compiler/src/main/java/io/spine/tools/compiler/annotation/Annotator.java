@@ -70,6 +70,10 @@ public abstract class Annotator {
         rewriteSource(relativeSourcePath, new TypeDeclarationAnnotation());
     }
 
+    protected final void annotate(ClassName targetClass) {
+        rewriteSource(targetClass.resolveFile(), new NestedTypeDeclarationAnnotation(targetClass));
+    }
+
     /**
      * Rewrites a generated Java source with the specified
      * relative path after applying a {@link SourceVisitor}.
@@ -161,4 +165,23 @@ public abstract class Annotator {
         }
     }
 
+    private final class NestedTypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
+
+        private final ClassName targetClass;
+
+        private NestedTypeDeclarationAnnotation(ClassName targetClass) {
+            this.targetClass = targetClass;
+        }
+
+        @Override
+        public void accept(AbstractJavaSource<JavaClassSource> source) {
+            checkNotNull(source);
+            String className = targetClass.value();
+            JavaSource<?> targetClassSource =
+                    source.getQualifiedName().equals(className)
+                    ? source
+                    : source.getNestedType(className);
+            addAnnotation(targetClassSource);
+        }
+    }
 }
