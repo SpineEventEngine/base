@@ -38,12 +38,7 @@ public enum LibraryFile {
     /**
      * The file containing the number of predefined JSON parsers for various types.
      */
-    KNOWN_TYPE_PARSERS("known_type_parsers.js"),
-
-    /**
-     * The file containing the abstract base for all parsers.
-     */
-    OBJECT_PARSER("object_parser.js");
+    KNOWN_TYPE_PARSERS("known_type_parsers.js");
 
     private final FileName fileName;
 

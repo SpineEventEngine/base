@@ -37,7 +37,6 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -64,11 +63,6 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      */
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers_template";
-    /**
-     * The path to the {@code object_parser} resource which contains the abstract parser definition.
-     */
-    private static final String ABSTRACT_PARSER_RESOURCE =
-            "io/spine/tools/protojs/knowntypes/object_parser_template";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
@@ -115,7 +109,6 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     @VisibleForTesting
     void writeKnownTypeParsers() {
         copyResource(PARSERS_RESOURCE, KNOWN_TYPE_PARSERS);
-        copyResource(ABSTRACT_PARSER_RESOURCE, OBJECT_PARSER);
         ExportStandardParsers generator = new ExportStandardParsers();
         FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
         writer.append(generator.value());

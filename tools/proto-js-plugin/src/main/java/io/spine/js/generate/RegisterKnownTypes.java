@@ -38,13 +38,13 @@ import static java.lang.String.format;
 /**
  * A task, which generates the code for registering of messages and enums in known types.
  *
- * <p>The registration is happens by calling a registry from Spine Web.
+ * <p>The registration happens by calling a registry from Spine Web.
  */
 public final class RegisterKnownTypes extends GenerationTask {
 
     private static final String KNOWN_TYPES_NAME = "KnownTypes";
     private static final String REGISTER_METHOD_NAME = "register";
-    private static final String KNOWN_TYPES_FILE = "spine-web-client/client/known-types";
+    private static final String KNOWN_TYPES_FILE = "spine-web-client/client/known-types.js";
 
     public RegisterKnownTypes(Directory generatedRoot) {
         super(generatedRoot);

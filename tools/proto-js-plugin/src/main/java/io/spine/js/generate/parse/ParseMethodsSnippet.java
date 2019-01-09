@@ -30,7 +30,6 @@ import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.Import;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 
 /**
@@ -50,6 +49,12 @@ public final class ParseMethodsSnippet implements Snippet {
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
     /** The name of the {@code object_parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
+    static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
+
+    @VisibleForTesting
+    static final String TYPE_PARSERS_FILE = "spine-web-client/client/parser/type-parsers.js";
+    @VisibleForTesting
+    static final String OBJECT_PARSER_FILE = "spine-web-client/client/parser/object-parser.js";
 
     /**
      * The comment inserted before the generated code.
@@ -105,11 +110,14 @@ public final class ParseMethodsSnippet implements Snippet {
         FileName fileName = FileName.from(file);
         String parsersImport = Import.fileRelativeTo(KNOWN_TYPE_PARSERS.fileName(), fileName)
                                      .namedAs(PARSERS_IMPORT_NAME);
-        String abstractParserImport = Import.fileRelativeTo(OBJECT_PARSER.fileName(), fileName)
+        String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        String parsers2Import = Import.libraryDefault(TYPE_PARSERS_FILE)
+                                      .namedAs(TYPE_PARSERS_IMPORT_NAME);
         CodeLines lines = new CodeLines();
         lines.append(parsersImport);
         lines.append(abstractParserImport);
+        lines.append(parsers2Import);
         return lines;
     }
 

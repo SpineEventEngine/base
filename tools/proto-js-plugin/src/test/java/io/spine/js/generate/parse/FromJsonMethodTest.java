@@ -24,6 +24,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +34,7 @@ import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON_ARG;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -42,6 +44,7 @@ class FromJsonMethodTest {
 
     private final Descriptor message = message();
     private final TypeName messageType = TypeName.from(message);
+    private final TypeName parserType = TypeName.ofParser(message);
     private final FromJsonMethod generator = FromJsonMethod.createFor(message);
 
     @Test
@@ -76,7 +79,7 @@ class FromJsonMethodTest {
                                    .value();
         String expected =
                 messageType + "." + FROM_OBJECT + " = function(obj) {" + newLine() +
-                        "  let parser = new " + TypeName.ofParser(message) + "();" + newLine() +
+                        "  let parser = new " + parserType + "();" + newLine() +
                         "  return parser.fromObject(obj);" + newLine() +
                         "};";
         assertContains(lines, expected);
@@ -84,10 +87,19 @@ class FromJsonMethodTest {
 
     @Test
     @DisplayName("generate a message parser")
-    void checkJsObjectForNull() {
+    void generateParser() {
         CodeLines lines = generator.value();
         String expected = new GeneratedParser(message).value()
                                                       .toString();
+        assertContains(lines, expected);
+    }
+
+    @Test
+    @DisplayName("register a message parser")
+    void registerParser() {
+        CodeLines lines = generator.value();
+        String expected = format("TypeParsers.register(new %s(), '%s');",
+                                 parserType, TypeUrl.from(message));
         assertContains(lines, expected);
     }
 

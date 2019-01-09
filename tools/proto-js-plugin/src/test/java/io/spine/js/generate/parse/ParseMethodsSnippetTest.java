@@ -23,16 +23,20 @@ package io.spine.js.generate.parse;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.Import;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.code.js.LibraryFile.OBJECT_PARSER;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.ABSTRACT_PARSER_IMPORT_NAME;
 import static io.spine.js.generate.parse.ParseMethodsSnippet.COMMENT;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.OBJECT_PARSER_FILE;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_FILE;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_IMPORT_NAME;
 
 @DisplayName("ParseMethodsSnippet should")
 class ParseMethodsSnippetTest {
@@ -52,9 +56,13 @@ class ParseMethodsSnippetTest {
     void generateImports() {
         CodeLines snippet = generator.imports();
         String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
-        String abstractParserImport = "require('../../" + OBJECT_PARSER + "');";
+        String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
+                                            .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        String typeParsersImport = Import.libraryDefault(TYPE_PARSERS_FILE)
+                                         .namedAs(TYPE_PARSERS_IMPORT_NAME);
         assertContains(snippet, knownTypeParsersImport);
         assertContains(snippet, abstractParserImport);
+        assertContains(snippet, typeParsersImport);
     }
 
     @Test
