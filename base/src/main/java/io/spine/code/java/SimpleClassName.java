@@ -55,7 +55,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     static SimpleClassName create(String value) {
         checkNotNull(value);
-        checkArgument(!value.isEmpty(), "Class name cannot be empty.");
+        checkArgument(!value.isEmpty(), "Simple class name cannot be empty.");
         return new SimpleClassName(value);
     }
 
