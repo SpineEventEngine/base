@@ -24,9 +24,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.stream.Stream;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 final class PatternAnnotator extends Annotator {
 
@@ -67,5 +75,51 @@ final class PatternAnnotator extends Annotator {
         return result.build();
     }
 
+    private void annotate(ClassName targetClass) {
+        rewriteSource(targetClass.resolveFile(), new NestedTypeDeclarationAnnotation(targetClass));
+    }
 
+    private final class NestedTypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
+
+        private final ClassName targetClass;
+
+        private NestedTypeDeclarationAnnotation(ClassName targetClass) {
+            this.targetClass = targetClass;
+        }
+
+        @Override
+        public void accept(AbstractJavaSource<JavaClassSource> source) {
+            checkNotNull(source);
+            AnnotationTargetSource<?, ?> target = findTarget(source);
+            addAnnotation(target);
+        }
+
+        private AnnotationTargetSource<?, ?> findTarget(AbstractJavaSource<JavaClassSource> root) {
+            String className = targetClass.value();
+            Queue<AbstractJavaSource<JavaClassSource>> classesToCheck = new ArrayDeque<>();
+            classesToCheck.add(root);
+            while (!classesToCheck.isEmpty()) {
+                AbstractJavaSource<JavaClassSource> currentClass = classesToCheck.poll();
+                if (currentClass.getQualifiedName().equals(className)) {
+                    return currentClass;
+                }
+                if (currentClass.hasNestedType(className)) {
+                    return currentClass.getNestedType(className);
+                }
+                currentClass.getNestedTypes()
+                            .stream()
+                            .filter(type -> type instanceof AbstractJavaSource)
+                            .forEach(type -> {
+                                @SuppressWarnings("unchecked")
+                                // Due to inconvenience of Roaster API.
+                                        AbstractJavaSource<JavaClassSource> abstractJavaSource =
+                                        (AbstractJavaSource<JavaClassSource>) type;
+                                classesToCheck.add(abstractJavaSource);
+                            });
+            }
+            throw newIllegalStateException("Class `%s` not found in Java source `%s`.",
+                                           className,
+                                           root.getCanonicalName());
+        }
+    }
 }
