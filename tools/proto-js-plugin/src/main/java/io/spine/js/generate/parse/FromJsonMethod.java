@@ -50,12 +50,14 @@ public final class FromJsonMethod implements Snippet {
     /**
      * The {@code fromJson} method name.
      */
-    public static final String FROM_JSON = "fromJson";
+    @VisibleForTesting
+    static final String FROM_JSON = "fromJson";
 
     /**
      * The {@code fromObject} method name.
      */
-    public static final String FROM_OBJECT = "fromObject";
+    @VisibleForTesting
+    static final String FROM_OBJECT = "fromObject";
     private static final String REGISTER_METHOD_NAME = "register";
 
     /**
