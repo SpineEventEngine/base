@@ -22,6 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Import;
 import org.junit.jupiter.api.DisplayName;
@@ -29,19 +30,17 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.ABSTRACT_PARSER_IMPORT_NAME;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.COMMENT;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.OBJECT_PARSER_FILE;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_FILE;
-import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.ParseSnippet.ABSTRACT_PARSER_IMPORT_NAME;
+import static io.spine.js.generate.parse.ParseSnippet.COMMENT;
+import static io.spine.js.generate.parse.ParseSnippet.OBJECT_PARSER_FILE;
+import static io.spine.js.generate.parse.ParseSnippet.TYPE_PARSERS_FILE;
+import static io.spine.js.generate.parse.ParseSnippet.TYPE_PARSERS_IMPORT_NAME;
 
-@DisplayName("ParseMethodsSnippet should")
-class ParseMethodsSnippetTest {
+@DisplayName("ParseSnippet should")
+class ParseSnippetTest {
 
     private final FileDescriptor file = file();
-    private final ParseMethodsSnippet generator = new ParseMethodsSnippet(file);
+    private final ParseSnippet generator = new ParseSnippet(file);
 
     @Test
     @DisplayName("generate explaining comment")
@@ -63,14 +62,12 @@ class ParseMethodsSnippetTest {
     }
 
     @Test
-    @DisplayName("generate `fromJson` and `fromObject` methods for all messages in file")
+    @DisplayName("generate code for parsing")
     void generateMethods() {
-        CodeLines snippet = generator.parseMethods();
+        CodeLines snippet = generator.parseCode();
         for (Descriptor message : file.getMessageTypes()) {
-            String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
-            assertContains(snippet, fromJsonDeclaration);
-            String fromObjectDeclaration = message.getFullName() + '.' + FROM_OBJECT;
-            assertContains(snippet, fromObjectDeclaration);
+            TypeName parserType = TypeName.ofParser(message);
+            assertContains(snippet, parserType.value());
         }
     }
 }

@@ -32,12 +32,9 @@ import io.spine.js.generate.output.snippet.Import;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 
 /**
- * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
- *
- * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
- * declared in the {@link FileDescriptor}.
+ * The code for parsing of a Protobuf message from a plain Javascript object.
  */
-public final class ParseMethodsSnippet implements Snippet {
+public final class ParseSnippet implements Snippet {
 
     /**
      * The name of the import of parsers registry.
@@ -69,24 +66,10 @@ public final class ParseMethodsSnippet implements Snippet {
      * @param file
      *         the {@code FileDescriptor} whose messages to process
      */
-    public ParseMethodsSnippet(FileDescriptor file) {
+    public ParseSnippet(FileDescriptor file) {
         this.file = file;
     }
 
-    /**
-     * Generates the {@code fromJson(json)} method and all the related code for each message of the
-     * processed {@code file}.
-     *
-     * <p>More specifically:
-     * <ol>
-     *     <li>Writes a comment explaining the generated code.
-     *     <li>Adds an import for the standard Protobuf type parsers.
-     *     <li>For each message, adds the {@code fromJson(json)} method which parses JSON
-     *         {@code string} into object.
-     *     <li>For each message, adds the {@code fromObject(obj)} method which parses the JS object
-     *         and creates a message instance.
-     * </ol>
-     */
     @Override
     public CodeLines value() {
         CodeLines out = new CodeLines();
@@ -94,14 +77,12 @@ public final class ParseMethodsSnippet implements Snippet {
         out.append(COMMENT);
         out.append(emptyLine());
         out.append(imports());
-        out.append(parseMethods());
+        out.append(parseCode());
         return out;
     }
 
     /**
-     * Generates the {@code known_type_parsers.js} and {@code object_parser.js} imports.
-     *
-     * <p>The import path is relative to the processed {@code file}.
+     * Generates imports required by the code for parsing of messages.
      */
     @VisibleForTesting
     CodeLines imports() {
@@ -115,17 +96,13 @@ public final class ParseMethodsSnippet implements Snippet {
         return lines;
     }
 
-    /**
-     * Generates the {@code fromJson(json)} and {@code fromObject(obj)} methods for each message of
-     * the file.
-     */
     @VisibleForTesting
-    CodeLines parseMethods() {
+    CodeLines parseCode() {
         CodeLines snippet = new CodeLines();
         for (MessageType message : TypeSet.onlyMessages(file)) {
-            FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message.descriptor());
+            GeneratedParser parser = new GeneratedParser(message.descriptor());
             snippet.append(emptyLine());
-            snippet.append(fromJsonMethod);
+            snippet.append(parser);
         }
         return snippet;
     }

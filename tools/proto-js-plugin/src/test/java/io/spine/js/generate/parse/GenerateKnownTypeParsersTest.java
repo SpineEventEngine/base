@@ -26,7 +26,10 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.given.GivenProject;
 import io.spine.option.OptionsProto;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +41,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.createFor;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
@@ -61,21 +63,21 @@ class GenerateKnownTypeParsersTest {
     }
 
     @Test
-    @DisplayName("write `fromJson` method into generated JS files")
-    void writeFromJsonMethod() throws IOException {
-        writer.writeParseMethods(fileSet);
+    @DisplayName("write code for parsing")
+    void writeParsingCode() throws IOException {
+        writer.generateFor(fileSet);
         checkProcessedFiles(fileSet);
     }
 
     @Test
-    @DisplayName("not write `fromJson` method into Spine Options file")
-    void skipSpineOptions() {
+    @DisplayName("write code for parsing of Spine options")
+    void writeOptionsParseCode() {
         FileDescriptor spineOptionsFile = OptionsProto.getDescriptor();
         assertFalse(shouldSkip(spineOptionsFile));
     }
 
     @Test
-    @DisplayName("not write `fromJson` method into files declaring standard Protobuf types")
+    @DisplayName("not write parsing code for standard Protobuf types")
     void skipStandard() {
         FileDescriptor fileDeclaringAny = Any.getDescriptor()
                                              .getFile();
@@ -87,14 +89,16 @@ class GenerateKnownTypeParsersTest {
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
             if (!shouldSkip(file) && !messageTypes.isEmpty()) {
-                checkFromJsonDeclared(file);
+                checkParseCodeAdded(file);
             }
         }
     }
 
-    private void checkFromJsonDeclared(FileDescriptor file) throws IOException {
+    private void checkParseCodeAdded(FileDescriptor file) throws IOException {
         Path jsFilePath = generatedProtoDir.resolve(FileName.from(file));
-        String fromJsonDeclaration = '.' + FROM_JSON + " = function";
-        assertFileContains(jsFilePath, fromJsonDeclaration);
+        for (MessageType messageType : TypeSet.onlyMessages(file)) {
+            TypeName parserTypeName = TypeName.ofParser(messageType.descriptor());
+            assertFileContains(jsFilePath, parserTypeName.value());
+        }
     }
 }
