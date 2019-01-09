@@ -35,9 +35,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.exists;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
@@ -176,12 +179,36 @@ public abstract class Annotator {
         @Override
         public void accept(AbstractJavaSource<JavaClassSource> source) {
             checkNotNull(source);
+            AnnotationTargetSource<?, ?> target = findTarget(source);
+            addAnnotation(target);
+        }
+
+        private AnnotationTargetSource<?, ?> findTarget(AbstractJavaSource<JavaClassSource> root) {
             String className = targetClass.value();
-            JavaSource<?> targetClassSource =
-                    source.getQualifiedName().equals(className)
-                    ? source
-                    : source.getNestedType(className);
-            addAnnotation(targetClassSource);
+            Queue<AbstractJavaSource<JavaClassSource>> classesToCheck = new ArrayDeque<>();
+            classesToCheck.add(root);
+            while (!classesToCheck.isEmpty()) {
+                AbstractJavaSource<JavaClassSource> currentClass = classesToCheck.poll();
+                if (currentClass.getQualifiedName().equals(className)) {
+                    return currentClass;
+                }
+                if (currentClass.hasNestedType(className)) {
+                    return currentClass.getNestedType(className);
+                }
+                currentClass.getNestedTypes()
+                            .stream()
+                            .filter(type -> type instanceof AbstractJavaSource)
+                            .forEach(type -> {
+                                @SuppressWarnings("unchecked")
+                                    // Due to inconvenience of Roaster API.
+                                AbstractJavaSource<JavaClassSource> abstractJavaSource =
+                                        (AbstractJavaSource<JavaClassSource>) type;
+                                classesToCheck.add(abstractJavaSource);
+                            });
+            }
+            throw newIllegalStateException("Class `%s` not found in Java source `%s`.",
+                                           className,
+                                           root.getCanonicalName());
         }
     }
 }
