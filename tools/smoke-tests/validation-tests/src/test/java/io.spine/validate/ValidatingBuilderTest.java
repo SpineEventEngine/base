@@ -32,6 +32,7 @@ import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 import org.slf4j.event.SubstituteLoggingEvent;
@@ -240,28 +241,36 @@ class ValidatingBuilderTest {
         assertThrows(ValidationException.class, () -> violatingOperation.apply(initialBuilder));
     }
 
-    @Test
-    @DisplayName("produce a warning upon finding a repeated field that has `(set_once) = true`")
-    void testSetOnceRepeatedFieldsWarning() {
-        EssayVBuilder contents = EssayVBuilder
-                .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
-        contents.addLine("First line of the task");
-        assertFalse(loggedMessages.isEmpty());
-        assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.ERROR);
-    }
+    @Nested
+    @DisplayName("Produce an error if `(set_once) = true` is put for")
+    class InaplicableOption {
 
-    @Test
-    @DisplayName("produce a warning upon finding a map field that has `(set_once) = true`")
-    void testSetOnceMapFieldWarning() {
-        EssayVBuilder essay = EssayVBuilder
-                .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
-        essay.putTableOfContents("Synopsis", 0);
-        assertFalse(loggedMessages.isEmpty());
-        assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.ERROR);
+        private EssayVBuilder essay;
+        private Queue<SubstituteLoggingEvent> loggedMessages;
+
+        @BeforeEach
+        void setUp() {
+            essay = EssayVBuilder.newBuilder();
+            loggedMessages = redirectLogging(EssayVBuilder.class);
+        }
+
+        @Test
+        @DisplayName("a repeated field")
+        void testSetOnceRepeatedFieldsError() {
+            essay.addLine("First line of the task");
+            assertFalse(loggedMessages.isEmpty());
+            assertEquals(loggedMessages.peek()
+                                       .getLevel(), Level.ERROR);
+        }
+
+        @Test
+        @DisplayName("a map field")
+        void testSetOnceMapFieldError() {
+            essay.putTableOfContents("Synopsis", 0);
+            assertFalse(loggedMessages.isEmpty());
+            assertEquals(loggedMessages.peek()
+                                       .getLevel(), Level.ERROR);
+        }
     }
 
     @Test
@@ -273,8 +282,9 @@ class ValidatingBuilderTest {
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
-    private static Queue<SubstituteLoggingEvent> redirectVBuildersLogging() {
-        SubstituteLogger logger = (SubstituteLogger) Logging.get(AbstractValidatingBuilder.class);
+    private static
+    Queue<SubstituteLoggingEvent> redirectLogging(Class<? extends AbstractValidatingBuilder> cls) {
+        SubstituteLogger logger = (SubstituteLogger) Logging.get(cls);
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect(logger, loggedMessages);
         return loggedMessages;
@@ -284,11 +294,12 @@ class ValidatingBuilderTest {
      * Creates a valid {@link ProjectVBuilder} instance.
      */
     private static ProjectVBuilder fill() {
-        ProjectVBuilder builder = ProjectVBuilder.newBuilder()
-                                                 .addTask(task())
-                                                 .addMember(member())
-                                                 .putRole("Ownner", member())
-                                                 .putDeletedTask(newUuid(), timeInPast());
+        ProjectVBuilder builder = ProjectVBuilder
+                .newBuilder()
+                .addTask(task())
+                .addMember(member())
+                .putRole("Owner", member())
+                .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
     }
