@@ -82,7 +82,7 @@ public final class ClassName extends StringTypeValue {
      */
     public static ClassName of(String className) {
         checkNotNull(className);
-        checkArgument(className.length() > 0, "Class name cannot me empty.");
+        checkArgument(className.length() > 0, "Class name cannot be empty.");
         return new ClassName(className);
     }
 
