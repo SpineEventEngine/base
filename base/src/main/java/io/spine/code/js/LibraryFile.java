@@ -33,12 +33,7 @@ public enum LibraryFile {
     /**
      * The file containing map of all known types with their {@linkplain io.spine.type.TypeUrl URL}.
      */
-    KNOWN_TYPES("known_types.js"),
-
-    /**
-     * The file containing the number of predefined JSON parsers for various types.
-     */
-    KNOWN_TYPE_PARSERS("known_type_parsers.js");
+    KNOWN_TYPES("known_types.js");
 
     private final FileName fileName;
 

@@ -22,26 +22,29 @@ package io.spine.js.generate.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
+import io.spine.js.generate.parse.GeneratedParser;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.ParseMethodsSnippet.TYPE_PARSERS_IMPORT_NAME;
+import static java.lang.String.format;
 
 /**
  * The value parser for the proto fields of {@code message} type.
  *
- * <p>Handles all {@code message} fields except those who belong to standard Protobuf types which
- * are parsed separately.
+ * <p>Handles all {@code message} fields by calling {@code TypeParsers} registry.
  */
 final class MessageFieldParser implements FieldParser {
 
-    private final TypeName typeName;
+    private static final String PARSER_BY_URL_METHOD = "parserFor";
+
+    private final Descriptor message;
     private final CodeLines jsOutput;
 
-    private MessageFieldParser(TypeName typeName, CodeLines jsOutput) {
-        this.typeName = typeName;
+    private MessageFieldParser(Descriptor message, CodeLines jsOutput) {
+        this.message = message;
         this.jsOutput = jsOutput;
     }
 
@@ -57,16 +60,9 @@ final class MessageFieldParser implements FieldParser {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor messageType = field.getMessageType();
-        TypeName typeName = TypeName.from(messageType);
-        return new MessageFieldParser(typeName, jsOutput);
+        return new MessageFieldParser(messageType, jsOutput);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>For the {@code message} types that do not belong to the well-known types, the parse
-     * operation is executed via the recursive {@code fromObject} method call.
-     */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
@@ -75,7 +71,10 @@ final class MessageFieldParser implements FieldParser {
     }
 
     private VariableDeclaration parsedVariable(String name, String valueToParse) {
-        String recursiveCall = typeName.value() + '.' + FROM_OBJECT + '(' + valueToParse + ')';
-        return VariableDeclaration.initialized(name, recursiveCall);
+        TypeUrl typeUrl = TypeUrl.from(message);
+        String obtainParser = format("%s.%s('%s')",
+                                     TYPE_PARSERS_IMPORT_NAME, PARSER_BY_URL_METHOD, typeUrl);
+        String parserCall = GeneratedParser.parseMethodCall(obtainParser, valueToParse);
+        return VariableDeclaration.initialized(name, parserCall);
     }
 }

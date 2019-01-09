@@ -23,13 +23,11 @@ package io.spine.js.generate.parse;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.FileName;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.Import;
 
-import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 
 /**
@@ -41,15 +39,14 @@ import static io.spine.js.generate.output.CodeLine.emptyLine;
 public final class ParseMethodsSnippet implements Snippet {
 
     /**
-     * The name of the {@code known_type_parsers.js} import.
+     * The name of the import of parsers registry.
      *
-     * <p>Visible so the other generators such as {@linkplain FromJsonMethod message} or
+     * <p>Visible so the other generators such as a
      * {@linkplain io.spine.js.generate.field.FieldGenerator field} can use the import.
      */
-    public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
+    public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
     /** The name of the {@code object_parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
-    static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
 
     @VisibleForTesting
     static final String TYPE_PARSERS_FILE = "spine-web-client/client/parser/type-parsers.js";
@@ -107,15 +104,11 @@ public final class ParseMethodsSnippet implements Snippet {
      */
     @VisibleForTesting
     CodeLines imports() {
-        FileName fileName = FileName.from(file);
-        String parsersImport = Import.fileRelativeTo(KNOWN_TYPE_PARSERS.fileName(), fileName)
-                                     .namedAs(PARSERS_IMPORT_NAME);
         String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
         String parsers2Import = Import.libraryDefault(TYPE_PARSERS_FILE)
                                       .namedAs(TYPE_PARSERS_IMPORT_NAME);
         CodeLines lines = new CodeLines();
-        lines.append(parsersImport);
         lines.append(abstractParserImport);
         lines.append(parsers2Import);
         return lines;

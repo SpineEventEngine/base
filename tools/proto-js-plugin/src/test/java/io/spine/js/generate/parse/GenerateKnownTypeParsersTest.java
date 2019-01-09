@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
-import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.createFor;
@@ -69,14 +68,6 @@ class GenerateKnownTypeParsersTest {
         writer.writeKnownTypes(fileSet);
         Path knownTypes = generatedProtoDir.resolve(KNOWN_TYPES);
         assertTrue(exists(knownTypes));
-    }
-
-    @Test
-    @DisplayName("write known type parsers map to JS file")
-    void writeKnownTypeParsers() {
-        writer.writeKnownTypeParsers();
-        Path knownTypeParsers = generatedProtoDir.resolve(KNOWN_TYPE_PARSERS);
-        assertTrue(exists(knownTypeParsers));
     }
 
     @Test

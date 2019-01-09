@@ -27,7 +27,6 @@ import io.spine.js.generate.output.snippet.Import;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
@@ -55,12 +54,10 @@ class ParseMethodsSnippetTest {
     @DisplayName("generate imports")
     void generateImports() {
         CodeLines snippet = generator.imports();
-        String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
         String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
         String typeParsersImport = Import.libraryDefault(TYPE_PARSERS_FILE)
                                          .namedAs(TYPE_PARSERS_IMPORT_NAME);
-        assertContains(snippet, knownTypeParsersImport);
         assertContains(snippet, abstractParserImport);
         assertContains(snippet, typeParsersImport);
     }
