@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.check;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -35,9 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PreprocessorConfigurer {
 
     static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
-
-    @VisibleForTesting
-    static final String PREPROCESSOR_ARG = "-processorpath";
 
     private final Project project;
 
