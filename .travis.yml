@@ -18,7 +18,7 @@ before_install:
 script:
   - ./gradlew build check --stacktrace
   - cd ./tools/smoke-tests
-  - ../../gradlew check --stacktrace
+  - ./gradlew check --stacktrace
   - cd ../..
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
