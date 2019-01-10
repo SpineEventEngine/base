@@ -46,7 +46,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
-        })
+        "ClassWithTooManyFields" /* OK for a Gradle extension to have a flat structure. */})
 public class Extension {
 
     /**
