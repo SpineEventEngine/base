@@ -30,12 +30,12 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.js.generate.parse.GeneratedParser.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.GeneratedParser.PARSE_METHOD;
 import static java.lang.System.lineSeparator;
 
-@DisplayName("Parser should")
-class ParserTest {
+@DisplayName("GeneratedParser should")
+class GeneratedParserTest {
 
     private final Descriptor message = Any.getDescriptor();
     private final GeneratedParser parser = new GeneratedParser(message);
@@ -44,7 +44,7 @@ class ParserTest {
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
         CodeLines snippet = parser.fromObjectMethod();
-        String expectedName = expectedParserName(message) + ".prototype." + FROM_OBJECT;
+        String expectedName = expectedParserName(message) + ".prototype." + PARSE_METHOD;
         String methodDeclaration = expectedName + " = function(" + FROM_OBJECT_ARG;
         assertContains(snippet, methodDeclaration);
     }
@@ -98,7 +98,7 @@ class ParserTest {
     }
 
     private static void assertCtorInitialization(CodeLines lines, Descriptor message) {
-        String expectedName = expectedParserName(message);
+        TypeName expectedName = expectedParserName(message);
         assertThat(lines.toString()).contains(
                 expectedName + ".prototype.constructor = " + expectedName + ';'
         );
@@ -110,7 +110,7 @@ class ParserTest {
         assertThat(lines.toString()).contains(expected);
     }
 
-    private static String expectedParserName(Descriptor message) {
-        return TypeName.from(message) + "Parser";
+    private static TypeName expectedParserName(Descriptor message) {
+        return TypeName.ofParser(message);
     }
 }

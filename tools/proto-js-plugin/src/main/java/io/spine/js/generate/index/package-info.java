@@ -18,34 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-"use strict";
-
 /**
- * Parses a plain Javascript object to a Protobuf message.
- *
- * The class is abstract and should be implemented for every message type.
+ * The package contains classes performing writing of the index file
+ * for the generated Protobuf types.
  */
-class ObjectParser {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js.generate.index;
 
-    /**
-     * Creates a new instance.
-     */
-    constructor() {
-        if (this.constructor === ObjectParser) {
-            throw new Error('Cannot instantiate abstract ObjectParser class.');
-        }
-    }
-
-    /**
-     * Converts an object to a message.
-     *
-     * @abstract
-     * @param {!Object} object the object representing a Protobuf message
-     * @return {!Message} the parsed Protobuf message
-     */
-    fromObject(object) {
-        throw new Error('The method is abstract and should be implemented by a subclass');
-    }
-}
-
-module.exports = ObjectParser;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

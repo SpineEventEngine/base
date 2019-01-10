@@ -23,6 +23,7 @@ package io.spine.js.generate.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +37,6 @@ import static io.spine.js.generate.field.given.Given.mapField;
 import static io.spine.js.generate.field.given.Given.repeatedField;
 import static io.spine.js.generate.field.given.Given.singularField;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -112,10 +112,10 @@ class FieldGeneratorTest {
     void callParser() {
         String fieldValue = singularGenerator.acquireFieldValue();
         singularGenerator.generate();
-        String typeName = singularField().getMessageType()
-                                         .getFullName();
-        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + fieldValue + ')';
-        assertContains(jsOutput, recursiveCall);
+        TypeUrl typeUrl = TypeUrl.from(singularField().getMessageType());
+        String parserCall = format("TypeParsers.parserFor('%s').fromObject(%s);",
+                                   typeUrl, fieldValue);
+        assertContains(jsOutput, parserCall);
     }
 
     @Test

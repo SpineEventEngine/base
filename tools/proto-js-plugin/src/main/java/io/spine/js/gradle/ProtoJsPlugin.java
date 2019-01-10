@@ -20,11 +20,13 @@
 
 package io.spine.js.gradle;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -33,6 +35,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.util.List;
 
 import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.tools.gradle.TaskName.BUILD;
@@ -132,10 +135,14 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateCode(Directory generatedRoot, File descriptors) {
+        List<GenerationTask> tasks = ImmutableList.of(
+                GenerateKnownTypeParsers.createFor(generatedRoot),
+                new AppendTypeUrlGetter(generatedRoot),
+                new GenerateIndexFile(generatedRoot)
+        );
         FileSet fileSet = parseOrEmpty(descriptors);
-        GenerationTask generateParsers = GenerateKnownTypeParsers.createFor(generatedRoot);
-        generateParsers.performFor(fileSet);
-        GenerationTask appendTypeUrlGetter = new AppendTypeUrlGetter(generatedRoot);
-        appendTypeUrlGetter.performFor(fileSet);
+        for (GenerationTask task : tasks) {
+            task.performFor(fileSet);
+        }
     }
 }

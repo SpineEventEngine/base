@@ -18,37 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.index;
 
 import com.google.common.collect.Maps;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.output.snippet.JsImportGenerator;
 import io.spine.js.generate.output.snippet.MapExportSnippet;
 import io.spine.type.TypeUrl;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
- * The generator of the global known types {@code Map}.
+ * The code of the known types {@code Map}.
  *
  * <p>This class generates the map with all the known types written in the form of
- * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
+ * "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type".
  */
-public final class KnownTypesMap implements Snippet {
+final class KnownTypesMap implements Snippet {
 
     /**
      * The exported map name.
@@ -65,62 +59,18 @@ public final class KnownTypesMap implements Snippet {
      * @param fileSet
      *         the {@code FileSet} containing all the known types
      */
-    public KnownTypesMap(FileSet fileSet) {
+    KnownTypesMap(FileSet fileSet) {
         this.fileSet = fileSet;
     }
 
-    /**
-     * Generates the known types code.
-     *
-     * <p>The code includes:
-     * <ol>
-     *     <li>Imports of all JS files declaring generated messages
-     *     <li>The global {@code Map} of known types
-     * </ol>
-     */
     @Override
     public CodeLines value() {
-        CodeLines lines = new CodeLines();
-        lines.append(knownTypesImports());
-        lines.append(emptyLine());
-        lines.append(knownTypesMapExport());
-        return lines;
-    }
-
-    /**
-     * Generates import statements for all files declaring generated messages.
-     */
-    private CodeLines knownTypesImports() {
-        Collection<FileDescriptor> files = fileSet.files();
-        Set<FileName> imports = files.stream()
-                                     .filter(file -> !TypeSet.messagesAndEnums(file)
-                                                             .isEmpty())
-                                     .map(FileName::from)
-                                     .collect(toSet());
-        CodeLines importLines = new CodeLines();
-        JsImportGenerator generator = JsImportGenerator
-                .newBuilder()
-                .setImports(imports)
-                .setJsOutput(importLines)
-                .build();
-        generator.generate();
-        return importLines;
-    }
-
-    /**
-     * Generates the {@code Map} of known types.
-     *
-     * <p>Map entries are known types stored in the "{@linkplain TypeUrl type-url}-to-JS-type"
-     * format.
-     *
-     * <p>The map is exported under the {@link #MAP_NAME}.
-     */
-    private MapExportSnippet knownTypesMapExport() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        return MapExportSnippet
+        MapExportSnippet mapSnippet = MapExportSnippet
                 .newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();
+        return mapSnippet.value();
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {

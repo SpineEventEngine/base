@@ -26,24 +26,9 @@ package io.spine.code.js;
 public enum LibraryFile {
 
     /**
-     * The file declaring Spine Options.
+     * The index file containing maps with Protobuf types and their parsers.
      */
-    SPINE_OPTIONS("spine/options_pb.js"),
-
-    /**
-     * The file containing map of all known types with their {@linkplain io.spine.type.TypeUrl URL}.
-     */
-    KNOWN_TYPES("known_types.js"),
-
-    /**
-     * The file containing the number of predefined JSON parsers for various types.
-     */
-    KNOWN_TYPE_PARSERS("known_type_parsers.js"),
-
-    /**
-     * The file containing the abstract base for all parsers.
-     */
-    OBJECT_PARSER("object_parser.js");
+    INDEX("index.js");
 
     private final FileName fileName;
 

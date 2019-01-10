@@ -56,11 +56,13 @@ public final class TypeName extends StringTypeValue {
 
     /**
      * Obtains the type name of the parser of the specified message.
+     *
+     * <p>The parser is a static property on the corresponding message type.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
     public static TypeName ofParser(Descriptor message) {
         checkNotNull(message);
         TypeName messageType = from(message);
-        return new TypeName(messageType + "Parser");
+        return new TypeName(messageType + ".Parser");
     }
 }

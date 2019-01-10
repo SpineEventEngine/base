@@ -62,7 +62,8 @@ public final class GeneratedParser implements Snippet {
     @VisibleForTesting
     static final String FROM_OBJECT_ARG = "obj";
     /** The name of the method declared on an abstract parser. */
-    private static final String PARSE_METHOD = "fromObject";
+    @VisibleForTesting
+    static final String PARSE_METHOD = "fromObject";
 
     /** The message to generate the parser for. */
     private final Descriptor message;
@@ -186,6 +187,6 @@ public final class GeneratedParser implements Snippet {
      * Obtains the name of the imported abstract parser.
      */
     private static String superClass() {
-        return ParseMethodsSnippet.ABSTRACT_PARSER_IMPORT_NAME;
+        return GenerateKnownTypeParsers.ABSTRACT_PARSER_IMPORT_NAME;
     }
 }
