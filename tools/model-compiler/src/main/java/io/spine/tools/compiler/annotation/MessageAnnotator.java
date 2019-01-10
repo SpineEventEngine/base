@@ -25,9 +25,18 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.SourceFile;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 
 import java.nio.file.Path;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A message annotator.
@@ -35,7 +44,7 @@ import java.util.List;
  * <p>Annotates generated top-level messages from a {@code .proto} file,
  * if a specified {@linkplain MessageOptions message option} value is {@code true}.
  */
-class MessageAnnotator extends TypeDefinitionAnnotator<Descriptor> {
+class MessageAnnotator extends OptionAnnotator<Descriptor> {
 
     MessageAnnotator(ClassName annotation,
                      ApiOption option,
@@ -45,22 +54,76 @@ class MessageAnnotator extends TypeDefinitionAnnotator<Descriptor> {
     }
 
     @Override
-    protected List<Descriptor> getDefinitions(FileDescriptor file) {
+    public final void annotate() {
+        for (FileDescriptor file : descriptors()) {
+            annotate(file);
+        }
+    }
+
+    @Override
+    protected final void annotateOneFile(FileDescriptor file) {
+        SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
+        rewriteSource(outerClass, new AnnotateNestedType(file));
+    }
+
+    @Override
+    protected final void annotateMultipleFiles(FileDescriptor file) {
+        for (Descriptor definitionDescriptor : getDefinitions(file)) {
+            if (shouldAnnotate(definitionDescriptor)) {
+                annotateMessageTypes(definitionDescriptor, file);
+            }
+        }
+    }
+
+    private static List<Descriptor> getDefinitions(FileDescriptor file) {
         return file.getMessageTypes();
-    }
-
-    @Override
-    protected String getDefinitionName(Descriptor definition) {
-        return definition.getName();
-    }
-
-    @Override
-    protected void annotateDefinition(Descriptor definition, FileDescriptor file) {
-        annotateMessageTypes(definition, file);
     }
 
     @Override
     protected boolean shouldAnnotate(Descriptor descriptor) {
         return option().isPresentAt(descriptor);
+    }
+
+    static <T extends JavaSource<T>>
+    JavaSource findNestedType(AbstractJavaSource<T> enclosingClass, String typeName) {
+        for (JavaSource nestedType : enclosingClass.getNestedTypes()) {
+            if (nestedType.getName()
+                          .equals(typeName)) {
+                return nestedType;
+            }
+        }
+
+        String errMsg = format("Nested type `%s` is not defined in `%s`.",
+                               typeName, enclosingClass.getName());
+        throw new IllegalStateException(errMsg);
+    }
+
+    /**
+     * Optionally annotates nested types in a file.
+     */
+    private class AnnotateNestedType implements SourceVisitor<JavaClassSource> {
+
+        private final FileDescriptor file;
+
+        private AnnotateNestedType(FileDescriptor file) {
+            this.file = file;
+        }
+
+        @Override
+        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
+            checkNotNull(input);
+            for (Descriptor definition : getDefinitions(file)) {
+                if (shouldAnnotate(definition)) {
+                    String messageName = definition.getName();
+                    JavaSource message = findNestedType(input, messageName);
+                    addAnnotation(message);
+
+                    String javaType = SimpleClassName.messageOrBuilder(messageName)
+                                                     .value();
+                    JavaSource messageOrBuilder = findNestedType(input, javaType);
+                    addAnnotation(messageOrBuilder);
+                }
+            }
+        }
     }
 }
