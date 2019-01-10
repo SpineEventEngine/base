@@ -33,7 +33,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A value object holding a fully-qualified Java class name.
@@ -139,11 +138,8 @@ public final class ClassName extends StringTypeValue {
     }
 
     private static String javaPackageName(FileDescriptor file) {
-        String packageName = PackageName.resolve(file.toProto()).value();
-        String result = packageName.isEmpty()
-                        ? ""
-                        : packageName + DOT_SEPARATOR;
-        return result;
+        PackageName packageName = PackageName.resolve(file.toProto());
+        return packageName.value() + DOT_SEPARATOR;
     }
 
     /**
@@ -207,19 +203,8 @@ public final class ClassName extends StringTypeValue {
         return result;
     }
 
-    /**
-     * Generates new class name taking this name and appending the passed suffix.
-     *
-     * @param suffix non-empty suffix
-     * @return new class name
-     */
-    public ClassName with(String suffix) {
-        checkNotEmptyOrBlank(suffix);
-        return of(value() + suffix);
-    }
-
     public ClassName orBuilder() {
-        return with(OR_BUILDER_SUFFIX);
+        return of(value() + OR_BUILDER_SUFFIX);
     }
 
     private static ClassName construct(FileDescriptor file,
@@ -265,15 +250,11 @@ public final class ClassName extends StringTypeValue {
     }
 
     private PackageName getPackage() {
-        String packageName = beforeDot(value());
-        return PackageName.of(packageName);
-    }
-
-    private static String beforeDot(String fullName) {
+        String fullName = value();
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
         String result = fullName.substring(0, lastDotIndex);
-        return result;
+        return PackageName.of(result);
     }
 
     private SimpleClassName topLevelClass() {

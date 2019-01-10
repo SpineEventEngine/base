@@ -40,7 +40,7 @@ public final class PackageName extends StringTypeValue {
     private static final String DELIMITER = String.valueOf(DELIMITER_CHAR);
 
     private PackageName(String value) {
-        super(value);
+        super(checkNotEmptyOrBlank(value));
     }
 
     /**
@@ -51,7 +51,6 @@ public final class PackageName extends StringTypeValue {
      * @return new instance
      */
     public static PackageName of(String value) {
-        checkNotEmptyOrBlank(value);
         PackageName result = new PackageName(value);
         return result;
     }
@@ -105,5 +104,20 @@ public final class PackageName extends StringTypeValue {
         String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
         Directory result = Directory.at(Paths.get(packageDir));
         return result;
+    }
+
+    /**
+     * Always returns {@code false}.
+     *
+     * @return always {@code false}
+     * @deprecated Java package name must not be empty under normal circumstances.
+     *         {@code PackageName} may never represent the default package, thus this method always
+     *         returns
+     *         {@code false}.
+     */
+    @Deprecated
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }
