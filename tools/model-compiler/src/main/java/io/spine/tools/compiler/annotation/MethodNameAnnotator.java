@@ -47,14 +47,15 @@ final class MethodNameAnnotator extends Annotator {
 
     @Override
     public void annotate() {
-        SourceVisitor<?> visitor = new AnnotateMethods();
-        descriptors().stream()
-                     .map(TypeSet::messagesAndEnums)
-                     .flatMap(typeSet -> typeSet.types().stream())
-                     .map(type -> type.javaClassName().resolveFile())
-                     .forEach(file -> rewriteSource(file, visitor));
+        if (!patterns.isEmpty()) {
+            SourceVisitor<?> visitor = new AnnotateMethods();
+            descriptors().stream()
+                         .map(TypeSet::messagesAndEnums)
+                         .flatMap(typeSet -> typeSet.types().stream())
+                         .map(type -> type.javaClassName().resolveFile())
+                         .forEach(file -> rewriteSource(file, visitor));
+        }
     }
-
 
     private final class AnnotateMethods implements ClassInDepthVisitor {
 
