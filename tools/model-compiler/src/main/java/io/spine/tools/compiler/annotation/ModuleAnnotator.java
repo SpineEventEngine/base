@@ -28,6 +28,7 @@ import org.checkerframework.checker.regex.qual.Regex;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
@@ -132,6 +133,23 @@ public final class ModuleAnnotator {
         }
     }
 
+    private static final class MethodNameJob implements Job {
+
+        private final ImmutableSet<MethodPattern> patterns;
+        private final ClassName javaAnnotation;
+
+        private MethodNameJob(ImmutableSet<MethodPattern> patterns, ClassName javaAnnotation) {
+            this.patterns = patterns;
+            this.javaAnnotation = javaAnnotation;
+        }
+
+        @Override
+        public void execute(AnnotatorFactory factory) {
+            factory.createMethodAnnotator(javaAnnotation, patterns)
+                   .annotate();
+        }
+    }
+
     /**
      * A builder of {@link Job} instances.
      *
@@ -174,6 +192,7 @@ public final class ModuleAnnotator {
         private AnnotatorFactory annotatorFactory;
         private ImmutableSet<@Regex String> internalPatterns;
         private ClassName internalAnnotation;
+        private ImmutableSet<String> internalMethodNames;
 
         /**
          * Prevents direct instantiation.
@@ -219,11 +238,16 @@ public final class ModuleAnnotator {
             return this;
         }
 
+        public Builder setInternalMethodNames(ImmutableSet<String> methodNames) {
+            checkNotNull(methodNames);
+            this.internalMethodNames = methodNames;
+            return this;
+        }
+
         /**
          * Specifies the {@code internal} annotation class name.
          *
-         * <p>This annotation will be used to mark classes matching
-         * {@linkplain #setInternalPatterns internal patterns}.
+         * <p>This annotation will be used to mark internal classes and methods.
          *
          * @param internalAnnotation
          *         annotation class name
@@ -245,6 +269,11 @@ public final class ModuleAnnotator {
                             .map(ClassNamePattern::compile)
                             .map(pattern -> new PatternJob(pattern, internalAnnotation))
                             .forEach(this::add);
+            ImmutableSet<MethodPattern> methodPatterns = internalMethodNames
+                    .stream()
+                    .map(MethodPattern::exactly)
+                    .collect(toImmutableSet());
+            add(new MethodNameJob(methodPatterns, internalAnnotation));
             return new ModuleAnnotator(this);
         }
     }

@@ -157,9 +157,11 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
+    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+
     public List<String> internalClassPatterns = new ArrayList<>();
 
-    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+    public List<String> internalMethodNames = new ArrayList<>();
 
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
@@ -331,6 +333,11 @@ public class Extension {
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
         List<String> patterns = spineProtobuf(project).internalClassPatterns;
+        return ImmutableSet.copyOf(patterns);
+    }
+
+    public static ImmutableSet<String> getInternalMethodNames(Project project) {
+        List<String> patterns = spineProtobuf(project).internalMethodNames;
         return ImmutableSet.copyOf(patterns);
     }
 

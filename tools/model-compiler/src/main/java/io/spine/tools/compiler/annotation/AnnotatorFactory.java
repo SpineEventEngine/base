@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileDescriptors;
@@ -96,5 +97,9 @@ public final class AnnotatorFactory {
 
     Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern) {
         return new PatternAnnotator(annotation, pattern, fileDescriptors, genProtoDir);
+    }
+
+    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns) {
+        return new MethodNameAnnotator(annotation, patterns, fileDescriptors, genProtoDir);
     }
 }
