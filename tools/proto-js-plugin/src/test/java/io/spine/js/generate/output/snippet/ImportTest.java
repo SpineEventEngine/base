@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("Import")
+@DisplayName("A code generator should generate an import for")
 class ImportTest {
 
     private final FileName anyFile = FileName.from(Any.getDescriptor()
@@ -37,7 +37,8 @@ class ImportTest {
     @DisplayName("a file relative to a current directory")
     void fileRelativeToCurrentDir() {
         Import importLine = Import.fileRelativeToRoot(anyFile);
-        assertThat(importLine.content()).isEqualTo("require('./google/protobuf/any_pb.js');");
+        String expected = "require('./google/protobuf/any_pb.js');";
+        assertThat(importLine.content()).isEqualTo(expected);
     }
 
     @Test
@@ -65,7 +66,7 @@ class ImportTest {
     }
 
     @Test
-    @DisplayName("with an alias")
+    @DisplayName("a file with an alias")
     void named() {
         Import importLine = Import.fileRelativeToRoot(anyFile);
         String expected = "let alias = require('./google/protobuf/any_pb.js');";
