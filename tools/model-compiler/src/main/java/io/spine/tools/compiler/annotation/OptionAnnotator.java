@@ -28,20 +28,16 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 
 import java.nio.file.Path;
-import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SourceFile.forMessage;
 import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 
 /**
- * Abstract base class for the annotators of the generated Java sources.
+ * An {@link Annotator} which annotates Java sources basing on a given Protobuf option.
  *
- * <p>{@code Annotator} inserts a reference to the specified annotation
- * to the pre-configured spots of the Java files, generated basing on Protobuf definitions.
- *
- * <p>Different kinds of annotators are purposed for different Protobuf option types
- * such as {@code FileOptions}, {@code MessageOptions} etc.
+ * <p>Subtypes are purposed for different Protobuf option types such as {@code FileOptions},
+ * {@code MessageOptions} etc.
  *
  * <p>Depending on the option type, an annotator manages a corresponding Protobuf descriptor
  * (e.g. {@code FileDescriptorProto} for {@code FileOptions}).
@@ -58,22 +54,12 @@ public abstract class OptionAnnotator<D extends GenericDescriptor> extends Annot
      */
     private final ApiOption option;
 
-    /**
-     * Protobuf file descriptors to process.
-     */
-    private final ImmutableList<FileDescriptor> fileDescriptors;
-
     protected OptionAnnotator(ClassName annotation,
                               ApiOption option,
-                              Collection<FileDescriptor> fileDescriptors,
+                              ImmutableList<FileDescriptor> fileDescriptors,
                               Path genProtoDir) {
-        super(annotation, genProtoDir);
+        super(annotation, fileDescriptors, genProtoDir);
         this.option = checkNotNull(option);
-        this.fileDescriptors = ImmutableList.copyOf(checkNotNull(fileDescriptors));
-    }
-
-    protected Iterable<FileDescriptor> fileDescriptors() {
-        return fileDescriptors;
     }
 
     /**

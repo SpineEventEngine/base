@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
@@ -32,7 +33,6 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,14 +47,14 @@ abstract class TypeDefinitionAnnotator<D extends GenericDescriptor>
 
     TypeDefinitionAnnotator(ClassName annotation,
                             ApiOption option,
-                            Collection<FileDescriptor> files,
+                            ImmutableList<FileDescriptor> files,
                             Path genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
     @Override
     public final void annotate() {
-        for (FileDescriptor file : fileDescriptors()) {
+        for (FileDescriptor file : descriptors()) {
             annotate(file);
         }
     }

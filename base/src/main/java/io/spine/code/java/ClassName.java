@@ -116,6 +116,13 @@ public final class ClassName extends StringTypeValue {
                          messageType.getContainingType());
     }
 
+    /**
+     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
+     *
+     * @param file
+     *         the file from which the outer class is generated
+     * @return new instance of {@code ClassName}
+     */
     public static ClassName outerClass(FileDescriptor file) {
         PackageName packageName = PackageName.resolve(file.toProto());
         SimpleClassName simpleName = SimpleClassName.outerOf(file);
@@ -241,6 +248,18 @@ public final class ClassName extends StringTypeValue {
         return NestedClassName.create(this);
     }
 
+    /**
+     * Resolves the file which contains the declaration of the associated class.
+     *
+     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
+     * file starting at the top level package.
+     *
+     * <p>In the simplest case, the file name is the same as the simple class name. However, if
+     * the class is nested, then the file name coincides with the simple name of the top-level
+     * class.
+     *
+     * @return the file in which the Java class is declared
+     */
     public SourceFile resolveFile() {
         Directory directory = getPackage().toDirectory();
         SimpleClassName topLevelClass = topLevelClass();

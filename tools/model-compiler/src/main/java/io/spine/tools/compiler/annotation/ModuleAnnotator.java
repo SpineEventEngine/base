@@ -200,12 +200,34 @@ public final class ModuleAnnotator {
             return this;
         }
 
+        /**
+         * Adds patters for Java classes to be annotated as {@code internal}.
+         *
+         * <p>The patterns are {@linkplain java.util.regex.Pattern#compile(String) compiled} with
+         * no additional flags.
+         *
+         * <p>All the classes, fully qualified canonical names of which match at least one of
+         * the given patterns, should be marked as internal by the resulting annotator.
+         *
+         * @param patterns
+         *         class name patterns
+         * @see #setInternalAnnotation
+         */
         public Builder setInternalPatterns(ImmutableSet<@Regex String> patterns) {
             checkNotNull(patterns);
             this.internalPatterns = patterns;
             return this;
         }
 
+        /**
+         * Specifies the {@code internal} annotation class name.
+         *
+         * <p>This annotation will be used to mark classes matching
+         * {@linkplain #setInternalPatterns internal patterns}.
+         *
+         * @param internalAnnotation
+         *         annotation class name
+         */
         public Builder setInternalAnnotation(ClassName internalAnnotation) {
             this.internalAnnotation = internalAnnotation;
             return this;

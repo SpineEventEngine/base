@@ -107,6 +107,13 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public abstract SimpleClassName simpleJavaClassName();
 
+    /**
+     * Defines whether or not the Java class generated from this type has a builder.
+     *
+     * @return {@code true} if the generated Java class has corresponding
+     *         {@link com.google.protobuf.Message.Builder} and
+     *         {@link com.google.protobuf.MessageOrBuilder}
+     */
     public final boolean supportsBuilders() {
         return supportsBuilders;
     }

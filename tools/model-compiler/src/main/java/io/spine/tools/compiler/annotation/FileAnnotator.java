@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -29,7 +30,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 
 import java.nio.file.Path;
-import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SourceFile.forEnum;
@@ -47,7 +47,7 @@ class FileAnnotator extends OptionAnnotator<FileDescriptor> {
 
     FileAnnotator(ClassName annotation,
                   ApiOption option,
-                  Collection<FileDescriptor> files,
+                  ImmutableList<FileDescriptor> files,
                   Path genProtoDir,
                   Path genGrpcDir) {
         super(annotation, option, files, genProtoDir);
@@ -57,7 +57,7 @@ class FileAnnotator extends OptionAnnotator<FileDescriptor> {
 
     @Override
     public void annotate() {
-        for (FileDescriptor file : fileDescriptors()) {
+        for (FileDescriptor file : descriptors()) {
             if (shouldAnnotate(file)) {
                 annotate(file);
             }

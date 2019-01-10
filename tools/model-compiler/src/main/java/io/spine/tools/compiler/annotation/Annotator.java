@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -41,7 +42,16 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.exists;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
+/**
+ * Abstract base class for the annotators of the generated Java sources.
+ *
+ * <p>{@code Annotator} inserts a reference to the specified annotation
+ * to the pre-configured spots of the Java files, generated basing on Protobuf definitions.
+ */
 public abstract class Annotator {
+
+
+    private final ImmutableList<FileDescriptor> descriptors;
 
     /**
      * The name of the Java class of the annotation to apply.
@@ -53,8 +63,11 @@ public abstract class Annotator {
      */
     private final Path genProtoDir;
 
-    protected Annotator(ClassName annotation, Path genProtoDir) {
+    protected Annotator(ClassName annotation,
+                        ImmutableList<FileDescriptor> descriptors,
+                        Path genProtoDir) {
         this.annotation = checkNotNull(annotation);
+        this.descriptors = checkNotNull(descriptors);
         this.genProtoDir = checkNotNull(genProtoDir);
     }
 
@@ -142,6 +155,10 @@ public abstract class Annotator {
             AnnotationSource newAnnotation = source.addAnnotation();
             newAnnotation.setName(annotationFQN);
         }
+    }
+
+    protected final ImmutableList<FileDescriptor> descriptors() {
+        return descriptors;
     }
 
     /**

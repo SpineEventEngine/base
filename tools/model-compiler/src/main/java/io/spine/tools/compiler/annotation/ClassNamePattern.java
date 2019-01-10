@@ -30,6 +30,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+/**
+ * A pattern matching qualified names of Java classes.
+ *
+ * <p>The pattern is based on the Java {@linkplain java.util.regex.Pattern regular expression}.
+ */
 final class ClassNamePattern {
 
     private final Pattern pattern;
@@ -38,12 +43,29 @@ final class ClassNamePattern {
         this.pattern = pattern;
     }
 
+    /**
+     * Creates a new instance of {@code ClassNamePattern} based on the given regular expression.
+     *
+     * <p>The regex does not receive additional flags.
+     *
+     * @param regex
+     *         the regex to match class names
+     * @return new {@code ClassNamePattern}
+     */
     static ClassNamePattern compile(@Regex String regex) {
         checkArgument(!isNullOrEmpty(regex));
         Pattern pattern = Pattern.compile(regex);
         return new ClassNamePattern(pattern);
     }
 
+    /**
+     * Tries to match the given class name against this pattern.
+     *
+     * @param name
+     *         the class name to match
+     * @return {@code true} if the {@code ClassName}
+     *         {@linkplain java.util.regex.Matcher#matches() matches} this pattern
+     */
     boolean matches(ClassName name) {
         checkNotNull(name);
         Matcher matcher = pattern.matcher(name.value());

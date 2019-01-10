@@ -32,7 +32,6 @@ modelCompiler {
                 // Classes which have `complex.Matter$` in their FQN followed by an upper or lower 
                 // case letters ` A` or `L`.
                 // For the sake of testing. This is not a recommended usage.
-
     ]
 }
 

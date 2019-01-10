@@ -32,6 +32,9 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test methods and assertions for the annotator plugin tests.
+ */
 public final class AnnotatorTestEnv {
 
     /**

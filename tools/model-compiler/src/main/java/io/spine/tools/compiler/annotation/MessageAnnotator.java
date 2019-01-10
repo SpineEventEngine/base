@@ -20,13 +20,13 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ class MessageAnnotator extends TypeDefinitionAnnotator<Descriptor> {
 
     MessageAnnotator(ClassName annotation,
                      ApiOption option,
-                     Collection<FileDescriptor> files,
+                     ImmutableList<FileDescriptor> files,
                      Path genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }

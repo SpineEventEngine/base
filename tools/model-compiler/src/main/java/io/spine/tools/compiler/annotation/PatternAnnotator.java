@@ -36,26 +36,28 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * An {@link Annotator} which annotates Java classes names of which match certain
+ * {@linkplain io.spine.tools.compiler.annotation.ClassNamePattern patterns}.
+ */
 final class PatternAnnotator extends Annotator {
 
-    private final ImmutableList<FileDescriptor> descriptors;
     private final ClassNamePattern pattern;
 
     PatternAnnotator(ClassName annotation,
                      ClassNamePattern pattern,
                      ImmutableList<FileDescriptor> fileDescriptors,
                      Path genProtoDir) {
-        super(annotation, genProtoDir);
-        this.descriptors = fileDescriptors;
+        super(annotation, fileDescriptors, genProtoDir);
         this.pattern = pattern;
     }
 
     @Override
     public void annotate() {
-        descriptors.stream()
-                   .flatMap(PatternAnnotator::allClasses)
-                   .filter(pattern::matches)
-                   .forEach(this::annotate);
+        descriptors().stream()
+                     .flatMap(PatternAnnotator::allClasses)
+                     .filter(pattern::matches)
+                     .forEach(this::annotate);
     }
 
     private static Stream<ClassName> allClasses(FileDescriptor file) {
@@ -79,6 +81,12 @@ final class PatternAnnotator extends Annotator {
         rewriteSource(targetClass.resolveFile(), new NestedTypeDeclarationAnnotation(targetClass));
     }
 
+    /**
+     * An annotation function, that finds and annotates a type declaration by the name of the type.
+     *
+     * <p>The target type may be nested or top-level. The function first checks the root type and
+     * looks in depth into nested types if the root it not the target.
+     */
     private final class NestedTypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
 
         private final ClassName targetClass;
@@ -94,6 +102,16 @@ final class PatternAnnotator extends Annotator {
             addAnnotation(target);
         }
 
+        /**
+         * Performs a breadth-first search through the tree of nested type declarations and obtains
+         * the target type.
+         *
+         * <p>If the target is not found, an {@link java.lang.IllegalStateException} is thrown.
+         *
+         * @param root
+         *         the root of the type declaration lookup
+         * @return target type declaration
+         */
         private AnnotationTargetSource<?, ?> findTarget(AbstractJavaSource<JavaClassSource> root) {
             String className = targetClass.value();
             Queue<AbstractJavaSource<JavaClassSource>> classesToCheck = new ArrayDeque<>();
