@@ -112,8 +112,7 @@ public final class PackageName extends StringTypeValue {
      * @return always {@code false}
      * @deprecated Java package name must not be empty under normal circumstances.
      *         {@code PackageName} may never represent the default package, thus this method always
-     *         returns
-     *         {@code false}.
+     *         returns {@code false}.
      */
     @Deprecated
     @Override

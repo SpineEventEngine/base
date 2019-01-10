@@ -157,6 +157,9 @@ public abstract class Annotator {
         }
     }
 
+    /**
+     * Obtains the list of file descriptors from which the annotated Java code is generated.
+     */
     protected final ImmutableList<FileDescriptor> descriptors() {
         return descriptors;
     }
