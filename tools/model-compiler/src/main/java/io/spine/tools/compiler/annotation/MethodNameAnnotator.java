@@ -1,0 +1,79 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.tools.compiler.annotation;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.TypeSet;
+import org.jboss.forge.roaster.model.Method;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.MethodSource;
+
+import java.nio.file.Path;
+import java.util.stream.Stream;
+
+final class MethodNameAnnotator extends Annotator {
+
+    private final ImmutableSet<MethodPattern> patterns;
+
+    MethodNameAnnotator(ClassName annotation,
+                        ImmutableSet<MethodPattern> patterns,
+                        ImmutableList<Descriptors.FileDescriptor> descriptors,
+                        Path genProtoDir) {
+        super(annotation, descriptors, genProtoDir);
+        this.patterns = patterns;
+    }
+
+    @Override
+    public void annotate() {
+        SourceVisitor<?> visitor = new AnnotateMethods();
+        descriptors().stream()
+                     .map(TypeSet::messagesAndEnums)
+                     .flatMap(typeSet -> typeSet.types().stream())
+                     .map(type -> type.javaClassName().resolveFile())
+                     .forEach(file -> rewriteSource(file, visitor));
+    }
+
+
+    private final class AnnotateMethods implements ClassInDepthVisitor {
+
+        @Override
+        public void accept(AbstractJavaSource<JavaClassSource> source) {
+            allClasses(source)
+                    .flatMap(classSource -> classSource instanceof JavaClassSource
+                                            ? ((JavaClassSource) classSource).getMethods().stream()
+                                            : Stream.<MethodSource<?>>of())
+                    .filter(Method::isPublic)
+                    .filter(this::matching)
+                    .forEach(MethodNameAnnotator.this::addAnnotation);
+
+        }
+
+        private boolean matching(Method<?, ?> method) {
+            String methodName = method.getName();
+            return patterns.stream()
+                           .anyMatch(pattern -> pattern.matches(methodName));
+        }
+    }
+}

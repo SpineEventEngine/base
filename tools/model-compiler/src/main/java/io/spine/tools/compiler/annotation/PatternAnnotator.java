@@ -29,8 +29,6 @@ import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import java.nio.file.Path;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -87,7 +85,7 @@ final class PatternAnnotator extends Annotator {
      * <p>The target type may be nested or top-level. The function first checks the root type and
      * looks in depth into nested types if the root it not the target.
      */
-    private final class NestedTypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
+    private final class NestedTypeDeclarationAnnotation implements ClassInDepthVisitor {
 
         private final ClassName targetClass;
 
@@ -114,30 +112,15 @@ final class PatternAnnotator extends Annotator {
          */
         private AnnotationTargetSource<?, ?> findTarget(AbstractJavaSource<JavaClassSource> root) {
             String className = targetClass.value();
-            Queue<AbstractJavaSource<JavaClassSource>> classesToCheck = new ArrayDeque<>();
-            classesToCheck.add(root);
-            while (!classesToCheck.isEmpty()) {
-                AbstractJavaSource<JavaClassSource> currentClass = classesToCheck.poll();
-                if (currentClass.getQualifiedName().equals(className)) {
-                    return currentClass;
-                }
-                if (currentClass.hasNestedType(className)) {
-                    return currentClass.getNestedType(className);
-                }
-                currentClass.getNestedTypes()
-                            .stream()
-                            .filter(type -> type instanceof AbstractJavaSource)
-                            .forEach(type -> {
-                                @SuppressWarnings("unchecked")
-                                    // Due to inconvenience of Roaster API.
-                                AbstractJavaSource<JavaClassSource> abstractJavaSource =
-                                        (AbstractJavaSource<JavaClassSource>) type;
-                                classesToCheck.add(abstractJavaSource);
-                            });
-            }
-            throw newIllegalStateException("Class `%s` not found in Java source `%s`.",
-                                           className,
-                                           root.getCanonicalName());
+            AnnotationTargetSource<?, ?> abstractJavaSource = allClasses(root)
+                    .filter(type -> type.getQualifiedName().equals(className))
+                    .findAny()
+                    .orElseThrow(() -> newIllegalStateException(
+                            "Class `%s` not found in Java source `%s`.",
+                            className,
+                            root.getCanonicalName())
+                    );
+            return abstractJavaSource;
         }
     }
 }
