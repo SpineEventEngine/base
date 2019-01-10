@@ -26,6 +26,7 @@ import io.spine.value.StringTypeValue;
 import java.io.File;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -39,7 +40,7 @@ public final class PackageName extends StringTypeValue {
     private static final String DELIMITER = String.valueOf(DELIMITER_CHAR);
 
     private PackageName(String value) {
-        super(value);
+        super(checkNotEmptyOrBlank(value));
     }
 
     /**
@@ -50,7 +51,6 @@ public final class PackageName extends StringTypeValue {
      * @return new instance
      */
     public static PackageName of(String value) {
-        checkNotEmptyOrBlank(value);
         PackageName result = new PackageName(value);
         return result;
     }
@@ -78,8 +78,13 @@ public final class PackageName extends StringTypeValue {
      * Obtains a Java package name by the passed file descriptor.
      */
     public static PackageName resolve(FileDescriptorProto file) {
-        String javaPackage = resolveName(file);
-        PackageName result = new PackageName(javaPackage.trim());
+        String javaPackage = resolveName(file).trim();
+        checkArgument(!javaPackage.isEmpty(),
+                      "Message classes generated from file %s belong to the default package.%s"
+                    + "Use `option java_package` or `package` to specify the Java package.",
+                      file.getName(),
+                      System.lineSeparator());
+        PackageName result = new PackageName(javaPackage);
         return result;
     }
 
@@ -99,5 +104,19 @@ public final class PackageName extends StringTypeValue {
         String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
         Directory result = Directory.at(Paths.get(packageDir));
         return result;
+    }
+
+    /**
+     * Always returns {@code false}.
+     *
+     * @return always {@code false}
+     * @deprecated Java package name must not be empty under normal circumstances.
+     *         {@code PackageName} may never represent the default package, thus this method always
+     *         returns {@code false}.
+     */
+    @Deprecated
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

@@ -57,7 +57,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.code.java.SourceFile.forMessage;
-import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.code.java.SourceFile.forOuterClassOf;
 import static io.spine.code.java.SourceFile.forService;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL;
@@ -191,8 +190,7 @@ class ProtoAnnotatorPluginTest {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
-    private void assertServiceAnnotations(FileName testFile,
-                                      boolean shouldBeAnnotated)
+    private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         assertServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
     }
@@ -215,7 +213,8 @@ class ProtoAnnotatorPluginTest {
     private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
+                                                     .get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
                 .getPath();
         NestedTypeFieldsAnnotationCheck check =
@@ -226,10 +225,12 @@ class ProtoAnnotatorPluginTest {
     private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
-        FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
+                                                     .get(0);
+        FieldDescriptor experimentalField = messageDescriptor.getFields()
+                                                             .get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
-                                    .getPath();
+                .getPath();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
@@ -240,10 +241,8 @@ class ProtoAnnotatorPluginTest {
             DescriptorProto messageProto = messageDescriptor.toProto();
             DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
             Path messagePath = forMessage(messageProto, fileProto).getPath();
-            Path messageOrBuilderPath = forMessageOrBuilder(messageProto, fileProto).getPath();
             SourceCheck annotationCheck = new MainDefinitionAnnotationCheck(shouldBeAnnotated);
             check(messagePath, annotationCheck);
-            check(messageOrBuilderPath, annotationCheck);
         }
     }
 

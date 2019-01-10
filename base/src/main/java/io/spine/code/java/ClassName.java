@@ -32,7 +32,7 @@ import java.util.Deque;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
 
 /**
  * A value object holding a fully-qualified Java class name.
@@ -81,7 +81,7 @@ public final class ClassName extends StringTypeValue {
      */
     public static ClassName of(String className) {
         checkNotNull(className);
-        checkArgument(className.length() > 0, "Class name cannot me empty");
+        checkArgument(className.length() > 0, "Class name cannot be empty.");
         return new ClassName(className);
     }
 
@@ -111,8 +111,22 @@ public final class ClassName extends StringTypeValue {
      * @return new instance of {@code ClassName}
      */
     public static ClassName from(Descriptor messageType) {
+        checkNotNull(messageType);
         return construct(messageType.getFile(), messageType.getName(),
                          messageType.getContainingType());
+    }
+
+    /**
+     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
+     *
+     * @param file
+     *         the file from which the outer class is generated
+     * @return new instance of {@code ClassName}
+     */
+    public static ClassName outerClass(FileDescriptor file) {
+        PackageName packageName = PackageName.resolve(file.toProto());
+        SimpleClassName simpleName = SimpleClassName.outerOf(file);
+        return of(packageName, simpleName);
     }
 
     /**
@@ -131,16 +145,8 @@ public final class ClassName extends StringTypeValue {
     }
 
     private static String javaPackageName(FileDescriptor file) {
-        String javaPackage = file.getOptions()
-                                 .getJavaPackage()
-                                 .trim();
-        String packageName = javaPackage.isEmpty()
-                             ? file.getPackage()
-                             : javaPackage;
-        String result = packageName.isEmpty()
-                        ? ""
-                        : packageName + DOT_SEPARATOR;
-        return result;
+        PackageName packageName = PackageName.resolve(file.toProto());
+        return packageName.value() + DOT_SEPARATOR;
     }
 
     /**
@@ -204,15 +210,8 @@ public final class ClassName extends StringTypeValue {
         return result;
     }
 
-    /**
-     * Generates new class name taking this name and appending the passed suffix.
-     *
-     * @param suffix non-empty suffix
-     * @return new class name
-     */
-    public ClassName with(String suffix) {
-        checkNotEmptyOrBlank(suffix);
-        return of(value() + suffix);
+    public ClassName orBuilder() {
+        return of(value() + OR_BUILDER_SUFFIX);
     }
 
     private static ClassName construct(FileDescriptor file,
@@ -247,5 +246,42 @@ public final class ClassName extends StringTypeValue {
      */
     public NestedClassName toNested() {
         return NestedClassName.create(this);
+    }
+
+    /**
+     * Resolves the file which contains the declaration of the associated class.
+     *
+     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
+     * file starting at the top level package.
+     *
+     * <p>In the simplest case, the file name is the same as the simple class name. However, if
+     * the class is nested, then the file name coincides with the simple name of the top-level
+     * class.
+     *
+     * @return the file in which the Java class is declared
+     */
+    public SourceFile resolveFile() {
+        Directory directory = getPackage().toDirectory();
+        SimpleClassName topLevelClass = topLevelClass();
+        FileName javaFile = FileName.forType(topLevelClass.value());
+        SourceFile sourceFile = directory.resolve(javaFile);
+        return sourceFile;
+    }
+
+    private PackageName getPackage() {
+        String fullName = value();
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
+        String result = fullName.substring(0, lastDotIndex);
+        return PackageName.of(result);
+    }
+
+    private SimpleClassName topLevelClass() {
+        String qualifiedClassName = afterDot(value());
+        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
+        String topLevelClassName = delimiterIndex >= 0
+                                   ? qualifiedClassName.substring(0, delimiterIndex)
+                                   : qualifiedClassName;
+        return SimpleClassName.create(topLevelClassName);
     }
 }
