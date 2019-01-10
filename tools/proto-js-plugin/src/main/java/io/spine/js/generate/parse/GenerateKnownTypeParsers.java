@@ -71,6 +71,9 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
 
     /**
      * Obtains types, which require parsers to be generated.
+     *
+     * <p>The types with the <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
+     * special JSON mapping</a> should be skipped.
      */
     public static ImmutableCollection<MessageType> targetTypes(FileDescriptor file) {
         if (FileDescriptors.isGoogle(file)) {
