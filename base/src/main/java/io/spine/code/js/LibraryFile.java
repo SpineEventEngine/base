@@ -26,7 +26,7 @@ package io.spine.code.js;
 public enum LibraryFile {
 
     /**
-     * The index file containing maps with Protobuf types and their parsers.
+     * The index file exposing data about generated Protobuf types.
      */
     INDEX("index.js");
 

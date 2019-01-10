@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * The task to generate the {@code index.js} for generated Protobuf types.
  *
- * <p>The index file is used by Spine Web to register known types and their parsers.
+ * <p>The index file is used by the Spine Web to register known types and their parsers.
  *
  * <p>The index file provides:
  * <ul>

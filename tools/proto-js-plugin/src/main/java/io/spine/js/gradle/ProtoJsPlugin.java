@@ -76,7 +76,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  * </ol>
  *
  * <p>Also, the generated code depends on the {@code spine-web-client} module published
- * by Spine Web. So, the users of the generated code should set up the dependency.
+ * by the Spine Web. So, the users of the generated code should set up the dependency.
  *
  * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a>
  * builds its Protobuf definitions to JS and the plugin relies on this behaviour.
