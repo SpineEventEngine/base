@@ -21,9 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -38,12 +36,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.java.SourceFile.forMessage;
-import static io.spine.code.java.SourceFile.forMessageOrBuilder;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.exists;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -51,19 +45,13 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 /**
  * Abstract base class for the annotators of the generated Java sources.
  *
- * <p>{@code Annotator} inserts a reference to the specified {@link #annotation}
+ * <p>{@code Annotator} inserts a reference to the specified annotation
  * to the pre-configured spots of the Java files, generated basing on Protobuf definitions.
- *
- * <p>Different kinds of annotators are purposed for different Protobuf option types
- * such as {@code FileOptions}, {@code MessageOptions} etc.
- *
- * <p>Depending on the option type, an annotator manages a corresponding Protobuf descriptor
- * (e.g. {@code FileDescriptorProto} for {@code FileOptions}).
- *
- * @param <D>
- *         the proto descriptor type used to receive {@link #option} value
  */
-public abstract class Annotator<D extends GenericDescriptor> {
+public abstract class Annotator {
+
+
+    private final ImmutableList<FileDescriptor> descriptors;
 
     /**
      * The name of the Java class of the annotation to apply.
@@ -71,96 +59,22 @@ public abstract class Annotator<D extends GenericDescriptor> {
     private final ClassName annotation;
 
     /**
-     * An Protobuf option, that tells whether generated program elements should be annotated.
-     *
-     * <p>Can be of any option type, which is {@code boolean}.
+     * An absolute path to the Java sources to annotate.
      */
-    private final ApiOption option;
-
-    /**
-     * Protobuf file descriptors to process.
-     */
-    private final ImmutableList<FileDescriptor> fileDescriptors;
-
-    /**
-     * An absolute path to the Java sources, generated basing on {@link #fileDescriptors}.
-     */
-    private final String genProtoDir;
+    private final Path genProtoDir;
 
     protected Annotator(ClassName annotation,
-                        ApiOption option,
-                        Collection<FileDescriptor> fileDescriptors,
-                        String genProtoDir) {
+                        ImmutableList<FileDescriptor> descriptors,
+                        Path genProtoDir) {
         this.annotation = checkNotNull(annotation);
-        this.option = checkNotNull(option);
-        this.fileDescriptors = ImmutableList.copyOf(checkNotNull(fileDescriptors));
+        this.descriptors = checkNotNull(descriptors);
         this.genProtoDir = checkNotNull(genProtoDir);
     }
 
-    protected Iterable<FileDescriptor> fileDescriptors() {
-        return fileDescriptors;
-    }
-
     /**
-     * Annotates the Java sources generated from the passed
-     * {@linkplain #fileDescriptors file descriptors}.
+     * Annotates the Java sources generated from Protobuf.
      */
     public abstract void annotate();
-
-    /**
-     * Annotates the Java sources generated from the specified file descriptor.
-     */
-    protected final void annotate(FileDescriptor fileDescriptor) {
-        if (fileDescriptor.getOptions()
-                          .getJavaMultipleFiles()) {
-            annotateMultipleFiles(fileDescriptor);
-        } else {
-            annotateOneFile(fileDescriptor);
-        }
-    }
-
-    /**
-     * Annotates the Java sources generated from the specified file descriptor
-     * if {@code java_multiple_files} proto file option is set to {@code false}.
-     *
-     * @param fileDescriptor
-     *         the file descriptor
-     */
-    protected abstract void annotateOneFile(FileDescriptor fileDescriptor);
-
-    /**
-     * Annotates the Java sources generated from the specified file descriptor
-     * if {@code java_multiple_files} proto file option is {@code true}.
-     *
-     * @param fileDescriptor
-     *         the file descriptor
-     */
-    protected abstract void annotateMultipleFiles(FileDescriptor fileDescriptor);
-
-    /**
-     * Tells whether the generated program elements
-     * from the specified descriptor should be annotated.
-     *
-     * @param descriptor
-     *         the descriptor to extract {@link #option} value.
-     * @return {@code true} if generated element should be annotated, {@code false} otherwise
-     */
-    protected abstract boolean shouldAnnotate(D descriptor);
-
-    protected final ApiOption option() {
-        return option;
-    }
-
-    /**
-     * Annotates message class and MessageOrBuilder interface that correspond to the passed type.
-     */
-    protected final void annotateMessageTypes(Descriptor type, FileDescriptor file) {
-        SourceFile messageClass = forMessage(type.toProto(), file.toProto());
-        annotate(messageClass);
-
-        SourceFile messageOrBuilderInterface = forMessageOrBuilder(type.toProto(), file.toProto());
-        annotate(messageOrBuilderInterface);
-    }
 
     /**
      * Rewrites the file applying {@link TypeDeclarationAnnotation}.
@@ -190,14 +104,14 @@ public abstract class Annotator<D extends GenericDescriptor> {
      *
      * @param sourcePathPrefix
      *         the prefix for the relative source path
-     * @param sourcePath
+     * @param sourceFile
      *         the relative path to a source file
      * @param visitor
      *         the source visitor
      */
     static <T extends JavaSource<T>>
-    void rewriteSource(String sourcePathPrefix, SourceFile sourcePath, SourceVisitor<T> visitor) {
-        Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
+    void rewriteSource(Path sourcePathPrefix, SourceFile sourceFile, SourceVisitor<T> visitor) {
+        Path absoluteSourcePath = sourcePathPrefix.resolve(sourceFile.getPath());
         if (exists(absoluteSourcePath)) {
             @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
                                              for `AbstractJavaSource.class` value. */)
@@ -241,6 +155,13 @@ public abstract class Annotator<D extends GenericDescriptor> {
             AnnotationSource newAnnotation = source.addAnnotation();
             newAnnotation.setName(annotationFQN);
         }
+    }
+
+    /**
+     * Obtains the list of file descriptors from which the annotated Java code is generated.
+     */
+    protected final ImmutableList<FileDescriptor> descriptors() {
+        return descriptors;
     }
 
     /**

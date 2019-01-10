@@ -18,7 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package testsources.internal.subinternal;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.gradle.compiler.given;
 
-public class SubInternalPackageClass {
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

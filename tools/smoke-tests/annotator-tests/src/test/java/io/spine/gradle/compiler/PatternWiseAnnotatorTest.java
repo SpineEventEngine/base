@@ -18,7 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package testsources.internal.subinternal;
+package io.spine.gradle.compiler;
 
-public class SubInternalPackageClass {
+import io.spine.test.annotator.complex.Matter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
+
+@DisplayName("ProtoAnnotatorPlugin should pick up `internalClassPatterns` and")
+class PatternWiseAnnotatorTest {
+
+    @Test
+    @DisplayName("mark specified top-level classes")
+    void markSpecifiedClasses() {
+        assertInternal(ScaffoldingOrBuilder.class);
+        assertInternal(BetaAllProto.class);
+    }
+
+    @Test
+    @DisplayName("mark nested messages and enums")
+    void markNestedTypes() {
+        assertInternal(Matter.Body.Molecule.class);
+        assertInternal(Matter.Body.Molecule.Atom.class);
+        assertInternal(Matter.Field.class);
+
+        assertNotInternal(Matter.class);
+        assertNotInternal(Matter.Body.class);
+    }
 }

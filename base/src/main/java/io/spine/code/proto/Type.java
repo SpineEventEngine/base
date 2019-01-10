@@ -45,9 +45,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T descriptor;
+    private final boolean supportsBuilders;
 
-    protected Type(T descriptor) {
+    protected Type(T descriptor, boolean supportsBuilders) {
         this.descriptor = checkNotNull(descriptor);
+        this.supportsBuilders = supportsBuilders;
     }
 
     /**
@@ -104,6 +106,17 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains simple class name for corresponding Java type.
      */
     public abstract SimpleClassName simpleJavaClassName();
+
+    /**
+     * Defines whether or not the Java class generated from this type has a builder.
+     *
+     * @return {@code true} if the generated Java class has corresponding
+     *         {@link com.google.protobuf.Message.Builder} and
+     *         {@link com.google.protobuf.MessageOrBuilder}
+     */
+    public final boolean supportsBuilders() {
+        return supportsBuilders;
+    }
 
     /**
      * Returns a fully-qualified name of the proto type.

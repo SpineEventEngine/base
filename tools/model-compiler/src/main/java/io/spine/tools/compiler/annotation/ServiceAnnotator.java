@@ -20,12 +20,13 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
 
-import java.util.Collection;
+import java.nio.file.Path;
 
 import static io.spine.code.java.SourceFile.forService;
 
@@ -36,18 +37,18 @@ import static io.spine.code.java.SourceFile.forService;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
  */
-class ServiceAnnotator extends Annotator<ServiceDescriptor> {
+class ServiceAnnotator extends OptionAnnotator<ServiceDescriptor> {
 
     ServiceAnnotator(ClassName annotation,
                      ApiOption option,
-                     Collection<FileDescriptor> fileDescriptors,
-                     String genProtoDir) {
+                     ImmutableList<FileDescriptor> fileDescriptors,
+                     Path genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 
     @Override
     public void annotate() {
-        for (FileDescriptor fileDescriptor : fileDescriptors()) {
+        for (FileDescriptor fileDescriptor : descriptors()) {
             annotate(fileDescriptor);
         }
     }
