@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,14 +22,11 @@ package io.spine.base;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.MessageFile.Predicate;
 import io.spine.base.given.MessageFileEventsProto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.base.MessageFile.EVENTS_FILE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,29 +34,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MessageFileTest {
 
     @Nested
-    @DisplayName("provide a predicate that")
+    @DisplayName("test a file descriptor")
     class ProvidePredicate {
 
-        private Predicate predicate;
-
-        @BeforeEach
-        void setUp() {
-            predicate = EVENTS_FILE.predicate();
-        }
-
         @Test
-        @DisplayName("accepts the file with matching suffix")
+        @DisplayName("accepting the file with matching suffix")
         void acceptingEligibleFile() {
             FileDescriptor descriptor = MessageFileEventsProto.getDescriptor();
-            assertTrue(predicate.test(descriptor));
+            assertTrue(MessageFile.EVENTS.test(descriptor.toProto()));
         }
 
         @Test
-        @DisplayName("rejects the file with non-matching suffix")
+        @DisplayName("rejecting the file with non-matching suffix")
         void rejectingNonEligibleFile() {
             FileDescriptor descriptor = Any.getDescriptor()
                                            .getFile();
-            assertFalse(predicate.test(descriptor));
+            assertFalse(MessageFile.EVENTS.test(descriptor.toProto()));
         }
     }
 }

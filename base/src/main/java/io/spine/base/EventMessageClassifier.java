@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,8 +24,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
-import static io.spine.base.MessageFile.EVENTS_FILE;
-
 /**
  * Checks if the given message definition is an {@link EventMessage}.
  */
@@ -34,7 +32,6 @@ final class EventMessageClassifier extends MessageClassifier {
 
     @Override
     public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return EVENTS_FILE.predicate()
-                          .test(declaringFile);
+        return MessageFile.EVENTS.test(declaringFile);
     }
 }

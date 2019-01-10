@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -28,13 +28,11 @@ import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
-import io.spine.option.Options;
 import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -50,7 +48,7 @@ import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
  */
 public abstract class AbstractValidatingBuilder<T extends Message, B extends Message.Builder>
-        implements ValidatingBuilder<T, B> {
+        implements ValidatingBuilder<T, B>, Logging {
 
     /**
      * The builder for the original {@code Message}.
@@ -261,14 +259,13 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @throws ValidationException
      *         if the value of the  field that is {@code (set_once) = true} is being changed
      */
-    @SuppressWarnings("unused")
-        // Called by all actual validating builder subclasses.
+    @SuppressWarnings("unused") // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
         boolean shouldValidate = isSetOnce(field);
         if (shouldValidate) {
-            boolean setOnceNotRecommended = field.isRepeated() || field.isMapField();
-            if (setOnceNotRecommended) {
-                logTypeWarning(field);
+            boolean setOnceInapplicable = field.isRepeated() || field.isMapField();
+            if (setOnceInapplicable) {
+                logError(field);
             } else {
                 boolean valueAlreadySet = getMessageBuilder().hasField(field);
                 if (valueAlreadySet) {
@@ -286,23 +283,19 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         return setOnceValue || requiredByDefault;
     }
 
-    private static void logTypeWarning(FieldDescriptor field) {
-        String containingTypeName = field.getContainingType()
-                                         .getName();
-        String fieldName = field.getName();
-        Logger logger = Logging.get(AbstractValidatingBuilder.class);
-        logger.error("Error found in %s.%s. " +
+    private void logError(FieldDescriptor field) {
+        String fieldName = field.getFullName();
+        _error("Error found in `%s`. " +
                     "Repeated and map fields can't be marked as `(set_once) = true`",
-                    containingTypeName,
                     fieldName);
     }
 
     private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
-        String fieldName = descriptor.getName();
+        String fieldName = descriptor.getFullName();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("Attempted to change the value of the field %s which has " +
-                              "`(set_once) = true` and is already set")
+                .setMsgFormat("Attempted to change the value of the field `%s` which has " +
+                              "`(set_once) = true` and is already set.")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));

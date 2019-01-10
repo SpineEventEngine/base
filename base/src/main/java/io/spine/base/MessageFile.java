@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,94 +20,52 @@
 
 package io.spine.base;
 
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 
-import java.io.Serializable;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A enumeration of standard Proto files for events, commands, etc.
- *
- * <p>File names reflect the Spine naming conventions for the given file types.
+ * A enumeration of file naming conventions for pre-defined types of messages.
  */
-public enum MessageFile {
+public enum MessageFile implements Predicate<FileDescriptorProto> {
 
-    EVENTS_FILE("events"),
-    COMMANDS_FILE("commands"),
-    REJECTIONS_FILE("rejections");
+    /**
+     * Commands are declared in a file which name ends with {@code "commands.proto"}.
+     */
+    COMMANDS("commands"),
 
-    private final Predicate predicate;
+    /**
+     * Events are declared in a file which name ends with {@code "events.proto"}.
+     */
+    EVENTS("events"),
+
+    /**
+     * Rejections are declared in a file which name ends with {@code "rejections.proto"}.
+     */
+    REJECTIONS("rejections");
+
+    private final String suffix;
 
     MessageFile(String name) {
-        String suffix = checkNotNull(name) + FileName.EXTENSION;
-        predicate = new Predicate(suffix);
+        this.suffix = checkNotNull(name) + FileName.EXTENSION;
     }
 
     /**
-     * Provides the predicate for finding proto files with the appropriate message declarations.
+     * Checks if the name of the given file matches this suffix.
      */
-    public Predicate predicate() {
-        return predicate;
+    @Override
+    public boolean test(FileDescriptorProto file) {
+        String name = file.getName();
+        return name.endsWith(suffix);
     }
 
     /**
-     * Provides a suffix by which such file can be located.
+     * Obtains a suffix required for this kind of files.
      */
     public String suffix() {
-        return predicate.suffix;
-    }
-
-    /**
-     * A Protobuf file predicate.
-     *
-     * <p>Tests if a given file matches a {@linkplain MessageFile file type}.
-     */
-    @Immutable
-    public static final class Predicate implements Serializable {
-
-        private static final long serialVersionUID = 0L;
-
-        private final String suffix;
-
-        /**
-         * Creates a new instance of {@code Predicate}.
-         *
-         * <p>A file matches this predicate if the file name ends with the given {@code suffix}.
-         *
-         * @param suffix the suffix of a Protobuf file name
-         */
-        private Predicate(String suffix) {
-            this.suffix = suffix;
-        }
-
-        /**
-         * Checks the given file upon this predicate.
-         *
-         * @param file
-         *         the file descriptor message
-         * @return {@code true} if the file name ends with the {@code suffix},
-         *         {@code false} otherwise
-         */
-        public boolean test(FileDescriptorProto file) {
-            String name = file.getName();
-            return name.endsWith(suffix);
-        }
-
-        /**
-         * Checks the given file upon this predicate.
-         *
-         * @param file
-         *         the file descriptor
-         * @return {@code true} if the file name ends with the {@code suffix},
-         *         {@code false} otherwise
-         */
-        public boolean test(FileDescriptor file) {
-            FileDescriptorProto protoDescriptor = file.toProto();
-            return test(protoDescriptor);
-        }
+        return suffix;
     }
 }
