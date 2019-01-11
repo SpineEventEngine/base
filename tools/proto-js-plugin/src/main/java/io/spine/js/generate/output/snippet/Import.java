@@ -62,6 +62,7 @@ public class Import extends CodeLine {
     private final String content;
 
     private Import(String content) {
+        super();
         this.content = checkNotNull(content);
     }
 
