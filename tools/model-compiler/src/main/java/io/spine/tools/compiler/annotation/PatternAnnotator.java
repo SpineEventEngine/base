@@ -87,7 +87,7 @@ final class PatternAnnotator extends Annotator {
      * <p>The target type may be nested or top-level. The function first checks the root type and
      * looks in depth into nested types if the root it not the target.
      */
-    private final class NestedTypeDeclarationAnnotation implements ClassInDepthVisitor {
+    private final class NestedTypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
 
         private final ClassName targetClass;
 

@@ -68,7 +68,7 @@ final class MethodNameAnnotator extends Annotator {
     /**
      * A function annotating methods of a given source according to the patterns.
      */
-    private final class AnnotateMethods implements ClassInDepthVisitor {
+    private final class AnnotateMethods implements SourceVisitor<JavaClassSource> {
 
         @Override
         public void accept(AbstractJavaSource<JavaClassSource> source) {
