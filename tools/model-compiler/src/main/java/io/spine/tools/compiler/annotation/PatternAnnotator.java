@@ -23,6 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.TypeSet;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
@@ -31,8 +32,9 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An {@link Annotator} which annotates Java classes names of which match certain
@@ -111,16 +113,26 @@ final class PatternAnnotator extends Annotator {
          * @return target type declaration
          */
         private AnnotationTargetSource<?, ?> findTarget(AbstractJavaSource<JavaClassSource> root) {
-            String className = targetClass.value();
-            AnnotationTargetSource<?, ?> abstractJavaSource = allClasses(root)
-                    .filter(type -> type.getQualifiedName().equals(className))
-                    .findAny()
-                    .orElseThrow(() -> newIllegalStateException(
-                            "Class `%s` not found in Java source `%s`.",
-                            className,
-                            root.getCanonicalName())
-                    );
-            return abstractJavaSource;
+            if (root.getQualifiedName().equals(targetClass.value())) {
+                return root;
+            } else {
+                ImmutableList<SimpleClassName> names = targetClass.toNested()
+                                                                  .pathToNested();
+                checkState(!names.isEmpty(), "Invalid class name %s.", targetClass);
+                SimpleClassName rootName = names.get(0);
+                checkArgument(root.getName()
+                                  .equals(rootName.value()));
+                AbstractJavaSource<JavaClassSource> source = root;
+                for (SimpleClassName name : names.subList(1, names.size())) {
+                    @SuppressWarnings("unchecked")
+                    AbstractJavaSource<JavaClassSource> nested =
+                            (AbstractJavaSource<JavaClassSource>) source.getNestedType(name.value());
+                    source = nested;
+                }
+                checkState(source.getQualifiedName()
+                                 .equals(targetClass.value()));
+                return source;
+            }
         }
     }
 }

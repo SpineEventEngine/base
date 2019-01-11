@@ -20,16 +20,23 @@
 
 package io.spine.code.java;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * A name of a potentially nested class with outer class names separated with dots.
  *
- * <p>A top level class name would have equal to {@link io.spine.code.java.SimpleClassName}.
+ * <p>A top level class name would have equal to {@link SimpleClassName}.
  */
 public final class NestedClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+
+    private static final Splitter nameSplitter = Splitter.on('.')
+                                                         .omitEmptyStrings();
 
     private NestedClassName(String value) {
         super(value);
@@ -42,5 +49,15 @@ public final class NestedClassName extends StringTypeValue {
         String nameWithOuter = ClassName.afterDot(className.value());
         String dotted = ClassName.toDotted(nameWithOuter);
         return new NestedClassName(dotted);
+    }
+
+    public ImmutableList<SimpleClassName> pathToNested() {
+        String fullName = value();
+        ImmutableList<SimpleClassName> result =
+                nameSplitter.splitToList(fullName)
+                            .stream()
+                            .map(SimpleClassName::create)
+                            .collect(toImmutableList());
+        return result;
     }
 }
