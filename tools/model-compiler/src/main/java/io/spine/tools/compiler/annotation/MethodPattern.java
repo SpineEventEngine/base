@@ -23,7 +23,10 @@ package io.spine.tools.compiler.annotation;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
-public final class MethodPattern {
+/**
+ * A pattern matching a method signature.
+ */
+final class MethodPattern {
 
     private final String name;
 
@@ -31,12 +34,26 @@ public final class MethodPattern {
         this.name = name;
     }
 
+    /**
+     * Creates a new pattern which matches method with the name exactly as specified.
+     *
+     * @param methodName
+     *         the method name
+     * @return new {@code MethodPattern}
+     */
     static MethodPattern exactly(String methodName) {
         checkNotNull(methodName);
         checkNotEmptyOrBlank(methodName);
         return new MethodPattern(methodName);
     }
 
+    /**
+     * Tries to match the given method name against this pattern.
+     *
+     * @param methodName
+     *         the method name to match
+     * @return {@code true} if the method name matches this pattern, {@code false} otherwise
+     */
     boolean matches(String methodName) {
         checkNotNull(methodName);
         return methodName.equals(name);
