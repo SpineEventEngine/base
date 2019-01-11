@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.code.java.ClassName.DOT_SEPARATOR;
 
 /**
  * A name of a potentially nested class with outer class names separated with dots.
@@ -35,7 +36,7 @@ public final class NestedClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    private static final Splitter nameSplitter = Splitter.on('.')
+    private static final Splitter nameSplitter = Splitter.on(DOT_SEPARATOR)
                                                          .omitEmptyStrings();
 
     private NestedClassName(String value) {
