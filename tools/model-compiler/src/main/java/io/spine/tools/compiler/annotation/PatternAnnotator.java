@@ -117,7 +117,7 @@ final class PatternAnnotator extends Annotator {
                 return root;
             } else {
                 ImmutableList<SimpleClassName> names = targetClass.toNested()
-                                                                  .pathToNested();
+                                                                  .asPath();
                 checkState(!names.isEmpty(), "Invalid class name %s.", targetClass);
                 SimpleClassName rootName = names.get(0);
                 checkArgument(root.getName()

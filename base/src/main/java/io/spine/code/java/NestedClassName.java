@@ -51,7 +51,18 @@ public final class NestedClassName extends StringTypeValue {
         return new NestedClassName(dotted);
     }
 
-    public ImmutableList<SimpleClassName> pathToNested() {
+    /**
+     * Obtains this class name as a list of simple class names sorted in the nesting order.
+     *
+     * <p>For example, if this class name is {@code "Container.Job.Builder"}, then the resulting
+     * list would be {@code ["Container", "Job", "Builder"]}.
+     *
+     * <p>If this class name is just a {@link SimpleClassName}, then the only entry of the resulting
+     * list is that simple name.
+     *
+     * @return this name split into simple class names
+     */
+    public ImmutableList<SimpleClassName> asPath() {
         String fullName = value();
         ImmutableList<SimpleClassName> result =
                 nameSplitter.splitToList(fullName)

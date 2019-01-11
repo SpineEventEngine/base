@@ -133,6 +133,9 @@ public final class ModuleAnnotator {
         }
     }
 
+    /**
+     * An annotation {@link Job} which annotates methods matching certain naming patterns.
+     */
     private static final class MethodNameJob implements Job {
 
         private final ImmutableSet<MethodPattern> patterns;
@@ -220,7 +223,7 @@ public final class ModuleAnnotator {
         }
 
         /**
-         * Adds patters for Java classes to be annotated as {@code internal}.
+         * Sets patters for Java classes to be annotated as {@code internal}.
          *
          * <p>The patterns are {@linkplain java.util.regex.Pattern#compile(String) compiled} with
          * no additional flags.
@@ -238,6 +241,13 @@ public final class ModuleAnnotator {
             return this;
         }
 
+        /**
+         * Sets names of methods to be annotated as {@code internal}.
+         *
+         * @param methodNames
+         *         the method names
+         * @see #setInternalAnnotation
+         */
         public Builder setInternalMethodNames(ImmutableSet<String> methodNames) {
             checkNotNull(methodNames);
             this.internalMethodNames = methodNames;
