@@ -28,6 +28,7 @@ import io.spine.code.proto.TypeSet;
 import org.jboss.forge.roaster.model.Method;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.MethodHolderSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
 import java.nio.file.Path;
@@ -62,8 +63,9 @@ final class MethodNameAnnotator extends Annotator {
         @Override
         public void accept(AbstractJavaSource<JavaClassSource> source) {
             allClasses(source)
-                    .flatMap(classSource -> classSource instanceof JavaClassSource
-                                            ? ((JavaClassSource) classSource).getMethods().stream()
+                    .flatMap(classSource -> classSource instanceof MethodHolderSource
+                                            ? ((MethodHolderSource<?>) classSource).getMethods()
+                                                                                   .stream()
                                             : Stream.<MethodSource<?>>of())
                     .filter(Method::isPublic)
                     .filter(this::matching)
