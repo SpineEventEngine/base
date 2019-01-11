@@ -29,11 +29,18 @@ import org.jboss.forge.roaster.model.Method;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodHolderSource;
-import org.jboss.forge.roaster.model.source.MethodSource;
 
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
+/**
+ * An {@link Annotator} which annotates methods matching given patterns.
+ *
+ * <p>Note that, unlike other annotator implementations, {@code MethodNameAnnotator} works with
+ * multiple method patterns rather than just one due to performance considerations. All
+ * the generated classes are parsed and checked. This can take some time. Thus, consider
+ * the selective approach to marking methods unless a pattern or a set of patterns is completely
+ * necessary.
+ */
 final class MethodNameAnnotator extends Annotator {
 
     private final ImmutableSet<MethodPattern> patterns;
@@ -58,6 +65,9 @@ final class MethodNameAnnotator extends Annotator {
         }
     }
 
+    /**
+     * A function annotating methods of a given source according to the patterns.
+     */
     private final class AnnotateMethods implements ClassInDepthVisitor {
 
         @Override
