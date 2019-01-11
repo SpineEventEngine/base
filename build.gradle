@@ -25,9 +25,9 @@ buildscript {
     apply from: "$rootDir/version.gradle"
 
     repositories {
+        mavenLocal()
         maven { url = repos.gradlePlugins }
         jcenter()
-        mavenLocal()
         
         maven { url = repos.oldSpine }
         maven { url = repos.oldSpineSnapshots }
