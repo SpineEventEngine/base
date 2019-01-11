@@ -72,15 +72,14 @@ final class MethodNameAnnotator extends Annotator {
 
         @Override
         public void accept(AbstractJavaSource<JavaClassSource> source) {
-            allClasses(source)
-                    .flatMap(classSource -> classSource instanceof MethodHolderSource
-                                            ? ((MethodHolderSource<?>) classSource).getMethods()
-                                                                                   .stream()
-                                            : Stream.<MethodSource<?>>of())
-                    .filter(Method::isPublic)
-                    .filter(this::matching)
-                    .forEach(MethodNameAnnotator.this::addAnnotation);
-
+            if (source instanceof MethodHolderSource) {
+                ((MethodHolderSource<?>) source)
+                        .getMethods()
+                        .stream()
+                        .filter(Method::isPublic)
+                        .filter(this::matching)
+                        .forEach(MethodNameAnnotator.this::addAnnotation);
+            }
         }
 
         private boolean matching(Method<?, ?> method) {
