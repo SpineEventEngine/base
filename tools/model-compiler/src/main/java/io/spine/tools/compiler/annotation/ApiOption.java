@@ -177,6 +177,11 @@ public final class ApiOption {
         return fieldOption != null;
     }
 
+    @Override
+    public String toString() {
+        return messageOption.getDescriptor().getName();
+    }
+
     /**
      * Enumeration of well known API options.
      */

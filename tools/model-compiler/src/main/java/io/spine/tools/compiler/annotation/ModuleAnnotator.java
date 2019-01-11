@@ -23,6 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.java.ClassName;
+import io.spine.logging.Logging;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Set;
@@ -66,7 +67,7 @@ public final class ModuleAnnotator {
      *
      * <p>Typically, represents a piece of routine source code annotation work to perform.
      */
-    public interface Job {
+    public interface Job extends Logging {
 
         /**
          * Executes this job.
@@ -94,20 +95,24 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
-            ClassName annotation = javaAnnotation;
-            ApiOption option = protobufOption;
-            factory.createFileAnnotator(annotation, option)
+            _debug("Annotating sources marked as `{}` with `{}`.", protobufOption, javaAnnotation);
+            _debug("Annotating by the file option.");
+            factory.createFileAnnotator(javaAnnotation, protobufOption)
                    .annotate();
-            factory.createMessageAnnotator(annotation, option)
+            _debug("Annotating by the message option.");
+            factory.createMessageAnnotator(javaAnnotation, protobufOption)
                    .annotate();
-            if (option.supportsServices()) {
-                factory.createServiceAnnotator(annotation, option)
+            if (protobufOption.supportsServices()) {
+                _debug("Annotating by the service option.");
+                factory.createServiceAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
-            if (option.supportsFields()) {
-                factory.createFieldAnnotator(annotation, option)
+            if (protobufOption.supportsFields()) {
+                _debug("Annotating by the field option.");
+                factory.createFieldAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
+            _debug("Option `{}` processed.", protobufOption);
         }
     }
 
@@ -128,8 +133,10 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
+            _debug("Annotating classes matching `{}` with `{}`.", pattern, javaAnnotation);
             factory.createPatternAnnotator(javaAnnotation, pattern)
                    .annotate();
+            _debug("Pattern `{}` processed.", pattern);
         }
     }
 
@@ -148,6 +155,7 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
+            _debug("Annotating methods matching patterns {} with `{}`.", patterns, javaAnnotation);
             factory.createMethodAnnotator(javaAnnotation, patterns)
                    .annotate();
         }

@@ -20,6 +20,8 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.base.MoreObjects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -57,5 +59,12 @@ final class MethodPattern {
     boolean matches(String methodName) {
         checkNotNull(methodName);
         return methodName.equals(name);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("name", name)
+                          .toString();
     }
 }

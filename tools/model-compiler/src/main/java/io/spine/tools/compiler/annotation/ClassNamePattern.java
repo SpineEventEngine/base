@@ -71,4 +71,9 @@ final class ClassNamePattern {
         Matcher matcher = pattern.matcher(name.value());
         return matcher.matches();
     }
+
+    @Override
+    public String toString() {
+        return pattern.pattern();
+    }
 }
