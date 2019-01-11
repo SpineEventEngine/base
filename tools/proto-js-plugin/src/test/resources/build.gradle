@@ -27,9 +27,8 @@ buildscript {
     apply from: "$enclosingRootDir/version.gradle"
 
     repositories {
-        google()
-        mavenCentral()
         mavenLocal()
+        jcenter()
     }
 
     dependencies {
@@ -38,11 +37,8 @@ buildscript {
 }
 
 repositories {
-    jcenter()
-    google()
-    mavenCentral()
     mavenLocal()
-    maven { url = repos.gradlePlugins }
+    jcenter()
 }
 
 apply plugin: 'java'
