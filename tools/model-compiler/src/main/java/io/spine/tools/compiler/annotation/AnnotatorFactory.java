@@ -27,11 +27,10 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -48,35 +47,35 @@ public final class AnnotatorFactory {
      * An absolute path to the Java sources directory,
      * generated basing on {@link #fileDescriptors}.
      */
-    private final String genProtoDir;
+    private final Path genProtoDir;
 
     /**
      * An absolute path to the {@code gRPC} services directory,
      * generated basing on {@link #fileDescriptors}.
      */
-    private final String genGrpcDir;
+    private final Path genGrpcDir;
 
     private AnnotatorFactory(Collection<FileDescriptor> fileDescriptors,
-                             String genProtoDir,
-                             String genGrpcDir) {
+                             Path genProtoDir,
+                             Path genGrpcDir) {
         checkNotNull(fileDescriptors);
-        checkArgument(!isNullOrEmpty(genProtoDir));
-        checkArgument(!isNullOrEmpty(genGrpcDir));
+        checkNotNull(genProtoDir);
+        checkNotNull(genGrpcDir);
         this.fileDescriptors = ImmutableList.copyOf(fileDescriptors);
         this.genProtoDir = genProtoDir;
         this.genGrpcDir = genGrpcDir;
     }
 
     public static AnnotatorFactory newInstance(File descriptorSetFile,
-                                               String generatedProtoDir,
-                                               String generatedGrpcDir) {
+                                               Path generatedProtoDir,
+                                               Path generatedGrpcDir) {
         Collection<FileDescriptor> descriptors = FileSet
                 .parse(descriptorSetFile)
                 .files()
                 .stream()
                 .filter(FileDescriptors::isNotGoogle)
                 .collect(toSet());
-        return new AnnotatorFactory(descriptors, generatedProtoDir,generatedGrpcDir);
+        return new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
     }
 
     Annotator createFileAnnotator(ClassName annotation, ApiOption option) {
@@ -91,8 +90,11 @@ public final class AnnotatorFactory {
         return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    Annotator createServiceAnnotator(ClassName annotation,
-                                     ApiOption option) {
+    Annotator createServiceAnnotator(ClassName annotation, ApiOption option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
+    }
+
+    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern) {
+        return new PatternAnnotator(annotation, pattern, fileDescriptors, genProtoDir);
     }
 }

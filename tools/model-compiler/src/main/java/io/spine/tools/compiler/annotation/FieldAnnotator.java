@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -37,11 +38,11 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
-import java.util.Collection;
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
+import static io.spine.tools.compiler.annotation.MessageAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -50,21 +51,19 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>Annotates {@code public} accessors for a field in a generated Java source
  * if a specified {@linkplain FieldOptions field option} value is {@code true}
  * for the field definition.
- *
- * @author Dmytro Grankin
  */
-class FieldAnnotator extends Annotator<FieldDescriptor> {
+class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
 
     FieldAnnotator(ClassName annotation,
                    ApiOption option,
-                   Collection<FileDescriptor> fileDescriptors,
-                   String genProtoDir) {
+                   ImmutableList<FileDescriptor> fileDescriptors,
+                   Path genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 
     @Override
     public void annotate() {
-        for (FileDescriptor file : fileDescriptors()) {
+        for (FileDescriptor file : descriptors()) {
             annotate(file);
         }
     }

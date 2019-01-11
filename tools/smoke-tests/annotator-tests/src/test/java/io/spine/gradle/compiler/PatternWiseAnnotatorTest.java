@@ -18,24 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    generateAnnotations {
-        internal = 'io.spine.test.annotation.Private'
-        experimental = 'io.spine.test.annotation.Attempt'
-        beta = 'io.spine.test.annotation.Alpha'
-        spi = 'io.spine.test.annotation.ServiceProviderInterface'
-    }
-    internalClassPatterns += [
-            '.*OrBuilder', // Classes ending with `OrBuilder`.
-            '.*Proto',     // Classes ending with `Proto`.
-            '.*complex\\.Matter\\$.*[AaLl].*'
-                // Classes which have `complex.Matter$` in their FQN followed by an upper or lower 
-                // case letters ` A` or `L`.
-                // For the sake of testing. This is not a recommended usage.
-    ]
-}
+package io.spine.gradle.compiler;
 
-dependencies {
-    testImplementation deps.grpc.grpcStub
-    testImplementation deps.grpc.grpcProtobuf
+import io.spine.test.annotator.complex.Matter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
+
+@DisplayName("ProtoAnnotatorPlugin should pick up `internalClassPatterns` and")
+class PatternWiseAnnotatorTest {
+
+    @Test
+    @DisplayName("mark specified top-level classes")
+    void markSpecifiedClasses() {
+        assertInternal(ScaffoldingOrBuilder.class);
+        assertInternal(BetaAllProto.class);
+    }
+
+    @Test
+    @DisplayName("mark nested messages and enums")
+    void markNestedTypes() {
+        assertInternal(Matter.Body.Molecule.class);
+        assertInternal(Matter.Body.Molecule.Atom.class);
+        assertInternal(Matter.Field.class);
+
+        assertNotInternal(Matter.class);
+        assertNotInternal(Matter.Body.class);
+    }
 }

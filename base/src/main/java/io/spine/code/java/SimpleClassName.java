@@ -38,9 +38,10 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class SimpleClassName extends StringTypeValue {
 
+    static final String OR_BUILDER_SUFFIX = "OrBuilder";
+
     private static final long serialVersionUID = 0L;
     private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
-    private static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
     private SimpleClassName(String value) {
         super(value);
@@ -54,7 +55,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     static SimpleClassName create(String value) {
         checkNotNull(value);
-        checkArgument(!value.isEmpty(), "Class name cannot be empty.");
+        checkArgument(!value.isEmpty(), "Simple class name cannot be empty.");
         return new SimpleClassName(value);
     }
 
