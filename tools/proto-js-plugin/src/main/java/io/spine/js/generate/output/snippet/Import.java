@@ -90,6 +90,9 @@ public class Import extends CodeLine {
 
     /**
      * Obtains an import of a library.
+     *
+     * <p>It is allowed to specify just a library name like {@code google-protobuf}
+     * or the path to a library file, e.g. {@code google-protobuf/proto-file.js}.
      */
     public static Import library(String libraryName) {
         checkNotNull(libraryName);

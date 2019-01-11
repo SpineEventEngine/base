@@ -53,7 +53,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * {@linkplain io.spine.js.generate.field.FieldGenerator field} can use the import.
      */
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
-    /** The name of the {@code object_parser.js} import. */
+    /** The name of the {@code object-parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
     @VisibleForTesting
     static final String TYPE_PARSERS_FILE = "spine-web-client/client/parser/type-parsers.js";
@@ -92,7 +92,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     private void generateFor(FileDescriptor file) {
         if (targetTypes(file).isEmpty()) {
             return;
-        };
+        }
         CodeLines code = codeFor(file);
         FileWriter writer = FileWriter.createFor(generatedRoot(), file);
         writer.append(code);
