@@ -69,12 +69,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  *         {@code js {option "import_style=commonjs"}};
  * </ol>
  *
- * <p>Also, the generated code depends on the {@code spine-web-client} module published
- * by the Spine Web. So, the users of the generated code should set up the dependency.
- *
- * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a>
- * builds its Protobuf definitions to JS and the plugin relies on this behaviour.
- *
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * can be used as an example of the required project configuration.
  */
