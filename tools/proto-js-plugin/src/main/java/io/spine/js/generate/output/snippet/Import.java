@@ -20,7 +20,6 @@
 
 package io.spine.js.generate.output.snippet;
 
-import com.google.common.base.Strings;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.output.CodeLine;
 
@@ -36,11 +35,6 @@ import static java.lang.String.format;
 public class Import extends CodeLine {
 
     /**
-     * The path to parent directory.
-     */
-    private static final String PARENT_DIR = "../";
-
-    /**
      * The import format.
      *
      * <p>The placeholder represents the file to be imported.
@@ -54,11 +48,6 @@ public class Import extends CodeLine {
      */
     private static final String NAMED_IMPORT_FORMAT = "let %s = %s";
 
-    /**
-     * The path to the current directory.
-     */
-    private static final String CURRENT_DIR = "./";
-
     private final String content;
 
     private Import(String content) {
@@ -71,7 +60,8 @@ public class Import extends CodeLine {
      */
     public static Import fileRelativeToRoot(FileName file) {
         checkNotNull(file);
-        return withPrefix(CURRENT_DIR, file);
+        String content = format(IMPORT_FORMAT, file.pathFromRoot());
+        return new Import(content);
     }
 
     /**
@@ -85,7 +75,7 @@ public class Import extends CodeLine {
     public static Import fileRelativeTo(FileName fileToImport, FileName relativeTo) {
         checkNotNull(fileToImport);
         checkNotNull(relativeTo);
-        String prefix = composePathToRoot(relativeTo);
+        String prefix = relativeTo.pathToRoot();
         return withPrefix(prefix, fileToImport);
     }
 
@@ -129,19 +119,6 @@ public class Import extends CodeLine {
      */
     public String namedAs(String importName) {
         String result = format(NAMED_IMPORT_FORMAT, importName, content());
-        return result;
-    }
-
-    /**
-     * Composes the path from the given file to its root.
-     *
-     * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
-     */
-    private static String composePathToRoot(FileName fileName) {
-        String[] pathElements = fileName.pathElements();
-        int fileLocationDepth = pathElements.length - 1;
-        String pathToRoot = Strings.repeat(PARENT_DIR, fileLocationDepth);
-        String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
         return result;
     }
 }
