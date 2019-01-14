@@ -26,6 +26,7 @@ import io.spine.base.Identifier;
 import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
+import io.spine.test.validate.msg.builder.ConstitutionVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
@@ -299,6 +300,13 @@ class ValidatingBuilderTest {
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
                    builder -> builder.addAllSnowflake(snowflakes));
+    }
+
+    @Test
+    void testDistinctThrowsOnInapplicable() {
+        testOption(ConstitutionVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setAmendments("First Amendment"));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
