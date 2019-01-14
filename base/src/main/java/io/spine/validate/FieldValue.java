@@ -117,23 +117,23 @@ final class FieldValue {
         JavaType fieldType = javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(previousValue, this, assumeRequired);
+                return new MessageFieldValidator(this, previousValue, assumeRequired);
             case INT:
-                return new IntegerFieldValidator(previousValue, this);
+                return new IntegerFieldValidator(this, previousValue);
             case LONG:
-                return new LongFieldValidator(previousValue, this);
+                return new LongFieldValidator(this, previousValue);
             case FLOAT:
-                return new FloatFieldValidator(previousValue, this);
+                return new FloatFieldValidator(this, previousValue);
             case DOUBLE:
-                return new DoubleFieldValidator(previousValue, this);
+                return new DoubleFieldValidator(this, previousValue);
             case STRING:
-                return new StringFieldValidator(previousValue, this, assumeRequired);
+                return new StringFieldValidator(this, previousValue, assumeRequired);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(previousValue, this);
+                return new ByteStringFieldValidator(this, previousValue);
             case BOOLEAN:
-                return new BooleanFieldValidator(previousValue, this);
+                return new BooleanFieldValidator(this, previousValue);
             case ENUM:
-                return new EnumFieldValidator(previousValue, this);
+                return new EnumFieldValidator(this, previousValue);
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }

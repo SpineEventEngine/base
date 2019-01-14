@@ -97,6 +97,6 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
                                                      Object rawValue) {
         FieldContext fieldContext = FieldContext.create(field);
         return new StringFieldValidator(FieldValue.of(rawValue, fieldContext),
-                                        false);
+                                        FieldValue.unsetValue(fieldContext), false);
     }
 }

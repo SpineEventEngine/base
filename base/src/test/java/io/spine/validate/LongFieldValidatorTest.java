@@ -32,7 +32,8 @@ class LongFieldValidatorTest extends NumberFieldValidatorTest<Long, LongFieldVal
     LongFieldValidatorTest() {
         super(TRES,
               -TRES,
-              new LongFieldValidator(FieldValue.of(TRES, fieldContext)),
+              new LongFieldValidator(FieldValue.of(TRES, fieldContext),
+                                     FieldValue.unsetValue(fieldContext)),
               requiredValidator());
     }
 
@@ -42,7 +43,8 @@ class LongFieldValidatorTest extends NumberFieldValidatorTest<Long, LongFieldVal
                                                                        .get(0);
         FieldContext context = FieldContext.create(descriptor);
         FieldValue value = FieldValue.of(TRES, context);
-        LongFieldValidator requiredValidator = new LongFieldValidator(value);
+        LongFieldValidator requiredValidator =
+                new LongFieldValidator(value, FieldValue.unsetValue(context));
         return requiredValidator;
     }
 }
