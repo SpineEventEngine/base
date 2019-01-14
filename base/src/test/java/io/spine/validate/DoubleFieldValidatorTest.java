@@ -32,7 +32,8 @@ class DoubleFieldValidatorTest extends NumberFieldValidatorTest<Double, DoubleFi
     private DoubleFieldValidatorTest() {
         super(PI,
               -PI,
-              new DoubleFieldValidator(FieldValue.of(PI, fieldContext)),
+              new DoubleFieldValidator(FieldValue.of(PI, fieldContext),
+                                       FieldValue.unsetValue(fieldContext)),
               requiredFieldValidator());
     }
 
@@ -42,7 +43,8 @@ class DoubleFieldValidatorTest extends NumberFieldValidatorTest<Double, DoubleFi
                                                                           .get(0);
         FieldContext context = FieldContext.create(requiredFieldDescriptor);
         FieldValue value = FieldValue.of(PI, context);
-        DoubleFieldValidator requiredValidator = new DoubleFieldValidator(value);
+        DoubleFieldValidator requiredValidator =
+                new DoubleFieldValidator(value, FieldValue.unsetValue(context));
         return requiredValidator;
     }
 }
