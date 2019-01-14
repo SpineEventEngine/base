@@ -147,9 +147,8 @@ message Blizzard {
     repeated Snowflake snowflake = 1 [(distinct) = true];
 }
 
-message ArtificialBlizzard {
-
-    repeated Snowflake snowflake = 1 [(distinct) = false];
+message Constitution {
+    string amendments = 1 [(distinct) = true];
 }
 
 // A snowflake is represented by a polygon. Two snowflakes are equal if they have the same
