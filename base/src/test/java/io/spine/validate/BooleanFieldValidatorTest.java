@@ -46,8 +46,7 @@ class BooleanFieldValidatorTest {
                                                        .get(0);
     private final FieldContext fieldContext = FieldContext.create(fieldDescriptor);
     private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(FieldValue.of(false, fieldContext),
-                                      FieldValue.unsetValue(fieldContext));
+            new BooleanFieldValidator(FieldValue.of(false, fieldContext));
 
     @Test
     @DisplayName("convert string to number")
@@ -64,8 +63,7 @@ class BooleanFieldValidatorTest {
                 .get(0);
         FieldContext context = FieldContext.create(descriptor);
         FieldValue fieldValue = FieldValue.of(true, context);
-        BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue,
-                                                                    FieldValue.unsetValue(context));
+        BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
 
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect((SubstituteLogger) validator.log(), loggedMessages);
