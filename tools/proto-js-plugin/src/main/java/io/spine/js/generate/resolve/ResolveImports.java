@@ -53,6 +53,7 @@ public final class ResolveImports extends GenerationTask {
     private static final String PARENT_DIR = "../";
     //TODO:2019-01-13:dmitry.grankin: Calculate count depending on the project root and the gen dir path.
     private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
+    public static final String PROJECT_SRC_DIR = "main/";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -70,11 +71,12 @@ public final class ResolveImports extends GenerationTask {
         List<String> lines = fileLines(fileName);
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            boolean isImport = ResolvableImport.isImport(line);
+            boolean isImport = ImportSnippet.hasImport(line);
             if (isImport) {
-                ResolvableImport resolvable = new ResolvableImport(line);
-                ResolvableImport resolved = resolveImport(resolvable, fileName, generatedRoot());
-                lines.set(i, resolved.text());
+                ImportSnippet sourceImport = new ImportSnippet(line);
+                ImportSnippet updatedImport =
+                        resolveImport(sourceImport, fileName, generatedRoot());
+                lines.set(i, updatedImport.text());
             }
         }
         rewriteFile(fileName, lines);
@@ -87,20 +89,20 @@ public final class ResolveImports extends GenerationTask {
      * if the imported file {@linkplain #belongsToModule(String, Directory) belongs}
      * to the currently processed module.
      */
-    private static ResolvableImport resolveImport(ResolvableImport resolvable,
-                                                  FileName fileName,
-                                                  Directory generatedRoot) {
+    private static ImportSnippet resolveImport(ImportSnippet resolvable,
+                                               FileName fileName,
+                                               Directory generatedRoot) {
         boolean isSpine = resolvable.isSpine();
         if (!isSpine) {
             return resolvable;
         }
-        String libraryRelativePath = resolvable.pathSkipFirstPart();
-        String relativePath = "main/" + libraryRelativePath;
-        if (!belongsToModule(relativePath, generatedRoot)) {
+        String filePath = resolvable.importedFilePath();
+        String filePathInSources = PROJECT_SRC_DIR + filePath;
+        if (!belongsToModule(filePathInSources, generatedRoot)) {
             return resolvable;
         }
         String pathPrefix = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
-        ResolvableImport resolved = resolvable.replacePath(pathPrefix + relativePath);
+        ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePathInSources);
         return resolved;
     }
 
@@ -111,14 +113,12 @@ public final class ResolveImports extends GenerationTask {
      */
     private static boolean belongsToModule(String filePath, Directory generatedRoot) {
         Path modulePath = generatedRoot.getPath()
-                                       .resolve(MODULE_RELATIVE_TO_PROTO)
-                                       .normalize();
-        Path absolutePath = modulePath.resolve(filePath)
-                                      .normalize();
+                                       .resolve(MODULE_RELATIVE_TO_PROTO);
+        Path absolutePath = modulePath.resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
         log().debug("Checking if the file {} belongs to the module, result: {}",
-                    absolutePath, presentInModule);
+                    absolutePath.normalize(), presentInModule);
         return presentInModule;
     }
 

@@ -30,12 +30,12 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ResolvableImport should")
-class ResolvableImportTest {
+@DisplayName("ImportSnippet should")
+class ImportSnippetTest {
 
     private final FileName importedFile = FileName.from(Any.getDescriptor()
                                                            .getFile());
-    private final ResolvableImport libraryFileImport = googleProtobufImport(importedFile);
+    private final ImportSnippet libraryFileImport = googleProtobufImport(importedFile);
 
     @Test
     @DisplayName("extract the import path")
@@ -48,21 +48,38 @@ class ResolvableImportTest {
     @DisplayName("replace the import path")
     void replaceImportPath() {
         String newPath = "b";
-        ResolvableImport updatedLine = libraryFileImport.replacePath(newPath);
+        ImportSnippet updatedLine = libraryFileImport.replacePath(newPath);
         assertThat(updatedLine.path()).isEqualTo(newPath);
     }
 
     @Test
-    @DisplayName("obtain the import path skipping the first part")
-    void importPathWithSkippedLibrary() {
-        String pureFilePath = libraryFileImport.pathSkipFirstPart();
-        assertThat(pureFilePath).isEqualTo(importedFile.value());
+    @DisplayName("obtain the file path skipping the library name")
+    void importedFilePathSkippingLibrary() {
+        String filePath = libraryFileImport.importedFilePath();
+        assertThat(filePath).isEqualTo(importedFile.value());
+    }
+
+    @Test
+    @DisplayName("obtain the file path relative to the current directory")
+    void importedFilePathRelativeToCurrentDir() {
+        ImportSnippet fileImport = importWithPath("./file.js");
+        String filePath = fileImport.importedFilePath();
+        assertThat(filePath).isEqualTo("file.js");
+    }
+
+    @Test
+    @DisplayName("obtain the file path relative to the parent directory")
+    void importedFilePathRelativeToParentDir() {
+        String filePath = "../file.js";
+        ImportSnippet fileImport = importWithPath(filePath);
+        String parsedFilePath = fileImport.importedFilePath();
+        assertThat(parsedFilePath).isEqualTo(filePath);
     }
 
     @Test
     @DisplayName("recognize a Spine library")
     void recognizeSpine() {
-        ResolvableImport spineImport = importWithPath("spine/something");
+        ImportSnippet spineImport = importWithPath("spine/something");
         assertTrue(spineImport.isSpine());
     }
 
@@ -72,12 +89,12 @@ class ResolvableImportTest {
         assertFalse(libraryFileImport.isSpine());
     }
 
-    private static ResolvableImport googleProtobufImport(FileName file) {
+    private static ImportSnippet googleProtobufImport(FileName file) {
         return importWithPath("google-protobuf/" + file);
     }
 
-    private static ResolvableImport importWithPath(String path) {
-        return new ResolvableImport(
+    private static ImportSnippet importWithPath(String path) {
+        return new ImportSnippet(
                 format("let hah = require('%s');", path));
     }
 }

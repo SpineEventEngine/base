@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A line of a source Javascript file with an import statement, which is going to be resolved.
  */
-class ResolvableImport {
+class ImportSnippet {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
@@ -36,15 +36,15 @@ class ResolvableImport {
 
     private final String text;
 
-    ResolvableImport(String text) {
-        checkArgument(isImport(text), "The text should contain an import statement.");
+    ImportSnippet(String text) {
+        checkArgument(hasImport(text), "The text should contain an import statement.");
         this.text = text;
     }
 
     /**
      * Tells whether the line contains an import statement.
      */
-    static boolean isImport(String line) {
+    static boolean hasImport(String line) {
         boolean result = line.contains(IMPORT_BEGIN_SIGN);
         return result;
     }
@@ -60,14 +60,20 @@ class ResolvableImport {
     }
 
     /**
-     * Obtains the {@link #path()} skipping the first part.
+     * Obtains the path of the imported file.
+     *
+     * <p>Unlike {@link #path()} the method skips a library name if it is present.
      */
-    String pathSkipFirstPart() {
+    String importedFilePath() {
         String path = path();
+        boolean relativeToParent = path.startsWith("../");
+        if (relativeToParent) {
+            return path;
+        }
         int separatorIndex = path.indexOf(IMPORT_PATHS_SEPARATOR);
         checkState(separatorIndex != -1,
-                   "The import path %s should not consist of a single part.",
-                   path);
+                   "The import path %s is expected to contain the separator `%s`.",
+                   path, IMPORT_PATHS_SEPARATOR);
         String result = path.substring(separatorIndex + 1);
         return result;
     }
@@ -75,9 +81,9 @@ class ResolvableImport {
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
-    ResolvableImport replacePath(CharSequence newPath) {
+    ImportSnippet replacePath(CharSequence newPath) {
         String updatedText = text.replace(path(), newPath);
-        return new ResolvableImport(updatedText);
+        return new ImportSnippet(updatedText);
     }
 
     /**
