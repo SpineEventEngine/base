@@ -33,8 +33,8 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
      * @param fieldValue
      *         the value to validate
      */
-    DoubleFieldValidator(FieldValue fieldValue) {
-        super(fieldValue);
+    DoubleFieldValidator(FieldValue fieldValue, FieldValue previousValue) {
+        super(fieldValue, previousValue);
     }
 
     @Override

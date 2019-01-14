@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
@@ -29,7 +31,9 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
@@ -46,6 +50,7 @@ abstract class FieldValidator<V> implements Logging {
     private final FieldValue value;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
+    private final List<V> previousValues;
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
@@ -66,17 +71,21 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @param fieldValue
      *         the value to validate
+     * @param previousValue
+     *         a value that the field has had before the validation
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      * @param canBeRequired
      *         defines whether a field that is being validated can be {@code required}
      */
-    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
+    protected FieldValidator(FieldValue fieldValue, FieldValue previousValue,
+                             boolean assumeRequired, boolean canBeRequired) {
         this.canBeRequired = canBeRequired;
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
+        this.previousValues = previousValue.asList();
         this.assumeRequired = assumeRequired;
         this.required = fieldValue.valueOf(OptionsProto.required);
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
@@ -130,6 +139,7 @@ abstract class FieldValidator<V> implements Logging {
     protected final List<ConstraintViolation> validate() {
         checkCanBeRequired();
         checkIfRequiredAndNotSet();
+        validateDistinct(this.getFieldContext().getTarget(), this.value);
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -140,6 +150,53 @@ abstract class FieldValidator<V> implements Logging {
         return result;
     }
 
+
+    /**
+     * Validates the field against the {@code distinct} field option.
+     *
+     * <p>If the specified value already exists in the list represented by the specified descriptor,
+     * a {@code ConstraintViolationError} is thrown.
+     *
+     * @param descriptor
+     *         a descriptor for a field that is being validated
+     * @param fieldValue
+     *         a new value to be added to the collection represented by the repeated field
+     */
+    private void validateDistinct(FieldDescriptor descriptor, FieldValue fieldValue)
+            throws ValidationException {
+        if (fieldValue.valueOf(OptionsProto.distinct)) {
+            if (descriptor.isRepeated()) {
+                Set<?> current = new HashSet<>(previousValues);
+                boolean allAdded = current.addAll(fieldValue.asList());
+                if (!allAdded) {
+                    throw distinctOptionViolated(descriptor, fieldValue);
+                }
+            } else {
+                throw distinctOptionCannotBeApplied(descriptor);
+            }
+        }
+    }
+
+    private static ValidationException distinctOptionCannotBeApplied(FieldDescriptor descriptor) {
+        ConstraintViolation nonRepeatedDistinct = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Non repeated field %s cannot be `(distinct) = true`")
+                .addParam(descriptor.getFullName())
+                .build();
+        return new ValidationException(ImmutableList.of(nonRepeatedDistinct));
+    }
+
+    private static ValidationException distinctOptionViolated(FieldDescriptor descriptor,
+                                                              FieldValue value) {
+        ConstraintViolation distinctViolated = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Field %s can only contain distinct elements, can't add %s.")
+                .addParam(descriptor.getFullName())
+                .addParam(value.toString())
+                .build();
+        ValidationException exception = new ValidationException(ImmutableList.of(distinctViolated));
+        return exception;
+    }
     private void checkCanBeRequired() {
         boolean fieldIsRequired = isRequiredField();
         if (!canBeRequired && fieldIsRequired) {

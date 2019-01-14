@@ -60,8 +60,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      * @param fieldValue
      *         the value to validate
      */
-    NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
+    NumberFieldValidator(FieldValue fieldValue, FieldValue previousField) {
+        super(fieldValue, previousField,false, false);
         this.minDecimal = fieldValue.valueOf(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimal.getInclusive();
         this.maxDecimal = fieldValue.valueOf(OptionsProto.decimalMax);

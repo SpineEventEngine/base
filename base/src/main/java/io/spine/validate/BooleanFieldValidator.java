@@ -30,9 +30,10 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *
      * @param fieldValue
      *         the value to to validate
+     * @param previousValue previous value of the field
      */
-    BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
+    BooleanFieldValidator(FieldValue fieldValue, FieldValue previousValue) {
+        super(fieldValue, previousValue, false, false);
     }
 
     /**
