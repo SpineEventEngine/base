@@ -28,7 +28,6 @@ import io.spine.js.generate.GenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,9 +42,8 @@ class ResolveImportsTest {
     private final SourceFile moduleMainFile = SourceFile.of(GenerationTask.class);
     private final Path importedFilePath = Paths.get("java")
                                                .resolve(moduleMainFile.getPath());
-    private final Directory fakeProtoRoot = Directory.at(FileSystems.getDefault()
-                                                                    .getPath("src/main/proto")
-                                                                    .toAbsolutePath());
+    private final Directory fakeProtoRoot = Directory.at(Paths.get("src/main/proto")
+                                                              .toAbsolutePath());
     private final FileName importInto = FileName.from(Any.getDescriptor()
                                                          .getFile());
 
