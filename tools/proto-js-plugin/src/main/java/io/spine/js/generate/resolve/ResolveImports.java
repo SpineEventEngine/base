@@ -77,8 +77,7 @@ public final class ResolveImports extends GenerationTask {
             boolean isImport = ImportSnippet.hasImport(line);
             if (isImport) {
                 ImportSnippet sourceImport = new ImportSnippet(line, fileName);
-                ImportSnippet updatedImport =
-                        resolveImport(sourceImport, generatedRoot());
+                ImportSnippet updatedImport = resolveImport(sourceImport, generatedRoot());
                 lines.set(i, updatedImport.text());
             }
         }
