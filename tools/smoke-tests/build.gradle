@@ -119,36 +119,4 @@ subprojects {
     }
 }
 
-task jacocoRootReport(dependsOn: subprojects.test, type: JacocoReport) {
-    additionalSourceDirs = files(subprojects.sourceSets.main.java.srcDirs)
-    sourceDirectories = files(subprojects.sourceSets.main.java.srcDirs)
-
-    // It is required to set some default value in order for the task to initialize.
-    // This value is overridden in `#doFirst` section.
-    classDirectories = files(subprojects.sourceSets.main.output)
-    executionData = files(subprojects.jacocoTestReport.executionData)
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        csv.enabled = false
-    }
-    onlyIf = { true }
-    doFirst {
-        // In case some modules do not have the JaCoCo execution data files.
-        executionData = files(executionData.findAll {
-            it.exists()
-        })
-
-        classDirectories += files(
-                subprojects*.configurations.runtime.files
-                        .stream()
-                        .flatMap { it.stream() }
-                        .filter { it.name.endsWith('.jar') }
-                        .flatMap { zipTree(it).files.stream() }
-                        .filter { it.path.contains('io/spine') }
-                        .toArray()
-        )
-    }
-}
-
-check.dependsOn jacocoRootReport
+apply from: "$rootDir/../../config/gradle/jacoco.gradle"

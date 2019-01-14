@@ -196,7 +196,7 @@ subprojects {
         api deps.build.protobuf
 
         implementation deps.build.guava
-        implementation deps.build.slf4j
+        api deps.build.slf4j
         implementation deps.build.checkerAnnotations
         implementation deps.build.errorProneAnnotations
         implementation deps.build.jsr305Annotations

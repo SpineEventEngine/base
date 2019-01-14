@@ -94,8 +94,6 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
             return;
         }
 
-        preprocessorConfigurer.addConfigurePreprocessorAction(preprocessorConfig);
-
         SeverityConfigurer severityConfigurer = SeverityConfigurer.initFor(project);
         severityConfigurer.addConfigureSeverityAction();
     }
