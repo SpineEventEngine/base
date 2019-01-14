@@ -30,8 +30,8 @@ buildscript {
 
     repositories {
         mavenLocal()
-        mavenCentral()
-        
+        jcenter()
+
         maven { url = repos.spine }
         maven { url = repos.spineSnapshots }
     }
@@ -57,8 +57,8 @@ apply plugin: 'io.spine.tools.spine-model-compiler'
 
 repositories {
     mavenLocal()
-    mavenCentral()
-    
+    jcenter()
+
     maven { url = repos.spine }
     maven { url = repos.spineSnapshots }
 }
@@ -66,8 +66,6 @@ repositories {
 dependencies {
     implementation "io.spine:spine-base:$spineVersion"
 }
-
-dependencies()
 
 sourceSets {
     main {

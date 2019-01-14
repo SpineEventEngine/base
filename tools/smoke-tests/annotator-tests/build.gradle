@@ -33,6 +33,13 @@ modelCompiler {
                 // case letters ` A` or `L`.
                 // For the sake of testing. This is not a recommended usage.
     ]
+    internalMethodNames += [
+            'newBuilderForType',
+            'parseFrom',
+            'parseDelimitedFrom',
+            'getSerializedSize',
+            'internalGetValueMap'
+    ]
 }
 
 dependencies {
