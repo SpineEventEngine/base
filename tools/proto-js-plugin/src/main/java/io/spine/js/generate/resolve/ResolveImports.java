@@ -56,7 +56,7 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     static final String SRC_RELATIVE_TO_PROTO = PARENT_DIR;
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    private static final String PROJECT_SRC_DIR = "main/";
+    private static final String PROJECT_SRC_DIR = "main";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -111,18 +111,25 @@ public final class ResolveImports extends GenerationTask {
     /**
      * Tells whether a file with the specified path belongs to the currently processed module.
      *
-     * <p>The method assumes a specific file structure.
+     * <p>The method assumes the project structure similar to Spine Web.
      */
+    @VisibleForTesting
     static boolean belongsToModule(String filePath, Directory generatedRoot) {
-        Path modulePath = generatedRoot.getPath()
-                                       .resolve(MODULE_RELATIVE_TO_PROTO);
-        Path absolutePath = modulePath.resolve(PROJECT_SRC_DIR)
-                                      .resolve(filePath);
+        Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
         log().debug("Checking if the file {} belongs to the module, result: {}",
-                    absolutePath.normalize(), presentInModule);
+                    absolutePath, presentInModule);
         return presentInModule;
+    }
+
+    @VisibleForTesting
+    static Path sourcesPath(Directory generatedRoot) {
+        Path modulePath = generatedRoot.getPath()
+                                       .resolve(MODULE_RELATIVE_TO_PROTO);
+        Path result = modulePath.resolve(PROJECT_SRC_DIR)
+                                .normalize();
+        return result;
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {

@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.ResolveImports.SRC_RELATIVE_TO_PROTO;
 import static io.spine.js.generate.resolve.given.Given.importWithPath;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ResolveImports task should")
@@ -69,6 +70,15 @@ class ResolveImportsTest {
         String path = importedFilePath.toString();
         boolean belongs = ResolveImports.belongsToModule(path, fakeProtoRoot);
         assertTrue(belongs);
+    }
+
+    @Test
+    @DisplayName("resolve the sources directory")
+    void resolveSourcesDirectory() {
+        Path sourcesDirectoryPath = ResolveImports.sourcesPath(fakeProtoRoot);
+        Path expected = Paths.get("src/main")
+                             .toAbsolutePath();
+        assertEquals(expected, sourcesDirectoryPath);
     }
 
     private void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
