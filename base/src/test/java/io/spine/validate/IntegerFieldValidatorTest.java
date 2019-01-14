@@ -32,8 +32,7 @@ class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, Intege
     IntegerFieldValidatorTest() {
         super(DOS,
               -DOS,
-              new IntegerFieldValidator(FieldValue.of(DOS, fieldContext),
-                                        FieldValue.unsetValue(fieldContext)),
+              new IntegerFieldValidator(FieldValue.of(DOS, fieldContext)),
               requiredFieldValidator());
     }
 
@@ -43,8 +42,7 @@ class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, Intege
                                                                       .get(0);
         FieldContext context = FieldContext.create(descriptor);
         FieldValue value = FieldValue.of(DOS, context);
-        IntegerFieldValidator requiredValidator =
-                new IntegerFieldValidator(value, FieldValue.unsetValue(context));
+        IntegerFieldValidator requiredValidator = new IntegerFieldValidator(value);
         return requiredValidator;
     }
 }

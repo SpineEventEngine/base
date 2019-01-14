@@ -32,8 +32,7 @@ class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatField
     FloatFieldValidatorTest() {
         super(HALF,
               -HALF,
-              new FloatFieldValidator(FieldValue.of(HALF, fieldContext),
-                                      FieldValue.unsetValue(fieldContext)),
+              new FloatFieldValidator(FieldValue.of(HALF, fieldContext)),
               requiredFieldValidator());
     }
 
@@ -43,8 +42,7 @@ class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatField
                                                             .get(0);
         FieldContext context = FieldContext.create(descriptor);
         FieldValue value = FieldValue.of(HALF, context);
-        FloatFieldValidator requiredValidator =
-                new FloatFieldValidator(value, FieldValue.unsetValue(context));
+        FloatFieldValidator requiredValidator = new FloatFieldValidator(value);
         return requiredValidator;
     }
 }
