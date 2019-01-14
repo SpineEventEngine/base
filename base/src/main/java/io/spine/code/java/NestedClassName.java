@@ -63,7 +63,7 @@ public final class NestedClassName extends StringTypeValue {
      *
      * @return this name split into simple class names
      */
-    public ImmutableList<SimpleClassName> asPath() {
+    public ImmutableList<SimpleClassName> split() {
         String fullName = value();
         ImmutableList<SimpleClassName> result =
                 nameSplitter.splitToList(fullName)
