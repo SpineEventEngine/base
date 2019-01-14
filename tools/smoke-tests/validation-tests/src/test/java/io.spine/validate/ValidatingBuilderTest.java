@@ -281,8 +281,8 @@ class ValidatingBuilderTest {
     @DisplayName("not allow to change a state of an implicitly `(set_once)` field")
     void testSetOnceImplicitForEntities() {
         testOption(EditTaskStateVBuilder.newBuilder(),
-                    builder -> builder.setEditId(newUuid()),
-                    builder -> builder.setEditId(newUuid()));
+                   builder -> builder.setEditId(newUuid()),
+                   builder -> builder.setEditId(newUuid()));
     }
 
     @DisplayName("does not allow to add duplicate entries to a `distinct` marked field")
@@ -294,16 +294,16 @@ class ValidatingBuilderTest {
     }
 
     @Test
-    void testDistinctThrowsOnAddAll(){
+    void testDistinctThrowsOnAddAll() {
         List snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
-                   builder->builder.addAllSnowflake(snowflakes));
+                   builder -> builder.addAllSnowflake(snowflakes));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
-    private static
-    Queue<SubstituteLoggingEvent> redirectLogging(Class<? extends AbstractValidatingBuilder> cls) {
+    private static Queue<SubstituteLoggingEvent> redirectLogging(
+            Class<? extends AbstractValidatingBuilder> cls) {
         SubstituteLogger logger = (SubstituteLogger) Logging.get(cls);
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect(logger, loggedMessages);
