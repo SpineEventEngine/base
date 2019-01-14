@@ -20,6 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -51,9 +53,10 @@ public final class ResolveImports extends GenerationTask {
      * The path to parent directory.
      */
     private static final String PARENT_DIR = "../";
-    //TODO:2019-01-13:dmitry.grankin: Calculate count depending on the project root and the gen dir path.
-    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
-    public static final String PROJECT_SRC_DIR = "main/";
+    @VisibleForTesting
+    static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
+    @VisibleForTesting
+    static final String PROJECT_SRC_DIR = "main/";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -86,18 +89,20 @@ public final class ResolveImports extends GenerationTask {
      * Attempts to resolve an import in the file.
      *
      * <p>In particular, replaces library-like imports by relative paths
-     * if the imported file {@linkplain #belongsToModule(String, Directory) belongs}
+     * if the imported file {@linkplain #belongsToModule(Path, Directory) belongs}
      * to the currently processed module.
      */
-    private static ImportSnippet resolveImport(ImportSnippet resolvable,
-                                               FileName fileName,
-                                               Directory generatedRoot) {
+    @VisibleForTesting
+    static ImportSnippet resolveImport(ImportSnippet resolvable,
+                                       FileName fileName,
+                                       Directory generatedRoot) {
         boolean isSpine = resolvable.isSpine();
         if (!isSpine) {
             return resolvable;
         }
-        String filePath = resolvable.importedFilePath();
-        String filePathInSources = PROJECT_SRC_DIR + filePath;
+        Path filePath = resolvable.importedFilePath();
+        Path filePathInSources = Paths.get(PROJECT_SRC_DIR)
+                                      .resolve(filePath);
         if (!belongsToModule(filePathInSources, generatedRoot)) {
             return resolvable;
         }
@@ -111,7 +116,7 @@ public final class ResolveImports extends GenerationTask {
      *
      * <p>The method assumes a specific file structure.
      */
-    private static boolean belongsToModule(String filePath, Directory generatedRoot) {
+    private static boolean belongsToModule(Path filePath, Directory generatedRoot) {
         Path modulePath = generatedRoot.getPath()
                                        .resolve(MODULE_RELATIVE_TO_PROTO);
         Path absolutePath = modulePath.resolve(filePath);

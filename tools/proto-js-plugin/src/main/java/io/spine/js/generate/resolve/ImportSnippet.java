@@ -20,13 +20,16 @@
 
 package io.spine.js.generate.resolve;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A line of a source Javascript file with an import statement, which is going to be resolved.
  */
-class ImportSnippet {
+public class ImportSnippet {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
@@ -36,7 +39,7 @@ class ImportSnippet {
 
     private final String text;
 
-    ImportSnippet(String text) {
+    public ImportSnippet(String text) {
         checkArgument(hasImport(text), "The text should contain an import statement.");
         this.text = text;
     }
@@ -64,18 +67,18 @@ class ImportSnippet {
      *
      * <p>Unlike {@link #path()} the method skips a library name if it is present.
      */
-    String importedFilePath() {
+    Path importedFilePath() {
         String path = path();
         boolean relativeToParent = path.startsWith("../");
         if (relativeToParent) {
-            return path;
+            return Paths.get(path);
         }
         int separatorIndex = path.indexOf(IMPORT_PATHS_SEPARATOR);
         checkState(separatorIndex != -1,
                    "The import path %s is expected to contain the separator `%s`.",
                    path, IMPORT_PATHS_SEPARATOR);
         String result = path.substring(separatorIndex + 1);
-        return result;
+        return Paths.get(result);
     }
 
     /**
