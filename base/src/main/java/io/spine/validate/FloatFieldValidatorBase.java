@@ -32,8 +32,8 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
      * @param fieldValue
      *         the value to validate
      */
-    FloatFieldValidatorBase(FieldValue fieldValue, FieldValue previousValue) {
-        super(fieldValue, previousValue);
+    FloatFieldValidatorBase(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

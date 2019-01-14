@@ -32,11 +32,9 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
      *
      * @param fieldValue
      *         the value to validate
-     * @param previousValue
-     *         previous value of the field
      */
-    FloatFieldValidator(FieldValue fieldValue, FieldValue previousValue) {
-        super(fieldValue, previousValue);
+    FloatFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override
