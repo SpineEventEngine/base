@@ -55,6 +55,8 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
     @VisibleForTesting
+    static final String SRC_RELATIVE_TO_PROTO = PARENT_DIR;
+    @VisibleForTesting
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
     static final String PROJECT_SRC_DIR = "main/";
 
@@ -101,12 +103,11 @@ public final class ResolveImports extends GenerationTask {
             return resolvable;
         }
         String filePath = resolvable.importedFilePath();
-        String filePathInSources = PROJECT_SRC_DIR + filePath;
-        if (!belongsToModule(filePathInSources, generatedRoot)) {
+        if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
         }
-        String pathPrefix = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
-        ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePathInSources);
+        String pathPrefix = SRC_RELATIVE_TO_PROTO + fileName.pathToRoot();
+        ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
     }
 
@@ -118,7 +119,8 @@ public final class ResolveImports extends GenerationTask {
     static boolean belongsToModule(String filePath, Directory generatedRoot) {
         Path modulePath = generatedRoot.getPath()
                                        .resolve(MODULE_RELATIVE_TO_PROTO);
-        Path absolutePath = modulePath.resolve(filePath);
+        Path absolutePath = modulePath.resolve(PROJECT_SRC_DIR)
+                                      .resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
         log().debug("Checking if the file {} belongs to the module, result: {}",
