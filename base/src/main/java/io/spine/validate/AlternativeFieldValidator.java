@@ -139,11 +139,8 @@ final class AlternativeFieldValidator implements Logging {
             violations.add(notFound);
             return false;
         }
-        FieldContext context = fieldValue.get()
-                                         .context();
-        FieldValidator<?> fieldValidator =
-                fieldValue.get()
-                          .createValidatorAssumingRequired(FieldValue.unsetValue(context));
+        FieldValidator<?> fieldValidator = fieldValue.get()
+                                                     .createValidatorAssumingRequired();
         List<ConstraintViolation> violations = fieldValidator.validate();
         // Do not add violations to the results because we have options.
         // The violation would be that none of the field or combinations is defined.

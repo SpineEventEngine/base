@@ -32,10 +32,9 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
      *
      * @param fieldValue
      *         the value to validate
-     * @param previousValue previous value of the field
      */
-    IntegerFieldValidator(FieldValue fieldValue, FieldValue previousValue) {
-        super(fieldValue, previousValue);
+    IntegerFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override
