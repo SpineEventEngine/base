@@ -54,7 +54,7 @@ project.compileTestJava.enabled = false
 task compileProtoToJs
 
 protobuf {
-    generatedFilesBaseDir = "$projectDir/proto"
+    generatedFilesBaseDir = "$projectDir/generated"
     protoc {
         artifact = deps.build.protoc
     }
