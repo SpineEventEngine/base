@@ -23,11 +23,13 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.java.ClassName;
+import io.spine.logging.Logging;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
@@ -65,7 +67,7 @@ public final class ModuleAnnotator {
      *
      * <p>Typically, represents a piece of routine source code annotation work to perform.
      */
-    public interface Job {
+    public interface Job extends Logging {
 
         /**
          * Executes this job.
@@ -93,20 +95,24 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
-            ClassName annotation = javaAnnotation;
-            ApiOption option = protobufOption;
-            factory.createFileAnnotator(annotation, option)
+            _debug("Annotating sources marked as `{}` with `{}`.", protobufOption, javaAnnotation);
+            _debug("Annotating by the file option.");
+            factory.createFileAnnotator(javaAnnotation, protobufOption)
                    .annotate();
-            factory.createMessageAnnotator(annotation, option)
+            _debug("Annotating by the message option.");
+            factory.createMessageAnnotator(javaAnnotation, protobufOption)
                    .annotate();
-            if (option.supportsServices()) {
-                factory.createServiceAnnotator(annotation, option)
+            if (protobufOption.supportsServices()) {
+                _debug("Annotating by the service option.");
+                factory.createServiceAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
-            if (option.supportsFields()) {
-                factory.createFieldAnnotator(annotation, option)
+            if (protobufOption.supportsFields()) {
+                _debug("Annotating by the field option.");
+                factory.createFieldAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
+            _debug("Option `{}` processed.", protobufOption);
         }
     }
 
@@ -127,7 +133,30 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
+            _debug("Annotating classes matching `{}` with `{}`.", pattern, javaAnnotation);
             factory.createPatternAnnotator(javaAnnotation, pattern)
+                   .annotate();
+            _debug("Pattern `{}` processed.", pattern);
+        }
+    }
+
+    /**
+     * An annotation {@link Job} which annotates methods matching certain naming patterns.
+     */
+    private static final class MethodNameJob implements Job {
+
+        private final ImmutableSet<MethodPattern> patterns;
+        private final ClassName javaAnnotation;
+
+        private MethodNameJob(ImmutableSet<MethodPattern> patterns, ClassName javaAnnotation) {
+            this.patterns = patterns;
+            this.javaAnnotation = javaAnnotation;
+        }
+
+        @Override
+        public void execute(AnnotatorFactory factory) {
+            _debug("Annotating methods matching patterns {} with `{}`.", patterns, javaAnnotation);
+            factory.createMethodAnnotator(javaAnnotation, patterns)
                    .annotate();
         }
     }
@@ -172,8 +201,9 @@ public final class ModuleAnnotator {
 
         private final Set<Job> jobs;
         private AnnotatorFactory annotatorFactory;
-        private ImmutableSet<@Regex String> internalPatterns;
         private ClassName internalAnnotation;
+        private ImmutableSet<@Regex String> internalPatterns = ImmutableSet.of();
+        private ImmutableSet<String> internalMethodNames = ImmutableSet.of();
 
         /**
          * Prevents direct instantiation.
@@ -184,7 +214,6 @@ public final class ModuleAnnotator {
 
         public Builder setAnnotatorFactory(AnnotatorFactory annotatorFactory) {
             this.annotatorFactory = checkNotNull(annotatorFactory);
-            this.internalPatterns = ImmutableSet.of();
             return this;
         }
 
@@ -201,7 +230,7 @@ public final class ModuleAnnotator {
         }
 
         /**
-         * Adds patters for Java classes to be annotated as {@code internal}.
+         * Sets patters for Java classes to be annotated as {@code internal}.
          *
          * <p>The patterns are {@linkplain java.util.regex.Pattern#compile(String) compiled} with
          * no additional flags.
@@ -214,22 +243,32 @@ public final class ModuleAnnotator {
          * @see #setInternalAnnotation
          */
         public Builder setInternalPatterns(ImmutableSet<@Regex String> patterns) {
-            checkNotNull(patterns);
-            this.internalPatterns = patterns;
+            this.internalPatterns = checkNotNull(patterns);;
+            return this;
+        }
+
+        /**
+         * Sets names of methods to be annotated as {@code internal}.
+         *
+         * @param methodNames
+         *         the method names
+         * @see #setInternalAnnotation
+         */
+        public Builder setInternalMethodNames(ImmutableSet<String> methodNames) {
+            this.internalMethodNames = checkNotNull(methodNames);;
             return this;
         }
 
         /**
          * Specifies the {@code internal} annotation class name.
          *
-         * <p>This annotation will be used to mark classes matching
-         * {@linkplain #setInternalPatterns internal patterns}.
+         * <p>This annotation will be used to mark internal classes and methods.
          *
          * @param internalAnnotation
          *         annotation class name
          */
         public Builder setInternalAnnotation(ClassName internalAnnotation) {
-            this.internalAnnotation = internalAnnotation;
+            this.internalAnnotation = checkNotNull(internalAnnotation);
             return this;
         }
 
@@ -245,6 +284,11 @@ public final class ModuleAnnotator {
                             .map(ClassNamePattern::compile)
                             .map(pattern -> new PatternJob(pattern, internalAnnotation))
                             .forEach(this::add);
+            ImmutableSet<MethodPattern> methodPatterns = internalMethodNames
+                    .stream()
+                    .map(MethodPattern::exactly)
+                    .collect(toImmutableSet());
+            add(new MethodNameJob(methodPatterns, internalAnnotation));
             return new ModuleAnnotator(this);
         }
     }
