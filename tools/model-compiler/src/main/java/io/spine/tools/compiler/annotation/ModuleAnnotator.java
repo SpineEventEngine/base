@@ -201,9 +201,9 @@ public final class ModuleAnnotator {
 
         private final Set<Job> jobs;
         private AnnotatorFactory annotatorFactory;
-        private ImmutableSet<@Regex String> internalPatterns;
         private ClassName internalAnnotation;
-        private ImmutableSet<String> internalMethodNames;
+        private ImmutableSet<@Regex String> internalPatterns = ImmutableSet.of();
+        private ImmutableSet<String> internalMethodNames = ImmutableSet.of();
 
         /**
          * Prevents direct instantiation.
@@ -214,7 +214,6 @@ public final class ModuleAnnotator {
 
         public Builder setAnnotatorFactory(AnnotatorFactory annotatorFactory) {
             this.annotatorFactory = checkNotNull(annotatorFactory);
-            this.internalPatterns = ImmutableSet.of();
             return this;
         }
 
@@ -244,8 +243,7 @@ public final class ModuleAnnotator {
          * @see #setInternalAnnotation
          */
         public Builder setInternalPatterns(ImmutableSet<@Regex String> patterns) {
-            checkNotNull(patterns);
-            this.internalPatterns = patterns;
+            this.internalPatterns = checkNotNull(patterns);;
             return this;
         }
 
@@ -257,8 +255,7 @@ public final class ModuleAnnotator {
          * @see #setInternalAnnotation
          */
         public Builder setInternalMethodNames(ImmutableSet<String> methodNames) {
-            checkNotNull(methodNames);
-            this.internalMethodNames = methodNames;
+            this.internalMethodNames = checkNotNull(methodNames);;
             return this;
         }
 
@@ -271,7 +268,7 @@ public final class ModuleAnnotator {
          *         annotation class name
          */
         public Builder setInternalAnnotation(ClassName internalAnnotation) {
-            this.internalAnnotation = internalAnnotation;
+            this.internalAnnotation = checkNotNull(internalAnnotation);
             return this;
         }
 

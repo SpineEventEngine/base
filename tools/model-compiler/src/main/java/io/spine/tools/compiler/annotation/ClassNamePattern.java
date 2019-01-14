@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.base.Objects;
 import io.spine.code.java.ClassName;
 import org.checkerframework.checker.regex.qual.Regex;
 
@@ -35,7 +36,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  *
  * <p>The pattern is based on the Java {@linkplain java.util.regex.Pattern regular expression}.
  */
-final class ClassNamePattern {
+public final class ClassNamePattern {
 
     private final Pattern pattern;
 
@@ -75,5 +76,29 @@ final class ClassNamePattern {
     @Override
     public String toString() {
         return pattern.pattern();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Does not account for the <strong>effective</strong> regex pattern equality. If two
+     * patterns are constructed differently, they are <strong>not</strong> equal according to this
+     * method. Only equal pattern string literals yield equal patterns.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ClassNamePattern pattern1 = (ClassNamePattern) o;
+        return Objects.equal(pattern.pattern(), pattern1.pattern.pattern());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(pattern);
     }
 }

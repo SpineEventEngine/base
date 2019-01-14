@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
@@ -180,6 +181,26 @@ public final class ApiOption {
     @Override
     public String toString() {
         return messageOption.getDescriptor().getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApiOption option = (ApiOption) o;
+        return Objects.equal(fileOption, option.fileOption) &&
+                Objects.equal(messageOption, option.messageOption) &&
+                Objects.equal(serviceOption, option.serviceOption) &&
+                Objects.equal(fieldOption, option.fieldOption);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(fileOption, messageOption, serviceOption, fieldOption);
     }
 
     /**

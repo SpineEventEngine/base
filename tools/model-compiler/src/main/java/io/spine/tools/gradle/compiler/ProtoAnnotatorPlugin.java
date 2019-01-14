@@ -23,6 +23,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.java.ClassName;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
+import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -213,9 +214,8 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             }
             Path generatedProtoPath = Paths.get(generatedProtoDir);
             Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-            AnnotatorFactory annotatorFactory = AnnotatorFactory.newInstance(setFile,
-                                                                             generatedProtoPath,
-                                                                             generatedGrpcPath);
+            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                    .newInstance(setFile, generatedProtoPath, generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
             ClassName internalClassName = annotations.internalClassName();
             ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);

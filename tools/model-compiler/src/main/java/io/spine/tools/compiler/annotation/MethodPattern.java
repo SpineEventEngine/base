@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -28,7 +29,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A pattern matching a method signature.
  */
-final class MethodPattern {
+public final class MethodPattern {
 
     private final String name;
 
@@ -66,5 +67,22 @@ final class MethodPattern {
         return MoreObjects.toStringHelper(this)
                           .add("name", name)
                           .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MethodPattern pattern = (MethodPattern) o;
+        return Objects.equal(name, pattern.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 }
