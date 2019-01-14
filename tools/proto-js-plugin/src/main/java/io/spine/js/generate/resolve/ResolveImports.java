@@ -101,7 +101,7 @@ public final class ResolveImports extends GenerationTask {
             return resolvable;
         }
         String filePath = resolvable.importedFilePath();
-        String filePathInSources = PROJECT_SRC_DIR + filePath;;
+        String filePathInSources = PROJECT_SRC_DIR + filePath;
         if (!belongsToModule(filePathInSources, generatedRoot)) {
             return resolvable;
         }
@@ -115,7 +115,7 @@ public final class ResolveImports extends GenerationTask {
      *
      * <p>The method assumes a specific file structure.
      */
-    private static boolean belongsToModule(String filePath, Directory generatedRoot) {
+    static boolean belongsToModule(String filePath, Directory generatedRoot) {
         Path modulePath = generatedRoot.getPath()
                                        .resolve(MODULE_RELATIVE_TO_PROTO);
         Path absolutePath = modulePath.resolve(filePath);
