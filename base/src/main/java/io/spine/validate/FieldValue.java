@@ -30,6 +30,7 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -62,6 +63,21 @@ final class FieldValue {
     }
 
     /**
+     * Returns a new instance of an unset field.
+     *
+     * @param context
+     *         the context of the field
+     * @return a new instance that represents an unset field
+     */
+    static FieldValue unsetValue(FieldContext context) {
+        checkNotNull(context);
+        List<?> value = ImmutableList.of();
+        FieldDescriptor fieldDescriptor = context.getTarget();
+        FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
+        return new FieldValue(value, context, declaration);
+    }
+
+    /**
      * Creates a new instance from the value.
      *
      * @param rawValue
@@ -81,12 +97,12 @@ final class FieldValue {
         return new FieldValue(value, context, declaration);
     }
 
-    FieldValidator<?> createValidator() {
-        return createValidator(false);
+    FieldValidator<?> createValidator(FieldValue previousValue) {
+        return createValidator(previousValue, false);
     }
 
-    FieldValidator<?> createValidatorAssumingRequired() {
-        return createValidator(true);
+    FieldValidator<?> createValidatorAssumingRequired(FieldValue previousValue) {
+        return createValidator(previousValue, true);
     }
 
     /**
@@ -97,27 +113,27 @@ final class FieldValue {
      *         if the constraint is not set explicitly
      */
     @SuppressWarnings("OverlyComplexMethod")
-    private FieldValidator<?> createValidator(boolean assumeRequired) {
+    private FieldValidator<?> createValidator(FieldValue previousValue, boolean assumeRequired) {
         JavaType fieldType = javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(this, assumeRequired);
+                return new MessageFieldValidator(previousValue, this, assumeRequired);
             case INT:
-                return new IntegerFieldValidator(this);
+                return new IntegerFieldValidator(previousValue, this);
             case LONG:
-                return new LongFieldValidator(this);
+                return new LongFieldValidator(previousValue, this);
             case FLOAT:
-                return new FloatFieldValidator(this);
+                return new FloatFieldValidator(previousValue, this);
             case DOUBLE:
-                return new DoubleFieldValidator(this);
+                return new DoubleFieldValidator(previousValue, this);
             case STRING:
-                return new StringFieldValidator(this, assumeRequired);
+                return new StringFieldValidator(previousValue, this, assumeRequired);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(this);
+                return new ByteStringFieldValidator(previousValue, this);
             case BOOLEAN:
-                return new BooleanFieldValidator(this);
+                return new BooleanFieldValidator(previousValue, this);
             case ENUM:
-                return new EnumFieldValidator(this);
+                return new EnumFieldValidator(previousValue, this);
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }

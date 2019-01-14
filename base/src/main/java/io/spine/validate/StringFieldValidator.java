@@ -38,12 +38,14 @@ class StringFieldValidator extends FieldValidator<String> {
      *
      * @param fieldValue
      *         the value to validate
+     * @param previousValue
+     *         previous value of the field
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, true);
+    StringFieldValidator(FieldValue fieldValue, FieldValue previousValue, boolean assumeRequired) {
+        super(fieldValue, previousValue, assumeRequired, true);
         this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
