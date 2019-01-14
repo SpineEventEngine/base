@@ -18,25 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
-
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
-
-/**
- * A factory for {@linkplain Annotator Annotators}.
+/* 
+ * As of Gradle 5.0, support for nested builds without `settings.gradle` was removed.
+ * (see https://docs.gradle.org/5.0-milestone-1/release-notes.html issue #6287 under "Fixed issues")
+ * 
+ * Since `base-validating-builders` doesn't need any custom settings, this file is empty, but it has
+ * to exist for a nested build to work.
  */
-public interface AnnotatorFactory {
-
-    Annotator createFileAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createMessageAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createFieldAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createServiceAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern);
-
-    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns);
-}

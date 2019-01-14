@@ -18,25 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.gradle.compiler.given;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * A factory for {@linkplain Annotator Annotators}.
- */
-public interface AnnotatorFactory {
-
-    Annotator createFileAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createMessageAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createFieldAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createServiceAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern);
-
-    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns);
-}
+import javax.annotation.ParametersAreNonnullByDefault;

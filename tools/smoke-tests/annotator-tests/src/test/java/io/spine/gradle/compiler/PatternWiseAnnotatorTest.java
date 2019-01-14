@@ -18,25 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+package io.spine.gradle.compiler;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
+import io.spine.test.annotator.complex.Matter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A factory for {@linkplain Annotator Annotators}.
- */
-public interface AnnotatorFactory {
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
 
-    Annotator createFileAnnotator(ClassName annotation, ApiOption option);
+@DisplayName("ProtoAnnotatorPlugin should pick up `internalClassPatterns` and")
+class PatternWiseAnnotatorTest {
 
-    Annotator createMessageAnnotator(ClassName annotation, ApiOption option);
+    @Test
+    @DisplayName("mark specified top-level classes")
+    void markSpecifiedClasses() {
+        assertInternal(ScaffoldingOrBuilder.class);
+        assertInternal(BetaAllProto.class);
+    }
 
-    Annotator createFieldAnnotator(ClassName annotation, ApiOption option);
+    @Test
+    @DisplayName("mark nested messages and enums")
+    void markNestedTypes() {
+        assertInternal(Matter.Body.Molecule.class);
+        assertInternal(Matter.Body.Molecule.Atom.class);
+        assertInternal(Matter.Field.class);
 
-    Annotator createServiceAnnotator(ClassName annotation, ApiOption option);
-
-    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern);
-
-    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns);
+        assertNotInternal(Matter.class);
+        assertNotInternal(Matter.Body.class);
+    }
 }

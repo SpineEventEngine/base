@@ -20,19 +20,17 @@
 
 package io.spine.gradle.compiler;
 
-import io.spine.test.annotation.Alpha;
-import io.spine.test.annotation.Attempt;
-import io.spine.test.annotation.Private;
-import io.spine.test.annotation.ServiceProviderInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertBeta;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertExperimental;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotBeta;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotExperimental;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotSpi;
+import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertSpi;
 
 @DisplayName("ProtoAnnotatorPlugin should")
 class ProtoAnnotatorPluginTest {
@@ -54,14 +52,6 @@ class ProtoAnnotatorPluginTest {
         assertNotSpi(ImplicitlyInternalServiceGrpc.class);
     }
 
-    private static void assertSpi(AnnotatedElement element) {
-        assertAnnotated(element, ServiceProviderInterface.class);
-    }
-
-    private static void assertNotSpi(AnnotatedElement element) {
-        assertNotAnnotated(element, ServiceProviderInterface.class);
-    }
-
     @Test
     @DisplayName("annotate internal API elements with provided annotation")
     void annotateInternal() throws NoSuchMethodException {
@@ -79,14 +69,6 @@ class ProtoAnnotatorPluginTest {
         assertNotInternal(SpiServiceGrpc.class);
         assertNotInternal(ImplicitlySpiMessage.class);
         assertNotInternal(ImplicitlySpiServiceGrpc.class);
-    }
-
-    private static void assertInternal(AnnotatedElement element) {
-        assertAnnotated(element, Private.class);
-    }
-
-    private static void assertNotInternal(AnnotatedElement element) {
-        assertNotAnnotated(element, Private.class);
     }
 
     @Test
@@ -108,14 +90,6 @@ class ProtoAnnotatorPluginTest {
         assertNotExperimental(ImplicitlySpiServiceGrpc.class);
     }
 
-    private static void assertExperimental(AnnotatedElement element) {
-        assertAnnotated(element, Attempt.class);
-    }
-
-    private static void assertNotExperimental(AnnotatedElement element) {
-        assertNotAnnotated(element, Attempt.class);
-    }
-
     @Test
     @DisplayName("annotate beta API elements with provided annotation")
     void annotateBeta() throws NoSuchMethodException {
@@ -132,27 +106,5 @@ class ProtoAnnotatorPluginTest {
         assertNotBeta(Scaffolding.class.getDeclaredMethod("getHidden"));
         assertNotBeta(ImplicitlyExperimentalMessage.class);
         assertNotBeta(ImplicitlyExperimentalServiceGrpc.class);
-    }
-
-    private static void assertBeta(AnnotatedElement element) {
-        assertAnnotated(element, Alpha.class);
-    }
-
-    private static void assertNotBeta(AnnotatedElement element) {
-        assertNotAnnotated(element, Alpha.class);
-    }
-
-    private static void assertAnnotated(AnnotatedElement element,
-                                        Class<? extends Annotation> expected) {
-        assertTrue(element.isAnnotationPresent(expected),
-                   format("%s must be annotated with %s.", element, expected.getSimpleName()));
-    }
-
-    private static void assertNotAnnotated(AnnotatedElement element,
-                                           Class<? extends Annotation> notExpected) {
-        assertFalse(element.isAnnotationPresent(notExpected),
-                    format("%s must NOT be annotated with %s.",
-                           element,
-                           notExpected.getSimpleName()));
     }
 }

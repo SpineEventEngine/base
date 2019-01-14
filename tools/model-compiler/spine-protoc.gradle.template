@@ -39,7 +39,8 @@ final def spineFolderName = @spineDir@
 
 buildscript {
     repositories {
-        mavenCentral()
+        mavenLocal()
+        jcenter()
     }
 
     ext {
@@ -54,14 +55,16 @@ configurations {
 }
 
 repositories {
-    maven {
-        url = 'http://maven.teamdev.com/repository/spine'
-    }
-    maven {
-        url = 'http://maven.teamdev.com/repository/spine-snapshots'
-    }
-    mavenCentral()
     mavenLocal()
+    jcenter()
+
+    // Spine-specific Maven repositories.
+    maven {
+        url = 'https://spine.mycloudrepo.io/public/repositories/releases'
+    }
+    maven {
+        url = 'https://spine.mycloudrepo.io/public/repositories/snapshots'
+    }
 }
 
 dependencies {

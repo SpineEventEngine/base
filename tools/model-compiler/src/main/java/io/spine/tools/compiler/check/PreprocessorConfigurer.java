@@ -20,15 +20,11 @@
 
 package io.spine.tools.compiler.check;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.invocation.Gradle;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompile;
 
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
@@ -38,9 +34,6 @@ import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompil
 public class PreprocessorConfigurer {
 
     static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
-
-    @VisibleForTesting
-    static final String PREPROCESSOR_ARG = "-processorpath";
 
     private final Project project;
 
@@ -74,37 +67,5 @@ public class PreprocessorConfigurer {
             preprocessorConfig = configurations.create(PREPROCESSOR_CONFIG_NAME);
         }
         return preprocessorConfig;
-    }
-
-    /**
-     * Makes sure the given configuration is added to the preprocessor path of all the
-     * {@code JavaCompile} tasks of the project.
-     *
-     * <p>The action is executed on the {@code projectEvaluated} stage.
-     */
-    public void addConfigurePreprocessorAction(Configuration preprocessorConfig) {
-        checkNotNull(preprocessorConfig);
-        Action<Gradle> configurePreprocessor =
-                configurePreprocessorAction(preprocessorConfig);
-        Gradle gradle = project.getGradle();
-        gradle.projectsEvaluated(configurePreprocessor);
-    }
-
-    /**
-     * Converts the {@link #configurePreprocessor(Configuration)} method to the Gradle
-     * {@link Action}.
-     */
-    private Action<Gradle>
-    configurePreprocessorAction(Configuration preprocessorConfig) {
-        return gradle -> configurePreprocessor(preprocessorConfig);
-    }
-
-    /**
-     * Adds the given preprocessor configuration as the preprocessor path to all the
-     * {@code JavaCompile} tasks of the project.
-     */
-    @SuppressWarnings("TypeMayBeWeakened") // More specific type expresses the method intent better.
-    private void configurePreprocessor(Configuration preprocessorConfig) {
-        addArgsToJavaCompile(project, PREPROCESSOR_ARG, preprocessorConfig.getAsPath());
     }
 }
