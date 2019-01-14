@@ -26,8 +26,6 @@ import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,16 +55,16 @@ class ImportSnippetTest {
     @Test
     @DisplayName("obtain the file path skipping the library name")
     void importedFilePathSkippingLibrary() {
-        Path filePath = libraryFileImport.importedFilePath();
-        assertThat(filePath.toString()).isEqualTo(importedFile.value());
+        String filePath = libraryFileImport.importedFilePath();
+        assertThat(filePath).isEqualTo(importedFile.value());
     }
 
     @Test
     @DisplayName("obtain the file path relative to the current directory")
     void importedFilePathRelativeToCurrentDir() {
         ImportSnippet fileImport = Given.importWithPath("./file.js");
-        Path filePath = fileImport.importedFilePath();
-        assertThat(filePath.toString()).isEqualTo("file.js");
+        String filePath = fileImport.importedFilePath();
+        assertThat(filePath).isEqualTo("file.js");
     }
 
     @Test
@@ -74,8 +72,8 @@ class ImportSnippetTest {
     void importedFilePathRelativeToParentDir() {
         String filePath = "../file.js";
         ImportSnippet fileImport = Given.importWithPath(filePath);
-        Path parsedFilePath = fileImport.importedFilePath();
-        assertThat(parsedFilePath.toString()).isEqualTo(filePath);
+        String parsedFilePath = fileImport.importedFilePath();
+        assertThat(parsedFilePath).isEqualTo(filePath);
     }
 
     @Test
