@@ -48,15 +48,17 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public final class ResolveImports extends GenerationTask {
 
-    /**
-     * The path to parent directory.
-     */
+    /** The path to parent directory. */
     private static final String PARENT_DIR = "../";
+    /**
+     * The relative path from the Protobuf root directory to the sources directory.
+     *
+     * <p>The path is specific to Spine Web.
+     */
     private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
-    @VisibleForTesting
-    static final String SRC_RELATIVE_TO_PROTO = PARENT_DIR;
+    /** A part of the import path to the main sources directory. */
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    private static final String PROJECT_SRC_DIR = "main";
+    private static final String PROJECT_SRC_DIR = "main/";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -101,8 +103,7 @@ public final class ResolveImports extends GenerationTask {
         if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
         }
-        String pathPrefix = SRC_RELATIVE_TO_PROTO + resolvable.fileName()
-                                                              .pathToRoot();
+        String pathPrefix = fileRelativeToSources(resolvable.fileName());
         ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
     }
@@ -129,6 +130,17 @@ public final class ResolveImports extends GenerationTask {
         Path result = modulePath.resolve(PROJECT_SRC_DIR)
                                 .normalize();
         return result;
+    }
+
+    /**
+     * Obtains the relative path to the sources directory from the path of the file.
+     *
+     * <p>The path should be relative and contain slashes as separators since it
+     * will be used in JS imports.
+     */
+    @VisibleForTesting
+    static String fileRelativeToSources(FileName fileName) {
+        return MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot() + PROJECT_SRC_DIR;
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {

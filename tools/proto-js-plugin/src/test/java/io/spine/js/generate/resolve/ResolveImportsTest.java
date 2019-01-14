@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.ResolveImports.SRC_RELATIVE_TO_PROTO;
 import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,7 +51,7 @@ class ResolveImportsTest {
     @DisplayName("resolve Spine library import if it is present in the module")
     void resolveSpineImport() {
         ImportSnippet importLine = importLine("spine/" + importedFilePath);
-        String expectedPathPrefix = SRC_RELATIVE_TO_PROTO + importInto.pathToRoot();
+        String expectedPathPrefix = ResolveImports.fileRelativeToSources(importInto);
         String expectedPath = expectedPathPrefix + importedFilePath;
         assertImportPath(importLine, expectedPath);
     }
@@ -79,6 +78,13 @@ class ResolveImportsTest {
         Path expected = Paths.get("src/main")
                              .toAbsolutePath();
         assertEquals(expected, sourcesDirectoryPath);
+    }
+
+    @Test
+    @DisplayName("compose the relative path to sources for a file")
+    void filePathRelativeToSources() {
+        String path = ResolveImports.fileRelativeToSources(importInto);
+        assertThat(path).isEqualTo("../../../../main/");
     }
 
     private void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
