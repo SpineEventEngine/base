@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -35,9 +36,12 @@ import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
@@ -163,9 +167,58 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
+        validateDistinct(descriptor, valueToValidate);
         FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
+    }
+
+    /**
+     * Validates the field against the {@code distinct} field option.
+     *
+     * <p>If the specified value already exists in the list represented by the specified descriptor,
+     * a {@code ConstraintViolationError} is thrown.
+     *
+     * @param descriptor
+     *         a descriptor for a field that is being validated
+     * @param fieldValue
+     *         a new value to be added to the collection represented by the repeated field
+     */
+    private void validateDistinct(Descriptors.FieldDescriptor descriptor, FieldValue fieldValue)
+            throws ValidationException {
+        if (fieldValue.valueOf(OptionsProto.distinct)) {
+            if (descriptor.isRepeated()) {
+                Set<?> current = new HashSet<>((Collection<?>) this.getMessageBuilder()
+                                                                   .getField(descriptor));
+                boolean allAdded = current.addAll(fieldValue.asList());
+                if (!allAdded) {
+                    throw distinctOptionViolated(descriptor, fieldValue);
+                }
+            } else {
+                throw distinctOptionCannotBeApplied(descriptor);
+            }
+        }
+    }
+
+    private ValidationException distinctOptionCannotBeApplied(FieldDescriptor descriptor) {
+        ConstraintViolation nonRepeatedDistinct = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Non repeated field %s cannot be `(distinct) = true`")
+                .addParam(descriptor.getFullName())
+                .build();
+        return new ValidationException(ImmutableList.of(nonRepeatedDistinct));
+    }
+
+    private static ValidationException distinctOptionViolated(FieldDescriptor descriptor,
+                                                              FieldValue value) {
+        ConstraintViolation distinctViolated = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Field %s can only contain distinct elements, can't add %s.")
+                .addParam(descriptor.getFullName())
+                .addParam(value.toString())
+                .build();
+        ValidationException exception = new ValidationException(ImmutableList.of(distinctViolated));
+        return exception;
     }
 
     /**
