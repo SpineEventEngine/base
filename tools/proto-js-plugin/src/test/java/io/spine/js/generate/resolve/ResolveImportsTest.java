@@ -29,6 +29,7 @@ import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,6 +75,6 @@ class ResolveImportsTest {
     }
 
     private String resolvedPathPrefix() {
-        return MODULE_RELATIVE_TO_PROTO + importInto.pathToRoot() + PROJECT_SRC_DIR;
+        return MODULE_RELATIVE_TO_PROTO + importInto.pathToRoot() + PROJECT_SRC_DIR + File.separator;
     }
 }

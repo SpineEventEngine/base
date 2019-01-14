@@ -56,7 +56,8 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
     @VisibleForTesting
-    static final String PROJECT_SRC_DIR = "main/";
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
+    static final String PROJECT_SRC_DIR = "main";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
