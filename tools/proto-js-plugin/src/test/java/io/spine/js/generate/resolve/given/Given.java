@@ -31,12 +31,12 @@ public class Given {
     private Given() {
     }
 
-    public static ImportSnippet googleProtobufImport(FileName file) {
-        return importWithPath("google-protobuf/" + file);
+    public static ImportSnippet googleProtobufImport(FileName file, FileName importSource) {
+        return importWithPath("google-protobuf/" + file, importSource);
     }
 
-    public static ImportSnippet importWithPath(String path) {
-        return new ImportSnippet(
-                format("let foo = require('%s');", path));
+    public static ImportSnippet importWithPath(String path, FileName importSource) {
+        String importText = format("let foo = require('%s');", path);
+        return new ImportSnippet(importText, importSource);
     }
 }

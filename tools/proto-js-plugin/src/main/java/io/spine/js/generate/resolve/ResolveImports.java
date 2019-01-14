@@ -52,13 +52,11 @@ public final class ResolveImports extends GenerationTask {
      * The path to parent directory.
      */
     private static final String PARENT_DIR = "../";
-    @VisibleForTesting
-    static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
+    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
     @VisibleForTesting
     static final String SRC_RELATIVE_TO_PROTO = PARENT_DIR;
-    @VisibleForTesting
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    static final String PROJECT_SRC_DIR = "main/";
+    private static final String PROJECT_SRC_DIR = "main/";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -78,9 +76,9 @@ public final class ResolveImports extends GenerationTask {
             String line = lines.get(i);
             boolean isImport = ImportSnippet.hasImport(line);
             if (isImport) {
-                ImportSnippet sourceImport = new ImportSnippet(line);
+                ImportSnippet sourceImport = new ImportSnippet(line, fileName);
                 ImportSnippet updatedImport =
-                        resolveImport(sourceImport, fileName, generatedRoot());
+                        resolveImport(sourceImport, generatedRoot());
                 lines.set(i, updatedImport.text());
             }
         }
@@ -95,9 +93,7 @@ public final class ResolveImports extends GenerationTask {
      * to the currently processed module.
      */
     @VisibleForTesting
-    static ImportSnippet resolveImport(ImportSnippet resolvable,
-                                       FileName fileName,
-                                       Directory generatedRoot) {
+    static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
         boolean isSpine = resolvable.isSpine();
         if (!isSpine) {
             return resolvable;
@@ -106,7 +102,8 @@ public final class ResolveImports extends GenerationTask {
         if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
         }
-        String pathPrefix = SRC_RELATIVE_TO_PROTO + fileName.pathToRoot();
+        String pathPrefix = SRC_RELATIVE_TO_PROTO + resolvable.fileName()
+                                                              .pathToRoot();
         ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
     }

@@ -25,7 +25,6 @@ import io.spine.code.java.SourceFile;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.GenerationTask;
-import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +34,7 @@ import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.ResolveImports.SRC_RELATIVE_TO_PROTO;
+import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ResolveImports task should")
@@ -52,15 +52,16 @@ class ResolveImportsTest {
     @Test
     @DisplayName("resolve Spine library import if it is present in the module")
     void resolveSpineImport() {
-        ImportSnippet importLine = Given.importWithPath("spine/" + importedFilePath);
-        String expectedPath = resolvedPathPrefix() + importedFilePath;
+        ImportSnippet importLine = importLine("spine/" + importedFilePath);
+        String expectedPathPrefix = SRC_RELATIVE_TO_PROTO + importInto.pathToRoot();
+        String expectedPath = expectedPathPrefix + importedFilePath;
         assertImportPath(importLine, expectedPath);
     }
 
     @Test
     @DisplayName("not resolve Spine library import if it present if the module")
     void notResolveSpineImport() {
-        ImportSnippet importLine = Given.importWithPath(importedFilePath.toString());
+        ImportSnippet importLine = importLine(importedFilePath.toString());
         assertImportPath(importLine, importedFilePath.toString());
     }
 
@@ -78,10 +79,10 @@ class ResolveImportsTest {
     }
 
     private ImportSnippet resolveImport(ImportSnippet importLine) {
-        return ResolveImports.resolveImport(importLine, importInto, fakeProtoRoot);
+        return ResolveImports.resolveImport(importLine, fakeProtoRoot);
     }
 
-    private String resolvedPathPrefix() {
-        return SRC_RELATIVE_TO_PROTO + importInto.pathToRoot();
+    private ImportSnippet importLine(String importPath) {
+        return importWithPath(importPath, importInto);
     }
 }

@@ -21,6 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.StringValue;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,10 @@ class ImportSnippetTest {
 
     private final FileName importedFile = FileName.from(Any.getDescriptor()
                                                            .getFile());
-    private final ImportSnippet libraryFileImport = Given.googleProtobufImport(importedFile);
+    private final FileName importSource = FileName.from(StringValue.getDescriptor()
+                                                                   .getFile());
+    private final ImportSnippet libraryFileImport = Given.googleProtobufImport(importedFile,
+                                                                               importSource);
 
     @Test
     @DisplayName("extract the import path")
@@ -62,7 +66,7 @@ class ImportSnippetTest {
     @Test
     @DisplayName("obtain the file path relative to the current directory")
     void importedFilePathRelativeToCurrentDir() {
-        ImportSnippet fileImport = Given.importWithPath("./file.js");
+        ImportSnippet fileImport = importWithPath("./file.js");
         String filePath = fileImport.importedFilePath();
         assertThat(filePath).isEqualTo("file.js");
     }
@@ -71,7 +75,7 @@ class ImportSnippetTest {
     @DisplayName("obtain the file path relative to the parent directory")
     void importedFilePathRelativeToParentDir() {
         String filePath = "../file.js";
-        ImportSnippet fileImport = Given.importWithPath(filePath);
+        ImportSnippet fileImport = importWithPath(filePath);
         String parsedFilePath = fileImport.importedFilePath();
         assertThat(parsedFilePath).isEqualTo(filePath);
     }
@@ -79,7 +83,7 @@ class ImportSnippetTest {
     @Test
     @DisplayName("recognize a Spine library")
     void recognizeSpine() {
-        ImportSnippet spineImport = Given.importWithPath("spine/something");
+        ImportSnippet spineImport = importWithPath("spine/something");
         assertTrue(spineImport.isSpine());
     }
 
@@ -89,4 +93,7 @@ class ImportSnippetTest {
         assertFalse(libraryFileImport.isSpine());
     }
 
+    private ImportSnippet importWithPath(String filePath) {
+        return Given.importWithPath(filePath, importSource);
+    }
 }

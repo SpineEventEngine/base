@@ -20,7 +20,10 @@
 
 package io.spine.js.generate.resolve;
 
+import io.spine.code.js.FileName;
+
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -35,10 +38,21 @@ public class ImportSnippet {
     private static final String SPINE_SIGN = "spine";
 
     private final String text;
+    private final FileName fileName;
 
-    public ImportSnippet(String text) {
+    /**
+     * Creates a new instance.
+     *
+     * @param text
+     *         the line with an import statement
+     * @param fileName
+     *         the name of the file the text belongs to
+     */
+    public ImportSnippet(String text, FileName fileName) {
         checkArgument(hasImport(text), "The text should contain an import statement.");
+        checkNotNull(fileName);
         this.text = text;
+        this.fileName = fileName;
     }
 
     /**
@@ -83,7 +97,7 @@ public class ImportSnippet {
      */
     ImportSnippet replacePath(CharSequence newPath) {
         String updatedText = text.replace(path(), newPath);
-        return new ImportSnippet(updatedText);
+        return new ImportSnippet(updatedText, fileName);
     }
 
     /**
@@ -91,6 +105,13 @@ public class ImportSnippet {
      */
     String text() {
         return text;
+    }
+
+    /**
+     * Obtains the name of the file the import belongs to.
+     */
+    FileName fileName() {
+        return fileName;
     }
 
     /**
