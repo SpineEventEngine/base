@@ -33,7 +33,7 @@ public class ImportSnippet {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
-    private static final String IMPORT_PATHS_SEPARATOR = "/";
+    static final String IMPORT_PATHS_SEPARATOR = "/";
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
     private static final String SPINE_SIGN = "spine";
 
@@ -122,5 +122,12 @@ public class ImportSnippet {
     boolean isSpine() {
         boolean result = path().startsWith(SPINE_SIGN);
         return result;
+    }
+
+    /**
+     * Obtains the separator used in Javascript imports.
+     */
+    static String pathSeparator() {
+        return IMPORT_PATHS_SEPARATOR;
     }
 }

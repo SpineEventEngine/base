@@ -20,8 +20,12 @@
 
 package io.spine.js.generate.resolve.given;
 
+import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.resolve.ImportSnippet;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.lang.String.format;
 
@@ -38,5 +42,20 @@ public class Given {
     public static ImportSnippet importWithPath(String path, FileName importSource) {
         String importText = format("let foo = require('%s');", path);
         return new ImportSnippet(importText, importSource);
+    }
+
+    public static Directory mainProtoRoot() {
+        return protoRoot("main");
+    }
+
+    public static Directory testProtoRoot() {
+        return protoRoot("test");
+    }
+
+    private static Directory protoRoot(String sourceSetName) {
+        Path path = Paths.get("src")
+                         .resolve(sourceSetName)
+                         .resolve("proto");
+        return Directory.at(path.toAbsolutePath());
     }
 }

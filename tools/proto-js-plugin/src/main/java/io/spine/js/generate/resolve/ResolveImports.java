@@ -46,10 +46,12 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  *
  * <p>The task should be performed last.
  */
+@SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
 public final class ResolveImports extends GenerationTask {
 
     /** The path to parent directory. */
     private static final String PARENT_DIR = "../";
+    private static final String SRC_RELATIVE_TO_MAIN_PROTO = PARENT_DIR;
     /**
      * The relative path from the Protobuf root directory to the sources directory.
      *
@@ -57,8 +59,7 @@ public final class ResolveImports extends GenerationTask {
      */
     private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
     /** A part of the import path to the main sources directory. */
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    private static final String PROJECT_SRC_DIR = "main/";
+    private static final String PROJECT_SRC_DIR = "main";
 
     public ResolveImports(Directory generatedRoot) {
         super(generatedRoot);
@@ -103,7 +104,7 @@ public final class ResolveImports extends GenerationTask {
         if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
         }
-        String pathPrefix = fileRelativeToSources(resolvable.fileName());
+        String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
         ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
     }
@@ -139,8 +140,15 @@ public final class ResolveImports extends GenerationTask {
      * will be used in JS imports.
      */
     @VisibleForTesting
-    static String fileRelativeToSources(FileName fileName) {
-        return MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot() + PROJECT_SRC_DIR;
+    static String fileRelativeToSources(Directory generatedRoot, FileName fileName) {
+        Path protoRootPath = generatedRoot.getPath();
+        boolean isMainSourceSet = protoRootPath.toString()
+                                               .contains(PROJECT_SRC_DIR);
+        if (isMainSourceSet) {
+            return SRC_RELATIVE_TO_MAIN_PROTO + fileName.pathToRoot();
+        }
+        String pathToParentDir = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
+        return pathToParentDir + PROJECT_SRC_DIR + ImportSnippet.pathSeparator();
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {
