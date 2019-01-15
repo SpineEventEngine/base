@@ -297,9 +297,10 @@ class ValidatingBuilderTest {
     @Test
     void testDistinctThrowsOnAddAll() {
         List snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
+        BlizzardVBuilder.newBuilder().addSnowflake(triangularSnowflake()).build();
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
-                   builder -> builder.addAllSnowflake(snowflakes));
+                   builder -> builder.addAllSnowflake(snowflakes).build());
     }
 
     @Test
