@@ -55,10 +55,12 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
     /** The name of the {@code object-parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
+    /** The name of the Spine Web artifact published to NPM. */
+    private static final String SPINE_WEB_NAME = "spine-web";
     @VisibleForTesting
-    static final String TYPE_PARSERS_FILE = "spine-web-client/client/parser/type-parsers.js";
+    static final String TYPE_PARSERS_FILE = SPINE_WEB_NAME + "/client/parser/type-parsers.js";
     @VisibleForTesting
-    static final String OBJECT_PARSER_FILE = "spine-web-client/client/parser/object-parser.js";
+    static final String OBJECT_PARSER_FILE = SPINE_WEB_NAME + "/client/parser/object-parser.js";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
