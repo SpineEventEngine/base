@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,12 +23,10 @@ package io.spine.tools.compiler.annotation.check;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * Interface for validation of a {@link JavaClassSource}.
- *
- * @author Dmytro Grankin
  */
-public interface SourceCheck extends Function<AbstractJavaSource<JavaClassSource>, Void> {
+public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
 }

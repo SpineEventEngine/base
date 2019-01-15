@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -246,8 +246,8 @@ public final class Identifier<I> {
      *         if the message is not a UUID message
      */
     public static <I extends Message> I generate(Class<I> idClass) {
-        UuidMessage<I> uuidMessage = UuidMessage.of(idClass);
-        return uuidMessage.generate();
+        UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
+        return uuidFactory.newUuid();
     }
 
     /**

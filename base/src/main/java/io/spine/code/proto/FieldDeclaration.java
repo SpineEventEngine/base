@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,12 +21,12 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.CommandMessage;
+import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
@@ -36,7 +36,6 @@ import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -159,7 +158,7 @@ public final class FieldDeclaration implements Logging {
      * Determines whether the field is a command ID.
      *
      * <p>A command ID is the first field of a message declared in a
-     * {@link io.spine.base.CommandMessage.File command file}.
+     * {@link MessageFile#COMMANDS commands file}.
      *
      * @return {@code true} if the field is a command ID, {@code false} otherwise
      */
@@ -234,6 +233,11 @@ public final class FieldDeclaration implements Logging {
         return new FieldDeclaration(valueDescriptor);
     }
 
+    /** Returns the name of the type of this field. */
+    public String typeName(){
+        return field.getType().name();
+    }
+
     private boolean isEntityField() {
         EntityOption entityOption = field.getContainingType()
                                          .getOptions()
@@ -262,9 +266,8 @@ public final class FieldDeclaration implements Logging {
 
     private boolean isCommandsFile() {
         FileDescriptor file = field.getFile();
-        boolean commandsFile = CommandMessage.File.predicate()
-                                                  .test(file);
-        return commandsFile;
+        boolean result = MessageFile.COMMANDS.test(file.toProto());
+        return result;
     }
 
     /**
@@ -273,53 +276,31 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        @Nullable String leadingComments = fieldLeadingComments(field.toProto())
-                .orElse(null);
-
-        return Optional.ofNullable(leadingComments);
+        LocationPath fieldPath = fieldPath();
+        return message.leadingComments(fieldPath);
     }
 
     /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(DescriptorProtos.FieldDescriptorProto field) {
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        if (message.isNested()) {
-            return Optional.empty();
-        }
-
-        LocationPath fieldPath = fieldPath(field);
-        return message.documentation()
-                      .leadingComments(fieldPath);
-    }
-
-    /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
+     * Returns the path to the field inside a message declaration.
      *
      * <p>Protobuf extensions are not supported.
      *
-     * @param field
-     *         the field to get location path
      * @return the field location path
      */
-    private LocationPath fieldPath(DescriptorProtos.FieldDescriptorProto field) {
+    private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(message.documentation()
-                                   .messagePath());
+        locationPath.addAll(message.path());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
+        int fieldIndex = fieldIndex();
+        locationPath.add(fieldIndex);
         return locationPath;
     }
 
-    private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
+    private int fieldIndex() {
+        FieldDescriptorProto fproto = this.field.toProto();
         return message.descriptor()
-                          .toProto()
-                          .getFieldList()
-                          .indexOf(field);
+                      .toProto()
+                      .getFieldList()
+                      .indexOf(fproto);
     }
 }

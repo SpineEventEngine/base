@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,32 +17,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PrimitiveType;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.List;
 import java.util.Optional;
+
+import static io.spine.tools.compiler.field.AccessorTemplates.adder;
+import static io.spine.tools.compiler.field.AccessorTemplates.allAdder;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.countGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.listGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.setter;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
 public final class RepeatedFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "addAll";
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    getter(),
+                    listGetter(),
+                    countGetter(),
+                    setter(),
+                    adder(),
+                    allAdder(),
+                    clearer()
+            );
 
     private final TypeName typeName;
 
     /**
      * Constructs a new instance based on component type.
      *
-     * @param componentTypeName the component type name
+     * @param declaration
+     *         the declaration of the field
      */
-    RepeatedFieldType(String componentTypeName) {
-        this.typeName = constructTypeNameFor(componentTypeName);
+    RepeatedFieldType(FieldDeclaration declaration) {
+        this.typeName = constructTypeNameFor(declaration.javaTypeName());
     }
 
     @Override
@@ -50,13 +72,18 @@ public final class RepeatedFieldType implements FieldType {
         return typeName;
     }
 
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return GENERATED_ACCESSORS;
+    }
+
     /**
-     * Returns "addAll" setter prefix,
-     * used to initialize a repeated field using with a call to Protobuf message builder.
+     * Returns "addAll" setter prefix, used to initialize a repeated field using with a call to
+     * Protobuf message builder.
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return allAdder();
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {

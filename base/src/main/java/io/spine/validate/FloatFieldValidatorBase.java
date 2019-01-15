@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,9 +26,6 @@ package io.spine.validate;
 abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
         extends NumberFieldValidator<V> {
 
-    private static final String INVALID_ID_TYPE_MSG =
-            "Entity ID field must not be a floating point number.";
-
     /**
      * Creates a new validator instance.
      *
@@ -45,7 +42,9 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
         V value = getValues().get(0);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat(INVALID_ID_TYPE_MSG)
+                .setMsgFormat("Entity ID field `%s` must not be a floating point number.")
+                .addParam(field().descriptor()
+                                 .getFullName())
                 .setFieldPath(getFieldPath())
                 .setFieldValue(wrap(value))
                 .build();

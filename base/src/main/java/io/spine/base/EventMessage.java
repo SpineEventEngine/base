@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for event messages.
@@ -29,33 +28,7 @@ import io.spine.base.MessageFile.Predicate;
  * <p>This interface is used by the Model Compiler for marking event messages.
  * By convention, event messages are defined in a proto file, which name ends
  * with {@code events.proto}.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public interface EventMessage extends SerializableMessage {
-
-    /**
-     * Provides the predicate for finding proto files with event message declarations.
-     */
-    class File {
-        private static final MessageFile INSTANCE = new MessageFile("events") {
-            private static final long serialVersionUID = 0L;
-        };
-
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
-        public static Predicate predicate() {
-            return INSTANCE.predicate();
-        }
-
-        /**
-         * Obtains the suffix common for proto files containing command message declarations.
-         */
-        public static String suffix() {
-            return INSTANCE.value();
-        }
-    }
 }

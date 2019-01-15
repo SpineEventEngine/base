@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,10 +20,14 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.util.ConfigureUtil;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -42,7 +46,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
-        })
+        "ClassWithTooManyFields" /* OK for a Gradle extension to have a flat structure. */})
 public class Extension {
 
     /**
@@ -152,6 +156,12 @@ public class Extension {
      * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
     public Severity spineCheckSeverity;
+
+    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+
+    public List<String> internalClassPatterns = new ArrayList<>();
+
+    public List<String> internalMethodNames = new ArrayList<>();
 
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
@@ -301,6 +311,34 @@ public class Extension {
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateAnnotations(Closure closure) {
+        ConfigureUtil.configure(closure, generateAnnotations);
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateAnnotations(Action<? super CodeGenAnnotations> action) {
+        action.execute(generateAnnotations);
+    }
+
+    public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
+        CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
+        annotations = annotations != null ? annotations : new CodeGenAnnotations();
+        return annotations;
+    }
+
+    public static ImmutableSet<String> getInternalClassPatterns(Project project) {
+        List<String> patterns = spineProtobuf(project).internalClassPatterns;
+        return ImmutableSet.copyOf(patterns);
+    }
+
+    public static ImmutableSet<String> getInternalMethodNames(Project project) {
+        List<String> patterns = spineProtobuf(project).internalMethodNames;
+        return ImmutableSet.copyOf(patterns);
     }
 
     private static Iterable<String> spineDirs(Project project) {

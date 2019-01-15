@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,14 +24,15 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.Attachment;
+import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.Task;
-import io.spine.test.validate.msg.builder.TaskLabel;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 import org.slf4j.event.SubstituteLoggingEvent;
@@ -39,12 +40,17 @@ import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
+import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
+import static io.spine.test.validate.msg.builder.TaskLabel.IMPORTANT;
+import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -175,120 +181,110 @@ class ValidatingBuilderTest {
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked string field via the setter method")
-    void testSetDoesNotAllowMutate() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setId(Identifier.newUuid());
-        assertThrows(ValidationException.class, () -> builder.setId(Identifier.newUuid()));
+    @DisplayName("not allow to change the value of a (set_once) message field")
+    void testMessageFieldMutations() {
+        Stream<Function<TaskVBuilder, ?>> enumFieldMutations = Stream.of(
+                taskVBuilder -> taskVBuilder.setLabel(CRITICAL),
+                taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
+                TaskVBuilder::clearLabel
+        );
+        testFields(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked string field via the `clear` method")
-    void testSetOnceDoesNotAllowClear() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setId(Identifier.newUuid());
-        assertThrows(ValidationException.class, builder::clearId);
+    @DisplayName("not allow to change the value of a (set_once) string field")
+    void testStringFieldMutations() {
+        Stream<Function<TaskVBuilder, ?>> stringFieldMutations = Stream.of(
+                taskVBuilder -> taskVBuilder.setId(newUuid()),
+                taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
+                TaskVBuilder::clearId
+        );
+        testFields(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked string field via the `mergeFrom` method")
-    void testSetOnceDesNotAllowMerge() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setId(Identifier.newUuid());
-        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
+    @DisplayName("not allow to change the value of a (set_once) enum field")
+    void testEnumFieldMutations() {
+        Stream<Function<TaskVBuilder, ?>> messageFieldMutations = Stream.of(
+                taskVBuilder -> taskVBuilder.setAssignee(Member.getDefaultInstance()),
+                taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
+                TaskVBuilder::clearAssignee
+        );
+        testFields(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
+    }
+
+    private static void testFields(Function<TaskVBuilder, TaskVBuilder> setup,
+                                   Stream<Function<TaskVBuilder, ?>> mutateOperations) {
+        mutateOperations.forEach(
+                operation -> testSetOnce(TaskVBuilder.newBuilder(), setup, operation));
+    }
+
+    /**
+     * Tests a validating builder that validates a message that declares a {@code (set_once)} field.
+     *
+     * <p>To do so, sets up the builder and then applies a mutation operation against it to see
+     * whether it throws an exception.
+     *
+     * @param builder
+     *         an initial value of a builder
+     * @param builderSetup
+     *         first mutation of a {@code set_once field}
+     * @param violatingOperation
+     *         an operation that is supposed to be illegal against a
+     *         {@code set_once} field
+     * @param <E>
+     *         type of the builder
+     */
+    private static <E extends AbstractValidatingBuilder<?, ?>>
+    void testSetOnce(E builder, Function<E, E> builderSetup, Function<E, ?> violatingOperation) {
+        E initialBuilder = builderSetup.apply(builder);
+        assertThrows(ValidationException.class, () -> violatingOperation.apply(initialBuilder));
+    }
+
+    @Nested
+    @DisplayName("Produce an error if `(set_once) = true` is put for")
+    class InaplicableOption {
+
+        private EssayVBuilder essay;
+        private Queue<SubstituteLoggingEvent> loggedMessages;
+
+        @BeforeEach
+        void setUp() {
+            essay = EssayVBuilder.newBuilder();
+            loggedMessages = redirectLogging(EssayVBuilder.class);
+        }
+
+        @Test
+        @DisplayName("a repeated field")
+        void testSetOnceRepeatedFieldsError() {
+            essay.addLine("First line of the task");
+            assertFalse(loggedMessages.isEmpty());
+            assertEquals(loggedMessages.peek()
+                                       .getLevel(), Level.ERROR);
+        }
+
+        @Test
+        @DisplayName("a map field")
+        void testSetOnceMapFieldError() {
+            essay.putTableOfContents("Synopsis", 0);
+            assertFalse(loggedMessages.isEmpty());
+            assertEquals(loggedMessages.peek()
+                                       .getLevel(), Level.ERROR);
+        }
     }
 
     @Test
-    @DisplayName("not allow to mutate a (set_once) marked enum field via the setter method")
-    void testSetOnceDoesNotAllowMutateEnumSetter() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setLabel(TaskLabel.CRITICAL);
-        assertThrows(ValidationException.class,
-                     () -> builder.setLabel(TaskLabel.OF_LITTLE_IMPORTANCE));
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a (set_once) marked enum field via the `clear` method")
-    void testSetOnceDoesNotAllowMutateEnumClear() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setLabel(TaskLabel.IMPORTANT);
-        assertThrows(ValidationException.class, builder::clearLabel);
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a (set_once) marked enum field via the `mergeFrom` method")
-    void testSetOnceDoesNotAllowMutateEnumMergeFrom() {
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setLabel(TaskLabel.CRITICAL);
-        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a (set_once) marked message field via the setter method")
-    void testSetOnceDoesNotAllowMutateMessageSetter() {
-        Member assignee = Member.getDefaultInstance();
-        Member anotherAssignee = Member.newBuilder()
-                                       .setId(Identifier.newUuid())
-                                       .build();
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setAssignee(assignee);
-        assertThrows(ValidationException.class, () -> builder.setAssignee(anotherAssignee));
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a (set_once) marked message field via the clear method")
-    void testSetOnceDoesNotAllowMutateMessageClear() {
-        Member assignee = Member.getDefaultInstance();
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setAssignee(assignee);
-        assertThrows(ValidationException.class, builder::clearAssignee);
-    }
-
-    @Test
-    @DisplayName("not allow to mutate a (set_once) marked message field via the `mergeFrom` method")
-    void testSetOnceDoesNotAllowMutateMessageMergeFrom() {
-        Member assignee = Member.getDefaultInstance();
-        TaskVBuilder builder = TaskVBuilder
-                .newBuilder()
-                .setAssignee(assignee);
-        assertThrows(ValidationException.class, () -> builder.mergeFrom(sampleTask()));
-    }
-
-    @Test
-    @DisplayName("produce a warning upon finding a repeated field that has `(set_once) = true`")
-    void testSetOnceRepeatedFieldsWarning() {
-        EssayVBuilder contents = EssayVBuilder
-                .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
-        contents.addLine("First line of the task");
-        assertFalse(loggedMessages.isEmpty());
-        assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.WARN);
-    }
-
-    @Test
-    @DisplayName("produce a warning upon finding a map field that has `(set_once) = true`")
-    void testSetOnceMapFieldWarning() {
-        EssayVBuilder essay = EssayVBuilder
-                .newBuilder();
-        Queue<SubstituteLoggingEvent> loggedMessages = redirectVBuildersLogging();
-        essay.putTableOfContents("Synopsis", 0);
-        assertFalse(loggedMessages.isEmpty());
-        assertEquals(loggedMessages.peek()
-                                   .getLevel(), Level.WARN);
+    @DisplayName("not allow to change a state of an implicitly `(set_once)` field")
+    void testSetOnceImplicitForEntities() {
+        testSetOnce(EditTaskStateVBuilder.newBuilder(),
+                    builder -> builder.setEditId(newUuid()),
+                    builder -> builder.setEditId(newUuid()));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
-    private static Queue<SubstituteLoggingEvent> redirectVBuildersLogging() {
-        SubstituteLogger logger = (SubstituteLogger) Logging.get(AbstractValidatingBuilder.class);
+    private static
+    Queue<SubstituteLoggingEvent> redirectLogging(Class<? extends AbstractValidatingBuilder> cls) {
+        SubstituteLogger logger = (SubstituteLogger) Logging.get(cls);
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect(logger, loggedMessages);
         return loggedMessages;
@@ -298,11 +294,12 @@ class ValidatingBuilderTest {
      * Creates a valid {@link ProjectVBuilder} instance.
      */
     private static ProjectVBuilder fill() {
-        ProjectVBuilder builder = ProjectVBuilder.newBuilder()
-                                                 .addTask(task())
-                                                 .addMember(member())
-                                                 .putRole("Ownner", member())
-                                                 .putDeletedTask(newUuid(), timeInPast());
+        ProjectVBuilder builder = ProjectVBuilder
+                .newBuilder()
+                .addTask(task())
+                .addMember(member())
+                .putRole("Owner", member())
+                .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
     }
@@ -329,7 +326,7 @@ class ValidatingBuilderTest {
         return Task.newBuilder()
                    .setId(Identifier.newUuid())
                    .setAssignee(member)
-                   .setLabel(TaskLabel.OF_LITTLE_IMPORTANCE)
+                   .setLabel(OF_LITTLE_IMPORTANCE)
                    .setName("Do something unimportant")
                    .build();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,24 +20,20 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileOptions;
-import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SourceFile;
-import io.spine.option.Options;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Optional;
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.java.SourceFile.forEnum;
+import static io.spine.code.java.SourceFile.forService;
 
 /**
  * A file-level annotator.
@@ -45,15 +41,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Annotates generated top-level definitions from a {@code .proto} file,
  * if a specified {@linkplain FileOptions file option} value is {@code true}.
  */
-class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
+class FileAnnotator extends OptionAnnotator<FileDescriptor> {
 
-    private final String genGrpcDir;
+    private final Path genGrpcDir;
 
-    FileAnnotator(Class<? extends Annotation> annotation,
-                  GeneratedExtension<FileOptions, Boolean> option,
-                  Collection<FileDescriptorProto> files,
-                  String genProtoDir,
-                  String genGrpcDir) {
+    FileAnnotator(ClassName annotation,
+                  ApiOption option,
+                  ImmutableList<FileDescriptor> files,
+                  Path genProtoDir,
+                  Path genGrpcDir) {
         super(annotation, option, files, genProtoDir);
         checkNotNull(genGrpcDir);
         this.genGrpcDir = genGrpcDir;
@@ -61,7 +57,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
 
     @Override
     public void annotate() {
-        for (FileDescriptorProto file : fileDescriptors()) {
+        for (FileDescriptor file : descriptors()) {
             if (shouldAnnotate(file)) {
                 annotate(file);
             }
@@ -69,16 +65,21 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
     }
 
     @Override
-    protected void annotateOneFile(FileDescriptorProto file) {
+    protected void annotateOneFile(FileDescriptor file) {
         annotateServices(file);
         annotateNestedTypes(file);
     }
 
     @Override
-    protected void annotateMultipleFiles(FileDescriptorProto file) {
+    protected void annotateMultipleFiles(FileDescriptor file) {
         annotateMessages(file);
         annotateEnums(file);
         annotateServices(file);
+    }
+
+    @Override
+    protected boolean shouldAnnotate(FileDescriptor descriptor) {
+        return option().isPresentAt(descriptor);
     }
 
     /**
@@ -86,69 +87,55 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * {@linkplain FileOptions#getJavaOuterClassname() outer class}.
      *
      * @param file the file descriptor to get the outer class.
-     * @see #annotateServices(FileDescriptorProto)
+     * @see #annotateServices(FileDescriptor)
      */
-    private void annotateNestedTypes(FileDescriptorProto file) {
-        SourceFile filePath = SourceFile.forOuterClassOf(file);
-        rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
-            @Override
-            public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
-                checkNotNull(input);
-                for (JavaSource nestedType : input.getNestedTypes()) {
-                    addAnnotation(nestedType);
-                }
-                return null;
-            }
-        });
+    private void annotateNestedTypes(FileDescriptor file) {
+        SourceFile filePath = SourceFile.forOuterClassOf(file.toProto());
+        rewriteSource(filePath, input -> input.getNestedTypes().forEach(this::addAnnotation));
     }
 
     /**
-     * Annotates all messages generated from the specified {@link FileDescriptorProto}.
+     * Annotates all messages generated from the specified {@link FileDescriptor}.
      *
      * <p>The specified file descriptor should
      * {@linkplain FileOptions#getJavaMultipleFiles() have multiple Java files}.
      *
      * @param file the file descriptor to get message descriptors
      */
-    private void annotateMessages(FileDescriptorProto file) {
-        for (DescriptorProto messageType : file.getMessageTypeList()) {
+    private void annotateMessages(FileDescriptor file) {
+        for (Descriptor messageType : file.getMessageTypes()) {
             annotateMessageTypes(messageType, file);
         }
     }
 
     /**
-     * Annotates all enums generated from the specified {@link FileDescriptorProto}.
+     * Annotates all enums generated from the specified {@link FileDescriptor}.
      *
      * <p>The specified file descriptor should
      * {@linkplain FileOptions#getJavaMultipleFiles() have multiple Java files}.
      *
      * @param file the file descriptor to get enum descriptors
      */
-    private void annotateEnums(FileDescriptorProto file) {
-        for (EnumDescriptorProto enumType : file.getEnumTypeList()) {
-            SourceFile filePath = SourceFile.forEnum(enumType, file);
+    private void annotateEnums(FileDescriptor file) {
+        for (EnumDescriptor enumType : file.getEnumTypes()) {
+            SourceFile filePath = forEnum(enumType.toProto(), file.toProto());
             annotate(filePath);
         }
     }
 
     /**
      * Annotates all {@code gRPC} services,
-     * generated basing on the specified {@link FileDescriptorProto}.
+     * generated basing on the specified {@link FileDescriptor}.
      *
      * <p>A generated service is always a separate file.
      * So value of {@link FileOptions#getJavaMultipleFiles()} does not play a role.
      *
      * @param file the file descriptor to get service descriptors
      */
-    private void annotateServices(FileDescriptorProto file) {
-        for (ServiceDescriptorProto serviceDescriptor : file.getServiceList()) {
-            SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
+    private void annotateServices(FileDescriptor file) {
+        for (ServiceDescriptor serviceDescriptor : file.getServices()) {
+            SourceFile serviceClass = forService(serviceDescriptor.toProto(), file.toProto());
             rewriteSource(genGrpcDir, serviceClass, new TypeDeclarationAnnotation());
         }
-    }
-
-    @Override
-    protected Optional<Boolean> getOptionValue(FileDescriptorProto file) {
-        return Options.option(file, getOption());
     }
 }

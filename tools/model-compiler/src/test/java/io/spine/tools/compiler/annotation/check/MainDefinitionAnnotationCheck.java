@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,33 +20,44 @@
 
 package io.spine.tools.compiler.annotation.check;
 
+import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static io.spine.tools.compiler.annotation.check.Annotations.findAnnotation;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MainDefinitionAnnotationCheck implements SourceCheck {
 
+    private final Class<? extends Annotation> annotation;
     private final boolean shouldBeAnnotated;
 
     public MainDefinitionAnnotationCheck(boolean shouldBeAnnotated) {
+        this(Internal.class, shouldBeAnnotated);
+    }
+
+    public MainDefinitionAnnotationCheck(Class<? extends Annotation> annotation,
+                                         boolean shouldBeAnnotated) {
+        this.annotation = annotation;
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
-    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
-        checkNotNull(input);
-        AnnotationSource annotationSource = findSpiAnnotation(input);
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> source) {
+        checkNotNull(source);
+        Optional<? extends AnnotationSource<?>> annotationSource =
+                findAnnotation(source, annotation);
         if (shouldBeAnnotated) {
-            assertNotNull(annotationSource);
+            assertTrue(annotationSource.isPresent());
         } else {
-            assertNull(annotationSource);
+            assertFalse(annotationSource.isPresent());
         }
-        return null;
     }
 }

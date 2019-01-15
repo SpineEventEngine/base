@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -43,14 +43,14 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
 
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
 
-    private final DecimalMinOption minDecimalOpt;
+    private final DecimalMinOption minDecimal;
     private final boolean isMinDecimalInclusive;
 
-    private final DecimalMaxOption maxDecimalOpt;
+    private final DecimalMaxOption maxDecimal;
     private final boolean isMaxDecimalInclusive;
 
-    private final MinOption minOption;
-    private final MaxOption maxOption;
+    private final MinOption min;
+    private final MaxOption max;
 
     private final DigitsOption digitsOption;
 
@@ -61,13 +61,13 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      *         the value to validate
      */
     NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
-        this.minDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMin);
-        this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
-        this.maxDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMax);
-        this.isMaxDecimalInclusive = maxDecimalOpt.getInclusive();
-        this.minOption = fieldValue.valueOf(OptionsProto.min);
-        this.maxOption = fieldValue.valueOf(OptionsProto.max);
+        super(fieldValue, false, false);
+        this.minDecimal = fieldValue.valueOf(OptionsProto.decimalMin);
+        this.isMinDecimalInclusive = minDecimal.getInclusive();
+        this.maxDecimal = fieldValue.valueOf(OptionsProto.decimalMax);
+        this.isMaxDecimalInclusive = maxDecimal.getInclusive();
+        this.min = fieldValue.valueOf(OptionsProto.min);
+        this.max = fieldValue.valueOf(OptionsProto.max);
         this.digitsOption = fieldValue.valueOf(OptionsProto.digits);
     }
 
@@ -95,36 +95,35 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
     }
 
+    /**
+     * Returns {@code false}.
+     *
+     * <p>There's no way to define whether a Protobuf numeric field is {@code 0} or not set.
+     */
     @Override
     protected boolean isNotSet(V value) {
-        int intValue = value.intValue();
-        boolean result = intValue == 0;
-        return result;
+        return false;
     }
 
     private void validateRangeOptions(V value) {
         if (notFitToDecimalMin(value)) {
-            addViolation(
-                    newDecimalViolation(value, minDecimalOpt, minDecimalOpt.getMsgFormat(),
-                                        minDecimalOpt.getInclusive(), minDecimalOpt.getValue()));
+            addViolation(decimal(value, minDecimal, minDecimal.getMsgFormat(),
+                                 minDecimal.getInclusive(), minDecimal.getValue()));
         }
         if (notFitToDecimalMax(value)) {
-            addViolation(
-                    newDecimalViolation(value, maxDecimalOpt, maxDecimalOpt.getMsgFormat(),
-                                        maxDecimalOpt.getInclusive(), maxDecimalOpt.getValue()));
+            addViolation(decimal(value, maxDecimal, maxDecimal.getMsgFormat(),
+                                 maxDecimal.getInclusive(), maxDecimal.getValue()));
         }
         if (notFitToMin(value)) {
-            addViolation(newMinOrMaxViolation(value, minOption, minOption.getMsgFormat(),
-                                              minOption.getValue()));
+            addViolation(minOrMax(value, min, min.getMsgFormat(), min.getValue()));
         }
         if (notFitToMax(value)) {
-            addViolation(newMinOrMaxViolation(value, maxOption, maxOption.getMsgFormat(),
-                                              maxOption.getValue()));
+            addViolation(minOrMax(value, max, max.getMsgFormat(), max.getValue()));
         }
     }
 
     private boolean notFitToDecimalMin(V value) {
-        String minAsString = minDecimalOpt.getValue();
+        String minAsString = minDecimal.getValue();
         if (minAsString.isEmpty()) {
             return false;
         }
@@ -138,7 +137,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     private boolean notFitToDecimalMax(V value) {
-        String maxAsString = maxDecimalOpt.getValue();
+        String maxAsString = maxDecimal.getValue();
         if (maxAsString.isEmpty()) {
             return false;
         }
@@ -151,7 +150,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     private boolean notFitToMin(V value) {
-        String minAsString = minOption.getValue();
+        String minAsString = min.getValue();
         if (minAsString.isEmpty()) {
             return false;
         }
@@ -162,7 +161,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     private boolean notFitToMax(V value) {
-        String maxAsString = maxOption.getValue();
+        String maxAsString = max.getValue();
         if (maxAsString.isEmpty()) {
             return false;
         }
@@ -185,41 +184,43 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         boolean isInvalid = (intDigitsCount > intDigitsMax) ||
                 (fractionDigitsCount > fractionDigitsMax);
         if (isInvalid) {
-            addViolation(newDigitsViolation(value));
+            addViolation(digits(value));
         }
     }
 
-    private ConstraintViolation newDecimalViolation(V value,
-                                                    Message option,
-                                                    String customMsg,
-                                                    boolean isInclusive,
-                                                    String minOrMax) {
+    private ConstraintViolation decimal(V value,
+                                        Message option,
+                                        String customMsg,
+                                        boolean isInclusive,
+                                        String constraint) {
         String msg = getErrorMsgFormat(option, customMsg);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
                 .addParam(isInclusive ? "or equal to " : "")
-                .addParam(minOrMax)
+                .addParam(constraint)
                 .setFieldPath(getFieldPath())
                 .setFieldValue(wrap(value))
                 .build();
         return violation;
     }
 
-    private ConstraintViolation newMinOrMaxViolation(V value, Message option,
-                                                     String customMsg, String minOrMax) {
+    private ConstraintViolation minOrMax(V value,
+                                         Message option,
+                                         String customMsg,
+                                         String constraint) {
         String msg = getErrorMsgFormat(option, customMsg);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
-                .addParam(minOrMax)
+                .addParam(constraint)
                 .setFieldPath(getFieldPath())
                 .setFieldValue(wrap(value))
                 .build();
         return violation;
     }
 
-    private ConstraintViolation newDigitsViolation(V value) {
+    private ConstraintViolation digits(V value) {
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());

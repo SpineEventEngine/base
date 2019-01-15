@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -32,7 +32,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *         the value to to validate
      */
     BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, false);
     }
 
     /**
@@ -45,10 +45,13 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Performs no action, since {@code boolean} fields require no additional validation.
+     */
     @Override
     protected void validateOwnRules() {
-        if (isRequiredField()) {
-            log().warn("'required' option not allowed for boolean field");
-        }
+        // NOP
     }
 }

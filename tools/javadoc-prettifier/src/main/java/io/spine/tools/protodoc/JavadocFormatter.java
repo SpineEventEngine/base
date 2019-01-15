@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,12 +20,14 @@
 
 package io.spine.tools.protodoc;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.code.java.FileName;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
@@ -38,8 +40,6 @@ import static java.nio.file.Files.newBufferedWriter;
  *
  * <p>The formatter executes {@linkplain FormattingAction formatting actions}
  * for the Javadoc lines in a source file.
- *
- * @author Dmytro Grankin
  */
 class JavadocFormatter {
 
@@ -48,21 +48,10 @@ class JavadocFormatter {
     /**
      * The formatting actions to perform.
      */
-    private final List<FormattingAction> actions;
+    private final ImmutableList<FormattingAction> actions;
 
-    JavadocFormatter(List<FormattingAction> actions) {
+    JavadocFormatter(ImmutableList<FormattingAction> actions) {
         this.actions = actions;
-    }
-
-    /**
-     * Checks the file path.
-     *
-     * @param path  the target file path
-     * @return {@code true} in case if the file has the .java extension.
-     */
-    private static boolean isJavaFile(Path path) {
-        return path.toString()
-                   .endsWith(".java");
     }
 
     /**
@@ -73,7 +62,7 @@ class JavadocFormatter {
      * @param path the path to the file
      */
     void format(Path path) throws IOException {
-        if (!isJavaFile(path)) {
+        if (!FileName.isJava(path)) {
             return;
         }
 

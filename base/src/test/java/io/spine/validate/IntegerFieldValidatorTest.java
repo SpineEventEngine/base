@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors;
+import io.spine.test.validate.RequiredIntFieldValue;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("IntegerFieldValidator should")
@@ -28,6 +30,19 @@ class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, Intege
     private static final int DOS = 2;
 
     IntegerFieldValidatorTest() {
-        super(DOS, -DOS, new IntegerFieldValidator(FieldValue.of(DOS, fieldContext)));
+        super(DOS,
+              -DOS,
+              new IntegerFieldValidator(FieldValue.of(DOS, fieldContext)),
+              requiredFieldValidator());
+    }
+
+    private static IntegerFieldValidator requiredFieldValidator() {
+        Descriptors.FieldDescriptor descriptor = RequiredIntFieldValue.getDescriptor()
+                                                                      .getFields()
+                                                                      .get(0);
+        FieldContext context = FieldContext.create(descriptor);
+        FieldValue value = FieldValue.of(DOS, context);
+        IntegerFieldValidator requiredValidator = new IntegerFieldValidator(value);
+        return requiredValidator;
     }
 }

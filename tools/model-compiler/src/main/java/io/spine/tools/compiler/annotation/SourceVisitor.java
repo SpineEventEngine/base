@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,7 +23,7 @@ package io.spine.tools.compiler.annotation;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * A {@link AbstractJavaSource} visitor.
@@ -32,8 +32,7 @@ import java.util.function.Function;
  * A typical scenario is modification of the source or its validation.
  *
  * @param <T> the type of {@link JavaSource} to visit
- * @author Dmytro Grankin
  */
-interface SourceVisitor<T extends JavaSource<T>>
-        extends Function<AbstractJavaSource<T>, Void> {
+@FunctionalInterface
+interface SourceVisitor<T extends JavaSource<T>> extends Consumer<AbstractJavaSource<T>> {
 }

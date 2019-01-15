@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,10 +17,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 /**
  * The type information of a field for a code-generation.
@@ -39,19 +42,25 @@ public interface FieldType {
      *
      * @return the setter prefix
      */
-    String getSetterPrefix();
+    AccessorTemplate primarySetterTemplate();
+
+    /**
+     * Obtains the templates of the generated Java accessors for a field of this type.
+     *
+     * @return the accessor templates
+     */
+    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
 
     /**
      * Creates a an instances basing on the type of the field.
      */
-    static FieldType create(FieldDeclaration field) {
+    static FieldType of(FieldDeclaration field) {
         if (field.isMap()) {
             return new MapFieldType(field);
+        } else if (field.isRepeated()) {
+            return new RepeatedFieldType(field);
         } else {
-            String fieldTypeName = field.javaTypeName();
-            return field.isRepeated()
-                   ? new RepeatedFieldType(fieldTypeName)
-                   : new SingularFieldType(fieldTypeName);
+            return new SingularFieldType(field);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -58,7 +58,7 @@ public final class SourceFile extends AbstractSourceFile {
         checkNotNull(file);
         FileName filename = SimpleClassName.outerOf(file)
                                            .toFileName();
-        SourceFile result = getFolder(file).resolve(filename);
+        SourceFile result = getGeneratedFolder(file).resolve(filename);
         return result;
     }
 
@@ -70,7 +70,7 @@ public final class SourceFile extends AbstractSourceFile {
      *         the proto file descriptor
      * @return the relative folder path
      */
-    private static Directory getFolder(FileDescriptorProto file) {
+    private static Directory getGeneratedFolder(FileDescriptorProto file) {
         checkNotNull(file);
         PackageName packageName = PackageName.resolve(file);
         Directory result = packageName.toDirectory();
@@ -120,7 +120,7 @@ public final class SourceFile extends AbstractSourceFile {
         }
         if (file.getOptions().getJavaMultipleFiles()) {
             FileName filename = fileName.apply(message);
-            SourceFile result = getFolder(file).resolve(filename);
+            SourceFile result = getGeneratedFolder(file).resolve(filename);
             return result;
         } else {
             SourceFile result = forOuterClassOf(file);
@@ -153,7 +153,7 @@ public final class SourceFile extends AbstractSourceFile {
         }
         if (file.getOptions().getJavaMultipleFiles()) {
             FileName filename = FileName.forEnum(enumType);
-            SourceFile result = getFolder(file).resolve(filename);
+            SourceFile result = getGeneratedFolder(file).resolve(filename);
             return result;
         } else {
             SourceFile result = forOuterClassOf(file);
@@ -180,7 +180,7 @@ public final class SourceFile extends AbstractSourceFile {
         }
 
         FileName filename = FileName.forService(service);
-        SourceFile result = getFolder(file).resolve(filename);
+        SourceFile result = getGeneratedFolder(file).resolve(filename);
         return result;
     }
 

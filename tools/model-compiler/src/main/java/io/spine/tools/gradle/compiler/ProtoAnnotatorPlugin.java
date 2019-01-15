@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,20 +20,34 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
+import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
+import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import static io.spine.tools.compiler.annotation.ApiOption.beta;
+import static io.spine.tools.compiler.annotation.ApiOption.experimental;
+import static io.spine.tools.compiler.annotation.ApiOption.internal;
+import static io.spine.tools.compiler.annotation.ApiOption.spi;
+import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
+import static io.spine.tools.gradle.compiler.Extension.getInternalClassPatterns;
+import static io.spine.tools.gradle.compiler.Extension.getInternalMethodNames;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
@@ -186,22 +200,38 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private Action<Task> newAction(String descriptorSetFile, Project project, boolean isTestTask) {
-
-        String generatedProtoDir = isTestTask
-                                   ? getTestGenProtoDir(project)
-                                   : getMainGenProtoDir(project);
-
-        String generatedGrpcDir = isTestTask
-                                  ? getTestGenGrpcDir(project)
-                                  : getMainGenGrpcDir(project);
-
         return task -> {
+            String generatedProtoDir = isTestTask
+                                       ? getTestGenProtoDir(project)
+                                       : getMainGenProtoDir(project);
+            String generatedGrpcDir = isTestTask
+                                      ? getTestGenGrpcDir(project)
+                                      : getMainGenGrpcDir(project);
             File setFile = new File(descriptorSetFile);
             if (!setFile.exists()) {
                 logMissingDescriptorSetFile(setFile);
                 return;
             }
-            AnnotatorFactory.process(setFile, generatedProtoDir, generatedGrpcDir);
+            Path generatedProtoPath = Paths.get(generatedProtoDir);
+            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
+            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                    .newInstance(setFile, generatedProtoPath, generatedGrpcPath);
+            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+            ClassName internalClassName = annotations.internalClassName();
+            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
+            ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
+            ModuleAnnotator moduleAnnotator = ModuleAnnotator
+                    .newBuilder()
+                    .setAnnotatorFactory(annotatorFactory)
+                    .add(translate(spi()).as(annotations.spiClassName()))
+                    .add(translate(beta()).as(annotations.betaClassName()))
+                    .add(translate(experimental()).as(annotations.experimentalClassName()))
+                    .add(translate(internal()).as(internalClassName))
+                    .setInternalPatterns(internalClassPatterns)
+                    .setInternalMethodNames(internalMethodNames)
+                    .setInternalAnnotation(internalClassName)
+                    .build();
+            moduleAnnotator.annotate();
         };
     }
 }

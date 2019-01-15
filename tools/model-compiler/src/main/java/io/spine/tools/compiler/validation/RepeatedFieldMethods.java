@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,16 +21,17 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
+import io.spine.code.java.FieldName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.field.AccessorTemplate;
+import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
@@ -39,11 +40,13 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.validation.Methods.clearPrefix;
-import static io.spine.tools.compiler.validation.Methods.clearProperty;
+import static io.spine.tools.compiler.field.AccessorTemplates.adder;
+import static io.spine.tools.compiler.field.AccessorTemplates.allAdder;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.listGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.remover;
+import static io.spine.tools.compiler.field.AccessorTemplates.setter;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
-import static io.spine.tools.compiler.validation.Methods.rawSuffix;
-import static io.spine.tools.compiler.validation.Methods.removePrefix;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
 
@@ -63,19 +66,11 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     // Although it has the equivalent literal they have the different meaning.
     private static final String INDEX = "index";
 
-    private static final String ADD_PREFIX = "add";
-    private static final String SET_PREFIX = "set";
-    private static final String ADD_RAW_PREFIX = "addRaw";
-    private static final String SET_RAW_PREFIX = "setRaw";
     private static final String CONVERTED_VALUE = "convertedValue";
 
-    private static final String ADD_ALL_METHOD = ".addAll%s(%s)";
-
     private final FieldType fieldType;
-    private final String javaFieldName;
-    private final String methodNamePart;
+    private final FieldName javaFieldName;
     private final ClassName listElementClassName;
-    private final FieldDescriptor field;
     private final boolean isScalarOrEnum;
 
     /**
@@ -95,15 +90,12 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     private RepeatedFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());
-        this.field = checkNotNull(builder.getField());
-        FieldDescriptorProto fdescr = field.toProto();
-        FieldName fieldName = FieldName.of(fdescr);
-        this.javaFieldName = fieldName.javaCase();
-        this.methodNamePart = fieldName.toCamelCase();
-        FieldDeclaration fieldDecl = new FieldDeclaration(field);
-        String fieldJavaClass = fieldDecl.javaTypeName();
+        FieldDescriptor field = checkNotNull(builder.getField());
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
+        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
+        String fieldJavaClass = fieldDeclaration.javaTypeName();
         this.listElementClassName = ClassName.bestGuess(fieldJavaClass);
-        this.isScalarOrEnum = fieldDecl.isScalar() || fieldDecl.isEnum();
+        this.isScalarOrEnum = fieldDeclaration.isScalar() || fieldDeclaration.isEnum();
     }
 
     @Override
@@ -120,11 +112,11 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     private MethodSpec getter() {
         _debug("The getter construction for the repeated field is started.");
 
-        String methodName = "get" + methodNamePart;
+        String methodName = AccessorTemplates.getter().format(javaFieldName);
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType, listElementClassName);
-        String returnStatement = format("return %s.get%sList()",
-                                        getMessageBuilder(), methodNamePart);
+        String returnStatement = format("return %s.%s()",
+                                        getMessageBuilder(), listGetter().format(javaFieldName));
         MethodSpec methodSpec = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
@@ -167,9 +159,10 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec rawAddObjectMethod() {
-        String methodName = ADD_RAW_PREFIX + methodNamePart;
-        String addValueStatement = getMessageBuilder() + '.'
-                + ADD_PREFIX + methodNamePart + "(convertedValue)";
+        String methodName = adder().toRaw().format(javaFieldName);
+        String messageBuilderMethod = adder().format(javaFieldName);
+        String addValueStatement = format("%s.%s(convertedValue)",
+                                          getMessageBuilder(), messageBuilderMethod);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -177,7 +170,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(addValueStatement)
                 .addStatement(returnThis())
                 .build();
@@ -185,20 +178,19 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec createRawAddObjectByIndexMethod() {
-        MethodSpec result = modifyCollectionByIndexWithRaw(ADD_RAW_PREFIX, ADD_PREFIX);
+        MethodSpec result = modifyCollectionByIndexWithRaw(adder());
         return result;
     }
 
     private MethodSpec rawSetObjectByIndexMethod() {
-        return modifyCollectionByIndexWithRaw(SET_RAW_PREFIX, SET_PREFIX);
+        return modifyCollectionByIndexWithRaw(setter());
     }
 
-    private MethodSpec modifyCollectionByIndexWithRaw(String methodNamePrefix,
-                                                      String realBuilderCallPrefix) {
-        String methodName = methodNamePrefix + methodNamePart;
+    private MethodSpec modifyCollectionByIndexWithRaw(AccessorTemplate methodTemplate) {
+        String methodName = methodTemplate.toRaw().format(javaFieldName);
         String modificationStatement =
-                format("%s.%s%s(%s, convertedValue)",
-                       getMessageBuilder(), realBuilderCallPrefix, methodNamePart, INDEX);
+                format("%s.%s(%s, convertedValue)",
+                       getMessageBuilder(), methodTemplate.format(javaFieldName), INDEX);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(String.class, VALUE)
@@ -207,7 +199,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
                 .build();
@@ -215,9 +207,10 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec rawAddAllMethod() {
-        String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
-        String addAllValues = getMessageBuilder()
-                + format(ADD_ALL_METHOD, methodNamePart, CONVERTED_VALUE);
+        String methodName = fieldType.primarySetterTemplate()
+                                     .toRaw()
+                                     .format(javaFieldName);
+        String addAllValues = addAllStatement(CONVERTED_VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -227,7 +220,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                               listElementClassName,
                               listElementClassName)
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
                 .build();
@@ -235,27 +228,31 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec addAllMethod() {
-        String methodName = fieldType.getSetterPrefix() + methodNamePart;
+        String methodName = fieldType.primarySetterTemplate().format(javaFieldName);
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType, listElementClassName);
-        String fieldName = field.getName();
-        String addAllValues = getMessageBuilder()
-                + format(ADD_ALL_METHOD, methodNamePart, VALUE);
+        String addAllValues = addAllStatement(VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(VALUE, fieldName))
+                .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
                 .build();
         return result;
     }
 
+    private String addAllStatement(String parameter) {
+        String addAllMethodName = allAdder().format(javaFieldName);
+        String addAllValues = format("%s.%s(%s)", getMessageBuilder(), addAllMethodName, parameter);
+        return addAllValues;
+    }
+
     private MethodSpec addObjectMethod() {
-        String methodName = ADD_PREFIX + methodNamePart;
-        String addValue = format("%s.%s%s(%s)",
-                                 getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
+        String methodName = adder().format(javaFieldName);
+        String addValue = format("%s.%s(%s)",
+                                 getMessageBuilder(), methodName, VALUE);
         String descriptorDeclaration = descriptorDeclaration();
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(listElementClassName, VALUE)
@@ -270,17 +267,16 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec addObjectByIndexMethod() {
-        return modifyCollectionByIndex(ADD_PREFIX);
+        return modifyCollectionByIndex(adder());
     }
 
     private MethodSpec setObjectByIndexMethod() {
-        return modifyCollectionByIndex(SET_PREFIX);
+        return modifyCollectionByIndex(setter());
     }
 
     private MethodSpec removeObjectByIndexMethod() {
-        String methodName = removePrefix() + methodNamePart;
-        String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
-                                 removePrefix(), methodNamePart, INDEX);
+        String methodName = remover().format(javaFieldName);
+        String addValue = format("%s.%s(%s)", getMessageBuilder(), methodName, INDEX);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addStatement(addValue)
@@ -289,10 +285,9 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec modifyCollectionByIndex(String methodPrefix) {
-        String methodName = methodPrefix + methodNamePart;
-        String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
-                                              methodPrefix, methodNamePart, INDEX, VALUE);
+    private MethodSpec modifyCollectionByIndex(AccessorTemplate template) {
+        String methodName = template.format(javaFieldName);
+        String modificationStatement = format("%s.%s(%s, %s)", getMessageBuilder(), methodName, INDEX, VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(listElementClassName, VALUE)
@@ -306,8 +301,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     private MethodSpec clearMethod() {
-        String clearField = getMessageBuilder() + clearProperty(methodNamePart);
-        String methodName = clearPrefix() + methodNamePart;
+        String methodName = clearer().format(javaFieldName);
+        String clearField = format("%s.%s()", getMessageBuilder(), clearer().format(javaFieldName));
         MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(clearField)
                 .addStatement(returnThis())

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -93,8 +93,6 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
         if (!dependencyResolved) {
             return;
         }
-
-        preprocessorConfigurer.addConfigurePreprocessorAction(preprocessorConfig);
 
         SeverityConfigurer severityConfigurer = SeverityConfigurer.initFor(project);
         severityConfigurer.addConfigureSeverityAction();

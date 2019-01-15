@@ -1,10 +1,12 @@
 syntax = "proto3";
 
+package spine.test.annotator;
+
 import "spine/options.proto";
 
-option (SPI_all) = true;
+option (internal_all) = true;
 option java_multiple_files = true;
 
 message First {
-    option (SPI_type) = true;
+    option (internal_type) = true;
 }

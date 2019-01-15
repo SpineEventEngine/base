@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,36 +20,33 @@
 
 package io.spine.tools.compiler.annotation.check;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.Descriptors.Descriptor;
 
 public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
 
-    private final DescriptorProtos.DescriptorProto messageDescriptor;
+    private final Descriptor messageDescriptor;
     private final boolean shouldBeAnnotated;
 
-    public NestedTypeFieldsAnnotationCheck(DescriptorProtos.DescriptorProto messageDescriptor,
+    public NestedTypeFieldsAnnotationCheck(Descriptor messageDescriptor,
                                            boolean shouldBeAnnotated) {
         this.messageDescriptor = messageDescriptor;
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
-    @SuppressWarnings({
-            "ResultOfMethodCallIgnored", // `Void` return type.
-            "unchecked"                  // Could not determine exact type for nested declaration.
-    })
-    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
-        for (DescriptorProtos.FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
-            AbstractJavaSource nestedType =
-                    (AbstractJavaSource) outerClass.getNestedType(messageDescriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).apply(nestedType);
+        for (FieldDescriptor fieldDescriptor : messageDescriptor.getFields()) {
+            AbstractJavaSource nestedType = (AbstractJavaSource)
+                    outerClass.getNestedType(messageDescriptor.getName());
+            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).accept(nestedType);
         }
-        return null;
     }
 }

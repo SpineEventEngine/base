@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,8 +25,6 @@ import com.google.common.base.MoreObjects;
  * Task names in Gradle build lifecycle.
  *
  * <p>Spine `tools` library uses some of 3rd-party Gradle tasks as anchors for own execution.
- *
- * @author Alex Tymchenko
  */
 public enum TaskName {
 

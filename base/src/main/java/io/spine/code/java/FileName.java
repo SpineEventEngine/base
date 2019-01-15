@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,6 +25,11 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractFileName;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -35,6 +40,7 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final long serialVersionUID = 0L;
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String EXTENSION = ".java";
+    private static final Pattern EXTENSION_PATTERN = Pattern.compile(EXTENSION, Pattern.LITERAL);
 
     private FileName(String value) {
         super(value);
@@ -88,5 +94,27 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     public static FileName forService(ServiceDescriptorProto service) {
         return forType(service.getName() + GRPC_CLASSNAME_SUFFIX);
+    }
+
+    /**
+     * Checks the file path.
+     *
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
+    public static boolean isJava(Path path) {
+        return path.toString()
+                   .endsWith(EXTENSION);
+    }
+
+    /**
+     * Obtains the name of the file without standard source code extension.
+     */
+    public static String nameOnly(File file) {
+        checkNotNull(file);
+        String nameWithExtension = file.getName();
+        String result = EXTENSION_PATTERN.matcher(nameWithExtension)
+                                         .replaceAll("");
+        return result;
     }
 }

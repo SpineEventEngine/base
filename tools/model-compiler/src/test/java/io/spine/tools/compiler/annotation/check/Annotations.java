@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,34 +20,37 @@
 
 package io.spine.tools.compiler.annotation.check;
 
-import io.spine.annotation.SPI;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.annotation.Internal;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Utilities for working with annotations in the generated code.
- * 
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  */
 class Annotations {
 
-    static final Class<? extends Annotation> ANNOTATION_CLASS = SPI.class;
+    private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
 
     /** Prevents instantiation of this utility class. */
     private Annotations() {
     }
 
-    static @Nullable AnnotationSource findSpiAnnotation(AnnotationTargetSource<?, ?> javaSource) {
-        for (AnnotationSource annotationSource : javaSource.getAnnotations()) {
-            if (annotationSource.getQualifiedName()
-                                .equals(ANNOTATION_CLASS.getName())) {
-                return annotationSource;
-            }
-        }
-        return null;
+    static Optional<? extends AnnotationSource<?>>
+    findInternalAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+        return findAnnotation(javaSource, ANNOTATION_CLASS);
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findAnnotation(AnnotationTargetSource<?, ?> javaSource,
+                   Class<? extends Annotation> annotationType) {
+        String annotationName = annotationType.getName();
+        AnnotationSource<?> annotation = javaSource
+                .getAnnotation(annotationName);
+        return ofNullable(annotation);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,43 +22,44 @@ package io.spine.code.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.VBuilderClassName;
+import io.spine.logging.Logging;
 import io.spine.option.IsOption;
 import io.spine.type.TypeUrl;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A message type as declared in a proto file.
  */
 @Internal
-public class MessageType extends Type<Descriptor, DescriptorProto> {
+public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
      * Standard suffix for a Validating Builder class name.
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
-    private final MessageDocumentation documentation;
-
-    @SuppressWarnings("ThisEscapedInObjectConstruction") // OK since fully initialized.
     protected MessageType(Descriptor descriptor) {
-        super(descriptor);
-        this.documentation = new MessageDocumentation(this);
+        super(descriptor, true);
     }
 
     @VisibleForTesting // Otherwise package-private
@@ -178,36 +179,15 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     /**
-     * Obtains the name of the builder class for this message type.
-     */
-    public ClassName builderClass() {
-        ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
-        return result;
-    }
-
-    /**
-     * Obtains the name of a Validating Builder class that corresponds to this message type.
-     *
-     * @return the class name of the builder, or empty optional if this message type is
-     *         from the "google" package
-     */
-    public Optional<SimpleClassName> validatingBuilderClass() {
-        if (isGoogle()) {
-            return Optional.empty();
-        }
-        return Optional.of(javaClassName().toSimple().with(VBUILDER_SUFFIX));
-    }
-
-    /**
      * Obtains the name of a Validating Builder class for the type.
      *
      * @throws java.lang.IllegalStateException if the message type does not have a corresponding
      *  a Validating Builder class, for example, because it's a Google Protobuf message
      */
-    public SimpleClassName getValidatingBuilderClass() {
-        return validatingBuilderClass()
-                .orElseThrow(() -> newIllegalArgumentException(
-                        "No validating builder class available for the type `%s`.", this));
+    public SimpleClassName validatingBuilderClass() {
+        checkState(isCustom(), "No validating builder class available for the type `%s`.", this);
+        SimpleClassName result = VBuilderClassName.of(this);
+        return result;
     }
 
     /**
@@ -248,13 +228,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     /**
-     * Obtains message documentation.
-     */
-    public MessageDocumentation documentation() {
-        return documentation;
-    }
-
-    /**
      * Obtains fields declared in the message type.
      */
     public ImmutableList<FieldDeclaration> fields() {
@@ -264,5 +237,77 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                             .map(d -> new FieldDeclaration(d, this))
                             .collect(toImmutableList());
         return result;
+    }
+
+    /**
+     * Returns the message location path for a top-level message definition.
+     *
+     * @return the message location path
+     */
+    LocationPath path() {
+        LocationPath path = new LocationPath();
+        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+        Descriptor descriptor = descriptor();
+        if (isNested()) {
+            Deque<Integer> parentPath = new ArrayDeque<>();
+            Descriptor containingType = descriptor.getContainingType();
+            while (containingType != null) {
+                parentPath.addFirst(containingType.getIndex());
+                containingType = containingType.getContainingType();
+            }
+            path.addAll(parentPath);
+        }
+        path.add(descriptor.getIndex());
+        return path;
+    }
+
+    /**
+     * Obtains the comments going before a rejection declaration.
+     *
+     * <p>Requires the following Protobuf plugin configuration:
+     * <pre> {@code
+     * generateProtoTasks {
+     *     all().each { final task ->
+     *         // If true, the descriptor set will contain line number information
+     *         // and comments. Default is false.
+     *         task.descriptorSetOptions.includeSourceInfo = true
+     *         // ...
+     *     }
+     * }
+     * }</pre>
+     *
+     * @return the comments text or {@code Optional.empty()} if there are no comments
+     *
+     * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
+     *         Protobuf plugin configuration</a>
+     */
+    public Optional<String> leadingComments() {
+        LocationPath messagePath = path();
+        return leadingComments(messagePath);
+    }
+
+    /**
+     * Obtains a leading comments by the {@link LocationPath}.
+     *
+     * @param locationPath
+     *         the location path to get leading comments
+     * @return the leading comments or empty {@code Optional} if there are no such comments or
+     *         a descriptor was generated without source code information
+     */
+    Optional<String> leadingComments(LocationPath locationPath) {
+        FileDescriptorProto file = descriptor()
+                .getFile()
+                .toProto();
+        if (!file.hasSourceCodeInfo()) {
+            _warn("Unable to obtain proto source code info. " +
+                          "Please configure the Gradle Protobuf plugin as follows:%n%s",
+                  "`task.descriptorSetOptions.includeSourceInfo = true`.");
+            return Optional.empty();
+        }
+
+        DescriptorProtos.SourceCodeInfo.Location location = locationPath.toLocation(file);
+        return location.hasLeadingComments()
+               ? Optional.of(location.getLeadingComments())
+               : Optional.empty();
     }
 }

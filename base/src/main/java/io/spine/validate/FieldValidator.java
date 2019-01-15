@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -35,16 +35,13 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
- * Validates messages according to Spine custom protobuf options and
+ * Validates messages according to Spine custom Protobuf options and
  * provides constraint violations found.
  *
  * @param <V>
  *         a type of field values
  */
 abstract class FieldValidator<V> implements Logging {
-
-    private static final String ENTITY_ID_REPEATED_FIELD_MSG =
-            "Entity ID must not be a repeated field.";
 
     private final FieldValue value;
     private final FieldDeclaration declaration;
@@ -56,6 +53,7 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
+    private final boolean canBeRequired;
 
     /**
      * If set the validator would assume that the field is required even
@@ -71,8 +69,11 @@ abstract class FieldValidator<V> implements Logging {
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
+     * @param canBeRequired
+     *         defines whether a field that is being validated can be {@code required}
      */
-    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
+        this.canBeRequired = canBeRequired;
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
@@ -127,6 +128,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
      */
     protected final List<ConstraintViolation> validate() {
+        checkCanBeRequired();
         checkIfRequiredAndNotSet();
         if (isRequiredId()) {
             validateEntityId();
@@ -136,6 +138,13 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
+    }
+
+    private void checkCanBeRequired() {
+        boolean fieldIsRequired = isRequiredField();
+        if (!canBeRequired && fieldIsRequired) {
+            _warn("Fields of type {} should not be declared as `(required)`.", field().typeName());
+        }
     }
 
     /**
@@ -162,7 +171,9 @@ abstract class FieldValidator<V> implements Logging {
         if (declaration.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
-                    .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
+                    .setMsgFormat("Entity ID field `%s` must not be a repeated field.")
+                    .addParam(declaration.descriptor()
+                                         .getFullName())
                     .setFieldPath(getFieldPath())
                     .build();
             addViolation(violation);

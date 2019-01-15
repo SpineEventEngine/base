@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,8 +27,6 @@ import com.google.protobuf.ByteString;
  */
 class ByteStringFieldValidator extends FieldValidator<ByteString> {
 
-    private static final String INVALID_ID_TYPE_MSG = "Entity ID field must not be a ByteString.";
-
     /**
      * Creates a new validator instance.
      *
@@ -36,7 +34,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      *         the value to validate
      */
     ByteStringFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false);
+        super(fieldValue, false, true);
     }
 
     @Override
@@ -61,7 +59,9 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     protected void validateEntityId() {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat(INVALID_ID_TYPE_MSG)
+                .setMsgFormat("Entity ID field `%s` must not be a ByteString.")
+                .addParam(field().descriptor()
+                                 .getFullName())
                 .setFieldPath(getFieldPath())
                 .build();
         addViolation(violation);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,16 +20,23 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.option.Options;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.SourceFile;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A message annotator.
@@ -37,32 +44,86 @@ import java.util.Optional;
  * <p>Annotates generated top-level messages from a {@code .proto} file,
  * if a specified {@linkplain MessageOptions message option} value is {@code true}.
  */
-class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, DescriptorProto> {
+class MessageAnnotator extends OptionAnnotator<Descriptor> {
 
-    MessageAnnotator(Class<? extends Annotation> annotation,
-                     GeneratedExtension<MessageOptions, Boolean> option,
-                     Collection<FileDescriptorProto> files,
-                     String genProtoDir) {
+    MessageAnnotator(ClassName annotation,
+                     ApiOption option,
+                     ImmutableList<FileDescriptor> files,
+                     Path genProtoDir) {
         super(annotation, option, files, genProtoDir);
     }
 
     @Override
-    protected List<DescriptorProto> getDefinitions(FileDescriptorProto file) {
-        return file.getMessageTypeList();
+    public final void annotate() {
+        for (FileDescriptor file : descriptors()) {
+            annotate(file);
+        }
     }
 
     @Override
-    protected String getDefinitionName(DescriptorProto definition) {
-        return definition.getName();
+    protected final void annotateOneFile(FileDescriptor file) {
+        SourceFile outerClass = SourceFile.forOuterClassOf(file.toProto());
+        rewriteSource(outerClass, new AnnotateNestedType(file));
     }
 
     @Override
-    protected void annotateDefinition(DescriptorProto definition, FileDescriptorProto file) {
-        annotateMessageTypes(definition, file);
+    protected final void annotateMultipleFiles(FileDescriptor file) {
+        for (Descriptor definitionDescriptor : getDefinitions(file)) {
+            if (shouldAnnotate(definitionDescriptor)) {
+                annotateMessageTypes(definitionDescriptor, file);
+            }
+        }
+    }
+
+    private static List<Descriptor> getDefinitions(FileDescriptor file) {
+        return file.getMessageTypes();
     }
 
     @Override
-    protected Optional<Boolean> getOptionValue(DescriptorProto definition) {
-        return Options.option(definition, getOption());
+    protected boolean shouldAnnotate(Descriptor descriptor) {
+        return option().isPresentAt(descriptor);
+    }
+
+    static <T extends JavaSource<T>>
+    JavaSource findNestedType(AbstractJavaSource<T> enclosingClass, String typeName) {
+        for (JavaSource nestedType : enclosingClass.getNestedTypes()) {
+            if (nestedType.getName()
+                          .equals(typeName)) {
+                return nestedType;
+            }
+        }
+
+        String errMsg = format("Nested type `%s` is not defined in `%s`.",
+                               typeName, enclosingClass.getName());
+        throw new IllegalStateException(errMsg);
+    }
+
+    /**
+     * Optionally annotates nested types in a file.
+     */
+    private class AnnotateNestedType implements SourceVisitor<JavaClassSource> {
+
+        private final FileDescriptor file;
+
+        private AnnotateNestedType(FileDescriptor file) {
+            this.file = file;
+        }
+
+        @Override
+        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
+            checkNotNull(input);
+            for (Descriptor definition : getDefinitions(file)) {
+                if (shouldAnnotate(definition)) {
+                    String messageName = definition.getName();
+                    JavaSource message = findNestedType(input, messageName);
+                    addAnnotation(message);
+
+                    String javaType = SimpleClassName.messageOrBuilder(messageName)
+                                                     .value();
+                    JavaSource messageOrBuilder = findNestedType(input, javaType);
+                    addAnnotation(messageOrBuilder);
+                }
+            }
+        }
     }
 }

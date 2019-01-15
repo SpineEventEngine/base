@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -29,8 +29,6 @@ import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;
 
 /**
  * A statement to convert a {@linkplain String raw} value.
- *
- * @see io.spine.validate.AbstractValidatingBuilder#convert(String, Class)
  */
 final class ConvertStatement {
 

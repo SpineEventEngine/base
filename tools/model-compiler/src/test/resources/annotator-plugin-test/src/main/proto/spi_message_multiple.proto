@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-import "spine/options.proto";
-
-option java_multiple_files = true;
-
-message Experimental {
-    option (SPI_type) = true;
-}

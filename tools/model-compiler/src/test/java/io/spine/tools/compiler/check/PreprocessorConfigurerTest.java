@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -28,9 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_ARG;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -74,12 +72,5 @@ class PreprocessorConfigurerTest {
         Configuration preprocessorConfig = configurer.setupPreprocessorConfig();
         Configuration foundConfig = projectConfigs.findByName(PREPROCESSOR_CONFIG_NAME);
         assertEquals(preprocessorConfig, foundConfig);
-    }
-
-    @Test
-    @DisplayName("add configure preprocessor action")
-    void add_configure_preprocessor_action() {
-        configurer.addConfigurePreprocessorAction(preprocessorConfig);
-        assertCompileTasksContain(project, PREPROCESSOR_ARG, preprocessorConfig.getAsPath());
     }
 }

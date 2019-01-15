@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -46,6 +46,7 @@ import static io.spine.tools.compiler.validation.Methods.returnThis;
 final class VBuilderMethods {
 
     private final MessageType type;
+    @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic.
     private static final String MERGE_FROM_METHOD_PARAMETER_NAME = "message";
 
     private VBuilderMethods(MessageType messageType) {
@@ -92,17 +93,15 @@ final class VBuilderMethods {
 
     private ClassName validatingBuilderClass() {
         return ClassName.get(type.javaPackage()
-                                 .value(), type.getValidatingBuilderClass()
+                                 .value(), type.validatingBuilderClass()
                                                .value());
     }
 
     private MethodSpec mergeFromMethod() {
         String methodName = "mergeFrom";
-        SimpleClassName vBuilderClass = this.type.getValidatingBuilderClass();
+        SimpleClassName vBuilderClass = type.validatingBuilderClass();
         ClassName className = ClassName.bestGuess(vBuilderClass.toString());
-        String messageTypeName = type.toProto()
-                                     .getName();
-        ClassName messageClass = ClassName.bestGuess(messageTypeName);
+        ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(CanIgnoreReturnValue.class)
@@ -172,6 +171,13 @@ final class VBuilderMethods {
         return result.build();
     }
 
+    private ClassName messageClass() {
+        String fullyQualifiedDotted = type.javaClassName()
+                                          .toDotted()
+                                          .value();
+        return ClassName.bestGuess(fullyQualifiedDotted);
+    }
+
     /**
      * A factory for the method constructors.
      */
@@ -186,19 +192,18 @@ final class VBuilderMethods {
          * @return the method constructor instance
          */
         private MethodGroup create(FieldDeclaration field, int index) {
-            FieldType fieldType = FieldType.create(field);
-            MethodGroup methodGroup =
-                    builderFor(field)
-                            .setField(field.descriptor())
-                            .setFieldType(fieldType)
-                            .setFieldIndex(index)
-                            // The name of the Validating Builder class.
-                            .setJavaClass(type.getValidatingBuilderClass()
-                                              .value())
-                            .setJavaPackage(type.javaPackage()
-                                                .value())
-                            .setGenericClassName(messageClass())
-                            .build();
+            FieldType fieldType = FieldType.of(field);
+            MethodGroup methodGroup = builderFor(field)
+                    .setField(field.descriptor())
+                    .setFieldType(fieldType)
+                    .setFieldIndex(index)
+                    // The name of the Validating Builder class.
+                    .setJavaClass(type.validatingBuilderClass()
+                                      .value())
+                    .setJavaPackage(type.javaPackage()
+                                        .value())
+                    .setGenericClassName(messageClass())
+                    .build();
             return methodGroup;
         }
 
@@ -212,11 +217,5 @@ final class VBuilderMethods {
             return SingularFieldMethods.newBuilder();
         }
 
-        private ClassName messageClass() {
-            String fullyQualifiedDotted = type.javaClassName()
-                                              .toDotted()
-                                              .value();
-            return ClassName.bestGuess(fullyQualifiedDotted);
-        }
     }
 }

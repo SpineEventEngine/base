@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,7 +25,6 @@ import com.google.protobuf.util.Durations;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
-
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 

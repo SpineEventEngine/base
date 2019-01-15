@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for rejection messages.
@@ -29,34 +28,7 @@ import io.spine.base.MessageFile.Predicate;
  * <p>This interface is used by the Model Compiler for marking rejection messages.
  * By convention, rejection messages are defined in a proto file, which name ends
  * with {@code rejections.proto}.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public interface RejectionMessage extends EventMessage {
-
-    /**
-     * Provides the predicate for finding proto files with rejection message declarations.
-     */
-    class File {
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Used in other contexts.
-        private static final MessageFile INSTANCE = new MessageFile("rejections") {
-            private static final long serialVersionUID = 0L;
-        };
-
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
-        public static Predicate predicate() {
-            return INSTANCE.predicate();
-        }
-
-        /**
-         * Obtains the suffix common for proto files containing command message declarations.
-         */
-        public static String suffix() {
-            return INSTANCE.value();
-        }
-    }
 }

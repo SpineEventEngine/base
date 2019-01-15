@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,10 +25,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.field.given.Given.messageField;
 import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.precondition.FieldPreconditions.preconditionFor;
+import static io.spine.js.generate.given.Generators.assertContains;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")

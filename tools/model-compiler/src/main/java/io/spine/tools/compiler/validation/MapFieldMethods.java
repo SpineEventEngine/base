@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,23 +24,25 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.proto.FieldName;
+import io.spine.code.java.FieldName;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.MapFieldType;
 import io.spine.validate.ValidationException;
 
-import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.tools.compiler.validation.Methods.clearPrefix;
+import static io.spine.tools.compiler.field.AccessorTemplates.allPutter;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.putter;
+import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
-import static io.spine.tools.compiler.validation.Methods.rawSuffix;
-import static io.spine.tools.compiler.validation.Methods.removePrefix;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * A method constructor of the {@code MethodSpec} objects based on the Protobuf message declaration.
@@ -56,15 +58,10 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     private static final String MAP_TO_VALIDATE_PARAM_NAME = "mapToValidate";
     private static final String MAP_TO_VALIDATE = "final $T<$T, $T> mapToValidate = ";
 
-    private final String javaFieldName;
-
     /**
      * The name of the property represented by this field.
-     *
-     * <p>Effectively equal to {@linkplain #javaFieldName Java field name} with the first letter in
-     * upper case.
      */
-    private final String propertyName;
+    private final FieldName javaFieldName;
     private final TypeName keyTypeName;
     private final TypeName valueTypeName;
     private final MapFieldType fieldType;
@@ -75,15 +72,13 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
      * @param builder the {MapFieldMethodsConstructorBuilder} instance
      */
     @SuppressWarnings("ConstantConditions")
-    // The fields are checked in the {@code #build()} method
-    // of the {@code MapFieldMethodConstructorBuilder} class.
+        // The fields are checked in the {@code #build()} method
+        // of the {@code MapFieldMethodConstructorBuilder} class.
     private MapFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
         FieldDescriptor field = builder.getField();
-        FieldName fieldName = FieldName.of(field.toProto());
-        this.propertyName = fieldName.toCamelCase();
-        this.javaFieldName = fieldName.javaCase();
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
         this.keyTypeName = fieldType.getKeyTypeName();
         this.valueTypeName = fieldType.getValueTypeName();
     }
@@ -102,13 +97,13 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec getter() {
         _debug("The getter construction for the map field is started.");
-        String methodName = "get" + propertyName;
-
-        String returnStatement = format("return %s.get%sMap()",
-                                        getMessageBuilder(), propertyName);
+        String methodName = AccessorTemplates.mapGetter()
+                                             .format(javaFieldName);
+        String returnStatement = format("return %s.%s()",
+                                        getMessageBuilder(), methodName);
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
-                          .addModifiers(Modifier.PUBLIC)
+                          .addModifiers(PUBLIC)
                           .returns(fieldType.getTypeName())
                           .addStatement(returnStatement)
                           .build();
@@ -139,13 +134,16 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putMethod() {
-        String methodName = "put" + propertyName;
+        String methodName = putter().format(javaFieldName);
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
-        String putStatement = format("%s.put%s(%s, %s)",
-                                     getMessageBuilder(), propertyName, KEY, VALUE);
+        String putStatement = format("%s.%s(%s, %s)",
+                                     getMessageBuilder(),
+                                     methodName,
+                                     KEY,
+                                     VALUE);
         MethodSpec result = newBuilderSetter(methodName)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(PUBLIC)
                 .addException(ValidationException.class)
                 .addParameter(keyTypeName, KEY)
                 .addParameter(valueTypeName, VALUE)
@@ -161,11 +159,11 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putRawMethod() {
-        String methodName = "putRaw" + propertyName;
+        String methodName = "putRaw" + javaFieldName;
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";
-        String putStatement = format("%s.put%s(convertedKey, convertedValue)",
-                                     getMessageBuilder(), propertyName);
+        String putStatement = format("%s.%s(convertedKey, convertedValue)",
+                                     getMessageBuilder(), putter().format(javaFieldName));
 
         MethodSpec result = newBuilderSetter(methodName)
                 .addException(ValidationException.class)
@@ -187,9 +185,12 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putAllMethod() {
-        String putAllStatement = format("%s.putAll%s(%s)",
-                                        getMessageBuilder(), propertyName, MAP_PARAM_NAME);
-        String methodName = fieldType.getSetterPrefix() + propertyName;
+        String putAllStatement = format("%s.%s(%s)",
+                                        getMessageBuilder(),
+                                        allPutter().format(javaFieldName),
+                                        MAP_PARAM_NAME);
+        String methodName = fieldType.primarySetterTemplate()
+                                     .format(javaFieldName);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
@@ -202,9 +203,10 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putAllRawMethod() {
-        String putAllStatement = format("%s.putAll%s(convertedValue)",
-                                        getMessageBuilder(), propertyName);
-        String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
+        String putAllStatement = format("%s.%s(convertedValue)",
+                                        getMessageBuilder(), allPutter().format(javaFieldName));
+        String methodName = fieldType.primarySetterTemplate()
+                                     .format(javaFieldName);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, MAP_PARAM_NAME)
                 .addException(ValidationException.class)
@@ -221,9 +223,9 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec removeMethod() {
-        String removeFromMap = format("%s.remove%s(%s)",
-                                      getMessageBuilder(), propertyName, KEY);
-        String methodName = removePrefix() + propertyName;
+        String methodName = remover().format(javaFieldName);
+        String removeFromMap = format("%s.%s(%s)",
+                                      getMessageBuilder(), methodName, KEY);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(keyTypeName, KEY)
                 .addStatement(removeFromMap)
@@ -233,8 +235,8 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec clearMethod() {
-        String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
-        String methodName = clearPrefix() + propertyName;
+        String methodName = clearer().format(javaFieldName);
+        String clearMap = format("%s.%s()", getMessageBuilder(), methodName);
         MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(clearMap)
                 .addStatement(returnThis())

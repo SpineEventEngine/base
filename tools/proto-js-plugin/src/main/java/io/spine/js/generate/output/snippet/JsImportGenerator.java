@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,8 +23,8 @@ package io.spine.js.generate.output.snippet;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.output.CodeLines;
 
 import java.util.Collection;
 

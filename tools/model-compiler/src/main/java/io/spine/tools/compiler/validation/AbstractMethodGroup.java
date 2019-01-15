@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.java.FieldName;
 
 import javax.lang.model.element.Modifier;
 
@@ -112,7 +113,7 @@ abstract class AbstractMethodGroup implements MethodGroup {
      *         the name of the field to validate
      * @return the constructed statement
      */
-    static String validateStatement(String fieldValue, String fieldName) {
+    static String validateStatement(String fieldValue, FieldName fieldName) {
         checkNotNull(fieldValue);
         checkNotNull(fieldName);
         CodeBlock codeBlock = CodeBlock.of("validate($N, $N, $S)",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -38,7 +38,6 @@ import java.util.List;
 import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junitpioneer.jupiter.TempDirectory.TempDir;
 
@@ -53,7 +52,7 @@ class JavadocFormatterTest {
 
     private File folder;
     private final FormattingAction formatting = new BacktickFormatting();
-    private final List<FormattingAction> actions = singletonList(formatting);
+    private final ImmutableList<FormattingAction> actions = ImmutableList.of(formatting);
     private final JavadocFormatter backtickFormatter = new JavadocFormatter(actions);
 
     @BeforeEach

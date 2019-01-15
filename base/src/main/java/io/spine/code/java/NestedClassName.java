@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,16 +20,24 @@
 
 package io.spine.code.java;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.code.java.ClassName.DOT_SEPARATOR;
 
 /**
  * A name of a potentially nested class with outer class names separated with dots.
  *
- * <p>A top level class name would have equal to {@link io.spine.code.java.SimpleClassName}.
+ * <p>A top level class name would have equal to {@link SimpleClassName}.
  */
 public final class NestedClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+
+    private static final Splitter nameSplitter = Splitter.on(DOT_SEPARATOR)
+                                                         .omitEmptyStrings();
 
     private NestedClassName(String value) {
         super(value);
@@ -42,5 +50,26 @@ public final class NestedClassName extends StringTypeValue {
         String nameWithOuter = ClassName.afterDot(className.value());
         String dotted = ClassName.toDotted(nameWithOuter);
         return new NestedClassName(dotted);
+    }
+
+    /**
+     * Obtains this class name as a list of simple class names sorted in the nesting order.
+     *
+     * <p>For example, if this class name is {@code "Container.Job.Builder"}, then the resulting
+     * list would be {@code ["Container", "Job", "Builder"]}.
+     *
+     * <p>If this class name is just a {@link SimpleClassName}, then the only entry of the resulting
+     * list is that simple name.
+     *
+     * @return this name split into simple class names
+     */
+    public ImmutableList<SimpleClassName> split() {
+        String fullName = value();
+        ImmutableList<SimpleClassName> result =
+                nameSplitter.splitToList(fullName)
+                            .stream()
+                            .map(SimpleClassName::create)
+                            .collect(toImmutableList());
+        return result;
     }
 }

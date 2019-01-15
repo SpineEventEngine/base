@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,6 +24,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.Options;
+import io.spine.tools.protoc.insert.MessageInterfaceGenerator;
 
 import java.io.IOException;
 
@@ -35,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link MarkerInterfaceGenerator}.
+ * <p>For the description of the plugin behavior see {@link MessageInterfaceGenerator}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
@@ -53,7 +54,7 @@ public class Plugin {
      */
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
-        SpineProtoGenerator generator = MarkerInterfaceGenerator.instance();
+        SpineProtoGenerator generator = MessageInterfaceGenerator.instance();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

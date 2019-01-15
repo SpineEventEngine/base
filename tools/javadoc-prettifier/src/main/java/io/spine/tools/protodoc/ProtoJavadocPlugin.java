@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,6 +19,7 @@
  */
 package io.spine.tools.protodoc;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -37,7 +38,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -59,9 +59,6 @@ import static java.util.Arrays.asList;
  * <p>All {@code .java} files in the specified directories (and subdirectories) will be formatted.
  * So, if the folders contain not only the sources generated basing on Protobuf definitions,
  * they will be formatted either.
- *
- *  @author Alexander Aleksandrov
- *  @author Dmytro Grankin
  */
 public class ProtoJavadocPlugin extends SpinePlugin {
 
@@ -98,8 +95,10 @@ public class ProtoJavadocPlugin extends SpinePlugin {
             return;
         }
 
-        JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
-                                                                 new PreTagFormatting()));
+        JavadocFormatter formatter = new JavadocFormatter(
+                ImmutableList.of(new BacktickFormatting(),
+                                 new PreTagFormatting())
+        );
         try {
             log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));

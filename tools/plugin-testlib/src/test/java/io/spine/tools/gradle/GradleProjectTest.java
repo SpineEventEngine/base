@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -55,10 +55,11 @@ class GradleProjectTest {
     @Test
     @DisplayName("build from project folder and project name")
     void build_from_project_folder_and_project_name() {
-        GradleProject project = GradleProject.newBuilder()
-                                             .setProjectFolder(temporaryFolder)
-                                             .setProjectName(PROJECT_NAME)
-                                             .build();
+        GradleProject project = GradleProject
+                .newBuilder()
+                .setProjectFolder(temporaryFolder)
+                .setProjectName(PROJECT_NAME)
+                .build();
         assertNotNull(project);
     }
 
@@ -73,14 +74,13 @@ class GradleProjectTest {
                      .setProjectName(PROJECT_NAME)
                      .addJavaFiles(files)
                      .build();
-        @SuppressWarnings("DuplicateStringLiteralInspection")
-        // "java" literal is copied with different semantics.
-                Path root = temporaryFolder.toPath()
-                                           .resolve("src")
-                                           .resolve("main")
-                                           .resolve("java");
+        Path root = temporaryFolder.toPath()
+                                   .resolve("src")
+                                   .resolve("main")
+                                   .resolve("java");
         for (String fileName : files) {
-            assertTrue(Files.exists(root.resolve(fileName)));
+            Path file = root.resolve(fileName);
+            assertTrue(Files.exists(file));
         }
     }
 

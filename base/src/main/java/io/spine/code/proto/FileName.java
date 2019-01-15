@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,9 +23,7 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.CommandMessage;
-import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
+import io.spine.base.MessageFile;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
@@ -114,27 +112,29 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
         return result;
     }
 
+    private boolean matches(MessageFile file) {
+        boolean result = value().endsWith(file.suffix());
+        return result;
+    }
+
     /**
      * Returns {@code true} if the name of the file matches convention for command message files.
      */
     public boolean isCommands() {
-        boolean result = value().endsWith(CommandMessage.File.suffix());
-        return result;
+        return matches(MessageFile.COMMANDS);
     }
 
     /**
      * Returns {@code true} if the name of the file matches convention for event message files.
      */
     public boolean isEvents() {
-        boolean result = value().endsWith(EventMessage.File.suffix());
-        return result;
+        return matches(MessageFile.EVENTS);
     }
 
     /**
      * Returns {@code true} if the name of the file matches convention for rejection message files.
      */
     public boolean isRejections() {
-        boolean result = value().endsWith(RejectionMessage.File.suffix());
-        return result;
+        return matches(MessageFile.REJECTIONS);
     }
 }

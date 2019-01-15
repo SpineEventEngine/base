@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,9 +25,9 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.java.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
@@ -45,9 +45,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T descriptor;
+    private final boolean supportsBuilders;
 
-    protected Type(T descriptor) {
+    protected Type(T descriptor, boolean supportsBuilders) {
         this.descriptor = checkNotNull(descriptor);
+        this.supportsBuilders = supportsBuilders;
     }
 
     /**
@@ -104,6 +106,17 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains simple class name for corresponding Java type.
      */
     public abstract SimpleClassName simpleJavaClassName();
+
+    /**
+     * Defines whether or not the Java class generated from this type has a builder.
+     *
+     * @return {@code true} if the generated Java class has corresponding
+     *         {@link com.google.protobuf.Message.Builder} and
+     *         {@link com.google.protobuf.MessageOrBuilder}
+     */
+    public final boolean supportsBuilders() {
+        return supportsBuilders;
+    }
 
     /**
      * Returns a fully-qualified name of the proto type.

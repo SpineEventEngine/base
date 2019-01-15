@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.validation;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
 
 /**
@@ -33,39 +32,10 @@ final class Methods {
     private Methods() {
     }
 
-    /** Returns the suffix for the `raw` methods of the `ValidatingBuilder` classes. */
-    static String rawSuffix() {
-        return "Raw";
-    }
-
-    /** Returns the prefix for the `clear` methods of the `ValidatingBuilder` classes. */
-    static String clearPrefix() {
-        return "clear";
-    }
-
-    /** Returns the prefix for the `remove` methods of the `ValidatingBuilder` classes. */
-    static String removePrefix() {
-        return "remove";
-    }
-
     /** Returns the `return` statement for the methods of the `ValidatingBuilder` classes.*/
     @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
     static String returnThis() {
         return "return this";
-    }
-
-    /**
-     * Creates the {@code ... .clearProperty()} statement for the given property name.
-     *
-     * @param propertyName
-     *         the name of the property to clear
-     * @return the {@code String} representing the clear call
-     */
-    static String clearProperty(String propertyName) {
-        checkNotNull(propertyName);
-        checkState(!propertyName.isEmpty());
-
-        return format(".clear%s()", propertyName);
     }
 
     /** Returns a call to the specified method of the parent class with the specified parameters. */

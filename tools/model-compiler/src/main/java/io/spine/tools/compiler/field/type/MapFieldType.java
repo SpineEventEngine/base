@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,24 +20,47 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
+import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplates.allPutter;
+import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.countGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.mapGetter;
+import static io.spine.tools.compiler.field.AccessorTemplates.putter;
+import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 
 /**
  * Represents map {@linkplain FieldType field type}.
  */
 public final class MapFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "putAll";
+    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+            ImmutableSet.of(
+                    getter(),
+                    countGetter(),
+                    mapGetter(),
+                    prefixAndPostfix("get", "OrDefault"),
+                    prefixAndPostfix("get", "OrThrow"),
+                    prefix("contains"),
+                    clearer(),
+                    putter(),
+                    remover(),
+                    allPutter()
+            );
 
     private final TypeName typeName;
     private final TypeName keyTypeName;
@@ -78,8 +101,13 @@ public final class MapFieldType implements FieldType {
      * {@inheritDoc}
      */
     @Override
-    public String getSetterPrefix() {
-        return SETTER_PREFIX;
+    public AccessorTemplate primarySetterTemplate() {
+        return allPutter();
+    }
+
+    @Override
+    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+        return GENERATED_ACCESSORS;
     }
 
     private static TypeName boxIfPrimitive(TypeName typeName) {
@@ -113,12 +141,11 @@ public final class MapFieldType implements FieldType {
         FieldDescriptor valueField = mapEntry.getFields()
                                              .get(valueFieldIndex);
 
-        TypeName keyTypeName = FieldType.create(new FieldDeclaration(keyField))
+        TypeName keyTypeName = FieldType.of(new FieldDeclaration(keyField))
                                         .getTypeName();
-        TypeName valueTypeName = FieldType.create(new FieldDeclaration(valueField))
+        TypeName valueTypeName = FieldType.of(new FieldDeclaration(valueField))
                                           .getTypeName();
 
         return new AbstractMap.SimpleEntry<>(keyTypeName, valueTypeName);
     }
-
 }
