@@ -75,6 +75,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      *
      * <p>The types with the <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
      * special JSON mapping</a> should be skipped.
+     * Parsers for the types are provided by the Spine Web.
      */
     public static ImmutableCollection<MessageType> targetTypes(FileDescriptor file) {
         if (FileDescriptors.isGoogle(file)) {
