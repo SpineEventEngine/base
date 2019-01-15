@@ -20,19 +20,19 @@
 
 package io.spine.code.js;
 
-import io.spine.value.StringTypeValue;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A Javascript module published to NPM.
  */
-public final class Module extends StringTypeValue {
+public final class Module {
 
     /**
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static final Module spineWeb = new Module("spine-web");
 
-    private static final long serialVersionUID = 0L;
+    private final String name;
 
     /**
      * Creates a new instance.
@@ -41,13 +41,14 @@ public final class Module extends StringTypeValue {
      *         the name of the module
      */
     public Module(String name) {
-        super(name);
+        checkNotEmptyOrBlank(name);
+        this.name = name;
     }
 
     /**
      * Obtains the name of the published artifact.
      */
     public String artifactName() {
-        return value();
+        return name;
     }
 }
