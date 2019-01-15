@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -36,12 +35,12 @@ import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
@@ -84,6 +83,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public T build() throws ValidationException {
         T message = internalBuild();
         validateResult(message);
+        validateDistinct(message);
         return message;
     }
 
@@ -165,60 +165,32 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        validateDistinct(descriptor, valueToValidate);
+        FieldValue valueToValidate = fieldToValue(descriptor, fieldValue);
         FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }
 
-    /**
-     * Validates the field against the {@code distinct} field option.
-     *
-     * <p>If the specified value already exists in the list represented by the specified descriptor,
-     * a {@code ConstraintViolationError} is thrown.
-     *
-     * @param descriptor
-     *         a descriptor for a field that is being validated
-     * @param fieldValue
-     *         a new value to be added to the collection represented by the repeated field
-     */
-    private void validateDistinct(Descriptors.FieldDescriptor descriptor, FieldValue fieldValue)
-            throws ValidationException {
-        if (fieldValue.valueOf(OptionsProto.distinct)) {
-            if (descriptor.isRepeated()) {
-                Set<?> current = new HashSet<>((Collection<?>) this.getMessageBuilder()
-                                                                   .getField(descriptor));
-                boolean allAdded = current.addAll(fieldValue.asList());
-                if (!allAdded) {
-                    throw distinctOptionViolated(descriptor, fieldValue);
-                }
-            } else {
-                throw distinctOptionCannotBeApplied(descriptor);
+    private void validateDistinct(Message message) throws ValidationException {
+        AbstractFieldValidatingOption distinct = new DistinctFieldOption();
+        List<ConstraintViolation> violations =
+                new ArrayList<>();
+        for (Map.Entry<FieldDescriptor, Object> entry : message.getAllFields()
+                                                               .entrySet()) {
+            FieldValue value = fieldToValue(entry.getKey(),
+                                            entry.getValue());
+            List<ConstraintViolation> constraintViolations = distinct.validateAgainst(value);
+            for (ConstraintViolation violation : constraintViolations) {
+                violations.add(violation);
             }
         }
+        checkViolations(violations);
     }
 
-    private ValidationException distinctOptionCannotBeApplied(FieldDescriptor descriptor) {
-        ConstraintViolation nonRepeatedDistinct = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Non repeated field %s cannot be `(distinct) = true`")
-                .addParam(descriptor.getFullName())
-                .build();
-        return new ValidationException(ImmutableList.of(nonRepeatedDistinct));
-    }
-
-    private static ValidationException distinctOptionViolated(FieldDescriptor descriptor,
-                                                              FieldValue value) {
-        ConstraintViolation distinctViolated = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Field %s can only contain distinct elements, can't add %s.")
-                .addParam(descriptor.getFullName())
-                .addParam(value.toString())
-                .build();
-        ValidationException exception = new ValidationException(ImmutableList.of(distinctViolated));
-        return exception;
+    private <V> FieldValue fieldToValue(FieldDescriptor descriptor, V fieldValue) {
+        FieldContext fieldContext = FieldContext.create(descriptor);
+        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
+        return valueToValidate;
     }
 
     /**
@@ -266,14 +238,14 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
-        T result = (T) getMessageBuilder().build();
+                T result = (T) getMessageBuilder().build();
         return result;
     }
 
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
-        B result = (B) Messages.newInstance(messageClass)
-                               .newBuilderForType();
+                B result = (B) Messages.newInstance(messageClass)
+                                       .newBuilderForType();
         return result;
     }
 
@@ -332,15 +304,16 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         Optional<Boolean> setOnceDeclaration = option(field, OptionsProto.setOnce);
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        boolean requiredByDefault =
+                fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
         return setOnceValue || requiredByDefault;
     }
 
     private void logError(FieldDescriptor field) {
         String fieldName = field.getFullName();
         _error("Error found in `%s`. " +
-                    "Repeated and map fields can't be marked as `(set_once) = true`",
-                    fieldName);
+                       "Repeated and map fields can't be marked as `(set_once) = true`",
+               fieldName);
     }
 
     private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
@@ -348,7 +321,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Attempted to change the value of the field `%s` which has " +
-                              "`(set_once) = true` and is already set.")
+                                      "`(set_once) = true` and is already set.")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
@@ -367,7 +340,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private static <T extends Message> Class<T>
     getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
         @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-                Class<T> result = (Class<T>)GenericParameter.MESSAGE.getArgumentIn(builderClass);
+                Class<T> result = (Class<T>) GenericParameter.MESSAGE.getArgumentIn(builderClass);
         return result;
     }
 
