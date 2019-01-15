@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
+import io.spine.code.js.Module;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
@@ -55,12 +56,10 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
     /** The name of the {@code object-parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
-    /** The name of the Spine Web artifact published to NPM. */
-    private static final String SPINE_WEB_NAME = "spine-web";
     @VisibleForTesting
-    static final String TYPE_PARSERS_FILE = SPINE_WEB_NAME + "/client/parser/type-parsers.js";
+    static final String TYPE_PARSERS_FILE = spineWebFile("/client/parser/type-parsers.js");
     @VisibleForTesting
-    static final String OBJECT_PARSER_FILE = SPINE_WEB_NAME + "/client/parser/object-parser.js";
+    static final String OBJECT_PARSER_FILE = spineWebFile("/client/parser/object-parser.js");
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
@@ -140,5 +139,10 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
             snippet.append(parser);
         }
         return snippet;
+    }
+
+    private static String spineWebFile(String pathToFile) {
+        String result = Module.spineWeb.artifactName() + pathToFile;
+        return result;
     }
 }
