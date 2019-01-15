@@ -145,7 +145,7 @@ extend google.protobuf.FieldOptions {
     // }
     //
     // Attempting to add a snowflake that is equal to an existing one should result in an exception.
-    bool distinct = 73825;
+    OnDuplicate on_duplicate = 73825;
 
     // reserved 73826 to 73849 for future validation options.
 
@@ -812,6 +812,16 @@ message GoesOption {
 
     // A user-defined validation error format message.
     string msg_format = 2;
+}
+
+message OnDuplicate {
+    enum DuplicatePolicy {
+        IGNORE = 0;
+        ELIMINATE = 1;
+        ERROR = 2;
+    }
+
+    DuplicatePolicy duplicatePolicy = 1;
 }
 
 // Defines options of a message representing a state of an entity.
