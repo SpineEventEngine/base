@@ -19,7 +19,7 @@
  */
 
 /**
- * The package contains classes performing writing of Javascript code.
+ * The package contains classes performing writing of JavaScript code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

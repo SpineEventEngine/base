@@ -49,7 +49,7 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final String SUFFIX = "_pb";
     /** The standard file extension. */
     private static final String EXTENSION = ".js";
-    /** The path separator used in Javascript imports. Not platform-dependant. */
+    /** The path separator used in JavaScript imports. Not platform-dependant. */
     private static final String PATH_SEPARATOR = "/";
     /** The path to parent directory. */
     private static final String PARENT_DIR = "../";

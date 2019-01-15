@@ -23,7 +23,7 @@ package io.spine.code.js;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A Javascript module published to NPM.
+ * A JavaScript module published to NPM.
  */
 public final class Module {
 

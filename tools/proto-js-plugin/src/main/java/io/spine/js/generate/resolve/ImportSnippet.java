@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A line of a source Javascript file with an import statement, which is going to be resolved.
+ * A line of a source JavaScript file with an import statement, which is going to be resolved.
  */
 public class ImportSnippet {
 
@@ -125,7 +125,7 @@ public class ImportSnippet {
     }
 
     /**
-     * Obtains the separator used in Javascript imports.
+     * Obtains the separator used in JavaScript imports.
      */
     static String pathSeparator() {
         return IMPORT_PATHS_SEPARATOR;

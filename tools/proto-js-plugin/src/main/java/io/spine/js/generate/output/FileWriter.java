@@ -38,7 +38,7 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
- * A writer of Javascript code into a file.
+ * A writer of JavaScript code into a file.
  *
  * <p>The class wraps all {@link IOException}s which occur during its operations in the
  * {@link IllegalStateException}.

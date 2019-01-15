@@ -51,11 +51,11 @@ public class Extension {
      */
     public String testDescriptorSetPath;
     /**
-     * The absolute path to the main Protobufs compiled to Javascript.
+     * The absolute path to the main Protobufs compiled to JavaScript.
      */
     public String mainGenProtoDir;
     /**
-     * The absolute path to the test Protobufs compiled to Javascript.
+     * The absolute path to the test Protobufs compiled to JavaScript.
      */
     public String testGenProtoDir;
 

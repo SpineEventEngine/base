@@ -46,7 +46,7 @@ import static java.lang.String.format;
  * standard types are manually created and require no code generation.
  *
  * <p>Code provided by the class is in {@code ES5} standard
- * since Protobuf compiler generates Javascript in {@code ES5}.
+ * since Protobuf compiler generates JavaScript in {@code ES5}.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
 public final class GeneratedParser implements Snippet {
