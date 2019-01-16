@@ -40,17 +40,17 @@ import io.spine.test.validate.CustomMessageRequiredMsgFieldValue;
 import io.spine.test.validate.CustomMessageRequiredRepeatedMsgFieldValue;
 import io.spine.test.validate.CustomMessageRequiredStringFieldValue;
 import io.spine.test.validate.CustomMessageWithNoRequiredOption;
-import io.spine.test.validate.MaxInclusiveNumberFieldValue;
-import io.spine.test.validate.MaxExclusiveNumberFieldValue;
-import io.spine.test.validate.MinInclusiveNumberFieldValue;
-import io.spine.test.validate.MinExclusiveNumberFieldValue;
 import io.spine.test.validate.DigitsCountNumberFieldValue;
 import io.spine.test.validate.EnclosedMessageFieldValue;
 import io.spine.test.validate.EnclosedMessageFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.EnclosedMessageWithRequiredString;
 import io.spine.test.validate.EnclosedMessageWithoutAnnotationFieldValue;
+import io.spine.test.validate.MaxExclusiveNumberFieldValue;
+import io.spine.test.validate.MaxInclusiveNumberFieldValue;
 import io.spine.test.validate.MaxNumberFieldValue;
+import io.spine.test.validate.MinExclusiveNumberFieldValue;
+import io.spine.test.validate.MinInclusiveNumberFieldValue;
 import io.spine.test.validate.MinNumberFieldValue;
 import io.spine.test.validate.PatternStringFieldValue;
 import io.spine.test.validate.ProjectionState;
@@ -413,43 +413,43 @@ class MessageValidatorTest {
     @Test
     @DisplayName("find out that number is greater than decimal min inclusive")
     void find_out_that_number_is_greater_than_decimal_min_inclusive() {
-        minDecimalNumberTest(GREATER_THAN_MIN, true, true);
+        minNumberTest(GREATER_THAN_MIN, true, true);
     }
 
     @Test
     @DisplayName("find out that number is equal to decimal min inclusive")
     void find_out_that_number_is_equal_to_decimal_min_inclusive() {
-        minDecimalNumberTest(EQUAL_MIN, true, true);
+        minNumberTest(EQUAL_MIN, true, true);
     }
 
     @Test
     @DisplayName("find out that number is less than decimal min inclusive")
     void find_out_that_number_is_less_than_decimal_min_inclusive() {
-        minDecimalNumberTest(LESS_THAN_MIN, true, false);
+        minNumberTest(LESS_THAN_MIN, true, false);
     }
 
     @Test
     @DisplayName("find out that number is grated than decimal min NOT inclusive")
     void find_out_that_number_is_greater_than_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(GREATER_THAN_MIN, false, true);
+        minNumberTest(GREATER_THAN_MIN, false, true);
     }
 
     @Test
     @DisplayName("find out that number is equal to decimal min NOT inclusive")
     void find_out_that_number_is_equal_to_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(EQUAL_MIN, false, false);
+        minNumberTest(EQUAL_MIN, false, false);
     }
 
     @Test
     @DisplayName("find out that number is less than decimal min NOT inclusive")
     void find_out_that_number_is_less_than_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(LESS_THAN_MIN, false, false);
+        minNumberTest(LESS_THAN_MIN, false, false);
     }
 
     @Test
     @DisplayName("provide one valid violation if number is less than decimal min")
     void provide_one_valid_violation_if_number_is_less_than_decimal_min() {
-        minDecimalNumberTest(LESS_THAN_MIN, true, false);
+        minNumberTest(LESS_THAN_MIN, true, false);
         assertSingleViolation(LESS_THAN_MIN_MSG, VALUE);
     }
 
@@ -460,43 +460,43 @@ class MessageValidatorTest {
     @Test
     @DisplayName("find out that number is greater than decimal max inclusive")
     void find_out_that_number_is_greater_than_decimal_max_inclusive() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
+        maxNumberTest(GREATER_THAN_MAX, true, false);
     }
 
     @Test
     @DisplayName("find out that number is equal to decimal max inclusive")
     void find_out_that_number_is_equal_to_decimal_max_inclusive() {
-        maxDecimalNumberTest(EQUAL_MAX, true, true);
+        maxNumberTest(EQUAL_MAX, true, true);
     }
 
     @Test
     @DisplayName("find out that number is less than decimal max inclusive")
     void find_out_that_number_is_less_than_decimal_max_inclusive() {
-        maxDecimalNumberTest(LESS_THAN_MAX, true, true);
+        maxNumberTest(LESS_THAN_MAX, true, true);
     }
 
     @Test
     @DisplayName("find out that number is greated than decimal max NOT inclusive")
     void find_out_that_number_is_greater_than_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, false, false);
+        maxNumberTest(GREATER_THAN_MAX, false, false);
     }
 
     @Test
     @DisplayName("find out that number is equal to decimal max NOT inclusive")
     void find_out_that_number_is_equal_to_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(EQUAL_MAX, false, false);
+        maxNumberTest(EQUAL_MAX, false, false);
     }
 
     @Test
     @DisplayName("find out that number is less than decimal max NOT inclusive")
     void find_out_that_number_is_less_than_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(LESS_THAN_MAX, false, true);
+        maxNumberTest(LESS_THAN_MAX, false, true);
     }
 
     @Test
     @DisplayName("provide one valid violation if number is greater than decimal max")
     void provide_one_valid_violation_if_number_is_greater_than_decimal_max() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
+        maxNumberTest(GREATER_THAN_MAX, true, false);
         assertSingleViolation(GREATER_MAX_MSG, VALUE);
     }
 
@@ -1027,28 +1027,32 @@ class MessageValidatorTest {
      * Utility methods.
      */
 
-    private void minDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
-        Message msg = inclusive ?
-                      MinInclusiveNumberFieldValue.newBuilder()
-                                                   .setValue(value)
-                                                   .build() :
-                      MinExclusiveNumberFieldValue.newBuilder()
-                                                      .setValue(value)
-                                                      .build();
+    private void minNumberTest(double value, boolean inclusive, boolean valid) {
+        Message msg = inclusive
+                      ? MinInclusiveNumberFieldValue
+                              .newBuilder()
+                              .setValue(value)
+                              .build()
+                      : MinExclusiveNumberFieldValue
+                              .newBuilder()
+                              .setValue(value)
+                              .build();
         validate(msg);
-        assertIsValid(isValid);
+        assertIsValid(valid);
     }
 
-    private void maxDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
-        Message msg = inclusive ?
-                      MaxInclusiveNumberFieldValue.newBuilder()
-                                                   .setValue(value)
-                                                   .build() :
-                      MaxExclusiveNumberFieldValue.newBuilder()
-                                                      .setValue(value)
-                                                      .build();
+    private void maxNumberTest(double value, boolean inclusive, boolean valid) {
+        Message msg = inclusive
+                      ? MaxInclusiveNumberFieldValue
+                              .newBuilder()
+                              .setValue(value)
+                              .build()
+                      : MaxExclusiveNumberFieldValue
+                              .newBuilder()
+                              .setValue(value)
+                              .build();
         validate(msg);
-        assertIsValid(isValid);
+        assertIsValid(valid);
     }
 
     private void validate(Message msg) {
