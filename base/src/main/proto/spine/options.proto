@@ -90,13 +90,12 @@ extend google.protobuf.FieldOptions {
 
     IfMissingOption if_missing = 73813;
 
-    // The option to define maximal decimal value.
-    DecimalMaxOption decimal_max = 73814;
+    // reserved 73814 and 73815 for deleted options `decimal_max` and `decimal_min`.
 
-    // The option to define minimal decimal value.
-    DecimalMinOption decimal_min = 73815;
-
+    // A higher boundary to the range of values of a number.
     MaxOption max = 73816;
+
+    // A lower boundary to the range of values of a number.
     MinOption min = 73817;
 
     DigitsOption digits = 73818;
@@ -550,68 +549,6 @@ message IfMissingOption {
     string msg_format = 1;
 }
 
-// The field value must be greater than (or equal to, if the `inclusive` parameter is true) the
-// given minimum number.
-//
-// Is applicable only to numbers.
-// Repeated fields are supported.
-//
-// Example:
-//
-//     double value = 1 [(decimal_min).value = "10.5", (decimal_min).inclusive = true];
-//
-message DecimalMinOption {
-
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `inclusive` parameter is true) or an empty one;
-    //   2) the minimum number.
-    //
-    option (default_message) = "Number must be greater than %s%s.";
-
-    // The string representation of the minimum field value.
-    string value = 1;
-
-    // Specifies if the field can be equal to the minimum value.
-    // The default value is false.
-    bool inclusive = 2;
-
-    // A user-defined validation error format message.
-    string msg_format = 3;
-}
-
-// The field value must be less than (or equal to, if the `inclusive` option is true) the given
-// maximum number.
-// Is applicable only to numbers.
-// Repeated fields are supported.
-//
-// Example:
-//     double value = 1 [(decimal_max).value = "10.5", (decimal_max).inclusive = true];
-//
-message DecimalMaxOption {
-
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) "or equal to " string (if the `inclusive` parameter is true) or an empty string;
-    //   2) the maximum number.
-    //
-    option (default_message) = "Number must be less than %s%s.";
-
-    // The string representation of the maximum field value.
-    string value = 1;
-
-    // Specifies if the field can be equal to the maximum value.
-    //
-    // The default value is false.
-    //
-    bool inclusive = 2;
-
-    // A user-defined validation error format message.
-    string msg_format = 3;
-}
-
 // The field value must be greater than or equal to the given minimum number.
 //
 // Is applicable only to numbers.
@@ -624,15 +561,23 @@ message MinOption {
 
     // The default error message format string.
     //
-    // The format parameter is the minimum number.
+    // The format parameters are:
+    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
+    //   2) the minimum number.
     //
-    option (default_message) = "Number must be greater than or equal to %s.";
+    option (default_message) = "Number must be greater than %s %s.";
 
     // The string representation of the minimum field value.
     string value = 1;
 
+    // Specifies if the field should be strictly greater than the specified minimum.
+    //
+    // The default value is false, i.e. the bound is inclusive.
+    //
+    bool exclusive = 2;
+
     // A user-defined validation error format message.
-    string msg_format = 2;
+    string msg_format = 3;
 }
 
 // The field value must be less than or equal to the given maximum number.
@@ -647,14 +592,23 @@ message MaxOption {
 
     // The default error message format string.
     //
-    // The format parameter is the maximum number.
-    option (default_message) = "Number must be less than or equal to %s.";
+    // The format parameters are:
+    //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
+    //   2) the maximum number.
+    //
+    option (default_message) = "Number must be less than %s %s.";
 
     // The string representation of the maximum field value.
     string value = 1;
 
+    // Specifies if the field should be strictly less than the specified maximum
+    //
+    // The default value is false, i.e. the bound is inclusive.
+    //
+    bool exclusive = 2;
+
     // A user-defined validation error format message.
-    string msg_format = 2;
+    string msg_format = 3;
 }
 
 // The field value must be a number with the certain integral/fractional digit count.
@@ -681,13 +635,13 @@ message DigitsOption {
     //
     // Must be greater than zero.
     //
-    int32 integer_max = 1;
+    uint32 integer_max = 1;
 
     // Maximum count of fractional digits of the number (inclusive).
     //
     // Must be greater than or equal to zero.
     //
-    int32 fraction_max = 2;
+    uint32 fraction_max = 2;
 
     // A user-defined validation error format message.
     string msg_format = 3;
