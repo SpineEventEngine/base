@@ -35,12 +35,9 @@ import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
@@ -83,7 +80,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public T build() throws ValidationException {
         T message = internalBuild();
         validateResult(message);
-        validateDistinct(message);
         return message;
     }
 
@@ -165,32 +161,11 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        FieldValue valueToValidate = fieldToValue(descriptor, fieldValue);
+        FieldContext fieldContext = FieldContext.create(descriptor);
+        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
         FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
-    }
-
-    private void validateDistinct(Message message) throws ValidationException {
-        AbstractFieldValidatingOption distinct = new DistinctFieldOption();
-        List<ConstraintViolation> violations =
-                new ArrayList<>();
-        for (Map.Entry<FieldDescriptor, Object> entry : message.getAllFields()
-                                                               .entrySet()) {
-            FieldValue value = fieldToValue(entry.getKey(),
-                                            entry.getValue());
-            List<ConstraintViolation> constraintViolations = distinct.validateAgainst(value);
-            for (ConstraintViolation violation : constraintViolations) {
-                violations.add(violation);
-            }
-        }
-        checkViolations(violations);
-    }
-
-    private <V> FieldValue fieldToValue(FieldDescriptor descriptor, V fieldValue) {
-        FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        return valueToValidate;
     }
 
     /**
@@ -238,14 +213,14 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
-                T result = (T) getMessageBuilder().build();
+        T result = (T) getMessageBuilder().build();
         return result;
     }
 
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
-                B result = (B) Messages.newInstance(messageClass)
-                                       .newBuilderForType();
+        B result = (B) Messages.newInstance(messageClass)
+                               .newBuilderForType();
         return result;
     }
 
@@ -312,7 +287,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private void logError(FieldDescriptor field) {
         String fieldName = field.getFullName();
         _error("Error found in `%s`. " +
-                       "Repeated and map fields can't be marked as `(set_once) = true`",
+               "Repeated and map fields can't be marked as `(set_once) = true`.",
                fieldName);
     }
 
@@ -321,7 +296,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Attempted to change the value of the field `%s` which has " +
-                                      "`(set_once) = true` and is already set.")
+                              "`(set_once) = true` and is already set.")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
@@ -340,7 +315,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private static <T extends Message> Class<T>
     getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
         @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-                Class<T> result = (Class<T>) GenericParameter.MESSAGE.getArgumentIn(builderClass);
+                Class<T> result = (Class<T>)GenericParameter.MESSAGE.getArgumentIn(builderClass);
         return result;
     }
 
