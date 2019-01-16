@@ -26,12 +26,11 @@ import io.spine.option.OnDuplicate.DuplicatePolicy;
 import io.spine.option.OptionsProto;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class DistinctFieldOption extends AbstractFieldValidatingOption {
+final class DistinctFieldOption extends AbstractFieldValidatingOption {
 
     @Override
     boolean applicableTo(Descriptors.FieldDescriptor field) {
@@ -52,41 +51,17 @@ public final class DistinctFieldOption extends AbstractFieldValidatingOption {
     @Override
     List<ConstraintViolation> doValidate(FieldValue value) {
         int onDuplicate = policyFor(value).getNumber();
-        switch (onDuplicate) {
-            case 0:
-                return ImmutableList.of();
-            case 1:
-                return eliminateDuplicates(value);
-            case 2:
-                return checkForDuplicates(value);
-            default:
-                return ImmutableList.of();
-        }
+        return onDuplicate < 1 ? ImmutableList.of() : checkForDuplicates(value);
     }
 
-    /**
-     * @apiNote mutates the original value
-     */
-    private List<ConstraintViolation> eliminateDuplicates(FieldValue value) {
-        List<?> collect = value.asList()
-                               .stream()
-                               .distinct()
-                               .collect(Collectors.toList());
-
-        Descriptors.FieldDescriptor descriptor = value.context()
-                                                      .getTarget();
-        value = FieldValue.of(collect, FieldContext.create(descriptor));
-        return ImmutableList.of();
-    }
-
-    @SuppressWarnings("SuspiciousMethodCalls") //
+    @SuppressWarnings("SuspiciousMethodCalls")
     private static List<ConstraintViolation> checkForDuplicates(FieldValue value) {
         List<?> potentialDuplicates = new ArrayList<>(value.asList());
-        Set<?> duplicateLess = new HashSet<>(value.asList());
-        potentialDuplicates.removeAll(duplicateLess);
         List<ConstraintViolation> violations =
                 potentialDuplicates.stream()
                                    .distinct()
+                                   .filter(element -> Collections.frequency(potentialDuplicates,
+                                                                            element) > 1)
                                    .map(element -> duplicateFound(element, value))
                                    .collect(Collectors.toList());
         return violations;
@@ -107,10 +82,7 @@ public final class DistinctFieldOption extends AbstractFieldValidatingOption {
     }
 
     private static DuplicatePolicy policyFor(FieldValue field) {
-        return field.context()
-                    .getTarget()
-                    .getOptions()
-                    .getExtension(OptionsProto.onDuplicate)
+        return field.valueOf(OptionsProto.onDuplicate)
                     .getDuplicatePolicy();
     }
 }

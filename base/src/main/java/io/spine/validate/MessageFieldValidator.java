@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
@@ -31,6 +32,7 @@ import io.spine.option.TimeOption;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
+import java.util.Set;
 
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
@@ -174,6 +176,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 .addAllViolation(violations)
                 .build();
         return violation;
+    }
+
+    @Override
+    protected Set<AbstractFieldValidatingOption> additionalOptions() {
+        return ImmutableSet.of();
     }
 
     /**

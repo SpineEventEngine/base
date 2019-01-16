@@ -135,13 +135,11 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a repeated field as a collection of unique elements.
     //
-    // If `true`, attempting to add an already present value to a field that marked as distinct
-    // results in a runtime exception.
     //
     // Example:
     // For a message
     // message Blizzard {
-    //     repeated Snowflake = 1 [(distinct) = true];
+    //     repeated Snowflake = 1 [(on_duplicate).duplicatePolicy = ERROR];
     // }
     //
     // Attempting to add a snowflake that is equal to an existing one should result in an exception.
@@ -814,13 +812,20 @@ message GoesOption {
     string msg_format = 2;
 }
 
+// Defines options of a repeated field that defines a logic
 message OnDuplicate {
+
+    // Actions that can be taken if a duplicate is found.
     enum DuplicatePolicy {
+
+        // Duplicates are ignored.
         IGNORE = 0;
-        ELIMINATE = 1;
-        ERROR = 2;
+
+        // An error is produced if a duplicate was found.
+        ERROR = 1;
     }
 
+    // The type of action that is taken when a duplicate is found.
     DuplicatePolicy duplicatePolicy = 1;
 }
 

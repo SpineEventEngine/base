@@ -24,15 +24,49 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import java.util.List;
 
-public abstract class AbstractFieldValidatingOption {
+/**
+ * An option that validates a field.
+ */
+abstract class AbstractFieldValidatingOption {
 
+    /**
+     * Defines whether this option is applicable to the specified field.
+     *
+     * <p>Example: a {@link io.spine.option.DecimalMaxOption decimal max option} is applicable to
+     * numeric fields only.
+     *
+     * @param field
+     *         a field applicability to which is checked
+     * @return {@code true} if this option can be applied to the specified field, {@code false}
+     *         otherwise
+     */
     abstract boolean applicableTo(FieldDescriptor field);
 
+    /**
+     * Returns the exception that is thrown if this option was found to be inapplicable to the
+     * specified field.
+     */
     abstract ValidationException onInapplicable(FieldDescriptor field);
 
+    /**
+     * Defines the logic for validation of the specified field.
+     *
+     * @param value
+     *         field that is being validated
+     * @return a list of constraint violations, if any were found when validating the specified
+     *         field
+     */
     abstract List<ConstraintViolation> doValidate(FieldValue value);
 
-    public final List<ConstraintViolation> validateAgainst(FieldValue value) {
+    /**
+     * Validates the specified field against this option.
+     *
+     * @param value
+     *         the field value that is being validated
+     * @return list of constraint violations that were found while validating the specified
+     *         field
+     */
+    final List<ConstraintViolation> validateAgainst(FieldValue value) {
         FieldDescriptor descriptor = value.context()
                                           .getTarget();
         if (applicableTo(descriptor)) {

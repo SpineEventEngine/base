@@ -20,8 +20,11 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
+
+import java.util.Set;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 
@@ -51,6 +54,11 @@ class StringFieldValidator extends FieldValidator<String> {
     @Override
     protected void validateOwnRules() {
         checkIfMatchesToRegexp();
+    }
+
+    @Override
+    protected Set<AbstractFieldValidatingOption> additionalOptions() {
+        return ImmutableSet.of();
     }
 
     private void checkIfMatchesToRegexp() {

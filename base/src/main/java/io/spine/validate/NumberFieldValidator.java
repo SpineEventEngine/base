@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.DecimalMaxOption;
@@ -29,6 +30,7 @@ import io.spine.option.MaxOption;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -218,6 +220,11 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                 .setFieldValue(wrap(value))
                 .build();
         return violation;
+    }
+
+    @Override
+    protected Set<AbstractFieldValidatingOption> additionalOptions() {
+        return ImmutableSet.of();
     }
 
     private ConstraintViolation digits(V value) {

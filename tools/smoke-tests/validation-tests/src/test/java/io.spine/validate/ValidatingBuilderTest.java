@@ -283,7 +283,8 @@ class ValidatingBuilderTest {
     void testSetOnceImplicitForEntities() {
         testOption(EditTaskStateVBuilder.newBuilder(),
                    builder -> builder.setEditId(newUuid()),
-                   builder -> builder.setEditId(newUuid()));
+                   builder -> builder.setEditId(newUuid())
+                                     .build());
     }
 
     @DisplayName("does not allow to add duplicate entries to a `distinct` marked field")
@@ -291,23 +292,25 @@ class ValidatingBuilderTest {
     void testDistinctThrows() {
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
-                   builder -> builder.addSnowflake(triangularSnowflake()));
+                   builder -> builder.addSnowflake(triangularSnowflake())
+                                     .build());
     }
 
     @Test
     void testDistinctThrowsOnAddAll() {
         List snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
-        BlizzardVBuilder.newBuilder().addSnowflake(triangularSnowflake()).build();
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
-                   builder -> builder.addAllSnowflake(snowflakes).build());
+                   builder -> builder.addAllSnowflake(snowflakes)
+                                     .build());
     }
 
     @Test
     void testDistinctThrowsOnInapplicable() {
         testOption(ConstitutionVBuilder.newBuilder(),
                    builder -> builder,
-                   builder -> builder.setAmendments("First Amendment"));
+                   builder -> builder.setAmendments("First Amendment")
+                                     .build());
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
