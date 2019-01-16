@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
@@ -30,6 +32,8 @@ import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
@@ -49,6 +53,7 @@ abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
+    private final Set<AbstractFieldValidatingOption> fieldValidatingOptions;
     private final boolean required;
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
@@ -72,6 +77,8 @@ abstract class FieldValidator<V> implements Logging {
      * @param canBeRequired
      *         defines whether a field that is being validated can be {@code required}
      */
+    @SuppressWarnings({"OverridableMethodCallDuringObjectConstruction", "AbstractMethodCallInConstructor"})
+    // Subclasses return values that don't depend on any state
     protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
         this.canBeRequired = canBeRequired;
         this.value = fieldValue;
@@ -82,6 +89,7 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.fieldValidatingOptions = Sets.union(commonOptions(), additionalOptions());
     }
 
     /**
@@ -110,6 +118,15 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is not set, {@code false} otherwise
      */
     protected abstract boolean isNotSet(V value);
+
+    /**
+     * Defines options against which a field can be validated.
+     *
+     * <p>Subclasses should use this method to add more type-specific options.
+     *
+     * @return a set of additional options
+     */
+    protected abstract Set<AbstractFieldValidatingOption> additionalOptions();
 
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
@@ -157,7 +174,15 @@ abstract class FieldValidator<V> implements Logging {
     protected abstract void validateOwnRules();
 
     private List<ConstraintViolation> assembleViolations() {
-        return ImmutableList.copyOf(violations);
+        List<ConstraintViolation> optionViolations =
+                this.fieldValidatingOptions.stream()
+                                           .flatMap(option -> option.validateAgainst(this.value)
+                                                                    .stream())
+                                           .collect(Collectors.toList());
+        return ImmutableList.<ConstraintViolation>builder()
+                .addAll(optionViolations)
+                .addAll(violations)
+                .build();
     }
 
     /**
@@ -315,5 +340,10 @@ abstract class FieldValidator<V> implements Logging {
     /** Returns the declaration of the validated field. */
     protected FieldDeclaration field() {
         return declaration;
+    }
+
+    // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
+    private static Set<AbstractFieldValidatingOption> commonOptions() {
+        return ImmutableSet.of(new DistinctFieldOption());
     }
 }
