@@ -193,7 +193,7 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearLabel
         );
-        setSetOnce(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
     }
 
     @Test
@@ -204,7 +204,7 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearId
         );
-        setSetOnce(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
     }
 
     @Test
@@ -215,11 +215,11 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearAssignee
         );
-        setSetOnce(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
     }
 
-    private static void setSetOnce(Function<TaskVBuilder, TaskVBuilder> setup,
-                                   Stream<Function<TaskVBuilder, ?>> mutateOperations) {
+    private static void testSetOnce(Function<TaskVBuilder, TaskVBuilder> setup,
+                                    Stream<Function<TaskVBuilder, ?>> mutateOperations) {
         mutateOperations.forEach(
                 operation -> testOption(TaskVBuilder.newBuilder(), setup, operation));
     }
