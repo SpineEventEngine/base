@@ -50,8 +50,12 @@ final class DistinctFieldOption extends AbstractFieldValidatingOption {
 
     @Override
     List<ConstraintViolation> doValidate(FieldValue value) {
-        int onDuplicate = policyFor(value).getNumber();
-        return onDuplicate < 1 ? ImmutableList.of() : checkForDuplicates(value);
+        return checkForDuplicates(value);
+    }
+
+    @Override
+    boolean optionPresentFor(FieldValue value) {
+        return policyFor(value).getNumber() > 0;
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
@@ -74,8 +78,9 @@ final class DistinctFieldOption extends AbstractFieldValidatingOption {
         ConstraintViolation duplicateFound = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Found a duplicate element in a `distinct` field %s. " +
-                                      "Duplicate element: %s")
+                              "Duplicate element: %s.")
                 .addParam(fieldName)
+                .addParam(value.asList().toString())
                 .addParam(duplicate.toString())
                 .build();
         return duplicateFound;

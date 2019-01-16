@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import java.util.List;
@@ -58,6 +59,9 @@ abstract class AbstractFieldValidatingOption {
      */
     abstract List<ConstraintViolation> doValidate(FieldValue value);
 
+    /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
+    abstract boolean optionPresentFor(FieldValue value);
+
     /**
      * Validates the specified field against this option.
      *
@@ -69,10 +73,13 @@ abstract class AbstractFieldValidatingOption {
     final List<ConstraintViolation> validateAgainst(FieldValue value) {
         FieldDescriptor descriptor = value.context()
                                           .getTarget();
-        if (applicableTo(descriptor)) {
-            return doValidate(value);
-        } else {
-            throw onInapplicable(descriptor);
+        if (optionPresentFor(value)) {
+            if (applicableTo(descriptor)) {
+                return doValidate(value);
+            } else {
+                throw onInapplicable(descriptor);
+            }
         }
+        return ImmutableList.of();
     }
 }
