@@ -90,7 +90,8 @@ public final class Time {
     /**
      * The provider of the current time.
      *
-     * <p>Implement this interface and pass the resulting class to
+     * <p>Implement this interface and pass the resulting class to {@link #setProvider(Provider)}
+     * in order to change the {@link #getCurrentTime()} results.
      */
     @Internal
     public interface Provider {
