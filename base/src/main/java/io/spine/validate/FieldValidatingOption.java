@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * An option that validates a field.
  */
-abstract class AbstractFieldValidatingOption {
+abstract class FieldValidatingOption {
 
     /**
      * Defines whether this option is applicable to the specified field.
@@ -57,7 +57,7 @@ abstract class AbstractFieldValidatingOption {
      * @return a list of constraint violations, if any were found when validating the specified
      *         field
      */
-    abstract List<ConstraintViolation> doValidate(FieldValue value);
+    abstract List<ConstraintViolation> applyValidatingRules(FieldValue value);
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
     abstract boolean optionPresentFor(FieldValue value);
@@ -75,7 +75,7 @@ abstract class AbstractFieldValidatingOption {
                                           .getTarget();
         if (optionPresentFor(value)) {
             if (applicableTo(descriptor)) {
-                return doValidate(value);
+                return applyValidatingRules(value);
             } else {
                 throw onInapplicable(descriptor);
             }

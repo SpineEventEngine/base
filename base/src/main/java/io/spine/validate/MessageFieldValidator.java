@@ -179,7 +179,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected Set<AbstractFieldValidatingOption> additionalOptions() {
+    protected Set<FieldValidatingOption> additionalOptions() {
         return ImmutableSet.of();
     }
 

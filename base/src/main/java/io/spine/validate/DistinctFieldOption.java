@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-final class DistinctFieldOption extends AbstractFieldValidatingOption {
+final class DistinctFieldOption extends FieldValidatingOption {
 
     @Override
     boolean applicableTo(Descriptors.FieldDescriptor field) {
@@ -49,7 +49,7 @@ final class DistinctFieldOption extends AbstractFieldValidatingOption {
     }
 
     @Override
-    List<ConstraintViolation> doValidate(FieldValue value) {
+    List<ConstraintViolation> applyValidatingRules(FieldValue value) {
         return checkForDuplicates(value);
     }
 

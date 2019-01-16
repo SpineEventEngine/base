@@ -223,7 +223,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     @Override
-    protected Set<AbstractFieldValidatingOption> additionalOptions() {
+    protected Set<FieldValidatingOption> additionalOptions() {
         return ImmutableSet.of();
     }
 

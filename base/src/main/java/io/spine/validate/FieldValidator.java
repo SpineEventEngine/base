@@ -53,7 +53,7 @@ abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final Set<AbstractFieldValidatingOption> fieldValidatingOptions;
+    private final Set<FieldValidatingOption> fieldValidatingOptions;
     private final boolean required;
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
@@ -126,7 +126,7 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return a set of additional options
      */
-    protected abstract Set<AbstractFieldValidatingOption> additionalOptions();
+    protected abstract Set<FieldValidatingOption> additionalOptions();
 
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
@@ -343,7 +343,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
-    private static Set<AbstractFieldValidatingOption> commonOptions() {
+    private static Set<FieldValidatingOption> commonOptions() {
         return ImmutableSet.of(new DistinctFieldOption());
     }
 }
