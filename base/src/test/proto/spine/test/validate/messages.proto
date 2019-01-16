@@ -111,20 +111,20 @@ message CustomMessageWithNoRequiredOption {
 
 // Messages for "decimal_min", "decimal_max" options tests.
 
-message DecimalMinIncNumberFieldValue {
-    double value = 1 [(decimal_min).value = "16.5", (decimal_min).inclusive = true];
+message MinInclusiveNumberFieldValue {
+    double value = 1 [(min).value = "16.5", (min).exclusive = false];
 }
 
-message DecimalMinNotIncNumberFieldValue {
-    double value = 1 [(decimal_min).value = "16.5", (decimal_min).inclusive = false];
+message MinExclusiveNumberFieldValue {
+    double value = 1 [(min).value = "16.5", (min).exclusive = true];
 }
 
-message DecimalMaxIncNumberFieldValue {
-    double value = 1 [(decimal_max).value = "64.5", (decimal_max).inclusive = true];
+message MaxInclusiveNumberFieldValue {
+    double value = 1 [(max).value = "64.5", (max).exclusive = false];
 }
 
-message DecimalMaxNotIncNumberFieldValue {
-    double value = 1 [(decimal_max).value = "64.5", (decimal_max).inclusive = false];
+message MaxExclusiveNumberFieldValue {
+    double value = 1 [(max).value = "64.5", (max).exclusive = true];
 }
 
 // Messages for "min" and "max" options tests.

@@ -40,10 +40,10 @@ import io.spine.test.validate.CustomMessageRequiredMsgFieldValue;
 import io.spine.test.validate.CustomMessageRequiredRepeatedMsgFieldValue;
 import io.spine.test.validate.CustomMessageRequiredStringFieldValue;
 import io.spine.test.validate.CustomMessageWithNoRequiredOption;
-import io.spine.test.validate.DecimalMaxIncNumberFieldValue;
-import io.spine.test.validate.DecimalMaxNotIncNumberFieldValue;
-import io.spine.test.validate.DecimalMinIncNumberFieldValue;
-import io.spine.test.validate.DecimalMinNotIncNumberFieldValue;
+import io.spine.test.validate.MaxInclusiveNumberFieldValue;
+import io.spine.test.validate.MaxExclusiveNumberFieldValue;
+import io.spine.test.validate.MinInclusiveNumberFieldValue;
+import io.spine.test.validate.MinExclusiveNumberFieldValue;
 import io.spine.test.validate.DigitsCountNumberFieldValue;
 import io.spine.test.validate.EnclosedMessageFieldValue;
 import io.spine.test.validate.EnclosedMessageFieldValueWithCustomInvalidMessage;
@@ -1029,10 +1029,10 @@ class MessageValidatorTest {
 
     private void minDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
         Message msg = inclusive ?
-                      DecimalMinIncNumberFieldValue.newBuilder()
+                      MinInclusiveNumberFieldValue.newBuilder()
                                                    .setValue(value)
                                                    .build() :
-                      DecimalMinNotIncNumberFieldValue.newBuilder()
+                      MinExclusiveNumberFieldValue.newBuilder()
                                                       .setValue(value)
                                                       .build();
         validate(msg);
@@ -1041,10 +1041,10 @@ class MessageValidatorTest {
 
     private void maxDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
         Message msg = inclusive ?
-                      DecimalMaxIncNumberFieldValue.newBuilder()
+                      MaxInclusiveNumberFieldValue.newBuilder()
                                                    .setValue(value)
                                                    .build() :
-                      DecimalMaxNotIncNumberFieldValue.newBuilder()
+                      MaxExclusiveNumberFieldValue.newBuilder()
                                                       .setValue(value)
                                                       .build();
         validate(msg);
