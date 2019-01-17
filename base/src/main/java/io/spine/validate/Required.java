@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-public class RequiredOption extends FieldValidatingOption<Boolean> {
+public class Required extends FieldValidatingOption<Boolean> {
 
     private final Predicate<FieldValue> isNotSet;
     private final Predicate<FieldValue> isOptionPresent;
@@ -47,16 +47,28 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
      * @param isOptionPresent
      *         a function that defines whether this option is present
      */
-    private RequiredOption(Predicate<FieldValue> isNotSet,
-                           Predicate<FieldValue> isOptionPresent) {
+    private Required(Predicate<FieldValue> isNotSet,
+                     Predicate<FieldValue> isOptionPresent) {
         this.isNotSet = isNotSet;
         this.isOptionPresent = isOptionPresent;
     }
 
-    static RequiredOption create(Predicate<FieldValue> isNotSet,
-                                 boolean strict) {
-        Predicate<FieldValue> isOptionPresent = strict ? value -> true : RequiredOption::optionValue;
-        return new RequiredOption(isNotSet, isOptionPresent);
+    /**
+     * Creates a new instance of this validating option.
+     *
+     * <p>Depending on the value of the {@code strict} parameter, created option either checks
+     * the option value of the field (if {@code strict} is {@code false}), or assumes it to be
+     * {@code required} by default (if {@code strict} is {@code true}).
+     *
+     * @param isNotSet
+     *         a function that determines whether the value is set or not
+     * @param strict
+     *         whether it should be assumed that the field is {@code required} by default
+     * @return a new instance of this validating option
+     */
+    static Required create(Predicate<FieldValue> isNotSet, boolean strict) {
+        Predicate<FieldValue> isOptionPresent = strict ? value -> true : Required::optionValue;
+        return new Required(isNotSet, isOptionPresent);
     }
 
     /**
@@ -77,7 +89,7 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
      */
     @Override
     ValidationException onInapplicable(Descriptors.FieldDescriptor field) {
-        return nop();
+        throw new IllegalStateException("`Required` fields are applicable to any kind of field.");
     }
 
     @Override
@@ -98,7 +110,8 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
-                .setFieldPath(value.context().getFieldPath())
+                .setFieldPath(value.context()
+                                   .getFieldPath())
                 .build();
         return violation;
     }
@@ -126,9 +139,5 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
     @Override
     public Boolean getValueFor(FieldValue fieldValue) {
         return optionValue(fieldValue);
-    }
-
-    private <T> T nop() {
-        return null;
     }
 }
