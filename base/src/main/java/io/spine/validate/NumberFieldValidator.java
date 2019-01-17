@@ -117,8 +117,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
         int comparison = compareToValueOf(value, minAsString);
         return min.getExclusive()
-               ? comparison > 0
-               : comparison >= 0;
+               ? comparison <= 0
+               : comparison < 0;
     }
 
     private boolean notFitToMax(V value) {
@@ -128,8 +128,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
         int comparison = compareToValueOf(value, maxAsString);
         return max.getExclusive()
-               ? comparison < 0
-               : comparison <= 0;
+               ? comparison >= 0
+               : comparison > 0;
     }
 
     private int compareToValueOf(V value, String number) {
