@@ -28,7 +28,6 @@ import io.spine.js.generate.field.precondition.FieldPrecondition;
 import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
@@ -49,7 +48,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     @VisibleForTesting
     static final String FIELD_VALUE = "value";
 
-    private final FieldDescriptor field;
+    private final FieldToParse field;
     private final FieldPrecondition precondition;
     private final FieldParser parser;
 
@@ -67,9 +66,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      * @return the field value as parsed from the JSON
      */
     String acquireFieldValue() {
-        String fieldJsonName = field.getJsonName();
-        String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
-        return jsObject;
+        return field.value();
     }
 
     /**
@@ -92,7 +89,14 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     }
 
     FieldDescriptor field() {
-        return field;
+        return field.descriptor();
+    }
+
+    /**
+     * Obtains the name of the variable to set the field value on.
+     */
+    String targetVariable() {
+        return field.messageVariable();
     }
 
     /**
@@ -130,12 +134,12 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      */
     abstract static class Builder<B extends Builder<B>> {
 
-        private FieldDescriptor field;
+        private FieldToParse field;
         private FieldPrecondition precondition;
         private FieldParser parser;
         private CodeLines jsOutput;
 
-        B setField(FieldDescriptor field) {
+        B setField(FieldToParse field) {
             this.field = checkNotNull(field);
             return self();
         }

@@ -21,7 +21,7 @@
 package io.spine.js.generate.field.parser.primitive;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.js.generate.output.snippet.JsImportGenerator;
+import io.spine.js.generate.output.snippet.Import;
 import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -57,11 +57,8 @@ final class BytesParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        JsImportGenerator generator = JsImportGenerator
-                .newBuilder()
-                .setJsOutput(jsOutput())
-                .build();
-        generator.importLib(BASE64_LIB, BASE64_VAR);
+        Import base64Import = Import.library(BASE64_LIB);
+        jsOutput().append(base64Import.namedAs(BASE64_VAR));
         jsOutput().append(parsedVariable(variable, value));
     }
 

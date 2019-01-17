@@ -20,7 +20,6 @@
 
 package io.spine.code.js;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
 
@@ -44,7 +43,6 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates a new instance at the specified location.
      */
-    @VisibleForTesting
     public static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);

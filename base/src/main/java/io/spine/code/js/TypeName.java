@@ -20,17 +20,14 @@
 
 package io.spine.code.js;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Represents the Protobuf type in the JavaScript code.
- *
- * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
- *
- * @author Dmytro Kuzmin
+ * The name of a type in the JavaScript code.
  */
 public final class TypeName extends StringTypeValue {
 
@@ -45,10 +42,27 @@ public final class TypeName extends StringTypeValue {
         super(value);
     }
 
+    /**
+     * Obtains the type name of the specified Protobuf declaration.
+     *
+     * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
+     */
     public static TypeName from(GenericDescriptor descriptor) {
         checkNotNull(descriptor);
         String typeName = descriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return new TypeName(nameWithPrefix);
+    }
+
+    /**
+     * Obtains the type name of the parser of the specified message.
+     *
+     * <p>The parser is a static property on the corresponding message type.
+     */
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
+    public static TypeName ofParser(Descriptor message) {
+        checkNotNull(message);
+        TypeName messageType = from(message);
+        return new TypeName(messageType + ".Parser");
     }
 }

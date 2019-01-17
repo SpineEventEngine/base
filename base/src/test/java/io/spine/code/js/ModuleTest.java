@@ -20,28 +20,19 @@
 
 package io.spine.code.js;
 
-/**
- * The enumeration of project files provided by the Spine framework.
- */
-public enum LibraryFile {
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * The index file exposing data about generated Protobuf types.
-     */
-    INDEX("index.js");
+import static com.google.common.truth.Truth.assertThat;
 
-    private final FileName fileName;
+@DisplayName("Module should")
+class ModuleTest {
 
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
-    }
-
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
+    @Test
+    @DisplayName("provide the artifact name")
+    void provideArtifactName() {
+        String name = "someJsModule";
+        Module module = new Module(name);
+        assertThat(module.artifactName()).isEqualTo(name);
     }
 }

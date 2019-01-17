@@ -20,28 +20,35 @@
 
 package io.spine.code.js;
 
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
 /**
- * The enumeration of project files provided by the Spine framework.
+ * A JavaScript module published to NPM.
  */
-public enum LibraryFile {
+public final class Module {
 
     /**
-     * The index file exposing data about generated Protobuf types.
+     * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
-    INDEX("index.js");
+    public static final Module spineWeb = new Module("spine-web");
 
-    private final FileName fileName;
+    private final String name;
 
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
+    /**
+     * Creates a new instance.
+     *
+     * @param name
+     *         the name of the module
+     */
+    public Module(String name) {
+        checkNotEmptyOrBlank(name);
+        this.name = name;
     }
 
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
+    /**
+     * Obtains the name of the published artifact.
+     */
+    public String artifactName() {
+        return name;
     }
 }

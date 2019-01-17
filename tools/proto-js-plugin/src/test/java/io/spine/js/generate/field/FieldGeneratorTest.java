@@ -20,8 +20,10 @@
 
 package io.spine.js.generate.field;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,8 +37,7 @@ import static io.spine.js.generate.field.given.Given.mapField;
 import static io.spine.js.generate.field.given.Given.repeatedField;
 import static io.spine.js.generate.field.given.Given.singularField;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -45,6 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FieldGeneratorTest {
 
     private static final String JS_OBJECT = "jsObject";
+    private static final String MESSAGE_NAME = "messageName";
+    private static final String OBJECT_NAME = "objectName";
 
     private CodeLines jsOutput;
 
@@ -64,7 +67,7 @@ class FieldGeneratorTest {
     @DisplayName("acquire field value by field JSON name")
     void acquireJsObject() {
         String fieldValue = singularGenerator.acquireFieldValue();
-        String expected = FROM_OBJECT_ARG + '.' + singularField().getJsonName();
+        String expected = OBJECT_NAME + '.' + singularField().getJsonName();
         assertEquals(expected, fieldValue);
     }
 
@@ -109,10 +112,10 @@ class FieldGeneratorTest {
     void callParser() {
         String fieldValue = singularGenerator.acquireFieldValue();
         singularGenerator.generate();
-        String typeName = singularField().getMessageType()
-                                         .getFullName();
-        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + fieldValue + ')';
-        assertContains(jsOutput, recursiveCall);
+        TypeUrl typeUrl = TypeUrl.from(singularField().getMessageType());
+        String parserCall = format("TypeParsers.parserFor('%s').fromObject(%s);",
+                                   typeUrl, fieldValue);
+        assertContains(jsOutput, parserCall);
     }
 
     @Test
@@ -128,7 +131,8 @@ class FieldGeneratorTest {
     void setSingular() {
         singularGenerator.generate();
         FieldName fieldName = FieldName.from(singularField());
-        String setterCall = "set" + fieldName + '(' + FIELD_VALUE + ')';
+        String setterCall = format("%s.set%s(%s)",
+                                   singularGenerator.targetVariable(), fieldName, FIELD_VALUE);
         assertContains(jsOutput, setterCall);
     }
 
@@ -137,7 +141,8 @@ class FieldGeneratorTest {
     void addToRepeated() {
         repeatedGenerator.generate();
         FieldName fieldName = FieldName.from(repeatedField());
-        String addCall = "add" + fieldName + '(' + FIELD_VALUE + ')';
+        String addCall = format("%s.add%s(%s)",
+                                repeatedGenerator.targetVariable(), fieldName, FIELD_VALUE);
         assertContains(jsOutput, addCall);
     }
 
@@ -148,19 +153,24 @@ class FieldGeneratorTest {
         FieldName fieldName = FieldName.from(mapField());
         String getMapCall = "get" + fieldName + "Map()";
         String addToMapCall = "set(" + MAP_KEY + ", " + FIELD_VALUE + ')';
-        String addCall = getMapCall + '.' + addToMapCall;
+        String addCall = mapGenerator.targetVariable() + '.' + getMapCall + '.' + addToMapCall;
         assertContains(jsOutput, addCall);
     }
 
     private SingularFieldGenerator singularGenerator() {
-        return (SingularFieldGenerator) FieldGenerators.createFor(singularField(), jsOutput);
+        return (SingularFieldGenerator) fieldGenerator(singularField());
     }
 
     private RepeatedFieldGenerator repeatedGenerator() {
-        return (RepeatedFieldGenerator) FieldGenerators.createFor(repeatedField(), jsOutput);
+        return (RepeatedFieldGenerator) fieldGenerator(repeatedField());
     }
 
     private MapFieldGenerator mapGenerator() {
-        return (MapFieldGenerator) FieldGenerators.createFor(mapField(), jsOutput);
+        return (MapFieldGenerator) fieldGenerator(mapField());
+    }
+
+    private FieldGenerator fieldGenerator(FieldDescriptor descriptor) {
+        FieldToParse fieldToParse = new FieldToParse(descriptor, OBJECT_NAME, MESSAGE_NAME);
+        return FieldGenerators.createFor(fieldToParse, jsOutput);
     }
 }
