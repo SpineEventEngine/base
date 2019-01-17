@@ -97,9 +97,14 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
         boolean isSpine = resolvable.isSpine();
-        if (!isSpine) {
-            return resolvable;
+        if (isSpine) {
+            return resolveSpineImport(resolvable, generatedRoot);
         }
+        return resolvable;
+    }
+
+    private static ImportSnippet resolveSpineImport(ImportSnippet resolvable,
+                                                    Directory generatedRoot) {
         String filePath = resolvable.importedFilePath();
         if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
