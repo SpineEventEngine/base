@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
+import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.ConstitutionVBuilder;
@@ -35,6 +36,7 @@ import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.OptionInapplicableException;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -290,7 +292,7 @@ class ValidatingBuilderTest {
                                      .build());
     }
 
-    @DisplayName("does not allow to add duplicate entries to a `distinct` marked field")
+    @DisplayName("not allow to add duplicate entries to a `(onDuplicate) = ERROR` marked field")
     @Test
     void testDistinctThrows() {
         testOption(BlizzardVBuilder.newBuilder(),
@@ -299,6 +301,7 @@ class ValidatingBuilderTest {
                                      .build());
     }
 
+    @DisplayName("not allow to `allAdd` duplicate entries to a `(onDuplicate) = ERROR` marked field")
     @Test
     void testDistinctThrowsOnAddAll() {
         List snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
@@ -308,12 +311,20 @@ class ValidatingBuilderTest {
                                      .build());
     }
 
+    @DisplayName("throw if a non-repeated field was marked as `distinct`")
     @Test
     void testDistinctThrowsOnInapplicable() {
-        testOption(ConstitutionVBuilder.newBuilder(),
-                   builder -> builder,
-                   builder -> builder.setAmendments("First Amendment")
-                                     .build());
+        ConstitutionVBuilder builder = ConstitutionVBuilder.newBuilder();
+        assertThrows(OptionInapplicableException.class,
+                     () -> builder.setAmendments("First Amendment"));
+    }
+
+    @DisplayName("ignore duplicates in a `(on_duplicate) = IGNORE` marked field")
+    @Test
+    void testDistinctIgnoresIfRequested(){
+        ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
+        builder.addSnowflake(triangularSnowflake())
+               .addSnowflake(triangularSnowflake());
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
