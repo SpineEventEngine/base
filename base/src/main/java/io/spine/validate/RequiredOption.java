@@ -22,6 +22,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Message;
+import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
@@ -51,8 +53,8 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
         this.isOptionPresent = isOptionPresent;
     }
 
-    static RequiredOption selfResolvingOption(Predicate<FieldValue> isNotSet,
-                                              boolean strict) {
+    static RequiredOption create(Predicate<FieldValue> isNotSet,
+                                 boolean strict) {
         Predicate<FieldValue> isOptionPresent = strict ? value -> true : RequiredOption::optionValue;
         return new RequiredOption(isNotSet, isOptionPresent);
     }
@@ -87,16 +89,34 @@ public class RequiredOption extends FieldValidatingOption<Boolean> {
     }
 
     private static List<ConstraintViolation> requiredViolated(FieldValue value) {
+        IfMissing ifMissing = new IfMissing();
+        return ImmutableList.of(newViolation(ifMissing.getValueFor(value), value));
+    }
+
+    private static ConstraintViolation newViolation(IfMissingOption option, FieldValue value) {
+        String msg = getErrorMsgFormat(option, option.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("A required field %s was `required` but was not set.")
-                .addParam(value.declaration()
-                               .name()
-                               .value())
-                .setFieldPath(value.context()
-                                   .getFieldPath())
+                .setMsgFormat(msg)
+                .setFieldPath(value.context().getFieldPath())
                 .build();
-        return ImmutableList.of(violation);
+        return violation;
+    }
+
+    /**
+     * Returns a validation error message (a custom one (if present) or the default one).
+     *
+     * @param option
+     *         a validation option used to get the default message
+     * @param customMsg
+     *         a user-defined error message
+     */
+    private static String getErrorMsgFormat(Message option, String customMsg) {
+        String defaultMsg = option.getDescriptorForType()
+                                  .getOptions()
+                                  .getExtension(OptionsProto.defaultMessage);
+        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
+        return msg;
     }
 
     private static Boolean optionValue(FieldValue fieldValue) {
