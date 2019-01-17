@@ -17,44 +17,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-buildscript {
+buildscript { final scriptHandler ->
 
     // As long as `buildscript` section is always evaluated first,
     // we need to apply explicitly here.
     apply from: "$rootDir/config/gradle/dependencies.gradle"
     apply from: "$rootDir/version.gradle"
 
-    repositories {
-        mavenLocal()
-        maven { url = repos.gradlePlugins }
-        jcenter()
-        
-        maven { url = repos.oldSpine }
-        maven { url = repos.oldSpineSnapshots }
-
-        maven { url = repos.spine }
-        maven { url = repos.spineSnapshots }
-    }
-
-    //noinspection GroovyAssignabilityCheck
+    defaultRepositories(scriptHandler)
     dependencies {
         classpath deps.build.guava
-        classpath (deps.build.gradlePlugins.protobuf) {
-            exclude group: 'com.google.guava'
-        }
-        classpath (deps.build.gradlePlugins.errorProne) {
-            exclude group: 'com.google.guava'
-        }
+        classpath deps.build.gradlePlugins.protobuf
+        classpath deps.build.gradlePlugins.errorProne
     }
 
-    configurations.all {
-        resolutionStrategy {
-            cacheChangingModulesFor(0, 'seconds')
-            force deps.build.guava
-            force deps.test.guavaTestlib
-            force deps.build.protobuf
-        }
-    }
+    forceConfiguration(scriptHandler)
 }
 
 apply from: 'version.gradle'
@@ -99,64 +76,17 @@ allprojects {
 }
 
 subprojects {
+    buildscript { final scriptHandler ->
 
-    buildscript {
         apply from: "$rootDir/version.gradle"
 
-        repositories {
-            mavenLocal()
-            maven { url = repos.gradlePlugins }
-            jcenter()
-
-            maven { url = repos.spine }
-            maven { url = repos.spineSnapshots }
-        }
-
-        //noinspection GroovyAssignabilityCheck
+        defaultRepositories(scriptHandler)
         dependencies {
             classpath deps.build.guava
-            classpath(deps.build.gradlePlugins.protobuf) {
-                // exclude an old Guava version
-                exclude group: 'com.google.guava'
-            }
+            classpath deps.build.gradlePlugins.protobuf
         }
 
-        configurations.all {
-            resolutionStrategy {
-                cacheChangingModulesFor(0, 'seconds')
-
-                force deps.build.guava
-                force deps.test.guavaTestlib
-                force deps.build.protobuf
-            }
-        }
-    }
-
-    configurations {
-        all {
-            resolutionStrategy {
-
-                // Fail eagerly on version conflict (includes transitive dependencies)
-                // e.g. multiple different versions of the same dependency
-                // (where group and name are equal).
-                failOnVersionConflict()
-
-                force deps.build.errorProneAnnotations
-                force deps.build.jsr305Annotations
-                force deps.build.checkerAnnotations
-                force deps.build.guava
-                force deps.build.protobuf
-
-                force deps.test.guavaTestlib
-                force deps.test.truth
-                force deps.test.junit5Api
-                force deps.test.junit4
-            }
-        }
-
-        // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-        runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-        testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+        forceConfiguration(scriptHandler)
     }
 
     project.ext {
@@ -193,14 +123,7 @@ subprojects {
     // # suppress inspection "UnusedProperty"
     // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/
 
-    repositories {
-        mavenLocal()
-        jcenter()
-
-        maven { url = repos.spine }
-        maven { url = repos.spineSnapshots }
-    }
-
+    defaultRepositories(project)
     dependencies {
         errorprone deps.build.errorProneCore
         errorproneJavac deps.build.errorProneJavac
@@ -220,6 +143,13 @@ subprojects {
         testImplementation deps.test.junit5Api
         testImplementation deps.test.junit5Runner
         testImplementation deps.test.junitPioneer
+    }
+
+    forceConfiguration(project)
+    configurations {
+        // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
+        runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+        testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
     }
 
     sourceSets {
