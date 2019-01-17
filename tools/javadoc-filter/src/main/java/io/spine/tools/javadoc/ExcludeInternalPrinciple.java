@@ -33,10 +33,8 @@ import java.util.Collection;
  *
  * <p>Excludes all {@linkplain Internal}-annotated program elements, packages,
  * and their subpackages.
- *
- * @author Dmytro Grankin
  */
-class ExcludeInternalPrinciple implements ExcludePrinciple {
+final class ExcludeInternalPrinciple implements ExcludePrinciple {
 
     private final Collection<PackageDoc> exclusions;
     private final AnnotationAnalyst<Class<Internal>> internalAnalyst =
