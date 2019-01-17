@@ -22,37 +22,42 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.OnDuplicate;
-import io.spine.option.OnDuplicate.DuplicatePolicy;
 import io.spine.option.OptionsProto;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static io.spine.option.OnDuplicate.IGNORE;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values
  * represented by that {@code repeated} field don't contain duplicates.
  */
-final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate.DuplicatePolicy> {
+final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate> {
+
+    private DistinctFieldOption(){
+    }
+
+    public static DistinctFieldOption distinctFieldOption(){
+        return new DistinctFieldOption();
+    }
 
     @Override
-    boolean applicableTo(Descriptors.FieldDescriptor field) {
+    boolean applicableTo(FieldDeclaration field) {
         return field.isRepeated();
     }
 
     @Override
-    ValidationException onInapplicable(Descriptors.FieldDescriptor field) {
-        ConstraintViolation inapplicable = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Error for field %s. A non-repeated field cannot be `distinct`.")
-                .addParam(field.getFullName())
-                .build();
-        ValidationException exception = new ValidationException(ImmutableList.of(inapplicable));
-        return exception;
+    OptionInapplicableException onInapplicable(FieldDeclaration field) {
+        String format = "Error for field %s. A non-repeated field cannot be `distinct`.";
+        String exceptionText = format(format, field.name().value());
+        return new OptionInapplicableException(exceptionText);
     }
 
     @Override
@@ -61,8 +66,8 @@ final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate.Duplic
     }
 
     @Override
-    boolean optionPresentFor(FieldValue value) {
-        return policyFor(value).getNumber() > 0;
+    boolean optionPresentAt(FieldValue value) {
+        return valueFrom(value) != IGNORE;
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
@@ -85,18 +90,19 @@ final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate.Duplic
         return duplicates.build();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static <T> ConstraintViolation duplicateFound(FieldValue value, Set<T> duplicates) {
         String fieldName = value.declaration()
                                 .name()
                                 .value();
         List<String> stringValues = duplicates.stream()
                                               .map(Object::toString)
-                                              .collect(Collectors.toList());
+                                              .collect(toList());
         String formatParams = String.join(", ", stringValues);
         String msgFormat =
                 "Found a duplicate element in a `distinct` field %s. " +
-                "Duplicate elements: " +
-                formatParams;
+                        "Duplicate elements: " +
+                        formatParams;
         ConstraintViolation.Builder duplicatesBuilder = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msgFormat)
@@ -105,14 +111,8 @@ final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate.Duplic
         return duplicatesBuilder.build();
     }
 
-    private static DuplicatePolicy policyFor(FieldValue field) {
-        return field.valueOf(OptionsProto.onDuplicate)
-                    .getDuplicatePolicy();
-    }
-
     @Override
-    public DuplicatePolicy getValueFor(FieldValue something) {
-        return something.valueOf(OptionsProto.onDuplicate)
-                        .getDuplicatePolicy();
+    public OnDuplicate valueFrom(FieldValue fieldValue) {
+        return fieldValue.valueOf(OptionsProto.onDuplicate);
     }
 }

@@ -21,7 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldDeclaration;
 
 import java.util.List;
 
@@ -44,13 +44,13 @@ abstract class FieldValidatingOption<T> implements ValidatingOption<T, FieldValu
      * @return {@code true} if this option can be applied to the specified field, {@code false}
      *         otherwise
      */
-    abstract boolean applicableTo(FieldDescriptor field);
+    abstract boolean applicableTo(FieldDeclaration field);
 
     /**
      * Returns the exception that is thrown if this option was found to be inapplicable to the
      * specified field.
      */
-    abstract ValidationException onInapplicable(FieldDescriptor field);
+    abstract OptionInapplicableException onInapplicable(FieldDeclaration declaration);
 
     /**
      * Defines the logic for validation of the specified field.
@@ -63,17 +63,16 @@ abstract class FieldValidatingOption<T> implements ValidatingOption<T, FieldValu
     abstract List<ConstraintViolation> applyValidatingRules(FieldValue value);
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
-    abstract boolean optionPresentFor(FieldValue value);
+    abstract boolean optionPresentAt(FieldValue value);
 
     @Override
     public final List<ConstraintViolation> validateAgainst(FieldValue value) {
-        FieldDescriptor descriptor = value.context()
-                                          .getTarget();
-        if (optionPresentFor(value)) {
-            if (applicableTo(descriptor)) {
+        FieldDeclaration declaration = value.declaration();
+        if (optionPresentAt(value)) {
+            if (applicableTo(declaration)) {
                 return applyValidatingRules(value);
             } else {
-                throw onInapplicable(descriptor);
+                throw onInapplicable(declaration);
             }
         }
         return ImmutableList.of();

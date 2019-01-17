@@ -29,7 +29,7 @@ import io.spine.option.OptionsProto;
 public class IfMissing implements Option<IfMissingOption, FieldValue> {
 
     @Override
-    public IfMissingOption getValueFor(FieldValue fieldValue) {
+    public IfMissingOption valueFrom(FieldValue fieldValue) {
         IfMissingOption option = fieldValue.valueOf(OptionsProto.ifMissing);
         return option;
     }

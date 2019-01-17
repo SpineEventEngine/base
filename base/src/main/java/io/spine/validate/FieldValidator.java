@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -152,8 +153,11 @@ abstract class FieldValidator<V> implements Logging {
         if (shouldValidate()) {
             validateOwnRules();
         }
-        List<ConstraintViolation> result = assembleViolations();
-        return result;
+        List<ConstraintViolation> ownViolations = assembleViolations();
+        List<ConstraintViolation> optionViolations = optionViolations();
+        ImmutableList.Builder<ConstraintViolation> builder = ImmutableList.builder();
+        builder.addAll(ownViolations).addAll(optionViolations);
+        return builder.build();
     }
 
     private void checkCanBeRequired() {
@@ -173,15 +177,18 @@ abstract class FieldValidator<V> implements Logging {
     protected abstract void validateOwnRules();
 
     private List<ConstraintViolation> assembleViolations() {
+        return ImmutableList.<ConstraintViolation>builder()
+                .addAll(violations)
+                .build();
+    }
+
+    private List<ConstraintViolation> optionViolations(){
         List<ConstraintViolation> optionViolations =
                 this.fieldValidatingOptions.stream()
                                            .flatMap(option -> option.validateAgainst(this.value)
                                                                     .stream())
                                            .collect(Collectors.toList());
-        return ImmutableList.<ConstraintViolation>builder()
-                .addAll(optionViolations)
-                .addAll(violations)
-                .build();
+        return optionViolations;
     }
 
     /**
@@ -341,8 +348,9 @@ abstract class FieldValidator<V> implements Logging {
 
     // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
     private Set<FieldValidatingOption<?>> commonOptions(boolean isStrict) {
-        return ImmutableSet.of(new DistinctFieldOption(),
-                               Required.create(
-                                       value -> this.checkIfRequiredAndNotSet(), isStrict));
+        return ImmutableSet.of(
+                DistinctFieldOption.distinctFieldOption(),
+                Required.create(value -> this.checkIfRequiredAndNotSet(), isStrict)
+        );
     }
 }

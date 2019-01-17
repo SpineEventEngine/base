@@ -767,20 +767,13 @@ message GoesOption {
 }
 
 // Defines options of a repeated field that defines a logic
-message OnDuplicate {
+enum OnDuplicate {
 
-    // Actions that can be taken if a duplicate is found.
-    enum DuplicatePolicy {
+    // Duplicates are ignored.
+    IGNORE = 0;
 
-        // Duplicates are ignored.
-        IGNORE = 0;
-
-        // An error is produced if a duplicate was found.
-        ERROR = 1;
-    }
-
-    // The type of action that is taken when a duplicate is found.
-    DuplicatePolicy duplicatePolicy = 1;
+    // An error is produced if a duplicate was found.
+    ERROR = 1;
 }
 
 // Defines options of a message representing a state of an entity.

@@ -21,8 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
@@ -72,15 +72,17 @@ public class Required extends FieldValidatingOption<Boolean> {
     }
 
     /**
-     * @inheritDoc <p>Any field can be {@code required}.
+     * @inheritDoc
+     *
+     * <p>Any field can be {@code required}.
      */
     @Override
-    boolean applicableTo(Descriptors.FieldDescriptor field) {
+    boolean applicableTo(FieldDeclaration field) {
         return true;
     }
 
     @Override
-    boolean optionPresentFor(FieldValue value) {
+    boolean optionPresentAt(FieldValue value) {
         return this.isOptionPresent.test(value);
     }
 
@@ -88,7 +90,7 @@ public class Required extends FieldValidatingOption<Boolean> {
      * Any field can be {@code required}, so this method is never called.
      */
     @Override
-    ValidationException onInapplicable(Descriptors.FieldDescriptor field) {
+    OptionInapplicableException onInapplicable(FieldDeclaration field) {
         throw new IllegalStateException("`Required` fields are applicable to any kind of field.");
     }
 
@@ -102,7 +104,7 @@ public class Required extends FieldValidatingOption<Boolean> {
 
     private static List<ConstraintViolation> requiredViolated(FieldValue value) {
         IfMissing ifMissing = new IfMissing();
-        return ImmutableList.of(newViolation(ifMissing.getValueFor(value), value));
+        return ImmutableList.of(newViolation(ifMissing.valueFrom(value), value));
     }
 
     private static ConstraintViolation newViolation(IfMissingOption option, FieldValue value) {
@@ -137,7 +139,7 @@ public class Required extends FieldValidatingOption<Boolean> {
     }
 
     @Override
-    public Boolean getValueFor(FieldValue fieldValue) {
+    public Boolean valueFrom(FieldValue fieldValue) {
         return optionValue(fieldValue);
     }
 }

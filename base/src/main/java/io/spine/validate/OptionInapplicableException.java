@@ -21,25 +21,14 @@
 package io.spine.validate;
 
 /**
- * A Protobuf option.
- *
- * @param <T>
- *         type of information held by this option
- * @param <K>
- *         kind of entities that this option can be applied to
+ * Exception thrown whenever an attempt to apply an option to an incompatible type was found.
  */
-public interface Option<T, K> {
+public class OptionInapplicableException extends RuntimeException {
 
-    /**
-     * Returns the value of this option for the specified entity.
-     *
-     * @param bearer
-     *         entity which is checked for the value of this option
-     * @return value of this option
-     * @apiNote More often than not, it is impossible to say whether, for example, a field,
-     *         has or doesn't have an option value, because a default one is present.
-     *         When using this method take into account the fact that any option can have a
-     *         default value, which can be returned by this method
-     */
-    T valueFrom(K bearer);
+    private static final long serialVersionUID = 0L;
+
+    /** Creates a new instance of this exception with the specified clarifying message. */
+    public OptionInapplicableException(String message) {
+        super(message);
+    }
 }

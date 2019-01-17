@@ -64,8 +64,8 @@ public class RequiredField extends MessageValidatingOption<String> {
 
     @Override
     List<ConstraintViolation> applyValidationRules(MessageValue message) {
-        String expression = getValueFor(message);
-        ImmutableList<RequiredFieldOptionData> parse = parse(expression);
+        String expression = valueFrom(message);
+        ImmutableList<RequiredFieldOptions> parse = parse(expression);
         if (!alternativeFound(parse, message)) {
             String msgFormat =
                     "None of the fields match the `required_field` definition: %s";
@@ -81,11 +81,11 @@ public class RequiredField extends MessageValidatingOption<String> {
 
     @Override
     boolean optionPresent(MessageValue message) {
-        return !getValueFor(message).isEmpty();
+        return !valueFrom(message).isEmpty();
     }
 
     @Override
-    public String getValueFor(MessageValue message) {
+    public String valueFrom(MessageValue message) {
         Map<Descriptors.FieldDescriptor, Object> options = message.options();
         for (Descriptors.FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
@@ -96,7 +96,7 @@ public class RequiredField extends MessageValidatingOption<String> {
         return "";
     }
 
-    private static class RequiredFieldOptionData {
+    private static class RequiredFieldOptions {
 
         /**
          * The pattern to remove whitespace from the option field value.
@@ -110,36 +110,36 @@ public class RequiredField extends MessageValidatingOption<String> {
 
         private final ImmutableList<String> fieldNames;
 
-        private RequiredFieldOptionData(ImmutableList<String> names) {
+        private RequiredFieldOptions(ImmutableList<String> names) {
             fieldNames = names;
         }
 
-        static RequiredFieldOptionData ofCombination(ImmutableList<String> fieldNames) {
-            return new RequiredFieldOptionData(fieldNames);
+        static RequiredFieldOptions ofCombination(ImmutableList<String> fieldNames) {
+            return new RequiredFieldOptions(fieldNames);
         }
 
-        static RequiredFieldOptionData ofCombination(CharSequence expression) {
+        static RequiredFieldOptions ofCombination(CharSequence expression) {
             ImmutableList<String> parts = ImmutableList.copyOf(Splitter.on(AMPERSAND)
                                                                        .split(expression));
             return ofCombination(parts);
         }
     }
 
-    private static ImmutableList<RequiredFieldOptionData> parse(String expression) {
-        ImmutableList.Builder<RequiredFieldOptionData> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = RequiredFieldOptionData.WHITESPACE.matcher(expression)
-                                                                     .replaceAll("");
-        Iterable<String> parts = Splitter.on(RequiredFieldOptionData.OPTION_SEPARATOR)
+    private static ImmutableList<RequiredFieldOptions> parse(String expression) {
+        ImmutableList.Builder<RequiredFieldOptions> alternatives = ImmutableList.builder();
+        String whiteSpaceRemoved = RequiredFieldOptions.WHITESPACE.matcher(expression)
+                                                                  .replaceAll("");
+        Iterable<String> parts = Splitter.on(RequiredFieldOptions.OPTION_SEPARATOR)
                                          .split(whiteSpaceRemoved);
         for (String part : parts) {
-            alternatives.add(RequiredFieldOptionData.ofCombination(part));
+            alternatives.add(RequiredFieldOptions.ofCombination(part));
         }
         return alternatives.build();
     }
 
-    private boolean alternativeFound(Iterable<RequiredFieldOptionData> fieldOptions,
+    private boolean alternativeFound(Iterable<RequiredFieldOptions> fieldOptions,
                                      MessageValue message) {
-        for (RequiredFieldOptionData option : fieldOptions) {
+        for (RequiredFieldOptions option : fieldOptions) {
             boolean found = checkFields(option.fieldNames, message);
             if (found) {
                 return true;
