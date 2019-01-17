@@ -21,17 +21,16 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.proto.MessageType;
 
 /**
  * Checks if the given message definition is a {@link RejectionMessage}.
  */
 @Immutable
-final class RejectionMessageClassifier extends MessageClassifier {
+final class RejectionMessageClassifier implements MessageClassifier {
 
     @Override
-    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return MessageFile.REJECTIONS.test(declaringFile);
+    public boolean test(MessageType type) {
+        return type.isRejection();
     }
 }

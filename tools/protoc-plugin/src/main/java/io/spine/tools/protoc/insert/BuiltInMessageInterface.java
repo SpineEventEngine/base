@@ -27,14 +27,13 @@ import io.spine.base.MessageClassifier;
 import io.spine.base.RejectionMessage;
 import io.spine.base.SerializableMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import static io.spine.base.MessageClassifiers.forInterface;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
@@ -56,34 +55,31 @@ final class BuiltInMessageInterface implements MessageInterface {
         this.genericParams = genericParams;
     }
 
-    private static BuiltInMessageInterface from(Type type) {
-        checkNotNull(type);
-        return new BuiltInMessageInterface(type.interfaceClass, type.interfaceParams);
+    private static BuiltInMessageInterface from(BuiltIn builtIn) {
+        checkNotNull(builtIn);
+        return new BuiltInMessageInterface(builtIn.interfaceClass, builtIn.interfaceParams);
     }
 
     /**
      * Obtains the {@link CompilerOutput} item which generates Java sources for the given message
      * to implement a built-in interface.
      *
-     * @param file
-     *         the file containing the given {@code message} definition
-     * @param message
-     *         the message type to check
+     * @param type
+     *         the Proto type to check
      * @return the compiler output item or {@link Optional#empty()} if the given message should not
      *         implement a built-in interface
      */
-    static Optional<CompilerOutput> scanForBuiltIns(FileDescriptorProto file,
-                                                    DescriptorProto message) {
-        Optional<Type> foundInterface =
-                Stream.of(Type.values())
-                      .filter(contract -> contract.matches(message, file))
+    static Optional<CompilerOutput> scanForBuiltIns(MessageType type) {
+        Optional<BuiltIn> foundInterface =
+                Stream.of(BuiltIn.values())
+                      .filter(contract -> contract.matches(type))
                       .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
         }
-        Type type = foundInterface.get();
-        MessageInterface messageInterface = from(type);
-        InsertionPoint insertionPoint = implementInterface(file, message, messageInterface);
+        BuiltIn builtIn = foundInterface.get();
+        MessageInterface messageInterface = from(builtIn);
+        InsertionPoint insertionPoint = implementInterface(type, messageInterface);
         return Optional.of(insertionPoint);
     }
 
@@ -101,7 +97,7 @@ final class BuiltInMessageInterface implements MessageInterface {
      * The enumeration of built-in interfaces.
      */
     @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for this enum.
-    private enum Type {
+    private enum BuiltIn {
 
         EVENT_MESSAGE(EventMessage.class),
         COMMAND_MESSAGE(CommandMessage.class),
@@ -113,25 +109,23 @@ final class BuiltInMessageInterface implements MessageInterface {
         private final MessageClassifier classifier;
         private final MessageInterfaceParameters interfaceParams;
 
-        Type(Class<? extends SerializableMessage> interfaceClass,
-             MessageInterfaceParameter... interfaceParams) {
+        BuiltIn(Class<? extends SerializableMessage> interfaceClass,
+                MessageInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
             this.classifier = forInterface(interfaceClass);
             this.interfaceParams = MessageInterfaceParameters.of(interfaceParams);
         }
 
         /**
-         * Checks if a given message declaration matches the contract of this interface.
+         * Checks if a given type declaration matches the contract of this interface.
          *
-         * @param message
-         *         the descriptor of a message to check
-         * @param file
-         *         the descriptor of the message's declaring file
-         * @return {@code true} if the message declaration matches the interface contract,
+         * @param type
+         *         the type to check
+         * @return {@code true} if the type declaration matches the interface contract,
          *         {@code false} otherwise
          */
-        public boolean matches(DescriptorProto message, FileDescriptorProto file) {
-            return classifier.test(message, file);
+        public boolean matches(MessageType type) {
+            return classifier.test(type);
         }
     }
 }

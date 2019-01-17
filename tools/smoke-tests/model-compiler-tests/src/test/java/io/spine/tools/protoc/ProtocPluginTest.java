@@ -143,6 +143,12 @@ class ProtocPluginTest {
         assertEquals(id, rejection.getId());
     }
 
+    @Test
+    @DisplayName("mark nested message declarations")
+    void markNestedTypes() {
+
+    }
+
     @CanIgnoreReturnValue
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         Class<?> cls = Class.forName(fqn);

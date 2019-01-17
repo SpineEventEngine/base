@@ -21,13 +21,12 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.SourceFile;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 
-import static io.spine.code.java.PackageName.delimiter;
 import static java.lang.String.format;
 
 /**
@@ -46,32 +45,27 @@ final class InsertionPoint extends AbstractCompilerOutput {
     /**
      * Creates a new instance of {@code InsertionPoint}.
      *
-     * @param containingFile
-     *         the file which contains the given {@code message}
-     * @param message
-     *         the message which should be altered
+     * @param type
+     *         the type declaration of which should be altered
      * @param messageInterface
      *         the interface to implement
      * @return new instance of {@code InsertionPoint}
      */
-    static InsertionPoint implementInterface(FileDescriptorProto containingFile,
-                                             DescriptorProto message,
-                                             MessageInterface messageInterface) {
-        File.Builder file = prepareFile(containingFile, message);
-        String messageFqn = containingFile.getPackage() + delimiter() + message.getName();
-        String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageFqn);
+    static InsertionPoint implementInterface(MessageType type, MessageInterface messageInterface) {
+        File.Builder file = prepareFile(type);
+        String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, type.name());
         String content =
-                messageInterface.name() + initGenericParams(messageInterface, message) + ',';
+                messageInterface.name() + initGenericParams(messageInterface, type) + ',';
         File result = file.setInsertionPoint(insertionPoint)
                           .setContent(content)
                           .build();
         return new InsertionPoint(result);
     }
 
-    private static File.Builder prepareFile(FileDescriptorProto containingFile,
-                                            DescriptorProto message) {
-        String fileName = SourceFile.forMessage(message, containingFile)
+    private static File.Builder prepareFile(Type<?, ?> type) {
+        String fileName = SourceFile.forType(type)
                                     .toString();
+        // Protoc consumes only `/` path separators.
         String uriStyleName = fileName.replace('\\', '/');
         File.Builder srcFile = File.newBuilder()
                                    .setName(uriStyleName);
@@ -79,9 +73,9 @@ final class InsertionPoint extends AbstractCompilerOutput {
     }
 
     private static String initGenericParams(MessageInterface messageInterface,
-                                            DescriptorProto message) {
+                                            Type<?, ?> type) {
         MessageInterfaceParameters parameters = messageInterface.parameters();
-        String result = parameters.getAsStringFor(message);
+        String result = parameters.getAsStringFor(type);
         return result;
     }
 }

@@ -23,6 +23,7 @@ package io.spine.tools.protoc.insert;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import io.spine.code.proto.Type;
 
 import java.util.stream.Collectors;
 
@@ -58,17 +59,17 @@ final class MessageInterfaceParameters {
      *
      * <p>Example output: {@code <ProjectId, String>}.
      */
-    String getAsStringFor(DescriptorProto descendant) {
+    String getAsStringFor(Type<?, ?> type) {
         if (params.isEmpty()) {
             return "";
         }
-        String result = '<' + initParams(descendant) + '>';
+        String result = '<' + initParams(type) + '>';
         return result;
     }
 
-    private String initParams(DescriptorProto descendant) {
+    private String initParams(Type<?, ?> type) {
         return params.stream()
-                     .map(param -> param.valueFor(descendant))
+                     .map(param -> param.valueFor(type))
                      .collect(Collectors.joining(", "));
     }
 }

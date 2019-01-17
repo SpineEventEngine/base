@@ -24,7 +24,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 import io.spine.option.IsOption;
 import io.spine.option.Options;
 import io.spine.tools.protoc.CompilerOutput;
@@ -57,16 +61,17 @@ final class MessageAndInterface {
     /**
      * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
-    static Collection<CompilerOutput> scanFileOption(FileDescriptorProto file,
-                                                     DescriptorProto msg) {
-        Set<CompilerOutput> files = getEveryIs(file)
-                .map(option -> generateFile(file, msg, option))
+    static Collection<CompilerOutput> scanFileOption(MessageType type) {
+        Set<CompilerOutput> files = getEveryIs(type)
+                .map(option -> generateFile(type, option))
                 .map(MessageAndInterface::asSet)
                 .orElseGet(ImmutableSet::of);
         return files;
     }
 
-    private static Optional<IsOption> getEveryIs(FileDescriptorProto descriptor) {
+    private static Optional<IsOption> getEveryIs(MessageType type) {
+        Descriptors.FileDescriptor descriptor = type.descriptor()
+                                                    .getFile();
         Optional<IsOption> value = Options.option(descriptor, everyIs);
         return value;
     }
@@ -74,30 +79,29 @@ final class MessageAndInterface {
     /**
      * Scans the given {@linkplain DescriptorProto message} for the {@code (is)} option.
      */
-    static Collection<CompilerOutput> scanMsgOption(FileDescriptorProto file, DescriptorProto msg) {
-        Set<CompilerOutput> files = getIs(msg)
-                .map(option -> generateFile(file, msg, option))
+    static Collection<CompilerOutput> scanMsgOption(MessageType type) {
+        Set<CompilerOutput> files = getIs(type)
+                .map(option -> generateFile(type, option))
                 .map(MessageAndInterface::asSet)
                 .orElseGet(ImmutableSet::of);
         return files;
     }
 
-    private static Optional<IsOption> getIs(DescriptorProto descriptor) {
-        Optional<IsOption> value = Options.option(descriptor, is);
-        return value;
+    private static Optional<IsOption> getIs(Type<?, ?> type) {
+        return type instanceof MessageType
+               ? Options.option((Descriptor) type.descriptor(), is)
+               : Optional.empty();
     }
 
-    private static MessageAndInterface generateFile(FileDescriptorProto file,
-                                                    DescriptorProto msg,
+    private static MessageAndInterface generateFile(MessageType type,
                                                     IsOption optionValue) {
-        MessageInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        MessageInterfaceSpec interfaceSpec = prepareInterface(optionValue, type);
         CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
-        InsertionPoint message = InsertionPoint.implementInterface(file, msg, messageInterface);
+        InsertionPoint message = InsertionPoint.implementInterface(type, messageInterface);
         CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
                                                      ? messageInterface
                                                      : null;
-        @SuppressWarnings("ConstantConditions") // OK as param is nullable.
-                MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
+        MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
         return result;
     }
 
@@ -105,11 +109,9 @@ final class MessageAndInterface {
      * Converts the instance into the pair containing a message file and an interface file.
      */
     private Set<CompilerOutput> asSet() {
-        if (interfaceFile == null) {
-            return ImmutableSet.of(messageFile);
-        } else {
-            return ImmutableSet.of(messageFile, interfaceFile);
-        }
+        return interfaceFile == null
+               ? ImmutableSet.of(messageFile)
+               : ImmutableSet.of(messageFile, interfaceFile);
     }
 
     @Override

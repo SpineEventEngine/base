@@ -21,48 +21,27 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.annotation.Internal;
+import io.spine.code.proto.MessageType;
 
-import java.util.function.BiPredicate;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.function.Predicate;
 
 /**
  * Evaluates the message Proto definition against some contract.
  */
-@Internal
+@FunctionalInterface
 @Immutable
-public abstract class MessageClassifier
-        implements BiPredicate<DescriptorProto, FileDescriptorProto> {
+public interface MessageClassifier extends Predicate<MessageType> {
 
     /**
-     * Checks if the given message definition matches this classifier's contract.
+     * Checks if the given type definition matches this classifier's contract.
      *
-     * <p>Message's declaring file is also taken into account.
+     * <p>Type's declaring file is also taken into account.
      *
-     * @param message
-     *         the message definition to check
-     * @param declaringFile
-     *         the message's declaring file
-     * @return {@code true} if the message matches the contract, {@code false} otherwise
-     * @throws IllegalArgumentException
-     *         if the given file does not contain the given message
+     * @param type
+     *         the type to check
+     * @return {@code true} if the type matches the contract, {@code false} otherwise
      */
+    @SuppressWarnings("AbstractMethodOverridesAbstractMethod") // Adds proper documentation.
     @Override
-    public boolean test(DescriptorProto message, FileDescriptorProto declaringFile) {
-        checkNotNull(message);
-        checkNotNull(declaringFile);
-        boolean messageInFile = declaringFile.getMessageTypeList()
-                                             .contains(message);
-        checkArgument(messageInFile,
-                      "The passed file %s does not contain the specified message type %s",
-                      declaringFile.getName(),
-                      message.getName());
-        return doTest(message, declaringFile);
-    }
-
-    protected abstract boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile);
+    boolean test(MessageType type);
 }

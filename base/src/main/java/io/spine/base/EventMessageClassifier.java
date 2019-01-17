@@ -21,17 +21,18 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.proto.MessageType;
 
 /**
  * Checks if the given message definition is an {@link EventMessage}.
  */
 @Immutable
-final class EventMessageClassifier extends MessageClassifier {
+final class EventMessageClassifier implements MessageClassifier {
 
     @Override
-    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return MessageFile.EVENTS.test(declaringFile);
+    public boolean test(MessageType type) {
+        return MessageFile.EVENTS.test(type.descriptor()
+                                           .getFile()
+                                           .toProto());
     }
 }

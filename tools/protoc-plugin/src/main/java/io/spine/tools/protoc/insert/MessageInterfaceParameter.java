@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import io.spine.code.proto.Type;
 
 /**
  * The generic parameter of the {@link MessageInterface}.
@@ -38,5 +38,5 @@ interface MessageInterfaceParameter {
      *         the {@code Message} class implementing the interface
      * @return the value of the generic parameter
      */
-    String valueFor(DescriptorProto descendant);
+    String valueFor(Type<?, ?> type);
 }

@@ -121,6 +121,11 @@ public final class FileSet {
         return link(files);
     }
 
+    public static FileSet ofFiles(ImmutableSet<FileDescriptorProto> protoDescriptors) {
+        checkNotNull(protoDescriptors);
+        return link(protoDescriptors);
+    }
+
     /**
      * Obtains message declarations, that match the specified {@link java.util.function.Predicate}.
      *

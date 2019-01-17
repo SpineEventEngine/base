@@ -21,17 +21,18 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.proto.MessageType;
 
 /**
  * Checks if the given message definition is a {@link CommandMessage}.
  */
 @Immutable
-final class CommandMessageClassifier extends MessageClassifier {
+final class CommandMessageClassifier implements MessageClassifier {
 
     @Override
-    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return MessageFile.COMMANDS.test(declaringFile);
+    public boolean test(MessageType type) {
+        return MessageFile.COMMANDS.test(type.descriptor()
+                                             .getFile()
+                                             .toProto());
     }
 }

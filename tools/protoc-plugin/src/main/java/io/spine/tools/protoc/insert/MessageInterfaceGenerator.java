@@ -21,9 +21,9 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtoGenerator;
 
@@ -81,17 +81,23 @@ public class MessageInterfaceGenerator extends SpineProtoGenerator {
      */
     @Override
     protected Collection<CompilerOutput>
-    processMessage(FileDescriptorProto file, DescriptorProto message) {
+    processType(Type<?, ?> type) {
+        return type instanceof MessageType
+               ? processMessageType((MessageType) type)
+               : ImmutableList.of();
+    }
+
+    private static ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
+        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(type);
         builtInMarkedInterface.ifPresent(result::add);
 
-        Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
+        Collection<CompilerOutput> fromMsgOption = scanMsgOption(type);
         result.addAll(fromMsgOption);
 
         if (fromMsgOption.isEmpty()) {
-            Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
+            Collection<CompilerOutput> fromFileOption = scanFileOption(type);
             result.addAll(fromFileOption);
         }
         return result.build();
