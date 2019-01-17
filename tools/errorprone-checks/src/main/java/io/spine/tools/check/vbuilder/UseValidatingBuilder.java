@@ -67,8 +67,6 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
  *
  * <p>Usage of the {@code Message.Builder} inside of the generated {@code Message messages} and
  * in the {@linkplain ValidatingBuilder validating builders} themselves is allowed.
- *
- * @author Dmytro Kuzmin
  */
 @AutoService(BugChecker.class)
 @BugPattern(

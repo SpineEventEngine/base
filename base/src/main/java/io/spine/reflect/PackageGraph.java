@@ -61,8 +61,6 @@ import static java.util.stream.Collectors.toList;
  *     java.util.concurrent -&gt; java.util
  *     java.util.function -&gt; java.util
  * </pre>
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public final class PackageGraph implements Graph<PackageInfo> {

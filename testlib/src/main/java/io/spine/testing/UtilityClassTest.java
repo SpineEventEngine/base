@@ -34,16 +34,18 @@ import static io.spine.testing.Tests.assertTrue;
  *
  * @param <T> the type of the utility class under the test
  */
-@SuppressWarnings("UnstableApiUsage")
 public abstract class UtilityClassTest<T> {
 
     private final Class<T> utilityClass;
 
-    protected UtilityClassTest(Class<T> aClass) {
-        utilityClass = aClass;
+    protected UtilityClassTest(Class<T> cls) {
+        this.utilityClass = cls;
     }
 
-    protected Class<T> getUtilityClass() {
+    /**
+     * Obtains the class under the test.
+     */
+    protected final Class<T> getUtilityClass() {
         return utilityClass;
     }
 
