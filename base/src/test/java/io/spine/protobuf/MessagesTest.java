@@ -50,21 +50,21 @@ class MessagesTest extends UtilityClassTest<Messages> {
 
     @Test
     @DisplayName("return the same any from toAny")
-    void return_the_same_any_from_toAny() {
+    void sameAny() {
         Any any = toAny(getClass().getSimpleName());
         assertSame(any, AnyPacker.pack(any));
     }
 
     @Test
     @DisplayName("pack to Any")
-    void pack_to_Any() {
+    void packToAny() {
         Timestamp timestamp = Time.getCurrentTime();
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
     }
 
     @Test
     @DisplayName("return builder for the message")
-    void return_builder_for_the_message() {
+    void builderForMessage() {
         Message.Builder messageBuilder = builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
         assertEquals(MessageWithStringValue.class,
@@ -74,26 +74,26 @@ class MessagesTest extends UtilityClassTest<Messages> {
 
     @Test
     @DisplayName("throw when try to get builder for a not generated message")
-    void throw_exception_when_try_to_get_builder_for_not_the_generated_message() {
+    void failGettingNonGeneratedBuilder() {
         assertThrows(IllegalArgumentException.class,
                      () -> builderFor(Message.class));
     }
 
     @Test
-    @DisplayName("return true when message is checked")
-    void return_true_when_message_is_checked() {
+    @DisplayName("tell if a class is a Message")
+    void tellIfMessage() {
         assertTrue(Messages.isMessage(MessageWithStringValue.class));
     }
 
     @Test
-    @DisplayName("return false when not message is checked")
-    void return_false_when_not_message_is_checked() {
+    @DisplayName("tell if a class is not Message")
+    void tellNotMessage() {
         assertFalse(Messages.isMessage(getClass()));
     }
 
     @Test
     @DisplayName("ensure Message")
-    void ensure_Message() {
+    void ensureMessageInstance() {
         StringValue value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));

@@ -76,6 +76,7 @@ public final class Messages {
      * @return default instance of the class
      */
     public static <M extends Message> M defaultInstance(Class<M> messageClass) {
+        checkNotNull(messageClass);
         // It is safe to use the `Internal` utility class from Protobuf since it relies on the
         // that fact that the generated class has the `getDefaultInstance()` static method.
         M result = com.google.protobuf.Internal.getDefaultInstance(messageClass);
