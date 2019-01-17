@@ -95,7 +95,7 @@ class AlternativeFieldValidatorTest {
     private static void assertValid(Message message, boolean valid) {
         MessageValue value = MessageValue.atTopLevel(message);
         AlternativeFieldValidator validator = new AlternativeFieldValidator(value);
-        List<? extends ConstraintViolation> violations = validator.validate();
+        List<ConstraintViolation> violations = validator.validate();
         assertEquals(valid, violations.isEmpty());
     }
 }

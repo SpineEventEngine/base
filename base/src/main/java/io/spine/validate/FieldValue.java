@@ -199,6 +199,12 @@ final class FieldValue {
         }
     }
 
+    boolean isDefault() {
+        Object defaultValue = this.context.getTarget()
+                                          .getDefaultValue();
+        return this.value.equals(defaultValue);
+    }
+
     /** Returns the declaration of the value. */
     FieldDeclaration declaration() {
         return declaration;

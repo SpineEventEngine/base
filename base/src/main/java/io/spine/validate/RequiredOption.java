@@ -32,18 +32,29 @@ import java.util.function.Predicate;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-public class RequiredFieldOption extends FieldValidatingOption<Boolean> {
+public class RequiredOption extends FieldValidatingOption<Boolean> {
 
     private final Predicate<FieldValue> isNotSet;
+    private final Predicate<FieldValue> isOptionPresent;
 
     /**
      * Creates a new instance of this option.
      *
      * @param isNotSet
      *         a function that defines whether a field value is set or not
+     * @param isOptionPresent
+     *         a function that defines whether this option is present
      */
-    RequiredFieldOption(Predicate<FieldValue> isNotSet) {
+    private RequiredOption(Predicate<FieldValue> isNotSet,
+                           Predicate<FieldValue> isOptionPresent) {
         this.isNotSet = isNotSet;
+        this.isOptionPresent = isOptionPresent;
+    }
+
+    static RequiredOption selfResolvingOption(Predicate<FieldValue> isNotSet,
+                                              boolean strict) {
+        Predicate<FieldValue> isOptionPresent = strict ? value -> true : RequiredOption::optionValue;
+        return new RequiredOption(isNotSet, isOptionPresent);
     }
 
     /**
@@ -52,6 +63,11 @@ public class RequiredFieldOption extends FieldValidatingOption<Boolean> {
     @Override
     boolean applicableTo(Descriptors.FieldDescriptor field) {
         return true;
+    }
+
+    @Override
+    boolean optionPresentFor(FieldValue value) {
+        return this.isOptionPresent.test(value);
     }
 
     /**
@@ -77,19 +93,19 @@ public class RequiredFieldOption extends FieldValidatingOption<Boolean> {
                 .addParam(value.declaration()
                                .name()
                                .value())
-                .setFieldPath(value.context().getFieldPath())
+                .setFieldPath(value.context()
+                                   .getFieldPath())
                 .build();
         return ImmutableList.of(violation);
     }
 
-    @Override
-    boolean optionPresentFor(FieldValue value) {
-        return getValueFor(value);
+    private static Boolean optionValue(FieldValue fieldValue) {
+        return fieldValue.valueOf(OptionsProto.required);
     }
 
     @Override
-    public Boolean getValueFor(FieldValue something) {
-        return something.valueOf(OptionsProto.required);
+    public Boolean getValueFor(FieldValue fieldValue) {
+        return optionValue(fieldValue);
     }
 
     private <T> T nop() {

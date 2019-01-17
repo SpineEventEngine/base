@@ -72,7 +72,7 @@ final class AlternativeFieldValidator implements Logging {
         this.message = checkNotNull(message);
     }
 
-    List<? extends ConstraintViolation> validate() {
+    List<ConstraintViolation> validate() {
         Map<FieldDescriptor, Object> options = message.options();
         for (FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {

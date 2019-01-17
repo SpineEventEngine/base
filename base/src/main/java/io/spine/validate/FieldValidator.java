@@ -89,7 +89,7 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
-        this.fieldValidatingOptions = Sets.union(commonOptions(), additionalOptions());
+        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), additionalOptions());
     }
 
     /**
@@ -137,9 +137,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -340,8 +340,9 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
-    private Set<FieldValidatingOption<?>> commonOptions() {
+    private Set<FieldValidatingOption<?>> commonOptions(boolean isStrict) {
         return ImmutableSet.of(new DistinctFieldOption(),
-                               new RequiredFieldOption(value -> this.checkIfRequiredAndNotSet()));
+                               RequiredOption.selfResolvingOption(
+                                       value -> this.checkIfRequiredAndNotSet(), isStrict));
     }
 }
