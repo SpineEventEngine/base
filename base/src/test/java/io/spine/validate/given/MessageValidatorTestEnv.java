@@ -18,23 +18,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.given;
 
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
+import com.google.protobuf.ProtocolStringList;
+import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import io.spine.base.FieldPath;
 import io.spine.base.Time;
+import io.spine.validate.ConstraintViolation;
 
+import static com.google.protobuf.util.Timestamps.add;
+import static com.google.protobuf.util.Timestamps.subtract;
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.setProvider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageValidatorTestEnv {
 
-    private static final int SECONDS_IN_MINUTE = 60;
-    public static final int SECONDS_IN_5_MINUTES = 5 * SECONDS_IN_MINUTE;
+    public static final double EQUAL_MIN = 16.5;
+    public static final double GREATER_THAN_MIN = EQUAL_MIN + 5;
+    public static final double LESS_THAN_MIN = EQUAL_MIN - 5;
 
+    public static final double EQUAL_MAX = 64.5;
+    public static final double GREATER_THAN_MAX = EQUAL_MAX + 5;
+
+    public static final double INT_DIGIT_COUNT_GREATER_THAN_MAX = 123.5;
+    public static final double INT_DIGIT_COUNT_EQUAL_MAX = 12.5;
+
+    public static final String VALUE = "value";
+    public static final String EMAIL = "email";
+    public static final String OUTER_MSG_FIELD = "outer_msg_field";
+    public static final String NO_VALUE_MSG = "Value must be set.";
+    public static final String LESS_THAN_MIN_MSG = "Number must be greater than or equal to 16.5.";
+    public static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
+    public static final String MATCH_REGEXP_MSG = "String must match the regular expression '%s'.";
+
+    public static final int SECONDS_IN_MINUTE = 60;
+
+    public static final int SECONDS_IN_5_MINUTES = 5 * SECONDS_IN_MINUTE;
     public static final int FIFTY_NANOSECONDS = 50;
     public static final int ZERO_NANOSECONDS = 0;
-    
+    public static final double INT_DIGIT_COUNT_LESS_THAN_MAX = 1.5;
+    public static final double LESS_THAN_MAX = EQUAL_MAX - 5;
+
     /** Prevent instantiation of this test environment. */
     private MessageValidatorTestEnv() {
     }
@@ -69,6 +99,32 @@ public class MessageValidatorTestEnv {
     public static void freezeTime(Timestamp time) {
         Time.Provider frozenTimeProvider = new ConstantTimeProvider(time);
         setProvider(frozenTimeProvider);
+    }
+
+    public static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
+        FieldPath path = violation.getFieldPath();
+        ProtocolStringList actualFields = path.getFieldNameList();
+        assertEquals(expectedFields.length, actualFields.size());
+        assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
+    }
+
+    public static Timestamp getFuture() {
+        Timestamp future = add(getCurrentTime(), newDuration(SECONDS_IN_5_MINUTES));
+        return future;
+    }
+
+    public static Timestamp getPast() {
+        Timestamp past = subtract(getCurrentTime(), newDuration(SECONDS_IN_5_MINUTES));
+        return past;
+    }
+
+    public static StringValue newStringValue() {
+        return StringValue.of(newUuid());
+    }
+
+    public static ByteString newByteString() {
+        ByteString bytes = ByteString.copyFromUtf8(newUuid());
+        return bytes;
     }
 
     /**
