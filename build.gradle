@@ -47,13 +47,14 @@ buildscript {
         }
     }
 
-    configurations.all({
+    configurations.all {
         resolutionStrategy {
             cacheChangingModulesFor(0, 'seconds')
             force deps.build.guava
             force deps.test.guavaTestlib
+            force deps.build.protobuf
         }
-    })
+    }
 }
 
 apply from: 'version.gradle'
@@ -120,12 +121,39 @@ subprojects {
             }
         }
 
-        configurations.all({
-            resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-        })
+        configurations.all {
+            resolutionStrategy {
+                cacheChangingModulesFor(0, 'seconds')
+
+                force deps.build.guava
+                force deps.test.guavaTestlib
+                force deps.build.protobuf
+            }
+        }
     }
 
     configurations {
+        all {
+            resolutionStrategy {
+
+                // Fail eagerly on version conflict (includes transitive dependencies)
+                // e.g. multiple different versions of the same dependency
+                // (where group and name are equal).
+                failOnVersionConflict()
+
+                force deps.build.errorProneAnnotations
+                force deps.build.jsr305Annotations
+                force deps.build.checkerAnnotations
+                force deps.build.guava
+                force deps.build.protobuf
+
+                force deps.test.guavaTestlib
+                force deps.test.truth
+                force deps.test.junit5Api
+                force deps.test.junit4
+            }
+        }
+
         // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
         runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
         testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"

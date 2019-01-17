@@ -50,7 +50,9 @@ public final class Messages {
      * Reflection and then invokes it.
      *
      * @return new instance
+     * @deprecated use {@link #defaultInstance(Class)}
      */
+    @Deprecated
     public static <M extends Message> M newInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
         try {
@@ -64,6 +66,20 @@ public final class Messages {
                 | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * Obtains the default instance of the passed message class.
+     *
+     * @param messageClass the class for which to obtain the default instance
+     * @param <M> the type of the message
+     * @return default instance of the class
+     */
+    public static <M extends Message> M defaultInstance(Class<M> messageClass) {
+        // It is safe to use the `Internal` utility class from Protobuf since it relies on the
+        // that fact that the generated class has the `getDefaultInstance()` static method.
+        M result = com.google.protobuf.Internal.getDefaultInstance(messageClass);
+        return result;
     }
 
     /**

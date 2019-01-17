@@ -35,9 +35,18 @@ dependencies {
     implementation deps.build.errorProneCore
     implementation deps.build.errorProneAnnotations
 
-    compileOnly "com.google.auto.service:auto-service:$autoServiceVersion"
+    compileOnly ("com.google.auto.service:auto-service:$autoServiceVersion") {
 
-    testImplementation deps.build.errorProneTestHelpers
+        // Exclude com.google.auto:auto-common because of the version conflict:
+        // 0.8 is used by `auto-service` and 0.10 is used by `error_prone_core`.
+        exclude group: 'com.google.auto'
+    }
+
+    testImplementation (deps.build.errorProneTestHelpers) {
+        // Exclude com.google.auto:auto-common because of the version conflict:
+        // 0.9 is used by `error_prone_test_helpers` and 0.10 is used by `error_prone_core`.
+        exclude group: 'com.google.auto' 
+    }
 }
 
 def getResolvedArtifactFor(final dependency) {
