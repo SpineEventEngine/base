@@ -18,13 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.test.validate;
 
 import com.google.protobuf.Message;
-import io.spine.test.validate.FirstRuleTarget;
-import io.spine.test.validate.InvalidMessage;
-import io.spine.test.validate.RuleTargetAggregate;
-import io.spine.test.validate.SecondRuleTarget;
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.MessageValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +31,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageValidator should")
-class MessageValidatorTest {
+class ValidatorTest {
 
     private List<ConstraintViolation> violations;
 
