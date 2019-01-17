@@ -247,17 +247,17 @@ subprojects {
     
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
-        classifier "sources"
+        archiveClassifier.set("sources")
     }
 
     task testOutputJar(type: Jar) {
         from sourceSets.test.output
-        classifier "test"
+        archiveClassifier.set("test")
     }
 
     task javadocJar(type: Jar, dependsOn: 'javadoc') {
         from "$projectDir/build/docs/javadoc"
-        classifier "javadoc"
+        archiveClassifier.set("javadoc")
     }
 
     // Apply the same IDEA module configuration for each of sub-projects.
