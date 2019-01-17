@@ -586,7 +586,7 @@ message MinOption {
 // Repeated fields are supported.
 //
 // Example:
-//    double value = 1 [(max).value = "10.5"];
+//     double value = 1 [(max).value = "10.5"];
 //
 message MaxOption {
 
