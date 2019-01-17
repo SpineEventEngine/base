@@ -31,8 +31,6 @@ final class CommandMessageClassifier implements MessageClassifier {
 
     @Override
     public boolean test(MessageType type) {
-        return MessageFile.COMMANDS.test(type.descriptor()
-                                             .getFile()
-                                             .toProto());
+        return type.isCommand();
     }
 }

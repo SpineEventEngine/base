@@ -175,6 +175,24 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return result;
     }
 
+    /**
+     * Tells if this message is a command.
+     */
+    public boolean isCommand() {
+        boolean result = isTopLevel() && declaringFileName().isCommands();
+        return result;
+    }
+
+    /**
+     * Tells if this message is an event.
+     *
+     * <p>Returns {@code false} if this type is a {@linkplain #isRejection() rejection}.
+     */
+    public boolean isEvent() {
+        boolean result = isTopLevel() && declaringFileName().isEvents();
+        return result;
+    }
+
     private FileName declaringFileName() {
         return FileName.from(descriptor().getFile());
     }

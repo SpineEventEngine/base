@@ -31,8 +31,6 @@ final class EventMessageClassifier implements MessageClassifier {
 
     @Override
     public boolean test(MessageType type) {
-        return MessageFile.EVENTS.test(type.descriptor()
-                                           .getFile()
-                                           .toProto());
+        return type.isEvent();
     }
 }
