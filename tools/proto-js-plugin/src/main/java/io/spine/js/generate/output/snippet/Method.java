@@ -32,7 +32,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.join;
 
 /**
- * The declaration of a method in Javascript code.
+ * The declaration of a method in JavaScript code.
  */
 public class Method implements Snippet {
 

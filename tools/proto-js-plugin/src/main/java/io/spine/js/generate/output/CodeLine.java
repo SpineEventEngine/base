@@ -23,7 +23,7 @@ package io.spine.js.generate.output;
 import java.util.Objects;
 
 /**
- * A line of a Javascript code.
+ * A line of a JavaScript code.
  *
  * <p>The line is not aware of {@linkplain io.spine.js.generate.output.IndentedLine indentation}.
  */

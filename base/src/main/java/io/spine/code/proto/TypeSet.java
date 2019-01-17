@@ -94,6 +94,11 @@ public final class TypeSet {
         return result.messageTypes.values();
     }
 
+    public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
+        TypeSet typeSet = MessageType.allFrom(file);
+        return typeSet.messageTypes.values();
+    }
+
     /**
      * Obtains the size of the set.
      */

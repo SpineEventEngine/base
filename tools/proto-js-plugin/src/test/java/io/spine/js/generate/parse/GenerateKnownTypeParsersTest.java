@@ -26,31 +26,40 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.TypeName;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.given.GivenProject;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.snippet.Comment;
+import io.spine.js.generate.output.snippet.Import;
 import io.spine.option.OptionsProto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spine.test.js.Task;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
-import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.js.generate.parse.GenerateKnownTypeParsers.ABSTRACT_PARSER_IMPORT_NAME;
+import static io.spine.js.generate.parse.GenerateKnownTypeParsers.OBJECT_PARSER_FILE;
+import static io.spine.js.generate.parse.GenerateKnownTypeParsers.TYPE_PARSERS_FILE;
+import static io.spine.js.generate.parse.GenerateKnownTypeParsers.TYPE_PARSERS_IMPORT_NAME;
 import static io.spine.js.generate.parse.GenerateKnownTypeParsers.createFor;
-import static io.spine.js.generate.parse.GenerateKnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static java.nio.file.Files.exists;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GenerateKnownTypeParsers should")
 class GenerateKnownTypeParsersTest {
 
+    private final FileDescriptor file = Task.TaskId.getDescriptor()
+                                                   .getFile();
     private final FileSet fileSet = GivenProject.mainFileSet();
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
     private final GenerateKnownTypeParsers writer = createFor(generatedProtoDir);
@@ -64,56 +73,64 @@ class GenerateKnownTypeParsersTest {
     }
 
     @Test
-    @DisplayName("write known types map to JS file")
-    void writeKnownTypes() {
-        writer.writeKnownTypes(fileSet);
-        Path knownTypes = generatedProtoDir.resolve(KNOWN_TYPES);
-        assertTrue(exists(knownTypes));
+    @DisplayName("generate explaining comment")
+    void generateComment() {
+        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
+        Comment expectedComment = Comment.generatedBySpine();
+        assertContains(code, expectedComment.content());
     }
 
     @Test
-    @DisplayName("write known type parsers map to JS file")
-    void writeKnownTypeParsers() {
-        writer.writeKnownTypeParsers();
-        Path knownTypeParsers = generatedProtoDir.resolve(KNOWN_TYPE_PARSERS);
-        assertTrue(exists(knownTypeParsers));
+    @DisplayName("generate imports")
+    void generateImports() {
+        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
+        String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
+                                            .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        String typeParsersImport = Import.libraryDefault(TYPE_PARSERS_FILE)
+                                         .namedAs(TYPE_PARSERS_IMPORT_NAME);
+        assertContains(code, abstractParserImport);
+        assertContains(code, typeParsersImport);
     }
 
     @Test
-    @DisplayName("write `fromJson` method into generated JS files")
-    void writeFromJsonMethod() throws IOException {
-        writer.writeParseMethods(fileSet);
+    @DisplayName("write code for parsing")
+    void writeParsingCode() throws IOException {
+        writer.generateFor(fileSet);
         checkProcessedFiles(fileSet);
     }
 
     @Test
-    @DisplayName("not write `fromJson` method into Spine Options file")
-    void skipSpineOptions() {
-        FileDescriptor spineOptionsFile = OptionsProto.getDescriptor();
-        assertFalse(shouldSkip(spineOptionsFile));
+    @DisplayName("write code for parsing of Spine options")
+    void writeOptionsParseCode() {
+        FileDescriptor optionsFile = OptionsProto.getDescriptor()
+                                                 .getFile();
+        Collection<MessageType> targets = GenerateKnownTypeParsers.targetTypes(optionsFile);
+        assertThat(targets).isNotEmpty();
     }
 
     @Test
-    @DisplayName("not write `fromJson` method into files declaring standard Protobuf types")
+    @DisplayName("not write parsing code for standard Protobuf types")
     void skipStandard() {
-        FileDescriptor fileDeclaringAny = Any.getDescriptor()
-                                             .getFile();
-        assertTrue(shouldSkip(fileDeclaringAny));
+        Collection<MessageType> targets = GenerateKnownTypeParsers.targetTypes(Any.getDescriptor()
+                                                                                  .getFile());
+        assertThat(targets).isEmpty();
     }
 
     private void checkProcessedFiles(FileSet fileSet) throws IOException {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
-            if (!shouldSkip(file) && !messageTypes.isEmpty()) {
-                checkFromJsonDeclared(file);
+            if (FileDescriptors.isNotGoogle(file) && !messageTypes.isEmpty()) {
+                checkParseCodeAdded(file);
             }
         }
     }
 
-    private void checkFromJsonDeclared(FileDescriptor file) throws IOException {
+    private void checkParseCodeAdded(FileDescriptor file) throws IOException {
         Path jsFilePath = generatedProtoDir.resolve(FileName.from(file));
-        String fromJsonDeclaration = '.' + FROM_JSON + " = function";
-        assertFileContains(jsFilePath, fromJsonDeclaration);
+        for (MessageType messageType : TypeSet.onlyMessages(file)) {
+            TypeName parserTypeName = TypeName.ofParser(messageType.descriptor());
+            assertFileContains(jsFilePath, parserTypeName.value());
+        }
     }
 }

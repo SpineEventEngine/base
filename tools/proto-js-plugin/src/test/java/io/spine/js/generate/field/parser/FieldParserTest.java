@@ -20,21 +20,24 @@
 
 package io.spine.js.generate.field.parser;
 
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.field.given.Given.enumField;
 import static io.spine.js.generate.field.given.Given.messageField;
 import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.given.Given.timestampField;
 import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
@@ -49,6 +52,42 @@ class FieldParserTest {
     @BeforeEach
     void setUp() {
         jsOutput = new CodeLines();
+    }
+
+    @Test
+    @DisplayName("reject null passed to factory method")
+    void nullCheck() {
+        new NullPointerTester()
+                .setDefault(FieldDescriptor.class, messageField())
+                .testAllPublicStaticMethods(FieldParser.class);
+    }
+
+    @Test
+    @DisplayName("create parser for primitive field")
+    void createParserForPrimitive() {
+        FieldParser parser = parserFor(primitiveField(), jsOutput);
+        assertThat(parser).isInstanceOf(PrimitiveFieldParser.class);
+    }
+
+    @Test
+    @DisplayName("create parser for enum field")
+    void createParserForEnum() {
+        FieldParser parser = parserFor(enumField(), jsOutput);
+        assertThat(parser).isInstanceOf(EnumFieldParser.class);
+    }
+
+    @Test
+    @DisplayName("create parser for message field with custom type")
+    void createParserForMessage() {
+        FieldParser parser = parserFor(messageField(), jsOutput);
+        assertThat(parser).isInstanceOf(MessageFieldParser.class);
+    }
+
+    @Test
+    @DisplayName("create parser for message field with standard type")
+    void createParserForWellKnown() {
+        FieldParser parser = parserFor(timestampField(), jsOutput);
+        assertThat(parser).isInstanceOf(MessageFieldParser.class);
     }
 
     @Test
@@ -76,18 +115,17 @@ class FieldParserTest {
     void parseMessage() {
         FieldParser parser = parserFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        Descriptor messageType = messageField().getMessageType();
-        TypeName typeName = TypeName.from(messageType);
-        String parse = "let " + VARIABLE + " = " + typeName + '.' + FROM_OBJECT + '(' + VALUE + ')';
-        assertContains(jsOutput, parse);
+
     }
 
     @Test
-    @DisplayName("parse message field with standard type via known type parser")
+    @DisplayName("parse a message field")
     void parseWellKnown() {
-        FieldParser parser = parserFor(timestampField(), jsOutput);
+        FieldParser parser = parserFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        String parse = "let " + VARIABLE + " = parser.parse(" + VALUE + ')';
-        assertContains(jsOutput, parse);
+        TypeUrl typeUrl = TypeUrl.from(messageField().getMessageType());
+        String parserCall = format("TypeParsers.parserFor('%s').fromObject(%s);",
+                                   typeUrl, VALUE);
+        assertContains(jsOutput, parserCall);
     }
 }

@@ -48,4 +48,12 @@ class MethodReferenceTest {
         String expectedName = "proto.google.protobuf.Any.method";
         assertEquals(expectedName, reference.value());
     }
+
+    @Test
+    @DisplayName("provide reference to a constructor")
+    void constructor() {
+        MethodReference reference = MethodReference.constructor(typeName);
+        String expected = "proto.google.protobuf.Any";
+        assertEquals(expected, reference.value());
+    }
 }

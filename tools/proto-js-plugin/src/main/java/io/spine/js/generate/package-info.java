@@ -21,10 +21,12 @@
 /**
  * The classes generating and writing the JavaScript code.
  */
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.js.generate;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

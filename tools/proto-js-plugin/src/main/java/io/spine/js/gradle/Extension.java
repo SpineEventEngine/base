@@ -20,17 +20,74 @@
 
 package io.spine.js.gradle;
 
+import com.google.common.annotations.VisibleForTesting;
+import io.spine.code.js.DefaultJsProject;
+import io.spine.code.js.Directory;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
  * task to configure when it will be executed during the build lifecycle.
  */
+@SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
 public class Extension {
 
     private Task generateParsersTask;
+
+    /**
+     * The absolute path to the main Protobuf descriptor set file.
+     */
+    public String mainDescriptorSetPath;
+    /**
+     * The absolute path to the test Protobuf descriptor set file.
+     */
+    public String testDescriptorSetPath;
+    /**
+     * The absolute path to the main Protobufs compiled to JavaScript.
+     */
+    public String mainGenProtoDir;
+    /**
+     * The absolute path to the test Protobufs compiled to JavaScript.
+     */
+    public String testGenProtoDir;
+
+    public static Directory getMainGenProto(Project project) {
+        Extension extension = extension(project);
+        String specifiedValue = extension.mainGenProtoDir;
+        Path path = pathOrDefault(specifiedValue,
+                                  def(project).proto()
+                                              .mainJs());
+        return Directory.at(path);
+    }
+
+    public static Directory getTestGenProtoDir(Project project) {
+        Extension extension = extension(project);
+        String specifiedValue = extension.testGenProtoDir;
+        Path path = pathOrDefault(specifiedValue,
+                                  def(project).proto()
+                                              .testJs());
+        return Directory.at(path);
+    }
+
+    public static File getMainDescriptorSet(Project project) {
+        Path path = pathOrDefault(extension(project).mainDescriptorSetPath,
+                                  def(project).mainDescriptors());
+        return path.toFile();
+    }
+
+    public static File getTestDescriptorSet(Project project) {
+        Path path = pathOrDefault(extension(project).testDescriptorSetPath,
+                                  def(project).testDescriptors());
+        return path.toFile();
+    }
 
     /**
      * Returns the {@code generateJsonParsers} task configured by the {@link ProtoJsPlugin}.
@@ -47,5 +104,23 @@ public class Extension {
      */
     void setGenerateParsersTask(Task generateParsersTask) {
         this.generateParsersTask = generateParsersTask;
+    }
+
+    @VisibleForTesting
+    static Extension extension(Project project) {
+        return (Extension)
+                project.getExtensions()
+                       .getByName(ProtoJsPlugin.extensionName());
+    }
+
+    private static Path pathOrDefault(String path, Object defaultValue) {
+        String pathValue = isNullOrEmpty(path)
+                           ? defaultValue.toString()
+                           : path;
+        return Paths.get(pathValue);
+    }
+
+    private static DefaultJsProject def(Project project) {
+        return DefaultJsProject.at(project.getProjectDir());
     }
 }
