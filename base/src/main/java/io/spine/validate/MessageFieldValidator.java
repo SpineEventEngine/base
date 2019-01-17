@@ -58,7 +58,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *         such constraint is not explicitly set
      */
     MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, true);
+        super(fieldValue, assumeRequired, true, ImmutableSet.of());
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 
@@ -176,11 +176,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 .addAllViolation(violations)
                 .build();
         return violation;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
     }
 
     /**

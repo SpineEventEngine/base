@@ -22,8 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Set;
-
 /**
  * Validates fields of type {@link Boolean}.
  */
@@ -36,7 +34,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *         the value to to validate
      */
     BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
+        super(fieldValue, false, false, ImmutableSet.of());
     }
 
     /**
@@ -57,10 +55,5 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     @Override
     protected void validateOwnRules() {
         // NOP
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
     }
 }

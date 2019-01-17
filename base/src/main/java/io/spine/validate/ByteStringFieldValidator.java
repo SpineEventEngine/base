@@ -37,7 +37,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      *         the value to validate
      */
     ByteStringFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, true);
+        super(fieldValue, false, true, ImmutableSet.of());
     }
 
     @Override
@@ -55,11 +55,6 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     @Override
     protected void validateOwnRules() {
         // NoOp
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
     }
 
     @Override

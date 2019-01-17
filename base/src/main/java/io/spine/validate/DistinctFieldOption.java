@@ -77,8 +77,7 @@ final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate> {
         return ImmutableList.of(duplicateFound(value, duplicates));
     }
 
-    private static Set<?> findDuplicates(Iterable<?> potentialDuplicates) {
-        Set<Object> duplicateLess = new HashSet<>();
+    private static Set<?> findDuplicates(Iterable<?> potentialDuplicates) { Set<Object> duplicateLess = new HashSet<>();
         ImmutableSet.Builder<Object> duplicates = ImmutableSet.builder();
         for (Object potentialDuplicate : potentialDuplicates) {
             if (duplicateLess.contains(potentialDuplicate)) {

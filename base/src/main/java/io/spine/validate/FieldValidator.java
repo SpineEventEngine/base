@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -78,9 +77,10 @@ abstract class FieldValidator<V> implements Logging {
      * @param canBeRequired
      *         defines whether a field that is being validated can be {@code required}
      */
-    @SuppressWarnings({"OverridableMethodCallDuringObjectConstruction", "AbstractMethodCallInConstructor"})
-    // Subclasses return values that don't depend on any state
-    protected FieldValidator(FieldValue fieldValue, boolean assumeRequired, boolean canBeRequired) {
+    protected FieldValidator(FieldValue fieldValue,
+                             boolean assumeRequired,
+                             boolean canBeRequired,
+                             Set<FieldValidatingOption<?>> additionalOptions) {
         this.canBeRequired = canBeRequired;
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
@@ -90,7 +90,7 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
-        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), additionalOptions());
+        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), additionalOptions);
     }
 
     /**
@@ -119,15 +119,6 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is not set, {@code false} otherwise
      */
     protected abstract boolean isNotSet(V value);
-
-    /**
-     * Defines options against which a field can be validated.
-     *
-     * <p>Subclasses should use this method to add more type-specific options.
-     *
-     * @return a set of additional options
-     */
-    protected abstract Set<FieldValidatingOption<?>> additionalOptions();
 
     /**
      * Validates messages according to Spine custom protobuf options and returns validation

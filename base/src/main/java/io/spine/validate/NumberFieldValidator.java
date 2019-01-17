@@ -55,7 +55,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      *         the value to validate
      */
     NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
+        super(fieldValue, false, false, ImmutableSet.of());
         this.min = fieldValue.valueOf(OptionsProto.min);
         this.max = fieldValue.valueOf(OptionsProto.max);
         this.digitsOption = fieldValue.valueOf(OptionsProto.digits);
@@ -172,11 +172,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                 .setFieldValue(wrap(value))
                 .build();
         return violation;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
     }
 
     private ConstraintViolation digits(V value) {
