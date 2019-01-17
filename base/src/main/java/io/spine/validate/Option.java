@@ -20,45 +20,26 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-
-import java.util.Set;
-
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A Protobuf option.
+ *
+ * @param <T>
+ *         type of information held by this option
+ * @param <K>
+ *         kind of entities that this option can be applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public interface Option<T, K> {
 
     /**
-     * Creates a new validator instance.
+     * Returns the value of this option for the specified entity.
      *
-     * @param fieldValue
-     *         the value to validate
+     * @param something
+     *         entity which is checked for the value of this option
+     * @return value of this option
+     * @apiNote More often than not, it is impossible to say whether a, for example, field,
+     *         has or doesn't have an option value, because a default one is present.
+     *         When using this method take into account the fact that any option can have a
+     *         default value, which can be returned by this method
      */
-    EnumFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, true);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action since no special options are declared for the enum values validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NoOp
-    }
+    T getValueFor(K something);
 }

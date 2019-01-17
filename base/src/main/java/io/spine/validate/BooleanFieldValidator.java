@@ -60,7 +60,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     @Override
-    protected Set<FieldValidatingOption> additionalOptions() {
+    protected Set<FieldValidatingOption<?>> additionalOptions() {
         return ImmutableSet.of();
     }
 }

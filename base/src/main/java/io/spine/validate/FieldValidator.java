@@ -53,7 +53,7 @@ abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final Set<FieldValidatingOption> fieldValidatingOptions;
+    private final Set<FieldValidatingOption<?>> fieldValidatingOptions;
     private final boolean required;
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
@@ -126,7 +126,7 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return a set of additional options
      */
-    protected abstract Set<FieldValidatingOption> additionalOptions();
+    protected abstract Set<FieldValidatingOption<?>> additionalOptions();
 
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
@@ -146,7 +146,6 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected final List<ConstraintViolation> validate() {
         checkCanBeRequired();
-        checkIfRequiredAndNotSet();
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -233,16 +232,14 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>It is required to override {@link #isNotSet(Object)} method to use this one.
      */
-    protected void checkIfRequiredAndNotSet() {
+    protected boolean checkIfRequiredAndNotSet() {
         if (!isRequiredField()) {
             if (hasCustomMissingMessage()) {
                 log().warn("'if_missing' option is set without '(required) = true'");
             }
-            return;
+            return false;
         }
-        if (fieldValueNotSet()) {
-            addViolation(newViolation(ifMissingOption));
-        }
+        return fieldValueNotSet();
     }
 
     /** Returns an immutable list of the field values. */
@@ -343,7 +340,8 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
-    private static Set<FieldValidatingOption> commonOptions() {
-        return ImmutableSet.of(new DistinctFieldOption());
+    private Set<FieldValidatingOption<?>> commonOptions() {
+        return ImmutableSet.of(new DistinctFieldOption(),
+                               new RequiredFieldOption(value -> this.checkIfRequiredAndNotSet()));
     }
 }

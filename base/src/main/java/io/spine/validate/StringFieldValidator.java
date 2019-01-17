@@ -57,7 +57,7 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected Set<FieldValidatingOption> additionalOptions() {
+    protected Set<FieldValidatingOption<?>> additionalOptions() {
         return ImmutableSet.of();
     }
 

@@ -20,45 +20,22 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-
-import java.util.Set;
+import java.util.List;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option that validates an arbitrary Protobuf entity.
+ *
+ * <p>If that entity does not correspond to the rules defined by this option,
+ * {@linkplain io.spine.validate.ConstraintViolation constraint violations} are generated.
+ *
+ * @param <T>
+ *         type of information that this option holds, e. g.
+ *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
+ *         Boolean}
+ * @param <K>
+ *         kind of entities that are being validated against this option
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public interface ValidatingOption<T, K> extends Option<T, K> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, true);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> additionalOptions() {
-        return ImmutableSet.of();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action since no special options are declared for the enum values validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NoOp
-    }
+    List<ConstraintViolation> validateAgainst(K something);
 }

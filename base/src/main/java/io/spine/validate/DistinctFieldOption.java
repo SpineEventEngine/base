@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
+import io.spine.option.OnDuplicate;
 import io.spine.option.OnDuplicate.DuplicatePolicy;
 import io.spine.option.OptionsProto;
 
@@ -30,7 +31,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-final class DistinctFieldOption extends FieldValidatingOption {
+/**
+ * An option that can be applied to {@code repeated} Protobuf fields to specify that values
+ * represented by that {@code repeated} field don't contain duplicates.
+ */
+final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate.DuplicatePolicy> {
 
     @Override
     boolean applicableTo(Descriptors.FieldDescriptor field) {
@@ -89,5 +94,10 @@ final class DistinctFieldOption extends FieldValidatingOption {
     private static DuplicatePolicy policyFor(FieldValue field) {
         return field.valueOf(OptionsProto.onDuplicate)
                     .getDuplicatePolicy();
+    }
+
+    @Override
+    public DuplicatePolicy getValueFor(FieldValue something) {
+        return something.valueOf(OptionsProto.onDuplicate).getDuplicatePolicy();
     }
 }

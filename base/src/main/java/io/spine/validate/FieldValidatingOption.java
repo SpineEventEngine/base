@@ -27,13 +27,16 @@ import java.util.List;
 
 /**
  * An option that validates a field.
+ *
+ * @param <T>
+ *         type of information that this option holds
  */
-abstract class FieldValidatingOption {
+abstract class FieldValidatingOption<T> implements ValidatingOption<T, FieldValue> {
 
     /**
      * Defines whether this option is applicable to the specified field.
      *
-     * <p>Example: a {@link io.spine.option.DecimalMaxOption decimal max option} is applicable to
+     * <p>Example: a {@link io.spine.option.MaxOption max option} is applicable to
      * numeric fields only.
      *
      * @param field
@@ -62,15 +65,8 @@ abstract class FieldValidatingOption {
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
     abstract boolean optionPresentFor(FieldValue value);
 
-    /**
-     * Validates the specified field against this option.
-     *
-     * @param value
-     *         the field value that is being validated
-     * @return list of constraint violations that were found while validating the specified
-     *         field
-     */
-    final List<ConstraintViolation> validateAgainst(FieldValue value) {
+    @Override
+    public final List<ConstraintViolation> validateAgainst(FieldValue value) {
         FieldDescriptor descriptor = value.context()
                                           .getTarget();
         if (optionPresentFor(value)) {
