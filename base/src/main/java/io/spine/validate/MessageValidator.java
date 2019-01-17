@@ -43,7 +43,8 @@ public class MessageValidator {
     /**
      * Creates a validator for a top-level message.
      */
-    public static MessageValidator newInstance(Message message) { MessageValue messageValue = MessageValue.atTopLevel(message);
+    public static MessageValidator newInstance(Message message) {
+        MessageValue messageValue = MessageValue.atTopLevel(message);
         return new MessageValidator(messageValue);
     }
 

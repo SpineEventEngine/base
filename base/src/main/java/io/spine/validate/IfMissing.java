@@ -23,6 +23,9 @@ package io.spine.validate;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
+/**
+ * A field option that defines custom error message if a field is {@code required} but missing.
+ */
 public class IfMissing implements Option<IfMissingOption, FieldValue> {
 
     @Override

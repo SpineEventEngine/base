@@ -24,6 +24,14 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
+/**
+ * An option that validates a message.
+ *
+ * <p>Defines the set of rules against which the message can be validated.
+ *
+ * @param <T>
+ *         type of information held by this option
+ */
 public abstract class MessageValidatingOption<T> implements ValidatingOption<T, MessageValue> {
 
     @Override
@@ -34,7 +42,15 @@ public abstract class MessageValidatingOption<T> implements ValidatingOption<T, 
         return ImmutableList.of();
     }
 
-    abstract List<ConstraintViolation> applyValidationRules(MessageValue something);
+    /**
+     * Defines the rules according to which a message will be validated.
+     *
+     * @param message
+     *         a message that is being validated.
+     * @return a set of constraints that the message violates
+     */
+    abstract List<ConstraintViolation> applyValidationRules(MessageValue message);
 
+    /** Returns whether this option is present for the specified message. */
     abstract boolean optionPresent(MessageValue something);
 }

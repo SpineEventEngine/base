@@ -279,8 +279,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         Optional<Boolean> setOnceDeclaration = option(field, OptionsProto.setOnce);
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault =
-                fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
         return setOnceValue || requiredByDefault;
     }
 

@@ -30,9 +30,23 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * A message option that defines a set of required fields for the message.
+ * A message option that defines a combination of required fields for the message.
  *
+ * The fields are separated with a {@code |} symbol, and combined with a {@code &} symbol.
  *
+ * Example:
+ * <pre>
+ *     {@code
+ *     message PersonName {
+ *         option (required_field) = "given_name|honorific_prefix & family_name";
+ *         string honorific_prefix = 1;
+ *         string given_name = 2;
+ *         string middle_name = 3;
+ *     }
+ *     }
+ * </pre>
+ * The {@code PersonName} message is valid against the {@code RequiredField} either if it has a
+ * non-default family name, or both honorific prefix and a family name.
  */
 public class RequiredField extends MessageValidatingOption<String> {
 
