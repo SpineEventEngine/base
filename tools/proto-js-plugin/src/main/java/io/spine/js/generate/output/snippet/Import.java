@@ -40,7 +40,6 @@ public class Import extends CodeLine {
      * <p>The placeholder represents the file to be imported.
      */
     private static final String IMPORT_FORMAT = "require('%s');";
-
     private static final String DEFAULT_IMPORT_FORMAT = "require('%s').default;";
 
     /**

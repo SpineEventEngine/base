@@ -23,15 +23,19 @@ package io.spine.js.gradle;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.code.js.Module;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
@@ -58,6 +62,20 @@ public class Extension {
      * The absolute path to the test Protobufs compiled to JavaScript.
      */
     public String testGenProtoDir;
+    /**
+     * Names of JavaScript modules and Protobuf packages they provide.
+     *
+     * <p>Information about modules is used to resolve imports in generated Protobuf files.
+     *
+     * <p>An example of the definition:
+     * <pre>{@code
+     * modules = [
+     *      'spine-web'  : ['spine.web', 'spine.client'],
+     *      'spine-users': ['spine.users']
+     * ]
+     * }</pre>
+     */
+    public Map<String, List<String>> modules;
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);
@@ -87,6 +105,16 @@ public class Extension {
         Path path = pathOrDefault(extension(project).testDescriptorSetPath,
                                   def(project).testDescriptors());
         return path.toFile();
+    }
+
+    public static List<Module> modules(Project project) {
+        Map<String, List<String>> rawModules = extension(project).modules;
+        List<Module> modules = newArrayList();
+        for (String moduleName : rawModules.keySet()) {
+            Module module = new Module(moduleName);
+            modules.add(module);
+        }
+        return modules;
     }
 
     /**

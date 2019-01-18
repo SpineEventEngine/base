@@ -38,8 +38,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * <p>For example, the {@code spine/options.proto} becomes {spine/options_pb.js}.
  *
  * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
- *
- * @author Dmytro Kuzmin
  */
 public final class FileName extends AbstractFileName<FileName> {
 

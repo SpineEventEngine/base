@@ -20,8 +20,10 @@
 
 package io.spine.js.gradle;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.code.js.Module;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -34,7 +36,9 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(TempDirectory.class)
@@ -129,6 +133,17 @@ class ExtensionTest {
         File file = Extension.getTestDescriptorSet(project);
         File expected = new File(customPath);
         assertEquals(expected, file);
+    }
+
+    @Test
+    @DisplayName("return modules to resolve")
+    void modulesToResolve() {
+        String moduleName = "foo-bar";
+        pluginExtension().modules.put(moduleName, ImmutableList.of("org.nested"));
+        List<Module> modules = Extension.modules(project);
+        assertThat(modules).hasSize(1);
+        assertThat(modules.get(0)
+                          .artifactName()).isEqualTo(moduleName);
     }
 
     private Extension pluginExtension() {
