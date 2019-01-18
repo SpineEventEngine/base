@@ -20,25 +20,19 @@
 
 package io.spine.js.generate.resolve;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
-import io.spine.code.js.ImportPath;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
-import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.code.js.ImportPath.parentDirectory;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
@@ -49,18 +43,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  *
  * <p>The task should be performed last.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
 public final class ResolveImports extends GenerationTask {
-
-    private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
-    /**
-     * The relative path from the Protobuf root directory to the sources directory.
-     *
-     * <p>The path is specific to Spine Web.
-     */
-    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(parentDirectory(), 2);
-    /** A part of the import path to the main sources directory. */
-    private static final String PROJECT_SRC_DIR = "main";
 
     private final List<ResolvableModule> modules;
 
@@ -93,73 +76,10 @@ public final class ResolveImports extends GenerationTask {
 
     /**
      * Attempts to resolve an import in the file.
-     *
-     * <p>In particular, replaces library-like imports by relative paths
-     * if the imported file {@linkplain #belongsToModuleSources(String, Directory) belongs}
-     * to the currently processed module.
      */
-    @VisibleForTesting
-    static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
-        boolean isSpine = resolvable.isSpine();
-        if (isSpine) {
-            return resolveSpineImport(resolvable, generatedRoot);
-        }
-        return resolvable;
-    }
-
-    private static ImportSnippet resolveSpineImport(ImportSnippet resolvable,
-                                                    Directory generatedRoot) {
-        String filePath = resolvable.path()
-                                    .filePath();
-        if (!belongsToModuleSources(filePath, generatedRoot)) {
-            return resolvable;
-        }
-        String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
-        ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
+    private static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
+        ImportSnippet resolved = new ResolveLibraryImport(generatedRoot).perform(resolvable);
         return resolved;
-    }
-
-    /**
-     * Tells whether a file with the specified path belongs
-     * to sources of the currently processed module.
-     *
-     * <p>The method assumes the project structure similar to Spine Web.
-     */
-    @VisibleForTesting
-    static boolean belongsToModuleSources(String filePath, Directory generatedRoot) {
-        Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
-        boolean presentInModule = absolutePath.toFile()
-                                              .exists();
-        log().debug("Checking if the file {} belongs to the module, result: {}",
-                    absolutePath, presentInModule);
-        return presentInModule;
-    }
-
-    @VisibleForTesting
-    static Path sourcesPath(Directory generatedRoot) {
-        Path modulePath = generatedRoot.getPath()
-                                       .resolve(MODULE_RELATIVE_TO_PROTO);
-        Path result = modulePath.resolve(PROJECT_SRC_DIR)
-                                .normalize();
-        return result;
-    }
-
-    /**
-     * Obtains the relative path to the sources directory from the path of the file.
-     *
-     * <p>The path should be relative and contain slashes as separators since it
-     * will be used in JS imports.
-     */
-    @VisibleForTesting
-    static String fileRelativeToSources(Directory generatedRoot, FileName fileName) {
-        Path protoRootPath = generatedRoot.getPath();
-        boolean isMainSourceSet = protoRootPath.toString()
-                                               .contains(PROJECT_SRC_DIR);
-        if (isMainSourceSet) {
-            return SRC_RELATIVE_TO_MAIN_PROTO + fileName.pathToRoot();
-        }
-        String pathToParentDir = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
-        return pathToParentDir + PROJECT_SRC_DIR + ImportPath.separator();
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {
@@ -180,9 +100,5 @@ public final class ResolveImports extends GenerationTask {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
-    }
-
-    private static Logger log() {
-        return Logging.get(ResolveImports.class);
     }
 }

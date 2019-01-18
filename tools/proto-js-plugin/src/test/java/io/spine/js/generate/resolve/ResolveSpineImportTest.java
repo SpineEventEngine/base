@@ -39,8 +39,8 @@ import static io.spine.js.generate.resolve.given.Given.testProtoRoot;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ResolveImports task should")
-class ResolveImportsTest {
+@DisplayName("ResolveSpineImport should")
+class ResolveSpineImportTest {
 
     private final SourceFile moduleMainFile = SourceFile.of(GenerationTask.class);
     private final Path importedFilePath = Paths.get("java")
@@ -53,7 +53,8 @@ class ResolveImportsTest {
     @DisplayName("resolve Spine library import if it is present in the module")
     void resolveSpineImport() {
         ImportSnippet importLine = importLine("spine/" + importedFilePath);
-        String expectedPathPrefix = ResolveImports.fileRelativeToSources(fakeProtoRoot, importInto);
+        String expectedPathPrefix = ResolveLibraryImport.fileRelativeToSources(fakeProtoRoot,
+                                                                               importInto);
         String expectedPath = expectedPathPrefix + importedFilePath;
         assertImportPath(importLine, expectedPath);
     }
@@ -69,14 +70,14 @@ class ResolveImportsTest {
     @DisplayName("check imported file belongs to the module")
     void checkBelongsToModule() {
         String path = importedFilePath.toString();
-        boolean belongs = ResolveImports.belongsToModuleSources(path, fakeProtoRoot);
+        boolean belongs = ResolveLibraryImport.belongsToModuleSources(path, fakeProtoRoot);
         assertTrue(belongs);
     }
 
     @Test
     @DisplayName("resolve the sources directory")
     void resolveSourcesDirectory() {
-        Path sourcesDirectoryPath = ResolveImports.sourcesPath(fakeProtoRoot);
+        Path sourcesDirectoryPath = ResolveLibraryImport.sourcesPath(fakeProtoRoot);
         Path expected = Paths.get("src/main")
                              .toAbsolutePath();
         assertEquals(expected, sourcesDirectoryPath);
@@ -85,14 +86,14 @@ class ResolveImportsTest {
     @Test
     @DisplayName("compose the relative path to sources for a main file")
     void mainFileRelativeToSources() {
-        String path = ResolveImports.fileRelativeToSources(mainProtoRoot(), importInto);
+        String path = ResolveLibraryImport.fileRelativeToSources(mainProtoRoot(), importInto);
         assertThat(path).isEqualTo("../../../");
     }
 
     @Test
     @DisplayName("compose the relative path to sources for a test file")
     void testFileRelativeToSources() {
-        String path = ResolveImports.fileRelativeToSources(testProtoRoot(), importInto);
+        String path = ResolveLibraryImport.fileRelativeToSources(testProtoRoot(), importInto);
         assertThat(path).isEqualTo("../../../../main/");
     }
 
@@ -103,7 +104,8 @@ class ResolveImportsTest {
     }
 
     private ImportSnippet resolveImport(ImportSnippet importLine) {
-        return ResolveImports.resolveImport(importLine, fakeProtoRoot);
+        ResolveLibraryImport action = new ResolveLibraryImport(fakeProtoRoot);
+        return action.perform(importLine);
     }
 
     private ImportSnippet importLine(String importPath) {
