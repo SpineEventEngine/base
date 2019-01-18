@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -37,7 +36,6 @@ import io.spine.type.TypeUrl;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -62,7 +60,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         super(descriptor, true);
     }
 
-    @VisibleForTesting // Otherwise package-private
+    /**
+     * Creates a new instance of {@code MessageType} from the given message descriptor.
+     *
+     * @param descriptor
+     *         message descriptor
+     * @return new instance of {@code MessageType}
+     */
     public static MessageType of(Descriptor descriptor) {
         return new MessageType(descriptor);
     }
@@ -135,11 +139,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (isGoogle()) {
             return false;
         }
-
-        FileDescriptor optionsProto =
-                IsOption.getDescriptor()
-                        .getFile();
-
+        FileDescriptor optionsProto = IsOption.getDescriptor()
+                                              .getFile();
         FileDescriptor file = descriptor().getFile();
         return !sameFiles(optionsProto, file);
     }
@@ -149,10 +150,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isTopLevel() {
         Descriptor descriptor = descriptor();
-        List<Descriptor> topLevel = descriptor.getFile()
-                                              .getMessageTypes();
-        boolean result = topLevel.contains(descriptor);
-        return result;
+        Descriptor parent = descriptor.getContainingType();
+        return parent == null;
     }
 
     /**
@@ -166,9 +165,30 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is a rejection.
      */
     public boolean isRejection() {
-        FileName file = FileName.from(descriptor().getFile());
-        boolean result = file.isRejections();
+        boolean result = isTopLevel() && declaringFileName().isRejections();
         return result;
+    }
+
+    /**
+     * Tells if this message is a command.
+     */
+    public boolean isCommand() {
+        boolean result = isTopLevel() && declaringFileName().isCommands();
+        return result;
+    }
+
+    /**
+     * Tells if this message is an event.
+     *
+     * <p>Returns {@code false} if this type is a {@linkplain #isRejection() rejection}.
+     */
+    public boolean isEvent() {
+        boolean result = isTopLevel() && declaringFileName().isEvents();
+        return result;
+    }
+
+    private FileName declaringFileName() {
+        return FileName.from(descriptor().getFile());
     }
 
     /**

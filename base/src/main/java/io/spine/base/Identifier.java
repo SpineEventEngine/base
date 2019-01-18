@@ -247,6 +247,7 @@ public final class Identifier<I> {
      *         if the message is not a UUID message
      */
     public static <I extends Message> I generate(Class<I> idClass) {
+        checkNotNull(idClass);
         UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
         return uuidFactory.newUuid();
     }

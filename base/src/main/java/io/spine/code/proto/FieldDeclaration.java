@@ -43,6 +43,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -171,6 +172,13 @@ public final class FieldDeclaration implements Logging {
      */
     public boolean isScalar() {
         return ScalarType.isScalarType(field.toProto());
+    }
+
+    /**
+     * Tells if the field is of {@code string} type.
+     */
+    public boolean isString() {
+        return field.getType() == STRING;
     }
 
     /**

@@ -20,36 +20,36 @@
 
 package io.spine.base;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.code.proto.MessageType;
 
 /**
  * Checks if the given message definition is a {@link UuidValue}.
  */
 @Immutable
-final class UuidValueClassifier extends MessageClassifier {
+final class UuidValueClassifier implements MessageClassifier {
 
-    static final String FIELD_NAME = "uuid";
+    static final FieldName FIELD_NAME = FieldName.of("uuid");
 
     @Override
-    public boolean doTest(DescriptorProto message, FileDescriptorProto declaringFile) {
-        return doTest(message);
-    }
-
-    boolean doTest(DescriptorProto message) {
-        int fieldCount = message.getFieldCount();
-        if (fieldCount != 1) {
+    public boolean test(MessageType type) {
+        ImmutableList<FieldDeclaration> fields = type.fields();
+        if (fields.size() != 1) {
             return false;
         }
-        FieldDescriptorProto theField = message.getFieldList()
-                                               .get(0);
-        boolean nameMatches = theField.getName()
+        FieldDeclaration theField = fields.get(0);
+        boolean nameMatches = theField.name()
                                       .equals(FIELD_NAME);
-        boolean typeMatches = theField.getType() == TYPE_STRING;
+        boolean typeMatches = theField.isString();
         return nameMatches && typeMatches;
+    }
+
+    boolean test(Descriptor descriptor) {
+        MessageType type = MessageType.of(descriptor);
+        return test(type);
     }
 }

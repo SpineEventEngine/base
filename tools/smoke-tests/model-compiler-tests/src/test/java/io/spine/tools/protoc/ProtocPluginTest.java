@@ -26,6 +26,12 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.test.protoc.EducationalInstitution;
+import io.spine.test.protoc.Kindergarten;
+import io.spine.test.protoc.Outer;
+import io.spine.test.protoc.School;
+import io.spine.test.protoc.University;
+import io.spine.test.protoc.Wrapped;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -33,9 +39,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -60,8 +64,10 @@ class ProtocPluginTest {
     @Test
     @DisplayName("implement marker interface in the generated messages")
     void implementMarkerInterfacesInGeneratedMessages() {
-        assertThat(PICustomerNotified.getDefaultInstance(), instanceOf(PICustomerEvent.class));
-        assertThat(PICustomerEmailReceived.getDefaultInstance(), instanceOf(PICustomerEvent.class));
+        assertThat(PICustomerNotified.getDefaultInstance())
+                .isInstanceOf(PICustomerEvent.class);
+        assertThat(PICustomerEmailReceived.getDefaultInstance())
+                .isInstanceOf(PICustomerEvent.class);
     }
 
     @Test
@@ -73,18 +79,18 @@ class ProtocPluginTest {
     @Test
     @DisplayName("implement interface in the generated messages with `IS` option")
     void implementInterfaceInGeneratedMessagesWithIsOption() {
-        assertThat(PICustomerCreated.getDefaultInstance(), instanceOf(PICustomerEvent.class));
-        assertThat(PICreateCustomer.getDefaultInstance(), instanceOf(PICustomerCommand.class));
+        assertThat(PICustomerCreated.getDefaultInstance()).isInstanceOf(PICustomerEvent.class);
+        assertThat(PICreateCustomer.getDefaultInstance()).isInstanceOf(PICustomerCommand.class);
     }
 
     @Test
     @DisplayName("use `IS` in priority to `EVERY IS`")
     void useIsInPriorityToEveryIs() {
-        assertThat(PIUserCreated.getDefaultInstance(), instanceOf(PIUserEvent.class));
-        assertThat(PIUserNameUpdated.getDefaultInstance(), instanceOf(PIUserEvent.class));
+        assertThat(PIUserCreated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
+        assertThat(PIUserNameUpdated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
 
-        assertThat(UserName.getDefaultInstance(), not(instanceOf(PIUserEvent.class)));
-        assertThat(UserName.getDefaultInstance(), instanceOf(UserInfo.class));
+        assertThat(UserName.getDefaultInstance()).isNotInstanceOf(PIUserEvent.class);
+        assertThat(UserName.getDefaultInstance()).isInstanceOf(UserInfo.class);
     }
 
     @Test
@@ -106,33 +112,33 @@ class ProtocPluginTest {
     @Test
     @DisplayName("mark as event messages")
     void markEventMessages() {
-        assertThat(UserCreated.getDefaultInstance(), instanceOf(EventMessage.class));
-        assertThat(UserCreated.getDefaultInstance(), instanceOf(FirstEvent.class));
-        assertThat(UserNotified.getDefaultInstance(), instanceOf(EventMessage.class));
+        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
+        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(FirstEvent.class);
+        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
     }
 
     @Test
     @DisplayName("mark as command messages")
     void markCommandMessages() {
-        assertThat(CreateUser.getDefaultInstance(), instanceOf(CommandMessage.class));
-        assertThat(NotifyUser.getDefaultInstance(), instanceOf(CommandMessage.class));
+        assertThat(CreateUser.getDefaultInstance()).isInstanceOf(CommandMessage.class);
+        assertThat(NotifyUser.getDefaultInstance()).isInstanceOf(CommandMessage.class);
     }
 
     @Test
     @DisplayName("mark as rejection messages")
     void markRejectionMessages() {
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(),
-                   instanceOf(RejectionMessage.class));
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(),
-                   instanceOf(UserRejection.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                   .isInstanceOf(RejectionMessage.class);
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                   .isInstanceOf(UserRejection.class);
     }
 
     @Test
     @DisplayName("mark messages with already existing interface types")
     @SuppressWarnings("UnnecessaryLocalVariable") // Compile-time verification.
     void implementHandcraftedInterfaces() {
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(),
-                   instanceOf(UserRejection.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                   .isInstanceOf(UserRejection.class);
         assertFalse(Message.class.isAssignableFrom(UserRejection.class));
         String id = Identifier.newUuid();
         Rejections.UserAlreadyExists message = Rejections.UserAlreadyExists
@@ -141,6 +147,23 @@ class ProtocPluginTest {
                 .build();
         UserRejection rejection = message;
         assertEquals(id, rejection.getId());
+    }
+
+    @Test
+    @DisplayName("mark nested message declarations by (is) option")
+    void markNestedTypes() {
+        assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
+    }
+
+    @Test
+    @DisplayName("mark nested message declarations by (every_is) option")
+    void markEveryNested() {
+        assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.Elementary.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(University.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
     }
 
     @CanIgnoreReturnValue

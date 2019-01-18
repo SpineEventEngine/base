@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractSourceFile;
+import io.spine.code.proto.Type;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -45,6 +46,19 @@ public final class SourceFile extends AbstractSourceFile {
         checkNotNull(path);
         SourceFile result = new SourceFile(path);
         return result;
+    }
+
+    /**
+     * Obtains the generated file {@link Path} for the specified type.
+     *
+     * @param type
+     *         the type from which the file is generated
+     * @return a relative file path
+     */
+    public static SourceFile forType(Type<?, ?> type) {
+        SourceFile classFile = type.javaClassName()
+                                   .resolveFile();
+        return classFile;
     }
 
     /**
