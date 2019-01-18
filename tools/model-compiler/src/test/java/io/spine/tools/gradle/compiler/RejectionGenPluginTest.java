@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.GradleProject;
@@ -38,10 +39,10 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
@@ -64,15 +65,16 @@ class RejectionGenPluginTest {
     @Test
     @DisplayName("compile generated rejections")
     void compileGeneratedRejections() {
-        Collection<String> files = Arrays.asList("test_rejections.proto",
-                                                 "outer_class_by_file_name_rejections.proto",
-                                                 "outer_class_set_rejections.proto",
-                                                 "deps/deps.proto");
+        Collection<String> files = ImmutableList.of("test_rejections.proto",
+                                                    "outer_class_by_file_name_rejections.proto",
+                                                    "outer_class_set_rejections.proto",
+                                                    "deps/deps.proto");
         GradleProject project = GradleProject.newBuilder()
                                              .setProjectName("rejections-gen-plugin-test")
                                              .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
                                              .build();
+        project.executeTask(GENERATE_PROTO);
         project.executeTask(COMPILE_JAVA);
     }
 

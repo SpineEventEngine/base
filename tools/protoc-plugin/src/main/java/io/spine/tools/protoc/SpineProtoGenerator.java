@@ -27,6 +27,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
+import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
@@ -39,7 +40,6 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
@@ -105,8 +105,7 @@ public abstract class SpineProtoGenerator {
      *         non-equal instances with the same value of {@code CodeGeneratorResponse.File.name}.
      *         Such entries cause {@code protoc} to fail and should be filtered on an early stage.
      */
-    protected abstract Collection<CompilerOutput>
-    processType(Type<?, ?> type);
+    protected abstract Collection<CompilerOutput> processType(Type<?, ?> type);
 
     /**
      * Processes the given compiler request and generates the response to the compiler.
@@ -128,27 +127,37 @@ public abstract class SpineProtoGenerator {
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
         checkCompilerVersion(request);
-        ImmutableSet<FileDescriptorProto> filesToGenerate = filesToGenerate(request);
-        CodeGeneratorResponse response = process(filesToGenerate);
+        checkNotEmpty(request);
+        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
+        Set<FileName> requestedFileNames = request.getFileToGenerateList()
+                                                  .stream()
+                                                  .map(FileName::of)
+                                                  .collect(toSet());
+        FileSet requestedFiles = fileSet.find(requestedFileNames);
+        TypeSet typeSet = TypeSet.messagesAndEnums(requestedFiles);
+        CodeGeneratorResponse response = process(typeSet);
         return response;
     }
 
-    private static ImmutableSet<FileDescriptorProto> filesToGenerate(CodeGeneratorRequest request) {
-        List<String> fileNames = request.getFileToGenerateList();
-        checkArgument(!fileNames.isEmpty(), "No files to generate provided.");
-        ImmutableSet.Builder<FileDescriptorProto> filesToGenerate = ImmutableSet.builder();
-        for (String name : fileNames) {
-            FileDescriptorProto foundFile =
-                    request.getProtoFileList()
-                           .stream()
-                           .filter(file -> file.getName().equals(name))
-                           .findAny()
-                           .orElseThrow(() -> newIllegalStateException(
-                                   "Unable to find descriptor for file `%s`.", name
-                           ));
-            filesToGenerate.add(foundFile);
-        }
-        return filesToGenerate.build();
+    private static void checkNotEmpty(CodeGeneratorRequest request)
+            throws IllegalArgumentException {
+        checkArgument(request.getFileToGenerateCount() > 0, "No files to generate provided.");
+    }
+
+    /**
+     * Processes all passed proto files.
+     */
+    private CodeGeneratorResponse process(TypeSet types) {
+        Set<CompilerOutput> rawOutput = types.types()
+                                             .stream()
+                                             .flatMap(type -> processType(type).stream())
+                                             .collect(toSet());
+        Collection<File> mergedFiles = mergeFiles(rawOutput);
+        CodeGeneratorResponse response = CodeGeneratorResponse
+                .newBuilder()
+                .addAllFile(mergedFiles)
+                .build();
+        return response;
     }
 
     /**
@@ -159,24 +168,6 @@ public abstract class SpineProtoGenerator {
         checkArgument(version.getMajor() >= 3,
                       "Use protoc of version 3.* or higher to run %s",
                       getClass().getName());
-    }
-
-    /**
-     * Processes all passed proto files.
-     */
-    private CodeGeneratorResponse process(ImmutableSet<FileDescriptorProto> files) {
-        FileSet fileSet = FileSet.ofFiles(files);
-        TypeSet typeSet = TypeSet.messagesAndEnums(fileSet);
-        Set<CompilerOutput> rawOutput = typeSet.types()
-                                               .stream()
-                                               .flatMap(type -> processType(type).stream())
-                                               .collect(toSet());
-        Collection<File> mergedFiles = mergeFiles(rawOutput);
-        CodeGeneratorResponse response = CodeGeneratorResponse
-                .newBuilder()
-                .addAllFile(mergedFiles)
-                .build();
-        return response;
     }
 
     private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
