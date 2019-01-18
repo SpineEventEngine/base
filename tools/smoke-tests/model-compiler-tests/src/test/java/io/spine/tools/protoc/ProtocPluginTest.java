@@ -26,6 +26,12 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.test.protoc.EducationalInstitution;
+import io.spine.test.protoc.Kindergarten;
+import io.spine.test.protoc.Outer;
+import io.spine.test.protoc.School;
+import io.spine.test.protoc.University;
+import io.spine.test.protoc.Wrapped;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -144,9 +150,20 @@ class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark nested message declarations")
+    @DisplayName("mark nested message declarations by (is) option")
     void markNestedTypes() {
+        assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
+    }
 
+    @Test
+    @DisplayName("mark nested message declarations by (every_is) option")
+    void markEveryNested() {
+        assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.Elementary.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(University.class).isAssignableTo(EducationalInstitution.class);
+        assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
     }
 
     @CanIgnoreReturnValue
