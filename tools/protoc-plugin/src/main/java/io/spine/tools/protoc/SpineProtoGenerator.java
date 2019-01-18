@@ -34,6 +34,7 @@ import io.spine.code.proto.TypeSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,6 +44,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -165,10 +167,10 @@ public abstract class SpineProtoGenerator {
     private CodeGeneratorResponse process(ImmutableSet<FileDescriptorProto> files) {
         FileSet fileSet = FileSet.ofFiles(files);
         TypeSet typeSet = TypeSet.messagesAndEnums(fileSet);
-        List<CompilerOutput> rawOutput = typeSet.types()
-                                                .stream()
-                                                .flatMap(type -> processType(type).stream())
-                                                .collect(toList());
+        Set<CompilerOutput> rawOutput = typeSet.types()
+                                               .stream()
+                                               .flatMap(type -> processType(type).stream())
+                                               .collect(toSet());
         Collection<File> mergedFiles = mergeFiles(rawOutput);
         CodeGeneratorResponse response = CodeGeneratorResponse
                 .newBuilder()

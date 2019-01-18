@@ -22,9 +22,9 @@ package io.spine.base;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Internal;
 import com.google.protobuf.Message;
 import io.spine.protobuf.Messages;
-import io.spine.type.TypeName;
 
 import java.util.List;
 import java.util.UUID;
@@ -68,8 +68,8 @@ final class UuidFactory<I extends Message> {
      *         if the passed ID class does not obey {@link UuidValue} contract
      */
     static <I extends Message> UuidFactory<I> forClass(Class<I> idClass) {
-        Descriptor message = TypeName.of(idClass)
-                                     .getMessageDescriptor();
+        Descriptor message = Internal.getDefaultInstance(idClass)
+                                     .getDescriptorForType();
         checkState(isUuidMessage(message), ERROR_MESSAGE, FIELD_NAME);
         List<FieldDescriptor> fields = message.getFields();
         FieldDescriptor uuidField = fields.get(0);
@@ -95,9 +95,10 @@ final class UuidFactory<I extends Message> {
     @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
     I newUuidOf(String value) {
         checkIsUuid(value);
-        Message initializedId = Messages.builderFor(idClass)
-                                        .setField(uuidField, value)
-                                        .build();
+        Message initializedId = Messages
+                .builderFor(idClass)
+                .setField(uuidField, value)
+                .build();
         return (I) initializedId;
     }
 
