@@ -67,7 +67,7 @@ public final class ResolveImports extends GenerationTask {
             boolean isImport = ImportSnippet.hasImport(line);
             if (isImport) {
                 ImportSnippet sourceImport = new ImportSnippet(line, fileName);
-                ImportSnippet updatedImport = resolveImport(sourceImport, generatedRoot());
+                ImportSnippet updatedImport = resolveImport(sourceImport);
                 lines.set(i, updatedImport.text());
             }
         }
@@ -77,9 +77,13 @@ public final class ResolveImports extends GenerationTask {
     /**
      * Attempts to resolve an import in the file.
      */
-    private static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
-        ImportSnippet resolved = new ResolveLibraryImport(generatedRoot).perform(resolvable);
-        return resolved;
+    private ImportSnippet resolveImport(ImportSnippet resolvable) {
+        ResolveSpineImport resolveSpine = new ResolveSpineImport(generatedRoot());
+        if (resolveSpine.isApplicableTo(resolvable)) {
+            return resolveSpine.performFor(resolvable);
+        }
+        ResolveRelativeImport resolveRelative = new ResolveRelativeImport(generatedRoot(), modules);
+        return resolveRelative.performFor(resolvable);
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {

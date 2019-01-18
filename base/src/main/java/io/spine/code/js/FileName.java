@@ -72,7 +72,7 @@ public final class FileName extends AbstractFileName<FileName> {
     public static FileName from(FileDescriptorProto descriptor) {
         checkNotNull(descriptor);
         io.spine.code.proto.FileName protoFileName = io.spine.code.proto.FileName.from(descriptor);
-        String fileName = protoFileName.nameWithoutExtension() + SUFFIX + EXTENSION;
+        String fileName = protoFileName.nameWithoutExtension() + protoEnding();
         return of(fileName);
     }
 
@@ -114,5 +114,12 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     public String pathFromRoot() {
         return ImportPath.currentDirectory() + value();
+    }
+
+    /**
+     * Obtains the ending of a {@code .proto} file compiled into JavaScript.
+     */
+    public static String protoEnding() {
+        return SUFFIX + EXTENSION;
     }
 }

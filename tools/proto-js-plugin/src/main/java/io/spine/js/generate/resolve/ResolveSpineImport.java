@@ -35,10 +35,10 @@ import static io.spine.code.js.ImportPath.parentDirectory;
 
 /**
  * Replaces library-like imports by relative paths if the imported file
- * {@linkplain ResolveLibraryImport#belongsToModuleSources(String, Directory) belongs}
+ * {@linkplain #belongsToModuleSources(String, Directory) belongs}
  * to the currently processed module.
  */
-final class ResolveLibraryImport {
+final class ResolveSpineImport {
 
     private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
     /**
@@ -52,16 +52,20 @@ final class ResolveLibraryImport {
 
     private final Directory generatedRoot;
 
-    ResolveLibraryImport(Directory generatedRoot) {
+    ResolveSpineImport(Directory generatedRoot) {
         checkNotNull(generatedRoot);
         this.generatedRoot = generatedRoot;
     }
 
-    ImportSnippet perform(ImportSnippet resolvable) {
-        if (!resolvable.isSpine()) {
+    ImportSnippet performFor(ImportSnippet resolvable) {
+        if (isApplicableTo(resolvable)) {
             return attemptResolve(resolvable);
         }
         return resolvable;
+    }
+
+    boolean isApplicableTo(ImportSnippet resolvable) {
+        return !resolvable.isSpine();
     }
 
     private ImportSnippet attemptResolve(ImportSnippet resolvable) {
@@ -86,7 +90,7 @@ final class ResolveLibraryImport {
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
-        log().debug("Checking if the file {} belongs to the module, result: {}",
+        log().debug("Checking if the file {} belongs to the module sources, result: {}",
                     absolutePath, presentInModule);
         return presentInModule;
     }

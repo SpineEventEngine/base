@@ -82,8 +82,27 @@ public final class ImportPath extends StringTypeValue {
         return path;
     }
 
+    /**
+     * Tells if the path is relative.
+     *
+     * @return {@code true} if the path starts with the current or parent directory reference
+     */
+    public boolean isRelative() {
+        boolean result = isRelativeToParent() || isRelativeToCurrent();
+        return result;
+    }
+
+    public boolean isGeneratedProto() {
+        boolean result = value().endsWith(FileName.protoEnding());
+        return result;
+    }
+
     private boolean isRelativeToParent() {
         return value().startsWith(parentDirectory());
+    }
+
+    private boolean isRelativeToCurrent() {
+        return value().startsWith(currentDirectory());
     }
 
     /**
