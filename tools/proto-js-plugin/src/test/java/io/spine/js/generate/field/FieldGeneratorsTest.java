@@ -44,7 +44,7 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
     @Override
     protected void configure(NullPointerTester tester) {
-        tester.setDefault(FieldDescriptor.class, messageField());
+        tester.setDefault(FieldToParse.class, fieldToParse(messageField()));
     }
 
     @BeforeEach
@@ -74,6 +74,11 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     }
 
     private FieldGenerator generatorFor(FieldDescriptor field) {
-        return FieldGenerators.createFor(field, jsOutput);
+        FieldToParse fieldToParse = fieldToParse(field);
+        return FieldGenerators.createFor(fieldToParse, jsOutput);
+    }
+
+    private static FieldToParse fieldToParse(FieldDescriptor field) {
+        return new FieldToParse(field, "inputVar", "outputVar");
     }
 }

@@ -18,47 +18,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.index;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Timestamp;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
+import io.spine.code.proto.FileSet;
+import io.spine.js.generate.given.GivenProject;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.type.TypeUrl;
-import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+
+import static io.spine.code.js.LibraryFile.INDEX;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ExportStandardParsers should")
-class ExportStandardParsersTest {
+@DisplayName("GenerateIndexFile should")
+class GenerateIndexFileTest {
 
-    private final ExportStandardParsers generator = new ExportStandardParsers();
+    private final FileSet fileSet = GivenProject.mainFileSet();
+    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
+    private final GenerateIndexFile task = new GenerateIndexFile(generatedProtoDir);
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ExportStandardParsers.class);
+    @DisplayName("write known types map to JS file")
+    void writeKnownTypes() {
+        task.performFor(fileSet);
+        Path knownTypes = generatedProtoDir.resolve(INDEX);
+        assertTrue(exists(knownTypes));
     }
 
     @Test
-    @DisplayName("tell if parser for type URL is present")
-    void tellIfHasParser() {
-        TypeUrl timestamp = TypeUrl.of(Timestamp.class);
-        assertTrue(ExportStandardParsers.hasParser(timestamp));
-
-        TypeUrl validationError = TypeUrl.of(ValidationError.class);
-        assertFalse(ExportStandardParsers.hasParser(validationError));
-    }
-
-    @Test
-    @DisplayName("generate known type parsers map")
-    void generateParsersMap() {
-        CodeLines snippet = generator.value();
-        String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
-        assertContains(snippet, mapEntry);
+    @DisplayName("generate imports for known types")
+    void generateImports() {
+        CodeLines generatedCode = GenerateIndexFile.codeFor(fileSet);
+        for (FileDescriptor file : fileSet.files()) {
+            FileName fileName = FileName.from(file);
+            String fileImport = "require('./" + fileName + "');";
+            assertContains(generatedCode, fileImport);
+        }
     }
 }

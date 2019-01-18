@@ -125,7 +125,8 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
         }
-        if (file.getOptions().getJavaMultipleFiles()) {
+        if (file.getOptions()
+                .getJavaMultipleFiles()) {
             FileName filename = fileName.apply(message);
             SourceFile result = getGeneratedFolder(file).resolve(filename);
             return result;
@@ -158,7 +159,8 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(enumType)) {
             throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
-        if (file.getOptions().getJavaMultipleFiles()) {
+        if (file.getOptions()
+                .getJavaMultipleFiles()) {
             FileName filename = FileName.forEnum(enumType);
             SourceFile result = getGeneratedFolder(file).resolve(filename);
             return result;
@@ -199,5 +201,14 @@ public final class SourceFile extends AbstractSourceFile {
                                        .toDirectory()
                                        .resolve(FileName.forType(typename));
         return result;
+    }
+
+    /**
+     * Obtains a source file of the specified class.
+     */
+    public static SourceFile of(Class cls) {
+        Directory packageDirectory = PackageName.of(cls)
+                                                .toDirectory();
+        return forType(packageDirectory.toString(), cls.getSimpleName());
     }
 }

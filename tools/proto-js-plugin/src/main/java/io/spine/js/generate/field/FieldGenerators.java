@@ -47,18 +47,19 @@ public final class FieldGenerators {
      * Creates a {@code FieldGenerator} for the given field.
      *
      * @param field
-     *         the descriptor of the field to be handled by the generator
+     *         the field to parse and set for a message
      * @param jsOutput
      *         the {@code JsOutput} to accumulate all the generated code
      * @return the new {@code FieldGenerator} of the appropriate type
      */
-    public static FieldGenerator createFor(FieldDescriptor field, CodeLines jsOutput) {
+    public static FieldGenerator createFor(FieldToParse field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
-        if (isMap(field)) {
+        FieldDescriptor descriptor = field.descriptor();
+        if (isMap(descriptor)) {
             return mapGenerator(field, jsOutput);
         }
-        if (isRepeated(field)) {
+        if (isRepeated(descriptor)) {
             return repeatedGenerator(field, jsOutput);
         }
         return singularGenerator(field, jsOutput);
@@ -78,10 +79,11 @@ public final class FieldGenerators {
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
-    private static FieldGenerator mapGenerator(FieldDescriptor field, CodeLines jsOutput) {
-        FieldParser keyParser = mapKeyParser(field, jsOutput);
-        FieldParser valueParser = mapValueParser(field, jsOutput);
-        FieldPrecondition valuePrecondition = mapValuePrecondition(field, jsOutput);
+    private static FieldGenerator mapGenerator(FieldToParse field, CodeLines jsOutput) {
+        FieldDescriptor descriptor = field.descriptor();
+        FieldParser keyParser = mapKeyParser(descriptor, jsOutput);
+        FieldParser valueParser = mapValueParser(descriptor, jsOutput);
+        FieldPrecondition valuePrecondition = mapValuePrecondition(descriptor, jsOutput);
 
         FieldGenerator generator = MapFieldGenerator
                 .newBuilder()
@@ -97,9 +99,10 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain RepeatedFieldGenerator generator} for the {@code repeated} proto field.
      */
-    private static FieldGenerator repeatedGenerator(FieldDescriptor field, CodeLines jsOutput) {
-        FieldPrecondition precondition = preconditionFor(field, jsOutput);
-        FieldParser parser = parserFor(field, jsOutput);
+    private static FieldGenerator repeatedGenerator(FieldToParse field, CodeLines jsOutput) {
+        FieldDescriptor descriptor = field.descriptor();
+        FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
+        FieldParser parser = parserFor(descriptor, jsOutput);
 
         FieldGenerator generator = RepeatedFieldGenerator
                 .newBuilder()
@@ -114,9 +117,10 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain SingularFieldGenerator generator} for the ordinary proto field.
      */
-    private static FieldGenerator singularGenerator(FieldDescriptor field, CodeLines jsOutput) {
-        FieldPrecondition precondition = preconditionFor(field, jsOutput);
-        FieldParser parser = parserFor(field, jsOutput);
+    private static FieldGenerator singularGenerator(FieldToParse field, CodeLines jsOutput) {
+        FieldDescriptor descriptor = field.descriptor();
+        FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
+        FieldParser parser = parserFor(descriptor, jsOutput);
 
         FieldGenerator generator = SingularFieldGenerator
                 .newBuilder()

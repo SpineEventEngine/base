@@ -23,8 +23,6 @@ package io.spine.js.generate.field;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.FieldName;
 
-import static io.spine.js.generate.parse.FromJsonMethod.MESSAGE;
-
 /**
  * The generator for the {@code repeated} Protobuf fields.
  *
@@ -64,7 +62,7 @@ final class RepeatedFieldGenerator extends FieldGenerator {
     String mergeFormat() {
         FieldName fieldName = FieldName.from(field());
         String addFunctionName = "add" + fieldName;
-        String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
+        String addToListFormat = targetVariable() + '.' + addFunctionName + "(%s);";
         return addToListFormat;
     }
 

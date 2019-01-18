@@ -1,0 +1,61 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.js.generate.resolve.given;
+
+import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
+import io.spine.js.generate.resolve.ImportSnippet;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static java.lang.String.format;
+
+public class Given {
+
+    /** Prevents instantiation of this utility class. */
+    private Given() {
+    }
+
+    public static ImportSnippet googleProtobufImport(FileName file, FileName importSource) {
+        return importWithPath("google-protobuf/" + file, importSource);
+    }
+
+    public static ImportSnippet importWithPath(String path, FileName importSource) {
+        String importText = format("let foo = require('%s');", path);
+        return new ImportSnippet(importText, importSource);
+    }
+
+    public static Directory mainProtoRoot() {
+        return protoRoot("main");
+    }
+
+    public static Directory testProtoRoot() {
+        return protoRoot("test");
+    }
+
+    private static Directory protoRoot(String sourceSetName) {
+        Path path = Paths.get("src")
+                         .resolve(sourceSetName)
+                         .resolve("proto");
+        return Directory.at(path.toAbsolutePath());
+    }
+}
