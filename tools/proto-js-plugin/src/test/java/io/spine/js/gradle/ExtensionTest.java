@@ -23,7 +23,7 @@ package io.spine.js.gradle;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.code.js.Module;
+import io.spine.js.generate.resolve.ResolvableModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -141,11 +141,9 @@ class ExtensionTest {
     void modulesToResolve() {
         String moduleName = "foo-bar";
         Map<String, List<String>> modulesExt = pluginExtension().modules;
-        modulesExt.put(moduleName, ImmutableList.of("org.nested"));
-        List<Module> modules = Extension.modules(project);
+        modulesExt.put(moduleName, ImmutableList.of());
+        List<ResolvableModule> modules = Extension.modules(project);
         assertThat(modules).hasSize(1);
-        assertThat(modules.get(0)
-                          .artifactName()).isEqualTo(moduleName);
     }
 
     private Extension pluginExtension() {

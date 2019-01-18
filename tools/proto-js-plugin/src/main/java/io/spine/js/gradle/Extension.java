@@ -23,13 +23,15 @@ package io.spine.js.gradle;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.code.js.Module;
+import io.spine.js.generate.resolve.PackagePattern;
+import io.spine.js.generate.resolve.ResolvableModule;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
@@ -108,11 +111,12 @@ public class Extension {
         return path.toFile();
     }
 
-    public static List<Module> modules(Project project) {
+    public static List<ResolvableModule> modules(Project project) {
         Map<String, List<String>> rawModules = extension(project).modules;
-        List<Module> modules = newArrayList();
+        List<ResolvableModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
-            Module module = new Module(moduleName);
+            List<PackagePattern> patterns = patterns(rawModules.get(moduleName));
+            ResolvableModule module = new ResolvableModule(moduleName, patterns);
             modules.add(module);
         }
         return modules;
@@ -140,6 +144,12 @@ public class Extension {
         return (Extension)
                 project.getExtensions()
                        .getByName(ProtoJsPlugin.extensionName());
+    }
+
+    private static List<PackagePattern> patterns(Collection<String> rawPatterns) {
+        return rawPatterns.stream()
+                          .map(PackagePattern::of)
+                          .collect(toList());
     }
 
     private static Path pathOrDefault(String path, Object defaultValue) {

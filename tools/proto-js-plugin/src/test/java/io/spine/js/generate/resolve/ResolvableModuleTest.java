@@ -31,11 +31,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("ProtoModule should")
-class ProtoModuleTest {
+@DisplayName("ResolvableModule should")
+class ResolvableModuleTest {
 
     private static final String moduleName = "spine-js";
-    private final ProtoModule module = new ProtoModule(moduleName, ImmutableList.of(
+    private final ResolvableModule module = new ResolvableModule(moduleName, ImmutableList.of(
             PackagePattern.of("spine")
     ));
 
@@ -62,13 +62,13 @@ class ProtoModuleTest {
         assertEquals(resolved.path(), ImportPath.of(moduleName + "/spine/js_pb.js"));
     }
 
-    private static void assertMatches(ProtoModule module, String importPath) {
+    private static void assertMatches(ResolvableModule module, String importPath) {
         ImportPath wrappedPath = ImportPath.of(importPath);
         boolean result = module.matches(wrappedPath);
         assertThat(result).isTrue();
     }
 
-    private static void assertNotMatches(ProtoModule module, String importPath) {
+    private static void assertNotMatches(ResolvableModule module, String importPath) {
         ImportPath wrappedPath = ImportPath.of(importPath);
         boolean result = module.matches(wrappedPath);
         assertThat(result).isFalse();

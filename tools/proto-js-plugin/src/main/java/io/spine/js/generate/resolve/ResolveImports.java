@@ -23,6 +23,7 @@ package io.spine.js.generate.resolve;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
@@ -61,8 +62,11 @@ public final class ResolveImports extends GenerationTask {
     /** A part of the import path to the main sources directory. */
     private static final String PROJECT_SRC_DIR = "main";
 
-    public ResolveImports(Directory generatedRoot) {
+    private final List<ResolvableModule> modules;
+
+    public ResolveImports(Directory generatedRoot, List<ResolvableModule> modules) {
         super(generatedRoot);
+        this.modules = ImmutableList.copyOf(modules);
     }
 
     @Override
@@ -91,7 +95,7 @@ public final class ResolveImports extends GenerationTask {
      * Attempts to resolve an import in the file.
      *
      * <p>In particular, replaces library-like imports by relative paths
-     * if the imported file {@linkplain #belongsToModule(String, Directory) belongs}
+     * if the imported file {@linkplain #belongsToModuleSources(String, Directory) belongs}
      * to the currently processed module.
      */
     @VisibleForTesting
@@ -107,7 +111,7 @@ public final class ResolveImports extends GenerationTask {
                                                     Directory generatedRoot) {
         String filePath = resolvable.path()
                                     .filePath();
-        if (!belongsToModule(filePath, generatedRoot)) {
+        if (!belongsToModuleSources(filePath, generatedRoot)) {
             return resolvable;
         }
         String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
@@ -116,12 +120,13 @@ public final class ResolveImports extends GenerationTask {
     }
 
     /**
-     * Tells whether a file with the specified path belongs to the currently processed module.
+     * Tells whether a file with the specified path belongs
+     * to sources of the currently processed module.
      *
      * <p>The method assumes the project structure similar to Spine Web.
      */
     @VisibleForTesting
-    static boolean belongsToModule(String filePath, Directory generatedRoot) {
+    static boolean belongsToModuleSources(String filePath, Directory generatedRoot) {
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();

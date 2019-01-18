@@ -69,7 +69,7 @@ class ResolveImportsTest {
     @DisplayName("check imported file belongs to the module")
     void checkBelongsToModule() {
         String path = importedFilePath.toString();
-        boolean belongs = ResolveImports.belongsToModule(path, fakeProtoRoot);
+        boolean belongs = ResolveImports.belongsToModuleSources(path, fakeProtoRoot);
         assertTrue(belongs);
     }
 

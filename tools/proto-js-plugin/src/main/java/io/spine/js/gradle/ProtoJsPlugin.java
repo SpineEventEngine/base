@@ -28,6 +28,7 @@ import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;
 import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
+import io.spine.js.generate.resolve.ResolvableModule;
 import io.spine.js.generate.resolve.ResolveImports;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -114,21 +115,25 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateForMain(Project project) {
         Directory generatedRoot = Extension.getMainGenProto(project);
         File descriptors = Extension.getMainDescriptorSet(project);
-        generateCode(generatedRoot, descriptors);
+        List<ResolvableModule> modules = Extension.modules(project);
+        generateCode(generatedRoot, descriptors, modules);
     }
 
     private static void generateForTest(Project project) {
         Directory generatedRoot = Extension.getTestGenProtoDir(project);
         File descriptors = Extension.getTestDescriptorSet(project);
-        generateCode(generatedRoot, descriptors);
+        List<ResolvableModule> modules = Extension.modules(project);
+        generateCode(generatedRoot, descriptors, modules);
     }
 
-    private static void generateCode(Directory generatedRoot, File descriptors) {
+    private static void generateCode(Directory generatedRoot,
+                                     File descriptors,
+                                     List<ResolvableModule> modules) {
         List<GenerationTask> tasks = ImmutableList.of(
                 GenerateKnownTypeParsers.createFor(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
-                new ResolveImports(generatedRoot)
+                new ResolveImports(generatedRoot, modules)
         );
         FileSet fileSet = parseOrEmpty(descriptors);
         for (GenerationTask task : tasks) {

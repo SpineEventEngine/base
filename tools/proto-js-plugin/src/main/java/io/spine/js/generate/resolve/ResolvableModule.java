@@ -26,14 +26,14 @@ import io.spine.code.js.ImportPath;
 import java.util.List;
 
 /**
- * A JavaScript module providing compiled Protobuf files.
+ * A JavaScript module to resolve in compiled Protobuf files.
  */
-public class ProtoModule {
+public final class ResolvableModule {
 
     private final String name;
     private final List<PackagePattern> packages;
 
-    public ProtoModule(String name, List<PackagePattern> packages) {
+    public ResolvableModule(String name, List<PackagePattern> packages) {
         this.name = name;
         this.packages = ImmutableList.copyOf(packages);
     }

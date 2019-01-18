@@ -31,7 +31,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  *
  * <p>Used to resolve relative imports of Protobuf files.
  */
-class PackagePattern {
+public final class PackagePattern {
 
     private static final String PACKAGE_SEPARATOR = "\\.";
     private static final Pattern PACKAGE_SEPARATOR_PATTERN = Pattern.compile(PACKAGE_SEPARATOR);
@@ -49,7 +49,7 @@ class PackagePattern {
      *         the name of a Protobuf package
      * @return a new instance
      */
-    static PackagePattern of(String packageName) {
+    public static PackagePattern of(String packageName) {
         return new PackagePattern(packageName);
     }
 
