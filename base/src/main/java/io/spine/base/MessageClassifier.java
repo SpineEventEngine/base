@@ -35,8 +35,6 @@ public interface MessageClassifier extends Predicate<MessageType> {
     /**
      * Checks if the given type definition matches this classifier's contract.
      *
-     * <p>Type's declaring file is also taken into account.
-     *
      * @param type
      *         the type to check
      * @return {@code true} if the type matches the contract, {@code false} otherwise

@@ -121,6 +121,16 @@ public final class FileSet {
         return link(files);
     }
 
+    /**
+     * Constructs a new {@code FileSet} out of the given file descriptors.
+     *
+     * <p>The file descriptors are {@linkplain Linker#link linked} in order to obtain normal
+     * {@code FileDescriptor}s out of {@code FileDescriptorProto}s.
+     *
+     * @param protoDescriptors
+     *         file descriptors to include in the set
+     * @return new file set
+     */
     public static FileSet ofFiles(ImmutableSet<FileDescriptorProto> protoDescriptors) {
         checkNotNull(protoDescriptors);
         return link(protoDescriptors);

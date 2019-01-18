@@ -48,6 +48,13 @@ public final class SourceFile extends AbstractSourceFile {
         return result;
     }
 
+    /**
+     * Obtains the generated file {@link Path} for the specified type.
+     *
+     * @param type
+     *         the type from which the file is generated
+     * @return a relative file path
+     */
     public static SourceFile forType(Type<?, ?> type) {
         SourceFile classFile = type.javaClassName()
                                    .resolveFile();
