@@ -25,12 +25,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.option.IsOption;
-import io.spine.option.Options;
 import io.spine.tools.protoc.CompilerOutput;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.option.Options.option;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
@@ -72,7 +70,7 @@ final class MessageAndInterface {
     private static Optional<IsOption> getEveryIs(MessageType type) {
         Descriptors.FileDescriptor descriptor = type.descriptor()
                                                     .getFile();
-        Optional<IsOption> value = Options.option(descriptor, everyIs);
+        Optional<IsOption> value = option(descriptor, everyIs);
         return value;
     }
 
@@ -87,10 +85,8 @@ final class MessageAndInterface {
         return files;
     }
 
-    private static Optional<IsOption> getIs(Type<?, ?> type) {
-        return type instanceof MessageType
-               ? Options.option((Descriptor) type.descriptor(), is)
-               : Optional.empty();
+    private static Optional<IsOption> getIs(MessageType type) {
+        return option(type.descriptor(), is);
     }
 
     private static MessageAndInterface generateFile(MessageType type,
