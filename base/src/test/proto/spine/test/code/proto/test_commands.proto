@@ -29,9 +29,9 @@ option java_package = "io.spine.test.code.proto.command";
 option java_multiple_files = true;
 option java_outer_classname = "MttCommandsProto";
 
-// This file define test environment for `MessageTypeTest.java`.
+// This file defines test environment for `MessageTypeTest.java`.
 
-// A sample command to verify telling that a message is a command from `MessageType`.
+// A sample command to verify detecting that a message is a command from `MessageType`.
 message MttStartProject {
 
     Details details = 1;
