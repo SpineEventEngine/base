@@ -68,6 +68,20 @@ public final class ImportPath extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Strings the current directory symbol as well as parent directory symbols in the path.
+     */
+    public String stripRelativePath() {
+        String path = value();
+        if (path.startsWith(CURRENT_DIR)) {
+            path = path.substring(CURRENT_DIR.length());
+        }
+        while (path.startsWith(PARENT_DIR)) {
+            path = path.substring(PARENT_DIR.length());
+        }
+        return path;
+    }
+
     private boolean isRelativeToParent() {
         return value().startsWith(parentDirectory());
     }

@@ -52,4 +52,20 @@ class ImportPathTest {
         String parsedFilePath = fileImport.filePath();
         assertThat(parsedFilePath).isEqualTo(filePath);
     }
+
+    @Test
+    @DisplayName("strip path relative to parent directory")
+    void stripRelativeToParent() {
+        ImportPath importPath = ImportPath.of("../../foo/nested.js");
+        String stripped = importPath.stripRelativePath();
+        assertThat(stripped).isEqualTo("foo/nested.js");
+    }
+
+    @Test
+    @DisplayName("strip path relative to current directory")
+    void stripRelativeToCurrent() {
+        ImportPath importPath = ImportPath.of("./../foo/deep.js");
+        String stripped = importPath.stripRelativePath();
+        assertThat(stripped).isEqualTo("foo/deep.js");
+    }
 }

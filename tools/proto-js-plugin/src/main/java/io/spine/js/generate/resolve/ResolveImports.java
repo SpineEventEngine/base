@@ -37,6 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static io.spine.code.js.ImportPath.parentDirectory;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
@@ -50,15 +51,13 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
 public final class ResolveImports extends GenerationTask {
 
-    /** The path to parent directory. */
-    private static final String PARENT_DIR = "../";
-    private static final String SRC_RELATIVE_TO_MAIN_PROTO = PARENT_DIR;
+    private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
     /**
      * The relative path from the Protobuf root directory to the sources directory.
      *
      * <p>The path is specific to Spine Web.
      */
-    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
+    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(parentDirectory(), 2);
     /** A part of the import path to the main sources directory. */
     private static final String PROJECT_SRC_DIR = "main";
 
