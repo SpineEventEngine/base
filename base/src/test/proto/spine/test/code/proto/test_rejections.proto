@@ -33,6 +33,10 @@ option java_package = "io.spine.test.code.proto.rejections";
 // A sample rejection to verify telling that a message is a rejection from `MessageType`.
 message MttSampleRejection {
 
-    // A mock property.
-    string value = 1;
+    Details details = 1;
+
+    message Details {
+
+        string description = 1;
+    }
 }

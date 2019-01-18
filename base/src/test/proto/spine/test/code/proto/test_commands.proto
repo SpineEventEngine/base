@@ -34,6 +34,10 @@ option java_outer_classname = "MttCommandsProto";
 // A sample command to verify telling that a message is a command from `MessageType`.
 message MttStartProject {
 
-    // A mock property.
-    string value = 1;
+    Details details = 1;
+
+    message Details {
+
+        string description = 1;
+    }
 }

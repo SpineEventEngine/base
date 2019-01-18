@@ -55,18 +55,18 @@ class MessageTypeTest {
         return yes.negate();
     }
 
-    /**
-     * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
-     */
-    void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-        MessageType type = MessageType.of(descriptor);
-        boolean result = method.test(type);
-        assertTrue(result);
-    }
-
     @Nested
     @DisplayName("tell if message is")
     class Tell {
+
+        /**
+         * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
+         */
+        void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
+            MessageType type = MessageType.of(descriptor);
+            boolean result = method.test(type);
+            assertTrue(result);
+        }
 
         @DisplayName("nested")
         @Test
@@ -104,6 +104,34 @@ class MessageTypeTest {
             assertQuality(MessageType::isEvent,
                           MttProjectStarted.getDescriptor()
             );
+        }
+
+        @Nested
+        @DisplayName("not a")
+        class NotA {
+            @DisplayName("rejection")
+            @Test
+            void rejection() {
+                assertQuality(not(MessageType::isRejection),
+                              TestRejections.MttSampleRejection.Details.getDescriptor()
+                );
+            }
+
+            @DisplayName("command")
+            @Test
+            void command() {
+                assertQuality(not(MessageType::isCommand),
+                              MttStartProject.Details.getDescriptor()
+                );
+            }
+
+            @DisplayName("event")
+            @Test
+            void event() {
+                assertQuality(not(MessageType::isEvent),
+                              MttProjectStarted.Details.getDescriptor()
+                );
+            }
         }
 
         @Nested

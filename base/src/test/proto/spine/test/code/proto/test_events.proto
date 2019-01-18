@@ -34,6 +34,10 @@ option java_outer_classname = "MttEventsProto";
 // A sample event to verify telling that a message is an event from `MessageType`.
 message MttProjectStarted {
 
-    // A mock property.
-    string value = 1;
+    Details details = 1;
+
+    message Details {
+
+        string description = 1;
+    }
 }
