@@ -17,20 +17,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.base;
+package spine.test.code.proto.rejections;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.MessageType;
+import "spine/options.proto";
 
-/**
- * Checks if the given message definition is a {@link RejectionMessage}.
- */
-@Immutable
-final class RejectionMessageClassifier implements MessageClassifier {
+option (type_url_prefix) = "type.spine.io";
+option (SPI_all) = true;
+option java_package = "io.spine.test.code.proto.event";
+option java_multiple_files = true;
+option java_outer_classname = "MttEventsProto";
 
-    @Override
-    public boolean test(MessageType type) {
-        return type.isRejection();
-    }
+// This file define test environment for `MessageTypeTest.java`.
+
+// A sample event to verify telling that a message is an event from `MessageType`.
+message MttProjectStarted {
+
+    // A mock property.
+    string value = 1;
 }

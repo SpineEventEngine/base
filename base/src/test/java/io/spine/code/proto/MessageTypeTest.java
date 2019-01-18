@@ -30,6 +30,8 @@ import io.spine.net.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
+import io.spine.test.code.proto.command.MttStartProject;
+import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -53,18 +55,18 @@ class MessageTypeTest {
         return yes.negate();
     }
 
-    @Nested
-    @DisplayName("Tell if message is")
-    class Tell {
+    /**
+     * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
+     */
+    void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
+        MessageType type = MessageType.of(descriptor);
+        boolean result = method.test(type);
+        assertTrue(result);
+    }
 
-        /**
-         * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
-         */
-        void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-            MessageType type = MessageType.of(descriptor);
-            boolean result = method.test(type);
-            assertTrue(result);
-        }
+    @Nested
+    @DisplayName("tell if message is")
+    class Tell {
 
         @DisplayName("nested")
         @Test
@@ -85,6 +87,22 @@ class MessageTypeTest {
         void rejection() {
             assertQuality(MessageType::isRejection,
                           TestRejections.MttSampleRejection.getDescriptor()
+            );
+        }
+
+        @DisplayName("a command")
+        @Test
+        void command() {
+            assertQuality(MessageType::isCommand,
+                          MttStartProject.getDescriptor()
+            );
+        }
+
+        @DisplayName("an event")
+        @Test
+        void event() {
+            assertQuality(MessageType::isEvent,
+                          MttProjectStarted.getDescriptor()
             );
         }
 

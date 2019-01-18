@@ -20,10 +20,9 @@
 
 package io.spine.base;
 
+import com.google.common.collect.ImmutableMap;
 import io.spine.annotation.Internal;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.spine.code.proto.MessageType;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -33,7 +32,12 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @Internal
 public final class MessageClassifiers {
 
-    private static final Map<Class<?>, MessageClassifier> classifiers = classifiers();
+    private static final ImmutableMap<Class<?>, MessageClassifier> classifiers = ImmutableMap.of(
+            CommandMessage.class, MessageType::isCommand,
+            EventMessage.class, MessageType::isEvent,
+            RejectionMessage.class, MessageType::isRejection,
+            UuidValue.class, new UuidValueClassifier()
+    );
 
     private MessageClassifiers() {
     }
@@ -50,16 +54,5 @@ public final class MessageClassifiers {
                                            interfaceClass.getCanonicalName());
         }
         return classifier;
-    }
-
-    private static Map<Class<?>, MessageClassifier> classifiers() {
-        Map<Class<?>, MessageClassifier> classifiers = new HashMap<>();
-
-        classifiers.put(CommandMessage.class, new CommandMessageClassifier());
-        classifiers.put(EventMessage.class, new EventMessageClassifier());
-        classifiers.put(RejectionMessage.class, new RejectionMessageClassifier());
-        classifiers.put(UuidValue.class, new UuidValueClassifier());
-
-        return classifiers;
     }
 }

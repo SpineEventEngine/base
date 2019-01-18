@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.MessageClassifiers.forInterface;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
-import static java.util.Optional.empty;
 
 /**
  * A built-in message interface.
@@ -74,13 +73,7 @@ final class BuiltInMessageInterface implements MessageInterface {
                 Stream.of(BuiltIn.values())
                       .filter(contract -> contract.matches(type))
                       .findFirst();
-        if (!foundInterface.isPresent()) {
-            return empty();
-        }
-        BuiltIn builtIn = foundInterface.get();
-        MessageInterface messageInterface = from(builtIn);
-        InsertionPoint insertionPoint = implementInterface(type, messageInterface);
-        return Optional.of(insertionPoint);
+        return foundInterface.map(builtIn -> implementInterface(type, from(builtIn)));
     }
 
     @Override

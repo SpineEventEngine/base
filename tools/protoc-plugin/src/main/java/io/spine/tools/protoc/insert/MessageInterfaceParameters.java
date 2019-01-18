@@ -22,7 +22,6 @@ package io.spine.tools.protoc.insert;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import io.spine.code.proto.Type;
 
 import java.util.stream.Collectors;

@@ -29,6 +29,7 @@ import io.spine.protobuf.Messages;
 import java.util.List;
 import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.base.UuidValueClassifier.FIELD_NAME;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -68,6 +69,7 @@ final class UuidFactory<I extends Message> {
      *         if the passed ID class does not obey {@link UuidValue} contract
      */
     static <I extends Message> UuidFactory<I> forClass(Class<I> idClass) {
+        checkNotNull(idClass);
         Descriptor message = Internal.getDefaultInstance(idClass)
                                      .getDescriptorForType();
         checkState(isUuidMessage(message), ERROR_MESSAGE, FIELD_NAME);

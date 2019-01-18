@@ -36,7 +36,6 @@ import io.spine.type.TypeUrl;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -140,11 +139,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (isGoogle()) {
             return false;
         }
-
-        FileDescriptor optionsProto =
-                IsOption.getDescriptor()
-                        .getFile();
-
+        FileDescriptor optionsProto = IsOption.getDescriptor()
+                                              .getFile();
         FileDescriptor file = descriptor().getFile();
         return !sameFiles(optionsProto, file);
     }
@@ -154,10 +150,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isTopLevel() {
         Descriptor descriptor = descriptor();
-        List<Descriptor> topLevel = descriptor.getFile()
-                                              .getMessageTypes();
-        boolean result = topLevel.contains(descriptor);
-        return result;
+        Descriptor parent = descriptor.getContainingType();
+        return parent == null;
     }
 
     /**

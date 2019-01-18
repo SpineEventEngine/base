@@ -34,7 +34,6 @@ final class IdentityParameter implements MessageInterfaceParameter {
 
     @Override
     public String valueFor(Type<?, ?> type) {
-        return type.name()
-                   .value();
+        return type.simpleJavaClassName().value();
     }
 }
