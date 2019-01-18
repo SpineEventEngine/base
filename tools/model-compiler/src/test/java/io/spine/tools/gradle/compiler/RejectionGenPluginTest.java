@@ -42,7 +42,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
@@ -74,7 +73,6 @@ class RejectionGenPluginTest {
                                              .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
                                              .build();
-        project.executeTask(GENERATE_PROTO);
         project.executeTask(COMPILE_JAVA);
     }
 
