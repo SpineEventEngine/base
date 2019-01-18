@@ -21,10 +21,10 @@
 package io.spine.js.generate.resolve;
 
 import io.spine.code.js.FileName;
+import io.spine.code.js.ImportPath;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A line of a source JavaScript file with an import statement, which is going to be resolved.
@@ -33,7 +33,6 @@ public class ImportSnippet {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
-    static final String IMPORT_PATHS_SEPARATOR = "/";
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
     private static final String SPINE_SIGN = "spine";
 
@@ -66,37 +65,18 @@ public class ImportSnippet {
     /**
      * Obtains the path specified in the import statement.
      */
-    String path() {
+    ImportPath path() {
         int beginIndex = text.indexOf(IMPORT_BEGIN_SIGN) + IMPORT_BEGIN_SIGN.length();
         int endIndex = text.indexOf(IMPORT_END_SIGN, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
-        return importPath;
-    }
-
-    /**
-     * Obtains the path of the imported file.
-     *
-     * <p>Unlike {@link #path()} the method skips a library name if it is present.
-     */
-    String importedFilePath() {
-        String path = path();
-        boolean relativeToParent = path.startsWith("../");
-        if (relativeToParent) {
-            return path;
-        }
-        int separatorIndex = path.indexOf(IMPORT_PATHS_SEPARATOR);
-        checkState(separatorIndex != -1,
-                   "The import path %s is expected to contain the separator `%s`.",
-                   path, IMPORT_PATHS_SEPARATOR);
-        String result = path.substring(separatorIndex + 1);
-        return result;
+        return ImportPath.of(importPath);
     }
 
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
     ImportSnippet replacePath(CharSequence newPath) {
-        String updatedText = text.replace(path(), newPath);
+        String updatedText = text.replace(path().value(), newPath);
         return new ImportSnippet(updatedText, fileName);
     }
 
@@ -120,14 +100,8 @@ public class ImportSnippet {
      * @return {@code true} if the import path starts with {@code spine}, {@code false} otherwise
      */
     boolean isSpine() {
-        boolean result = path().startsWith(SPINE_SIGN);
+        boolean result = path().value()
+                               .startsWith(SPINE_SIGN);
         return result;
-    }
-
-    /**
-     * Obtains the separator used in JavaScript imports.
-     */
-    static String pathSeparator() {
-        return IMPORT_PATHS_SEPARATOR;
     }
 }

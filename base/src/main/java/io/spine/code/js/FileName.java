@@ -47,12 +47,6 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final String SUFFIX = "_pb";
     /** The standard file extension. */
     private static final String EXTENSION = ".js";
-    /** The path separator used in JavaScript imports. Not platform-dependant. */
-    private static final String PATH_SEPARATOR = "/";
-    /** The path to parent directory. */
-    private static final String PARENT_DIR = "../";
-    /** The path to the current directory. */
-    private static final String CURRENT_DIR = "./";
 
     private FileName(String value) {
         super(value);
@@ -95,20 +89,21 @@ public final class FileName extends AbstractFileName<FileName> {
      * itself.
      */
     public String[] pathElements() {
-        String[] result = value().split(PATH_SEPARATOR);
+        String[] result = value().split(ImportPath.separator());
         return result;
     }
 
     /**
      * Composes the path from the given file to its root.
      *
-     * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
+     * <p>Basically, the method replaces all preceding path elements
+     * by the {@link ImportPath#parentDirectory()}.
      */
     public String pathToRoot() {
         String[] pathElements = pathElements();
         int fileLocationDepth = pathElements.length - 1;
-        String pathToRoot = Strings.repeat(PARENT_DIR, fileLocationDepth);
-        String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
+        String pathToRoot = Strings.repeat(ImportPath.parentDirectory(), fileLocationDepth);
+        String result = pathToRoot.isEmpty() ? ImportPath.currentDirectory() : pathToRoot;
         return result;
     }
 
@@ -118,6 +113,6 @@ public final class FileName extends AbstractFileName<FileName> {
      * <p>Assumes that the path is used at the root directory with generated Protobuf files.
      */
     public String pathFromRoot() {
-        return CURRENT_DIR + value();
+        return ImportPath.currentDirectory() + value();
     }
 }

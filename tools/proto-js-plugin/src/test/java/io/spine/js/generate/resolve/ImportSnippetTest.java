@@ -23,6 +23,7 @@ package io.spine.js.generate.resolve;
 import com.google.protobuf.Any;
 import com.google.protobuf.StringValue;
 import io.spine.code.js.FileName;
+import io.spine.code.js.ImportPath;
 import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,8 +45,9 @@ class ImportSnippetTest {
     @Test
     @DisplayName("extract the import path")
     void extractImportPath() {
-        String importPath = libraryFileImport.path();
-        assertThat(importPath).isEqualTo("google-protobuf/" + importedFile);
+        ImportPath importPath = libraryFileImport.path();
+        ImportPath expected = ImportPath.of("google-protobuf/" + importedFile);
+        assertThat(importPath).isEqualTo(expected);
     }
 
     @Test
@@ -53,31 +55,8 @@ class ImportSnippetTest {
     void replaceImportPath() {
         String newPath = "b";
         ImportSnippet updatedLine = libraryFileImport.replacePath(newPath);
-        assertThat(updatedLine.path()).isEqualTo(newPath);
-    }
-
-    @Test
-    @DisplayName("obtain the file path skipping the library name")
-    void importedFilePathSkippingLibrary() {
-        String filePath = libraryFileImport.importedFilePath();
-        assertThat(filePath).isEqualTo(importedFile.value());
-    }
-
-    @Test
-    @DisplayName("obtain the file path relative to the current directory")
-    void importedFilePathRelativeToCurrentDir() {
-        ImportSnippet fileImport = importWithPath("./file.js");
-        String filePath = fileImport.importedFilePath();
-        assertThat(filePath).isEqualTo("file.js");
-    }
-
-    @Test
-    @DisplayName("obtain the file path relative to the parent directory")
-    void importedFilePathRelativeToParentDir() {
-        String filePath = "../file.js";
-        ImportSnippet fileImport = importWithPath(filePath);
-        String parsedFilePath = fileImport.importedFilePath();
-        assertThat(parsedFilePath).isEqualTo(filePath);
+        ImportPath updatedPath = updatedLine.path();
+        assertThat(updatedPath.value()).isEqualTo(newPath);
     }
 
     @Test

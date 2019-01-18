@@ -26,6 +26,7 @@ import com.google.common.base.Strings;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.ImportPath;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.logging.Logging;
@@ -105,7 +106,8 @@ public final class ResolveImports extends GenerationTask {
 
     private static ImportSnippet resolveSpineImport(ImportSnippet resolvable,
                                                     Directory generatedRoot) {
-        String filePath = resolvable.importedFilePath();
+        String filePath = resolvable.path()
+                                    .filePath();
         if (!belongsToModule(filePath, generatedRoot)) {
             return resolvable;
         }
@@ -153,7 +155,7 @@ public final class ResolveImports extends GenerationTask {
             return SRC_RELATIVE_TO_MAIN_PROTO + fileName.pathToRoot();
         }
         String pathToParentDir = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
-        return pathToParentDir + PROJECT_SRC_DIR + ImportSnippet.pathSeparator();
+        return pathToParentDir + PROJECT_SRC_DIR + ImportPath.separator();
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {
