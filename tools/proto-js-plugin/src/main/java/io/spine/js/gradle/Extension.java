@@ -36,6 +36,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
@@ -75,7 +76,7 @@ public class Extension {
      * ]
      * }</pre>
      */
-    public Map<String, List<String>> modules;
+    public Map<String, List<String>> modules = newHashMap();
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);

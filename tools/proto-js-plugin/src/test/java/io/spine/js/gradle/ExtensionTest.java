@@ -37,6 +37,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -139,7 +140,8 @@ class ExtensionTest {
     @DisplayName("return modules to resolve")
     void modulesToResolve() {
         String moduleName = "foo-bar";
-        pluginExtension().modules.put(moduleName, ImmutableList.of("org.nested"));
+        Map<String, List<String>> modulesExt = pluginExtension().modules;
+        modulesExt.put(moduleName, ImmutableList.of("org.nested"));
         List<Module> modules = Extension.modules(project);
         assertThat(modules).hasSize(1);
         assertThat(modules.get(0)

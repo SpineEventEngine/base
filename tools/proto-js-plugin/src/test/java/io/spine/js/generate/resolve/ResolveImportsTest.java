@@ -24,6 +24,7 @@ import com.google.protobuf.Any;
 import io.spine.code.java.SourceFile;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.ImportPath;
 import io.spine.js.generate.GenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +98,8 @@ class ResolveImportsTest {
 
     private void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
         ImportSnippet resolved = resolveImport(importLine);
-        assertThat(resolved.path()).isEqualTo(expectedImportPath);
+        ImportPath path = resolved.path();
+        assertThat(path.value()).isEqualTo(expectedImportPath);
     }
 
     private ImportSnippet resolveImport(ImportSnippet importLine) {
