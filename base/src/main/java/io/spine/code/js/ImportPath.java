@@ -25,7 +25,7 @@ import io.spine.value.StringTypeValue;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A path of an import in JavaScript.
+ * A path to a file used in a JavaScript import statement.
  */
 public final class ImportPath extends StringTypeValue {
 
@@ -71,7 +71,7 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Strings the current directory symbol as well as parent directory symbols in the path.
+     * Strips the current directory symbol as well as parent directory symbols in the path.
      */
     public String stripRelativePath() {
         String path = value();
