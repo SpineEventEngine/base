@@ -159,6 +159,8 @@ public class Extension {
 
     public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
+    public GeneratedInterfaces generateInterfaces = new GeneratedInterfaces();
+
     public List<String> internalClassPatterns = new ArrayList<>();
 
     public List<String> internalMethodNames = new ArrayList<>();
@@ -323,6 +325,18 @@ public class Extension {
         // Used by Gradle to configure `generateAnnotations` with a closure.
     public void generateAnnotations(Action<? super CodeGenAnnotations> action) {
         action.execute(generateAnnotations);
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateInterfaces(Closure closure) {
+        ConfigureUtil.configure(closure, generateInterfaces);
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateAnnotations` with a closure.
+    public void generateInterfaces(Action<? super GeneratedInterfaces> action) {
+        action.execute(generateInterfaces);
     }
 
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
