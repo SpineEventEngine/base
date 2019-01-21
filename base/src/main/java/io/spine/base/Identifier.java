@@ -35,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.protobuf.Messages.defaultInstance;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -246,6 +247,7 @@ public final class Identifier<I> {
      *         if the message is not a UUID message
      */
     public static <I extends Message> I generate(Class<I> idClass) {
+        checkNotNull(idClass);
         UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
         return uuidFactory.newUuid();
     }
@@ -461,7 +463,7 @@ public final class Identifier<I> {
             @Override
             <I> I getDefaultValue(Class<I> idClass) {
                 Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
-                Message result = Messages.newInstance(msgClass);
+                Message result = defaultInstance(msgClass);
                 return (I) result;
             }
         };

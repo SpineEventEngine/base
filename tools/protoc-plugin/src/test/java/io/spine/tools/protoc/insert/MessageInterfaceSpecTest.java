@@ -34,7 +34,7 @@ class MessageInterfaceSpecTest {
 
     @Test
     @DisplayName("generate interfaces")
-    void generate_interfaces() {
+    void generateInterfaces() {
         String packageName = "io.spine.test";
         String interfaceName = "CustomerEvent";
         JavaFile javaFile = new MessageInterfaceSpec(packageName, interfaceName).toJavaCode();

@@ -21,15 +21,14 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.generate.GeneratedBySpine;
-import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
+import io.spine.code.proto.Type;
 import io.spine.option.IsOption;
 
 import javax.annotation.Generated;
@@ -60,15 +59,14 @@ final class MessageInterfaceSpec {
         this.name = name;
     }
 
-    static MessageInterfaceSpec prepareInterface(IsOption optionValue,
-                                                 FileDescriptorProto srcFile) {
+    static MessageInterfaceSpec prepareInterface(IsOption optionValue, Type<?, ?> declaringType) {
         String javaType = optionValue.getJavaType();
         MessageInterfaceSpec spec;
         if (javaType.contains(delimiter())) {
             spec = from(javaType);
         } else {
-            String javaPackage = PackageName.resolve(srcFile)
-                                            .value();
+            String javaPackage = declaringType.javaPackage()
+                                              .value();
             spec = new MessageInterfaceSpec(javaPackage, javaType);
         }
         return spec;

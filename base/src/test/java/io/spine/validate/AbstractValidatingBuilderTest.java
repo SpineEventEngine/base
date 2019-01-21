@@ -39,6 +39,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -197,5 +199,12 @@ class AbstractValidatingBuilderTest {
         StringValueVBuilder builder = StringValueVBuilder.newBuilder();
         assertThrows(ConversionException.class,
                      () -> builder.convert(notInt, Int32Value.class));
+    }
+
+    @Test
+    @DisplayName("Have public internalBuild() method")
+    void publicInternalBuild() throws NoSuchMethodException {
+        Method method = AbstractValidatingBuilder.class.getMethod("internalBuild");
+        assertThat(Modifier.isPublic(method.getModifiers())).isTrue();
     }
 }

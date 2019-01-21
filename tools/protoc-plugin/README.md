@@ -8,8 +8,7 @@ a plugin into a Protobuf compiler (a.k.a. `protoc`) is implemented.
 
 ### Message interfaces
 
-Spine `protoc` plugin enables the user to mark certain message classes with interfaces extended 
-from the `com.google.protobuf.Message`.
+Spine `protoc` plugin enables the user to mark certain message classes with interfaces.
 
 To mark a certain message type, add the `(is)` option for the type:
 
@@ -17,7 +16,8 @@ To mark a certain message type, add the `(is)` option for the type:
 import "spine/options.proto";
 
 message Cat {
-    option (is) = "org.example.Pet";
+    option (is).java_type = "org.example.Pet";
+    option (is).generate = true;
     
     // ...
 }
@@ -27,6 +27,8 @@ After recompiling the definition with the Spine Protobuf plugin, a `.java` file 
 interface.
 
 The file with the interface declaration is generated alongside the message class files.
+
+In order to use an existing interface, just don't set `(is).generate = true`.
 
 Similarly to `(is)` option, file-level `(every_is)` option declares that all the message types 
 declared in the current file implement the given interface.
@@ -62,7 +64,7 @@ import "spine/options.proto";
 option java_package = "org.example.pet";
 
 message Mouse {
-    option (is) = "SmallPet";
+    option (is) = {java_type: "SmallPet" generate: true};
     
     // ...
 }
@@ -71,6 +73,18 @@ message Mouse {
 In the example above, the Java FQN of the generated message interface is 
 `org.example.pet.SmallPet`.
 If `java_package` option is absent, the Protobuf package is used instead.
+
+#### Built-in interfaces
+
+The plugin has a number of built-in interfaces that are applied to messages which match a certain 
+convention:
+ - `io.spine.base.EventMessage` is applied to all top-level messages declared in a file which has
+   a name ending with `events.proto`;
+ - `io.spine.base.CommandMessage` is applied to all top-level messages declared in a file which has
+   a name ending with `commands.proto`;
+ - `io.spine.base.RejectionMessage` is applied to all top-level messages declared in a file which
+   has a name ending with `rejections.proto`;
+ - `io.spine.base.UuidValue` is applied to all messages with a single string field called `uuid`.
 
 ## Usage
 
