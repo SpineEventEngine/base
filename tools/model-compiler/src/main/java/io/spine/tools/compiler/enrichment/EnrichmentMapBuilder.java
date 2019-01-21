@@ -184,8 +184,8 @@ final class EnrichmentMapBuilder implements Logging {
         Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
-                ByOption by = new ByOption(packagePrefix, msg, field);
-                Map.Entry<String, String> foundEvents = by.collect();
+                ByOption by = new ByOption(msg, field);
+                Map.Entry<String, String> foundEvents = by.collect(packagePrefix);
                 enrichmentsMap.put(foundEvents.getKey(), foundEvents.getValue());
             }
         }
