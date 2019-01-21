@@ -172,11 +172,9 @@ extend google.protobuf.FieldOptions {
 
     // reserved 73854 to 73899 for future options.
 
-    // Reference Option `by`
-    // ---------------------
+    // Reference Option `by` for Enrichments
+    // ---------------------------------------
     //
-    // Using `by` for Enrichments
-    // ---------------------------
     // An instruction to associate an enrichment message field with the field from an event message
     // to enrich (or event context field).
     //
