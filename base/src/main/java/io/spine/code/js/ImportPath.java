@@ -128,14 +128,14 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Obtains the path to the parent directory.
+     * Obtains the string used to reference the parent directory in imports.
      */
     public static String parentDirectory() {
         return PARENT_DIR;
     }
 
     /**
-     * Obtains the path to the current directory.
+     * Obtains the string used to reference the current directory in imports.
      */
     public static String currentDirectory() {
         return CURRENT_DIR;
