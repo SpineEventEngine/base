@@ -20,26 +20,31 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.Type;
+import io.spine.code.proto.TypeSet;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
-import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -81,8 +86,8 @@ public abstract class SpineProtoGenerator {
     }
 
     /**
-     * Processes a single message type and generates from zero to many {@link File} instances in
-     * response to the message type.
+     * Processes a single type and generates from zero to many {@link CompilerOutput} instances in
+     * response to the type.
      *
      * <p>The output {@linkplain File Files} may:
      * <ul>
@@ -91,19 +96,16 @@ public abstract class SpineProtoGenerator {
      *     <li>contain extra types to generate for the given message declaration.
      * </ul>
      *
-     * <p>Note that this method may produce identical {@link File CodeGeneratorResponse.File}
-     * instances (i.e. equal in terms of {@link Object#equals(Object) equals()} method), but should
-     * not produce non-equal instances with the same value of
-     * {@code CodeGeneratorResponse.File.name} field. Such entries cause {@code protoc} to fail
-     * and should be filtered on the early stage.
-     *
-     * @param file    the message type enclosing file
-     * @param message the message type to process
-     * @return optionally a {@link Collection} of {@linkplain File Files} to generate or an empty
-     * {@code Collection}
+     * @param type
+     *         the Protobuf type to process
+     * @return optionally a {@link Collection} of {@linkplain CompilerOutput CompilerOutputs}
+     *         to write or an empty {@code Collection}
+     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e. equal in
+     *         terms of {@link Object#equals(Object) equals()} method), but should not produce
+     *         non-equal instances with the same value of {@code CodeGeneratorResponse.File.name}.
+     *         Such entries cause {@code protoc} to fail and should be filtered on an early stage.
      */
-    protected abstract Collection<CompilerOutput> processMessage(FileDescriptorProto file,
-                                                                 DescriptorProto message);
+    protected abstract Collection<CompilerOutput> processType(Type<?, ?> type);
 
     /**
      * Processes the given compiler request and generates the response to the compiler.
@@ -120,34 +122,42 @@ public abstract class SpineProtoGenerator {
      *
      * @param request the compiler request
      * @return the response to the compiler
-     * @see #processMessage(com.google.protobuf.DescriptorProtos.FileDescriptorProto,
-     *                      com.google.protobuf.DescriptorProtos.DescriptorProto)
-     *                     Javadoc for processMessage() for more detailed description
+     * @see #processType Javadoc for processType(...) for more detailed description
      */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
         checkCompilerVersion(request);
-        List<FileDescriptorProto> filesToGenerate = filesToGenerate(request);
-        CodeGeneratorResponse response = process(filesToGenerate);
+        checkNotEmpty(request);
+        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
+        Set<FileName> requestedFileNames = request.getFileToGenerateList()
+                                                  .stream()
+                                                  .map(FileName::of)
+                                                  .collect(toSet());
+        FileSet requestedFiles = fileSet.find(requestedFileNames);
+        TypeSet typeSet = TypeSet.messagesAndEnums(requestedFiles);
+        CodeGeneratorResponse response = process(typeSet);
         return response;
     }
 
-    private static List<FileDescriptorProto> filesToGenerate(CodeGeneratorRequest request) {
-        List<String> fileNames = request.getFileToGenerateList();
-        checkArgument(!fileNames.isEmpty(), "No files to generate provided.");
-        List<FileDescriptorProto> filesToGenerate = newArrayListWithExpectedSize(fileNames.size());
-        for (String name : fileNames) {
-            FileDescriptorProto foundFile =
-                    request.getProtoFileList()
-                           .stream()
-                           .filter(file -> file.getName().equals(name))
-                           .findAny()
-                           .orElseThrow(() -> newIllegalStateException(
-                                   "Unable to find descriptor for file `%s`.", name
-                           ));
-            filesToGenerate.add(foundFile);
-        }
-        return filesToGenerate;
+    private static void checkNotEmpty(CodeGeneratorRequest request)
+            throws IllegalArgumentException {
+        checkArgument(request.getFileToGenerateCount() > 0, "No files to generate provided.");
+    }
+
+    /**
+     * Processes all passed proto files.
+     */
+    private CodeGeneratorResponse process(TypeSet types) {
+        Set<CompilerOutput> rawOutput = types.types()
+                                             .stream()
+                                             .flatMap(type -> processType(type).stream())
+                                             .collect(toSet());
+        Collection<File> mergedFiles = mergeFiles(rawOutput);
+        CodeGeneratorResponse response = CodeGeneratorResponse
+                .newBuilder()
+                .addAllFile(mergedFiles)
+                .build();
+        return response;
     }
 
     /**
@@ -158,23 +168,6 @@ public abstract class SpineProtoGenerator {
         checkArgument(version.getMajor() >= 3,
                       "Use protoc of version 3.* or higher to run %s",
                       getClass().getName());
-    }
-
-    /**
-     * Processes all passed proto files.
-     */
-    private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
-        Collection<CompilerOutput> generatedFiles = newHashSet();
-        for (FileDescriptorProto file : files) {
-            Collection<CompilerOutput> newFiles = generateForTypesIn(file);
-            generatedFiles.addAll(newFiles);
-        }
-        Collection<File> mergedFiles = mergeFiles(generatedFiles);
-        CodeGeneratorResponse response =
-                CodeGeneratorResponse.newBuilder()
-                                     .addAllFile(mergedFiles)
-                                     .build();
-        return response;
     }
 
     private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
@@ -209,17 +202,5 @@ public abstract class SpineProtoGenerator {
         return left.toBuilder()
                    .setContent(left.getContent() + right.getContent())
                    .build();
-    }
-
-    /**
-     * Processes the passed proto file.
-     */
-    private Collection<CompilerOutput> generateForTypesIn(FileDescriptorProto file) {
-        Collection<CompilerOutput> result = newHashSet();
-        for (DescriptorProto message : file.getMessageTypeList()) {
-            Collection<CompilerOutput> processedFile = processMessage(file, message);
-            result.addAll(processedFile);
-        }
-        return result;
     }
 }

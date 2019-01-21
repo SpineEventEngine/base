@@ -42,6 +42,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.option.Options.option;
+import static io.spine.protobuf.Messages.defaultInstance;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
@@ -219,8 +220,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
-        B result = (B) Messages.newInstance(messageClass)
-                               .newBuilderForType();
+        B result = (B) defaultInstance(messageClass).newBuilderForType();
         return result;
     }
 

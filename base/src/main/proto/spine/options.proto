@@ -45,7 +45,7 @@ syntax = "proto3";
 // import "spine/options.proto";
 //
 // option (type_url_prefix) = "type.example.org";
-//
+
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "OptionsProto";
@@ -511,12 +511,19 @@ extend google.protobuf.FileOptions {
     // ```
     // option (every_is).java_type = "ProjectCommand";
     //
-    // message CreateProject { /*...*/ }
+    // message CreateProject {
+    //     // ...
+    //
+    //     message WithAssignee {
+    //         // ...
+    //     }
+    // }
     //
     // message DeleteProject { /*...*/ }
     // ```
     //
-    // In the example above, `CreateProject` and `DeleteProject` messages are `ProjectCommand`-s.
+    // In the example above, `CreateProject`, `CreateProject.WithAssignee`, and `DeleteProject`
+    // messages are `ProjectCommand`-s.
     //
     // To specify a characteristic for a single message, use `(is)` message option. If both `(is)`
     // and `(every_is)` options are found, `(is)` value is taken.

@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import io.spine.code.proto.Type;
 
 /**
  * The message interface parameter whose value is the target {@code Message} itself.
@@ -33,7 +33,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 final class IdentityParameter implements MessageInterfaceParameter {
 
     @Override
-    public String valueFor(DescriptorProto descendant) {
-        return descendant.getName();
+    public String valueFor(Type<?, ?> type) {
+        return type.simpleJavaClassName().value();
     }
 }

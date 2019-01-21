@@ -30,6 +30,8 @@ import io.spine.net.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
+import io.spine.test.code.proto.command.MttStartProject;
+import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -54,7 +56,7 @@ class MessageTypeTest {
     }
 
     @Nested
-    @DisplayName("Tell if message is")
+    @DisplayName("tell if message is")
     class Tell {
 
         /**
@@ -86,6 +88,50 @@ class MessageTypeTest {
             assertQuality(MessageType::isRejection,
                           TestRejections.MttSampleRejection.getDescriptor()
             );
+        }
+
+        @DisplayName("a command")
+        @Test
+        void command() {
+            assertQuality(MessageType::isCommand,
+                          MttStartProject.getDescriptor()
+            );
+        }
+
+        @DisplayName("an event")
+        @Test
+        void event() {
+            assertQuality(MessageType::isEvent,
+                          MttProjectStarted.getDescriptor()
+            );
+        }
+
+        @Nested
+        @DisplayName("not a")
+        class NotA {
+            @DisplayName("rejection")
+            @Test
+            void rejection() {
+                assertQuality(not(MessageType::isRejection),
+                              TestRejections.MttSampleRejection.Details.getDescriptor()
+                );
+            }
+
+            @DisplayName("command")
+            @Test
+            void command() {
+                assertQuality(not(MessageType::isCommand),
+                              MttStartProject.Details.getDescriptor()
+                );
+            }
+
+            @DisplayName("event")
+            @Test
+            void event() {
+                assertQuality(not(MessageType::isEvent),
+                              MttProjectStarted.Details.getDescriptor()
+                );
+            }
         }
 
         @Nested

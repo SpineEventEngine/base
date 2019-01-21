@@ -43,4 +43,15 @@ public final class StringValueVBuilder
         getMessageBuilder().setValue(value);
         return this;
     }
+
+    /**
+     * Simply calls {@link #internalBuild()}.
+     *
+     * @apiNote This method is provided only to make sure that the {@link #internalBuild()} which
+     * is used by generated VBuilders is not accidentally made private.
+     */
+    @SuppressWarnings("unused")
+    public StringValue callInternalBuild() {
+        return internalBuild();
+    }
 }
