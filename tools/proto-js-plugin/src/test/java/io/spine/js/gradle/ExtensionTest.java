@@ -139,6 +139,7 @@ class ExtensionTest {
     @Test
     @DisplayName("set modules to resolve")
     void setModulesToResolve() {
+        pluginExtension().resolveSpineModules = false;
         String moduleName = "foo-bar";
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, ImmutableList.of());
