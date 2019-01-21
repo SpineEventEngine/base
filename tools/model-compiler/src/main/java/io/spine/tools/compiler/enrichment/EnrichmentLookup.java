@@ -20,14 +20,16 @@
 
 package io.spine.tools.compiler.enrichment;
 
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
 import io.spine.code.properties.PropertiesWriter;
 import io.spine.logging.Logging;
-import org.slf4j.Logger;
+import io.spine.type.TypeName;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
@@ -37,10 +39,15 @@ import static io.spine.code.proto.FileDescriptors.parseSkipGoogle;
  * Parses descriptor set file and creates enrichments map for discovered enrichment
  * definitions.
  */
-public class EnrichmentLookup {
+public class EnrichmentLookup implements Logging {
 
-    /** Prevents instantiation of this utility class. */
-    private EnrichmentLookup() {
+    private final File descriptorSetFile;
+
+    /**
+     * Creates new instance for generating rejections obtained from the passed descriptor set file.
+     */
+    public EnrichmentLookup(File descriptorSetFile) {
+        this.descriptorSetFile = descriptorSetFile;
     }
 
     /**
@@ -48,37 +55,49 @@ public class EnrichmentLookup {
      * set file and generates the {@linkplain Resources#ENRICHMENTS resource file} in the
      * specified directory.
      */
-    public static void processDescriptorSetFile(File setFile, String targetDir) {
-        Collection<FileDescriptorProto> files = parseSkipGoogle(setFile);
+    public void collectTo(String targetDir) {
+        Collection<FileDescriptorProto> files = parseSkipGoogle(descriptorSetFile);
 
         Map<String, String> propsMap = findAll(files);
 
         if (propsMap.isEmpty()) {
-            log().debug("Enrichment lookup complete. No enrichments found.");
+            _debug("Enrichment lookup complete. No enrichments found.");
             return;
         }
 
         writeTo(propsMap, targetDir);
     }
 
-    private static Map<String, String> findAll(Iterable<FileDescriptorProto> files) {
+    private Map<String, String> findAll(Iterable<FileDescriptorProto> files) {
         Map<String, String> propsMap = newHashMap();
         for (FileDescriptorProto file : files) {
-            EnrichmentFinder lookup = new EnrichmentFinder(file);
-            Map<String, String> enrichments = lookup.findAll();
+            Map<String, String> enrichments = findAllIn(file);
             propsMap.putAll(enrichments);
         }
         return propsMap;
     }
 
-    private static void writeTo(Map<String, String> propsMap, String targetDir) {
-        log().debug("Writing the enrichment description to {}/{}",
+    /**
+     * Finds event enrichment definitions in the file.
+     *
+     * @return a map from enrichment type name to event to enrich type name
+     */
+    private Map<String, String> findAllIn(FileDescriptorProto file) {
+        _debug("Looking up for the enrichments in {}", file.getName());
+
+        List<DescriptorProtos.DescriptorProto> messages = file.getMessageTypeList();
+        String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
+        EnrichmentMap map = new EnrichmentMap(packagePrefix);
+        Map<String, String> result = map.allOf(messages);
+
+        _debug("Found {} enrichments", result.size());
+        return result;
+    }
+
+    private void writeTo(Map<String, String> propsMap, String targetDir) {
+        _debug("Writing the enrichment description to {}/{}",
                     targetDir, Resources.ENRICHMENTS);
         PropertiesWriter writer = new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
         writer.write(propsMap);
-    }
-
-    private static Logger log() {
-        return Logging.get(EnrichmentLookup.class);
     }
 }
