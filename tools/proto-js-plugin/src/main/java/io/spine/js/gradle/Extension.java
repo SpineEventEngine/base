@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.code.js.ImportPath;
 import io.spine.code.js.Module;
 import io.spine.js.generate.resolve.PackagePattern;
 import io.spine.js.generate.resolve.ResolvableModule;
@@ -173,7 +174,7 @@ public class Extension {
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
     private static ResolvableModule spineWeb() {
-        String name = Module.spineWeb.artifactName();
+        String name = Module.spineWeb.artifactName() + ImportPath.separator() + "proto";
         List<PackagePattern> packages = ImmutableList.of(
                 PackagePattern.of("spine.base.*"),
                 PackagePattern.of("spine.change.*"),
@@ -181,8 +182,6 @@ public class Extension {
                 PackagePattern.of("spine.core.*"),
                 PackagePattern.of("spine.net.*"),
                 PackagePattern.of("spine.people.*"),
-                PackagePattern.of("spine.server.*"),
-                PackagePattern.of("spine.system.*"),
                 PackagePattern.of("spine.time.*"),
                 PackagePattern.of("spine.ui.*"),
                 PackagePattern.of("spine.validate.*"),
