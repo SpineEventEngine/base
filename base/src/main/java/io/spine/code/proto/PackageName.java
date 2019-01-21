@@ -34,6 +34,10 @@ public final class PackageName extends StringTypeValue {
      * The package used to identify standard Protobuf types.
      */
     public static final PackageName googleProtobuf = of("google.protobuf");
+    /**
+     * The delimeter used in package names.
+     */
+    public static final String SEPARATOR = ".";
 
     private PackageName(String value) {
         super(checkNotEmptyOrBlank(value));

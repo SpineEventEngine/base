@@ -21,10 +21,12 @@
 package io.spine.js.generate.resolve;
 
 import io.spine.code.js.ImportPath;
+import io.spine.code.proto.PackageName;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -38,11 +40,12 @@ public final class PackagePattern {
     private static final Pattern PACKAGE_SEPARATOR_PATTERN = Pattern.compile(PACKAGE_SEPARATOR);
     private static final String INCLUDE_NESTED_PATTERN_ENDING = ".*";
 
-    private final String packageName;
+    private final PackageName packageName;
     private final boolean includeNested;
 
-    private PackagePattern(String packageName, boolean includeNested) {
-        this.packageName = checkNotEmptyOrBlank(packageName);
+    private PackagePattern(PackageName packageName, boolean includeNested) {
+        checkNotNull(packageName);
+        this.packageName = packageName;
         this.includeNested = includeNested;
     }
 
@@ -63,12 +66,12 @@ public final class PackagePattern {
     public static PackagePattern of(String value) {
         checkNotEmptyOrBlank(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
-        String packageName;
+        PackageName packageName;
         if (includeNested) {
             int packageNameEnd = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
-            packageName = value.substring(0, packageNameEnd);
+            packageName = PackageName.of(value.substring(0, packageNameEnd));
         } else {
-            packageName = value;
+            packageName = PackageName.of(value);
         }
         return new PackagePattern(packageName, includeNested);
     }
@@ -94,12 +97,12 @@ public final class PackagePattern {
     /**
      * Obtains the package name used in the pattern.
      */
-    String packageName() {
+    PackageName packageName() {
         return packageName;
     }
 
     private String packagePath() {
-        return PACKAGE_SEPARATOR_PATTERN.matcher(packageName)
+        return PACKAGE_SEPARATOR_PATTERN.matcher(packageName.value())
                                         .replaceAll(ImportPath.separator());
     }
 

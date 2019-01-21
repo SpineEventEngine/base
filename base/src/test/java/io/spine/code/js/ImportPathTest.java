@@ -20,10 +20,13 @@
 
 package io.spine.code.js;
 
+import com.google.protobuf.Any;
+import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -69,6 +72,16 @@ class ImportPathTest {
         ImportPath importPath = ImportPath.of("./../foo/deep.js");
         String stripped = importPath.skipRelativePath();
         assertThat(stripped).isEqualTo("foo/deep.js");
+    }
+
+    @Test
+    @DisplayName("convert an import path to Protobuf package")
+    void convertImportToProtoPackage() {
+        FileName fileName = FileName.from(Any.getDescriptor()
+                                             .getFile());
+        ImportPath importPath = ImportPath.of(fileName.value());
+        PackageName protoPackage = importPath.protoPackage();
+        assertEquals(PackageName.googleProtobuf, protoPackage);
     }
 
     @Test

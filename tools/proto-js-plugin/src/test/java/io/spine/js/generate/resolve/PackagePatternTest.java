@@ -36,14 +36,16 @@ class PackagePatternTest {
     void packageNameForNonNested() {
         String packageName = "original";
         PackagePattern pattern = PackagePattern.of(packageName);
-        assertEquals(packageName, pattern.packageName());
+        assertEquals(packageName, pattern.packageName()
+                                         .value());
     }
 
     @Test
     @DisplayName("obtain package name for the nested format")
     void packageNameForNested() {
         PackagePattern pattern = PackagePattern.of("work.*");
-        assertEquals("work", pattern.packageName());
+        assertEquals("work", pattern.packageName()
+                                    .value());
     }
 
     @Test
