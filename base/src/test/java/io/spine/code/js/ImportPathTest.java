@@ -34,25 +34,25 @@ class ImportPathTest {
     @DisplayName("obtain the file path skipping the library name")
     void importedFilePathSkippingLibrary() {
         ImportPath importPath = ImportPath.of("lib/main.js");
-        String filePath = importPath.filePath();
-        assertThat(filePath).isEqualTo("main.js");
+        ImportPath filePath = importPath.skipLibrary();
+        assertThat(filePath.value()).isEqualTo("main.js");
     }
 
     @Test
     @DisplayName("obtain the file path relative to the current directory")
     void importedFilePathRelativeToCurrentDir() {
         ImportPath fileImport = ImportPath.of("./file.js");
-        String filePath = fileImport.filePath();
-        assertThat(filePath).isEqualTo("file.js");
+        ImportPath filePath = fileImport.skipLibrary();
+        assertThat(filePath.value()).isEqualTo("file.js");
     }
 
     @Test
     @DisplayName("obtain the file path relative to the parent directory")
     void importedFilePathRelativeToParentDir() {
-        String filePath = "../file.js";
-        ImportPath fileImport = ImportPath.of(filePath);
-        String parsedFilePath = fileImport.filePath();
-        assertThat(parsedFilePath).isEqualTo(filePath);
+        String sourcePath = "../file.js";
+        ImportPath fileImport = ImportPath.of(sourcePath);
+        ImportPath filePath = fileImport.skipLibrary();
+        assertThat(filePath.value()).isEqualTo(sourcePath);
     }
 
     @Test

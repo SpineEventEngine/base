@@ -53,21 +53,21 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Obtains the path of the imported file.
+     * Obtains the path of the imported file skipping the library name.
      *
-     * <p>The method skips a library name if it is present.
+     * <p>Does nothing if a library name if absent.
      */
-    public String filePath() {
+    public ImportPath skipLibrary() {
         String path = value();
         if (isRelativeToParent()) {
-            return path;
+            return this;
         }
         int separatorIndex = path.indexOf(separator());
         checkState(separatorIndex != -1,
                    "The import path %s is expected to contain the separator `%s`.",
                    path, separator());
         String result = path.substring(separatorIndex + 1);
-        return result;
+        return of(result);
     }
 
     /**
