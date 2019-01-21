@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.enrichment;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
 import io.spine.code.properties.PropertiesWriter;
@@ -28,7 +28,6 @@ import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,7 @@ public class EnrichmentLookup implements Logging {
      * specified directory.
      */
     public void collectTo(String targetDir) {
-        Collection<FileDescriptorProto> files = parseSkipGoogle(descriptorSetFile);
+        List<FileDescriptorProto> files = parseSkipGoogle(descriptorSetFile);
 
         Map<String, String> propsMap = findAll(files);
 
@@ -85,7 +84,7 @@ public class EnrichmentLookup implements Logging {
     private Map<String, String> findAllIn(FileDescriptorProto file) {
         _debug("Looking up for the enrichments in {}", file.getName());
 
-        List<DescriptorProtos.DescriptorProto> messages = file.getMessageTypeList();
+        List<DescriptorProto> messages = file.getMessageTypeList();
         String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
         EnrichmentMap map = new EnrichmentMap(packagePrefix);
         Map<String, String> result = map.allOf(messages);
