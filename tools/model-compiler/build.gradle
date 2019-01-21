@@ -48,6 +48,8 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
+    implementation deps.build.gradlePlugins.protobuf
+
     testImplementation project(':testlib')
     testImplementation deps.test.hamcrest
     testImplementation deps.test.junitPioneer

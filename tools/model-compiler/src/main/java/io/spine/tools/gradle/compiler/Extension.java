@@ -368,7 +368,7 @@ public class Extension {
         return spineDirs;
     }
 
-    private static Optional<String> spineDir(Project project) {
+    public static Optional<String> spineDir(Project project) {
         File projectDir;
         try {
             projectDir = project.getProjectDir()
