@@ -38,11 +38,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Obtains event names from the {@code "by"} field option of a message.
- *
- * @author Alexander Litus
- * @author Alexander Yevsyukov
  */
-class ByOption implements Logging {
+final class ByOption implements Logging {
 
     private final String packagePrefix;
     private final DescriptorProto message;
