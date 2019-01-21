@@ -25,9 +25,6 @@ import io.spine.value.StringTypeValue;
 
 /**
  * A positive space-based indentation of generated code.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
  */
 public final class Indent extends StringTypeValue {
 

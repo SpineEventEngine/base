@@ -26,6 +26,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.function.Supplier;
 
 /**
  * Abstract base for Spine plugins.
@@ -50,6 +52,19 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
         return result;
     }
 
+    /**
+     * Resolves an absolute file name obtained as a string from the passed supplier.
+     */
+    public static File resolve(Supplier<String> path) {
+        String pathname = path.get();
+        //_debug("Resolving path: {}", pathname);
+        Path normalized = new File(pathname).toPath()
+                                            .normalize();
+        File result = normalized.toAbsolutePath()
+                                .toFile();
+        return result;
+    }
+
     @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
     protected void logMissingDescriptorSetFile(File setFile) {
         _debug(
@@ -60,5 +75,4 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
                 setFile.getPath()
         );
     }
-
 }

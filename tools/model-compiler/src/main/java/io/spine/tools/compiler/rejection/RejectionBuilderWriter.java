@@ -52,7 +52,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-class RejectionBuilderWriter {
+final class RejectionBuilderWriter {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
