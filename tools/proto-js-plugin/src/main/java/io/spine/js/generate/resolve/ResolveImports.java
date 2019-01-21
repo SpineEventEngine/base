@@ -79,11 +79,11 @@ public final class ResolveImports extends GenerationTask {
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
         ResolveSpineImport resolveSpine = new ResolveSpineImport(generatedRoot());
-        if (resolveSpine.isApplicableTo(resolvable)) {
-            return resolveSpine.performFor(resolvable);
+        if (resolveSpine.isApplicableTo(resolvable.path())) {
+            return resolveSpine.attemptResolve(resolvable);
         }
         ResolveRelativeImport resolveRelative = new ResolveRelativeImport(generatedRoot(), modules);
-        return resolveRelative.performFor(resolvable);
+        return resolveRelative.attemptResolve(resolvable);
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {

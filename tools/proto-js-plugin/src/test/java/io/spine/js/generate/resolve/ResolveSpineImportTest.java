@@ -37,7 +37,7 @@ import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static io.spine.js.generate.resolve.given.Given.mainProtoRoot;
 import static io.spine.js.generate.resolve.given.Given.testProtoRoot;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("ResolveSpineImport should")
 class ResolveSpineImportTest {
@@ -67,11 +67,12 @@ class ResolveSpineImportTest {
     }
 
     @Test
-    @DisplayName("check imported file belongs to the module")
+    @DisplayName("not skip the import of a file belonging to the module")
     void checkBelongsToModule() {
-        String path = importedFilePath.toString();
-        boolean belongs = ResolveSpineImport.belongsToModuleSources(path, fakeProtoRoot);
-        assertTrue(belongs);
+        ImportPath importPath = ImportPath.of("spine/" + importedFilePath);
+        ResolveSpineImport action = new ResolveSpineImport(fakeProtoRoot);
+        boolean skip = action.skipForModule(importPath);
+        assertFalse(skip);
     }
 
     @Test
@@ -105,7 +106,7 @@ class ResolveSpineImportTest {
 
     private ImportSnippet resolveImport(ImportSnippet importLine) {
         ResolveSpineImport action = new ResolveSpineImport(fakeProtoRoot);
-        return action.performFor(importLine);
+        return action.attemptResolve(importLine);
     }
 
     private ImportSnippet importLine(String importPath) {

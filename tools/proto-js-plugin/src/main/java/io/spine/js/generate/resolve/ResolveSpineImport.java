@@ -34,11 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.ImportPath.parentDirectory;
 
 /**
- * Replaces library-like imports by relative paths if the imported file
- * {@linkplain #belongsToModuleSources(String, Directory) belongs}
- * to the currently processed module.
+ * Replaces library-like Spine imports by relative paths if the imported file
+ * belongs to the currently processed module.
  */
-final class ResolveSpineImport {
+final class ResolveSpineImport extends ResolveImport {
 
     private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
     /**
@@ -57,43 +56,37 @@ final class ResolveSpineImport {
         this.generatedRoot = generatedRoot;
     }
 
-    ImportSnippet performFor(ImportSnippet resolvable) {
-        if (isApplicableTo(resolvable)) {
-            return attemptResolve(resolvable);
-        }
-        return resolvable;
-    }
-
-    boolean isApplicableTo(ImportSnippet resolvable) {
-        return !resolvable.path()
-                          .isSpine();
-    }
-
-    private ImportSnippet attemptResolve(ImportSnippet resolvable) {
+    @Override
+    ImportSnippet resolve(ImportSnippet resolvable) {
         String filePath = resolvable.path()
                                     .filePath();
-        if (!belongsToModuleSources(filePath, generatedRoot)) {
-            return resolvable;
-        }
         String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
         ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
     }
 
+    @Override
+    boolean isApplicableTo(ImportPath importPath) {
+        return !importPath.isSpine();
+    }
+
     /**
-     * Tells whether a file with the specified path belongs
+     * {@inheritDoc}
+     *
+     * <p>Skips the resolving of the import if the imported file doesn't belong
      * to sources of the currently processed module.
      *
      * <p>The method assumes the project structure similar to Spine Web.
      */
-    @VisibleForTesting
-    static boolean belongsToModuleSources(String filePath, Directory generatedRoot) {
+    @Override
+    boolean skipForModule(ImportPath importPath) {
+        String filePath = importPath.filePath();
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
         log().debug("Checking if the file {} belongs to the module sources, result: {}",
                     absolutePath, presentInModule);
-        return presentInModule;
+        return !presentInModule;
     }
 
     @VisibleForTesting

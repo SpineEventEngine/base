@@ -20,6 +20,40 @@
 
 package io.spine.js.generate.resolve;
 
-abstract class ResolveAction {
+import io.spine.code.js.ImportPath;
 
+/**
+ * An action performed to resolve particular types of imports.
+ */
+abstract class ResolveImport {
+
+    /**
+     * Attempts to resolve the import.
+     *
+     * @param resolvable
+     *         the import to resolve
+     * @return the resolved import or the same import if it was not resolved
+     */
+    final ImportSnippet attemptResolve(ImportSnippet resolvable) {
+        ImportPath path = resolvable.path();
+        if (!isApplicableTo(path) || skipForModule(path)) {
+            return resolvable;
+        }
+        return resolve(resolvable);
+    }
+
+    /**
+     * Resolves an import and replaces the import path.
+     */
+    abstract ImportSnippet resolve(ImportSnippet resolvable);
+
+    /**
+     * Tells whether the import is supported by the class.
+     */
+    abstract boolean isApplicableTo(ImportPath importPath);
+
+    /**
+     * Tells whether the path should be resolved for the currently processed module.
+     */
+    abstract boolean skipForModule(ImportPath importPath);
 }

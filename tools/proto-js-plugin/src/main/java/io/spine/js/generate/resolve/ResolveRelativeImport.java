@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.js.Directory;
 import io.spine.code.js.ImportPath;
 import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.List;
 /**
  * Resolves a relative import path among the {@link #modules}.
  */
-final class ResolveRelativeImport {
+final class ResolveRelativeImport extends ResolveImport implements Logging {
 
     private final Directory generatedRoot;
     private final List<ResolvableModule> modules;
@@ -42,15 +41,15 @@ final class ResolveRelativeImport {
         this.modules = ImmutableList.copyOf(modules);
     }
 
-    ImportSnippet performFor(ImportSnippet resolvable) {
+    @Override
+    boolean isApplicableTo(ImportPath importPath) {
+        boolean result = importPath.isRelative() && importPath.isGeneratedProto();
+        return result;
+    }
+
+    @Override
+    ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
-        boolean isApplicable = importPath.isRelative() && importPath.isGeneratedProto();
-        if (!isApplicable) {
-            return resolvable;
-        }
-        if (belongsToModule(importPath)) {
-            return resolvable;
-        }
         for (ResolvableModule module : modules) {
             if (module.matches(importPath)) {
                 return module.resolve(resolvable);
@@ -59,19 +58,16 @@ final class ResolveRelativeImport {
         return resolvable;
     }
 
-    private boolean belongsToModule(ImportPath importPath) {
+    @Override
+    boolean skipForModule(ImportPath importPath) {
         String pathFromRoot = importPath.stripRelativePath();
         //TODO:2019-01-18:dmytro.grankin: consider check presence of .proto file instead.
         Path absolutePath = generatedRoot.getPath()
                                          .resolve(pathFromRoot);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
-        log().debug("Checking if the file {} belongs to the module Protobuf sources, result: {}",
-                    absolutePath, presentInModule);
+        _debug("Checking if the file {} belongs to the module Protobuf sources, result: {}",
+               absolutePath, presentInModule);
         return presentInModule;
-    }
-
-    private static Logger log() {
-        return Logging.get(ResolveRelativeImport.class);
     }
 }
