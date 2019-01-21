@@ -22,6 +22,7 @@ package io.spine.js.generate.resolve;
 
 import io.spine.code.js.ImportPath;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -98,5 +99,23 @@ public final class PackagePattern {
     private String packagePath() {
         return PACKAGE_SEPARATOR_PATTERN.matcher(packageName)
                                         .replaceAll(ImportPath.separator());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PackagePattern)) {
+            return false;
+        }
+        PackagePattern pattern = (PackagePattern) o;
+        return includeNested == pattern.includeNested &&
+                packageName.equals(pattern.packageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(packageName, includeNested);
     }
 }

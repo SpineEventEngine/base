@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.js.ImportPath;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A JavaScript module to resolve in compiled Protobuf files.
@@ -33,6 +34,14 @@ public final class ResolvableModule {
     private final String name;
     private final List<PackagePattern> packages;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param name
+     *         the name of the module to be resolved
+     * @param packages
+     *         patterns of packages provided by the resolvable module
+     */
     public ResolvableModule(String name, List<PackagePattern> packages) {
         this.name = name;
         this.packages = ImmutableList.copyOf(packages);
@@ -65,5 +74,23 @@ public final class ResolvableModule {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ResolvableModule)) {
+            return false;
+        }
+        ResolvableModule module = (ResolvableModule) o;
+        return name.equals(module.name) &&
+                packages.equals(module.packages);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, packages);
     }
 }

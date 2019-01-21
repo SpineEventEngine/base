@@ -21,8 +21,10 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.code.js.Module;
 import io.spine.js.generate.resolve.PackagePattern;
 import io.spine.js.generate.resolve.ResolvableModule;
 import org.gradle.api.Project;
@@ -71,15 +73,27 @@ public class Extension {
      *
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
+     * <p>Predefined Spine Modules are {@linkplain #resolveSpineModules included} by default.
+     *
      * <p>An example of the definition:
      * <pre>{@code
      * modules = [
-     *      'spine-web'  : ['spine.web', 'spine.client'],
-     *      'spine-users': ['spine.users']
+     *      // All in the packages excluding nested packages.
+     *      'client'  : ['company.client.foo', 'company.client.bar'],
+     *      // All in the packages including nested packages.
+     *      'server'  : ['company.server.*'],
+     *      // The root package not included in the modules above.
+     *      'common'  : ['company']
      * ]
      * }</pre>
      */
     public Map<String, List<String>> modules = newHashMap();
+    /**
+     * Determines whether to resolve predefined Spine Modules, e.g. the Spine Web.
+     *
+     * <p>The option is enabled by default.
+     */
+    public boolean resolveSpineModules = true;
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);
@@ -112,12 +126,16 @@ public class Extension {
     }
 
     public static List<ResolvableModule> modules(Project project) {
-        Map<String, List<String>> rawModules = extension(project).modules;
+        Extension extension = extension(project);
+        Map<String, List<String>> rawModules = extension.modules;
         List<ResolvableModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
             List<PackagePattern> patterns = patterns(rawModules.get(moduleName));
             ResolvableModule module = new ResolvableModule(moduleName, patterns);
             modules.add(module);
+        }
+        if (extension.resolveSpineModules) {
+            modules.addAll(predefinedModules());
         }
         return modules;
     }
@@ -144,6 +162,34 @@ public class Extension {
         return (Extension)
                 project.getExtensions()
                        .getByName(ProtoJsPlugin.extensionName());
+    }
+
+    @VisibleForTesting
+    static List<ResolvableModule> predefinedModules() {
+        return ImmutableList.of(
+                spineWeb()
+        );
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
+    private static ResolvableModule spineWeb() {
+        String name = Module.spineWeb.artifactName();
+        List<PackagePattern> packages = ImmutableList.of(
+                PackagePattern.of("spine.base.*"),
+                PackagePattern.of("spine.change.*"),
+                PackagePattern.of("spine.client.*"),
+                PackagePattern.of("spine.core.*"),
+                PackagePattern.of("spine.net.*"),
+                PackagePattern.of("spine.people.*"),
+                PackagePattern.of("spine.server.*"),
+                PackagePattern.of("spine.system.*"),
+                PackagePattern.of("spine.time.*"),
+                PackagePattern.of("spine.ui.*"),
+                PackagePattern.of("spine.validate.*"),
+                PackagePattern.of("spine.web.*"),
+                PackagePattern.of("spine")
+        );
+        return new ResolvableModule(name, packages);
     }
 
     private static List<PackagePattern> patterns(Collection<String> rawPatterns) {

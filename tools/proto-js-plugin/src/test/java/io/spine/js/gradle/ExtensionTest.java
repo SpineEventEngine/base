@@ -137,13 +137,29 @@ class ExtensionTest {
     }
 
     @Test
-    @DisplayName("return modules to resolve")
-    void modulesToResolve() {
+    @DisplayName("set modules to resolve")
+    void setModulesToResolve() {
         String moduleName = "foo-bar";
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, ImmutableList.of());
         List<ResolvableModule> modules = Extension.modules(project);
         assertThat(modules).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("not include predefined Spine modules")
+    void notIncludePredefinedModules() {
+        pluginExtension().resolveSpineModules = false;
+        List<ResolvableModule> modules = Extension.modules(project);
+        assertThat(modules).containsNoneIn(Extension.predefinedModules());
+    }
+
+    @Test
+    @DisplayName("include predefined Spine modules")
+    void includePredefinedModules() {
+        pluginExtension().resolveSpineModules = true;
+        List<ResolvableModule> modules = Extension.modules(project);
+        assertThat(modules).containsAllIn(Extension.predefinedModules());
     }
 
     private Extension pluginExtension() {
