@@ -20,25 +20,26 @@
 
 package io.spine.code.proto;
 
-public enum ProtoPackage {
+import io.spine.value.StringTypeValue;
 
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
+/**
+ * A Protobuf package name.
+ */
+public final class PackageName extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
     /**
      * The package used to identify standard Protobuf types.
      */
-    GOOGLE_PROTOBUF_PACKAGE("google.protobuf");
+    public static final PackageName googleProtobuf = of("google.protobuf");
 
-    private final String packageName;
-
-    ProtoPackage(String packageName) {
-        this.packageName = packageName;
+    private PackageName(String value) {
+        super(checkNotEmptyOrBlank(value));
     }
 
-    public String packageName() {
-        return packageName;
-    }
-
-    @Override
-    public String toString() {
-        return packageName;
+    public static PackageName of(String value) {
+        return new PackageName(value);
     }
 }
