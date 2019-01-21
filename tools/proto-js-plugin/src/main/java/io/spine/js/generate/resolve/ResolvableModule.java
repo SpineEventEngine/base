@@ -52,11 +52,11 @@ public final class ResolvableModule {
      */
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
-        boolean matches = matches(importPath);
-        if (!matches) {
+        boolean provides = provides(importPath);
+        if (!provides) {
             return resolvable;
         }
-        String resolvedPath = name + ImportPath.separator() + importPath.stripRelativePath();
+        String resolvedPath = name + ImportPath.separator() + importPath.skipRelativePath();
         return resolvable.replacePath(resolvedPath);
     }
 
@@ -67,7 +67,7 @@ public final class ResolvableModule {
      *         the import path to check
      * @return {@code true} if the module provides the imported file
      */
-    boolean matches(ImportPath importPath) {
+    boolean provides(ImportPath importPath) {
         for (PackagePattern packagePattern : packages) {
             if (packagePattern.matches(importPath)) {
                 return true;

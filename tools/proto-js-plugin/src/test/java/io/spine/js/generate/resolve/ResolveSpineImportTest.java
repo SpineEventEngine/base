@@ -71,8 +71,8 @@ class ResolveSpineImportTest {
     void checkBelongsToModule() {
         ImportPath importPath = ImportPath.of("spine/" + importedFilePath);
         ResolveSpineImport action = new ResolveSpineImport(fakeProtoRoot);
-        boolean skip = action.skipForModule(importPath);
-        assertFalse(skip);
+        boolean shouldSkip = action.shouldSkip(importPath);
+        assertFalse(shouldSkip);
     }
 
     @Test

@@ -78,7 +78,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
      * <p>The method assumes the project structure similar to Spine Web.
      */
     @Override
-    boolean skipForModule(ImportPath importPath) {
+    boolean shouldSkip(ImportPath importPath) {
         ImportPath filePath = importPath.skipLibrary();
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath.value());
         boolean presentInModule = absolutePath.toFile()

@@ -53,7 +53,7 @@ class ResolvableModuleTest {
     }
 
     @Test
-    @DisplayName("resolve an import path if matches")
+    @DisplayName("resolve an import path if the file is provided by module")
     void resolveMatchingImport() {
         FileName importSource = FileName.from(Any.getDescriptor()
                                                  .getFile());
@@ -64,13 +64,13 @@ class ResolvableModuleTest {
 
     private static void assertMatches(ResolvableModule module, String importPath) {
         ImportPath wrappedPath = ImportPath.of(importPath);
-        boolean result = module.matches(wrappedPath);
+        boolean result = module.provides(wrappedPath);
         assertThat(result).isTrue();
     }
 
     private static void assertNotMatches(ResolvableModule module, String importPath) {
         ImportPath wrappedPath = ImportPath.of(importPath);
-        boolean result = module.matches(wrappedPath);
+        boolean result = module.provides(wrappedPath);
         assertThat(result).isFalse();
     }
 }

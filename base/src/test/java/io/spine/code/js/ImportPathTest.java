@@ -59,7 +59,7 @@ class ImportPathTest {
     @DisplayName("strip path relative to parent directory")
     void stripRelativeToParent() {
         ImportPath importPath = ImportPath.of("../../foo/nested.js");
-        String stripped = importPath.stripRelativePath();
+        String stripped = importPath.skipRelativePath();
         assertThat(stripped).isEqualTo("foo/nested.js");
     }
 
@@ -67,7 +67,7 @@ class ImportPathTest {
     @DisplayName("strip path relative to current directory")
     void stripRelativeToCurrent() {
         ImportPath importPath = ImportPath.of("./../foo/deep.js");
-        String stripped = importPath.stripRelativePath();
+        String stripped = importPath.skipRelativePath();
         assertThat(stripped).isEqualTo("foo/deep.js");
     }
 

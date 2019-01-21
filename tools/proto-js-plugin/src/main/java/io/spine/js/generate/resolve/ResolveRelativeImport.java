@@ -51,7 +51,7 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
         for (ResolvableModule module : modules) {
-            if (module.matches(importPath)) {
+            if (module.provides(importPath)) {
                 return module.resolve(resolvable);
             }
         }
@@ -65,8 +65,8 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
      * belonging to the module if it is present in the folder with Protobufs compiled to JavaScript.
      */
     @Override
-    boolean skipForModule(ImportPath importPath) {
-        String pathFromRoot = importPath.stripRelativePath();
+    boolean shouldSkip(ImportPath importPath) {
+        String pathFromRoot = importPath.skipRelativePath();
         Path absolutePath = generatedRoot.getPath()
                                          .resolve(pathFromRoot);
         boolean presentInModule = absolutePath.toFile()

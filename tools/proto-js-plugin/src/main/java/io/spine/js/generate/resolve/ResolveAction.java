@@ -36,7 +36,7 @@ abstract class ResolveAction {
      */
     final ImportSnippet attemptResolve(ImportSnippet resolvable) {
         ImportPath path = resolvable.path();
-        if (!isApplicableTo(path) || skipForModule(path)) {
+        if (!isApplicableTo(path) || shouldSkip(path)) {
             return resolvable;
         }
         return resolve(resolvable);
@@ -53,7 +53,7 @@ abstract class ResolveAction {
     abstract boolean isApplicableTo(ImportPath importPath);
 
     /**
-     * Tells whether the path should be resolved for the currently processed module.
+     * Tells whether the import resolving should be skipped for the currently processed module.
      */
-    abstract boolean skipForModule(ImportPath importPath);
+    abstract boolean shouldSkip(ImportPath importPath);
 }

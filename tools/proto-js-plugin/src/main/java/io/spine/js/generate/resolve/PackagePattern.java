@@ -59,7 +59,9 @@ public final class PackagePattern {
      *         the value of the pattern
      * @return a new instance
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored" /* The result can be ignored. */)
     public static PackagePattern of(String value) {
+        checkNotEmptyOrBlank(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
         String packageName;
         if (includeNested) {
@@ -75,7 +77,7 @@ public final class PackagePattern {
      * Checks if the imported file matches the pattern.
      */
     boolean matches(ImportPath importPath) {
-        String strippedPath = importPath.stripRelativePath();
+        String strippedPath = importPath.skipRelativePath();
         String packageAsPath = packagePath();
         boolean rootPackageMatches = strippedPath.startsWith(packageAsPath);
         if (!rootPackageMatches) {

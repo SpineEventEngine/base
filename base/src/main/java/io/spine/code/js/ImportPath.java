@@ -71,9 +71,9 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Strips the current directory symbol as well as parent directory symbols in the path.
+     * Skips the current directory symbol as well as parent directory symbols in the path.
      */
-    public String stripRelativePath() {
+    public String skipRelativePath() {
         String path = value();
         if (path.startsWith(CURRENT_DIR)) {
             path = path.substring(CURRENT_DIR.length());
