@@ -31,7 +31,6 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -181,16 +180,6 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             File targetDir = resolve(targetDirPath);
             VBuilderGenerator generator = new VBuilderGenerator(protoSrcDir, targetDir, indent);
             generator.process(setFile);
-        }
-
-        private File resolve(Supplier<String> path) {
-            String pathname = path.get();
-            _debug("Resolving path: {}", pathname);
-            Path normalized = new File(pathname).toPath()
-                                                .normalize();
-            File result = normalized.toAbsolutePath()
-                                    .toFile();
-            return result;
         }
     }
 

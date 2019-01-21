@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * <p>The value cannot be negative.
  */
-public class IndentLevel {
+public final class IndentLevel {
 
     private static final IndentLevel ZERO = of(0);
 
