@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Resolves a relative import path among the {@link #modules}.
+ * Resolves relative imports of generated Protobuf files among the {@link #modules}.
  */
 final class ResolveRelativeImport extends ResolveAction implements Logging {
 
@@ -58,10 +58,15 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
         return resolvable;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Skips if the imported file belongs to the module. A file is considered
+     * belonging to the module if it is present in the folder with Protobufs compiled to JavaScript.
+     */
     @Override
     boolean skipForModule(ImportPath importPath) {
         String pathFromRoot = importPath.stripRelativePath();
-        //TODO:2019-01-18:dmytro.grankin: consider check presence of .proto file instead.
         Path absolutePath = generatedRoot.getPath()
                                          .resolve(pathFromRoot);
         boolean presentInModule = absolutePath.toFile()
