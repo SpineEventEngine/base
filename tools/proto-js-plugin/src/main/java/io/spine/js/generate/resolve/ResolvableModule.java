@@ -22,12 +22,18 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.ImportPath;
+import io.spine.code.proto.PackageName;
 
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * A JavaScript module to resolve in compiled Protobuf files.
+ *
+ * <p>The class knows about Protobuf packages provided by the module
+ * and if a Protobuf package of the imported file matches one of the packages, then it is resolved.
  */
 public final class ResolvableModule {
 
@@ -48,28 +54,27 @@ public final class ResolvableModule {
     }
 
     /**
-     * Tries to resolve the import within this module.
+     * Resolves a relative path to a generated Protobuf file.
+     *
+     * <p>As a result, an import path like {@code ../../spine/core/user_id_pb.js}
+     * is resolved to the {@code moduleName/spine/core/user_id_pb.js} path.
      */
-    ImportSnippet resolve(ImportSnippet resolvable) {
-        ImportPath importPath = resolvable.path();
-        boolean provides = provides(importPath);
-        if (!provides) {
-            return resolvable;
-        }
-        String resolvedPath = name + ImportPath.separator() + importPath.skipRelativePath();
-        return resolvable.replacePath(resolvedPath);
+    ImportPath resolve(ImportPath resolvable) {
+        checkState(provides(resolvable.protoPackage()));
+        String resolved = name + ImportPath.separator() + resolvable.skipRelativePath();
+        return ImportPath.of(resolved);
     }
 
     /**
-     * Checks if the imported file is provided by the module.
+     * Checks if the Protobuf package is provided by the module.
      *
-     * @param importPath
-     *         the import path to check
-     * @return {@code true} if the module provides the imported file
+     * @param packageName
+     *         the package to check
+     * @return {@code true} if the module provides the package
      */
-    boolean provides(ImportPath importPath) {
+    boolean provides(PackageName packageName) {
         for (PackagePattern packagePattern : packages) {
-            if (packagePattern.matches(importPath.protoPackage())) {
+            if (packagePattern.matches(packageName)) {
                 return true;
             }
         }

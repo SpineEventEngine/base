@@ -55,7 +55,7 @@ class ResolveRelativeImportTest {
     void handleUnresolved() {
         FileName importSource = FileName.from(Any.getDescriptor()
                                                  .getFile());
-        ImportSnippet resolvable = Given.importWithPath("options_pb.js", importSource);
+        ImportSnippet resolvable = Given.importWithPath("./unknown/options_pb.js", importSource);
         ImportSnippet resolved = action.resolve(resolvable);
         assertEquals(resolvable, resolved);
     }

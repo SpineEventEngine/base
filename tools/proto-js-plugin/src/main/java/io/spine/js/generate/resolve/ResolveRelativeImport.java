@@ -23,6 +23,7 @@ package io.spine.js.generate.resolve;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.Directory;
 import io.spine.code.js.ImportPath;
+import io.spine.code.proto.PackageName;
 import io.spine.logging.Logging;
 
 import java.nio.file.Path;
@@ -50,9 +51,11 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
     @Override
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
+        PackageName packageName = importPath.protoPackage();
         for (ResolvableModule module : modules) {
-            if (module.provides(importPath)) {
-                return module.resolve(resolvable);
+            if (module.provides(packageName)) {
+                ImportPath resolvedPath = module.resolve(importPath);
+                return resolvable.replacePath(resolvedPath.value());
             }
         }
         return resolvable;

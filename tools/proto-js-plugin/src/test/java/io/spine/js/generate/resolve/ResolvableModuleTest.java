@@ -21,15 +21,12 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Any;
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("ResolvableModule should")
 class ResolvableModuleTest {
@@ -40,37 +37,31 @@ class ResolvableModuleTest {
     ));
 
     @Test
-    @DisplayName("match an import path")
-    void checkImportPathMatches() {
-        assertMatches(module, "../spine/foo_pb.js");
-        assertMatches(module, "../spine/bar_pb.js");
-    }
-
-    @Test
-    @DisplayName("not match nested packages")
-    void notMatchesNestedPackages() {
-        assertNotMatches(module, "../spine/nested/type_pb.js");
-    }
-
-    @Test
     @DisplayName("resolve an import path if the file is provided by module")
     void resolveMatchingImport() {
-        FileName importSource = FileName.from(Any.getDescriptor()
-                                                 .getFile());
-        ImportSnippet resolvable = importWithPath("../spine/js_pb.js", importSource);
-        ImportSnippet resolved = module.resolve(resolvable);
-        assertEquals(resolved.path(), ImportPath.of(moduleName + "/spine/js_pb.js"));
+        ImportPath resolvable = ImportPath.of("../../spine/js_pb.js");
+        ImportPath resolved = module.resolve(resolvable);
+        ImportPath expected = ImportPath.of(moduleName + "/spine/js_pb.js");
+        assertEquals(expected, resolved);
     }
 
-    private static void assertMatches(ResolvableModule module, String importPath) {
-        ImportPath wrappedPath = ImportPath.of(importPath);
-        boolean result = module.provides(wrappedPath);
-        assertThat(result).isTrue();
+    @Test
+    @DisplayName("resolve only Proto files")
+    void acceptOnlyProto() {
+        ImportPath importPath = ImportPath.of("non-proto.js");
+        assertThrows(
+                IllegalStateException.class,
+                () -> module.resolve(importPath)
+        );
     }
-
-    private static void assertNotMatches(ResolvableModule module, String importPath) {
-        ImportPath wrappedPath = ImportPath.of(importPath);
-        boolean result = module.provides(wrappedPath);
-        assertThat(result).isFalse();
+    
+    @Test
+    @DisplayName("resolve only provided Proto files")
+    void acceptOnlyProvidedProto() {
+        ImportPath importPath = ImportPath.of("non/spine/index_pb.js");
+        assertThrows(
+                IllegalStateException.class,
+                () -> module.resolve(importPath)
+        );
     }
 }
