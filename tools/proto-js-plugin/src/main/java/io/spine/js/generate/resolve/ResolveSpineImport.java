@@ -26,7 +26,6 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
@@ -37,7 +36,7 @@ import static io.spine.code.js.ImportPath.parentDirectory;
  * Replaces library-like Spine imports by relative paths if the imported file
  * belongs to the currently processed module.
  */
-final class ResolveSpineImport extends ResolveAction {
+final class ResolveSpineImport extends ResolveAction implements Logging {
 
     private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
     /**
@@ -67,7 +66,7 @@ final class ResolveSpineImport extends ResolveAction {
 
     @Override
     boolean isApplicableTo(ImportPath importPath) {
-        return !importPath.isSpine();
+        return importPath.isSpine();
     }
 
     /**
@@ -84,7 +83,7 @@ final class ResolveSpineImport extends ResolveAction {
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
-        log().debug("Checking if the file {} belongs to the module sources, result: {}",
+        _debug("Checking if the file {} belongs to the module sources, result: {}",
                     absolutePath, presentInModule);
         return !presentInModule;
     }
@@ -114,9 +113,5 @@ final class ResolveSpineImport extends ResolveAction {
         }
         String pathToParentDir = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
         return pathToParentDir + PROJECT_SRC_DIR + ImportPath.separator();
-    }
-
-    private static Logger log() {
-        return Logging.get(ResolveImports.class);
     }
 }
