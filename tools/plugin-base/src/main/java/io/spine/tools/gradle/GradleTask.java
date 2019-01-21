@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -41,8 +42,6 @@ import static com.google.common.collect.Lists.newLinkedList;
  *
  * <p>Instantiated via {@link Builder}, forces the new task to be added to
  * the Gradle build lifecycle.
- *
- * @author Alex Tymchenko
  */
 public final class GradleTask {
 
@@ -87,12 +86,14 @@ public final class GradleTask {
         private TaskName previousTask;
         private TaskName previousTaskOfAllProjects;
 
+        private boolean allowNoDependencies;
+
         private final Collection<Path> inputs;
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
             this.action = action;
-            inputs = newLinkedList();
+            this.inputs = newLinkedList();
         }
 
         /**
@@ -110,6 +111,7 @@ public final class GradleTask {
          */
         public Builder insertBeforeTask(TaskName target) {
             checkNotNull(target, "task after the new one");
+            checkState(dependenciesRequired());
             this.followingTask = target;
             return this;
         }
@@ -129,6 +131,7 @@ public final class GradleTask {
          */
         public Builder insertAfterTask(TaskName target) {
             checkNotNull(target, "task before the new one");
+            checkState(dependenciesRequired());
             this.previousTask = target;
             return this;
         }
@@ -157,7 +160,16 @@ public final class GradleTask {
          */
         public Builder insertAfterAllTasks(TaskName target) {
             checkNotNull(target, "tasks before the new one");
+            checkState(dependenciesRequired());
             this.previousTaskOfAllProjects = target;
+            return this;
+        }
+
+        public Builder allowNoDependencies() {
+            checkState(previousTask == null);
+            checkState(previousTaskOfAllProjects == null);
+            checkState(followingTask == null);
+            allowNoDependencies = true;
             return this;
         }
 
@@ -190,11 +202,9 @@ public final class GradleTask {
             String errMsg = "Project is not specified for the new Gradle task: ";
             checkNotNull(project, errMsg + name);
 
-            if (followingTask == null
-                    && previousTask == null
-                    && previousTaskOfAllProjects == null) {
-                String exceptionMsg =
-                        "Either the previous or the following task must be set.";
+            if (dependenciesRequired() && !dependenciesPresent()) {
+                String exceptionMsg = "Either the previous or the following task must be set. " +
+                        "Call `allowNoDependencies()` to skip task dependencies setup.";
                 throw new IllegalStateException(exceptionMsg);
             }
 
@@ -204,6 +214,16 @@ public final class GradleTask {
             addTaskIO(newTask);
             GradleTask result = new GradleTask(newTask, name, project);
             return result;
+        }
+
+        private boolean dependenciesRequired() {
+            return !allowNoDependencies;
+        }
+
+        private boolean dependenciesPresent() {
+            return followingTask != null
+                || previousTask != null
+                || previousTaskOfAllProjects != null;
         }
 
         private void dependTask(Task task, Project project) {

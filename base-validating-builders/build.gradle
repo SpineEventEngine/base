@@ -126,6 +126,7 @@ assemble.dependsOn copyCompiledClasses
 
 build.doLast {
     final def directory = "$projectDir/../"
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
     final def script = runsOnWindows ? "gradlew.bat" : "gradlew"
     final def process = new ProcessBuilder()
             .command("$directory/$script".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
