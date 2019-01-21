@@ -43,7 +43,27 @@ public final class PackageName extends StringTypeValue {
         super(checkNotEmptyOrBlank(value));
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param value
+     *         the dot separated package name
+     * @return a new instance
+     */
     public static PackageName of(String value) {
         return new PackageName(value);
+    }
+
+    /**
+     * Tells whether the package is nested into the specified package.
+     *
+     * @param target
+     *         the package name to check
+     * @return {@code true} if this package is nested in the specified package,
+     *         {@code false} otherwise
+     */
+    public boolean isNestedIn(PackageName target) {
+        boolean result = value().startsWith(target.value());
+        return result;
     }
 }

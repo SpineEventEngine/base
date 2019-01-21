@@ -20,24 +20,18 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.ImportPath;
 import io.spine.code.proto.PackageName;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A pattern of a Protobuf package.
- *
- * <p>Used to resolve relative imports of Protobuf files.
+ * A pattern to match a Protobuf package.
  */
 public final class PackagePattern {
 
-    private static final String PACKAGE_SEPARATOR = "\\.";
-    private static final Pattern PACKAGE_SEPARATOR_PATTERN = Pattern.compile(PACKAGE_SEPARATOR);
     private static final String INCLUDE_NESTED_PATTERN_ENDING = ".*";
 
     private final PackageName packageName;
@@ -77,21 +71,13 @@ public final class PackagePattern {
     }
 
     /**
-     * Checks if the imported file matches the pattern.
+     * Checks if the pattern matches the specified package name.
      */
-    boolean matches(ImportPath importPath) {
-        String strippedPath = importPath.skipRelativePath();
-        String packageAsPath = packagePath();
-        boolean rootPackageMatches = strippedPath.startsWith(packageAsPath);
-        if (!rootPackageMatches) {
-            return false;
-        } else if (includeNested) {
-            return true;
-        } else {
-            String pathWithoutRootPackage = strippedPath.substring(packageAsPath.length() + 1);
-            boolean exactlyInRootPackage = !pathWithoutRootPackage.contains(ImportPath.separator());
-            return exactlyInRootPackage;
-        }
+    boolean matches(PackageName targetPackage) {
+        boolean result = includeNested
+                         ? targetPackage.isNestedIn(packageName)
+                         : packageName.equals(targetPackage);
+        return result;
     }
 
     /**
@@ -99,11 +85,6 @@ public final class PackagePattern {
      */
     PackageName packageName() {
         return packageName;
-    }
-
-    private String packagePath() {
-        return PACKAGE_SEPARATOR_PATTERN.matcher(packageName.value())
-                                        .replaceAll(ImportPath.separator());
     }
 
     @Override

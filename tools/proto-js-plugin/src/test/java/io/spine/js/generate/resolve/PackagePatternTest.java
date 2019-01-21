@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.ImportPath;
+import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,29 +49,30 @@ class PackagePatternTest {
     }
 
     @Test
-    @DisplayName("not include nested packages by default")
-    void notIncludeNestedPackages() {
+    @DisplayName("not match nested packages by default")
+    void notMatchNestedPackages() {
         PackagePattern pattern = PackagePattern.of("first");
-        ImportPath importPath = ImportPath.of("first/second/foo.js");
-        boolean matches = pattern.matches(importPath);
+        PackageName packageName = PackageName.of("first.second");
+        boolean matches = pattern.matches(packageName);
         assertFalse(matches);
     }
 
     @Test
-    @DisplayName("match file in the first level package")
-    void matchFirstLevelFile() {
-        PackagePattern pattern = PackagePattern.of("level1");
-        ImportPath importPath = ImportPath.of("level1/bar.js");
-        boolean matches = pattern.matches(importPath);
+    @DisplayName("match same packages")
+    void matchSamePackages() {
+        String name = "protos";
+        PackagePattern pattern = PackagePattern.of(name);
+        PackageName packageName = PackageName.of(name);
+        boolean matches = pattern.matches(packageName);
         assertTrue(matches);
     }
 
     @Test
-    @DisplayName("include nested packages if specified")
-    void includeNestedPackages() {
-        PackagePattern pattern = PackagePattern.of("first.*");
-        ImportPath importPath = ImportPath.of("first/second/bar.js");
-        boolean matches = pattern.matches(importPath);
+    @DisplayName("match nested packages if specified")
+    void matchNestedPackages() {
+        PackagePattern pattern = PackagePattern.of("foo.*");
+        PackageName packageName = PackageName.of("foo.bar");
+        boolean matches = pattern.matches(packageName);
         assertTrue(matches);
     }
 }

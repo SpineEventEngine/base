@@ -69,7 +69,7 @@ public final class ResolvableModule {
      */
     boolean provides(ImportPath importPath) {
         for (PackagePattern packagePattern : packages) {
-            if (packagePattern.matches(importPath)) {
+            if (packagePattern.matches(importPath.protoPackage())) {
                 return true;
             }
         }
