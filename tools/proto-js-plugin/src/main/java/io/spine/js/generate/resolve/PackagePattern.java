@@ -35,22 +35,39 @@ public final class PackagePattern {
 
     private static final String PACKAGE_SEPARATOR = "\\.";
     private static final Pattern PACKAGE_SEPARATOR_PATTERN = Pattern.compile(PACKAGE_SEPARATOR);
+    private static final String INCLUDE_NESTED_PATTERN_ENDING = ".*";
 
     private final String packageName;
+    private final boolean includeNested;
 
-    private PackagePattern(String packageName) {
+    private PackagePattern(String packageName, boolean includeNested) {
         this.packageName = checkNotEmptyOrBlank(packageName);
+        this.includeNested = includeNested;
     }
 
     /**
      * Creates a new instance.
      *
-     * @param packageName
-     *         the name of a Protobuf package
+     * <p>The following formats are supported:
+     * <ul>
+     *     <li>The exact package — {@code foo.bar}.
+     *     <li>The exact package and nested packages — {@code foo.bar.*}.
+     * </ul>
+     *
+     * @param value
+     *         the value of the pattern
      * @return a new instance
      */
-    public static PackagePattern of(String packageName) {
-        return new PackagePattern(packageName);
+    public static PackagePattern of(String value) {
+        boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
+        String packageName;
+        if (includeNested) {
+            int packageNameEnd = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
+            packageName = value.substring(0, packageNameEnd);
+        } else {
+            packageName = value;
+        }
+        return new PackagePattern(packageName, includeNested);
     }
 
     /**
@@ -62,10 +79,20 @@ public final class PackagePattern {
         boolean rootPackageMatches = strippedPath.startsWith(packageAsPath);
         if (!rootPackageMatches) {
             return false;
+        } else if (includeNested) {
+            return true;
+        } else {
+            String pathWithoutRootPackage = strippedPath.substring(packageAsPath.length() + 1);
+            boolean exactlyInRootPackage = !pathWithoutRootPackage.contains(ImportPath.separator());
+            return exactlyInRootPackage;
         }
-        String pathWithoutRootPackage = strippedPath.substring(packageAsPath.length() + 1);
-        boolean exactlyInRootPackage = !pathWithoutRootPackage.contains(ImportPath.separator());
-        return exactlyInRootPackage;
+    }
+
+    /**
+     * Obtains the package name used in the pattern.
+     */
+    String packageName() {
+        return packageName;
     }
 
     private String packagePath() {
