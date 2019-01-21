@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Resolves a relative import path among the {@link #modules}.
  */
-final class ResolveRelativeImport extends ResolveImport implements Logging {
+final class ResolveRelativeImport extends ResolveAction implements Logging {
 
     private final Directory generatedRoot;
     private final List<ResolvableModule> modules;

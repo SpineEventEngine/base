@@ -25,7 +25,7 @@ import io.spine.code.js.ImportPath;
 /**
  * An action performed to resolve particular types of imports.
  */
-abstract class ResolveImport {
+abstract class ResolveAction {
 
     /**
      * Attempts to resolve the import.

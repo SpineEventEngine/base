@@ -37,7 +37,7 @@ import static io.spine.code.js.ImportPath.parentDirectory;
  * Replaces library-like Spine imports by relative paths if the imported file
  * belongs to the currently processed module.
  */
-final class ResolveSpineImport extends ResolveImport {
+final class ResolveSpineImport extends ResolveAction {
 
     private static final String SRC_RELATIVE_TO_MAIN_PROTO = parentDirectory();
     /**
