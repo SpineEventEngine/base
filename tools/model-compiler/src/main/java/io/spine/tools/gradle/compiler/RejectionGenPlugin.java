@@ -26,12 +26,11 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
-import io.spine.logging.Logging;
 import io.spine.tools.compiler.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.rejection.RejectionWriter;
+import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -39,6 +38,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -49,7 +49,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
@@ -113,112 +112,73 @@ public class RejectionGenPlugin extends SpinePlugin {
         return new GenAction(this, project, descriptorSetPath, targetDirPath, protoSrcDir);
     }
 
-    private static class GenAction implements Action<Task>, Logging {
-
-        /** The plugin which executes this task. */
-        private final RejectionGenPlugin plugin;
-
-        /**
-         * Source Gradle project.
-         */
-        private final Project project;
-
-        /**
-         * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
-         */
-        private final Supplier<String> descriptorPath;
-
-        /**
-         * Obtains an absolute path to the folder, serving as a target
-         * for the generation for the given scope.
-         */
-        private final Supplier<String> targetDirPath;
-
-        /**
-         * Obtains an absolute path to the folder, containing the {@code .proto} files for
-         * the given scope.
-         */
-        private final Supplier<String> protoSrcDirPath;
-
-        /** Indentation for the generated code. */
-        private @MonotonicNonNull Indent indent;
+    /**
+     * Generates source code of rejections.
+     */
+    private static class GenAction extends CodeGenerationAction {
 
         private GenAction(RejectionGenPlugin plugin,
                           Project project,
                           Supplier<String> descriptorPath,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            this.plugin = plugin;
-            this.project = project;
-            this.descriptorPath = descriptorPath;
-            this.targetDirPath = targetDirPath;
-            this.protoSrcDirPath = protoSrcDirPath;
-        }
-
-        protected Indent indent() {
-            if (indent == null) {
-                indent = getIndent(project);
-            }
-            return indent;
-        }
-
-        protected File descriptorSetFile() {
-            return resolve(descriptorPath);
-        }
-
-        protected File protoSrcDir() {
-            return resolve(protoSrcDirPath);
-        }
-
-        protected File targetDir() {
-            return resolve(targetDirPath);
+            super(plugin, project, descriptorPath, targetDirPath, protoSrcDirPath);
         }
 
         @Override
         public void execute(Task task) {
-            File descriptorSetFile = descriptorSetFile();
-            if (!descriptorSetFile.exists()) {
-                plugin.logMissingDescriptorSetFile(descriptorSetFile);
+            Optional<File> descriptorSetFile = descriptorSetFile();
+            if (!descriptorSetFile.isPresent()) {
                 return;
             }
-            _debug("Generating from {}", descriptorSetFile);
+            _debug("Generating from {}", descriptorSetFile.get());
 
-            FileSet mainFiles = FileSet.parse(descriptorSetFile);
+            FileSet mainFiles = FileSet.parse(descriptorSetFile.get());
             ImmutableSet<RejectionsFile> rejectionFiles = findAll(mainFiles);
-            Logger log = log();
-            log.debug("Processing the file descriptors for the rejections {}", rejectionFiles);
-            File targetDir = targetDir();
-            for (RejectionsFile file : rejectionFiles) {
+            _debug("Processing the file descriptors for the rejections {}", rejectionFiles);
+            for (RejectionsFile source : rejectionFiles) {
                 // We are sure that this is a rejections file because we got them filtered.
-                generateRejections(file, targetDir);
+                generateRejections(source);
             }
         }
 
-        private void generateRejections(RejectionsFile source, File rejectionsOutDir) {
-            Logger log = log();
-            if (log.isDebugEnabled()) {
-                _debug(
-                        "Generating rejections from file: `{}` javaPackage: `{}`, javaOuterClassName: `{}`",
-                        source.getPath(),
-                        PackageName.resolve(source.getDescriptor()
-                                                  .toProto()),
-                        SimpleClassName.outerOf(source.getDescriptor())
-                );
-            }
-
+        private void generateRejections(RejectionsFile source) {
             List<RejectionType> rejections =
                     source.getRejectionDeclarations()
                           .stream()
                           .filter(new SourceProtoBelongsToModule(protoSrcDir()))
                           .collect(toImmutableList());
+            if (rejections.isEmpty()) {
+                return;
+            }
 
+            logGeneratingForFile(source);
             for (RejectionType rejection : rejections) {
                 // The name of the generated `ThrowableMessage` will be the same
                 // as for the Protobuf message.
-                log.debug("Processing rejection '{}'", rejection.simpleJavaClassName());
-                RejectionWriter writer = new RejectionWriter(rejection, rejectionsOutDir, indent());
+                _debug("Processing rejection '{}'", rejection.simpleJavaClassName());
+                RejectionWriter writer = new RejectionWriter(rejection, targetDir(), indent());
                 writer.write();
             }
+        }
+
+        private void logGeneratingForFile(RejectionsFile source) {
+            if (!log().isDebugEnabled()) {
+                return;
+            }
+            _debug(
+                    "Generating rejections from file: `{}` " +
+                            "javaPackage: `{}`, javaOuterClassName: `{}`",
+                    source.getPath(),
+                    PackageName.resolve(source.getDescriptor()
+                                              .toProto()),
+                    SimpleClassName.outerOf(source.getDescriptor())
+            );
+        }
+
+        @Override
+        protected Indent getIndent(Project project) {
+            return Extension.getIndent(project);
         }
     }
 }
