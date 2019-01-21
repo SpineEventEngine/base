@@ -29,8 +29,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ImportSnippet should")
 class ImportSnippetTest {
@@ -57,22 +55,5 @@ class ImportSnippetTest {
         ImportSnippet updatedLine = libraryFileImport.replacePath(newPath);
         ImportPath updatedPath = updatedLine.path();
         assertThat(updatedPath.value()).isEqualTo(newPath);
-    }
-
-    @Test
-    @DisplayName("recognize a Spine library")
-    void recognizeSpine() {
-        ImportSnippet spineImport = importWithPath("spine/something");
-        assertTrue(spineImport.isSpine());
-    }
-
-    @Test
-    @DisplayName("recognize not a Spine library")
-    void recognizeNotSpine() {
-        assertFalse(libraryFileImport.isSpine());
-    }
-
-    private ImportSnippet importWithPath(String filePath) {
-        return Given.importWithPath(filePath, importSource);
     }
 }

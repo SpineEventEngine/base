@@ -33,8 +33,6 @@ public class ImportSnippet {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
-    private static final String SPINE_SIGN = "spine";
 
     private final String text;
     private final FileName fileName;
@@ -92,16 +90,5 @@ public class ImportSnippet {
      */
     FileName fileName() {
         return fileName;
-    }
-
-    /**
-     * Tells whether the import refers to a Spine library.
-     *
-     * @return {@code true} if the import path starts with {@code spine}, {@code false} otherwise
-     */
-    boolean isSpine() {
-        boolean result = path().value()
-                               .startsWith(SPINE_SIGN);
-        return result;
     }
 }

@@ -24,6 +24,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ImportPath should")
 class ImportPathTest {
@@ -67,5 +69,19 @@ class ImportPathTest {
         ImportPath importPath = ImportPath.of("./../foo/deep.js");
         String stripped = importPath.stripRelativePath();
         assertThat(stripped).isEqualTo("foo/deep.js");
+    }
+
+    @Test
+    @DisplayName("recognize a Spine library")
+    void recognizeSpine() {
+        ImportPath importPath = ImportPath.of("spine/something");
+        assertTrue(importPath.isSpine());
+    }
+
+    @Test
+    @DisplayName("recognize not a Spine library")
+    void recognizeNotSpine() {
+        ImportPath importPath = ImportPath.of("not-spine");
+        assertFalse(importPath.isSpine());
     }
 }

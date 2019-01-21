@@ -65,7 +65,8 @@ final class ResolveSpineImport {
     }
 
     boolean isApplicableTo(ImportSnippet resolvable) {
-        return !resolvable.isSpine();
+        return !resolvable.path()
+                          .isSpine();
     }
 
     private ImportSnippet attemptResolve(ImportSnippet resolvable) {
