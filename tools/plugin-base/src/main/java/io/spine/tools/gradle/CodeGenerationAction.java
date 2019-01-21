@@ -38,31 +38,41 @@ import static io.spine.tools.gradle.SpinePlugin.resolve;
  */
 public abstract class CodeGenerationAction implements Action<Task>, Logging {
 
-    /** The plugin which executes this task. */
+    /**
+     * The plugin which executes this task.
+     */
     private final SpinePlugin plugin;
+
     /**
      * Source Gradle project.
      */
     private final Project project;
+
     /**
      * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
      */
     private final Supplier<String> descriptorPath;
+
     /**
      * Obtains an absolute path to the folder, serving as a target
      * for the generation for the given scope.
      */
     private final Supplier<String> targetDirPath;
+
     /**
      * Obtains an absolute path to the folder, containing the {@code .proto} files for
      * the given scope.
      */
     private final Supplier<String> protoSrcDirPath;
 
-    /** Target directory for code generation. */
+    /**
+     * Target directory for code generation.
+     */
     private @MonotonicNonNull File targetDir;
 
-    /** Indentation for the generated code. */
+    /**
+     * Indentation for the generated code.
+     */
     private @MonotonicNonNull Indent indent;
 
     /**
