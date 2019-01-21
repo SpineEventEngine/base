@@ -77,17 +77,20 @@ public class EnrichmentLookup implements Logging {
     }
 
     /**
-     * Finds event enrichment definitions in the file.
+     * Finds enrichment definitions in the proto files represented by the
+     * passed descriptor set file.
      *
-     * @return a map from enrichment type name to event to enrich type name
+     * @return a map from enrichment type name to the enriched types
      */
     private Map<String, String> findAllIn(FileDescriptorProto file) {
         _debug("Looking up for the enrichments in {}", file.getName());
 
         List<DescriptorProto> messages = file.getMessageTypeList();
         String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
-        EnrichmentMap map = new EnrichmentMap(packagePrefix);
-        Map<String, String> result = map.allOf(messages);
+        Map<String, String> result =
+                new EnrichmentMapBuilder(packagePrefix)
+                        .addAll(messages)
+                        .toMap();
 
         _debug("Found {} enrichments", result.size());
         return result;
