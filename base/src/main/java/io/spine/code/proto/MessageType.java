@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
@@ -48,7 +47,6 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 /**
  * A message type as declared in a proto file.
  */
-@Internal
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
