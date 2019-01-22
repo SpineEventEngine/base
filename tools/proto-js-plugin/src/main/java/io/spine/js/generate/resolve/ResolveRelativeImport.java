@@ -48,9 +48,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class ResolveRelativeImport extends ResolveAction implements Logging {
 
     private final Directory generatedRoot;
-    private final List<ResolvableModule> modules;
+    private final List<ProtoModule> modules;
 
-    ResolveRelativeImport(Directory generatedRoot, List<ResolvableModule> modules) {
+    ResolveRelativeImport(Directory generatedRoot, List<ProtoModule> modules) {
         super();
         this.generatedRoot = checkNotNull(generatedRoot);
         this.modules = ImmutableList.copyOf(modules);
@@ -68,7 +68,7 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
         ImportPath importPath = resolvable.path();
         PackageName packageName = importPath.fileName()
                                             .protoPackage();
-        for (ResolvableModule module : modules) {
+        for (ProtoModule module : modules) {
             if (module.provides(packageName)) {
                 ImportPath resolvedPath = module.resolve(importPath);
                 return resolvable.replacePath(resolvedPath.value());

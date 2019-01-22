@@ -30,21 +30,21 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ResolvableModule should")
-class ResolvableModuleTest {
+@DisplayName("ProtoModule should")
+class ProtoModuleTest {
 
     private static final String moduleName = "spine-js";
     private static final List<PackagePattern> patterns = ImmutableList.of(
             PackagePattern.of("spine")
     );
-    private final ResolvableModule module = new ResolvableModule(moduleName, patterns);
+    private final ProtoModule module = new ProtoModule(moduleName, patterns);
 
     @Test
     @DisplayName("not have an empty module name")
     void notHaveEmptyModuleName() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new ResolvableModule("", patterns)
+                () -> new ProtoModule("", patterns)
         );
     }
 

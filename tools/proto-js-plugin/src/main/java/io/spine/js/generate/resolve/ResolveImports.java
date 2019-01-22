@@ -45,9 +45,9 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public final class ResolveImports extends GenerationTask {
 
-    private final List<ResolvableModule> modules;
+    private final List<ProtoModule> modules;
 
-    public ResolveImports(Directory generatedRoot, List<ResolvableModule> modules) {
+    public ResolveImports(Directory generatedRoot, List<ProtoModule> modules) {
         super(generatedRoot);
         this.modules = ImmutableList.copyOf(modules);
     }

@@ -25,7 +25,9 @@ import io.spine.code.js.ImportPath;
 /**
  * An action performed to resolve particular types of imports.
  *
- * <p>An import resolution is an act of adjusting the import path
+ * <p>
+ *
+ *     An import resolution is an act of adjusting the import path
  * in an {@link ImportSnippet}. In general, it means that the base
  * path of an import is changed e.g. to point out a different directory.
  */
@@ -47,12 +49,12 @@ abstract class ResolveAction {
     }
 
     /**
-     * Resolves an import and replaces the import path.
+     * Resolves an import updating the import path.
      */
     abstract ImportSnippet resolve(ImportSnippet resolvable);
 
     /**
-     * Tells whether the import is supported by the class.
+     * Tells whether the action is applicable to the specified import.
      */
     abstract boolean isApplicableTo(ImportPath importPath);
 

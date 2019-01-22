@@ -27,7 +27,7 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.ImportPath;
 import io.spine.code.js.Module;
 import io.spine.js.generate.resolve.PackagePattern;
-import io.spine.js.generate.resolve.ResolvableModule;
+import io.spine.js.generate.resolve.ProtoModule;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -130,13 +130,13 @@ public class Extension {
         return path.toFile();
     }
 
-    public static List<ResolvableModule> modules(Project project) {
+    public static List<ProtoModule> modules(Project project) {
         Extension extension = extension(project);
         Map<String, List<String>> rawModules = extension.modules;
-        List<ResolvableModule> modules = newArrayList();
+        List<ProtoModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
             List<PackagePattern> patterns = patterns(rawModules.get(moduleName));
-            ResolvableModule module = new ResolvableModule(moduleName, patterns);
+            ProtoModule module = new ProtoModule(moduleName, patterns);
             modules.add(module);
         }
         if (extension.resolveSpineModules) {
@@ -170,14 +170,14 @@ public class Extension {
     }
 
     @VisibleForTesting
-    static List<ResolvableModule> predefinedModules() {
+    static List<ProtoModule> predefinedModules() {
         return ImmutableList.of(
                 spineWeb()
         );
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    private static ResolvableModule spineWeb() {
+    private static ProtoModule spineWeb() {
         String name = Module.spineWeb.artifactName() + ImportPath.separator() + "proto";
         List<PackagePattern> packages = ImmutableList.of(
                 PackagePattern.of("spine.base.*"),
@@ -192,7 +192,7 @@ public class Extension {
                 PackagePattern.of("spine.web.*"),
                 PackagePattern.of("spine")
         );
-        return new ResolvableModule(name, packages);
+        return new ProtoModule(name, packages);
     }
 
     private static List<PackagePattern> patterns(Collection<String> rawPatterns) {

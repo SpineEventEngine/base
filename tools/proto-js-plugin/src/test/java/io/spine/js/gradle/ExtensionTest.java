@@ -23,7 +23,7 @@ package io.spine.js.gradle;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.js.generate.resolve.ResolvableModule;
+import io.spine.js.generate.resolve.ProtoModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -143,7 +143,7 @@ class ExtensionTest {
         String moduleName = "foo-bar";
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, ImmutableList.of());
-        List<ResolvableModule> modules = Extension.modules(project);
+        List<ProtoModule> modules = Extension.modules(project);
         assertThat(modules).hasSize(1);
     }
 
@@ -151,7 +151,7 @@ class ExtensionTest {
     @DisplayName("not include predefined Spine modules")
     void notIncludePredefinedModules() {
         pluginExtension().resolveSpineModules = false;
-        List<ResolvableModule> modules = Extension.modules(project);
+        List<ProtoModule> modules = Extension.modules(project);
         assertThat(modules).containsNoneIn(Extension.predefinedModules());
     }
 
@@ -159,7 +159,7 @@ class ExtensionTest {
     @DisplayName("include predefined Spine modules")
     void includePredefinedModules() {
         pluginExtension().resolveSpineModules = true;
-        List<ResolvableModule> modules = Extension.modules(project);
+        List<ProtoModule> modules = Extension.modules(project);
         assertThat(modules).containsAllIn(Extension.predefinedModules());
     }
 

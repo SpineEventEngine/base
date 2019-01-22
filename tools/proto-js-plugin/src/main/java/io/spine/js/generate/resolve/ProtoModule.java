@@ -21,6 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.proto.PackageName;
 
@@ -31,12 +32,12 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A JavaScript module to resolve in compiled Protobuf files.
+ * A description of a JavaScript module, which provides compiled Protobuf files.
  *
- * <p>The class knows about Protobuf packages provided by the module
- * and if a Protobuf package of the imported file matches one of the packages, then it is resolved.
+ * <p>Describes what Protobuf files are provided using the
+ * {@linkplain PackagePattern patterns} of Protobuf packages.
  */
-public final class ResolvableModule {
+public final class ProtoModule {
 
     private final String name;
     private final List<PackagePattern> packages;
@@ -45,11 +46,11 @@ public final class ResolvableModule {
      * Creates a new instance.
      *
      * @param name
-     *         the name of the module to be resolved
+     *         the name of the module to be resolved, e.g. {@code library/proto}
      * @param packages
-     *         patterns of packages provided by the resolvable module
+     *         patterns of packages provided by the module
      */
-    public ResolvableModule(String name, List<PackagePattern> packages) {
+    public ProtoModule(String name, List<PackagePattern> packages) {
         this.name = checkNotEmptyOrBlank(name);
         this.packages = ImmutableList.copyOf(packages);
     }
@@ -58,13 +59,13 @@ public final class ResolvableModule {
      * Resolves a relative path to a generated Protobuf file.
      *
      * <p>As a result, an import path like {@code ../../spine/core/user_id_pb.js}
-     * is resolved to the {@code moduleName/spine/core/user_id_pb.js} path.
+     * becomes {@code moduleName/spine/core/user_id_pb.js} path.
      */
-    ImportPath resolve(ImportPath resolvable) {
-        PackageName packageName = resolvable.fileName()
-                                            .protoPackage();
+    ImportPath resolve(ImportPath importPath) {
+        FileName fileName = importPath.fileName();
+        PackageName packageName = fileName.protoPackage();
         checkState(provides(packageName));
-        String resolved = name + ImportPath.separator() + resolvable.fileName();
+        String resolved = name + ImportPath.separator() + fileName;
         return ImportPath.of(resolved);
     }
 
@@ -89,10 +90,10 @@ public final class ResolvableModule {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ResolvableModule)) {
+        if (!(o instanceof ProtoModule)) {
             return false;
         }
-        ResolvableModule module = (ResolvableModule) o;
+        ProtoModule module = (ProtoModule) o;
         return name.equals(module.name) &&
                 packages.equals(module.packages);
     }
