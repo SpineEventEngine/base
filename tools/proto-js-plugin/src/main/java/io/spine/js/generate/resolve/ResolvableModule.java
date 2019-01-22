@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A JavaScript module to resolve in compiled Protobuf files.
@@ -49,7 +50,7 @@ public final class ResolvableModule {
      *         patterns of packages provided by the resolvable module
      */
     public ResolvableModule(String name, List<PackagePattern> packages) {
-        this.name = name;
+        this.name = checkNotEmptyOrBlank(name);
         this.packages = ImmutableList.copyOf(packages);
     }
 

@@ -24,9 +24,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Module should")
 class ModuleTest {
+
+    @Test
+    @DisplayName("not have empty name")
+    void notAllowEmptyName() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new Module("")
+        );
+    }
 
     @Test
     @DisplayName("provide the artifact name")
@@ -34,5 +44,12 @@ class ModuleTest {
         String name = "someJsModule";
         Module module = new Module(name);
         assertThat(module.artifactName()).isEqualTo(name);
+    }
+
+    @Test
+    @DisplayName("know about Spine Web")
+    void spineWeb() {
+        Module module = Module.spineWeb;
+        assertThat(module.artifactName()).isEqualTo("spine-web");
     }
 }

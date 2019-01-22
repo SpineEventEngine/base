@@ -40,7 +40,7 @@ public final class PackageName extends StringTypeValue {
     public static final String SEPARATOR = ".";
 
     private PackageName(String value) {
-        super(checkNotEmptyOrBlank(value));
+        super(value);
     }
 
     /**
@@ -51,11 +51,12 @@ public final class PackageName extends StringTypeValue {
      * @return a new instance
      */
     public static PackageName of(String value) {
+        checkNotEmptyOrBlank(value);
         return new PackageName(value);
     }
 
     /**
-     * Tells whether the package is nested into the specified package.
+     * Tells whether the package is nested in the specified package.
      *
      * @param target
      *         the package name to check

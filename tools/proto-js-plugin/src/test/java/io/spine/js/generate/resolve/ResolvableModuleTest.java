@@ -25,6 +25,8 @@ import io.spine.code.js.ImportPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,9 +34,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ResolvableModuleTest {
 
     private static final String moduleName = "spine-js";
-    private final ResolvableModule module = new ResolvableModule(moduleName, ImmutableList.of(
+    private static final List<PackagePattern> patterns = ImmutableList.of(
             PackagePattern.of("spine")
-    ));
+    );
+    private final ResolvableModule module = new ResolvableModule(moduleName, patterns);
+
+    @Test
+    @DisplayName("not have an empty module name")
+    void notHaveEmptyModuleName() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new ResolvableModule("", patterns)
+        );
+    }
 
     @Test
     @DisplayName("resolve an import path if the file is provided by module")

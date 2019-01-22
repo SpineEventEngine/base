@@ -20,14 +20,32 @@
 
 package io.spine.code.proto;
 
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageName should")
 class PackageNameTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
+    }
+
+    @Test
+    @DisplayName("not be empty")
+    void notAcceptEmptyString() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> PackageName.of("")
+        );
+    }
 
     @Test
     @DisplayName("match parent packages")

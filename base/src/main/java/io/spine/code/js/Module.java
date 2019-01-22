@@ -27,10 +27,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class Module {
 
+    private static final String SPINE_MODULE_PREFIX = "spine-";
     /**
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
-    public static final Module spineWeb = new Module("spine-web");
+    public static final Module spineWeb = new Module(SPINE_MODULE_PREFIX + "web");
 
     private final String name;
 
@@ -50,5 +51,12 @@ public final class Module {
      */
     public String artifactName() {
         return name;
+    }
+
+    /**
+     * Obtains the prefix used for Spine artifacts.
+     */
+    public static String spinePrefix() {
+        return SPINE_MODULE_PREFIX;
     }
 }

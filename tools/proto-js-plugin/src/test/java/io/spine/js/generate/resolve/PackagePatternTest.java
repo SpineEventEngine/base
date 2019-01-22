@@ -20,16 +20,34 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.testing.NullPointerTester;
 import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackagePattern should")
 class PackagePatternTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(PackagePattern.class);
+    }
+
+    @Test
+    @DisplayName("not have empty package name")
+    void notHaveEmptyPackageName() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> PackagePattern.of("")
+        );
+    }
 
     @Test
     @DisplayName("obtain package name for the non-nested format")

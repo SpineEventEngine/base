@@ -20,21 +20,39 @@
 
 package io.spine.code.js;
 
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ImportPath should")
 class ImportPathTest {
 
     @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(ImportPath.class);
+    }
+
+    @Test
+    @DisplayName("not be an empty string")
+    void notAcceptEmptyString() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ImportPath.of("")
+        );
+    }
+
+    @Test
     @DisplayName("obtain the file path skipping the library name")
     void importedFilePathSkippingLibrary() {
         ImportPath importPath = ImportPath.of("lib/main.js");
-        ImportPath filePath = importPath.skipLibrary();
+        ImportPath filePath = importPath.stripLibrary();
         assertThat(filePath.value()).isEqualTo("main.js");
     }
 
@@ -42,7 +60,7 @@ class ImportPathTest {
     @DisplayName("obtain the file path relative to the current directory")
     void importedFilePathRelativeToCurrentDir() {
         ImportPath fileImport = ImportPath.of("./file.js");
-        ImportPath filePath = fileImport.skipLibrary();
+        ImportPath filePath = fileImport.stripLibrary();
         assertThat(filePath.value()).isEqualTo("file.js");
     }
 
@@ -51,7 +69,7 @@ class ImportPathTest {
     void importedFilePathRelativeToParentDir() {
         String sourcePath = "../file.js";
         ImportPath fileImport = ImportPath.of(sourcePath);
-        ImportPath filePath = fileImport.skipLibrary();
+        ImportPath filePath = fileImport.stripLibrary();
         assertThat(filePath.value()).isEqualTo(sourcePath);
     }
 
@@ -74,7 +92,7 @@ class ImportPathTest {
     @Test
     @DisplayName("recognize a Spine library")
     void recognizeSpine() {
-        ImportPath importPath = ImportPath.of("spine/something");
+        ImportPath importPath = ImportPath.of("spine-lib/something");
         assertTrue(importPath.isSpine());
     }
 

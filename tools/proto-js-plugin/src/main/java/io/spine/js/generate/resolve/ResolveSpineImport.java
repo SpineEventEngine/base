@@ -61,7 +61,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
     @Override
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath filePath = resolvable.path()
-                                        .skipLibrary();
+                                        .stripLibrary();
         String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
         ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
         return resolved;
@@ -82,7 +82,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
      */
     @Override
     boolean shouldNotResolve(ImportPath importPath) {
-        ImportPath filePath = importPath.skipLibrary();
+        ImportPath filePath = importPath.stripLibrary();
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath.value());
         boolean presentInModule = absolutePath.toFile()
                                               .exists();

@@ -23,10 +23,12 @@ package io.spine.code.js;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A path to a file used in a JavaScript import statement.
  */
+@SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
 public final class ImportPath extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
@@ -34,8 +36,6 @@ public final class ImportPath extends StringTypeValue {
     private static final String IMPORT_PATH_SEPARATOR = "/";
     private static final String PARENT_DIR = "../";
     private static final String CURRENT_DIR = "./";
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
-    private static final String SPINE_SIGN = "spine";
 
     private ImportPath(String value) {
         super(value);
@@ -49,15 +49,16 @@ public final class ImportPath extends StringTypeValue {
      * @return a new instance
      */
     public static ImportPath of(String value) {
+        checkNotEmptyOrBlank(value);
         return new ImportPath(value);
     }
 
     /**
-     * Obtains the path of the imported file skipping the library name.
+     * Obtains the path of the imported file stripping the library name.
      *
      * <p>Does nothing if a library name if absent.
      */
-    public ImportPath skipLibrary() {
+    public ImportPath stripLibrary() {
         String path = value();
         if (isRelativeToParent()) {
             return this;
@@ -100,7 +101,7 @@ public final class ImportPath extends StringTypeValue {
      * @return {@code true} if the import path starts with {@code spine}, {@code false} otherwise
      */
     public boolean isSpine() {
-        boolean result = value().startsWith(SPINE_SIGN);
+        boolean result = value().startsWith(Module.spinePrefix());
         return result;
     }
 
