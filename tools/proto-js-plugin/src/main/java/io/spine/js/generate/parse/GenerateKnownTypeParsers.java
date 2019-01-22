@@ -116,9 +116,11 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * Generates imports required by the code for parsing of messages.
      */
     private static CodeLines imports() {
-        String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
+        String abstractParserImport = Import.library(OBJECT_PARSER_FILE)
+                                            .toDefault()
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
-        String parsersImport = Import.libraryDefault(TYPE_PARSERS_FILE)
+        String parsersImport = Import.library(TYPE_PARSERS_FILE)
+                                     .toDefault()
                                      .namedAs(TYPE_PARSERS_IMPORT_NAME);
         CodeLines lines = new CodeLines();
         lines.append(abstractParserImport);
