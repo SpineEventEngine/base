@@ -58,8 +58,8 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
 
     @Override
     boolean isApplicableTo(ImportPath importPath) {
-        FileName fileName = importPath.fileName();
-        boolean result = importPath.isRelative() && fileName.isGeneratedProto();
+        boolean result = importPath.isRelative() && importPath.fileName()
+                                                              .isGeneratedProto();
         return result;
     }
 

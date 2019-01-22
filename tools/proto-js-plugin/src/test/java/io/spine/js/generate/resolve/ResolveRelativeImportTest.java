@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ResolveRelativeImport action should")
@@ -42,11 +43,19 @@ class ResolveRelativeImportTest {
                                                                            ImmutableList.of());
 
     @Test
-    @DisplayName("be applicable only to relative imports of generated Protobufs")
+    @DisplayName("be applicable to relative imports of generated Protobufs")
     void beApplicableToRelativeProtoImports() {
         ImportPath importPath = ImportPath.of("../options_pb.js");
         boolean applicable = action.isApplicableTo(importPath);
         assertTrue(applicable);
+    }
+
+    @Test
+    @DisplayName("not be applicable to library imports")
+    void notApplicableToLibraryImports() {
+        ImportPath importPath = ImportPath.of("google-protobuf");
+        boolean applicable = action.isApplicableTo(importPath);
+        assertFalse(applicable);
     }
 
     @Test

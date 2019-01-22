@@ -67,7 +67,8 @@ public final class FileName extends AbstractFileName<FileName> {
     @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     public static FileName of(String value) {
         checkNotEmptyOrBlank(value);
-        checkArgument(value.endsWith(EXTENSION));
+        checkArgument(value.endsWith(EXTENSION),
+                      "`%s` is expected to contain `.js` extension.", value);
         return new FileName(value);
     }
 
