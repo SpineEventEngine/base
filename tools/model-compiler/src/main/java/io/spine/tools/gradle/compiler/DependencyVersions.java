@@ -26,9 +26,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static org.gradle.internal.impldep.com.google.common.base.Charsets.UTF_8;
 
 final class DependencyVersions {
 
