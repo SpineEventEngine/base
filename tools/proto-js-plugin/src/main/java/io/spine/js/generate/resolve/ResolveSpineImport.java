@@ -55,8 +55,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
 
     ResolveSpineImport(Directory generatedRoot) {
         super();
-        checkNotNull(generatedRoot);
-        this.generatedRoot = generatedRoot;
+        this.generatedRoot = checkNotNull(generatedRoot);
     }
 
     @Override

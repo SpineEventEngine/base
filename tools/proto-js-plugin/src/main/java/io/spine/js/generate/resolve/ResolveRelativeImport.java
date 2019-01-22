@@ -30,6 +30,8 @@ import io.spine.logging.Logging;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An action resolving relative imports of generated Protobuf files.
  *
@@ -50,7 +52,7 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
 
     ResolveRelativeImport(Directory generatedRoot, List<ResolvableModule> modules) {
         super();
-        this.generatedRoot = generatedRoot;
+        this.generatedRoot = checkNotNull(generatedRoot);
         this.modules = ImmutableList.copyOf(modules);
     }
 
