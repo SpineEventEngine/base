@@ -21,12 +21,14 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.Options;
 import io.spine.tools.protoc.insert.MessageInterfaceGenerator;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,9 +54,11 @@ public class Plugin {
     /**
      * The entry point of the program.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidProtocolBufferException {
         CodeGeneratorRequest request = readRequest();
         SpineProtoGenerator generator = MessageInterfaceGenerator.instance();
+        byte[] parameter = Base64.getDecoder().decode(request.getParameter());
+        InterfaceTarget target = InterfaceTarget.parseFrom(parameter);
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

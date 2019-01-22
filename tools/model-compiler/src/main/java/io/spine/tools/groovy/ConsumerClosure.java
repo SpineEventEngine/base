@@ -38,11 +38,6 @@ public final class ConsumerClosure<T> extends Closure<Void> {
         this.action = action;
     }
 
-    public static <T> ConsumerClosure<T> closure(Class<T> thisClass, Action<? super T> action) {
-        checkNotNull(thisClass);
-        return closure(action);
-    }
-
     public static <T> ConsumerClosure<T> closure(Action<? super T> action) {
         checkNotNull(action);
         return new ConsumerClosure<>(action);

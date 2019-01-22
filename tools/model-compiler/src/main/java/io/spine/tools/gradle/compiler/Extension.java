@@ -342,8 +342,12 @@ public class Extension {
 
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
-        annotations = annotations != null ? annotations : new CodeGenAnnotations();
         return annotations;
+    }
+
+    public static GeneratedInterfaces getGeneratedInterfaces(Project project) {
+        GeneratedInterfaces interfaces = spineProtobuf(project).generateInterfaces;
+        return interfaces;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {

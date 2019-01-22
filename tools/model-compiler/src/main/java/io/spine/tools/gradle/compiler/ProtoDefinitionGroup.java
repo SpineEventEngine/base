@@ -20,16 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
-public final class ProtoDefinitionGroup {
+public interface ProtoDefinitionGroup {
 
-    ProtoDefinitionGroup() {
-    }
+    void markWith(String interfaceName);
 
-    public void markWith(String interfaceName) {
-
-    }
-
-    public void ignore() {
-
-    }
+    void ignore();
 }

@@ -20,28 +20,29 @@
 
 package io.spine.tools.gradle.compiler;
 
-import org.checkerframework.checker.regex.qual.Regex;
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Set;
+import java.util.Optional;
 
-import static com.google.common.collect.Sets.newConcurrentHashSet;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class GeneratedInterfaces {
+abstract class AbstractProtoDefinitionGroup implements ProtoDefinitionGroup {
 
-    private final Set<PatternDefinitionGroup> patternGroups;
-    private final UuidDefinitionGroup uuidDefinitionGroup = new UuidDefinitionGroup();
+    private @Nullable ClassName interfaceName;
 
-    GeneratedInterfaces() {
-        this.patternGroups = newConcurrentHashSet();
+    @Override
+    public void markWith(String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
     }
 
-    public ProtoDefinitionGroup filePattern(@Regex String pattern) {
-        PatternDefinitionGroup group = new PatternDefinitionGroup(pattern);
-        patternGroups.add(group);
-        return group;
+    @Override
+    public void ignore() {
+        this.interfaceName = null;
     }
 
-    public ProtoDefinitionGroup uuidMessage() {
-        return uuidDefinitionGroup;
+    final Optional<ClassName> interfaceName() {
+        return Optional.ofNullable(interfaceName);
     }
 }

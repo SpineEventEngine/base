@@ -20,28 +20,40 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.checkerframework.checker.regex.qual.Regex;
 
-import java.util.Set;
+final class PatternDefinitionGroup extends AbstractProtoDefinitionGroup {
 
-import static com.google.common.collect.Sets.newConcurrentHashSet;
+    private final String pattern;
 
-public final class GeneratedInterfaces {
-
-    private final Set<PatternDefinitionGroup> patternGroups;
-    private final UuidDefinitionGroup uuidDefinitionGroup = new UuidDefinitionGroup();
-
-    GeneratedInterfaces() {
-        this.patternGroups = newConcurrentHashSet();
+    PatternDefinitionGroup(@Regex String pattern) {
+        this.pattern = pattern;
     }
 
-    public ProtoDefinitionGroup filePattern(@Regex String pattern) {
-        PatternDefinitionGroup group = new PatternDefinitionGroup(pattern);
-        patternGroups.add(group);
-        return group;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PatternDefinitionGroup group = (PatternDefinitionGroup) o;
+        return Objects.equal(pattern, group.pattern);
     }
 
-    public ProtoDefinitionGroup uuidMessage() {
-        return uuidDefinitionGroup;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(pattern);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("pattern", pattern)
+                          .add("interfaceName", interfaceName().orElse(null))
+                          .toString();
     }
 }

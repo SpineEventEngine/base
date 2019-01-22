@@ -78,8 +78,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         project.getConvention()
                .getPlugin(ProtobufConvention.class)
                .protobuf(closure(
-                       ProtobufConfigurator.class,
-                       protobuf -> configureProtobuf(project, protobuf)
+                       (ProtobufConfigurator protobuf) -> configureProtobuf(project, protobuf)
                ));
     }
 
@@ -87,19 +86,18 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         DefaultJavaProject defaultProject = at(project.getProjectDir());
         protobuf.setGeneratedFilesBaseDir(defaultProject.generated().toString());
         protobuf.protoc(closure(
-                ExecutableLocator.class,
-                protocLocator -> protocLocator.setArtifact(Artifact.newBuilder()
-                                                                   .setGroup(PROTOBUF_GROUP)
-                                                                   .setName(PROTOC)
-                                                                   .setVersion(VERSIONS.protobuf())
-                                                                   .build()
-                                                                   .notation())
+                (ExecutableLocator protocLocator) -> protocLocator.setArtifact(
+                        Artifact.newBuilder()
+                                .setGroup(PROTOBUF_GROUP)
+                                .setName(PROTOC)
+                                .setVersion(VERSIONS.protobuf())
+                                .build()
+                                .notation())
         ));
         protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
-                GenerateProtoTaskCollection.class,
-                tasks -> configureProtocTasks(tasks, copyPluginJar)
+                (GenerateProtoTaskCollection tasks) -> configureProtocTasks(tasks, copyPluginJar)
         ));
     }
 

@@ -20,28 +20,5 @@
 
 package io.spine.tools.gradle.compiler;
 
-import org.checkerframework.checker.regex.qual.Regex;
-
-import java.util.Set;
-
-import static com.google.common.collect.Sets.newConcurrentHashSet;
-
-public final class GeneratedInterfaces {
-
-    private final Set<PatternDefinitionGroup> patternGroups;
-    private final UuidDefinitionGroup uuidDefinitionGroup = new UuidDefinitionGroup();
-
-    GeneratedInterfaces() {
-        this.patternGroups = newConcurrentHashSet();
-    }
-
-    public ProtoDefinitionGroup filePattern(@Regex String pattern) {
-        PatternDefinitionGroup group = new PatternDefinitionGroup(pattern);
-        patternGroups.add(group);
-        return group;
-    }
-
-    public ProtoDefinitionGroup uuidMessage() {
-        return uuidDefinitionGroup;
-    }
+final class UuidDefinitionGroup extends AbstractProtoDefinitionGroup {
 }

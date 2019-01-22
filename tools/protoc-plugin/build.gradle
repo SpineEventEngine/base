@@ -24,6 +24,7 @@ group 'io.spine.tools'
 
 dependencies {
     implementation project(':base')
+    implementation project(':protoc-api')
     implementation deps.gen.javaPoet
 
     testCompile project(':base')
@@ -31,12 +32,11 @@ dependencies {
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = deps.build.protoc
-    }
 }
 
 jar {
+    dependsOn project(':protoc-api').jar
+    
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
     }

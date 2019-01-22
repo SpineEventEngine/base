@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package spine.tools.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "ConfigProto";
+option java_multiple_files = true;
+
+message InterfaceName {
+
+    string fqn = 1 [(required) = true];
+}
+
+message UuidInterface {
+
+    InterfaceName interface_name = 1 [(required) = true];
+}
+
+message InterfaceTarget {
+
+    InterfaceName interface_name = 1 [(required) = true];
+
+    string file_pattern = 2 [(required) = true];
+}

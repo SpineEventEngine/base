@@ -34,6 +34,7 @@ group = 'io.spine.tools'
 dependencies {
     implementation project(':plugin-base')
     implementation project(':base')
+    implementation project(':protoc-api')
 
     implementation deps.gen.javaPoet
 
