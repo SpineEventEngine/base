@@ -24,7 +24,6 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.PackageName;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,22 +32,27 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FileName should")
 class FileNameTest {
 
-    private FileDescriptor file;
-
-    @BeforeEach
-    void setUp() {
-        file = Any.getDescriptor()
-                  .getFile();
-    }
+    private final FileDescriptor file = Any.getDescriptor()
+                                           .getFile();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(FileName.class);
+    }
+
+    @Test
+    @DisplayName("not accept names without extension")
+    void notAcceptNameWithoutExtension() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileName.of("no-extension")
+        );
     }
 
     @Test

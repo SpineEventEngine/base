@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 import io.spine.code.proto.PackageName;
@@ -37,14 +36,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * The JavaScript source file name.
- *
- * <p>When being created from {@link FileDescriptor}, the {@code .proto} extension is replaced by
- * {@code _pb.js} suffix, as per Protobuf standard.
- *
- * <p>For example, the {@code spine/options.proto} becomes {spine/options_pb.js}.
- *
- * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
+ * A name of a JavaScript source file.
  */
 public final class FileName extends AbstractFileName<FileName> {
 
@@ -73,25 +65,23 @@ public final class FileName extends AbstractFileName<FileName> {
     }
 
     /**
-     * Gets the generated JavaScript file name for the proto file.
+     * Obtains the name of the generated JavaScript file using the file descriptor.
+     *
+     * <p>All generated files have {@code _pb.js} suffix,
+     * so the descriptor with name {@code spine/options.proto}
+     * becomes {@code spine/options_pb.js}.
+     *
+     * <p>The resulting name also includes the path denoting a Protobuf package.
      *
      * @param descriptor
      *         the descriptor of the file
-     * @return the generated JavaScript file name
+     * @return the name of a generated JavaScript file
      */
-    public static FileName from(FileDescriptorProto descriptor) {
+    public static FileName from(FileDescriptor descriptor) {
         checkNotNull(descriptor);
         io.spine.code.proto.FileName protoFileName = io.spine.code.proto.FileName.from(descriptor);
         String fileName = protoFileName.nameWithoutExtension() + protoEnding();
         return of(fileName);
-    }
-
-    /**
-     * Obtains the file name from the passed descriptor.
-     */
-    public static FileName from(FileDescriptor descriptor) {
-        checkNotNull(descriptor);
-        return from(descriptor.toProto());
     }
 
     /**
