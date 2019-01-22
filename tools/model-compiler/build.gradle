@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+
+import static com.google.common.io.Files.createParentDirs
 
 ext {
     roasterVersion = '2.20.1.Final'
@@ -94,24 +94,28 @@ sourceSets {
  *
  * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
  */
-task prepareProtocConfig(type: Copy) {
-    description = "Prepares the spine-protoc.gradle.template file"
-
-    from "./spine-protoc.gradle.template"
-    into "./src/main/resources/"
-
-    rename { "./spine-protoc.gradle" }
+task prepareProtocConfigVersions {
+    description = "Prepares the versions.properties file."
     
-    filter(ReplaceTokens,
-            tokens: ['baseVersion': "'${spineVersion}'".toString(),
-                     'pbVersion'  : "'${deps.versions.protobuf}'".toString(),
-                     'gRPCVersion': "'${deps.versions.grpc}'".toString(),
-                     // See `DefaultProject.tempArtifacts()`
-                     'spineDir'   : "'.spine'"])
-    outputs.upToDateWhen { false }
+    final def file = file("$projectDir/generated/main/resources/versions.properties")
+    
+    outputs.file(file)
+    
+    final Properties versions = new Properties()
+    versions.setProperty("baseVersion", spineBaseVersion)
+    versions.setProperty("protobufVersion", spineBaseVersion)
+    versions.setProperty("gRPCVersion", spineBaseVersion)
+    
+    doLast {
+        createParentDirs(file)
+        file.createNewFile()
+        file.withOutputStream { final stream ->
+            versions.store(stream, "Versions of dependencies of the Model Compiler plugin and the Spine Protoc plugin.")
+        }
+    }
 }
 
-processResources.dependsOn prepareProtocConfig
+processResources.dependsOn prepareProtocConfigVersions
 
 final def copyPluginJarAction = {
     final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile
