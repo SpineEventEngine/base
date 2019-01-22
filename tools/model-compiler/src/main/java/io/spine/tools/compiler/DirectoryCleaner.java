@@ -43,8 +43,10 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
     public static void deleteDirs(List<String> dirs) {
         for (String dirPath : dirs) {
             File file = new File(dirPath);
-            if (file.exists() && file.isDirectory()) {
-                deleteRecursively(file.toPath());
+            if (file.isDirectory()) {
+                if (file.exists()) {
+                    deleteRecursively(file.toPath());
+                }
             } else {
                 String msg = "Trying to delete '{}' which is not a directory";
                 log().warn(msg, file.getAbsolutePath());
