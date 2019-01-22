@@ -78,8 +78,9 @@ protobuf {
 }
 
 sourceSets {
-    main{
+    main {
         java.srcDirs += "$projectDir/generated/main/spine"
+        resources.srcDirs += "$projectDir/generated/main/resources"
         resources.srcDirs += "$buildDir/descriptors/main"
     }
     test {

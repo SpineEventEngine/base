@@ -32,7 +32,7 @@ import static org.gradle.internal.impldep.com.google.common.base.Charsets.UTF_8;
 
 final class DependencyVersions {
 
-    private static final String RESOURCE_NAME = "versions.properties";
+    private static final String RESOURCE_NAME = "/versions.properties";
 
     private final String spineBase;
     private final String protobuf;
