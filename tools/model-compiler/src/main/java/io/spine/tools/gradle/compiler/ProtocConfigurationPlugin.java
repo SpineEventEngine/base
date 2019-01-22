@@ -59,6 +59,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static final String PLUGIN_DEPENDENCY_TEMPLATE =
             "io.spine.tools:spine-protoc-plugin:%s@jar";
 
+    private static final DependencyVersions VERSIONS = DependencyVersions.load();
+
     @Override
     public void apply(Project project) {
         project.getPluginManager()
@@ -79,7 +81,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protobuf.setGeneratedFilesBaseDir(defaultProject.generated().toString());
         protobuf.protoc(closure(
                 ExecutableLocator.class,
-                protocLocator -> protocLocator.setArtifact("com.google.protobuf:protoc:3.6.1")
+                protocLocator -> protocLocator.setArtifact("com.google.protobuf:protoc:" + VERSIONS.protobuf())
         ));
         protobuf.plugins(closure(
                 NamedDomainObjectContainer.class,
@@ -94,19 +96,18 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.GRPC.name,
-                       locator -> locator.setArtifact("io.grpc:protoc-gen-grpc-java:1.15.0"));
+                       locator -> locator.setArtifact("io.grpc:protoc-gen-grpc-java:" + VERSIONS.grpc()));
         plugins.create(ProtocPlugin.SPINE.name, locator -> {
             boolean windows = current().isWindows();
             String scriptExt = windows ? "bat" : "sh";
-            locator.setArtifact("io.spine.tools:spine-protoc-plugin:" + "1.0.0-SNAPSHOT:" + "script@" + scriptExt);
+            locator.setArtifact("io.spine.tools:spine-protoc-plugin:" + VERSIONS.spineBase() + ":script@" + scriptExt);
         });
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
         Configuration fetch = project.getConfigurations()
                                      .maybeCreate(FETCH.getValue());
-        // TODO:2019-01-21:dmytro.dashenkov: Provide proper version.
-        String dependency = format(PLUGIN_DEPENDENCY_TEMPLATE, "1.0.0-SNAPSHOT");
+        String dependency = format(PLUGIN_DEPENDENCY_TEMPLATE, VERSIONS.spineBase());
         Dependency protocPluginDependency = project.getDependencies()
                                                    .add(fetch.getName(), dependency);
         checkNotNull(protocPluginDependency,
