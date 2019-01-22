@@ -28,7 +28,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
-import org.slf4j.Logger;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -41,12 +40,8 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 
 /**
  * Composes enrichment map for multiple message declarations.
- *
- * @author Alexander Litus
- * @author Alex Tymchenko
- * @author Alexander Yevsyukov
  */
-class EnrichmentMap implements Logging {
+final class EnrichmentMap implements Logging {
 
     private static final String EMPTY_TYPE_NAME = "";
 
@@ -76,7 +71,7 @@ class EnrichmentMap implements Logging {
         for (DescriptorProto msg : messages) {
             handleMessage(multimap, msg);
         }
-        log().debug("Found enrichments: {}", multimap.toString());
+        _debug("Found enrichments: {}", multimap);
         Map<String, String> merged = merge(multimap);
         return merged;
     }
@@ -91,7 +86,7 @@ class EnrichmentMap implements Logging {
      * event types as values.
      */
     private Map<String, String> merge(HashMultimap<String, String> source) {
-        log().debug("Merging duplicating entries");
+        _debug("Merging duplicating entries");
         ImmutableMap.Builder<String, String> mergedResult = ImmutableMap.builder();
         for (String key : source.keySet()) {
             Set<String> valuesPerKey = source.get(key);
@@ -136,42 +131,40 @@ class EnrichmentMap implements Logging {
         Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
         if (entryFromInnerMsg != null) {
             put(entryFromInnerMsg, targetMap);
-            log().debug("Found enrichment: {} -> {}",
-                        entryFromInnerMsg.getKey(),
-                        entryFromInnerMsg.getValue());
+            _debug("Found enrichment: {} -> {}",
+                   entryFromInnerMsg.getKey(),
+                   entryFromInnerMsg.getValue());
         } else {
-            log().debug("No enrichment or event annotations found for message {}", msg.getName());
+            _debug("No enrichment or event annotations found for message {}", msg.getName());
         }
     }
 
-    @SuppressWarnings("MethodWithMoreThanThreeNegations")
     private Map<String, String> scanMsg(DescriptorProto msg) {
         ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
         String messageName = packagePrefix + msg.getName();
 
-        Logger log = log();
         // Treating current {@code msg} as an enrichment object.
-        log.debug("Scanning message {} for the enrichment annotations", messageName);
+        _debug("Scanning message {} for the enrichment annotations", messageName);
         Collection<TypeName> eventTypes = eventType.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
-            log.debug("Found target events: {}", mergedValue);
+            _debug("Found target events: {}", mergedValue);
             result.put(messageName, mergedValue);
         } else {
-            log.debug("No target events found");
+            _debug("No target events found");
         }
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
-        log.debug("Scanning message {} for the enrichment target annotations", messageName);
+        _debug("Scanning message {} for the enrichment target annotations", messageName);
         Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
         if (!enrichmentTypes.isEmpty()) {
-            log.debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
+            _debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
             for (TypeName enrichmentType : enrichmentTypes) {
                 String typeNameValue = enrichmentType.value();
                 result.put(typeNameValue, messageName);
             }
         } else {
-            log.debug("No enrichments for event {} found", messageName);
+            _debug("No enrichments for event {} found", messageName);
         }
 
         return result.build();
@@ -179,7 +172,7 @@ class EnrichmentMap implements Logging {
 
     private Map<String, String> scanFields(DescriptorProto msg) {
         String msgName = msg.getName();
-        log().debug("Scanning fields of message {} for the enrichment annotations", msgName);
+        _debug("Scanning fields of message {} for the enrichment annotations", msgName);
         Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
@@ -193,8 +186,7 @@ class EnrichmentMap implements Logging {
 
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
     private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
-        Logger log = log();
-        log.debug("Scanning inner messages of {} message for the annotations", msg.getName());
+        _debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
                 if (ByOption.isSetFor(field)) {
@@ -203,9 +195,9 @@ class EnrichmentMap implements Logging {
                             outerEventName +
                                     TypeName.NESTED_TYPE_SEPARATOR +
                                     innerMsg.getName();
-                    log.debug("'by' option found on field {} targeting outer event {}",
-                              field.getName(),
-                              outerEventName);
+                    _debug("'by' option found on field {} targeting outer event {}",
+                           field.getName(),
+                           outerEventName);
                     return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
                 }
             }

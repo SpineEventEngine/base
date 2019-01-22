@@ -21,17 +21,16 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.code.generate.Indent;
-import io.spine.logging.Logging;
 import io.spine.tools.compiler.validation.VBuilderGenerator;
+import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -40,7 +39,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
@@ -78,14 +76,12 @@ import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuild
  * }</pre>
  *
  * @see io.spine.validate.ValidatingBuilder
- * @see io.spine.validate.AbstractValidatingBuilder
  */
 public class ValidatingBuilderGenPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Logger log = log();
-        log.debug("Preparing to generate validating builders.");
+        _debug("Preparing to generate validating builders.");
         Action<Task> mainScopeAction =
                 createAction(project,
                              () -> getMainDescriptorSetPath(project),
@@ -97,7 +93,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                         .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
-        log.debug("Preparing to generate test validating builders.");
+        _debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
                 createAction(project,
                              () -> getTestDescriptorSetPath(project),
@@ -109,8 +105,8 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                         .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
-        log.debug("Validating builders generation phase initialized with tasks: {}, {}.",
-                  generateValidator, generateTestValidator);
+        _debug("Validating builders generation phase initialized with tasks: {}, {}.",
+               generateValidator, generateTestValidator);
     }
 
     private Action<Task> createAction(Project project,
@@ -127,77 +123,34 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
      *           of creation Gradle project is not fully evaluated, and the values
      *           are not yet defined.
      */
-    private static class GenAction implements Action<Task>, Logging {
-
-        private final ValidatingBuilderGenPlugin plugin;
-
-        /**
-         * Source Gradle project.
-         */
-        private final Project project;
-
-        /**
-         * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
-         */
-        private final Supplier<String> descriptorPath;
-
-        /**
-         * Obtains an absolute path to the folder, serving as a target
-         * for the generation for the given scope.
-         */
-        private final Supplier<String> targetDirPath;
-
-        /**
-         * Obtains an absolute path to the folder, containing the {@code .proto} files for
-         * the given scope.
-         */
-        private final Supplier<String> protoSrcDirPath;
+    private static class GenAction extends CodeGenerationAction {
 
         private GenAction(ValidatingBuilderGenPlugin plugin,
                           Project project,
                           Supplier<String> descriptorPath,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            this.plugin = plugin;
-            this.project = project;
-            this.descriptorPath = descriptorPath;
-            this.targetDirPath = targetDirPath;
-            this.protoSrcDirPath = protoSrcDirPath;
+            super(plugin, project, descriptorPath, targetDirPath, protoSrcDirPath);
         }
 
         @Override
         public void execute(Task task) {
-            if (!isGenerateValidatingBuilders(project)) {
+            if (!isGenerateValidatingBuilders(project())) {
                 return;
             }
-            File setFile = resolve(descriptorPath);
-            if (!setFile.exists()) {
-                plugin.logMissingDescriptorSetFile(setFile);
+            Optional<File> setFile = descriptorSetFile();
+            if (!setFile.isPresent()) {
                 return;
             }
 
-            Indent indent = getIndent(project);
-            File protoSrcDir = resolve(protoSrcDirPath);
-            File targetDir = resolve(targetDirPath);
-            VBuilderGenerator generator = new VBuilderGenerator(protoSrcDir, targetDir, indent);
-            generator.process(setFile);
+            VBuilderGenerator generator =
+                    new VBuilderGenerator(protoSrcDir(), targetDir(), indent());
+            generator.process(setFile.get());
         }
 
-        private File resolve(Supplier<String> path) {
-            String pathname = path.get();
-            _debug("Resolving path: {}", pathname);
-            Path normalized = new File(pathname).toPath()
-                                                .normalize();
-            File result = normalized.toAbsolutePath()
-                                    .toFile();
-            return result;
+        @Override
+        protected Indent getIndent(Project project) {
+            return Extension.getIndent(project);
         }
-    }
-
-    /** Opens the method to the helper class. */
-    @SuppressWarnings("RedundantMethodOverride")
-    @Override
-    protected void logMissingDescriptorSetFile(File setFile) {
-        super.logMissingDescriptorSetFile(setFile);
     }
 }
