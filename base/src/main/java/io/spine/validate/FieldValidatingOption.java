@@ -20,10 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.FieldDeclaration;
-
-import java.util.List;
 
 /**
  * An option that validates a field.
@@ -31,50 +27,10 @@ import java.util.List;
  * @param <T>
  *         type of information that this option holds
  */
-abstract class FieldValidatingOption<T> implements ValidatingOption<T, FieldValue> {
-
-    /**
-     * Defines whether this option is applicable to the specified field.
-     *
-     * <p>Example: a {@link io.spine.option.MaxOption max option} is applicable to
-     * numeric fields only.
-     *
-     * @param field
-     *         a field applicability to which is checked
-     * @return {@code true} if this option can be applied to the specified field, {@code false}
-     *         otherwise
-     */
-    abstract boolean applicableTo(FieldDeclaration field);
-
-    /**
-     * Returns the exception that is thrown if this option was found to be inapplicable to the
-     * specified field.
-     */
-    abstract OptionInapplicableException onInapplicable(FieldDeclaration declaration);
-
-    /**
-     * Defines the logic for validation of the specified field.
-     *
-     * @param value
-     *         field that is being validated
-     * @return a list of constraint violations, if any were found when validating the specified
-     *         field
-     */
-    abstract List<ConstraintViolation> applyValidatingRules(FieldValue value);
+abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValue<F>> {
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
-    abstract boolean optionPresentAt(FieldValue value);
-
-    @Override
-    public final List<ConstraintViolation> validateAgainst(FieldValue value) {
-        FieldDeclaration declaration = value.declaration();
-        if (optionPresentAt(value)) {
-            if (applicableTo(declaration)) {
-                return applyValidatingRules(value);
-            } else {
-                throw onInapplicable(declaration);
-            }
-        }
-        return ImmutableList.of();
+    boolean optionPresentAt(FieldValue<F> value) {
+        return valueFrom(value).isPresent();
     }
 }

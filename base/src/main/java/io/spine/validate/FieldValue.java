@@ -49,13 +49,13 @@ import static java.lang.String.format;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
  *         Protobuf Maps</a>
  */
-final class FieldValue {
+final class FieldValue<T> {
 
-    private final Object value;
+    private final T value;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Object value, FieldContext context, FieldDeclaration declaration) {
+    private FieldValue(T value, FieldContext context, FieldDeclaration declaration) {
         this.value = value;
         this.context = context;
         this.declaration = declaration;
@@ -70,15 +70,16 @@ final class FieldValue {
      *         the context of the field
      * @return a new instance
      */
-    static FieldValue of(Object rawValue, FieldContext context) {
+    @SuppressWarnings("unchecked")
+    static <T> FieldValue<T> of(T rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
-        Object value = rawValue instanceof ProtocolMessageEnum
-                       ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
+        T value = rawValue instanceof ProtocolMessageEnum
+                       ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                        : rawValue;
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
-        return new FieldValue(value, context, declaration);
+        return new FieldValue<>(value, context, declaration);
     }
 
     FieldValidator<?> createValidator() {
@@ -101,26 +102,31 @@ final class FieldValue {
         JavaType fieldType = javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(this, assumeRequired);
+                return new MessageFieldValidator(castThis(), assumeRequired);
             case INT:
-                return new IntegerFieldValidator(this);
+                return new IntegerFieldValidator(castThis());
             case LONG:
-                return new LongFieldValidator(this);
+                return new LongFieldValidator(castThis());
             case FLOAT:
-                return new FloatFieldValidator(this);
+                return new FloatFieldValidator(castThis());
             case DOUBLE:
-                return new DoubleFieldValidator(this);
+                return new DoubleFieldValidator(castThis());
             case STRING:
-                return new StringFieldValidator(this, assumeRequired);
+                return new StringFieldValidator(castThis(), assumeRequired);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(this);
+                return new ByteStringFieldValidator(castThis());
             case BOOLEAN:
-                return new BooleanFieldValidator(this);
+                return new BooleanFieldValidator(castThis());
             case ENUM:
-                return new EnumFieldValidator(this);
+                return new EnumFieldValidator(castThis());
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S> FieldValue<S> castThis(){
+        return ((FieldValue<S>) this);
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
@@ -149,16 +155,16 @@ final class FieldValue {
      *
      * @param option
      *         an extension key used to obtain an option
-     * @param <T>
+     * @param <O>
      *         the type of the option value
      */
-    <T> Option<T> option(GeneratedExtension<FieldOptions, T> option) {
-        Optional<Option<T>> validationRuleOption = getOptionValue(context, option);
+    <O> Option<O> option(GeneratedExtension<FieldOptions, O> option) {
+        Optional<Option<O>> validationRuleOption = getOptionValue(context, option);
         if (validationRuleOption.isPresent()) {
             return validationRuleOption.get();
         }
 
-        Option<T> result = Option.from(context.getTarget(), option);
+        Option<O> result = Option.from(context.getTarget(), option);
         return result;
     }
 
@@ -167,26 +173,24 @@ final class FieldValue {
      *
      * @param option
      *         an extension key used to obtain an option
-     * @param <T>
+     * @param <O>
      *         the type of the option value
      * @return the value of the option
      */
-    <T> T valueOf(GeneratedExtension<FieldOptions, T> option) {
+    <O> O valueOf(GeneratedExtension<FieldOptions, O> option) {
         return option(option).value();
     }
 
     /**
      * Converts the value to a list.
      *
-     * @param <T>
-     *         the type of the list elements
      * @return the value as a list
      */
     @SuppressWarnings({
             "unchecked", // Specific validator must call with its type.
             "ChainOfInstanceofChecks" // No other possible way to check the value type.
     })
-    <T> ImmutableList<T> asList() {
+    ImmutableList<T> asList() {
         if (value instanceof Collection) {
             Collection<T> result = (Collection<T>) value;
             return ImmutableList.copyOf(result);
@@ -194,15 +198,16 @@ final class FieldValue {
             Map<?, T> map = (Map<?, T>) value;
             return ImmutableList.copyOf(map.values());
         } else {
-            T result = (T) value;
-            return ImmutableList.of(result);
+            return ImmutableList.of(value);
         }
     }
 
+    T singleValue() {
+        return asList().get(0);
+    }
+
     boolean isDefault() {
-        Object defaultValue = this.context.getTarget()
-                                          .getDefaultValue();
-        return this.value.equals(defaultValue);
+        return this.createValidator(false).fieldValueNotSet();
     }
 
     /** Returns the declaration of the value. */

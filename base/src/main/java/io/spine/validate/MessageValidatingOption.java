@@ -20,10 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-
 /**
  * An option that validates a message.
  *
@@ -32,25 +28,10 @@ import java.util.List;
  * @param <T>
  *         type of information held by this option
  */
-public abstract class MessageValidatingOption<T> implements ValidatingOption<T, MessageValue> {
-
-    @Override
-    public List<ConstraintViolation> validateAgainst(MessageValue something) {
-        if (optionPresent(something)) {
-            return applyValidationRules(something);
-        }
-        return ImmutableList.of();
-    }
-
-    /**
-     * Defines the rules according to which a message will be validated.
-     *
-     * @param message
-     *         a message that is being validated.
-     * @return a set of constraints that the message violates
-     */
-    abstract List<ConstraintViolation> applyValidationRules(MessageValue message);
+public abstract class MessageValidatingOption<T> extends ValidatingOption<T, MessageValue> {
 
     /** Returns whether this option is present for the specified message. */
-    abstract boolean optionPresent(MessageValue something);
+    private boolean optionPresent(MessageValue bearer) {
+        return valueFrom(bearer).isPresent();
+    }
 }

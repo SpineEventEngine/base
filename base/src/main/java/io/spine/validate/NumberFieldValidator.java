@@ -54,7 +54,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      * @param fieldValue
      *         the value to validate
      */
-    NumberFieldValidator(FieldValue fieldValue) {
+    NumberFieldValidator(FieldValue<V> fieldValue) {
         super(fieldValue, false, false, ImmutableSet.of());
         this.min = fieldValue.valueOf(OptionsProto.min);
         this.max = fieldValue.valueOf(OptionsProto.max);

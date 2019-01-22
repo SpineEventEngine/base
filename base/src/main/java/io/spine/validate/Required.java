@@ -21,35 +21,44 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.logging.Logging;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
+
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM;
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE;
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
 
 /**
  * An option that makes a field {@code required}.
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-public class Required extends FieldValidatingOption<Boolean> {
+public final class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
-    private final Predicate<FieldValue> isNotSet;
-    private final Predicate<FieldValue> isOptionPresent;
+    private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
+            MESSAGE, ENUM, STRING, BYTE_STRING
+    );
+
+    private final Predicate<FieldValue<?>> isOptionPresent;
+    private final IfMissing ifMissing = new IfMissing();
 
     /**
      * Creates a new instance of this option.
      *
-     * @param isNotSet
-     *         a function that defines whether a field value is set or not
      * @param isOptionPresent
      *         a function that defines whether this option is present
      */
-    private Required(Predicate<FieldValue> isNotSet,
-                     Predicate<FieldValue> isOptionPresent) {
-        this.isNotSet = isNotSet;
+    private Required(Predicate<FieldValue<?>> isOptionPresent) {
+        super();
         this.isOptionPresent = isOptionPresent;
     }
 
@@ -60,54 +69,37 @@ public class Required extends FieldValidatingOption<Boolean> {
      * the option value of the field (if {@code strict} is {@code false}), or assumes it to be
      * {@code required} by default (if {@code strict} is {@code true}).
      *
-     * @param isNotSet
-     *         a function that determines whether the value is set or not
      * @param strict
      *         whether it should be assumed that the field is {@code required} by default
      * @return a new instance of this validating option
      */
-    static Required create(Predicate<FieldValue> isNotSet, boolean strict) {
-        Predicate<FieldValue> isOptionPresent = strict ? value -> true : Required::optionValue;
-        return new Required(isNotSet, isOptionPresent);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * <p>Any field can be {@code required}.
-     */
-    @Override
-    boolean applicableTo(FieldDeclaration field) {
-        return true;
+    static <T> Required<T> create(boolean strict) {
+        Predicate<FieldValue<?>> isOptionPresent = strict ? value -> true : Required::optionValue;
+        return new Required<>(isOptionPresent);
     }
 
     @Override
-    boolean optionPresentAt(FieldValue value) {
-        return this.isOptionPresent.test(value);
-    }
-
-    /**
-     * Any field can be {@code required}, so this method is never called.
-     */
-    @Override
-    OptionInapplicableException onInapplicable(FieldDeclaration field) {
-        throw new IllegalStateException("`Required` fields are applicable to any kind of field.");
-    }
-
-    @Override
-    List<ConstraintViolation> applyValidatingRules(FieldValue value) {
-        if (isNotSet.test(value)) {
-            return requiredViolated(value);
+    boolean optionPresentAt(FieldValue<T> value) {
+        if (this.isOptionPresent.test(value)) {
+            return true;
         }
-        return ImmutableList.of();
+        ifMissing.valueFrom(value)
+                 .ifPresent(ifMissingOption -> _warn(
+                         "'if_missing' option is set without '(required) = true'"));
+        return false;
     }
 
-    private static List<ConstraintViolation> requiredViolated(FieldValue value) {
-        IfMissing ifMissing = new IfMissing();
-        return ImmutableList.of(newViolation(ifMissing.valueFrom(value), value));
+    private void checkCanBeRequired(FieldValue<?> value) {
+        JavaType type = value.declaration()
+                             .javaType();
+        if (!CAN_BE_REQUIRED.contains(type)) {
+            String typeName = value.declaration()
+                                   .typeName();
+            _warn("Fields of type {} should not be declared as `(required)`.", typeName);
+        }
     }
 
-    private static ConstraintViolation newViolation(IfMissingOption option, FieldValue value) {
+    private static List<ConstraintViolation> newViolation(IfMissingOption option, FieldValue<?> value) {
         String msg = getErrorMsgFormat(option, option.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
@@ -115,14 +107,14 @@ public class Required extends FieldValidatingOption<Boolean> {
                 .setFieldPath(value.context()
                                    .getFieldPath())
                 .build();
-        return violation;
+        return ImmutableList.of(violation);
     }
 
     /**
      * Returns a validation error message (a custom one (if present) or the default one).
      *
      * @param option
-     *         a validation option used to get the default message
+     *         a validation option used to validationRule the default message
      * @param customMsg
      *         a user-defined error message
      */
@@ -134,12 +126,21 @@ public class Required extends FieldValidatingOption<Boolean> {
         return msg;
     }
 
-    private static Boolean optionValue(FieldValue fieldValue) {
+    private static Boolean optionValue(FieldValue<?> fieldValue) {
         return fieldValue.valueOf(OptionsProto.required);
+
     }
 
     @Override
-    public Boolean valueFrom(FieldValue fieldValue) {
-        return optionValue(fieldValue);
+    public Optional<Boolean> valueFrom(FieldValue<T> fieldValue) {
+        return Optional.of(optionValue(fieldValue));
+    }
+
+    @Override
+    ValidationRule<FieldValue<T>> validationRule() {
+        return new ValidationRule<>(value -> {
+            checkCanBeRequired(value);
+            return !value.isDefault();
+        }, value -> newViolation(this.ifMissing.valueFrom(value).get(), value));
     }
 }

@@ -32,7 +32,6 @@ import io.spine.option.TimeOption;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
-import java.util.Set;
 
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
@@ -57,7 +56,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
-    MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+    MessageFieldValidator(FieldValue<Message> fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired, true, ImmutableSet.of());
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
@@ -73,7 +72,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private boolean shouldValidateFields() {
-        return getValidateOption() && !fieldValueNotSet();
+        return fieldValue().valueOf(OptionsProto.valid) && !fieldValueNotSet();
     }
 
     @Override

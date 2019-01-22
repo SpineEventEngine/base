@@ -20,22 +20,21 @@
 
 package io.spine.validate;
 
-import java.util.List;
-
 /**
  * An option that validates an arbitrary Protobuf entity.
  *
- * <p>If that entity does not correspond to the rules defined by this option,
- * {@linkplain io.spine.validate.ConstraintViolation constraint violations} are generated.
  *
  * @param <T>
  *         type of information that this option holds, e. g.
  *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
  *         Boolean}
  * @param <K>
- *         kind of entities that are being validated against this option
+ *         kind of entities that can be validated by this option
  */
-public interface ValidatingOption<T, K> extends Option<T, K> {
+abstract class ValidatingOption<T, K> implements Option<T, K> {
 
-    List<ConstraintViolation> validateAgainst(K something);
+    /**
+     * Returns a validation rule that this option represents.
+     */
+    abstract ValidationRule<K> validationRule();
 }

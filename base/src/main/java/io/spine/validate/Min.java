@@ -21,52 +21,69 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.MinOption;
-import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class Min<V extends Number> extends NumberFieldValidatingOption<MinOption, V> {
+import static java.lang.Double.parseDouble;
+
+/**
+ * An option that defines a minimum value for a numeric field.
+ */
+public class Min extends FieldValidatingOption<MinOption, Double> {
 
     private Min() {
     }
 
-    static <V extends Number> Min<V> create() {
-        return new Min<>();
+    /** Creates a new instance of this option. */
+    static Min create() {
+        return new Min();
+    }
+
+    // TODO: 2019-01-22:serhii.lekariev: find a better name
+    private final Predicate<FieldValue<Double>> undershoots = doubleFieldValue -> {
+        MinOption option = getOption(doubleFieldValue);
+        double parsedValue = parseDouble(option.getValue());
+        Double actualValue = doubleFieldValue.singleValue();
+        Predicate<Double> undershoots = option.getExclusive() ?
+                                        value -> value < parsedValue :
+                                        value -> value <= parsedValue;
+        return undershoots.test(actualValue);
+    };
+
+    private MinOption getOption(FieldValue<Double> doubleFieldValue) {
+        return valueFrom(doubleFieldValue).orElseThrow(() -> null);
     }
 
     @Override
-    OptionInapplicableException onInapplicable(FieldDeclaration declaration) {
-        return null;
-    }
-
-    @Override
-    List<ConstraintViolation> applyValidatingRules(FieldValue<V> value) {
-        MinOption option = valueFrom(value).get();
-        double maxValue = Double.parseDouble(option.getValue());
-        Predicate<Double> exceedsMax = option.getExclusive() ?
-                                       input -> input < maxValue :
-                                       input -> input <= maxValue;
-        double fieldValue = value.singleValue().doubleValue();
-        if (exceedsMax.test(fieldValue)) {
-            return ImmutableList.of(exceedsMinConstraint(value));
-        }
-        return ImmutableList.of();
-    }
-
-    private ConstraintViolation exceedsMinConstraint(FieldValue<V> value) {
-        return null;
-    }
-
-    @Override
-    public Optional<MinOption> valueFrom(FieldValue<V> bearer) {
-        MinOption option = bearer.valueOf(OptionsProto.min);
-        return option.getValue()
-                     .isEmpty() ?
+    public Optional<MinOption> valueFrom(FieldValue<Double> bearer) {
+        return optionPresentAt(bearer) ?
                Optional.empty() :
-               Optional.of(option);
+               Optional.of(getOption(bearer));
+    }
+
+    private List<ConstraintViolation> maxFieldViolated(FieldValue<Double> fieldValue) {
+        MinOption option = getOption(fieldValue);
+        double parsedMaxValue = parseDouble(option.getValue());
+        boolean isExclusive = option.getExclusive();
+        String fieldName = fieldValue.declaration()
+                                     .name()
+                                     .value();
+        String format = "Actual value of field %s is less than the minimum value of %s, %s.";
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(format)
+                .addParam(fieldName)
+                .addParam(String.valueOf(parsedMaxValue))
+                .addParam(isExclusive ? "exclusive" : "inclusive")
+                .build();
+        return ImmutableList.of(violation);
+    }
+
+    @Override
+    ValidationRule<FieldValue<Double>> validationRule() {
+        return new ValidationRule<>(undershoots, this::maxFieldViolated);
     }
 }

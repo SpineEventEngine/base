@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import java.util.Optional;
+
 /**
  * A Protobuf option.
  *
@@ -41,5 +43,5 @@ public interface Option<T, K> {
      *         When using this method take into account the fact that any option can have a
      *         default value, which can be returned by this method
      */
-    T valueFrom(K bearer);
+    Optional<T> valueFrom(K bearer);
 }

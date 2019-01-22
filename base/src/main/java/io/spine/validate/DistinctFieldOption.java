@@ -22,64 +22,45 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.OnDuplicate;
 import io.spine.option.OptionsProto;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
-import static io.spine.option.OnDuplicate.IGNORE;
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values
  * represented by that {@code repeated} field don't contain duplicates.
+ *
+ * @param <T>
+ *         type fields that can be checked against this option
  */
-final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate> {
+final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T> {
 
-    private DistinctFieldOption(){
+    private DistinctFieldOption() {
     }
 
-    public static DistinctFieldOption distinctFieldOption(){
-        return new DistinctFieldOption();
-    }
-
-    @Override
-    boolean applicableTo(FieldDeclaration field) {
-        return field.isRepeated();
-    }
-
-    @Override
-    OptionInapplicableException onInapplicable(FieldDeclaration field) {
-        String format = "Error for field %s. A non-repeated field cannot be `distinct`.";
-        String exceptionText = format(format, field.name().value());
-        return new OptionInapplicableException(exceptionText);
-    }
-
-    @Override
-    List<ConstraintViolation> applyValidatingRules(FieldValue value) {
-        return checkForDuplicates(value);
-    }
-
-    @Override
-    boolean optionPresentAt(FieldValue value) {
-        return valueFrom(value) != IGNORE;
+    /**
+     * Returns a new instance of this option.
+     *
+     * @param <T> type of fields that can be checked against this option
+     */
+    static <T> DistinctFieldOption<T> distinctFieldOption() {
+        return new DistinctFieldOption<>();
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
-    private static List<ConstraintViolation> checkForDuplicates(FieldValue value) {
+    private static boolean checkForDuplicates(FieldValue<?> value) {
         List<?> potentialDuplicates = new ArrayList<>(value.asList());
         Set<?> duplicates = findDuplicates(potentialDuplicates);
-        return duplicates.isEmpty() ?
-               ImmutableList.of() :
-               ImmutableList.of(duplicateFound(value, duplicates));
+        return duplicates.isEmpty();
     }
 
-    private static Set<?> findDuplicates(Iterable<?> potentialDuplicates) { Set<Object> duplicateLess = new HashSet<>();
+    private static Set<?> findDuplicates(Iterable<?> potentialDuplicates) {
+        Set<Object> duplicateLess = new HashSet<>();
         ImmutableSet.Builder<Object> duplicates = ImmutableSet.builder();
         for (Object potentialDuplicate : potentialDuplicates) {
             if (duplicateLess.contains(potentialDuplicate)) {
@@ -92,28 +73,26 @@ final class DistinctFieldOption extends FieldValidatingOption<OnDuplicate> {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static <T> ConstraintViolation duplicateFound(FieldValue value, Set<T> duplicates) {
+    private static List<ConstraintViolation> duplicateFound(FieldValue value) {
         String fieldName = value.declaration()
                                 .name()
                                 .value();
-        List<String> stringValues = duplicates.stream()
-                                              .map(Object::toString)
-                                              .collect(toList());
-        String formatParams = String.join(", ", stringValues);
-        String msgFormat =
-                "Found a duplicate element in a `distinct` field %s. " +
-                        "Duplicate elements: " +
-                        formatParams;
+        String msg = "Found a duplicate element in a `distinct` field %s. ";
         ConstraintViolation.Builder duplicatesBuilder = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat(msgFormat)
+                .setMsgFormat(msg)
                 .addParam(fieldName);
-        stringValues.forEach(duplicatesBuilder::addParam);
-        return duplicatesBuilder.build();
+        return ImmutableList.of(duplicatesBuilder.build());
     }
 
     @Override
-    public OnDuplicate valueFrom(FieldValue fieldValue) {
-        return fieldValue.valueOf(OptionsProto.onDuplicate);
+    public Optional<OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
+        return Optional.of(fieldValue.valueOf(OptionsProto.onDuplicate));
+    }
+
+    @Override
+    ValidationRule<FieldValue<T>> validationRule() {
+        return new ValidationRule<>(DistinctFieldOption::checkForDuplicates,
+                                    DistinctFieldOption::duplicateFound);
     }
 }

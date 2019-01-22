@@ -21,69 +21,69 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.DOUBLE;
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.FLOAT;
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.INT;
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.LONG;
+import static java.lang.Double.parseDouble;
 
-public class Max<V extends Number> extends NumberFieldValidatingOption<MaxOption, V> {
+/**
+ * An option that defines a maximum value for a numeric field.
+ */
+public class Max extends FieldValidatingOption<MaxOption, Double> {
 
-    private Max() {
-        super();
+    private Max(){
     }
 
-    public static <V extends Number> Max<V> create(){
-        return new Max<>();
+    /** Returns a new instance of this option. */
+    static Max create(){
+        return new Max();
+    }
+
+    private final Predicate<FieldValue<Double>> exceeds = doubleFieldValue -> {
+        MaxOption option = getOption(doubleFieldValue);
+        double parsedValue = parseDouble(option.getValue());
+        Double actualValue = doubleFieldValue.singleValue();
+        Predicate<Double> exceeds = option.getExclusive() ?
+                                    value -> value > parsedValue :
+                                    value -> value >= parsedValue;
+        return exceeds.test(actualValue);
+    };
+
+    @Override
+    public Optional<MaxOption> valueFrom(FieldValue<Double> bearer) {
+        return optionPresentAt(bearer) ?
+               Optional.of(bearer.valueOf(OptionsProto.max)) :
+               Optional.empty();
+    }
+
+    private List<ConstraintViolation> maxFieldViolated(FieldValue<Double> fieldValue) {
+        MaxOption option = getOption(fieldValue);
+        double parsedMaxValue = parseDouble(option.getValue());
+        boolean isExclusive = option.getExclusive();
+        String fieldName = fieldValue.declaration()
+                                     .name()
+                                     .value();
+        String format = "Actual value of field %s exceeds maximum value of %s, %s.";
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(format)
+                .addParam(fieldName)
+                .addParam(String.valueOf(parsedMaxValue))
+                .addParam(isExclusive ? "exclusive" : "inclusive")
+                .build();
+        return ImmutableList.of(violation);
     }
 
     @Override
-    boolean applicableTo(FieldDeclaration field) {
-        return true;
+    ValidationRule<FieldValue<Double>> validationRule() {
+        return new ValidationRule<>(exceeds, this::maxFieldViolated);
     }
 
-    @Override
-    OptionInapplicableException onInapplicable(FieldDeclaration declaration) {
-        return null;
+    private MaxOption getOption(FieldValue<Double> doubleFieldValue) {
+        return valueFrom(doubleFieldValue).orElseThrow(() -> null);
     }
-
-    @Override
-    List<ConstraintViolation> applyValidatingRules(FieldValue<V> value) {
-        MaxOption option = valueFrom(value).get();
-        double maxValue = Double.parseDouble(option.getValue());
-        Predicate<Double> exceedsMax = option.getExclusive() ?
-                                       input -> input > maxValue :
-                                       input -> input >= maxValue;
-        double fieldValue = value.singleValue().doubleValue();
-        if (exceedsMax.test(fieldValue)) {
-            return ImmutableList.of(exceedsMaxConstraint(value));
-        }
-        return ImmutableList.of();
-    }
-
-    private ConstraintViolation exceedsMaxConstraint(FieldValue<V> value) {
-        // TODO: 2019-01-21:serhii.lekariev: xd
-        return ConstraintViolation.getDefaultInstance();
-    }
-
-    @Override
-    public Optional<MaxOption> valueFrom(FieldValue<V> bearer) {
-        MaxOption option = bearer.valueOf(OptionsProto.max);
-        return option.getValue()
-                     .isEmpty() ?
-               Optional.empty() :
-               Optional.of(option);
-    }
-
 }

@@ -62,11 +62,13 @@ public class RequiredField extends MessageValidatingOption<String> {
 
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
-    @Override
-    List<ConstraintViolation> applyValidationRules(MessageValue message) {
-        String expression = valueFrom(message);
+    private boolean matches(MessageValue messageField) {
+        if (!valueFrom(messageField).isPresent()) {
+            return true;
+        }
+        String expression = valueFrom(messageField).get();
         ImmutableList<RequiredFieldOptions> parse = parse(expression);
-        if (!alternativeFound(parse, message)) {
+        if (!alternativeFound(parse, messageField)) {
             String msgFormat =
                     "None of the fields match the `required_field` definition: %s";
             ConstraintViolation requiredFieldNotFound = ConstraintViolation
@@ -75,25 +77,26 @@ public class RequiredField extends MessageValidatingOption<String> {
                     .addParam(expression)
                     .build();
             violations.add(requiredFieldNotFound);
+            return false;
         }
-        return violations.build();
+        return true;
     }
 
     @Override
-    boolean optionPresent(MessageValue message) {
-        return !valueFrom(message).isEmpty();
-    }
-
-    @Override
-    public String valueFrom(MessageValue message) {
+    public Optional<String> valueFrom(MessageValue message) {
         Map<Descriptors.FieldDescriptor, Object> options = message.options();
         for (Descriptors.FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
                 String expression = (String) options.get(optionDescriptor);
-                return expression;
+                return Optional.of(expression);
             }
         }
-        return "";
+        return Optional.empty();
+    }
+
+    @Override
+    ValidationRule<MessageValue> validationRule() {
+        return new ValidationRule<>(this::matches, messageValue -> violations.build());
     }
 
     private static class RequiredFieldOptions {

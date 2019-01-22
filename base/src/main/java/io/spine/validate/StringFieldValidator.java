@@ -45,7 +45,7 @@ class StringFieldValidator extends FieldValidator<String> {
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+    StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired, true, ImmutableSet.of());
         this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
