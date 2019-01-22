@@ -59,7 +59,6 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new ValidationRulesLookupPlugin(),
-//                  new ProtocPluginImporter(),
                   new ProtocConfigurationPlugin(),
                   new DescriptorSetMergerPlugin(),
                   new ErrorProneChecksPlugin())
