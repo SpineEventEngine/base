@@ -46,7 +46,7 @@ public final class ProtoModule {
      * Creates a new instance.
      *
      * @param name
-     *         the name of the module to be resolved, e.g. {@code library/proto}
+     *         the name of the module, e.g. {@code library/proto}
      * @param packages
      *         patterns of packages provided by the module
      */
@@ -56,17 +56,20 @@ public final class ProtoModule {
     }
 
     /**
-     * Resolves a relative path to a generated Protobuf file.
+     * Obtains an import path for a generated Protobuf file.
      *
-     * <p>As a result, an import path like {@code ../../spine/core/user_id_pb.js}
-     * becomes {@code moduleName/spine/core/user_id_pb.js} path.
+     * @param fileName
+     *         the name of a JavaScript file
+     * @return the import path obtaining by composing the module and file name
+     * @throws IllegalStateException
+     *         if the file is not a generated Protobuf
+     *         or is not provided by the module
      */
-    ImportPath resolve(ImportPath importPath) {
-        FileName fileName = importPath.fileName();
-        PackageName packageName = fileName.protoPackage();
-        checkState(provides(packageName));
-        String resolved = name + ImportPath.separator() + fileName;
-        return ImportPath.of(resolved);
+    ImportPath importPathFor(FileName fileName) {
+        checkState(fileName.isGeneratedProto());
+        checkState(provides(fileName.protoPackage()));
+        String path = name + ImportPath.separator() + fileName;
+        return ImportPath.of(path);
     }
 
     /**

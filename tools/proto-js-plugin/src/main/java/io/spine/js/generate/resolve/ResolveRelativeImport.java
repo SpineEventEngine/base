@@ -66,12 +66,12 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
     @Override
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
-        PackageName packageName = importPath.fileName()
-                                            .protoPackage();
+        FileName fileName = importPath.fileName();
+        PackageName packageName = fileName.protoPackage();
         for (ProtoModule module : modules) {
             if (module.provides(packageName)) {
-                ImportPath resolvedPath = module.resolve(importPath);
-                return resolvable.replacePath(resolvedPath.value());
+                ImportPath pathInModule = module.importPathFor(fileName);
+                return resolvable.replacePath(pathInModule.value());
             }
         }
         return resolvable;

@@ -21,6 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,29 +52,29 @@ class ProtoModuleTest {
     @Test
     @DisplayName("resolve an import path if the file is provided by module")
     void resolveMatchingImport() {
-        ImportPath resolvable = ImportPath.of("../../spine/js_pb.js");
-        ImportPath resolved = module.resolve(resolvable);
-        ImportPath expected = ImportPath.of(moduleName + "/spine/js_pb.js");
-        assertEquals(expected, resolved);
+        FileName fileName = FileName.of("spine/js_pb.js");
+        ImportPath importPath = module.importPathFor(fileName);
+        ImportPath expectedPath = ImportPath.of(moduleName + '/' + fileName);
+        assertEquals(expectedPath, importPath);
     }
 
     @Test
-    @DisplayName("resolve only Proto files")
+    @DisplayName("compose an import path only for Proto files")
     void acceptOnlyProto() {
-        ImportPath importPath = ImportPath.of("non-proto.js");
+        FileName fileName = FileName.of("non-proto.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.resolve(importPath)
+                () -> module.importPathFor(fileName)
         );
     }
-    
+
     @Test
-    @DisplayName("resolve only provided Proto files")
+    @DisplayName("compose an import path only if package is provided by the module")
     void acceptOnlyProvidedProto() {
-        ImportPath importPath = ImportPath.of("non/spine/index_pb.js");
+        FileName fileName = FileName.of("non/spine/index_pb.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.resolve(importPath)
+                () -> module.importPathFor(fileName)
         );
     }
 }
