@@ -103,7 +103,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         ));
     }
 
-    private static void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    private static void
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.GRPC.name,
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
