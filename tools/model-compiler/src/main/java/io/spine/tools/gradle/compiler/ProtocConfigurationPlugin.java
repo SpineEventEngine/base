@@ -26,14 +26,14 @@ import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
-import groovy.lang.Closure;
-import groovy.lang.GString;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import org.codehaus.groovy.runtime.GStringImpl;
+import io.spine.tools.groovy.GStrings;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -48,12 +48,11 @@ import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static java.lang.String.format;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 public class ProtocConfigurationPlugin extends SpinePlugin {
-
-    private static final Object CLOSURE_OWNER = ProtocConfigurationPlugin.class.getName();
 
     private static final String PROTOBUF_GRADLE_PLUGIN = "com.google.protobuf";
 
@@ -69,7 +68,38 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private void applyTo(Project project) {
         project.getConvention()
                .getPlugin(ProtobufConvention.class)
-               .protobuf(new ProtobufConfiguration(this, project));
+               .protobuf(closure(
+                       ProtobufConfigurator.class,
+                       protobuf -> configureProtobuf(project, protobuf)
+               ));
+    }
+
+    private void configureProtobuf(Project project, ProtobufConfigurator protobuf) {
+        DefaultJavaProject defaultProject = at(project.getProjectDir());
+        protobuf.setGeneratedFilesBaseDir(defaultProject.generated().toString());
+        protobuf.protoc(closure(
+                ExecutableLocator.class,
+                protocLocator -> protocLocator.setArtifact("com.google.protobuf:protoc:3.6.1")
+        ));
+        protobuf.plugins(closure(
+                NamedDomainObjectContainer.class,
+                ProtocConfigurationPlugin::configureProtocPlugins
+        ));
+        GradleTask copyPluginJar = createCopyPluginJarTask(project);
+        protobuf.generateProtoTasks(closure(
+                GenerateProtoTaskCollection.class,
+                tasks -> configureProtocTasks(tasks, copyPluginJar)
+        ));
+    }
+
+    private static void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        plugins.create(ProtocPlugin.GRPC.name,
+                       locator -> locator.setArtifact("io.grpc:protoc-gen-grpc-java:1.15.0"));
+        plugins.create(ProtocPlugin.SPINE.name, locator -> {
+            boolean windows = current().isWindows();
+            String scriptExt = windows ? "bat" : "sh";
+            locator.setArtifact("io.spine.tools:spine-protoc-plugin:" + "1.0.0-SNAPSHOT:" + "script@" + scriptExt);
+        });
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
@@ -113,109 +143,51 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         }
     }
 
-    private static final class ProtobufConfiguration extends Closure {
+    private static void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
+        protocTask.dependsOn(dependency);
 
-        private static final long serialVersionUID = 0L;
+        protocTask.getPlugins()
+            .create(ProtocPlugin.GRPC.name);
+        protocTask.getPlugins()
+            .create(ProtocPlugin.SPINE.name,
+                    options -> options.setOutputSubDir("java"));
+        protocTask.setGenerateDescriptorSet(true);
+        boolean tests = protocTask.getSourceSet()
+                            .getName()
+                            .contains("test");
+        Project project = protocTask.getProject();
+        String descPath = tests
+                          ? getTestDescriptorSetPath(project)
+                          : getMainDescriptorSetPath(project);
+        GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
+        options.setPath(GStrings.fromPlain(descPath));
+        options.setIncludeImports(true);
+        options.setIncludeSourceInfo(true);
 
-        private final ProtocConfigurationPlugin configurationPlugin;
-        private final Project project;
-
-        ProtobufConfiguration(ProtocConfigurationPlugin plugin, Project project) {
-            super(CLOSURE_OWNER);
-            this.configurationPlugin = plugin;
-            this.project = project;
-        }
-
-        private void doCall(ProtobufConfigurator protobuf) {
-            protobuf.setGeneratedFilesBaseDir(at(project.getProjectDir()).generated()
-                                                                         .toString());
-            protobuf.protoc(new ProtocConfiguration());
-            protobuf.plugins(new PluginConfiguration());
-
-            GradleTask copyPluginJar = configurationPlugin.createCopyPluginJarTask(project);
-            protobuf.generateProtoTasks(new ProtoTaskConfiguration(copyPluginJar));
-        }
+        JavaPluginConvention javaConvention = project.getConvention()
+                                                     .getPlugin(JavaPluginConvention.class);
+        String sourceSetName = tests ? "test" : "main";
+        javaConvention.getSourceSets()
+                      .getByName(sourceSetName)
+                      .getResources()
+                      .srcDir(Paths.get(descPath)
+                                   .getParent());
     }
 
-    private static final class ProtocConfiguration extends Closure {
-
-        private static final long serialVersionUID = 0L;
-
-        private ProtocConfiguration() {
-            super(CLOSURE_OWNER);
-        }
-
-        private void doCall(ExecutableLocator protocLocator) {
-            protocLocator.setArtifact("com.google.protobuf:protoc:3.6.1");
-        }
+    private static void configureProtocTasks(GenerateProtoTaskCollection tasks,
+                                             GradleTask dependency) {
+        tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
     }
 
-    private static final class PluginConfiguration extends Closure {
+    private enum ProtocPlugin {
 
-        private static final long serialVersionUID = 0L;
+        GRPC("grpc"),
+        SPINE("spineProtoc");
 
-        private PluginConfiguration() {
-            super(CLOSURE_OWNER);
-        }
+        private final String name;
 
-        private void doCall(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-            // TODO:2019-01-21:dmytro.dashenkov: Version.
-            plugins.create("grpc", locator -> locator.setArtifact("io.grpc:protoc-gen-grpc-java:1.15.0"));
-            plugins.create("spineProtoc", locator -> {
-                boolean windows = current().isWindows();
-                String scriptExt = windows ? "bat" : "sh";
-                locator.setArtifact("io.spine.tools:spine-protoc-plugin:" + "1.0.0-SNAPSHOT:" + "script@" + scriptExt);
-            });
-        }
-    }
-
-    private static final class ProtoTaskConfiguration extends Closure {
-
-        private static final long serialVersionUID = 0L;
-        private static final Object[] EMPTY_G_STRING_ARGS = new Object[0];
-
-        private final GradleTask dependency;
-
-        private ProtoTaskConfiguration(GradleTask dependency) {
-            super(CLOSURE_OWNER);
-            this.dependency = dependency;
-        }
-
-        private void doCall(GenerateProtoTaskCollection tasks) {
-            tasks.all().forEach(task -> {
-                task.dependsOn(dependency.getTask());
-
-                task.getPlugins()
-                    .create("grpc");
-                task.getPlugins()
-                    .create("spineProtoc",
-                            options -> options.setOutputSubDir("java"));
-                task.setGenerateDescriptorSet(true);
-                boolean tests = task.getSourceSet()
-                                    .getName()
-                                    .contains("test");
-                Project project = task.getProject();
-                String descPath = tests
-                                  ? getTestDescriptorSetPath(project)
-                                  : getMainDescriptorSetPath(project);
-                GenerateProtoTask.DescriptorSetOptions options = task.getDescriptorSetOptions();
-                options.setPath(toGString(descPath));
-                options.setIncludeImports(true);
-                options.setIncludeSourceInfo(true);
-
-                JavaPluginConvention javaConvention = project.getConvention()
-                                                             .getPlugin(JavaPluginConvention.class);
-                String sourceSetName = tests ? "test" : "main";
-                javaConvention.getSourceSets()
-                              .getByName(sourceSetName)
-                              .getResources()
-                              .srcDir(Paths.get(descPath)
-                                           .getParent());
-            });
-        }
-
-        private static GString toGString(String normalString) {
-            return new GStringImpl(EMPTY_G_STRING_ARGS, new String[]{normalString});
+        ProtocPlugin(String name) {
+            this.name = name;
         }
     }
 }
