@@ -25,6 +25,7 @@ import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.util.ConfigureUtil;
@@ -157,9 +158,9 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
-    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+    public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public GeneratedInterfaces generateInterfaces = new GeneratedInterfaces();
+    public final GeneratedInterfaces generateInterfaces = new GeneratedInterfaces();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -308,7 +309,7 @@ public class Extension {
         return ImmutableList.copyOf(dirsToClean);
     }
 
-    public static Severity getSpineCheckSeverity(Project project) {
+    public static @Nullable Severity getSpineCheckSeverity(Project project) {
         Severity result = spineProtobuf(project).spineCheckSeverity;
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
