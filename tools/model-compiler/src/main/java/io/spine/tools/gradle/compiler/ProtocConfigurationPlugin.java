@@ -49,15 +49,22 @@ import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
-import static java.lang.String.format;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 public class ProtocConfigurationPlugin extends SpinePlugin {
 
-    private static final String PROTOBUF_GRADLE_PLUGIN = "com.google.protobuf";
+    private static final String PROTOBUF_GROUP = "com.google.protobuf";
+    private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
+    private static final String PROTOC = "protoc";
 
-    private static final String PLUGIN_DEPENDENCY_TEMPLATE =
-            "io.spine.tools:spine-protoc-plugin:%s@jar";
+    private static final String GRPC_GROUP = "io.grpc";
+    private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
+
+    private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+    private static final String JAR_EXTENSION = "jar";
+    private static final String SH_EXTENSION = "sh";
+    private static final String BAT_EXTENSION = "bat";
+    private static final String SCRIPT_CLASSIFIER = "script";
 
     private static final DependencyVersions VERSIONS = DependencyVersions.load();
 
@@ -81,7 +88,12 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protobuf.setGeneratedFilesBaseDir(defaultProject.generated().toString());
         protobuf.protoc(closure(
                 ExecutableLocator.class,
-                protocLocator -> protocLocator.setArtifact("com.google.protobuf:protoc:" + VERSIONS.protobuf())
+                protocLocator -> protocLocator.setArtifact(Artifact.newBuilder()
+                                                                   .setGroup(PROTOBUF_GROUP)
+                                                                   .setName(PROTOC)
+                                                                   .setVersion(VERSIONS.protobuf())
+                                                                   .build()
+                                                                   .notation())
         ));
         protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
@@ -93,22 +105,41 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.GRPC.name,
-                       locator -> locator.setArtifact("io.grpc:protoc-gen-grpc-java:" + VERSIONS.grpc()));
+                       locator -> locator.setArtifact(Artifact.newBuilder()
+                                                              .setGroup(GRPC_GROUP)
+                                                              .setName(GRPC_PLUGIN_NAME)
+                                                              .setVersion(VERSIONS.grpc())
+                                                              .build()
+                                                              .notation()));
         plugins.create(ProtocPlugin.SPINE.name, locator -> {
             boolean windows = current().isWindows();
-            String scriptExt = windows ? "bat" : "sh";
-            locator.setArtifact("io.spine.tools:spine-protoc-plugin:" + VERSIONS.spineBase() + ":script@" + scriptExt);
+            String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
+            locator.setArtifact(Artifact.newBuilder()
+                                        .useSpineToolsGroup()
+                                        .setName(SPINE_PLUGIN_NAME)
+                                        .setVersion(VERSIONS.spineBase())
+                                        .setClassifier(SCRIPT_CLASSIFIER)
+                                        .setExtension(scriptExt)
+                                        .build()
+                                        .notation());
         });
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
         Configuration fetch = project.getConfigurations()
                                      .maybeCreate(FETCH.getValue());
-        String dependency = format(PLUGIN_DEPENDENCY_TEMPLATE, VERSIONS.spineBase());
-        Dependency protocPluginDependency = project.getDependencies()
-                                                   .add(fetch.getName(), dependency);
+        Artifact protocPluginArtifact = Artifact
+                .newBuilder()
+                .useSpineToolsGroup()
+                .setName(SPINE_PLUGIN_NAME)
+                .setVersion(VERSIONS.spineBase())
+                .setExtension(JAR_EXTENSION)
+                .build();
+        Dependency protocPluginDependency = project
+                .getDependencies()
+                .add(fetch.getName(), protocPluginArtifact.notation());
         checkNotNull(protocPluginDependency,
-                     "Could not create dependency %s %s", fetch.getName(), dependency);
+                     "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
         GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR,
                                            task -> copyPluginExecutables(project,
                                                                          protocPluginDependency,
