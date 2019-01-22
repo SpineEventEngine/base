@@ -83,10 +83,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                 ExecutableLocator.class,
                 protocLocator -> protocLocator.setArtifact("com.google.protobuf:protoc:" + VERSIONS.protobuf())
         ));
-        protobuf.plugins(closure(
-                NamedDomainObjectContainer.class,
-                ProtocConfigurationPlugin::configureProtocPlugins
-        ));
+        protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
                 GenerateProtoTaskCollection.class,

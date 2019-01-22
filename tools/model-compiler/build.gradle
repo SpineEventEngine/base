@@ -104,8 +104,8 @@ task prepareProtocConfigVersions {
     
     final Properties versions = new Properties()
     versions.setProperty("baseVersion", spineBaseVersion)
-    versions.setProperty("protobufVersion", spineBaseVersion)
-    versions.setProperty("gRPCVersion", spineBaseVersion)
+    versions.setProperty("protobufVersion", deps.versions.protobuf)
+    versions.setProperty("gRPCVersion", deps.versions.grpc)
     
     doLast {
         createParentDirs(file)
