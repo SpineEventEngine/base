@@ -60,8 +60,10 @@ public final class ResolvableModule {
      * is resolved to the {@code moduleName/spine/core/user_id_pb.js} path.
      */
     ImportPath resolve(ImportPath resolvable) {
-        checkState(provides(resolvable.protoPackage()));
-        String resolved = name + ImportPath.separator() + resolvable.skipRelativePath();
+        PackageName packageName = resolvable.fileName()
+                                            .protoPackage();
+        checkState(provides(packageName));
+        String resolved = name + ImportPath.separator() + resolvable.fileName();
         return ImportPath.of(resolved);
     }
 

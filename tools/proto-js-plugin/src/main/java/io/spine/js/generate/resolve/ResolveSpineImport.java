@@ -88,7 +88,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
         boolean presentInModule = absolutePath.toFile()
                                               .exists();
         _debug("Checking if the file {} belongs to the module sources, result: {}",
-                    absolutePath, presentInModule);
+               absolutePath, presentInModule);
         return !presentInModule;
     }
 

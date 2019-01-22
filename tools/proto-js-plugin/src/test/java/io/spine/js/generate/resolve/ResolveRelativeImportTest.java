@@ -25,20 +25,19 @@ import com.google.protobuf.Any;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
-import io.spine.code.proto.SourceFile;
 import io.spine.js.generate.resolve.given.Given;
-import io.spine.js.generate.typeurl.OuterMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.resolve.given.Given.testProtoRoot;
+import java.nio.file.Paths;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ResolveRelativeImport action should")
 class ResolveRelativeImportTest {
 
-    private final Directory generatedRoot = testProtoRoot();
+    private final Directory generatedRoot = Directory.at(Paths.get("src/test/resources"));
     private final ResolveRelativeImport action = new ResolveRelativeImport(generatedRoot,
                                                                            ImmutableList.of());
 
@@ -63,9 +62,7 @@ class ResolveRelativeImportTest {
     @Test
     @DisplayName("skip imports of files exposed by current module")
     void skipImports() {
-        SourceFile protoFile = SourceFile.from(OuterMessage.getDescriptor()
-                                                           .getFile());
-        ImportPath importPath = ImportPath.of("../" + protoFile);
+        ImportPath importPath = ImportPath.of("../fake_pb.js");
         boolean shouldSkip = action.shouldNotResolve(importPath);
         assertTrue(shouldSkip);
     }

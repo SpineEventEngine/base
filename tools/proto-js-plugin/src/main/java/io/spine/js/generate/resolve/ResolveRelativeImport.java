@@ -22,6 +22,7 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.proto.PackageName;
 import io.spine.logging.Logging;
@@ -55,14 +56,16 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
 
     @Override
     boolean isApplicableTo(ImportPath importPath) {
-        boolean result = importPath.isRelative() && importPath.isGeneratedProto();
+        FileName fileName = importPath.fileName();
+        boolean result = importPath.isRelative() && fileName.isGeneratedProto();
         return result;
     }
 
     @Override
     ImportSnippet resolve(ImportSnippet resolvable) {
         ImportPath importPath = resolvable.path();
-        PackageName packageName = importPath.protoPackage();
+        PackageName packageName = importPath.fileName()
+                                            .protoPackage();
         for (ResolvableModule module : modules) {
             if (module.provides(packageName)) {
                 ImportPath resolvedPath = module.resolve(importPath);
@@ -80,13 +83,12 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
      */
     @Override
     boolean shouldNotResolve(ImportPath importPath) {
-        String pathFromRoot = importPath.skipRelativePath();
-        Path absolutePath = generatedRoot.getPath()
-                                         .resolve(pathFromRoot);
-        boolean presentInModule = absolutePath.toFile()
-                                              .exists();
+        FileName fileName = importPath.fileName();
+        Path filePath = generatedRoot.resolve(fileName);
+        boolean presentInModule = filePath.toFile()
+                                          .exists();
         _debug("Checking if the file {} belongs to the module Protobuf sources, result: {}",
-               absolutePath, presentInModule);
+               filePath, presentInModule);
         return presentInModule;
     }
 }
