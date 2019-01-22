@@ -33,8 +33,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.ImportPath.parentDirectory;
 
 /**
- * Replaces library-like Spine imports by relative paths if the imported file
- * belongs to the currently processed module.
+ * An action replacing import paths of Spine library files by relative import paths.
+ *
+ * <p>The class is originally created to replace imports of the
+ * {@linkplain io.spine.code.js.Module#spineWeb Spine Web} in Protobuf files
+ * provided by the Spine Web itself.
  */
 final class ResolveSpineImport extends ResolveAction implements Logging {
 
@@ -51,6 +54,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
     private final Directory generatedRoot;
 
     ResolveSpineImport(Directory generatedRoot) {
+        super();
         checkNotNull(generatedRoot);
         this.generatedRoot = generatedRoot;
     }
@@ -78,7 +82,7 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
      * <p>The method assumes the project structure similar to Spine Web.
      */
     @Override
-    boolean shouldSkip(ImportPath importPath) {
+    boolean shouldNotResolve(ImportPath importPath) {
         ImportPath filePath = importPath.skipLibrary();
         Path absolutePath = sourcesPath(generatedRoot).resolve(filePath.value());
         boolean presentInModule = absolutePath.toFile()

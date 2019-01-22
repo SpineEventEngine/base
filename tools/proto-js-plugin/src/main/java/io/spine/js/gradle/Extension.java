@@ -51,8 +51,6 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
 public class Extension {
 
-    private Task generateParsersTask;
-
     /**
      * The absolute path to the main Protobuf descriptor set file.
      */
@@ -74,27 +72,33 @@ public class Extension {
      *
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
-     * <p>Predefined Spine Modules are {@linkplain #resolveSpineModules included} by default.
+     * <p>Additionally to modules specified via the property,
+     * the predefined Spine modules can be {@linkplain #resolveSpineModules used}.
      *
      * <p>An example of the definition:
      * <pre>{@code
      * modules = [
-     *      // All in the packages excluding nested packages.
-     *      'client'  : ['company.client.foo', 'company.client.bar'],
-     *      // All in the packages including nested packages.
-     *      'server'  : ['company.server.*'],
-     *      // The root package not included in the modules above.
-     *      'common'  : ['company']
+     *      // The `client` module provides Protobuf types from `company.client` package
+     *      // (excluding nested packages).
+     *      'client' : ['company.client'],
+     *
+     *      // The `server` module provides Protobuf types from `company.server` package
+     *      // (including nested packages).
+     *      'server' : ['company.server.*'],
+     *
+     *      // The `common/proto` module provides Protobuf types from `company` package.
+     *      'common/proto' : ['company']
      * ]
      * }</pre>
      */
     public Map<String, List<String>> modules = newHashMap();
     /**
-     * Determines whether to resolve predefined Spine Modules, e.g. the Spine Web.
+     * Determines whether to resolve {@linkplain #predefinedModules() predefined} Spine modules.
      *
      * <p>The option is enabled by default.
      */
     public boolean resolveSpineModules = true;
+    private Task generateParsersTask;
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);

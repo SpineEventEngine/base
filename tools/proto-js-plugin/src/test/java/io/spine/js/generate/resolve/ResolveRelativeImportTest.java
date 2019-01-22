@@ -66,7 +66,7 @@ class ResolveRelativeImportTest {
         SourceFile protoFile = SourceFile.from(OuterMessage.getDescriptor()
                                                            .getFile());
         ImportPath importPath = ImportPath.of("../" + protoFile);
-        boolean shouldSkip = action.shouldSkip(importPath);
+        boolean shouldSkip = action.shouldNotResolve(importPath);
         assertTrue(shouldSkip);
     }
 }

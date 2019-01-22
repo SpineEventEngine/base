@@ -30,7 +30,17 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Resolves relative imports of generated Protobuf files among the {@link #modules}.
+ * An action resolving relative imports of generated Protobuf files.
+ *
+ * <p>Currently, Protobuf compiler generates relative imports for dependencies of a file,
+ * e.g. {@code require('../spine/options_pb.js')}, so the imported file
+ * should be also generated even if it is provided by a library.
+ *
+ * <p>The action allows to replace relative imports by module imports,
+ * so the import above can be resolved into {@code require('lib/spine/options_pb.js')}.
+ *
+ * <p>The knowledge about resolvable modules and Protobufs
+ * they are provide is specified by the class users.
  */
 final class ResolveRelativeImport extends ResolveAction implements Logging {
 
@@ -38,6 +48,7 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
     private final List<ResolvableModule> modules;
 
     ResolveRelativeImport(Directory generatedRoot, List<ResolvableModule> modules) {
+        super();
         this.generatedRoot = generatedRoot;
         this.modules = ImmutableList.copyOf(modules);
     }
@@ -68,7 +79,7 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
      * belonging to the module if it is present in the folder with Protobufs compiled to JavaScript.
      */
     @Override
-    boolean shouldSkip(ImportPath importPath) {
+    boolean shouldNotResolve(ImportPath importPath) {
         String pathFromRoot = importPath.skipRelativePath();
         Path absolutePath = generatedRoot.getPath()
                                          .resolve(pathFromRoot);
