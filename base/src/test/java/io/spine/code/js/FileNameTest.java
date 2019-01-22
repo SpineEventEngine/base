@@ -28,7 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -64,11 +63,10 @@ class FileNameTest {
     @DisplayName("return path elements")
     void returnPathElements() {
         FileName fileName = FileName.from(file);
-        String[] pathElements = fileName.pathElements();
-        List<String> pathElementList = Arrays.asList(pathElements);
-        assertThat(pathElementList).contains("google");
-        assertThat(pathElementList).contains("protobuf");
-        assertThat(pathElementList).contains("any_pb.js");
+        List<String> pathElements = fileName.pathElements();
+        assertThat(pathElements).contains("google");
+        assertThat(pathElements).contains("protobuf");
+        assertThat(pathElements).contains("any_pb.js");
     }
 
     @Test

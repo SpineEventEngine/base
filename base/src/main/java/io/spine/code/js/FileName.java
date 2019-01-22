@@ -20,13 +20,16 @@
 
 package io.spine.code.js;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 import io.spine.code.proto.PackageName;
 
-import java.util.regex.Pattern;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,7 +54,8 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final String SUFFIX = "_pb";
     /** The standard file extension. */
     private static final String EXTENSION = ".js";
-    private static final Pattern PATH_SEPARATOR_PATTERN = Pattern.compile(ImportPath.separator());
+    /** The file system separator as defined by Protobuf. Not platform-dependant. */
+    private static final String PATH_SEPARATOR = "/";
 
     private FileName(String value) {
         super(value);
@@ -90,23 +94,14 @@ public final class FileName extends AbstractFileName<FileName> {
     }
 
     /**
-     * Returns all {@code FileName} elements, i.e. the relative path to the file and file name
-     * itself.
-     */
-    public String[] pathElements() {
-        String[] result = value().split(ImportPath.separator());
-        return result;
-    }
-
-    /**
      * Composes the path from the given file to its root.
      *
      * <p>Basically, the method replaces all preceding path elements
      * by the {@link ImportPath#parentDirectory()}.
      */
     public String pathToRoot() {
-        String[] pathElements = pathElements();
-        int fileLocationDepth = pathElements.length - 1;
+        List<String> pathElements = pathElements();
+        int fileLocationDepth = pathElements.size() - 1;
         String pathToRoot = Strings.repeat(ImportPath.parentDirectory(), fileLocationDepth);
         String result = pathToRoot.isEmpty() ? ImportPath.currentDirectory() : pathToRoot;
         return result;
@@ -138,12 +133,22 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     public PackageName protoPackage() {
         checkState(isGeneratedProto());
-        String packageAndFile = value();
-        int fileNameSeparator = packageAndFile.lastIndexOf(ImportPath.separator());
-        String packagePath = packageAndFile.substring(0, fileNameSeparator);
-        String packageName = PATH_SEPARATOR_PATTERN.matcher(packagePath)
-                                                   .replaceAll(PackageName.SEPARATOR);
+        List<String> allElements = pathElements();
+        List<String> directoryElements = allElements.subList(0, allElements.size() - 1);
+        String packageName = Joiner.on(PackageName.SEPARATOR)
+                                   .join(directoryElements);
         return PackageName.of(packageName);
+    }
+
+    /**
+     * Returns all {@code FileName} elements, i.e. the relative path to the file and file name
+     * itself.
+     */
+    @VisibleForTesting
+    List<String> pathElements() {
+        List<String> result = Splitter.on(PATH_SEPARATOR)
+                                      .splitToList(value());
+        return result;
     }
 
     /**
