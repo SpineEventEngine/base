@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.MessageFile;
@@ -31,18 +32,18 @@ import io.spine.tools.protoc.InterfaceTarget;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.google.common.collect.Sets.newConcurrentHashSet;
+import static com.google.common.collect.Maps.newConcurrentMap;
 
 public final class GeneratedInterfaces {
 
-    private final Set<PostfixInterfaceConfig> patternConfigs;
+    private final Map<PostfixPattern, PostfixInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
 
     private GeneratedInterfaces() {
-        this.patternConfigs = newConcurrentHashSet();
+        this.patternConfigs = newConcurrentMap();
     }
 
     @VisibleForTesting
@@ -59,9 +60,9 @@ public final class GeneratedInterfaces {
     }
 
     public GeneratedInterfaceConfig filePattern(PostfixPattern pattern) {
-        PostfixInterfaceConfig group = new PostfixInterfaceConfig(pattern.postfix);
-        patternConfigs.add(group);
-        return group;
+        PostfixInterfaceConfig config = new PostfixInterfaceConfig(pattern.postfix);
+        patternConfigs.put(pattern, config);
+        return config;
     }
 
     public PostfixPattern endsWith(String postfix) {
@@ -84,14 +85,15 @@ public final class GeneratedInterfaces {
         SpineProtocConfig.Builder result = SpineProtocConfig
                 .newBuilder()
                 .setUuidInterface(uuidInterface);
-        patternConfigs.stream()
+        patternConfigs.values()
+                      .stream()
                       .map(config -> InterfaceTarget
-                             .newBuilder()
-                             .setFileSuffix(config.fileSuffix())
-                             .setInterfaceName(config.interfaceName()
-                                                     .map(ClassName::value)
-                                                     .orElse(""))
-                             .build())
+                              .newBuilder()
+                              .setFileSuffix(config.fileSuffix())
+                              .setInterfaceName(config.interfaceName()
+                                                      .map(ClassName::value)
+                                                      .orElse(""))
+                              .build())
                       .forEach(result::addInterfaceTarget);
         return result.build();
     }
@@ -102,6 +104,23 @@ public final class GeneratedInterfaces {
 
         private PostfixPattern(String postfix) {
             this.postfix = postfix;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof PostfixPattern)) {
+                return false;
+            }
+            PostfixPattern pattern = (PostfixPattern) o;
+            return Objects.equal(postfix, pattern.postfix);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(postfix);
         }
     }
 }

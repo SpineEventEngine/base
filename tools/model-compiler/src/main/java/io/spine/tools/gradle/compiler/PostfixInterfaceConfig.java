@@ -26,14 +26,14 @@ import org.checkerframework.checker.regex.qual.Regex;
 
 final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 
-    private final String suffix;
+    private final String postfix;
 
-    PostfixInterfaceConfig(@Regex String suffix) {
-        this.suffix = suffix;
+    PostfixInterfaceConfig(@Regex String postfix) {
+        this.postfix = postfix;
     }
 
     String fileSuffix() {
-        return suffix;
+        return postfix;
     }
 
     @Override
@@ -45,18 +45,18 @@ final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
             return false;
         }
         PostfixInterfaceConfig group = (PostfixInterfaceConfig) o;
-        return Objects.equal(suffix, group.suffix);
+        return Objects.equal(postfix, group.postfix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(suffix);
+        return Objects.hashCode(postfix);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("pattern", suffix)
+                          .add("postfix", postfix)
                           .add("interfaceName", interfaceName().orElse(null))
                           .toString();
     }
