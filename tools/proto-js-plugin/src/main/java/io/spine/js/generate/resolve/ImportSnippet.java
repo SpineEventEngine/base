@@ -95,8 +95,7 @@ public class ImportSnippet implements Logging {
         Path filePath = importedFilePath();
         boolean exists = filePath.toFile()
                                  .exists();
-        //TODO:2019-01-23:dmytro.grankin: Use `debug` level
-        _warn("Checking if the imported file {} exists, result: {}", filePath, exists);
+        _debug("Checking if the imported file {} exists, result: {}", filePath, exists);
         return exists;
     }
 
