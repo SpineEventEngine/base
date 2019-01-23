@@ -32,6 +32,7 @@ import io.spine.test.protoc.Outer;
 import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
+import io.spine.test.tools.protoc.WeatherForecast;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -164,6 +165,14 @@ class ProtocPluginTest {
         assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
         assertThat(University.class).isAssignableTo(EducationalInstitution.class);
         assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
+    }
+
+    @Test
+    @DisplayName("mark top-level message declarations with accordance with `modelCompiler.generatedInterfaces`")
+    void markMessagesByFilePatter() {
+        assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
+        assertThat(WeatherForecast.Temperature.getDefaultInstance())
+                .isNotInstanceOf(DocumentMessage.class);
     }
 
     @CanIgnoreReturnValue
