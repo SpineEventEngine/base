@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protoc.insert.BuiltInMessageInterface.scanForBuiltIns;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
 
@@ -95,9 +94,6 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
 
         Optional<CompilerOutput> matched = patternScanner.scan(type);
         matched.ifPresent(result::add);
-
-        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(type);
-        builtInMarkedInterface.ifPresent(result::add);
 
         Collection<CompilerOutput> fromMsgOption = scanMsgOption(type);
         result.addAll(fromMsgOption);

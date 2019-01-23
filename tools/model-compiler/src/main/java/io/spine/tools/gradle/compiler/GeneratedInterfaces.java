@@ -20,6 +20,12 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.annotations.VisibleForTesting;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
+import io.spine.base.MessageFile;
+import io.spine.base.RejectionMessage;
+import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.InterfaceTarget;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -35,8 +41,21 @@ public final class GeneratedInterfaces {
     private final Set<PostfixInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
 
-    GeneratedInterfaces() {
+    private GeneratedInterfaces() {
         this.patternConfigs = newConcurrentHashSet();
+    }
+
+    @VisibleForTesting
+    public static GeneratedInterfaces withDefaults() {
+        GeneratedInterfaces config = new GeneratedInterfaces();
+        config.filePattern(config.endsWith(MessageFile.COMMANDS.suffix()))
+              .markWith(CommandMessage.class.getName());
+        config.filePattern(config.endsWith(MessageFile.EVENTS.suffix()))
+              .markWith(EventMessage.class.getName());
+        config.filePattern(config.endsWith(MessageFile.REJECTIONS.suffix()))
+              .markWith(RejectionMessage.class.getName());
+        config.uuidMessage().markWith(UuidValue.class.getName());
+        return config;
     }
 
     public GeneratedInterfaceConfig filePattern(PostfixPattern pattern) {
@@ -53,7 +72,8 @@ public final class GeneratedInterfaces {
         return uuidInterfaceConfig;
     }
 
-    SpineProtocConfig asProtocConfig() {
+    @VisibleForTesting
+    public SpineProtocConfig asProtocConfig() {
         Optional<ClassName> name = uuidInterfaceConfig.interfaceName();
         UuidInterface uuidInterface = name
                 .map(className -> UuidInterface

@@ -28,6 +28,7 @@ dependencies {
     implementation deps.gen.javaPoet
 
     testCompile project(':base')
+    testImplementation project(':model-compiler')
 }
 
 protobuf {

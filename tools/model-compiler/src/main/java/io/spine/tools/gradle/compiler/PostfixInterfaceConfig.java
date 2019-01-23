@@ -41,7 +41,7 @@ final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof PostfixInterfaceConfig)) {
             return false;
         }
         PostfixInterfaceConfig group = (PostfixInterfaceConfig) o;

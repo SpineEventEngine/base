@@ -160,7 +160,7 @@ public class Extension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final GeneratedInterfaces generateInterfaces = new GeneratedInterfaces();
+    public final GeneratedInterfaces generateInterfaces = GeneratedInterfaces.withDefaults();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 

@@ -33,8 +33,8 @@ import io.spine.base.UuidValue;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
+import io.spine.tools.gradle.compiler.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
-import io.spine.tools.protoc.SpineProtocConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,14 +79,15 @@ class MessageInterfaceGeneratorTest {
     private static Version version() {
         return Version.newBuilder()
                       .setMajor(3)
-                      .setMinor(3)
-                      .setPatch(0)
+                      .setMinor(6)
+                      .setPatch(1)
                       .build();
     }
 
     @BeforeEach
     void setUp() {
-        codeGenerator = MessageInterfaceGenerator.instance(SpineProtocConfig.getDefaultInstance());
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        codeGenerator = MessageInterfaceGenerator.instance(interfaces.asProtocConfig());
     }
 
     @Test
