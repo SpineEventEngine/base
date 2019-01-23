@@ -48,7 +48,6 @@ protobuf {
     protoc {
         artifact = deps.build.protoc
     }
-
     generateProtoTasks {
         all().each { final task ->
             task.generateDescriptorSet = true

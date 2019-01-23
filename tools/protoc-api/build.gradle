@@ -29,4 +29,7 @@ sourceSets.main {
 
 protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
+    protoc {
+        artifact = deps.build.protoc
+    }
 }

@@ -177,8 +177,6 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
         protocTask.dependsOn(dependency);
-
-
         protocTask.getPlugins()
                   .create(ProtocPlugin.GRPC.name);
         protocTask.getPlugins()
