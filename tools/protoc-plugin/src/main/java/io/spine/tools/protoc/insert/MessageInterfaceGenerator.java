@@ -48,11 +48,14 @@ import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
  *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
  */
-public class MessageInterfaceGenerator extends SpineProtoGenerator {
+public final class MessageInterfaceGenerator extends SpineProtoGenerator {
+
+    private final PatternScanner patternScanner;
 
     /** Prevents singleton class instantiation. */
     private MessageInterfaceGenerator(SpineProtocConfig parameter) {
-        super(parameter);
+        super();
+        this.patternScanner = new PatternScanner(parameter);
     }
 
     /**
@@ -87,8 +90,11 @@ public class MessageInterfaceGenerator extends SpineProtoGenerator {
                : ImmutableList.of();
     }
 
-    private static ImmutableList<CompilerOutput> processMessageType(MessageType type) {
+    private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
+
+        Optional<CompilerOutput> matched = patternScanner.scan(type);
+        matched.ifPresent(result::add);
 
         Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(type);
         builtInMarkedInterface.ifPresent(result::add);
