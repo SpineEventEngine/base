@@ -38,18 +38,13 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Obtains event names from the {@code "by"} field option of a message.
- *
- * @author Alexander Litus
- * @author Alexander Yevsyukov
  */
-class ByOption implements Logging {
+final class ByOption implements Logging {
 
-    private final String packagePrefix;
     private final DescriptorProto message;
     private final FieldDescriptorProto field;
 
-    ByOption(String packagePrefix, DescriptorProto message, FieldDescriptorProto field) {
-        this.packagePrefix = packagePrefix;
+    ByOption(DescriptorProto message, FieldDescriptorProto field) {
         this.message = message;
         this.field = field;
     }
@@ -59,9 +54,9 @@ class ByOption implements Logging {
                       .isPresent();
     }
 
-    Map.Entry<String, String> collect() {
-        Collection<String> eventNamesFromBy = parse();
-        Map.Entry<String, String> result = group(eventNamesFromBy);
+    Map.Entry<String, String> collect(String packagePrefix) {
+        Collection<String> eventNames = parse();
+        Map.Entry<String, String> result = group(eventNames, packagePrefix);
         return result;
     }
 
@@ -92,7 +87,7 @@ class ByOption implements Logging {
         return result.build();
     }
 
-    private Map.Entry<String, String> group(Collection<String> events) {
+    private Map.Entry<String, String> group(Collection<String> events, String packagePrefix) {
         String enrichment = message.getName();
         String fieldName = field.getName();
         Logger log = log();

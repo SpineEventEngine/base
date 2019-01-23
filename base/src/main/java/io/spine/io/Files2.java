@@ -40,8 +40,6 @@ import static com.google.common.io.Files.createParentDirs;
  *     <li>{@link java.nio.file.Paths Paths} from NIO2
  *     <li>{@link com.google.common.io.Files Files from Guava}
  * </ul>
- *
- * @author Alexander Yevsyukov
  */
 public final class Files2 {
 

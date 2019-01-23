@@ -97,6 +97,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
             return;
         }
 
-        EnrichmentLookup.processDescriptorSetFile(file, targetDir);
+        EnrichmentLookup lookup = new EnrichmentLookup(file);
+        lookup.collectTo(targetDir);
     }
 }
