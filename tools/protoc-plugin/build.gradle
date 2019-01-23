@@ -33,6 +33,9 @@ dependencies {
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
+    protoc {
+        artifact = deps.build.protoc
+    }
 }
 
 jar {
