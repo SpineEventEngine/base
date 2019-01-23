@@ -169,7 +169,7 @@ class ProtocPluginTest {
 
     @Test
     @DisplayName("mark top-level message declarations with accordance with `modelCompiler.generatedInterfaces`")
-    void markMessagesByFilePatter() {
+    void markMessagesByFilePattern() {
         assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
         assertThat(WeatherForecast.Temperature.getDefaultInstance())
                 .isNotInstanceOf(DocumentMessage.class);
