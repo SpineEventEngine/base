@@ -21,16 +21,12 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.proto.PackageName;
 import io.spine.logging.Logging;
 
-import java.nio.file.Path;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An action resolving relative imports of generated Protobuf files.
@@ -47,12 +43,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class ResolveRelativeImport extends ResolveAction implements Logging {
 
-    private final Directory generatedRoot;
     private final List<ProtoModule> modules;
 
-    ResolveRelativeImport(Directory generatedRoot, List<ProtoModule> modules) {
+    ResolveRelativeImport(List<ProtoModule> modules) {
         super();
-        this.generatedRoot = checkNotNull(generatedRoot);
         this.modules = ImmutableList.copyOf(modules);
     }
 
@@ -75,22 +69,5 @@ final class ResolveRelativeImport extends ResolveAction implements Logging {
             }
         }
         return resolvable;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Skips if the imported file belongs to the module. A file is considered
-     * belonging to the module if it is present in the folder with Protobufs compiled to JavaScript.
-     */
-    @Override
-    boolean shouldNotResolve(ImportPath importPath) {
-        FileName fileName = importPath.fileName();
-        Path filePath = generatedRoot.resolve(fileName);
-        boolean presentInModule = filePath.toFile()
-                                          .exists();
-        _debug("Checking if the file {} belongs to the module Protobuf sources, result: {}",
-               filePath, presentInModule);
-        return presentInModule;
     }
 }

@@ -20,8 +20,11 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
+import io.spine.logging.Logging;
+
+import java.io.File;
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,27 +32,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A line of a source JavaScript file with an import statement, which is going to be resolved.
  */
-public class ImportSnippet {
+public class ImportSnippet implements Logging {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
 
     private final String text;
-    private final FileName fileName;
+    private final File originFile;
 
     /**
      * Creates a new instance.
      *
      * @param text
      *         the line with an import statement
-     * @param fileName
-     *         the name of the file the text belongs to
+     * @param originFile
+     *         the name of the file the import belongs to
      */
-    public ImportSnippet(String text, FileName fileName) {
+    public ImportSnippet(String text, File originFile) {
         checkArgument(hasImport(text), "The text should contain an import statement.");
-        checkNotNull(fileName);
+        checkNotNull(originFile);
         this.text = text;
-        this.fileName = fileName;
+        this.originFile = originFile;
     }
 
     /**
@@ -75,7 +78,7 @@ public class ImportSnippet {
      */
     ImportSnippet replacePath(CharSequence newPath) {
         String updatedText = text.replace(path().value(), newPath);
-        return new ImportSnippet(updatedText, fileName);
+        return new ImportSnippet(updatedText, originFile);
     }
 
     /**
@@ -86,9 +89,28 @@ public class ImportSnippet {
     }
 
     /**
-     * Obtains the name of the file the import belongs to.
+     * Tells whether the imported file is present on a file system.
      */
-    FileName fileName() {
-        return fileName;
+    boolean importedFileExists() {
+        Path filePath = importedFilePath();
+        boolean exists = filePath.toFile()
+                                 .exists();
+        //TODO:2019-01-23:dmytro.grankin: Use `debug` level
+        _warn("Checking if the imported file {} exists, result: {}", filePath, exists);
+        return exists;
+    }
+
+    /**
+     * Obtains the absolute path to the imported file.
+     */
+    Path importedFilePath() {
+        ImportPath importPath = path();
+        Path filePath = originDirectory().resolve(importPath.value());
+        return filePath.normalize();
+    }
+
+    private Path originDirectory() {
+        return originFile.getParentFile()
+                         .toPath();
     }
 }

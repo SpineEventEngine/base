@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
-import io.spine.code.js.Module;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
@@ -56,10 +56,11 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
     /** The name of the {@code object-parser.js} import. */
     static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
+    private static final String PARSER_FOLDER_PATH = "client/parser";
     @VisibleForTesting
-    static final String TYPE_PARSERS_FILE = spineWebFile("/client/parser/type-parsers.js");
+    static final String TYPE_PARSERS_FILE = PARSER_FOLDER_PATH + "/type-parsers.js";
     @VisibleForTesting
-    static final String OBJECT_PARSER_FILE = spineWebFile("/client/parser/object-parser.js");
+    static final String OBJECT_PARSER_FILE = PARSER_FOLDER_PATH + "/object-parser.js";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
@@ -101,31 +102,45 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     }
 
     @VisibleForTesting
-    static CodeLines codeFor(FileDescriptor file) {
+    CodeLines codeFor(FileDescriptor file) {
         ImmutableCollection<MessageType> types = targetTypes(file);
+        FileName fileName = FileName.from(file);
         CodeLines lines = new CodeLines();
         lines.append(emptyLine());
         lines.append(Comment.generatedBySpine());
         lines.append(emptyLine());
-        lines.append(imports());
+        lines.append(imports(fileName));
         lines.append(parses(types));
         return lines;
     }
 
     /**
      * Generates imports required by the code for parsing of messages.
+     *
+     * @param targetFile
+     *         the file to generate imports for
      */
-    private static CodeLines imports() {
-        String abstractParserImport = Import.library(OBJECT_PARSER_FILE)
-                                            .toDefault()
-                                            .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
-        String parsersImport = Import.library(TYPE_PARSERS_FILE)
-                                     .toDefault()
-                                     .namedAs(TYPE_PARSERS_IMPORT_NAME);
+    private CodeLines imports(FileName targetFile) {
+        String abstractParserImport = spineWebImport(OBJECT_PARSER_FILE, targetFile)
+                .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        String parsersImport = spineWebImport(TYPE_PARSERS_FILE, targetFile)
+                .namedAs(TYPE_PARSERS_IMPORT_NAME);
         CodeLines lines = new CodeLines();
         lines.append(abstractParserImport);
         lines.append(parsersImport);
         return lines;
+    }
+
+    private Import spineWebImport(String filePath, FileName targetFile) {
+        //TODO:2019-01-23:dmytro.grankin: refactor the method
+        boolean isTest = generatedRoot().toString()
+                                        .contains("test");
+        String pathPrefix = isTest
+                            ? "../../main/"
+                            : "../";
+        FileName reference = FileName.of(pathPrefix + filePath);
+        return Import.fileRelativeTo(reference, targetFile)
+                     .toDefault();
     }
 
     /**
@@ -142,10 +157,5 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
             snippet.append(parser);
         }
         return snippet;
-    }
-
-    private static String spineWebFile(String pathToFile) {
-        String result = Module.spineWeb.artifactName() + pathToFile;
-        return result;
     }
 }

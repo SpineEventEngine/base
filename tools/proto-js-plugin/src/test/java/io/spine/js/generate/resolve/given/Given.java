@@ -21,9 +21,9 @@
 package io.spine.js.generate.resolve.given;
 
 import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
 import io.spine.js.generate.resolve.ImportSnippet;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -35,13 +35,9 @@ public class Given {
     private Given() {
     }
 
-    public static ImportSnippet googleProtobufImport(FileName file, FileName importSource) {
-        return importWithPath("google-protobuf/" + file, importSource);
-    }
-
-    public static ImportSnippet importWithPath(String path, FileName importSource) {
+    public static ImportSnippet importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
-        return new ImportSnippet(importText, importSource);
+        return new ImportSnippet(importText, importOrigin);
     }
 
     public static Directory mainProtoRoot() {
@@ -50,6 +46,10 @@ public class Given {
 
     public static Directory testProtoRoot() {
         return protoRoot("test");
+    }
+
+    public static String relativeImportPath() {
+        return "../path-relative-to-parent.js";
     }
 
     private static Directory protoRoot(String sourceSetName) {

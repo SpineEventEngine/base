@@ -61,12 +61,13 @@ public final class ResolveImports extends GenerationTask {
     }
 
     private void resolveInFile(FileName fileName) {
-        List<String> lines = fileLines(fileName);
+        Path filePath = generatedRoot().resolve(fileName);
+        List<String> lines = fileLines(filePath);
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             boolean isImport = ImportSnippet.hasImport(line);
             if (isImport) {
-                ImportSnippet sourceImport = new ImportSnippet(line, fileName);
+                ImportSnippet sourceImport = new ImportSnippet(line, filePath.toFile());
                 ImportSnippet updatedImport = resolveImport(sourceImport);
                 lines.set(i, updatedImport.text());
             }
@@ -78,11 +79,11 @@ public final class ResolveImports extends GenerationTask {
      * Attempts to resolve an import in the file.
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
-        ResolveSpineImport resolveSpine = new ResolveSpineImport(generatedRoot());
+        ResolveSpineImport resolveSpine = new ResolveSpineImport();
         if (resolveSpine.isApplicableTo(resolvable.path())) {
             return resolveSpine.attemptResolve(resolvable);
         }
-        ResolveRelativeImport resolveRelative = new ResolveRelativeImport(generatedRoot(), modules);
+        ResolveRelativeImport resolveRelative = new ResolveRelativeImport(modules);
         return resolveRelative.attemptResolve(resolvable);
     }
 
@@ -96,10 +97,9 @@ public final class ResolveImports extends GenerationTask {
         }
     }
 
-    private List<String> fileLines(FileName fileName) {
-        Path path = generatedRoot().resolve(fileName);
+    private static List<String> fileLines(Path filePath) {
         try {
-            List<String> lines = Files.readAllLines(path);
+            List<String> lines = Files.readAllLines(filePath);
             return lines;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);

@@ -21,14 +21,12 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Any;
-import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,9 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("ResolveRelativeImport action should")
 class ResolveRelativeImportTest {
 
-    private final Directory generatedRoot = Directory.at(Paths.get("src/test/resources"));
-    private final ResolveRelativeImport action = new ResolveRelativeImport(generatedRoot,
-                                                                           ImmutableList.of());
+    private final ResolveRelativeImport action = new ResolveRelativeImport(ImmutableList.of());
 
     @Test
     @DisplayName("be applicable to relative imports of generated Protobufs")
@@ -61,18 +57,10 @@ class ResolveRelativeImportTest {
     @Test
     @DisplayName("return the same import snippet if was not resolved")
     void handleUnresolved() {
-        FileName importSource = FileName.from(Any.getDescriptor()
-                                                 .getFile());
-        ImportSnippet resolvable = Given.importWithPath("./unknown/options_pb.js", importSource);
+        File importOrigin = Paths.get("missing.js")
+                                 .toFile();
+        ImportSnippet resolvable = Given.importWithPath("./unknown/options_pb.js", importOrigin);
         ImportSnippet resolved = action.resolve(resolvable);
         assertEquals(resolvable, resolved);
-    }
-
-    @Test
-    @DisplayName("skip imports of files exposed by current module")
-    void skipImports() {
-        ImportPath importPath = ImportPath.of("../fake_pb.js");
-        boolean shouldSkip = action.shouldNotResolve(importPath);
-        assertTrue(shouldSkip);
     }
 }

@@ -29,15 +29,13 @@ import io.spine.js.generate.GenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static io.spine.js.generate.resolve.given.Given.mainProtoRoot;
-import static io.spine.js.generate.resolve.given.Given.testProtoRoot;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("ResolveSpineImport should")
 class ResolveSpineImportTest {
@@ -46,15 +44,17 @@ class ResolveSpineImportTest {
     private final Path importedFilePath = Paths.get("java")
                                                .resolve(moduleMainFile.getPath());
     private final Directory fakeProtoRoot = mainProtoRoot();
-    private final FileName importInto = FileName.from(Any.getDescriptor()
-                                                         .getFile());
+    private final FileName importOriginName = FileName.from(Any.getDescriptor()
+                                                               .getFile());
+    private final File importOrigin = fakeProtoRoot.resolve(importOriginName)
+                                                   .toFile();
 
     @Test
     @DisplayName("resolve Spine library import if it is present in the module")
     void resolveSpineImport() {
         ImportSnippet importLine = importLine("spine/" + importedFilePath);
-        String expectedPathPrefix = ResolveSpineImport.fileRelativeToSources(fakeProtoRoot,
-                                                                             importInto);
+        //TODO:2019-01-23:dmytro.grankin: fix the test
+        String expectedPathPrefix = "?";
         String expectedPath = expectedPathPrefix + importedFilePath;
         assertImportPath(importLine, expectedPath);
     }
@@ -66,50 +66,18 @@ class ResolveSpineImportTest {
         assertImportPath(importLine, importedFilePath.toString());
     }
 
-    @Test
-    @DisplayName("not skip the import of a file belonging to the module")
-    void checkBelongsToModule() {
-        ImportPath importPath = ImportPath.of("spine/" + importedFilePath);
-        ResolveSpineImport action = new ResolveSpineImport(fakeProtoRoot);
-        boolean shouldSkip = action.shouldNotResolve(importPath);
-        assertFalse(shouldSkip);
-    }
-
-    @Test
-    @DisplayName("resolve the sources directory")
-    void resolveSourcesDirectory() {
-        Path sourcesDirectoryPath = ResolveSpineImport.sourcesPath(fakeProtoRoot);
-        Path expected = Paths.get("src/main")
-                             .toAbsolutePath();
-        assertEquals(expected, sourcesDirectoryPath);
-    }
-
-    @Test
-    @DisplayName("compose the relative path to sources for a main file")
-    void mainFileRelativeToSources() {
-        String path = ResolveSpineImport.fileRelativeToSources(mainProtoRoot(), importInto);
-        assertThat(path).isEqualTo("../../../");
-    }
-
-    @Test
-    @DisplayName("compose the relative path to sources for a test file")
-    void testFileRelativeToSources() {
-        String path = ResolveSpineImport.fileRelativeToSources(testProtoRoot(), importInto);
-        assertThat(path).isEqualTo("../../../../main/");
-    }
-
-    private void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
+    private static void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
         ImportSnippet resolved = resolveImport(importLine);
         ImportPath path = resolved.path();
         assertThat(path.value()).isEqualTo(expectedImportPath);
     }
 
-    private ImportSnippet resolveImport(ImportSnippet importLine) {
-        ResolveSpineImport action = new ResolveSpineImport(fakeProtoRoot);
+    private static ImportSnippet resolveImport(ImportSnippet importLine) {
+        ResolveSpineImport action = new ResolveSpineImport();
         return action.attemptResolve(importLine);
     }
 
     private ImportSnippet importLine(String importPath) {
-        return importWithPath(importPath, importInto);
+        return importWithPath(importPath, importOrigin);
     }
 }

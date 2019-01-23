@@ -20,40 +20,50 @@
 
 package io.spine.js.generate.resolve;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.StringValue;
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
-import io.spine.js.generate.resolve.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.resolve.given.Given.importWithPath;
+import static io.spine.js.generate.resolve.given.Given.relativeImportPath;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ImportSnippet should")
 class ImportSnippetTest {
 
-    private final FileName importedFile = FileName.from(Any.getDescriptor()
-                                                           .getFile());
-    private final FileName importSource = FileName.from(StringValue.getDescriptor()
-                                                                   .getFile());
-    private final ImportSnippet libraryFileImport = Given.googleProtobufImport(importedFile,
-                                                                               importSource);
+    private final File importOrigin = Paths.get("folder/nested/some-file.js")
+                                           .toFile();
+    private final ImportSnippet importSnippet = importWithPath(relativeImportPath(), importOrigin);
 
     @Test
     @DisplayName("extract the import path")
     void extractImportPath() {
-        ImportPath importPath = libraryFileImport.path();
-        ImportPath expected = ImportPath.of("google-protobuf/" + importedFile);
-        assertThat(importPath).isEqualTo(expected);
+        ImportPath importPath = importSnippet.path();
+        assertThat(importPath.value()).isEqualTo(relativeImportPath());
     }
 
     @Test
     @DisplayName("replace the import path")
     void replaceImportPath() {
         String newPath = "b";
-        ImportSnippet updatedLine = libraryFileImport.replacePath(newPath);
+        ImportSnippet updatedLine = importSnippet.replacePath(newPath);
         ImportPath updatedPath = updatedLine.path();
         assertThat(updatedPath.value()).isEqualTo(newPath);
+    }
+
+    @Test
+    @DisplayName("know about the absolute path to the imported file")
+    void obtainImportedFilePath() {
+        Path importedFilePath = importSnippet.importedFilePath();
+        Path expectedRoot = importOrigin.getParentFile()
+                                        .toPath();
+        Path expectedPath = expectedRoot.resolve(relativeImportPath())
+                                        .normalize();
+        assertEquals(expectedPath, importedFilePath);
     }
 }
