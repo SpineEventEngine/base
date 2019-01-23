@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-    }
+package io.spine.tools.protoc;
+
+import io.spine.base.SerializableMessage;
+
+public interface DocumentMessage extends SerializableMessage {
 }

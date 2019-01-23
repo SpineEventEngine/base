@@ -24,6 +24,5 @@ message School {
 
 message University {
 
-    message College {
-    }
+    message College {}
 }
