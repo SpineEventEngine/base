@@ -44,13 +44,14 @@ final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
         if (!(o instanceof PostfixInterfaceConfig)) {
             return false;
         }
-        PostfixInterfaceConfig group = (PostfixInterfaceConfig) o;
-        return Objects.equal(postfix, group.postfix);
+        PostfixInterfaceConfig config = (PostfixInterfaceConfig) o;
+        return Objects.equal(postfix, config.postfix)
+                && Objects.equal(interfaceName().orElse(null), interfaceName().orElse(null));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(postfix);
+        return Objects.hashCode(postfix, interfaceName().orElse(null));
     }
 
     @Override
