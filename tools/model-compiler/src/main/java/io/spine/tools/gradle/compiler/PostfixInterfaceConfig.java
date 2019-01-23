@@ -24,11 +24,11 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.checkerframework.checker.regex.qual.Regex;
 
-final class PatternDefinitionGroup extends AbstractProtoDefinitionGroup {
+final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 
     private final String suffix;
 
-    PatternDefinitionGroup(@Regex String suffix) {
+    PostfixInterfaceConfig(@Regex String suffix) {
         this.suffix = suffix;
     }
 
@@ -44,7 +44,7 @@ final class PatternDefinitionGroup extends AbstractProtoDefinitionGroup {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PatternDefinitionGroup group = (PatternDefinitionGroup) o;
+        PostfixInterfaceConfig group = (PostfixInterfaceConfig) o;
         return Objects.equal(suffix, group.suffix);
     }
 

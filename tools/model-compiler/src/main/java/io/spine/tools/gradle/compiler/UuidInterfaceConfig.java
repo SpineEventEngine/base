@@ -20,5 +20,5 @@
 
 package io.spine.tools.gradle.compiler;
 
-final class UuidDefinitionGroup extends AbstractProtoDefinitionGroup {
+final class UuidInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 }

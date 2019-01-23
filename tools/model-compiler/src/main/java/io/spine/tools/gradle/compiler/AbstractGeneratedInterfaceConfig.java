@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-abstract class AbstractProtoDefinitionGroup implements ProtoDefinitionGroup {
+abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
 
     private @Nullable ClassName interfaceName;
 

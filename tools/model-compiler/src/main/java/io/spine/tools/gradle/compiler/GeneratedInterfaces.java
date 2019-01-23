@@ -24,7 +24,6 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.InterfaceTarget;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
-import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Optional;
 import java.util.Set;
@@ -33,25 +32,29 @@ import static com.google.common.collect.Sets.newConcurrentHashSet;
 
 public final class GeneratedInterfaces {
 
-    private final Set<PatternDefinitionGroup> patternGroups;
-    private final UuidDefinitionGroup uuidDefinitionGroup = new UuidDefinitionGroup();
+    private final Set<PostfixInterfaceConfig> patternConfigs;
+    private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
 
     GeneratedInterfaces() {
-        this.patternGroups = newConcurrentHashSet();
+        this.patternConfigs = newConcurrentHashSet();
     }
 
-    public ProtoDefinitionGroup filePattern(@Regex String pattern) {
-        PatternDefinitionGroup group = new PatternDefinitionGroup(pattern);
-        patternGroups.add(group);
+    public GeneratedInterfaceConfig filePattern(PostfixPattern pattern) {
+        PostfixInterfaceConfig group = new PostfixInterfaceConfig(pattern.postfix);
+        patternConfigs.add(group);
         return group;
     }
 
-    public ProtoDefinitionGroup uuidMessage() {
-        return uuidDefinitionGroup;
+    public PostfixPattern endsWith(String postfix) {
+        return new PostfixPattern(postfix);
+    }
+
+    public GeneratedInterfaceConfig uuidMessage() {
+        return uuidInterfaceConfig;
     }
 
     SpineProtocConfig asProtocConfig() {
-        Optional<ClassName> name = uuidDefinitionGroup.interfaceName();
+        Optional<ClassName> name = uuidInterfaceConfig.interfaceName();
         UuidInterface uuidInterface = name
                 .map(className -> UuidInterface
                         .newBuilder()
@@ -61,15 +64,24 @@ public final class GeneratedInterfaces {
         SpineProtocConfig.Builder result = SpineProtocConfig
                 .newBuilder()
                 .setUuidInterface(uuidInterface);
-        patternGroups.stream()
-                     .map(config -> InterfaceTarget
+        patternConfigs.stream()
+                      .map(config -> InterfaceTarget
                              .newBuilder()
                              .setFileSuffix(config.fileSuffix())
                              .setInterfaceName(config.interfaceName()
                                                      .map(ClassName::value)
                                                      .orElse(""))
                              .build())
-                     .forEach(result::addInterfaceTarget);
+                      .forEach(result::addInterfaceTarget);
         return result.build();
+    }
+
+    public static final class PostfixPattern {
+
+        private final String postfix;
+
+        private PostfixPattern(String postfix) {
+            this.postfix = postfix;
+        }
     }
 }

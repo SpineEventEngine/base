@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-public interface ProtoDefinitionGroup {
+public interface GeneratedInterfaceConfig {
 
     void markWith(String interfaceName);
 
