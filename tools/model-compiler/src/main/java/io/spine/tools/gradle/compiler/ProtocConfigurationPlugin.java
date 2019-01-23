@@ -30,6 +30,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.groovy.GStrings;
+import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -41,11 +42,13 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
+import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
@@ -84,7 +87,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private void configureProtobuf(Project project, ProtobufConfigurator protobuf) {
         DefaultJavaProject defaultProject = at(project.getProjectDir());
-        protobuf.setGeneratedFilesBaseDir(defaultProject.generated().toString());
+        protobuf.setGeneratedFilesBaseDir(defaultProject.generated()
+                                                        .toString());
         protobuf.protoc(closure(
                 (ExecutableLocator protocLocator) -> protocLocator.setArtifact(
                         Artifact.newBuilder()
@@ -174,15 +178,22 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
         protocTask.dependsOn(dependency);
 
+
         protocTask.getPlugins()
-            .create(ProtocPlugin.GRPC.name);
+                  .create(ProtocPlugin.GRPC.name);
         protocTask.getPlugins()
-            .create(ProtocPlugin.SPINE.name,
-                    options -> options.setOutputSubDir("java"));
+                  .create(ProtocPlugin.SPINE.name,
+                          options -> {
+                              options.setOutputSubDir("java");
+                              SpineProtocConfig param = assembleParameter(protocTask.getProject());
+                              String option = Base64.getEncoder()
+                                                    .encodeToString(param.toByteArray());
+                              options.option(option);
+                          });
         protocTask.setGenerateDescriptorSet(true);
         boolean tests = protocTask.getSourceSet()
-                            .getName()
-                            .contains("test");
+                                  .getName()
+                                  .contains("test");
         Project project = protocTask.getProject();
         String descPath = tests
                           ? getTestDescriptorSetPath(project)
@@ -205,6 +216,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static void configureProtocTasks(GenerateProtoTaskCollection tasks,
                                              GradleTask dependency) {
         tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
+    }
+
+    private static SpineProtocConfig assembleParameter(Project project) {
+        GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
+        return interfaces.asProtocConfig();
     }
 
     private enum ProtocPlugin {

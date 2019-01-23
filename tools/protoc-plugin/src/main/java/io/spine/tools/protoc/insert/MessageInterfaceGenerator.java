@@ -26,10 +26,12 @@ import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.Collection;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.insert.BuiltInMessageInterface.scanForBuiltIns;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
@@ -48,18 +50,17 @@ import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
  */
 public class MessageInterfaceGenerator extends SpineProtoGenerator {
 
-    private static final SpineProtoGenerator instance = new MessageInterfaceGenerator();
-
     /** Prevents singleton class instantiation. */
-    private MessageInterfaceGenerator() {
-        super();
+    private MessageInterfaceGenerator(SpineProtocConfig parameter) {
+        super(parameter);
     }
 
     /**
      * Retrieves the single instance of the {@code MessageInterfaceGenerator} type.
      */
-    public static SpineProtoGenerator instance() {
-        return instance;
+    public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
+        checkNotNull(parameter);
+        return new MessageInterfaceGenerator(parameter);
     }
 
     /**

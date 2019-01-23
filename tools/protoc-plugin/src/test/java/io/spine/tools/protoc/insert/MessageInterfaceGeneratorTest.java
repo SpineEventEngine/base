@@ -34,6 +34,7 @@ import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ class MessageInterfaceGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        codeGenerator = MessageInterfaceGenerator.instance();
+        codeGenerator = MessageInterfaceGenerator.instance(SpineProtocConfig.getDefaultInstance());
     }
 
     @Test

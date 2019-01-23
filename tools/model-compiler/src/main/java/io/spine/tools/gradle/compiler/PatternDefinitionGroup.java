@@ -26,10 +26,14 @@ import org.checkerframework.checker.regex.qual.Regex;
 
 final class PatternDefinitionGroup extends AbstractProtoDefinitionGroup {
 
-    private final String pattern;
+    private final String suffix;
 
-    PatternDefinitionGroup(@Regex String pattern) {
-        this.pattern = pattern;
+    PatternDefinitionGroup(@Regex String suffix) {
+        this.suffix = suffix;
+    }
+
+    String fileSuffix() {
+        return suffix;
     }
 
     @Override
@@ -41,18 +45,18 @@ final class PatternDefinitionGroup extends AbstractProtoDefinitionGroup {
             return false;
         }
         PatternDefinitionGroup group = (PatternDefinitionGroup) o;
-        return Objects.equal(pattern, group.pattern);
+        return Objects.equal(suffix, group.suffix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(pattern);
+        return Objects.hashCode(suffix);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("pattern", pattern)
+                          .add("pattern", suffix)
                           .add("interfaceName", interfaceName().orElse(null))
                           .toString();
     }

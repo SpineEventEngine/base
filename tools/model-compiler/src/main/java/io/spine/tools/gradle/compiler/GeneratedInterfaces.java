@@ -20,8 +20,13 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.InterfaceTarget;
+import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.UuidInterface;
 import org.checkerframework.checker.regex.qual.Regex;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newConcurrentHashSet;
@@ -43,5 +48,28 @@ public final class GeneratedInterfaces {
 
     public ProtoDefinitionGroup uuidMessage() {
         return uuidDefinitionGroup;
+    }
+
+    SpineProtocConfig asProtocConfig() {
+        Optional<ClassName> name = uuidDefinitionGroup.interfaceName();
+        UuidInterface uuidInterface = name
+                .map(className -> UuidInterface
+                        .newBuilder()
+                        .setInterfaceName(className.value())
+                        .build())
+                .orElse(UuidInterface.getDefaultInstance());
+        SpineProtocConfig.Builder result = SpineProtocConfig
+                .newBuilder()
+                .setUuidInterface(uuidInterface);
+        patternGroups.stream()
+                     .map(config -> InterfaceTarget
+                             .newBuilder()
+                             .setFileSuffix(config.fileSuffix())
+                             .setInterfaceName(config.interfaceName()
+                                                     .map(ClassName::value)
+                                                     .orElse(""))
+                             .build())
+                     .forEach(result::addInterfaceTarget);
+        return result.build();
     }
 }

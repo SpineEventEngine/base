@@ -42,8 +42,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
- *
- * @author Dmytro Dashenkov
  */
 public class Plugin {
 
@@ -54,11 +52,10 @@ public class Plugin {
     /**
      * The entry point of the program.
      */
-    public static void main(String[] args) throws InvalidProtocolBufferException {
+    public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
-        SpineProtoGenerator generator = MessageInterfaceGenerator.instance();
-        byte[] parameter = Base64.getDecoder().decode(request.getParameter());
-        InterfaceTarget target = InterfaceTarget.parseFrom(parameter);
+        SpineProtocConfig param = readConfig(request);
+        SpineProtoGenerator generator = MessageInterfaceGenerator.instance(param);
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }
@@ -69,6 +66,18 @@ public class Plugin {
                     CodeGeneratorRequest.parseFrom(System.in, Options.registry());
             return request;
         } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static SpineProtocConfig readConfig(CodeGeneratorRequest request) {
+        try {
+            String rawBase64Parameter = request.getParameter();
+            byte[] rawParameter = Base64.getDecoder()
+                                        .decode(rawBase64Parameter);
+            SpineProtocConfig config = SpineProtocConfig.parseFrom(rawParameter);
+            return config;
+        } catch (InvalidProtocolBufferException e) {
             throw new IllegalStateException(e);
         }
     }

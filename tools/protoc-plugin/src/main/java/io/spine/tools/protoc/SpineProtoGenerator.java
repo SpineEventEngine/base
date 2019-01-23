@@ -81,8 +81,10 @@ import static java.util.stream.Collectors.toSet;
  */
 public abstract class SpineProtoGenerator {
 
-    protected SpineProtoGenerator() {
-        super();
+    private final SpineProtocConfig parameter;
+
+    protected SpineProtoGenerator(SpineProtocConfig parameter) {
+        this.parameter = parameter;
     }
 
     /**
