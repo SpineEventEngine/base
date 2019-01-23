@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.GeneratedMessage;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
 
@@ -33,6 +31,7 @@ import java.util.Optional;
 public class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
 
     private Max() {
+        super(OptionsProto.max);
     }
 
     /** Returns a new instance of this option. */
@@ -42,16 +41,11 @@ public class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
 
     @Override
     public Optional<MaxOption> valueFrom(FieldValue<V> bearer) {
-        return Optional.of(bearer.valueOf(OptionsProto.max));
+        return Optional.of(bearer.valueOf(optionExtension()));
     }
 
     @Override
     Constraint<FieldValue<V>> constraint() {
         return new MaxConstraint<>();
-    }
-
-    @Override
-    GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, MaxOption> optionExtension() {
-        return OptionsProto.max;
     }
 }

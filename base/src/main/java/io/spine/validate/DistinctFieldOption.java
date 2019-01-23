@@ -20,13 +20,9 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.OnDuplicate;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,6 +35,7 @@ import java.util.Optional;
 final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T> {
 
     private DistinctFieldOption() {
+        super(OptionsProto.onDuplicate);
     }
 
     /**
@@ -50,19 +47,6 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
         return new DistinctFieldOption<>();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static List<ConstraintViolation> duplicateFound(FieldValue value) {
-        String fieldName = value.declaration()
-                                .name()
-                                .value();
-        String msg = "Found a duplicate element in a `distinct` field %s. ";
-        ConstraintViolation.Builder duplicatesBuilder = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(fieldName);
-        return ImmutableList.of(duplicatesBuilder.build());
-    }
-
     @Override
     public Optional<OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
         return Optional.of(fieldValue.valueOf(optionExtension()));
@@ -71,10 +55,5 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
     @Override
     Constraint<FieldValue<T>> constraint() {
         return new DistinctConstraint<>();
-    }
-
-    @Override
-    GeneratedExtension<FieldOptions, OnDuplicate> optionExtension() {
-        return OptionsProto.onDuplicate;
     }
 }

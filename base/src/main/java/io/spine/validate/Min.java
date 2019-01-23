@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.GeneratedMessage;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
@@ -33,6 +31,7 @@ import java.util.Optional;
 public class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
 
     private Min() {
+        super(OptionsProto.min);
     }
 
     /** Creates a new instance of this option. */
@@ -52,10 +51,5 @@ public class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
     @Override
     Constraint<FieldValue<V>> constraint() {
         return new MinConstraint<>();
-    }
-
-    @Override
-    GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, MinOption> optionExtension() {
-        return OptionsProto.min;
     }
 }

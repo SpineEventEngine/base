@@ -21,9 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.GeneratedMessage;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
 
@@ -56,7 +54,7 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
      *         a function that defines whether this option is present
      */
     private Required(Predicate<FieldValue<?>> isOptionPresent) {
-        super();
+        super(OptionsProto.required);
         this.isOptionPresent = isOptionPresent;
     }
 
@@ -74,11 +72,6 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
     static <T> Required<T> create(boolean strict) {
         Predicate<FieldValue<?>> isOptionPresent = strict ? value -> true : Required::optionValue;
         return new Required<>(isOptionPresent);
-    }
-
-    @Override
-    GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, Boolean> optionExtension() {
-        return OptionsProto.required;
     }
 
     @Override

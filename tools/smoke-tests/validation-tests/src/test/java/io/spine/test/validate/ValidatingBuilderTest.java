@@ -27,7 +27,6 @@ import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
-import io.spine.test.validate.msg.builder.ConstitutionVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
@@ -36,7 +35,6 @@ import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
-import io.spine.validate.OptionInapplicableException;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -304,19 +302,11 @@ class ValidatingBuilderTest {
     @DisplayName("not allow to `allAdd` duplicate entries to a `(onDuplicate) = ERROR` marked field")
     @Test
     void testDistinctThrowsOnAddAll() {
-        List snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
+        List<Snowflake> snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
         testOption(BlizzardVBuilder.newBuilder(),
                    builder -> builder.addSnowflake(triangularSnowflake()),
                    builder -> builder.addAllSnowflake(snowflakes)
                                      .build());
-    }
-
-    @DisplayName("throw if a non-repeated field was marked as `distinct`")
-    @Test
-    void testDistinctThrowsOnInapplicable() {
-        ConstitutionVBuilder builder = ConstitutionVBuilder.newBuilder();
-        assertThrows(OptionInapplicableException.class,
-                     () -> builder.setAmendments("First Amendment"));
     }
 
     @DisplayName("ignore duplicates in a `(on_duplicate) = IGNORE` marked field")

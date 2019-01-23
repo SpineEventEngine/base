@@ -32,5 +32,6 @@ package io.spine.validate;
  *         kind of entities that can be validated by this option
  */
 abstract class ValidatingOption<T, K> implements Option<T, K> {
+
     abstract Constraint<K> constraint();
 }

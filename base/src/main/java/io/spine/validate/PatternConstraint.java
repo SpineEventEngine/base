@@ -21,11 +21,13 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
 import java.util.List;
 
+import static io.spine.validate.FieldValidator.getErrorMsgFormat;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -39,15 +41,25 @@ public class PatternConstraint implements Constraint<FieldValue<String>> {
         PatternOption patternOption = fieldValue.valueOf(OptionsProto.pattern);
         String regex = patternOption.getRegex();
         ImmutableList<String> values = fieldValue.asList();
-        List<ConstraintViolation> violations = values.stream()
-                                                     .filter(value -> !value.matches(regex))
-                                                     .map(value -> doesNotMatch(fieldValue, value))
-                                                     .collect(toList());
+        List<ConstraintViolation> violations =
+                values.stream()
+                      .filter(value -> !value.matches(regex))
+                      .map(value -> newViolation(fieldValue, patternOption))
+                      .collect(toList());
         return violations;
     }
 
-    // TODO: 2019-01-23:serhii.lekariev:implement
-    private ConstraintViolation doesNotMatch(FieldValue<String> fieldValue, String value) {
-        return ConstraintViolation.getDefaultInstance();
+    private static ConstraintViolation newViolation(FieldValue<String> fieldValue,
+                                                    PatternOption patternOption) {
+        String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
+        FieldPath fieldPath = fieldValue.context().getFieldPath();
+        String regex = patternOption.getRegex();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .addParam(regex)
+                .setFieldPath(fieldPath)
+                .build();
+        return violation;
     }
 }

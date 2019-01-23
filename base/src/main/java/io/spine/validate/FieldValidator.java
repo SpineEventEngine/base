@@ -33,9 +33,9 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -163,7 +163,7 @@ abstract class FieldValidator<V> implements Logging {
                                            .filter(option -> option.optionPresentAt(value))
                                            .map(FieldValidatingOption::constraint)
                                            .flatMap(constraint -> constraint.check(value).stream())
-                                           .collect(Collectors.toList());
+                                           .collect(toList());
         return violations;
     }
 

@@ -39,14 +39,12 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {
-        V value = getValues().get(0);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Entity ID field `%s` must not be a floating point number.")
                 .addParam(field().descriptor()
                                  .getFullName())
                 .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value))
                 .build();
         addViolation(violation);
     }

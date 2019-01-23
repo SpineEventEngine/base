@@ -34,13 +34,23 @@ import io.spine.code.proto.Option;
  */
 abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValue<F>> {
 
-    /** Returns an extension that represents this option. */
-    abstract GeneratedExtension<FieldOptions, T> optionExtension();
+    /** An extension that represents this option. */
+    private final GeneratedExtension<FieldOptions, T> optionExtension;
+
+    /** Specifies the extension that corresponds to this option.*/
+    FieldValidatingOption(GeneratedExtension<FieldOptions, T> extension) {
+        this.optionExtension = extension;
+    }
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
     boolean optionPresentAt(FieldValue<F> value) {
         return Option.from(value.declaration()
-                                .descriptor(), optionExtension())
+                                .descriptor(), optionExtension)
                      .isExplicitlySet();
+    }
+
+    /** Returns the extension that corresponds to this option.*/
+    final GeneratedExtension<FieldOptions, T> optionExtension() {
+        return optionExtension;
     }
 }

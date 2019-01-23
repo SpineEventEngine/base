@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.OptionsProto;
 
 import java.util.Optional;
@@ -32,6 +30,7 @@ import java.util.Optional;
 public class PatternOption extends FieldValidatingOption<io.spine.option.PatternOption, String> {
 
     private PatternOption() {
+        super(OptionsProto.pattern);
     }
 
     /** Returns a new instance of this option. */
@@ -57,10 +56,5 @@ public class PatternOption extends FieldValidatingOption<io.spine.option.Pattern
     @Override
     Constraint<FieldValue<String>> constraint() {
         return new PatternConstraint();
-    }
-
-    @Override
-    GeneratedExtension<FieldOptions, io.spine.option.PatternOption> optionExtension() {
-        return OptionsProto.pattern;
     }
 }

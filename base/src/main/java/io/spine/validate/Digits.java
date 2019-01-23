@@ -20,41 +20,42 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
+import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
-import io.spine.option.PatternOption;
+
+import java.util.Optional;
 
 /**
- * Validates fields of type {@link String}.
+ * An option that imposes a constraint on a numeric field, checking whether the amount
+ * of digits in both whole and decimal parts of the numeric field exceed the specified maximum.
+ *
+ * @param <V>
+ *         type of value that the field marked with this option holds
  */
-class StringFieldValidator extends FieldValidator<String> {
+public class Digits<V extends Number> extends FieldValidatingOption<DigitsOption, V> {
 
-    private final PatternOption patternOption;
-    private final String regex;
+    private Digits() {
+        super(OptionsProto.digits);
+    }
 
     /**
-     * Creates a new validator instance.
+     * Creates a new instance of this option.
      *
-     * @param fieldValue
-     *         the value to validate
-     * @param assumeRequired
-     *         if {@code true} the validator would assume that the field is required even
-     *         if this constraint is not set explicitly
+     * @param <V>
+     *         type of value that a field marked with this option has
+     * @return new instance of this option
      */
-    StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, ImmutableSet.of(io.spine.validate.PatternOption.create()));
-        this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
-        this.regex = patternOption.getRegex();
+    public static <V extends Number> Digits<V> create() {
+        return new Digits<>();
     }
 
     @Override
-    protected void validateOwnRules() {
+    Constraint<FieldValue<V>> constraint() {
+        return new DigitsConstraint<>();
     }
 
-
     @Override
-    protected boolean isNotSet(String value) {
-        boolean result = value.isEmpty();
-        return result;
+    public Optional<DigitsOption> valueFrom(FieldValue<V> bearer) {
+        return Optional.of(bearer.valueOf(optionExtension()));
     }
 }
