@@ -191,25 +191,23 @@ public class KnownTypes implements Serializable {
 
     /**
      * A holder of the {@link KnownTypes} instance.
+     *
+     * @apiNote This class is public for allowing extension of known types by the development tools.
      */
+    @Internal
     public static final class Holder {
 
-        /**
-         * The lock to synchronize the write access to the {@code KnownTypes} instance.
-         */
+        /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
 
+        /** The singleton instance. */
         private static KnownTypes instance = new KnownTypes();
 
-        /**
-         * Prevents the utility class instantiation.
-         */
+        /** Prevents instantiation from outside. */
         private Holder() {
         }
 
-        /**
-         * Retrieves the singleton instance of {@code KnownTypes}.
-         */
+        /** Retrieves the singleton instance of {@code KnownTypes}. */
         private static KnownTypes instance() {
             return instance;
         }
@@ -222,7 +220,6 @@ public class KnownTypes implements Serializable {
          *
          * @throws java.lang.SecurityException if called from the client code
          */
-        @Internal
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
 
