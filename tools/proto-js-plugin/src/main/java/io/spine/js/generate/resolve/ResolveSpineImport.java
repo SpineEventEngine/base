@@ -20,7 +20,6 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.js.Module;
 import io.spine.logging.Logging;
@@ -36,12 +35,10 @@ final class ResolveSpineImport extends ResolveAction implements Logging {
 
     @Override
     ImportSnippet resolve(ImportSnippet resolvable) {
+        //TODO:2019-01-23:dmytro.grankin: add a check that the imported file is provided by Spine Web
         ImportPath importPath = resolvable.path();
-        FileName fileReference = importPath.fileName();
-        String unifiedReference = fileReference.value()
-                                               .replace("main/", "");
         String moduleReference =
-                Module.spineWeb.artifactName() + ImportPath.separator() + unifiedReference;
+                Module.spineWeb.artifactName() + ImportPath.separator() + importPath.fileName();
         ImportSnippet resolved = resolvable.replacePath(moduleReference);
         return resolved;
     }

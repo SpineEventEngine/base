@@ -75,7 +75,7 @@ class GenerateKnownTypeParsersTest {
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        CodeLines code = writer.codeFor(file);
+        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
         Comment expectedComment = Comment.generatedBySpine();
         assertContains(code, expectedComment.content());
     }
@@ -83,11 +83,11 @@ class GenerateKnownTypeParsersTest {
     @Test
     @DisplayName("generate imports")
     void generateImports() {
-        CodeLines code = writer.codeFor(file);
-        String abstractParserImport = Import.library(OBJECT_PARSER_FILE)
+        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
+        String abstractParserImport = Import.fileRelativeTo(OBJECT_PARSER_FILE, FileName.from(file))
                                             .toDefault()
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
-        String typeParsersImport = Import.library(TYPE_PARSERS_FILE)
+        String typeParsersImport = Import.fileRelativeTo(TYPE_PARSERS_FILE, FileName.from(file))
                                          .toDefault()
                                          .namedAs(TYPE_PARSERS_IMPORT_NAME);
         assertContains(code, abstractParserImport);
