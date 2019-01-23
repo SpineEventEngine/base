@@ -23,14 +23,17 @@ package io.spine.validate;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
+import java.util.Optional;
+
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
  */
-public class IfMissing implements Option<IfMissingOption, FieldValue> {
+public class IfMissing implements Option<IfMissingOption, FieldValue<?>> {
 
     @Override
-    public IfMissingOption valueFrom(FieldValue fieldValue) {
+    public Optional<IfMissingOption> valueFrom(FieldValue<?> fieldValue) {
         IfMissingOption option = fieldValue.valueOf(OptionsProto.ifMissing);
-        return option;
+        boolean isDefault = option.getDefaultInstanceForType().equals(option);
+        return isDefault? Optional.empty() : Optional.of(option);
     }
 }

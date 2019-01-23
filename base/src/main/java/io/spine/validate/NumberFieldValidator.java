@@ -22,13 +22,9 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
-import com.google.protobuf.Message;
 import io.spine.option.DigitsOption;
-import io.spine.option.MaxOption;
-import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -39,13 +35,9 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * @param <V>
  *         the type of the field value
  */
-abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends FieldValidator<V> {
+abstract class NumberFieldValidator<V extends Number> extends FieldValidator<V> {
 
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
-
-    private final MinOption min;
-    private final MaxOption max;
-
     private final DigitsOption digitsOption;
 
     /**
@@ -55,9 +47,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      *         the value to validate
      */
     NumberFieldValidator(FieldValue<V> fieldValue) {
-        super(fieldValue, false, false, ImmutableSet.of());
-        this.min = fieldValue.valueOf(OptionsProto.min);
-        this.max = fieldValue.valueOf(OptionsProto.max);
+        super(fieldValue, false, ImmutableSet.of(Max.create(), Min.create()));
         this.digitsOption = fieldValue.valueOf(OptionsProto.digits);
     }
 
@@ -80,7 +70,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     @Override
     protected void validateOwnRules() {
         for (V value : getValues()) {
-            validateRangeOptions(value);
             validateDigitsOption(value);
         }
     }
@@ -93,51 +82,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     @Override
     protected boolean isNotSet(V value) {
         return false;
-    }
-
-    private void validateRangeOptions(V value) {
-        if (notFitToMin(value)) {
-            addViolation(minOrMax(value,
-                                  min,
-                                  min.getMsgFormat(),
-                                  min.getExclusive(),
-                                  min.getValue()));
-        }
-        if (notFitToMax(value)) {
-            addViolation(minOrMax(value,
-                                  max,
-                                  max.getMsgFormat(),
-                                  max.getExclusive(),
-                                  max.getValue()));
-        }
-    }
-
-    private boolean notFitToMin(V value) {
-        String minAsString = min.getValue();
-        if (minAsString.isEmpty()) {
-            return false;
-        }
-        int comparison = compareToValueOf(value, minAsString);
-        return min.getExclusive()
-               ? comparison <= 0
-               : comparison < 0;
-    }
-
-    private boolean notFitToMax(V value) {
-        String maxAsString = max.getValue();
-        if (maxAsString.isEmpty()) {
-            return false;
-        }
-        int comparison = compareToValueOf(value, maxAsString);
-        return max.getExclusive()
-               ? comparison >= 0
-               : comparison > 0;
-    }
-
-    private int compareToValueOf(V value, String number) {
-        V bound = toNumber(number);
-        int comparison = value.compareTo(bound);
-        return comparison;
     }
 
     private void validateDigitsOption(V value) {
@@ -155,23 +99,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         if (isInvalid) {
             addViolation(digits(value));
         }
-    }
-
-    private ConstraintViolation minOrMax(V value,
-                                         Message option,
-                                         String customMsg,
-                                         boolean exclusive,
-                                         String constraint) {
-        String msg = getErrorMsgFormat(option, customMsg);
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(exclusive ? "" : "or equal to")
-                .addParam(constraint)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value))
-                .build();
-        return violation;
     }
 
     private ConstraintViolation digits(V value) {

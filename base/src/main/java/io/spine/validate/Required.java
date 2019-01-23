@@ -20,15 +20,13 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Message;
+import com.google.protobuf.GeneratedMessage;
 import io.spine.logging.Logging;
-import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -79,14 +77,17 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
     }
 
     @Override
+    GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, Boolean> optionExtension() {
+        return OptionsProto.required;
+    }
+
+    @Override
     boolean optionPresentAt(FieldValue<T> value) {
-        if (this.isOptionPresent.test(value)) {
-            return true;
-        }
         ifMissing.valueFrom(value)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));
-        return false;
+        checkCanBeRequired(value);
+        return this.isOptionPresent.test(value);
     }
 
     private void checkCanBeRequired(FieldValue<?> value) {
@@ -97,33 +98,6 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
                                    .typeName();
             _warn("Fields of type {} should not be declared as `(required)`.", typeName);
         }
-    }
-
-    private static List<ConstraintViolation> newViolation(IfMissingOption option, FieldValue<?> value) {
-        String msg = getErrorMsgFormat(option, option.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .setFieldPath(value.context()
-                                   .getFieldPath())
-                .build();
-        return ImmutableList.of(violation);
-    }
-
-    /**
-     * Returns a validation error message (a custom one (if present) or the default one).
-     *
-     * @param option
-     *         a validation option used to validationRule the default message
-     * @param customMsg
-     *         a user-defined error message
-     */
-    private static String getErrorMsgFormat(Message option, String customMsg) {
-        String defaultMsg = option.getDescriptorForType()
-                                  .getOptions()
-                                  .getExtension(OptionsProto.defaultMessage);
-        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
-        return msg;
     }
 
     private static Boolean optionValue(FieldValue<?> fieldValue) {
@@ -137,10 +111,7 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
     }
 
     @Override
-    ValidationRule<FieldValue<T>> validationRule() {
-        return new ValidationRule<>(value -> {
-            checkCanBeRequired(value);
-            return !value.isDefault();
-        }, value -> newViolation(this.ifMissing.valueFrom(value).get(), value));
+    Constraint<FieldValue<T>> constraint() {
+        return new RequiredConstraint<>();
     }
 }

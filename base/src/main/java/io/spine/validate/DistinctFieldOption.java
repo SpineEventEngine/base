@@ -21,15 +21,13 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.OnDuplicate;
 import io.spine.option.OptionsProto;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values
@@ -52,26 +50,6 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
         return new DistinctFieldOption<>();
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
-    private static boolean checkForDuplicates(FieldValue<?> value) {
-        List<?> potentialDuplicates = new ArrayList<>(value.asList());
-        Set<?> duplicates = findDuplicates(potentialDuplicates);
-        return duplicates.isEmpty();
-    }
-
-    private static Set<?> findDuplicates(Iterable<?> potentialDuplicates) {
-        Set<Object> duplicateLess = new HashSet<>();
-        ImmutableSet.Builder<Object> duplicates = ImmutableSet.builder();
-        for (Object potentialDuplicate : potentialDuplicates) {
-            if (duplicateLess.contains(potentialDuplicate)) {
-                duplicates.add(potentialDuplicate);
-            } else {
-                duplicateLess.add(potentialDuplicate);
-            }
-        }
-        return duplicates.build();
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static List<ConstraintViolation> duplicateFound(FieldValue value) {
         String fieldName = value.declaration()
@@ -87,12 +65,16 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
 
     @Override
     public Optional<OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
-        return Optional.of(fieldValue.valueOf(OptionsProto.onDuplicate));
+        return Optional.of(fieldValue.valueOf(optionExtension()));
     }
 
     @Override
-    ValidationRule<FieldValue<T>> validationRule() {
-        return new ValidationRule<>(DistinctFieldOption::checkForDuplicates,
-                                    DistinctFieldOption::duplicateFound);
+    Constraint<FieldValue<T>> constraint() {
+        return new DistinctConstraint<>();
+    }
+
+    @Override
+    GeneratedExtension<FieldOptions, OnDuplicate> optionExtension() {
+        return OptionsProto.onDuplicate;
     }
 }

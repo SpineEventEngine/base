@@ -20,17 +20,27 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.Option;
 
 /**
  * An option that validates a field.
+ *
+ * Validating options impose constraint on fields that they are applied to.
  *
  * @param <T>
  *         type of information that this option holds
  */
 abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValue<F>> {
 
+    /** Returns an extension that represents this option. */
+    abstract GeneratedExtension<FieldOptions, T> optionExtension();
+
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
     boolean optionPresentAt(FieldValue<F> value) {
-        return valueFrom(value).isPresent();
+        return Option.from(value.declaration()
+                                .descriptor(), optionExtension())
+                     .isExplicitlySet();
     }
 }

@@ -20,61 +20,28 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.base.FieldPath;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
 import java.util.Optional;
-
-import static io.spine.protobuf.TypeConverter.toAny;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.validate.FieldValidator.getErrorMsgFormat;
 
 /**
  * An option that defines a pattern that a field value has to match.
  */
 public class PatternOption extends FieldValidatingOption<io.spine.option.PatternOption, String> {
 
-    private PatternOption(){
+    private PatternOption() {
     }
 
     /** Returns a new instance of this option. */
-    public static PatternOption create(){
+    public static PatternOption create() {
         return new PatternOption();
-    }
-
-    private static List<ConstraintViolation> newViolation(FieldValue<String> fieldValue) {
-        io.spine.option.PatternOption patternOption = getOption(fieldValue);
-        String regex = patternOption.getRegex();
-        FieldPath fieldPath = fieldValue.context()
-                                        .getFieldPath();
-        String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(regex)
-                .setFieldPath(fieldPath)
-                .setFieldValue(toAny(fieldValue))
-                .build();
-        return ImmutableList.of(violation);
     }
 
     private static io.spine.option.PatternOption getOption(FieldValue<String> fieldValue) {
         io.spine.option.PatternOption option = fieldValue.valueOf(OptionsProto.pattern);
         return option;
-    }
-
-    private String getRegex(FieldValue<String> fieldValue) {
-        String regex = valueFrom(fieldValue).orElseThrow(() -> illegalState(fieldValue))
-                                            .getRegex();
-        return regex;
-    }
-
-    private static IllegalStateException illegalState(FieldValue<String> fieldValue) {
-        return newIllegalStateException("Could not validationRule regexp from field %s.",
-                                        fieldValue.context()
-                                                  .getFieldPath());
     }
 
     @Override
@@ -87,15 +54,13 @@ public class PatternOption extends FieldValidatingOption<io.spine.option.Pattern
                Optional.of(regex);
     }
 
-    private boolean allMatch(FieldValue<String> fieldValue) {
-        String regex = getRegex(fieldValue);
-        return fieldValue.asList()
-                         .stream()
-                         .allMatch(regex::matches);
+    @Override
+    Constraint<FieldValue<String>> constraint() {
+        return new PatternConstraint();
     }
 
     @Override
-    ValidationRule<FieldValue<String>> validationRule() {
-        return new ValidationRule<>(this::allMatch, PatternOption::newViolation);
+    GeneratedExtension<FieldOptions, io.spine.option.PatternOption> optionExtension() {
+        return OptionsProto.pattern;
     }
 }

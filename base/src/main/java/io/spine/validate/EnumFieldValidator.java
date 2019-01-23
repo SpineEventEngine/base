@@ -23,8 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
-import java.util.Set;
-
 /**
  * Validates fields of type {@link EnumValueDescriptor}.
  */
@@ -37,7 +35,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
      *         the value to validate
      */
     EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false, true, ImmutableSet.of());
+        super(fieldValue, false, ImmutableSet.of());
     }
 
     @Override

@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableSet;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
-import java.util.Set;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 
 /**
@@ -46,7 +44,7 @@ class StringFieldValidator extends FieldValidator<String> {
      *         if this constraint is not set explicitly
      */
     StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, true, ImmutableSet.of());
+        super(fieldValue, assumeRequired, ImmutableSet.of());
         this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }

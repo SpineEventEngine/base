@@ -71,12 +71,12 @@ final class FieldValue<T> {
      * @return a new instance
      */
     @SuppressWarnings("unchecked")
-    static <T> FieldValue<T> of(T rawValue, FieldContext context) {
+    static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
         T value = rawValue instanceof ProtocolMessageEnum
                        ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
-                       : rawValue;
+                       : (T) rawValue;
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
         return new FieldValue<>(value, context, declaration);
@@ -202,10 +202,7 @@ final class FieldValue<T> {
         }
     }
 
-    T singleValue() {
-        return asList().get(0);
-    }
-
+    /** Returns {@code true} if this field is default, {@code false} otherwise. */
     boolean isDefault() {
         return this.createValidator(false).fieldValueNotSet();
     }

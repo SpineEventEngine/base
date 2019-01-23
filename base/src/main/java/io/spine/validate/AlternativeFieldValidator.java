@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.logging.Logging;
 
 import java.util.List;
@@ -45,11 +44,8 @@ final class AlternativeFieldValidator implements Logging {
     }
 
     List<ConstraintViolation> validate() {
-        ValidatingOption<String, MessageValue> requiredFieldOption = new RequiredField();
-        ValidationRule<MessageValue> rule = requiredFieldOption.validationRule();
-        if(rule.valueDoesNotMatch(message)){
-            return ImmutableList.copyOf(rule.onDoesNotMatch());
-        }
-        return ImmutableList.of();
+        RequiredField requiredFieldOption = new RequiredField();
+        Constraint<MessageValue> required = requiredFieldOption.constraint();
+        return required.check(message);
     }
 }

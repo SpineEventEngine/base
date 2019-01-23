@@ -32,9 +32,5 @@ package io.spine.validate;
  *         kind of entities that can be validated by this option
  */
 abstract class ValidatingOption<T, K> implements Option<T, K> {
-
-    /**
-     * Returns a validation rule that this option represents.
-     */
-    abstract ValidationRule<K> validationRule();
+    abstract Constraint<K> constraint();
 }

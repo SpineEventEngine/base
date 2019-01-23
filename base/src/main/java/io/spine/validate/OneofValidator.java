@@ -49,7 +49,7 @@ class OneofValidator {
 
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Optional<FieldValue> populatedField = message.valueOf(oneof);
+        Optional<FieldValue<?>> populatedField = message.valueOf(oneof);
         if (!populatedField.isPresent()) {
             violations.add(noneFieldIsSet());
         } else {
@@ -74,7 +74,7 @@ class OneofValidator {
         return requiredFieldNotFound;
     }
 
-    private static List<ConstraintViolation> validateField(FieldValue field) {
+    private static List<ConstraintViolation> validateField(FieldValue<?> field) {
         FieldValidator<?> validator = field.createValidator();
         return validator.validate();
     }

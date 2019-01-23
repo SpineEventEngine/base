@@ -34,7 +34,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *         the value to to validate
      */
     BooleanFieldValidator(FieldValue<Boolean> fieldValue) {
-        super(fieldValue, false, false, ImmutableSet.of());
+        super(fieldValue, false, ImmutableSet.of());
     }
 
     /**

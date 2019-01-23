@@ -20,14 +20,10 @@
 
 package io.spine.validate;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * A message option that defines a combination of required fields for the message.
@@ -55,33 +51,6 @@ public class RequiredField extends MessageValidatingOption<String> {
      */
     private static final String OPTION_REQUIRED_FIELD = "required_field";
 
-    /**
-     * Combination of fields are made with ampersand.
-     */
-    private static final char AMPERSAND = '&';
-
-    private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-
-    private boolean matches(MessageValue messageField) {
-        if (!valueFrom(messageField).isPresent()) {
-            return true;
-        }
-        String expression = valueFrom(messageField).get();
-        ImmutableList<RequiredFieldOptions> parse = parse(expression);
-        if (!alternativeFound(parse, messageField)) {
-            String msgFormat =
-                    "None of the fields match the `required_field` definition: %s";
-            ConstraintViolation requiredFieldNotFound = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat(msgFormat)
-                    .addParam(expression)
-                    .build();
-            violations.add(requiredFieldNotFound);
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public Optional<String> valueFrom(MessageValue message) {
         Map<Descriptors.FieldDescriptor, Object> options = message.options();
@@ -95,88 +64,7 @@ public class RequiredField extends MessageValidatingOption<String> {
     }
 
     @Override
-    ValidationRule<MessageValue> validationRule() {
-        return new ValidationRule<>(this::matches, messageValue -> violations.build());
-    }
-
-    private static class RequiredFieldOptions {
-
-        /**
-         * The pattern to remove whitespace from the option field value.
-         */
-        private static final Pattern WHITESPACE = Pattern.compile("\\s+");
-
-        /**
-         * The separator of field name (or field combination) options.
-         */
-        private static final char OPTION_SEPARATOR = '|';
-
-        private final ImmutableList<String> fieldNames;
-
-        private RequiredFieldOptions(ImmutableList<String> names) {
-            fieldNames = names;
-        }
-
-        static RequiredFieldOptions ofCombination(ImmutableList<String> fieldNames) {
-            return new RequiredFieldOptions(fieldNames);
-        }
-
-        static RequiredFieldOptions ofCombination(CharSequence expression) {
-            ImmutableList<String> parts = ImmutableList.copyOf(Splitter.on(AMPERSAND)
-                                                                       .split(expression));
-            return ofCombination(parts);
-        }
-    }
-
-    private static ImmutableList<RequiredFieldOptions> parse(String expression) {
-        ImmutableList.Builder<RequiredFieldOptions> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = RequiredFieldOptions.WHITESPACE.matcher(expression)
-                                                                  .replaceAll("");
-        Iterable<String> parts = Splitter.on(RequiredFieldOptions.OPTION_SEPARATOR)
-                                         .split(whiteSpaceRemoved);
-        for (String part : parts) {
-            alternatives.add(RequiredFieldOptions.ofCombination(part));
-        }
-        return alternatives.build();
-    }
-
-    private boolean alternativeFound(Iterable<RequiredFieldOptions> fieldOptions,
-                                     MessageValue message) {
-        for (RequiredFieldOptions option : fieldOptions) {
-            boolean found = checkFields(option.fieldNames, message);
-            if (found) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkField(String fieldName, MessageValue message) {
-        Optional<FieldValue> fieldValue = message.valueOf(fieldName);
-        if (!fieldValue.isPresent()) {
-            ConstraintViolation notFound = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat("Field named `%s` is not found.")
-                    .addParam(fieldName)
-                    .build();
-            violations.add(notFound);
-            return false;
-        }
-        FieldValidator<?> fieldValidator = fieldValue.get()
-                                                     .createValidatorAssumingRequired();
-        List<ConstraintViolation> violations = fieldValidator.validate();
-        // Do not add violations to the results because we have options.
-        // The violation would be that none of the field or combinations is defined.
-
-        return violations.isEmpty();
-    }
-
-    private boolean checkFields(ImmutableList<String> fieldNames, MessageValue message) {
-        for (String fieldName : fieldNames) {
-            if (!checkField(fieldName, message)) {
-                return false;
-            }
-        }
-        return true;
+    Constraint<MessageValue> constraint() {
+        return new RequiredFieldConstraint();
     }
 }

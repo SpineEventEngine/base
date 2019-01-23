@@ -20,38 +20,27 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.GeneratedMessage;
-import io.spine.option.MaxOption;
-import io.spine.option.OptionsProto;
-
-import java.util.Optional;
+import java.util.List;
 
 /**
- * An option that defines a maximum value for a numeric field.
+ * A rule that limits the set of possible values for {@code T} and produces
+ * {@code ConstraintViolations} upon finding that some value of {@code T} does not fit into the
+ * set limits.
+ *
+ * @param <T>
+ *         a type of values that this constraint is applicable to
  */
-public class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
+public interface Constraint<T> {
 
-    private Max() {
-    }
-
-    /** Returns a new instance of this option. */
-    static <V extends Number> Max<V> create() {
-        return new Max<>();
-    }
-
-    @Override
-    public Optional<MaxOption> valueFrom(FieldValue<V> bearer) {
-        return Optional.of(bearer.valueOf(OptionsProto.max));
-    }
-
-    @Override
-    Constraint<FieldValue<V>> constraint() {
-        return new MaxConstraint<>();
-    }
-
-    @Override
-    GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, MaxOption> optionExtension() {
-        return OptionsProto.max;
-    }
+    /**
+     * Checks the specified value against this constraint.
+     *
+     * <p>If the value has been found to not correspond to the rules imposed by this constraint,
+     * {@code ConstraintViolations} are produced and returned.
+     *
+     * @param value
+     *         value that is being checked against this constraint
+     * @return a list of constraints, if any
+     */
+    List<ConstraintViolation> check(T value);
 }

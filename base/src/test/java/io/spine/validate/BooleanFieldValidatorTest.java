@@ -62,7 +62,7 @@ class BooleanFieldValidatorTest {
                 .getFields()
                 .get(0);
         FieldContext context = FieldContext.create(descriptor);
-        FieldValue fieldValue = FieldValue.of(true, context);
+        FieldValue<Boolean> fieldValue = FieldValue.of(true, context);
         BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
 
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
