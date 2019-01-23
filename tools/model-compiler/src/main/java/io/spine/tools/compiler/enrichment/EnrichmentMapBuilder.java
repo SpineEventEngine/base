@@ -23,7 +23,6 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.logging.Logging;
@@ -41,7 +40,7 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 /**
  * Composes enrichment map for multiple message declarations.
  */
-final class EnrichmentMap implements Logging {
+final class EnrichmentMapBuilder implements Logging {
 
     private static final String EMPTY_TYPE_NAME = "";
 
@@ -52,27 +51,36 @@ final class EnrichmentMap implements Logging {
     private final TypeNameParser eventType;
     private final TypeNameParser enrichmentType;
 
-    EnrichmentMap(String packagePrefix) {
+    /** Multimap for storing intermediate results. */
+    private final HashMultimap<String, String> multimap = HashMultimap.create();
+
+    EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
         this.eventType = new TypeNameParser(enrichmentFor, packagePrefix);
         this.enrichmentType = new TypeNameParser(enrichment, packagePrefix);
     }
 
     /**
-     * Obtains enrichment information found in the passed messages.
+     * Adds enrichment information found in the passed messages.
      *
      * <p>A key in the returned map is a type name of an enrichment.
      *
      * <p>A value, is a string with one or more event types that are enriched with the
      * type from the key.
      */
-    Map<String, String> allOf(Iterable<DescriptorProto> messages) {
-        HashMultimap<String, String> multimap = HashMultimap.create();
+    EnrichmentMapBuilder addAll(Iterable<DescriptorProto> messages) {
         for (DescriptorProto msg : messages) {
-            handleMessage(multimap, msg);
+            handleMessage(msg);
         }
+        return this;
+    }
+
+    /**
+     * Obtains enrichment information as the the map.
+     */
+    Map<String, String> toMap() {
         _debug("Found enrichments: {}", multimap);
-        Map<String, String> merged = merge(multimap);
+        Map<String, String> merged = merge();
         return merged;
     }
 
@@ -85,11 +93,11 @@ final class EnrichmentMap implements Logging {
      * i.e. when processing a single enrichment type as a map key, but multiple target
      * event types as values.
      */
-    private Map<String, String> merge(HashMultimap<String, String> source) {
-        _debug("Merging duplicating entries");
-        ImmutableMap.Builder<String, String> mergedResult = ImmutableMap.builder();
-        for (String key : source.keySet()) {
-            Set<String> valuesPerKey = source.get(key);
+    private Map<String, String> merge() {
+        _debug("Merging entries with the same key");
+        ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
+        for (String key : multimap.keySet()) {
+            Set<String> valuesPerKey = multimap.get(key);
             /* Empty type name might be present in the values.
                If so, remove it from the set */
             valuesPerKey.remove(EMPTY_TYPE_NAME);
@@ -101,22 +109,17 @@ final class EnrichmentMap implements Logging {
                 mergedValue = valuesPerKey.iterator()
                                           .next();
             }
-            mergedResult.put(key, mergedValue);
+            result.put(key, mergedValue);
         }
 
-        return mergedResult.build();
-    }
-
-    private static void put(Map.Entry<String, String> entry, Multimap<String, String> targetMap) {
-        // Put key and value separately to avoid an error.
-        targetMap.put(entry.getKey(), entry.getValue());
+        return result.build();
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")  // It's fine as we don't expect too many items.
-    private void handleMessage(Multimap<String, String> targetMap, DescriptorProto msg) {
+    private void handleMessage(DescriptorProto msg) {
         Map<String, String> entries = scanMsg(msg);
         for (Map.Entry<String, String> entry : entries.entrySet()) {
-            put(entry, targetMap);
+            put(entry);
         }
         if (!entries.isEmpty()) {
             return;
@@ -124,19 +127,24 @@ final class EnrichmentMap implements Logging {
         Map<String, String> entryFromField = scanFields(msg);
         if (entryFromField.size() > 0) {
             for (Map.Entry<String, String> entry : entryFromField.entrySet()) {
-                put(entry, targetMap);
+                put(entry);
             }
             return;
         }
         Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
         if (entryFromInnerMsg != null) {
-            put(entryFromInnerMsg, targetMap);
+            put(entryFromInnerMsg);
             _debug("Found enrichment: {} -> {}",
                    entryFromInnerMsg.getKey(),
                    entryFromInnerMsg.getValue());
         } else {
             _debug("No enrichment or event annotations found for message {}", msg.getName());
         }
+    }
+
+    private void put(Map.Entry<String, String> entry) {
+        // Put key and value separately to avoid an error.
+        multimap.put(entry.getKey(), entry.getValue());
     }
 
     private Map<String, String> scanMsg(DescriptorProto msg) {
@@ -176,8 +184,8 @@ final class EnrichmentMap implements Logging {
         Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
-                ByOption by = new ByOption(packagePrefix, msg, field);
-                Map.Entry<String, String> foundEvents = by.collect();
+                ByOption by = new ByOption(msg, field);
+                Map.Entry<String, String> foundEvents = by.collect(packagePrefix);
                 enrichmentsMap.put(foundEvents.getKey(), foundEvents.getValue());
             }
         }

@@ -23,8 +23,8 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Extension;
 import io.spine.option.Options;
 import io.spine.type.TypeName;
@@ -37,9 +37,6 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A parser of {@link TypeName}s contained in a message option.
- *
- * @author Dmytro Grankin
- * @author Dmytro Dashenkov
  */
 final class TypeNameParser {
 
@@ -63,10 +60,10 @@ final class TypeNameParser {
      */
     private static final Splitter splitter = Splitter.on(TYPE_NAME_SEPARATOR);
 
-    private final Extension<DescriptorProtos.MessageOptions, String> option;
+    private final Extension<MessageOptions, String> option;
     private final String packagePrefix;
 
-    TypeNameParser(Extension<DescriptorProtos.MessageOptions, String> option, String prefix) {
+    TypeNameParser(Extension<MessageOptions, String> option, String prefix) {
         this.option = option;
         packagePrefix = prefix;
     }
