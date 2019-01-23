@@ -40,6 +40,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class ProtoModule {
 
     private final String name;
+    //TODO:2019-01-23:dmytro.grankin: supply the value from outside
+    private final String protoDirectory = "proto";
     private final List<PackagePattern> packages;
 
     /**

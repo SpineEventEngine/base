@@ -25,7 +25,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.ImportPath;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.PackageName;
 import io.spine.js.generate.GenerationTask;
 
 import java.io.IOException;
@@ -79,12 +81,19 @@ public final class ResolveImports extends GenerationTask {
      * Attempts to resolve an import in the file.
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
-        ResolveSpineImport resolveSpine = new ResolveSpineImport();
-        if (resolveSpine.isApplicableTo(resolvable.path())) {
-            return resolveSpine.attemptResolve(resolvable);
+        ImportPath importPath = resolvable.path();
+        if (!importPath.isRelative()) {
+            return resolvable;
         }
-        ResolveRelativeImport resolveRelative = new ResolveRelativeImport(modules);
-        return resolveRelative.attemptResolve(resolvable);
+        FileName fileName = importPath.fileName();
+        PackageName packageName = fileName.protoPackage();
+        for (ProtoModule module : modules) {
+            if (module.provides(packageName)) {
+                ImportPath pathInModule = module.importPathFor(fileName);
+                return resolvable.replacePath(pathInModule.value());
+            }
+        }
+        return resolvable;
     }
 
     private void rewriteFile(FileName fileName, Iterable<String> lines) {
