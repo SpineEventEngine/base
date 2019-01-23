@@ -22,7 +22,6 @@ package io.spine.code.js;
 
 import io.spine.value.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -54,35 +53,21 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Obtains the path of the imported file stripping the library name.
-     *
-     * <p>Does nothing if a library name if absent.
-     */
-    public ImportPath stripLibrary() {
-        String path = value();
-        if (isRelativeToParent()) {
-            return this;
-        }
-        int separatorIndex = path.indexOf(separator());
-        checkState(separatorIndex != -1,
-                   "The import path %s is expected to contain the separator `%s`.",
-                   path, separator());
-        String result = path.substring(separatorIndex + 1);
-        return of(result);
-    }
-
-    /**
      * Obtains the name of the imported file.
      */
     public FileName fileName() {
-        String name = value();
-        if (name.startsWith(CURRENT_DIR)) {
-            name = name.substring(CURRENT_DIR.length());
-        }
-        while (name.startsWith(PARENT_DIR)) {
-            name = name.substring(PARENT_DIR.length());
-        }
-        return FileName.of(name);
+        return FileName.of(withoutRelative());
+    }
+
+    /**
+     * Obtains the directory used in the path.
+     *
+     * @return the directory path omitting relative path
+     */
+    public String directory() {
+        String nonRelativePath = withoutRelative();
+        int fileNameSeparator = nonRelativePath.lastIndexOf(IMPORT_PATH_SEPARATOR);
+        return nonRelativePath.substring(0, fileNameSeparator);
     }
 
     /**
@@ -95,13 +80,14 @@ public final class ImportPath extends StringTypeValue {
         return result;
     }
 
-    /**
-     * Tells whether the import refers to a Spine library.
-     *
-     * @return {@code true} if the import path starts with {@code spine}, {@code false} otherwise
-     */
-    public boolean isSpine() {
-        boolean result = value().startsWith(Module.spinePrefix());
+    private String withoutRelative() {
+        String result = value();
+        if (result.startsWith(CURRENT_DIR)) {
+            result = result.substring(CURRENT_DIR.length());
+        }
+        while (result.startsWith(PARENT_DIR)) {
+            result = result.substring(PARENT_DIR.length());
+        }
         return result;
     }
 

@@ -25,8 +25,8 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.js.Module;
+import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.js.generate.resolve.PackagePattern;
-import io.spine.js.generate.resolve.ProtoModule;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -129,13 +129,13 @@ public class Extension {
         return path.toFile();
     }
 
-    public static List<ProtoModule> modules(Project project) {
+    public static List<ExternalModule> modules(Project project) {
         Extension extension = extension(project);
         Map<String, List<String>> rawModules = extension.modules;
-        List<ProtoModule> modules = newArrayList();
+        List<ExternalModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
             List<PackagePattern> patterns = patterns(rawModules.get(moduleName));
-            ProtoModule module = new ProtoModule(moduleName, patterns);
+            ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
         if (extension.resolveSpineModules) {
@@ -169,14 +169,14 @@ public class Extension {
     }
 
     @VisibleForTesting
-    static List<ProtoModule> predefinedModules() {
+    static List<ExternalModule> predefinedModules() {
         return ImmutableList.of(
                 spineWeb()
         );
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-    private static ProtoModule spineWeb() {
+    private static ExternalModule spineWeb() {
         String name = Module.spineWeb.artifactName();
         List<PackagePattern> packages = ImmutableList.of(
                 PackagePattern.of("client.parser"),
@@ -192,7 +192,7 @@ public class Extension {
                 PackagePattern.of("spine.web.*"),
                 PackagePattern.of("spine")
         );
-        return new ProtoModule(name, packages);
+        return new ExternalModule(name, packages);
     }
 
     private static List<PackagePattern> patterns(Collection<String> rawPatterns) {

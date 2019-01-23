@@ -21,7 +21,6 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.proto.PackageName;
 
@@ -32,12 +31,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A description of a JavaScript module, which provides compiled Protobuf files.
+ * An external JavaScript module used in a project.
  *
- * <p>Describes what Protobuf files are provided using the
- * {@linkplain PackagePattern patterns} of Protobuf packages.
+ * <p>External means that it is provided by an artifact repository like NPM.
  */
-public final class ProtoModule {
+public final class ExternalModule {
 
     private final String name;
     //TODO:2019-01-23:dmytro.grankin: supply the value from outside
@@ -52,7 +50,7 @@ public final class ProtoModule {
      * @param packages
      *         patterns of packages provided by the module
      */
-    public ProtoModule(String name, List<PackagePattern> packages) {
+    public ExternalModule(String name, List<PackagePattern> packages) {
         this.name = checkNotEmptyOrBlank(name);
         this.packages = ImmutableList.copyOf(packages);
     }
@@ -60,28 +58,31 @@ public final class ProtoModule {
     /**
      * Obtains an import path for a generated Protobuf file.
      *
-     * @param fileName
+     * @param importPath
      *         the name of a JavaScript file
      * @return the import path obtaining by composing the module and file name
      * @throws IllegalStateException
      *         if the file is not a generated Protobuf
      *         or is not provided by the module
      */
-    ImportPath importPathFor(FileName fileName) {
-        checkState(fileName.isGeneratedProto());
-        checkState(provides(fileName.protoPackage()));
-        String path = name + ImportPath.separator() + fileName;
+    ImportPath importPathFor(ImportPath importPath) {
+        checkState(importPath.fileName()
+                             .isGeneratedProto());
+        checkState(provides(importPath));
+        String path = name + ImportPath.separator() + importPath;
         return ImportPath.of(path);
     }
 
     /**
-     * Checks if the Protobuf package is provided by the module.
+     * Checks if the module provides imported file.
      *
-     * @param packageName
-     *         the package to check
-     * @return {@code true} if the module provides the package
+     * @param importPath
+     *         the import to check
+     * @return {@code true} if the module provides the file
      */
-    boolean provides(PackageName packageName) {
+    boolean provides(ImportPath importPath) {
+        PackageName packageName = importPath.fileName()
+                                            .protoPackage();
         for (PackagePattern packagePattern : packages) {
             if (packagePattern.matches(packageName)) {
                 return true;
@@ -95,10 +96,10 @@ public final class ProtoModule {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ProtoModule)) {
+        if (!(o instanceof ExternalModule)) {
             return false;
         }
-        ProtoModule module = (ProtoModule) o;
+        ExternalModule module = (ExternalModule) o;
         return name.equals(module.name) &&
                 packages.equals(module.packages);
     }

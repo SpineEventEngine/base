@@ -21,7 +21,6 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,50 +30,48 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ProtoModule should")
-class ProtoModuleTest {
+@DisplayName("ExternalModule should")
+class ExternalModuleTest {
 
     private static final String moduleName = "spine-js";
     private static final List<PackagePattern> patterns = ImmutableList.of(
             PackagePattern.of("spine")
     );
-    private final ProtoModule module = new ProtoModule(moduleName, patterns);
+    private final ExternalModule module = new ExternalModule(moduleName, patterns);
 
     @Test
     @DisplayName("not have an empty module name")
     void notHaveEmptyModuleName() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new ProtoModule("", patterns)
+                () -> new ExternalModule("", patterns)
         );
     }
 
     @Test
     @DisplayName("resolve an import path if the file is provided by module")
     void resolveMatchingImport() {
-        FileName fileName = FileName.of("spine/js_pb.js");
-        ImportPath importPath = module.importPathFor(fileName);
-        ImportPath expectedPath = ImportPath.of(moduleName + '/' + fileName);
+        ImportPath originImport = ImportPath.of("spine/js_pb.js");
+        ImportPath importPath = module.importPathFor(originImport);
+        ImportPath expectedPath = ImportPath.of(moduleName + '/' + originImport);
         assertEquals(expectedPath, importPath);
     }
 
     @Test
     @DisplayName("compose an import path only for Proto files")
     void acceptOnlyProto() {
-        FileName fileName = FileName.of("non-proto.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.importPathFor(fileName)
+                () -> module.importPathFor(ImportPath.of("non-proto.js"))
         );
     }
 
     @Test
     @DisplayName("compose an import path only if package is provided by the module")
     void acceptOnlyProvidedProto() {
-        FileName fileName = FileName.of("non/spine/index_pb.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.importPathFor(fileName)
+                () -> module.importPathFor(ImportPath.of("non/spine/index_pb.js"))
         );
     }
 }

@@ -26,9 +26,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ImportPath should")
 class ImportPathTest {
@@ -49,31 +48,6 @@ class ImportPathTest {
     }
 
     @Test
-    @DisplayName("obtain the file path skipping the library name")
-    void importedFilePathSkippingLibrary() {
-        ImportPath importPath = ImportPath.of("lib/main.js");
-        ImportPath filePath = importPath.stripLibrary();
-        assertThat(filePath.value()).isEqualTo("main.js");
-    }
-
-    @Test
-    @DisplayName("obtain the file path relative to the current directory")
-    void importedFilePathRelativeToCurrentDir() {
-        ImportPath fileImport = ImportPath.of("./file.js");
-        ImportPath filePath = fileImport.stripLibrary();
-        assertThat(filePath.value()).isEqualTo("file.js");
-    }
-
-    @Test
-    @DisplayName("obtain the file path relative to the parent directory")
-    void importedFilePathRelativeToParentDir() {
-        String sourcePath = "../file.js";
-        ImportPath fileImport = ImportPath.of(sourcePath);
-        ImportPath filePath = fileImport.stripLibrary();
-        assertThat(filePath.value()).isEqualTo(sourcePath);
-    }
-
-    @Test
     @DisplayName("strip path relative to parent directory")
     void stripRelativeToParent() {
         ImportPath importPath = ImportPath.of("../../foo/nested.js");
@@ -90,16 +64,9 @@ class ImportPathTest {
     }
 
     @Test
-    @DisplayName("recognize a Spine library")
-    void recognizeSpine() {
-        ImportPath importPath = ImportPath.of("spine-lib/something");
-        assertTrue(importPath.isSpine());
-    }
-
-    @Test
-    @DisplayName("recognize not a Spine library")
-    void recognizeNotSpine() {
-        ImportPath importPath = ImportPath.of("not-spine");
-        assertFalse(importPath.isSpine());
+    @DisplayName("obtain the directory skipping relative path")
+    void directorySkipRelative() {
+        ImportPath importPath = ImportPath.of("./../../foo/bar/f.js");
+        assertEquals("foo/bar", importPath.directory());
     }
 }

@@ -27,7 +27,6 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.PackageName;
 import io.spine.js.generate.GenerationTask;
 
 import java.io.IOException;
@@ -47,9 +46,9 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public final class ResolveImports extends GenerationTask {
 
-    private final List<ProtoModule> modules;
+    private final List<ExternalModule> modules;
 
-    public ResolveImports(Directory generatedRoot, List<ProtoModule> modules) {
+    public ResolveImports(Directory generatedRoot, List<ExternalModule> modules) {
         super(generatedRoot);
         this.modules = ImmutableList.copyOf(modules);
     }
@@ -85,11 +84,9 @@ public final class ResolveImports extends GenerationTask {
         if (!importPath.isRelative()) {
             return resolvable;
         }
-        FileName fileName = importPath.fileName();
-        PackageName packageName = fileName.protoPackage();
-        for (ProtoModule module : modules) {
-            if (module.provides(packageName)) {
-                ImportPath pathInModule = module.importPathFor(fileName);
+        for (ExternalModule module : modules) {
+            if (module.provides(importPath)) {
+                ImportPath pathInModule = module.importPathFor(importPath);
                 return resolvable.replacePath(pathInModule.value());
             }
         }
