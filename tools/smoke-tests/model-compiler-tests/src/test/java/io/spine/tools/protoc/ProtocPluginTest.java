@@ -26,6 +26,7 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.UuidValue;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;
@@ -111,11 +112,12 @@ class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark as event messages")
-    void markEventMessages() {
-        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
-        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(FirstEvent.class);
-        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
+    @DisplayName("skip standard interfaces if overridden with `ignore()`")
+    void skipStandardTypesIfIgnored() {
+        assertThat(UserCreated.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+        assertThat(UserNotified.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+
+        assertThat(TypicalIdentifier.getDefaultInstance()).isNotInstanceOf(UuidValue.class);
     }
 
     @Test
