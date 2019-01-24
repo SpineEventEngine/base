@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors;
+import io.spine.code.proto.Option;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
@@ -39,13 +41,12 @@ public class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
         return new Min<>();
     }
 
-    private MinOption getOption(FieldValue<V> doubleFieldValue) {
-        return doubleFieldValue.valueOf(OptionsProto.min);
-    }
-
     @Override
     public Optional<MinOption> valueFrom(FieldValue<V> bearer) {
-        return Optional.of(getOption(bearer));
+        Descriptors.FieldDescriptor descriptor = bearer.declaration().descriptor();
+        boolean explicitlySet = Option.from(descriptor, optionExtension())
+                                      .isExplicitlySet();
+        return explicitlySet ? Optional.of(bearer.valueOf(optionExtension())) : Optional.empty();
     }
 
     @Override

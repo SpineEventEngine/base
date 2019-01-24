@@ -33,9 +33,9 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -63,7 +63,8 @@ abstract class FieldValidator<V> implements Logging {
 
     /**
      * Creates a new validator instance.
-     *  @param fieldValue
+     *
+     * @param fieldValue
      *         the value to validate
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
@@ -127,7 +128,7 @@ abstract class FieldValidator<V> implements Logging {
         if (isRequiredId()) {
             validateEntityId();
         }
-        if (shouldValidate()) {
+        if (shouldValidate(this.value)) {
             validateOwnRules();
         }
         List<ConstraintViolation> ownViolations = assembleViolations();
@@ -160,10 +161,11 @@ abstract class FieldValidator<V> implements Logging {
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
                 this.fieldValidatingOptions.stream()
-                                           .filter(option -> option.optionPresentAt(value))
-                                           .map(FieldValidatingOption::constraint)
-                                           .flatMap(constraint -> constraint.check(value).stream())
-                                           .collect(toList());
+                                           .filter(option->option.shouldValidate(value))
+                                           .map(ValidatingOption::constraint)
+                                           .flatMap(constraint -> constraint.check(value)
+                                                                            .stream())
+                                           .collect(Collectors.toList());
         return violations;
     }
 
@@ -245,7 +247,8 @@ abstract class FieldValidator<V> implements Logging {
         return msg;
     }
 
-    private boolean shouldValidate() {
+    private static boolean shouldValidate(FieldValue<?> value) {
+        FieldDeclaration declaration = value.declaration();
         return declaration.isNotCollection() || value.valueOf(OptionsProto.valid);
     }
 

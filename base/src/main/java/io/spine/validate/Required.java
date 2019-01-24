@@ -75,7 +75,7 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
     }
 
     @Override
-    boolean optionPresentAt(FieldValue<T> value) {
+    boolean shouldValidate(FieldValue<T> value) {
         ifMissing.valueFrom(value)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));

@@ -56,6 +56,8 @@ public class Digits<V extends Number> extends FieldValidatingOption<DigitsOption
 
     @Override
     public Optional<DigitsOption> valueFrom(FieldValue<V> bearer) {
-        return Optional.of(bearer.valueOf(optionExtension()));
+        DigitsOption option = bearer.valueOf(optionExtension());
+        boolean isDefault = option.getFractionMax() == 0 && option.getIntegerMax() == 0;
+        return isDefault ? Optional.empty() : Optional.of(option);
     }
 }

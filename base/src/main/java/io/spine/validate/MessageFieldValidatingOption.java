@@ -20,38 +20,22 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Message;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.OptionsProto;
 
-import java.util.Optional;
+public abstract class MessageFieldValidatingOption<O, M extends Message> extends FieldValidatingOption<O, M> {
 
-/**
- * An option that defines a pattern that a field value has to match.
- */
-public class PatternOption extends FieldValidatingOption<io.spine.option.PatternOption, String> {
-
-    private PatternOption() {
-        super(OptionsProto.pattern);
-    }
-
-    /** Returns a new instance of this option. */
-    public static PatternOption create() {
-        return new PatternOption();
-    }
-
-    private static io.spine.option.PatternOption getOption(FieldValue<String> fieldValue) {
-        io.spine.option.PatternOption option = fieldValue.valueOf(OptionsProto.pattern);
-        return option;
+    MessageFieldValidatingOption(GeneratedExtension<FieldOptions, O> extension) {
+        super(extension);
     }
 
     @Override
-    public Optional<io.spine.option.PatternOption> valueFrom(FieldValue<String> bearer) {
-        io.spine.option.PatternOption option = bearer.valueOf(OptionsProto.pattern);
-        boolean isDefault = option.getRegex().isEmpty();
-        return isDefault ? Optional.empty() : Optional.of(option);
-    }
-
-    @Override
-    Constraint<FieldValue<String>> constraint() {
-        return new PatternConstraint();
+    boolean shouldValidate(FieldValue<M> value) {
+        FieldDeclaration declaration = value.declaration();
+        boolean valid = value.valueOf(OptionsProto.valid);
+        return super.shouldValidate(value) && (declaration.isNotCollection() || valid);
     }
 }

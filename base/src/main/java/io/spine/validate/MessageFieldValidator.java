@@ -48,7 +48,9 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      *         such constraint is not explicitly set
      */
     MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, ImmutableSet.of((FieldValidatingOption<?, V>) When.create()));
+        super(fieldValue,
+              assumeRequired,
+              ImmutableSet.of(((FieldValidatingOption<?, V>) When.create())));
     }
 
     @Override
@@ -120,7 +122,6 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      * The enumeration of pre-defined custom validations for a message field.
      */
     private enum BuiltInValidation {
-
 
         /**
          * Custom validation strategy for an {@link Any} field.

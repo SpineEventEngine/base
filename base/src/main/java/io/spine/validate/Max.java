@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.Option;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
 
@@ -41,7 +43,10 @@ public class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
 
     @Override
     public Optional<MaxOption> valueFrom(FieldValue<V> bearer) {
-        return Optional.of(bearer.valueOf(optionExtension()));
+        FieldDescriptor descriptor = bearer.declaration().descriptor();
+        boolean explicitlySet = Option.from(descriptor, optionExtension())
+                                      .isExplicitlySet();
+        return explicitlySet ? Optional.of(bearer.valueOf(optionExtension())) : Optional.empty();
     }
 
     @Override

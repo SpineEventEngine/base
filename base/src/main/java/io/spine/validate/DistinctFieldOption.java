@@ -49,7 +49,9 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
 
     @Override
     public Optional<OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
-        return Optional.of(fieldValue.valueOf(optionExtension()));
+        OnDuplicate option = fieldValue.valueOf(optionExtension());
+        boolean isDefault = option.getNumber() == 0;
+        return isDefault ? Optional.empty() : Optional.of(option);
     }
 
     @Override
