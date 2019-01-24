@@ -30,6 +30,11 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
+/**
+ * Versions of dependencies required by Spine Protoc compiler configuration.
+ *
+ * @see ProtocConfigurationPlugin
+ */
 final class DependencyVersions {
 
     private static final String RESOURCE_NAME = "/versions.properties";
@@ -44,6 +49,9 @@ final class DependencyVersions {
         this.grpc = grpc;
     }
 
+    /**
+     * Loads the versions from {@code versions.properties} resource file.
+     */
     static DependencyVersions load() {
          try (InputStream resource = DependencyVersions.class.getResourceAsStream(RESOURCE_NAME)) {
              checkNotNull(resource, "%s is not available.", RESOURCE_NAME);
@@ -62,14 +70,23 @@ final class DependencyVersions {
                                       Property.GRPC.from(properties));
     }
 
+    /**
+     * Obtains the version of Spine base, Spine model-compiler plugin, and Spine Protoc plugin.
+     */
     String spineBase() {
         return spineBase;
     }
 
+    /**
+     * Obtains the version of Protobuf.
+     */
     String protobuf() {
         return protobuf;
     }
 
+    /**
+     * Obtains the version of gRPC.
+     */
     String grpc() {
         return grpc;
     }

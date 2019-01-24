@@ -55,6 +55,12 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static org.gradle.internal.os.OperatingSystem.current;
 
+/**
+ * The Gradle plugin which configures Protobuf compilation.
+ *
+ * <p>This plugin requires {@code com.google.protobuf} plugin. If it is not applied, the plugin
+ * performs no action.
+ */
 public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static final String PROTOBUF_GROUP = "com.google.protobuf";
