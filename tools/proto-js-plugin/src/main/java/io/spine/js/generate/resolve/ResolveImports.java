@@ -28,6 +28,7 @@ import io.spine.code.js.FileName;
 import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
+import org.gradle.plugins.ide.eclipse.model.FileReference;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -81,7 +82,8 @@ public final class ResolveImports extends GenerationTask {
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
         FileReference fileReference = resolvable.path();
-        if (!fileReference.isRelative()) {
+        boolean shouldResolve = fileReference.isRelative() && !resolvable.importedFileExists();
+        if (!shouldResolve) {
             return resolvable;
         }
         for (ExternalModule module : modules) {

@@ -20,49 +20,84 @@
 
 package io.spine.js.generate.resolve;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("ExternalModule should")
 class ExternalModuleTest {
 
-    private static final String moduleName = "spine-js";
-    private static final List<DirectoryPattern> patterns = ImmutableList.of(
-            DirectoryPattern.of("spine")
-    );
-    private final ExternalModule module = new ExternalModule(moduleName, patterns);
+    private static final String moduleName = "module";
 
     @Test
-    @DisplayName("not have an empty module name")
+    @DisplayName("not have an empty name")
     void notHaveEmptyModuleName() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new ExternalModule("", patterns)
+                () -> newModule("", "some/directory")
         );
     }
 
     @Test
-    @DisplayName("convert a relative file reference to the reference of the module")
-    void convertRelativeToModuleReference() {
-        FileReference origin = FileReference.of("./../spine/js_pb.js");
-        FileReference inModule = module.pathInModule(origin);
-        FileReference expected = FileReference.of(moduleName + '/' + origin);
-        assertEquals(expected, inModule);
+    @DisplayName("resolve an import if the directory is same as in the pattern")
+    void resolveIfDirectorySame() {
+        ExternalModule module = newModule(moduleName, "d");
+        ImportPath originImport = ImportPath.of("./../../d/f.js");
+        ImportPath pathInModule = module.pathInModule(originImport);
+        ImportPath expectedPath = ImportPath.of(moduleName + "/d/f.js");
+        assertEquals(expectedPath, pathInModule);
+    }
+
+    @Test
+    @DisplayName("resolve an import for a subdirectory of a pattern")
+    void resolveForSubdirectoryPattern() {
+        ExternalModule module = newModule(moduleName, "d/*");
+        ImportPath originImport = ImportPath.of("./../../d/d2/f.js");
+        ImportPath pathInModule = module.pathInModule(originImport);
+        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/f.js");
+        assertEquals(expectedPath, pathInModule);
+    }
+
+    @Test
+    @DisplayName("resolve an import if subdirectories match but root is absent")
+    void resolveImportMatchingSubdirectories() {
+        ExternalModule module = newModule(moduleName, "d/d2/d3");
+        ImportPath originImport = ImportPath.of("./../../d2/d3/f.js");
+        ImportPath pathInModule = module.pathInModule(originImport);
+        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/d3/f.js");
+        assertEquals(expectedPath, pathInModule);
+    }
+
+    @Test
+    @DisplayName("resolve an import if subdirectories match by pattern but root is absent")
+    void resolveImportMatchingAnySubdirectories() {
+        ExternalModule module = newModule(moduleName, "d/d2/d3/*");
+        ImportPath originImport = ImportPath.of("./../../d2/d3/d4/f.js");
+        ImportPath pathInModule = module.pathInModule(originImport);
+        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/d3/f.js");
+        assertEquals(expectedPath, pathInModule);
     }
 
     @Test
     @DisplayName("compose an import path only if package is provided by the module")
     void acceptOnlyProvidedProto() {
+        ExternalModule module = newModule(moduleName, "should_not_match_it");
+        ImportPath importPath = ImportPath.of("d/index_pb.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.pathInModule(FileReference.of("non/spine/index_pb.js"))
+                () -> module.pathInModule(importPath)
         );
+    }
+
+    private static ExternalModule newModule(String moduleName, String directoryPattern) {
+        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
+        Collection<DirectoryPattern> patterns = singletonList(pattern);
+        return new ExternalModule(moduleName, patterns);
     }
 }
