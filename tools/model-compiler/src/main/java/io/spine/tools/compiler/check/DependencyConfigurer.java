@@ -37,6 +37,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
+import static io.spine.tools.gradle.compiler.Artifact.SPINE_TOOLS_GROUP;
 
 /**
  * Class which helps managing dependencies related to the Spine Error Prone Checks module and the
@@ -50,9 +51,6 @@ import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 public class DependencyConfigurer {
 
     private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
-
-    @VisibleForTesting
-    static final String SPINE_TOOLS_GROUP = "io.spine.tools";
 
     @VisibleForTesting
     static final String SPINE_CHECKER_MODULE = "spine-errorprone-checks";
@@ -111,7 +109,7 @@ public class DependencyConfigurer {
      * Gets the {@code spine-model-compiler} dependency version from the
      * {@code project.buildsript.classpath} configuration.
      *
-     * <p>If the dependency version is not found, returns {@link Optional#EMPTY}.
+     * <p>If the dependency version is not found, returns {@link Optional#empty()}.
      */
     @VisibleForTesting
     Optional<String> acquireModelCompilerVersion() {

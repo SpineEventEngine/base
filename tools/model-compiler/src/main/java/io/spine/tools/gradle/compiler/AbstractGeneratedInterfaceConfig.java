@@ -18,11 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
+package io.spine.tools.gradle.compiler;
+
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * Abstract implementation base for {@link GeneratedInterfaceConfig}.
+ */
+abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
+
+    private @Nullable ClassName interfaceName;
+
+    @Override
+    public final void markWith(String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
+    }
+
+    @Override
+    public final void ignore() {
+        this.interfaceName = null;
+    }
+
+    final Optional<ClassName> interfaceName() {
+        return Optional.ofNullable(interfaceName);
     }
 }

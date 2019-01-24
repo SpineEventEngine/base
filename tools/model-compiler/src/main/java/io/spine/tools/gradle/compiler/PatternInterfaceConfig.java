@@ -18,11 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
-    }
+package io.spine.tools.gradle.compiler;
+
+import io.spine.tools.protoc.GeneratedInterface;
+
+/**
+ * A {@link GeneratedInterfaceConfig} targeting a certain file pattern.
+ */
+abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+
+    /**
+     * Converts this config into a {@code GeneratedInterface}.
+     */
+    abstract GeneratedInterface generatedInterface();
 }

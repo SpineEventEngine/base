@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
+import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @param value cannot be null or empty, no other checking is performed
      * @return new instance
      */
-    static SimpleClassName create(String value) {
+    static SimpleClassName create(@ClassGetSimpleName String value) {
         checkNotNull(value);
         checkArgument(!value.isEmpty(), "Simple class name cannot be empty.");
         return new SimpleClassName(value);
@@ -138,7 +139,7 @@ public final class SimpleClassName extends StringTypeValue {
      * Obtains class name for {@link com.google.protobuf.MessageOrBuilder MessageOrBuilder}
      * descendant for the passed message type.
      */
-    public static SimpleClassName messageOrBuilder(String typeName) {
+    public static SimpleClassName messageOrBuilder(@ClassGetSimpleName String typeName) {
         checkNotEmptyOrBlank(typeName);
         SimpleClassName result = create(typeName + OR_BUILDER_SUFFIX);
         return result;
