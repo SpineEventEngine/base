@@ -31,6 +31,7 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.SpineProtocConfig;
+import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -143,10 +144,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                 .add(fetch.getName(), protocPluginArtifact.notation());
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
-        GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR,
-                                           task -> copyPluginExecutables(project,
-                                                                         protocPluginDependency,
-                                                                         fetch))
+        Action<Task> action = task -> copyPluginExecutables(project, protocPluginDependency, fetch);
+        GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
                 .allowNoDependencies()
                 .applyNowTo(project);
         return copyPluginJar;

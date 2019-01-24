@@ -11,21 +11,32 @@ option java_multiple_files = true;
 
 option (internal_all) = true;
 
+// Interface to mark UUID messages.
+//
+// An empty value signifies that the messages should not be marked.
+//
 message UuidInterface {
 
-    string interface_name = 1 [(required) = true];
+    string interface_name = 1;
 }
 
-message InterfaceTarget {
+// Interface to mark messages defined in a file with a certain name postfix.
+//
+message GeneratedInterface {
 
-    string interface_name = 1 [(required) = true];
+    string interface_name = 1;
 
-    string file_suffix = 2 [(required) = true];
+    string file_postfix = 2 [(required) = true];
 }
 
+// Configuration of the Spine Protoc plugin.
+//
+// The configuration is passed to the plugin as the single option. The passed value is serialized
+// and base-64 encoded.
+//
 message SpineProtocConfig {
 
     UuidInterface uuid_interface = 1;
 
-    repeated InterfaceTarget interface_target = 2;
+    repeated GeneratedInterface generated_interface = 2;
 }

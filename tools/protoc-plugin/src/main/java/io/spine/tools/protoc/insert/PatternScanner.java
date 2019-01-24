@@ -23,7 +23,7 @@ package io.spine.tools.protoc.insert;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.InterfaceTarget;
+import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
@@ -54,20 +54,20 @@ final class PatternScanner {
     }
 
     private Optional<CompilerOutput> postfixBasedInterface(MessageType type) {
-        List<InterfaceTarget> interfaceTargets = patterns.getInterfaceTargetList();
+        List<GeneratedInterface> generatedInterfaces = patterns.getGeneratedInterfaceList();
         String sourceFilePath = type.sourceFile()
                                     .getPath()
                                     .toString();
-        return interfaceTargets
+        return generatedInterfaces
                 .stream()
                 .filter(target -> !target.getInterfaceName().isEmpty())
-                .filter(target -> sourceFilePath.contains(target.getFileSuffix()))
+                .filter(target -> sourceFilePath.contains(target.getFilePostfix()))
                 .map(target -> implementByTargetTarget(type, target))
                 .findFirst();
     }
 
     private static CompilerOutput implementByTargetTarget(MessageType type,
-                                                          InterfaceTarget target) {
+                                                          GeneratedInterface target) {
         MessageInterface messageInterface = new PredefinedInterface(
                 ClassName.of(target.getInterfaceName()),
                 MessageInterfaceParameters.empty()

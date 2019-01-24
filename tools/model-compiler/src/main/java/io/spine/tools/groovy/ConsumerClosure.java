@@ -27,6 +27,15 @@ import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An implementation of Groovy {@code Closure} which calls a given {@link Consumer} function with
+ * a passed parameter and returns no value.
+ *
+ * <p>It it required that the {@link Consumer} function is serializable. See {@link Action} for
+ * a serializable consumer.
+ *
+ * @param <T> the type of the closure parameter
+ */
 public final class ConsumerClosure<T> extends Closure<Void> {
 
     private static final long serialVersionUID = 0L;
@@ -38,6 +47,13 @@ public final class ConsumerClosure<T> extends Closure<Void> {
         this.action = action;
     }
 
+    /**
+     * Creates a new closure with the given action.
+     *
+     * @param action the action to execute upon the closure argument
+     * @param <T> the type of the closure argument
+     * @return new closure
+     */
     public static <T> ConsumerClosure<T> closure(Action<? super T> action) {
         checkNotNull(action);
         return new ConsumerClosure<>(action);
@@ -50,6 +66,14 @@ public final class ConsumerClosure<T> extends Closure<Void> {
         action.accept(thisInstance);
     }
 
+    /**
+     * An action to execute upon the closure argument.
+     *
+     * <p>This type is a {@link FunctionalInterface} which extends the standard {@link Consumer}
+     * interface and is {@link Serializable}.
+     *
+     * @param <T> the type of the argument
+     */
     @FunctionalInterface
     public interface Action<T> extends Consumer<T>, Serializable {}
 }

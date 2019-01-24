@@ -329,13 +329,13 @@ public class Extension {
     }
 
     @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateAnnotations` with a closure.
+        // Used by Gradle to configure `generateInterfaces` with a closure.
     public void generateInterfaces(Closure closure) {
         ConfigureUtil.configure(closure, generateInterfaces);
     }
 
     @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateAnnotations` with a closure.
+        // Used by Gradle to configure `generateInterfaces` with a closure.
     public void generateInterfaces(Action<? super GeneratedInterfaces> action) {
         action.execute(generateInterfaces);
     }

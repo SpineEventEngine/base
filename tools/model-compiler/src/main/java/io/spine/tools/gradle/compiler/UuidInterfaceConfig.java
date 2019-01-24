@@ -20,5 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
+/**
+ * A {@link GeneratedInterfaceConfig} which configures messages with a single string field named
+ * {@code uuid}.
+ */
 final class UuidInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 }

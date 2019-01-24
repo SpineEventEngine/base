@@ -24,6 +24,10 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.checkerframework.checker.regex.qual.Regex;
 
+/**
+ * A {@link GeneratedInterfaceConfig} which configures message types defined in a Proto file with
+ * a certain naming.
+ */
 final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 
     private final String postfix;

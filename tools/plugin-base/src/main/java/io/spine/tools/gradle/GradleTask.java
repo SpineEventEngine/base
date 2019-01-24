@@ -165,6 +165,12 @@ public final class GradleTask {
             return this;
         }
 
+        /**
+         * States that the task dependencies will be added to the task later.
+         *
+         * <p>If this method is not called, the dependencies <strong>must</strong> be specified
+         * via this builder.
+         */
         public Builder allowNoDependencies() {
             checkState(previousTask == null);
             checkState(previousTaskOfAllProjects == null);

@@ -27,6 +27,9 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Abstract implementation base for {@link GeneratedInterfaceConfig}.
+ */
 abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
 
     private @Nullable ClassName interfaceName;

@@ -20,9 +20,27 @@
 
 package io.spine.tools.gradle.compiler;
 
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+/**
+ * Configuration of a generated interface for a certain target.
+ *
+ * @see GeneratedInterfaces#filePattern
+ * @see GeneratedInterfaces#uuidMessage
+ */
 public interface GeneratedInterfaceConfig {
 
-    void markWith(String interfaceName);
+    /**
+     * For the given target, marks the target with the interface with the given fully qualified name.
+     *
+     * <p>The interface itself is not generated and the user should define it manually.
+     *
+     * @param interfaceName the FQN of the interface
+     */
+    void markWith(@FullyQualifiedName String interfaceName);
 
+    /**
+     * For the given target, turns off interface generation.
+     */
     void ignore();
 }

@@ -22,6 +22,9 @@ package io.spine.tools.groovy;
 
 import groovy.lang.GString;
 
+/**
+ * A factory of Groovy strings.
+ */
 public final class GStrings {
 
     /**
@@ -30,6 +33,12 @@ public final class GStrings {
     private GStrings() {
     }
 
+    /**
+     * Creates a new {@code GString} equivalent to the given Java string.
+     *
+     * @param javaString the plain Java string to convert into a Groovy string
+     * @return new {@code GString}
+     */
     public static GString fromPlain(String javaString) {
         return GString.EMPTY.plus(javaString);
     }
