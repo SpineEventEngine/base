@@ -34,10 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for working with property files.
- *
- * @author Alexander Litus
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 public final class PropertyFiles {
 

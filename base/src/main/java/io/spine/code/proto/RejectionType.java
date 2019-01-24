@@ -43,9 +43,9 @@ public final class RejectionType extends MessageType {
 
     /**
      * Creates a new instance.
-     *  @param message
-     *         the declaration of the rejection message
      *
+     * @param message
+     *         the declaration of the rejection message
      */
     RejectionType(Descriptor message) {
         super(message);
