@@ -23,7 +23,6 @@ package io.spine.code.js;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -71,13 +70,5 @@ class FileNameTest {
         assertThat(pathElements).contains("google");
         assertThat(pathElements).contains("protobuf");
         assertThat(pathElements).contains("any_pb.js");
-    }
-
-    @Test
-    @DisplayName("obtain Protobuf package")
-    void obtainProtoPackage() {
-        FileName fileName = FileName.from(file);
-        PackageName protoPackage = fileName.protoPackage();
-        assertEquals(PackageName.googleProtobuf, protoPackage);
     }
 }

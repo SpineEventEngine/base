@@ -53,10 +53,13 @@ public final class ImportPath extends StringTypeValue {
     }
 
     /**
-     * Obtains the name of the imported file.
+     * Obtains the name of the imported file skipping the path to it.
      */
     public FileName fileName() {
-        return FileName.of(withoutRelative());
+        String path = value();
+        int fileNameIndex = path.lastIndexOf(IMPORT_PATH_SEPARATOR) + 1;
+        String fileName = path.substring(fileNameIndex);
+        return FileName.of(fileName);
     }
 
     /**

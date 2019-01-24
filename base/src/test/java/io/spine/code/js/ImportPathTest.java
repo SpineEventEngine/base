@@ -48,19 +48,11 @@ class ImportPathTest {
     }
 
     @Test
-    @DisplayName("strip path relative to parent directory")
-    void stripRelativeToParent() {
-        ImportPath importPath = ImportPath.of("../../foo/nested.js");
+    @DisplayName("obtain file name skipping the path")
+    void obtainFileName() {
+        ImportPath importPath = ImportPath.of("./../../foo/nested.js");
         FileName fileName = importPath.fileName();
-        assertThat(fileName.value()).isEqualTo("foo/nested.js");
-    }
-
-    @Test
-    @DisplayName("strip path relative to current directory")
-    void stripRelativeToCurrent() {
-        ImportPath importPath = ImportPath.of("./../foo/deep.js");
-        FileName fileName = importPath.fileName();
-        assertThat(fileName.value()).isEqualTo("foo/deep.js");
+        assertThat(fileName.value()).isEqualTo("nested.js");
     }
 
     @Test

@@ -22,10 +22,10 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.ImportPath;
-import io.spine.code.proto.PackageName;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -38,38 +38,37 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class ExternalModule {
 
     private final String name;
-    //TODO:2019-01-23:dmytro.grankin: supply the value from outside
-    private final String protoDirectory = "proto";
-    private final List<PackagePattern> packages;
+    private final Collection<DirectoryPattern> directories;
 
     /**
      * Creates a new instance.
      *
      * @param name
-     *         the name of the module, e.g. {@code library/proto}
-     * @param packages
-     *         patterns of packages provided by the module
+     *         the name of the module
+     * @param directories
+     *         patterns of directories provided by the module
      */
-    public ExternalModule(String name, List<PackagePattern> packages) {
+    public ExternalModule(String name, Collection<DirectoryPattern> directories) {
         this.name = checkNotEmptyOrBlank(name);
-        this.packages = ImmutableList.copyOf(packages);
+        this.directories = ImmutableList.copyOf(directories);
     }
 
     /**
-     * Obtains an import path for a generated Protobuf file.
+     * Obtains an import path, which references this module.
      *
      * @param importPath
-     *         the name of a JavaScript file
-     * @return the import path obtaining by composing the module and file name
+     *         the relative import path
+     * @return the import path of the file in this module
      * @throws IllegalStateException
-     *         if the file is not a generated Protobuf
-     *         or is not provided by the module
+     *         if the file is not provided by the module
      */
-    ImportPath importPathFor(ImportPath importPath) {
-        checkState(importPath.fileName()
-                             .isGeneratedProto());
-        checkState(provides(importPath));
-        String path = name + ImportPath.separator() + importPath;
+    ImportPath pathInModule(ImportPath importPath) {
+        Optional<DirectoryPattern> directory = matchingDirectory(importPath);
+        checkState(directory.isPresent());
+        String directoryName = directory.get()
+                                        .directoryName();
+        String path = name + ImportPath.separator() + directoryName + ImportPath.separator() +
+                importPath.fileName();
         return ImportPath.of(path);
     }
 
@@ -81,14 +80,18 @@ public final class ExternalModule {
      * @return {@code true} if the module provides the file
      */
     boolean provides(ImportPath importPath) {
-        PackageName packageName = importPath.fileName()
-                                            .protoPackage();
-        for (PackagePattern packagePattern : packages) {
-            if (packagePattern.matches(packageName)) {
-                return true;
+        boolean result = matchingDirectory(importPath).isPresent();
+        return result;
+    }
+
+    private Optional<DirectoryPattern> matchingDirectory(ImportPath importPath) {
+        String directory = importPath.directory();
+        for (DirectoryPattern pattern : directories) {
+            if (pattern.matches(directory)) {
+                return Optional.of(pattern);
             }
         }
-        return false;
+        return Optional.empty();
     }
 
     @Override
@@ -101,11 +104,11 @@ public final class ExternalModule {
         }
         ExternalModule module = (ExternalModule) o;
         return name.equals(module.name) &&
-                packages.equals(module.packages);
+                directories.equals(module.directories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, packages);
+        return Objects.hash(name, directories);
     }
 }

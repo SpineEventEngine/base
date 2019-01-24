@@ -86,7 +86,7 @@ public final class ResolveImports extends GenerationTask {
         }
         for (ExternalModule module : modules) {
             if (module.provides(importPath)) {
-                ImportPath pathInModule = module.importPathFor(importPath);
+                ImportPath pathInModule = module.pathInModule(importPath);
                 return resolvable.replacePath(pathInModule.value());
             }
         }

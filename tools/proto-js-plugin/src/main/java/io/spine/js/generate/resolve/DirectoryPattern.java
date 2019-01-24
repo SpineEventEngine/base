@@ -20,26 +20,22 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.proto.PackageName;
-
 import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A pattern to match a Protobuf package.
+ * A pattern to match a directory.
  */
-public final class PackagePattern {
+public final class DirectoryPattern {
 
-    private static final String INCLUDE_NESTED_PATTERN_ENDING = ".*";
+    private static final String INCLUDE_NESTED_PATTERN_ENDING = "/*";
 
-    private final PackageName packageName;
+    private final String directoryName;
     private final boolean includeNested;
 
-    private PackagePattern(PackageName packageName, boolean includeNested) {
-        checkNotNull(packageName);
-        this.packageName = packageName;
+    private DirectoryPattern(String directoryName, boolean includeNested) {
+        this.directoryName = checkNotEmptyOrBlank(directoryName);
         this.includeNested = includeNested;
     }
 
@@ -48,8 +44,8 @@ public final class PackagePattern {
      *
      * <p>The following formats are supported:
      * <ul>
-     *     <li>The exact package — {@code foo.bar}.
-     *     <li>The exact package and nested packages — {@code foo.bar.*}.
+     *     <li>The exact directory — {@code foo/bar}.
+     *     <li>The directory and all subdirectories — {@code foo/bar/*}.
      * </ul>
      *
      * @param value
@@ -57,34 +53,39 @@ public final class PackagePattern {
      * @return a new instance
      */
     @SuppressWarnings("ResultOfMethodCallIgnored" /* The result can be ignored. */)
-    public static PackagePattern of(String value) {
+    public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
-        PackageName packageName;
+        String directoryName;
         if (includeNested) {
-            int packageNameEnd = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
-            packageName = PackageName.of(value.substring(0, packageNameEnd));
+            int nameEndIndex = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
+            directoryName = value.substring(0, nameEndIndex);
         } else {
-            packageName = PackageName.of(value);
+            directoryName = value;
         }
-        return new PackagePattern(packageName, includeNested);
+        return new DirectoryPattern(directoryName, includeNested);
     }
 
     /**
-     * Checks if the pattern matches the specified package name.
+     * Checks if the pattern matches the specified directory.
      */
-    boolean matches(PackageName targetPackage) {
-        boolean result = includeNested
-                         ? targetPackage.isNestedIn(packageName)
-                         : packageName.equals(targetPackage);
-        return result;
+    boolean matches(String targetDirectory) {
+        if (directoryName.equals(targetDirectory)) {
+            return true;
+        }
+        boolean rootMatches = targetDirectory.startsWith(directoryName);
+        if (includeNested && rootMatches) {
+            return true;
+        }
+        boolean endingMatches = directoryName.endsWith(targetDirectory);
+        return endingMatches;
     }
 
     /**
-     * Obtains the package name used in the pattern.
+     * Obtains the directory name used in the pattern.
      */
-    PackageName packageName() {
-        return packageName;
+    String directoryName() {
+        return directoryName;
     }
 
     @Override
@@ -92,16 +93,16 @@ public final class PackagePattern {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PackagePattern)) {
+        if (!(o instanceof DirectoryPattern)) {
             return false;
         }
-        PackagePattern pattern = (PackagePattern) o;
+        DirectoryPattern pattern = (DirectoryPattern) o;
         return includeNested == pattern.includeNested &&
-                packageName.equals(pattern.packageName);
+                directoryName.equals(pattern.directoryName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(packageName, includeNested);
+        return Objects.hash(directoryName, includeNested);
     }
 }

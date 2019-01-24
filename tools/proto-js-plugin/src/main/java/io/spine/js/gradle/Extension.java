@@ -25,8 +25,8 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.js.Module;
+import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
-import io.spine.js.generate.resolve.PackagePattern;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -134,7 +134,7 @@ public class Extension {
         Map<String, List<String>> rawModules = extension.modules;
         List<ExternalModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
-            List<PackagePattern> patterns = patterns(rawModules.get(moduleName));
+            List<DirectoryPattern> patterns = patterns(rawModules.get(moduleName));
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
@@ -175,29 +175,28 @@ public class Extension {
         );
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
     private static ExternalModule spineWeb() {
         String name = Module.spineWeb.artifactName();
-        List<PackagePattern> packages = ImmutableList.of(
-                PackagePattern.of("client.parser"),
-                PackagePattern.of("spine.base.*"),
-                PackagePattern.of("spine.change.*"),
-                PackagePattern.of("spine.client.*"),
-                PackagePattern.of("spine.core.*"),
-                PackagePattern.of("spine.net.*"),
-                PackagePattern.of("spine.people.*"),
-                PackagePattern.of("spine.time.*"),
-                PackagePattern.of("spine.ui.*"),
-                PackagePattern.of("spine.validate.*"),
-                PackagePattern.of("spine.web.*"),
-                PackagePattern.of("spine")
+        List<DirectoryPattern> packages = ImmutableList.of(
+                DirectoryPattern.of("client/parser"),
+                DirectoryPattern.of("proto/spine/base/*"),
+                DirectoryPattern.of("proto/spine/change/*"),
+                DirectoryPattern.of("proto/spine/client/*"),
+                DirectoryPattern.of("proto/spine/core/*"),
+                DirectoryPattern.of("proto/spine/net/*"),
+                DirectoryPattern.of("proto/spine/people/*"),
+                DirectoryPattern.of("proto/spine/time/*"),
+                DirectoryPattern.of("proto/spine/ui/*"),
+                DirectoryPattern.of("proto/spine/validate/*"),
+                DirectoryPattern.of("proto/spine/web/*"),
+                DirectoryPattern.of("proto/spine")
         );
         return new ExternalModule(name, packages);
     }
 
-    private static List<PackagePattern> patterns(Collection<String> rawPatterns) {
+    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
         return rawPatterns.stream()
-                          .map(PackagePattern::of)
+                          .map(DirectoryPattern::of)
                           .collect(toList());
     }
 

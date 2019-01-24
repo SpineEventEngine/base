@@ -21,7 +21,6 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,66 +30,71 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PackagePattern should")
-class PackagePatternTest {
+@DisplayName("FolderPattern should")
+class DirectoryPatternTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(PackagePattern.class);
+        new NullPointerTester().testAllPublicStaticMethods(DirectoryPattern.class);
     }
 
     @Test
-    @DisplayName("not have empty package name")
-    void notHaveEmptyPackageName() {
+    @DisplayName("not be empty")
+    void notEmpty() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> PackagePattern.of("")
+                () -> DirectoryPattern.of("")
         );
     }
 
     @Test
-    @DisplayName("obtain package name for the non-nested format")
-    void packageNameForNonNested() {
-        String packageName = "original";
-        PackagePattern pattern = PackagePattern.of(packageName);
-        assertEquals(packageName, pattern.packageName()
-                                         .value());
+    @DisplayName("obtain name for the non-nested format")
+    void nameForNonNested() {
+        String name = "original";
+        DirectoryPattern pattern = DirectoryPattern.of(name);
+        assertEquals(name, pattern.directoryName());
     }
 
     @Test
-    @DisplayName("obtain package name for the nested format")
-    void packageNameForNested() {
-        PackagePattern pattern = PackagePattern.of("work.*");
-        assertEquals("work", pattern.packageName()
-                                    .value());
+    @DisplayName("obtain name for the nested format")
+    void nameForNested() {
+        DirectoryPattern pattern = DirectoryPattern.of("work/*");
+        assertEquals("work", pattern.directoryName());
     }
 
     @Test
-    @DisplayName("not match nested packages by default")
-    void notMatchNestedPackages() {
-        PackagePattern pattern = PackagePattern.of("first");
-        PackageName packageName = PackageName.of("first.second");
-        boolean matches = pattern.matches(packageName);
+    @DisplayName("not match nested directories by default")
+    void notMatchNested() {
+        DirectoryPattern pattern = DirectoryPattern.of("first");
+        String directoryName = "first/second";
+        boolean matches = pattern.matches(directoryName);
         assertFalse(matches);
     }
 
     @Test
-    @DisplayName("match same packages")
-    void matchSamePackages() {
+    @DisplayName("match same directories")
+    void matchSame() {
         String name = "protos";
-        PackagePattern pattern = PackagePattern.of(name);
-        PackageName packageName = PackageName.of(name);
-        boolean matches = pattern.matches(packageName);
+        DirectoryPattern pattern = DirectoryPattern.of(name);
+        boolean matches = pattern.matches(name);
         assertTrue(matches);
     }
 
     @Test
-    @DisplayName("match nested packages if specified")
-    void matchNestedPackages() {
-        PackagePattern pattern = PackagePattern.of("foo.*");
-        PackageName packageName = PackageName.of("foo.bar");
-        boolean matches = pattern.matches(packageName);
+    @DisplayName("match nested directories if specified")
+    void matchNested() {
+        DirectoryPattern pattern = DirectoryPattern.of("foo/*");
+        String directoryName = "foo/bar";
+        boolean matches = pattern.matches(directoryName);
+        assertTrue(matches);
+    }
+
+    @Test
+    @DisplayName("match directories if structure is similar")
+    void matchSimilarDirectories() {
+        DirectoryPattern pattern = DirectoryPattern.of("base/nested");
+        boolean matches = pattern.matches("nested");
         assertTrue(matches);
     }
 }

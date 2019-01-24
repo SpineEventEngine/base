@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ExternalModuleTest {
 
     private static final String moduleName = "spine-js";
-    private static final List<PackagePattern> patterns = ImmutableList.of(
-            PackagePattern.of("spine")
+    private static final List<DirectoryPattern> patterns = ImmutableList.of(
+            DirectoryPattern.of("spine")
     );
     private final ExternalModule module = new ExternalModule(moduleName, patterns);
 
@@ -52,18 +52,9 @@ class ExternalModuleTest {
     @DisplayName("resolve an import path if the file is provided by module")
     void resolveMatchingImport() {
         ImportPath originImport = ImportPath.of("spine/js_pb.js");
-        ImportPath importPath = module.importPathFor(originImport);
+        ImportPath importPath = module.pathInModule(originImport);
         ImportPath expectedPath = ImportPath.of(moduleName + '/' + originImport);
         assertEquals(expectedPath, importPath);
-    }
-
-    @Test
-    @DisplayName("compose an import path only for Proto files")
-    void acceptOnlyProto() {
-        assertThrows(
-                IllegalStateException.class,
-                () -> module.importPathFor(ImportPath.of("non-proto.js"))
-        );
     }
 
     @Test
@@ -71,7 +62,7 @@ class ExternalModuleTest {
     void acceptOnlyProvidedProto() {
         assertThrows(
                 IllegalStateException.class,
-                () -> module.importPathFor(ImportPath.of("non/spine/index_pb.js"))
+                () -> module.pathInModule(ImportPath.of("non/spine/index_pb.js"))
         );
     }
 }
