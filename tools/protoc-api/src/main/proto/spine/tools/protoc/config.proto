@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package spine.tools.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "ConfigProto";
+option java_multiple_files = true;
+
+option (internal_all) = true;
+
+// Interface to mark UUID messages.
+//
+// An empty value signifies that the messages should not be marked.
+//
+message UuidInterface {
+
+    string interface_name = 1;
+}
+
+// Interface to mark messages defined in a file with a certain name postfix.
+//
+message GeneratedInterface {
+
+    string interface_name = 1;
+
+    string file_postfix = 2 [(required) = true];
+}
+
+// Configuration of the Spine Protoc plugin.
+//
+// The configuration is passed to the plugin as the single option. The passed value is serialized
+// and base-64 encoded.
+//
+message SpineProtocConfig {
+
+    UuidInterface uuid_interface = 1;
+
+    repeated GeneratedInterface generated_interface = 2;
+}

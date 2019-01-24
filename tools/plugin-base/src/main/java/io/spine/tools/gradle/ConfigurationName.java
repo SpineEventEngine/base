@@ -45,7 +45,12 @@ public enum ConfigurationName {
     /**
      * The {@code testRuntime} configuration.
      */
-    TEST_RUNTIME("testRuntime");
+    TEST_RUNTIME("testRuntime"),
+
+    /**
+     * A custom configuration for downloading artifacts from repositories.
+     */
+    FETCH("fetch");
 
     private final String value;
 

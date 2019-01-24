@@ -50,6 +50,7 @@ buildscript {
         }
 
         classpath files([
+                "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
                 "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
                 "$projectDir/../base/build/libs/base-${spineVersion}.jar"
@@ -63,28 +64,30 @@ apply plugin: 'io.spine.tools.spine-model-compiler'
 apply plugin: 'idea'
 
 repositories {
-    // This defines the `libs` directory under the `base/build` project as a local repository.
+    // This defines the `libs` directory of upstream projects as a local repository.
     // See `dependencies` section below for definition of the dependency on the JAR
-    // produced by the `base` module.
+    // produced by the `base` and `protoc-api` modules.
     flatDir {
-        dirs "$projectDir/../base/build/libs/"
+        final def baseRoot = "$projectDir/.."
+        dirs "$baseRoot/base/build/libs/", "$baseRoot/tools/protoc-api/build/libs"
     }
     mavenLocal()
     jcenter()
 }
 
 dependencies {
-    compileClasspath deps.build.protobuf
-    compileClasspath deps.build.guava
-    compileClasspath deps.build.slf4j
-    compileClasspath deps.build.checkerAnnotations
-    compileClasspath deps.build.errorProneAnnotations
-    compileClasspath deps.build.jsr305Annotations
-    compileClasspath deps.build.errorProneAnnotations
+    compileOnly deps.build.protobuf
+    compileOnly deps.build.guava
+    compileOnly deps.build.slf4j
+    compileOnly deps.build.checkerAnnotations
+    compileOnly deps.build.errorProneAnnotations
+    compileOnly deps.build.jsr305Annotations
+    compileOnly deps.build.errorProneAnnotations
 
-    // The below dependency refers to `/base/build/libs/base-{version}.jar`
+    // The below dependencies refer local artifacts.
     // See `repositories.flatDir` definition above.
-    compileClasspath name: "base-${spineVersion}"
+    compileOnly name: "base-${spineVersion}"
+    compileOnly name: "protoc-api-${spineVersion}"
 }
 
 modelCompiler {
@@ -126,6 +129,7 @@ assemble.dependsOn copyCompiledClasses
 
 build.doLast {
     final def directory = "$projectDir/../"
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
     final def script = runsOnWindows ? "gradlew.bat" : "gradlew"
     final def process = new ProcessBuilder()
             .command("$directory/$script".toString(), ':base:cleanJar', ':base:jar', '--console=plain')

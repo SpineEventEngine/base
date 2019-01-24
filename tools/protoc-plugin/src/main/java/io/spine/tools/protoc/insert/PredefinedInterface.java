@@ -18,11 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
+package io.spine.tools.protoc.insert;
+
+import io.spine.code.java.ClassName;
+
+/**
+ * An interface which already exists.
+ */
+final class PredefinedInterface implements MessageInterface {
+
+    private final ClassName name;
+    private final MessageInterfaceParameters parameters;
+
+    PredefinedInterface(ClassName name,
+                        MessageInterfaceParameters parameters) {
+        this.name = name;
+        this.parameters = parameters;
+    }
+
+    @Override
+    public String name() {
+        return name.value();
+    }
+
+    @Override
+    public MessageInterfaceParameters parameters() {
+        return parameters;
     }
 }
