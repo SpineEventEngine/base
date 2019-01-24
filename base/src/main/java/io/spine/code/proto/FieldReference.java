@@ -55,13 +55,26 @@ public final class FieldReference extends StringTypeValue {
      */
     private static final String ANY_BY_OPTION_TARGET = "*";
 
+    /**
+     * Separates two or more alternative references.
+     */
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
+
+    /**
+     * Separates a type name from a field name.
+     */
     private static final Splitter fieldNameSplit = Splitter.on('.');
+
+    /**
+     * Reference value parts separated by {@link #fieldNameSplit}.
+     */
+    private final ImmutableList<String> parts;
 
     @VisibleForTesting
     FieldReference(String value) {
         super(checkValue(value));
+        this.parts = parts(value);
     }
 
     /**
@@ -70,12 +83,16 @@ public final class FieldReference extends StringTypeValue {
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
-        List<String> parts = fieldNameSplit.splitToList(value);
+        List<String> parts = parts(value);
         if (parts.size() >= 2) {
             // Contains the type part.
             checkTypeReference(parts.get(0));
         }
         return value;
+    }
+
+    private static ImmutableList<String> parts(String value) {
+        return ImmutableList.copyOf(fieldNameSplit.splitToList(value));
     }
 
     /**
@@ -158,7 +175,7 @@ public final class FieldReference extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = value().startsWith("context");
+        boolean result = value().startsWith(Via.context.name());
         return result;
     }
 
@@ -167,10 +184,35 @@ public final class FieldReference extends StringTypeValue {
      */
     public String typeName() {
         String value = value();
+        checkState(hasType(), "The field reference (`%s`) does not have the type.", value);
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
-        checkState(index > 0, "The field reference (`%s`) does not have the type.", value);
         String result = value.substring(0, index)
                              .trim();
         return result;
+    }
+
+    /**
+     * Verifies if the reference contains a type name part.
+     */
+    public boolean hasType() {
+        return parts.size() >= 2;
+    }
+
+    /**
+     * Obtains the field name part of the reference.
+     */
+    public String fieldName() {
+        return parts.get(parts.size() - 1);
+    }
+
+    /**
+     * Enumeration of references to instances of specific message.
+     */
+    public enum Via {
+
+        /**
+         * The reference to an event context used in the {@code (by)} field option.
+         */
+        context
     }
 }

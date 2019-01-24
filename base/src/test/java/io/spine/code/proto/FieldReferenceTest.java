@@ -37,6 +37,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("FieldReference should")
 class FieldReferenceTest {
 
+    private ImmutableList<FieldReference> references;
+
+    /**
+     * Creates field reference form test environment message defined in
+     * {@code test/proto/spine/test/code/proto/field_reference_test.proto}.
+     */
+    @BeforeEach
+    void setUp() {
+        FieldDescriptorProto personNameField = UserInfo.getDescriptor()
+                                                       .toProto()
+                                                       .getField(0);
+        references = FieldReference.allFrom(personNameField);
+    }
+
+    private FieldReference ref(int index) {
+        return references.get(index);
+    }
+
     @Test
     void performNullCheck() {
         new NullPointerTester().testAllPublicStaticMethods(FieldReference.class);
@@ -91,18 +109,25 @@ class FieldReferenceTest {
     }
 
     @Nested
-    @DisplayName("obtain field references from a field descriptor")
-    class RefsFromDescriptor {
+    @DisplayName("obtain type reference")
+    class TypeRef {
 
-        private ImmutableList<FieldReference> references;
-
-        @BeforeEach
-        void setUp() {
-            FieldDescriptorProto personNameField = UserInfo.getDescriptor()
-                                                           .toProto()
-                                                           .getField(0);
-            references = FieldReference.allFrom(personNameField);
+        @Test
+        @DisplayName("as wildcard")
+        void wildcardType() {
+            assertThat(ref(0).typeName()).isEqualTo("*");
         }
+
+        @Test
+        @DisplayName("as type name")
+        void typeName() {
+            assertThat(ref(1).typeName()).isEqualTo("DocumentUpdated");
+        }
+    }
+
+    @Nested
+    @DisplayName("obtain instances from a field descriptor")
+    class RefsFromDescriptor {
 
         /** Tests that the number of alternatives matches those specified in the `by` option. */
         @Test
@@ -118,10 +143,6 @@ class FieldReferenceTest {
             assertThat(ref(0).isWildcard()).isTrue();
             assertThat(ref(1).typeName()).isEqualTo("DocumentUpdated");
             assertThat(ref(2).isContext()).isTrue();
-        }
-
-        private FieldReference ref(int index) {
-            return references.get(index);
         }
     }
 
