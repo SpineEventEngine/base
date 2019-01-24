@@ -24,8 +24,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A remote artifact specification.
+ *
+ * <p>An artifact must have a group, a name, and a version. Also, it may have a classifier and
+ * an extension.
+ */
 public final class Artifact {
 
+    /**
+     * The artifact group used for Spine tools.
+     */
     public static final String SPINE_TOOLS_GROUP = "io.spine.tools";
 
     private static final char COLON = ':';
@@ -44,7 +53,12 @@ public final class Artifact {
         this.classifier = builder.classifier;
         this.extension = builder.extension;
     }
-    
+
+    /**
+     * Prints this spec into a single string.
+     *
+     * <p>The format of the notation is: {@code "group:name:version:classifier@extension"}.
+     */
     String notation() {
         StringBuilder result = new StringBuilder(group)
                 .append(COLON)

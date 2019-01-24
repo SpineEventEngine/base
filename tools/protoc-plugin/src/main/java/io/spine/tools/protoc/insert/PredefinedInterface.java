@@ -22,6 +22,9 @@ package io.spine.tools.protoc.insert;
 
 import io.spine.code.java.ClassName;
 
+/**
+ * An interface which already exists.
+ */
 final class PredefinedInterface implements MessageInterface {
 
     private final ClassName name;

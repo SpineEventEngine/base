@@ -34,6 +34,9 @@ import static io.spine.base.MessageClassifiers.uuidContainer;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static io.spine.validate.Validate.isNotDefault;
 
+/**
+ * Scans the given type for a match upon patterns defined in {@link SpineProtocConfig}.
+ */
 final class PatternScanner {
 
     private final SpineProtocConfig patterns;
@@ -42,6 +45,9 @@ final class PatternScanner {
         this.patterns = patterns;
     }
 
+    /**
+     * Finds an interface to be generated for the given type.
+     */
     Optional<CompilerOutput> scan(MessageType type) {
         UuidInterface uuidInterface = patterns.getUuidInterface();
         if (isNotDefault(uuidInterface) && uuidContainer().test(type)) {
