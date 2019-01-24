@@ -22,11 +22,13 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.spine.base.FieldPath;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static io.spine.protobuf.TypeConverter.toAny;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -42,28 +44,33 @@ public class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
     public List<ConstraintViolation> check(FieldValue<T> fieldValue) {
         ImmutableList<T> values = fieldValue.asList();
         Set<T> duplicates = findDuplicates(values);
-        List<ConstraintViolation> violations = duplicates.stream()
-                                                         .map(duplicate -> distinctViolated(
-                                                                 fieldValue, duplicate))
-                                                         .collect(toList());
+        List<ConstraintViolation> violations =
+                duplicates.stream()
+                          .map(duplicate -> distinctViolated(fieldValue, duplicate))
+                          .collect(toList());
         return violations;
     }
 
     private ConstraintViolation distinctViolated(FieldValue<T> value, T duplicate) {
-        return ConstraintViolation.getDefaultInstance();
+        FieldPath path = value.context()
+                              .getFieldPath();
+        return ConstraintViolation.newBuilder()
+                .setMsgFormat("Values must be distinct.")
+                .setFieldPath(path)
+                .setFieldValue(toAny(duplicate))
+                .build();
     }
 
     private static <T> Set<T> findDuplicates(Iterable<T> potentialDuplicates) {
-        Set<T> duplicateLess = new HashSet<>();
+        Set<T> uniques = new HashSet<>();
         ImmutableSet.Builder<T> duplicates = ImmutableSet.builder();
         for (T potentialDuplicate : potentialDuplicates) {
-            if (duplicateLess.contains(potentialDuplicate)) {
+            if (uniques.contains(potentialDuplicate)) {
                 duplicates.add(potentialDuplicate);
             } else {
-                duplicateLess.add(potentialDuplicate);
+                uniques.add(potentialDuplicate);
             }
         }
         return duplicates.build();
     }
-
 }

@@ -36,6 +36,7 @@ public abstract class MessageFieldValidatingOption<O, M extends Message> extends
     boolean shouldValidate(FieldValue<M> value) {
         FieldDeclaration declaration = value.declaration();
         boolean valid = value.valueOf(OptionsProto.valid);
-        return super.shouldValidate(value) && (declaration.isNotCollection() || valid);
+        boolean shouldValidateCollection = declaration.isNotCollection() || valid;
+        return super.shouldValidate(value) && shouldValidateCollection;
     }
 }

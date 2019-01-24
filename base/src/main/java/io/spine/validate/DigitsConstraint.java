@@ -59,14 +59,14 @@ public class DigitsConstraint<V extends Number> implements Constraint<FieldValue
             boolean isInvalid = (intDigitsCount > intDigitsMax) ||
                     (fractionDigitsCount > fractionDigitsMax);
             if (isInvalid) {
-                ConstraintViolation digits = digits(fieldValue, digitsOption, val);
+                ConstraintViolation digits = digitsViolated(fieldValue, digitsOption, val);
                 return ImmutableList.of(digits);
             }
         }
         return ImmutableList.of();
     }
 
-    private ConstraintViolation digits(FieldValue<V> fieldValue, DigitsOption digitsOption,
+    private ConstraintViolation digitsViolated(FieldValue<V> fieldValue, DigitsOption digitsOption,
                                        V actualValue) {
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());

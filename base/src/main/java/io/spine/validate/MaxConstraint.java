@@ -33,7 +33,9 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A constraint that, when applied, checks whether a numeric field value exceeds a max value.
- * @param <V> value that the field validated by this constraint has
+ *
+ * @param <V>
+ *         value that the field validated by this constraint has
  */
 public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>> {
 
@@ -43,9 +45,9 @@ public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>
         ImmutableList<V> actualValue = fieldValue.asList();
         double maxValue = parseDouble(option.getValue());
         boolean exclusive = option.getExclusive();
-        Predicate<V> exceeds = exclusive ?
-                               value -> value.doubleValue() >= maxValue :
-                               value -> value.doubleValue() > maxValue;
+        Predicate<V> exceeds = exclusive
+                               ? value -> value.doubleValue() >= maxValue
+                               : value -> value.doubleValue() > maxValue;
         List<ConstraintViolation> violations =
                 actualValue.stream()
                            .filter(exceeds)
@@ -54,11 +56,13 @@ public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>
         return violations;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private ConstraintViolation maxViolated(FieldValue<V> fieldValue,
                                             double maxValue,
                                             boolean exclusive) {
         String format = "Number must be less than %s %s.";
-        FieldPath path = fieldValue.context().getFieldPath();
+        FieldPath path = fieldValue.context()
+                                   .getFieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)

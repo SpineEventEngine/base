@@ -47,6 +47,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
+    @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
     MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
         super(fieldValue,
               assumeRequired,

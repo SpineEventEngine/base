@@ -28,7 +28,7 @@ public class OptionInapplicableException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 
     /** Creates a new instance of this exception with the specified clarifying message. */
-    public OptionInapplicableException(String message) {
-        super(message);
+    public OptionInapplicableException(String msgFormat, Object... formatParams) {
+        super(String.format(msgFormat, formatParams));
     }
 }
