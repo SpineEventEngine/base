@@ -21,6 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.code.js.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,22 +54,23 @@ class DirectoryPatternTest {
     void nameForNonNested() {
         String name = "original";
         DirectoryPattern pattern = DirectoryPattern.of(name);
-        assertEquals(name, pattern.directoryName());
+        assertEquals(name, pattern.directoryName()
+                                  .value());
     }
 
     @Test
     @DisplayName("obtain name for the nested format")
     void nameForNested() {
         DirectoryPattern pattern = DirectoryPattern.of("work/*");
-        assertEquals("work", pattern.directoryName());
+        assertEquals("work", pattern.directoryName()
+                                    .value());
     }
 
     @Test
     @DisplayName("not match nested directories by default")
     void notMatchNested() {
         DirectoryPattern pattern = DirectoryPattern.of("first");
-        String directoryName = "first/second";
-        boolean matches = pattern.matches(directoryName);
+        boolean matches = matches(pattern, "first/second");
         assertFalse(matches);
     }
 
@@ -77,24 +79,53 @@ class DirectoryPatternTest {
     void matchSame() {
         String name = "protos";
         DirectoryPattern pattern = DirectoryPattern.of(name);
-        boolean matches = pattern.matches(name);
+        boolean matches = matches(pattern, name);
         assertTrue(matches);
+        assertTransform(pattern, name, name);
     }
 
     @Test
     @DisplayName("match nested directories if specified")
     void matchNested() {
         DirectoryPattern pattern = DirectoryPattern.of("foo/*");
-        String directoryName = "foo/bar";
-        boolean matches = pattern.matches(directoryName);
+        String directory = "foo/bar";
+        boolean matches = matches(pattern, directory);
         assertTrue(matches);
+        assertTransform(pattern, directory, directory);
     }
 
     @Test
     @DisplayName("match directories if structure is similar")
     void matchSimilarDirectories() {
         DirectoryPattern pattern = DirectoryPattern.of("base/nested");
-        boolean matches = pattern.matches("nested");
+        String directory = "nested";
+        boolean matches = matches(pattern, directory);
         assertTrue(matches);
+        assertTransform(pattern, directory, pattern.directoryName()
+                                                   .value());
+    }
+
+    @Test
+    @DisplayName("not transform if not matches")
+    void notTransformNonMatching() {
+        DirectoryPattern pattern = DirectoryPattern.of("a");
+        DirectoryReference directory = DirectoryReference.of("b");
+        assertThrows(
+                IllegalStateException.class,
+                () -> pattern.transform(directory)
+        );
+    }
+
+    private static boolean matches(DirectoryPattern pattern, String directoryToMatch) {
+        DirectoryReference directory = DirectoryReference.of(directoryToMatch);
+        return pattern.matches(directory);
+    }
+
+    private static void assertTransform(DirectoryPattern pattern,
+                                        String originReference,
+                                        String expectedReference) {
+        DirectoryReference origin = DirectoryReference.of(originReference);
+        DirectoryReference transformed = pattern.transform(origin);
+        assertEquals(expectedReference, transformed.value());
     }
 }

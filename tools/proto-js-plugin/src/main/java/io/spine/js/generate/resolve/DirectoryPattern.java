@@ -20,8 +20,13 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.annotations.VisibleForTesting;
+import io.spine.code.js.DirectoryReference;
+
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -31,11 +36,11 @@ public final class DirectoryPattern {
 
     private static final String INCLUDE_NESTED_PATTERN_ENDING = "/*";
 
-    private final String directoryName;
+    private final DirectoryReference directory;
     private final boolean includeNested;
 
-    private DirectoryPattern(String directoryName, boolean includeNested) {
-        this.directoryName = checkNotEmptyOrBlank(directoryName);
+    private DirectoryPattern(DirectoryReference directory, boolean includeNested) {
+        this.directory = checkNotNull(directory);
         this.includeNested = includeNested;
     }
 
@@ -56,36 +61,53 @@ public final class DirectoryPattern {
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
-        String directoryName;
+        String directory;
         if (includeNested) {
             int nameEndIndex = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
-            directoryName = value.substring(0, nameEndIndex);
+            directory = value.substring(0, nameEndIndex);
         } else {
-            directoryName = value;
+            directory = value;
         }
-        return new DirectoryPattern(directoryName, includeNested);
+        DirectoryReference reference = DirectoryReference.of(directory);
+        return new DirectoryPattern(reference, includeNested);
     }
 
     /**
      * Checks if the pattern matches the specified directory.
      */
-    boolean matches(String targetDirectory) {
-        if (directoryName.equals(targetDirectory)) {
+    boolean matches(DirectoryReference target) {
+        if (directory.equals(target)) {
             return true;
         }
-        boolean rootMatches = targetDirectory.startsWith(directoryName);
+        boolean rootMatches = directory.isParentFor(target);
         if (includeNested && rootMatches) {
             return true;
         }
-        boolean endingMatches = directoryName.endsWith(targetDirectory);
+        boolean endingMatches = directory.endsWith(target);
         return endingMatches;
+    }
+
+    /**
+     * Transforms the directory reference according to the pattern.
+     *
+     * @param origin
+     *         the reference to transform
+     * @return the updated reference
+     */
+    DirectoryReference transform(DirectoryReference origin) {
+        checkState(matches(origin));
+        if (directory.equals(origin) || directory.isParentFor(origin)) {
+            return origin;
+        }
+        return directory;
     }
 
     /**
      * Obtains the directory name used in the pattern.
      */
-    String directoryName() {
-        return directoryName;
+    @VisibleForTesting
+    DirectoryReference directoryName() {
+        return directory;
     }
 
     @Override
@@ -98,11 +120,11 @@ public final class DirectoryPattern {
         }
         DirectoryPattern pattern = (DirectoryPattern) o;
         return includeNested == pattern.includeNested &&
-                directoryName.equals(pattern.directoryName);
+                directory.equals(pattern.directory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(directoryName, includeNested);
+        return Objects.hash(directory, includeNested);
     }
 }

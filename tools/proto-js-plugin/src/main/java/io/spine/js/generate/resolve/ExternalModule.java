@@ -20,7 +20,10 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import io.spine.code.js.DirectoryReference;
+import io.spine.code.js.FileName;
 import io.spine.code.js.ImportPath;
 
 import java.util.Collection;
@@ -63,12 +66,13 @@ public final class ExternalModule {
      *         if the file is not provided by the module
      */
     ImportPath pathInModule(ImportPath importPath) {
-        Optional<DirectoryPattern> directory = matchingDirectory(importPath);
-        checkState(directory.isPresent());
-        String directoryName = directory.get()
-                                        .directoryName();
-        String path = name + ImportPath.separator() + directoryName + ImportPath.separator() +
-                importPath.fileName();
+        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(importPath);
+        checkState(matchingDirectory.isPresent());
+        DirectoryReference directory = matchingDirectory.get()
+                                                        .transform(importPath.directory());
+        FileName file = importPath.fileName();
+        String path = Joiner.on(ImportPath.separator())
+                            .join(name, directory, file);
         return ImportPath.of(path);
     }
 
@@ -85,7 +89,7 @@ public final class ExternalModule {
     }
 
     private Optional<DirectoryPattern> matchingDirectory(ImportPath importPath) {
-        String directory = importPath.directory();
+        DirectoryReference directory = importPath.directory();
         for (DirectoryPattern pattern : directories) {
             if (pattern.matches(directory)) {
                 return Optional.of(pattern);

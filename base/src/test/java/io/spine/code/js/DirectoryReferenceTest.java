@@ -20,46 +20,45 @@
 
 package io.spine.code.js;
 
-import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ImportPath should")
-class ImportPathTest {
-
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ImportPath.class);
-    }
+@DisplayName("DirectoryReference should")
+class DirectoryReferenceTest {
 
     @Test
-    @DisplayName("not be an empty string")
-    void notAcceptEmptyString() {
+    @DisplayName("not be empty")
+    void notEmpty() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> ImportPath.of("")
+                () -> DirectoryReference.of("")
         );
     }
 
     @Test
-    @DisplayName("obtain file name skipping the path")
-    void obtainFileName() {
-        ImportPath importPath = ImportPath.of("./../../foo/nested.js");
-        FileName fileName = importPath.fileName();
-        assertThat(fileName.value()).isEqualTo("nested.js");
+    @DisplayName("match the parent directory")
+    void matchParentDirectory() {
+        DirectoryReference parent = DirectoryReference.of("parent");
+        DirectoryReference child = DirectoryReference.of("parent/child");
+        assertTrue(parent.isParentFor(child));
     }
 
     @Test
-    @DisplayName("obtain the directory skipping relative path")
-    void directorySkipRelative() {
-        ImportPath importPath = ImportPath.of("./../../foo/bar/f.js");
-        assertEquals("foo/bar", importPath.directory()
-                                          .value());
+    @DisplayName("match indirect parents")
+    void matchIndirectParents() {
+        DirectoryReference indirectParent = DirectoryReference.of("source");
+        DirectoryReference child = DirectoryReference.of("source/something/else");
+        assertTrue(indirectParent.isParentFor(child));
+    }
+
+    @Test
+    @DisplayName("not match itself as parent")
+    void selfNotParent() {
+        DirectoryReference directory = DirectoryReference.of("self");
+        assertFalse(directory.isParentFor(directory));
     }
 }

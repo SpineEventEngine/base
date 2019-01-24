@@ -67,10 +67,11 @@ public final class ImportPath extends StringTypeValue {
      *
      * @return the directory path omitting relative path
      */
-    public String directory() {
+    public DirectoryReference directory() {
         String nonRelativePath = withoutRelative();
         int fileNameSeparator = nonRelativePath.lastIndexOf(IMPORT_PATH_SEPARATOR);
-        return nonRelativePath.substring(0, fileNameSeparator);
+        String directory = nonRelativePath.substring(0, fileNameSeparator);
+        return DirectoryReference.of(directory);
     }
 
     /**
