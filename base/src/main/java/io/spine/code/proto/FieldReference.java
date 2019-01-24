@@ -18,14 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.enrichment;
+package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.code.proto.FieldName;
 import io.spine.value.StringTypeValue;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -37,9 +35,10 @@ import static java.util.regex.Pattern.compile;
 /**
  * A reference to a field found in the {@code "by"} option value.
  */
-final class FieldReference extends StringTypeValue {
+public final class FieldReference extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+
     /**
      * Wildcard option used in {@code "by"} field option.
      *
@@ -47,7 +46,7 @@ final class FieldReference extends StringTypeValue {
      * may have any target event types. That's why an FQN of the target type is replaced by
      * this wildcard option.
      */
-    static final String ANY_BY_OPTION_TARGET = "*";
+    private static final String ANY_BY_OPTION_TARGET = "*";
 
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
@@ -56,7 +55,10 @@ final class FieldReference extends StringTypeValue {
         super(value);
     }
 
-    static List<FieldReference> allFrom(FieldDescriptorProto field) {
+    /**
+     * Obtains references found in the passed field.
+     */
+    public static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
         String[] found = parse(field);
 
         ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
@@ -64,6 +66,13 @@ final class FieldReference extends StringTypeValue {
             result.add(new FieldReference(ref));
         }
         return result.build();
+    }
+
+    /**
+     * Tells if the passed value reference all types.
+     */
+    public static boolean isWildcard(String typeName) {
+        return ANY_BY_OPTION_TARGET.equals(typeName);
     }
 
     private static String[] parse(FieldDescriptorProto field) {
@@ -81,12 +90,18 @@ final class FieldReference extends StringTypeValue {
         return result;
     }
 
-    boolean isWildcard() {
+    /**
+     * Verifies if the reference is by all types having a field with the referenced name.
+     */
+    public boolean isWildcard() {
         boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
         return result;
     }
 
-    boolean isInner() {
+    /**
+     * Verifies if the reference is to a field from another type.
+     */
+    public boolean isInner() {
         boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
         return result;
     }
@@ -94,7 +109,7 @@ final class FieldReference extends StringTypeValue {
     /**
      * Obtains the type name from the reference.
      */
-    String getType() {
+    public String typeName() {
         String value = value();
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         checkState(index > 0, "The field reference does not have the type (`%s`)", value);

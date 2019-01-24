@@ -23,6 +23,7 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.code.proto.FieldReference;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ final class ByOption implements Logging {
                 continue;
             }
 
-            String fullTypeName = fieldRef.getType();
+            String fullTypeName = fieldRef.typeName();
             result.add(fullTypeName);
         }
 
@@ -98,8 +99,7 @@ final class ByOption implements Logging {
                 throw invalidByOptionValue(enrichment);
             }
             log.debug("'by' option found on field {} targeting {}", fieldName, eventName);
-
-            if (FieldReference.ANY_BY_OPTION_TARGET.equals(eventName)) {
+            if (FieldReference.isWildcard(eventName)) {
                 log.warn("Skipping a wildcard event");
                 /* Ignore the wildcard `by` options, as we don't know
                    the target event type in this case. */
