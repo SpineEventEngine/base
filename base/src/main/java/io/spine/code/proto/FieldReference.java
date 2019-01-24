@@ -21,11 +21,13 @@
 package io.spine.code.proto;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.value.StringTypeValue;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -55,10 +57,25 @@ public final class FieldReference extends StringTypeValue {
 
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
+    private static final Splitter fieldNameSplit = Splitter.on('.');
 
     @VisibleForTesting
     FieldReference(String value) {
-        super(checkReference(value));
+        super(checkValue(value));
+    }
+
+    /**
+     * Ensures that the passed value is not null, empty or blank, and if it contains a type
+     * reference, it's not the {@linkplain #checkTypeReference(String)} suffix form}.
+     */
+    private static String checkValue(String value) {
+        checkNotEmptyOrBlank(value);
+        List<String> parts = fieldNameSplit.splitToList(value);
+        if (parts.size() >= 2) {
+            // Contains the type part.
+            checkTypeReference(parts.get(0));
+        }
+        return value;
     }
 
     /**
@@ -71,7 +88,7 @@ public final class FieldReference extends StringTypeValue {
      * </ol>
      */
     @CanIgnoreReturnValue
-    private static String checkReference(String typeReference) {
+    private static String checkTypeReference(String typeReference) {
         checkNotEmptyOrBlank(typeReference);
         if (typeReference.startsWith(ANY_BY_OPTION_TARGET)) {
             checkArgument(
@@ -102,7 +119,7 @@ public final class FieldReference extends StringTypeValue {
      * Tells if the passed value reference all types.
      */
     public static boolean isWildcard(String typeReference) {
-        checkReference(typeReference);
+        checkTypeReference(typeReference);
         return ANY_BY_OPTION_TARGET.equals(typeReference);
     }
 
