@@ -20,16 +20,21 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.value.StringTypeValue;
 
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.option.OptionsProto.by;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -51,14 +56,39 @@ public final class FieldReference extends StringTypeValue {
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
 
-    private FieldReference(String value) {
-        super(value);
+    @VisibleForTesting
+    FieldReference(String value) {
+        super(checkReference(value));
+    }
+
+    /**
+     * Ensures that the passed value is:
+     * <ol>
+     * <li>not null
+     * <li>not empty or blank
+     * <li>not a wild card type reference in a suffix form
+     *  (such as {@code '*CommonEventNameSuffix.field_name'}, which is not currently supported.
+     * </ol>
+     */
+    @CanIgnoreReturnValue
+    private static String checkReference(String typeReference) {
+        checkNotEmptyOrBlank(typeReference);
+        if (typeReference.startsWith(ANY_BY_OPTION_TARGET)) {
+            checkArgument(
+                    typeReference.equals(ANY_BY_OPTION_TARGET),
+                    "Referencing types with a suffix form (`%s`) in wildcard reference " +
+                            "is not supported . " +
+                            "Please use '*.<field_name>' when referencing a field of many types.",
+                    typeReference);
+        }
+        return typeReference;
     }
 
     /**
      * Obtains references found in the passed field.
      */
     public static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
+        checkNotNull(field);
         String[] found = parse(field);
 
         ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
@@ -71,15 +101,16 @@ public final class FieldReference extends StringTypeValue {
     /**
      * Tells if the passed value reference all types.
      */
-    public static boolean isWildcard(String typeName) {
-        return ANY_BY_OPTION_TARGET.equals(typeName);
+    public static boolean isWildcard(String typeReference) {
+        checkReference(typeReference);
+        return ANY_BY_OPTION_TARGET.equals(typeReference);
     }
 
     private static String[] parse(FieldDescriptorProto field) {
         String byArgument = field.getOptions()
                                  .getExtension(by);
         if (isNullOrEmpty(byArgument)) {
-            throw newIllegalArgumentException("There is no `by` option in the passed field %s",
+            throw newIllegalArgumentException("There is no `by` option in the passed field %s.",
                                               field.getName());
         }
 
@@ -91,7 +122,7 @@ public final class FieldReference extends StringTypeValue {
     }
 
     /**
-     * Verifies if the reference is by all types having a field with the referenced name.
+     * Verifies if the reference is to a field in all types having a field with the referenced name.
      */
     public boolean isWildcard() {
         boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
@@ -99,10 +130,18 @@ public final class FieldReference extends StringTypeValue {
     }
 
     /**
-     * Verifies if the reference is to a field from another type.
+     * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
         boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
+        return result;
+    }
+
+    /**
+     * Tells if the reference is for a message context field.
+     */
+    public boolean isContext() {
+        boolean result = value().startsWith("context");
         return result;
     }
 
@@ -112,7 +151,7 @@ public final class FieldReference extends StringTypeValue {
     public String typeName() {
         String value = value();
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
-        checkState(index > 0, "The field reference does not have the type (`%s`)", value);
+        checkState(index > 0, "The field reference (`%s`) does not have the type.", value);
         String result = value.substring(0, index)
                              .trim();
         return result;
