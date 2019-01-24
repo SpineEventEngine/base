@@ -18,11 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
+package io.spine.tools.groovy;
+
+import groovy.lang.GString;
+
+/**
+ * A factory of Groovy strings.
+ */
+public final class GStrings {
+
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private GStrings() {
+    }
+
+    /**
+     * Creates a new {@code GString} equivalent to the given Java string.
+     *
+     * @param javaString the plain Java string to convert into a Groovy string
+     * @return new {@code GString}
+     */
+    public static GString fromPlain(String javaString) {
+        return GString.EMPTY.plus(javaString);
     }
 }

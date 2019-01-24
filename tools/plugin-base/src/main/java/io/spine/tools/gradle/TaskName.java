@@ -203,7 +203,9 @@ public enum TaskName {
      *
      * <p>Handles both {@code main} and {@code test} classes and resources scope.
      */
-    GENERATE_JSON_PARSERS("generateJsonParsers");
+    GENERATE_JSON_PARSERS("generateJsonParsers"),
+
+    COPY_PLUGIN_JAR("copyPluginJar");
 
     private final String value;
 

@@ -48,7 +48,6 @@ protobuf {
     protoc {
         artifact = deps.build.protoc
     }
-
     generateProtoTasks {
         all().each { final task ->
             task.generateDescriptorSet = true
@@ -80,6 +79,7 @@ build.doLast {
     final boolean shouldClean = gradle.getTaskGraph().hasTask('clean')
     final def directory = "$rootDir/base-validating-builders"
     final def command = []
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
     final def script = runsOnWindows ? "gradlew.bat" : "gradlew"
     command.add("$directory/../$script".toString())
     if (shouldClean) {

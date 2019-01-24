@@ -27,21 +27,22 @@ include 'testlib'
 /**
  * Includes a module and sets custom project directory to it.
  */
-final def module = { final String name, final String path ->
+final def module = { final String name ->
     include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+    project(":$name").projectDir = new File("$rootDir/tools/$name")
 }
 
-module 'errorprone-checks',   'tools/errorprone-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
+module 'plugin-base'
+module 'plugin-testlib'
 
-module 'proto-js-plugin',     'tools/proto-js-plugin'
+module 'errorprone-checks'
+module 'javadoc-filter'
+module 'javadoc-prettifier'
+module 'model-compiler'
 
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
+module 'proto-js-plugin'
 
-module 'protoc-plugin',       'tools/protoc-plugin'
+module 'reflections-plugin'
 
-module 'plugin-testlib' ,     'tools/plugin-testlib'
+module 'protoc-api'
+module 'protoc-plugin'
