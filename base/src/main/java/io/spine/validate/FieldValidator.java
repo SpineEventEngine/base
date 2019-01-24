@@ -128,9 +128,7 @@ abstract class FieldValidator<V> implements Logging {
         if (isRequiredId()) {
             validateEntityId();
         }
-        if (shouldValidate(this.value)) {
-            validateOwnRules();
-        }
+        validateOwnRules();
         List<ConstraintViolation> ownViolations = assembleViolations();
         List<ConstraintViolation> optionViolations = optionViolations();
         ImmutableList.Builder<ConstraintViolation> builder = ImmutableList.builder();
@@ -161,7 +159,7 @@ abstract class FieldValidator<V> implements Logging {
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
                 this.fieldValidatingOptions.stream()
-                                           .filter(option->option.shouldValidate(value))
+                                           .filter(option -> option.shouldValidate(value))
                                            .map(ValidatingOption::constraint)
                                            .flatMap(constraint -> constraint.check(value)
                                                                             .stream())
@@ -235,7 +233,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns a validation error message (a custom one (if present) or the default one).
      *
      * @param option
-     *         a validation option used to validationRule the default message
+     *         a validation option used to get the default message
      * @param customMsg
      *         a user-defined error message
      */
@@ -245,11 +243,6 @@ abstract class FieldValidator<V> implements Logging {
                                   .getExtension(OptionsProto.defaultMessage);
         String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
         return msg;
-    }
-
-    private static boolean shouldValidate(FieldValue<?> value) {
-        FieldDeclaration declaration = value.declaration();
-        return declaration.isNotCollection() || value.valueOf(OptionsProto.valid);
     }
 
     /**
@@ -295,7 +288,6 @@ abstract class FieldValidator<V> implements Logging {
         return declaration;
     }
 
-    // TODO: 2019-15-16:serhii.lekariev:refactor all of the existing options to be either here or in additionalOptions
     private Set<FieldValidatingOption<?, V>> commonOptions(boolean isStrict) {
         return ImmutableSet.of(DistinctFieldOption.distinctFieldOption(),
                                Required.create(isStrict));
