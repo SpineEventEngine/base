@@ -20,41 +20,34 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import com.google.protobuf.Timestamp;
+import io.spine.option.OptionsProto;
+import io.spine.option.TimeOption;
 
-import java.util.Set;
+import java.util.Optional;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A validating option that specified the point in time which a {@link Timestamp} field value
+ * has.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public class When extends FieldValidatingOption<TimeOption, Timestamp> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false, ImmutableSet.of());
+    private When() {
+        super(OptionsProto.when);
+    }
+
+    /** Creates a new instance of this option.*/
+    public static When create() {
+        return new When();
     }
 
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
+    Constraint<FieldValue<Timestamp>> constraint() {
+        return new WhenConstraint();
     }
 
-
-    /**
-     * @inheritDoc
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, Set )} super constructor} parameter.
-     */
     @Override
-    protected void validateOwnRules() {
+    public Optional<TimeOption> valueFrom(FieldValue<Timestamp> bearer) {
+        return Optional.of(bearer.valueOf(optionExtension()));
     }
 }

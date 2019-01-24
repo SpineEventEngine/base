@@ -21,16 +21,13 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.option.OptionsProto;
-import io.spine.option.PatternOption;
+
+import java.util.Set;
 
 /**
  * Validates fields of type {@link String}.
  */
 class StringFieldValidator extends FieldValidator<String> {
-
-    private final PatternOption patternOption;
-    private final String regex;
 
     /**
      * Creates a new validator instance.
@@ -43,18 +40,21 @@ class StringFieldValidator extends FieldValidator<String> {
      */
     StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired, ImmutableSet.of(io.spine.validate.PatternOption.create()));
-        this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
-        this.regex = patternOption.getRegex();
     }
-
-    @Override
-    protected void validateOwnRules() {
-    }
-
 
     @Override
     protected boolean isNotSet(String value) {
         boolean result = value.isEmpty();
         return result;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * <p>All of the additional validation logic is passed as the third
+     * {@linkplain FieldValidator(FieldValue, boolean, Set )} super constructor} parameter.
+     */
+    @Override
+    protected void validateOwnRules() {
     }
 }

@@ -22,6 +22,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Set;
+
 /**
  * Validates fields of type {@link Boolean}.
  */
@@ -48,12 +50,12 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      *
-     * <p>Performs no action, since {@code boolean} fields require no additional validation.
+     * <p>All of the additional validation logic is passed as the third
+     * {@linkplain FieldValidator(FieldValue, boolean, Set)} super constructor} parameter.
      */
     @Override
     protected void validateOwnRules() {
-        // NOP
     }
 }
