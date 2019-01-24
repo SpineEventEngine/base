@@ -91,10 +91,10 @@ sourceSets {
 }
 
 /**
- * Prepares the `spine-protoc.gradle` file by copying its template to the `resources` directory and
- * injecting the versions of the protoc plugin dependencies.
+ * Prepares the `versions.properties` file and puts it into the resources of this project.
  *
- * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
+ * <p>The file contains versions of dependencies which are configured by
+ * the `ProtocConfigurationPlugin`.
  */
 task prepareProtocConfigVersions {
     description = "Prepares the versions.properties file."
