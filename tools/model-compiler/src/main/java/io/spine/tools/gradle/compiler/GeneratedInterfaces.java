@@ -29,13 +29,13 @@ import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
 import java.util.Map;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newConcurrentMap;
 
 /**
@@ -43,7 +43,7 @@ import static com.google.common.collect.Maps.newConcurrentMap;
  */
 public final class GeneratedInterfaces {
 
-    private final Map<PostfixPattern, PostfixInterfaceConfig> patternConfigs;
+    private final Map<FilePattern, PatternInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
 
     private GeneratedInterfaces() {
@@ -139,8 +139,9 @@ public final class GeneratedInterfaces {
      * @param pattern the file pattern
      * @return a configuration object for Proto files matching the pattern
      */
-    public GeneratedInterfaceConfig filePattern(PostfixPattern pattern) {
-        PostfixInterfaceConfig config = new PostfixInterfaceConfig(pattern.postfix);
+    public GeneratedInterfaceConfig filePattern(FilePattern pattern) {
+        checkNotNull(pattern);
+        PatternInterfaceConfig config = pattern.createInterfaceConfig();
         patternConfigs.put(pattern, config);
         return config;
     }
@@ -148,7 +149,7 @@ public final class GeneratedInterfaces {
     /**
      * Creates a file pattern to match files names of which end with a given postfix.
      *
-     * @see #filePattern(PostfixPattern)
+     * @see #filePattern(FilePattern)
      */
     public PostfixPattern endsWith(String postfix) {
         return new PostfixPattern(postfix);
@@ -158,7 +159,7 @@ public final class GeneratedInterfaces {
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #filePattern(PostfixPattern)} except for
+     * <p>This method functions similarly to the {@link #filePattern(FilePattern)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -189,26 +190,35 @@ public final class GeneratedInterfaces {
                 .setUuidInterface(uuidInterface);
         patternConfigs.values()
                       .stream()
-                      .map(config -> GeneratedInterface
-                              .newBuilder()
-                              .setFilePostfix(config.fileSuffix())
-                              .setInterfaceName(config.interfaceName()
-                                                      .map(ClassName::value)
-                                                      .orElse(""))
-                              .build())
+                      .map(PatternInterfaceConfig::generatedInterface)
                       .forEach(result::addGeneratedInterface);
         return result.build();
     }
 
     /**
+     * A file name pattern qualifying an interface configuration.
+     *
+     * @see #filePattern(FilePattern)
+     */
+    public abstract static class FilePattern {
+
+        abstract PatternInterfaceConfig createInterfaceConfig();
+    }
+
+    /**
      * A file pattern matching file names which end with a certain postfix.
      */
-    public static final class PostfixPattern {
+    public static final class PostfixPattern extends FilePattern {
 
         private final String postfix;
 
         private PostfixPattern(String postfix) {
             this.postfix = postfix;
+        }
+
+        @Override
+        PatternInterfaceConfig createInterfaceConfig() {
+            return new PostfixInterfaceConfig(postfix);
         }
 
         @Override

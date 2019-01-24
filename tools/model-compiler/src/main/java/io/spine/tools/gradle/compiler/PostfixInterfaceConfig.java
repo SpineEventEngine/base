@@ -22,22 +22,20 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.GeneratedInterface;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
  * A {@link GeneratedInterfaceConfig} which configures message types defined in a Proto file with
  * a certain naming.
  */
-final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+final class PostfixInterfaceConfig extends PatternInterfaceConfig {
 
     private final String postfix;
 
     PostfixInterfaceConfig(@Regex String postfix) {
         this.postfix = postfix;
-    }
-
-    String fileSuffix() {
-        return postfix;
     }
 
     @Override
@@ -64,5 +62,16 @@ final class PostfixInterfaceConfig extends AbstractGeneratedInterfaceConfig {
                           .add("postfix", postfix)
                           .add("interfaceName", interfaceName().orElse(null))
                           .toString();
+    }
+
+    @Override
+    GeneratedInterface generatedInterface() {
+        return GeneratedInterface
+                .newBuilder()
+                .setFilePostfix(postfix)
+                .setInterfaceName(interfaceName()
+                                          .map(ClassName::value)
+                                          .orElse(""))
+                .build();
     }
 }
