@@ -19,12 +19,10 @@
  */
 package io.spine.code.proto;
 
-import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.io.ResourceFiles;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
 
@@ -42,6 +40,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Streams.stream;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -134,15 +133,12 @@ public final class FileDescriptors {
      *         contained in the loaded files
      */
     static Set<FileDescriptorProto> load() {
-        Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
-        List<URL> urls = Lists.newArrayList(resources);
-        Set<FileDescriptorProto> files =
-                urls.stream()
-                    .map(FileDescriptors::loadFrom)
-                    .flatMap(set -> set.getFileList()
-                                       .stream())
-                    .filter(distinctBy(FileDescriptorProto::getName))
-                    .collect(toSet());
+        Iterator<URL> resources = DescriptorReference.loadAll();
+        Set<FileDescriptorProto> files = stream(resources)
+                .map(FileDescriptors::loadFrom)
+                .flatMap(set -> set.getFileList().stream())
+                .filter(distinctBy(FileDescriptorProto::getName))
+                .collect(toSet());
         return files;
     }
 

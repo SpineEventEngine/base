@@ -46,14 +46,17 @@ public class Extension {
      * The absolute path to the main Protobuf descriptor set file.
      */
     public String mainDescriptorSetPath;
+
     /**
      * The absolute path to the test Protobuf descriptor set file.
      */
     public String testDescriptorSetPath;
+
     /**
      * The absolute path to the main Protobufs compiled to JavaScript.
      */
     public String mainGenProtoDir;
+
     /**
      * The absolute path to the test Protobufs compiled to JavaScript.
      */

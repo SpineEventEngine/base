@@ -42,6 +42,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
@@ -181,6 +182,36 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private static void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
+        configureTaskPlugins(protocTask, dependency);
+        configureDescriptorSetGeneration(protocTask);
+    }
+
+    private static void configureDescriptorSetGeneration(GenerateProtoTask protocTask) {
+        protocTask.setGenerateDescriptorSet(true);
+        boolean tests = protocTask.getSourceSet()
+                                  .getName()
+                                  .contains("test");
+        Project project = protocTask.getProject();
+        String descPath = tests
+                          ? getTestDescriptorSetPath(project)
+                          : getMainDescriptorSetPath(project);
+        GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
+        options.setPath(GStrings.fromPlain(descPath));
+        options.setIncludeImports(false);
+        options.setIncludeSourceInfo(true);
+
+        JavaPluginConvention javaConvention = project.getConvention()
+                                                     .getPlugin(JavaPluginConvention.class);
+        String sourceSetName = tests ? "test" : "main";
+        Path resourceDirectory = Paths.get(descPath)
+                                      .getParent();
+        javaConvention.getSourceSets()
+                      .getByName(sourceSetName)
+                      .getResources()
+                      .srcDir(resourceDirectory);
+    }
+
+    private static void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
         protocTask.dependsOn(dependency);
         protocTask.getPlugins()
                   .create(ProtocPlugin.GRPC.name);
@@ -193,27 +224,6 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                                     .encodeToString(param.toByteArray());
                               options.option(option);
                           });
-        protocTask.setGenerateDescriptorSet(true);
-        boolean tests = protocTask.getSourceSet()
-                                  .getName()
-                                  .contains("test");
-        Project project = protocTask.getProject();
-        String descPath = tests
-                          ? getTestDescriptorSetPath(project)
-                          : getMainDescriptorSetPath(project);
-        GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
-        options.setPath(GStrings.fromPlain(descPath));
-        options.setIncludeImports(true);
-        options.setIncludeSourceInfo(true);
-
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        String sourceSetName = tests ? "test" : "main";
-        javaConvention.getSourceSets()
-                      .getByName(sourceSetName)
-                      .getResources()
-                      .srcDir(Paths.get(descPath)
-                                   .getParent());
     }
 
     private static void configureProtocTasks(GenerateProtoTaskCollection tasks,
