@@ -28,16 +28,10 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.value.StringTypeValue;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.option.OptionsProto.by;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static java.util.regex.Pattern.compile;
 
 /**
  * A reference to a field found in the {@code "by"} option value.
@@ -54,12 +48,6 @@ public final class FieldReference extends StringTypeValue {
      * this wildcard option.
      */
     private static final String ANY_BY_OPTION_TARGET = "*";
-
-    /**
-     * Separates two or more alternative references.
-     */
-    private static final String PIPE_SEPARATOR = "|";
-    private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
 
     /**
      * Separates a type name from a field name.
@@ -122,14 +110,7 @@ public final class FieldReference extends StringTypeValue {
      * Obtains references found in the passed field.
      */
     public static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
-        checkNotNull(field);
-        String[] found = parse(field);
-
-        ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
-        for (String ref : found) {
-            result.add(new FieldReference(ref));
-        }
-        return result.build();
+        return ByOption.allFrom(field);
     }
 
     /**
@@ -138,21 +119,6 @@ public final class FieldReference extends StringTypeValue {
     public static boolean isWildcard(String typeReference) {
         checkTypeReference(typeReference);
         return ANY_BY_OPTION_TARGET.equals(typeReference);
-    }
-
-    private static String[] parse(FieldDescriptorProto field) {
-        String byArgument = field.getOptions()
-                                 .getExtension(by);
-        if (isNullOrEmpty(byArgument)) {
-            throw newIllegalArgumentException("There is no `by` option in the passed field %s.",
-                                              field.getName());
-        }
-
-        String[] result;
-        result = byArgument.contains(PIPE_SEPARATOR)
-                 ? PATTERN_PIPE_SEPARATOR.split(byArgument)
-                 : new String[]{byArgument};
-        return result;
     }
 
     /**

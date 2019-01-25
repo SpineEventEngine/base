@@ -25,6 +25,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.code.proto.ByOption;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 
