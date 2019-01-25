@@ -20,116 +20,22 @@
 
 package io.spine.tools.compiler.enrichment;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.code.proto.FieldReference;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
-import org.slf4j.Logger;
-
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 import static io.spine.option.OptionsProto.by;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Obtains event names from the {@code "by"} field option of a message.
  */
 final class ByOption implements Logging {
 
-    private final DescriptorProto message;
-    private final FieldDescriptorProto field;
-
-    ByOption(DescriptorProto message, FieldDescriptorProto field) {
-        this.message = message;
-        this.field = field;
+    ByOption() {
     }
 
     static boolean isSetFor(FieldDescriptorProto field) {
         return Options.option(field, by)
                       .isPresent();
-    }
-
-    Map.Entry<String, String> collect(String packagePrefix) {
-        Collection<String> eventNames = parse();
-        Map.Entry<String, String> result = group(eventNames, packagePrefix);
-        return result;
-    }
-
-    /**
-     * Obtains the list with fully-qualified names of target event types for
-     * the given field.
-     */
-    private List<String> parse() {
-        List<FieldReference> fieldRefs = FieldReference.allFrom(field);
-
-        ImmutableList.Builder<String> result = ImmutableList.builder();
-        for (FieldReference fieldRef : fieldRefs) {
-            if (fieldRef.isWildcard() && fieldRefs.size() > 1) {
-                // Multiple argument `by` annotation can not contain wildcard reference onto
-                // the event type if the type was not specified with a `enrichment_for` annotation.
-                throw invalidByOptionUsage(field.getName());
-            }
-
-            if (fieldRef.isInner()) {
-                // The short form type names are handled as inner types.
-                continue;
-            }
-
-            String fullTypeName = fieldRef.typeName();
-            result.add(fullTypeName);
-        }
-
-        return result.build();
-    }
-
-    private Map.Entry<String, String> group(Collection<String> events, String packagePrefix) {
-        String enrichment = message.getName();
-        String fieldName = field.getName();
-        Logger log = log();
-        Collection<String> eventGroup = new HashSet<>(events.size());
-        for (String eventName : events) {
-            if (eventName == null || eventName.trim()
-                                              .isEmpty()) {
-                throw invalidByOptionValue(enrichment);
-            }
-            log.debug("'by' option found on field {} targeting {}", fieldName, eventName);
-            if (FieldReference.isWildcard(eventName)) {
-                log.warn("Skipping a wildcard event");
-                /* Ignore the wildcard `by` options, as we don't know
-                   the target event type in this case. */
-                continue;
-            }
-            eventGroup.add(eventName);
-        }
-        String enrichmentName = packagePrefix + enrichment;
-        String eventGroupString = TypeNameParser.joiner.join(eventGroup);
-        Map.Entry<String, String> result =
-                new AbstractMap.SimpleEntry<>(enrichmentName, eventGroupString);
-
-        return result;
-    }
-
-    private static IllegalStateException invalidByOptionValue(String msgName) {
-        throw newIllegalStateException(
-                "The message field `%s` has invalid 'by' option value, " +
-                        "which must be a fully-qualified field reference.",
-                msgName
-        );
-    }
-
-    private static IllegalStateException invalidByOptionUsage(String msgName) {
-        throw newIllegalStateException(
-                "Field of message `%s` has invalid 'by' option value. " +
-                        "Wildcard type is not allowed with multiple arguments. " +
-                        "Please, specify the type either with `by` or " +
-                        "with `enrichment_for` annotation.",
-                msgName
-        );
     }
 }
