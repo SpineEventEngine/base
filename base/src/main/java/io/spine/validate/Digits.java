@@ -29,10 +29,10 @@ import java.util.Optional;
  * An option that imposes a constraint on a numeric field, checking whether the amount
  * of digits in both whole and decimal parts of the numeric field exceed the specified maximum.
  *
- * @param <V>
- *         type of value that the field marked with this option holds
+ * @param <N>
+ *         Numeric values that this option is applicable to
  */
-public class Digits<V extends Number> extends FieldValidatingOption<DigitsOption, V> {
+public class Digits<N extends Number> extends FieldValidatingOption<DigitsOption, N> {
 
     private Digits() {
         super(OptionsProto.digits);
@@ -50,12 +50,12 @@ public class Digits<V extends Number> extends FieldValidatingOption<DigitsOption
     }
 
     @Override
-    Constraint<FieldValue<V>> constraint() {
+    Constraint<FieldValue<N>> constraint() {
         return new DigitsConstraint<>();
     }
 
     @Override
-    public Optional<DigitsOption> valueFrom(FieldValue<V> bearer) {
+    public Optional<DigitsOption> valueFrom(FieldValue<N> bearer) {
         DigitsOption option = bearer.valueOf(optionExtension());
         boolean isDefault = option.getFractionMax() == 0 && option.getIntegerMax() == 0;
         return isDefault ? Optional.empty() : Optional.of(option);

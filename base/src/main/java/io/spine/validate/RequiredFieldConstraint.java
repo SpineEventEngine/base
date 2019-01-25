@@ -53,8 +53,8 @@ public class RequiredFieldConstraint implements Constraint<MessageValue> {
         }
         String expression = requiredField.valueFrom(messageField)
                                          .get();
-        ImmutableList<RequiredFieldOptions> parse = parse(expression);
-        if (!alternativeFound(parse, messageField)) {
+        ImmutableList<RequiredFieldAlternatives> alternatives = parse(expression);
+        if (!alternativeFound(alternatives, messageField)) {
             String msgFormat =
                     "None of the fields match the `required_field` definition: %s";
             ConstraintViolation requiredFieldNotFound = ConstraintViolation
@@ -68,7 +68,10 @@ public class RequiredFieldConstraint implements Constraint<MessageValue> {
         return true;
     }
 
-    private static class RequiredFieldOptions {
+    /**
+     * Combinations of required fields found in the message value.
+     */
+    private static class RequiredFieldAlternatives {
 
         /**
          * The pattern to remove whitespace from the option field value.
@@ -82,37 +85,37 @@ public class RequiredFieldConstraint implements Constraint<MessageValue> {
 
         private final ImmutableList<String> fieldNames;
 
-        private RequiredFieldOptions(ImmutableList<String> names) {
+        private RequiredFieldAlternatives(ImmutableList<String> names) {
             fieldNames = names;
         }
 
-        static RequiredFieldOptions ofCombination(ImmutableList<String> fieldNames) {
-            return new RequiredFieldOptions(fieldNames);
+        static RequiredFieldAlternatives ofCombination(ImmutableList<String> fieldNames) {
+            return new RequiredFieldAlternatives(fieldNames);
         }
 
-        static RequiredFieldOptions ofCombination(CharSequence expression) {
+        static RequiredFieldAlternatives ofCombination(CharSequence expression) {
             ImmutableList<String> parts = ImmutableList.copyOf(Splitter.on(AMPERSAND)
                                                                        .split(expression));
             return ofCombination(parts);
         }
     }
 
-    private static ImmutableList<RequiredFieldOptions> parse(String expression) {
-        ImmutableList.Builder<RequiredFieldOptions> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = RequiredFieldOptions.WHITESPACE.matcher(expression)
-                                                                  .replaceAll("");
-        Iterable<String> parts = Splitter.on(RequiredFieldOptions.OPTION_SEPARATOR)
+    private static ImmutableList<RequiredFieldAlternatives> parse(String expression) {
+        ImmutableList.Builder<RequiredFieldAlternatives> alternatives = ImmutableList.builder();
+        String whiteSpaceRemoved = RequiredFieldAlternatives.WHITESPACE.matcher(expression)
+                                                                       .replaceAll("");
+        Iterable<String> parts = Splitter.on(RequiredFieldAlternatives.OPTION_SEPARATOR)
                                          .split(whiteSpaceRemoved);
         for (String part : parts) {
-            alternatives.add(RequiredFieldOptions.ofCombination(part));
+            alternatives.add(RequiredFieldAlternatives.ofCombination(part));
         }
         return alternatives.build();
     }
 
-    private boolean alternativeFound(Iterable<RequiredFieldOptions> fieldOptions,
+    private boolean alternativeFound(Iterable<RequiredFieldAlternatives> alternatives,
                                      MessageValue message) {
-        for (RequiredFieldOptions option : fieldOptions) {
-            boolean found = checkFields(option.fieldNames, message);
+        for (RequiredFieldAlternatives alternative : alternatives) {
+            boolean found = checkFields(alternative.fieldNames, message);
             if (found) {
                 return true;
             }

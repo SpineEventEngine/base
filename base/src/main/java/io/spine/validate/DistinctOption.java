@@ -32,9 +32,9 @@ import java.util.Optional;
  * @param <T>
  *         type fields that can be checked against this option
  */
-final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T> {
+final class DistinctOption<T> extends FieldValidatingOption<OnDuplicate, T> {
 
-    private DistinctFieldOption() {
+    private DistinctOption() {
         super(OptionsProto.onDuplicate);
     }
 
@@ -43,8 +43,8 @@ final class DistinctFieldOption<T> extends FieldValidatingOption<OnDuplicate, T>
      *
      * @param <T> type of fields that can be checked against this option
      */
-    static <T> DistinctFieldOption<T> distinctFieldOption() {
-        return new DistinctFieldOption<>();
+    static <T> DistinctOption<T> distinctFieldOption() {
+        return new DistinctOption<>();
     }
 
     @Override

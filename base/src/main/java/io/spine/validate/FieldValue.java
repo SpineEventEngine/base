@@ -125,14 +125,14 @@ final class FieldValue<T> {
     }
 
     /**
-     * Casting this value is needed to pass it as a constructor parameter to a {@link FieldValidator}
-     * subclasses, since all of them take a field value of concrete type.
-     *
-     * <p>Casting is safe, since {@link JavaType}, that is being checked by
-     * {@link #createValidator()} maps 1 to 1 to all {@code FieldValidator} subclasses, i.e. there
-     * is always going to be fitting validator.
+     * Casts this value to a more accurately typed {@code FieldValue}.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked"
+    /* Casting is safe, since {@link JavaType}, that is being checked by
+    * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
+    * is always going to be fitting validator.
+    */
+    )
     private <S> FieldValue<S> castThis(){
         return (FieldValue<S>) this;
     }

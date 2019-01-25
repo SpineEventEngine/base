@@ -28,12 +28,13 @@ import java.util.Optional;
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
  */
-public class IfMissing implements Option<IfMissingOption, FieldValue<?>> {
+final class IfMissing implements Option<IfMissingOption, FieldValue<?>> {
 
     @Override
     public Optional<IfMissingOption> valueFrom(FieldValue<?> fieldValue) {
         IfMissingOption option = fieldValue.valueOf(OptionsProto.ifMissing);
-        boolean isDefault = option.getDefaultInstanceForType().equals(option);
-        return isDefault? Optional.empty() : Optional.of(option);
+        boolean isDefault = option.getDefaultInstanceForType()
+                                  .equals(option);
+        return isDefault ? Optional.empty() : Optional.of(option);
     }
 }

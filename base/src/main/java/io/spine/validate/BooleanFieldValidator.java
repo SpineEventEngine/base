@@ -48,7 +48,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * <p>All of the additional validation logic is passed as the third
      * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.

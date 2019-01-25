@@ -26,7 +26,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 /**
  * An option that validates a field.
  *
- * Validating options impose constraint on fields that they are applied to.
+ * <p>Validating options impose constraint on fields that they are applied to.
  *
  * @param <T>
  *         type of information that this option holds
@@ -42,7 +42,6 @@ abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValu
     }
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
-
     boolean shouldValidate(FieldValue<F> value) {
         return valueFrom(value).isPresent();
     }

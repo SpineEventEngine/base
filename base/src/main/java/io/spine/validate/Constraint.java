@@ -24,23 +24,23 @@ import java.util.List;
 
 /**
  * A rule that limits the set of possible values for {@code T} and produces
- * {@code ConstraintViolations} upon finding that some value of {@code T} does not fit into the
+ * {@code ConstraintViolations} upon finding values of {@code T} which do not fit into the
  * set limits.
  *
  * @param <T>
  *         a type of values that this constraint is applicable to
  */
-public interface Constraint<T> {
+interface Constraint<T> {
 
     /**
      * Checks the specified value against this constraint.
      *
-     * <p>If the value has been found to not correspond to the rules imposed by this constraint,
-     * {@code ConstraintViolations} are produced and returned.
+     * <p>If the value has breaks the rules imposed by this constraint, {@code ConstraintViolations}
+     * are produced and returned.
      *
      * @param value
      *         value that is being checked against this constraint
-     * @return a list of constraints, if any
+     * @return a list of constraint violations, if a value breaks this
      */
     List<ConstraintViolation> check(T value);
 }

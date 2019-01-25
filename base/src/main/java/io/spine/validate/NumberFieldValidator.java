@@ -23,8 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 
-import java.util.Set;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 
 /**
@@ -65,7 +63,7 @@ abstract class NumberFieldValidator<V extends Number> extends FieldValidator<V> 
      * @inheritDoc
      *
      * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, Set )} super constructor} parameter.
+     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
      */
     @SuppressWarnings("NoopMethodInAbstractClass")
     @Override

@@ -69,16 +69,18 @@ abstract class FieldValidator<V> implements Logging {
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
+     * @param validatingOptions
+     *         options that validate a field and are relevant to more concrete subtypes
      */
     protected FieldValidator(FieldValue<V> fieldValue,
                              boolean assumeRequired,
-                             Set<FieldValidatingOption<?, V>> additionalOptions) {
+                             Set<FieldValidatingOption<?, V>> validatingOptions) {
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
         this.assumeRequired = assumeRequired;
-        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), additionalOptions);
+        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), validatingOptions);
     }
 
     /**
@@ -117,9 +119,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -289,7 +291,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private Set<FieldValidatingOption<?, V>> commonOptions(boolean isStrict) {
-        return ImmutableSet.of(DistinctFieldOption.distinctFieldOption(),
+        return ImmutableSet.of(DistinctOption.distinctFieldOption(),
                                Required.create(isStrict));
     }
 }

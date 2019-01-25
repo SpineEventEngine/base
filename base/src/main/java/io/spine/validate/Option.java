@@ -30,18 +30,14 @@ import java.util.Optional;
  * @param <K>
  *         kind of entities that this option can be applied to
  */
-public interface Option<T, K> {
+interface Option<T, K> {
 
     /**
-     * Returns the value of this option for the specified entity.
+     * Obtains the value of this option for the specified entity.
      *
      * @param bearer
-     *         entity which is checked for the value of this option
+     *         holder of the option
      * @return value of this option
-     * @apiNote More often than not, it is impossible to say whether, for example, a field,
-     *         has or doesn't have an option value, because a default one is present.
-     *         When using this method take into account the fact that any option can have a
-     *         default value, which can be returned by this method
      */
     Optional<T> valueFrom(K bearer);
 }
