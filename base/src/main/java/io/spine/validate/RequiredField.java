@@ -44,7 +44,7 @@ import java.util.Optional;
  * The {@code PersonName} message is valid against the {@code RequiredField} either if it has a
  * non-default family name, or both honorific prefix and a family name.
  */
-public class RequiredField extends MessageValidatingOption<String> {
+public class RequiredField extends ValidatingOption<String, MessageValue> {
 
     /**
      * The name of the message option field.

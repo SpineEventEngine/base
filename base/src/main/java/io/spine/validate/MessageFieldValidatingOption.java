@@ -26,7 +26,16 @@ import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.OptionsProto;
 
-public abstract class MessageFieldValidatingOption<O, M extends Message> extends FieldValidatingOption<O, M> {
+/**
+ * An option that validates a message field.
+ *
+ * @param <O>
+ *         type of option value
+ * @param <M>
+ *         type of the message being validated by this option
+ */
+abstract class MessageFieldValidatingOption<O, M extends Message>
+        extends FieldValidatingOption<O, M> {
 
     MessageFieldValidatingOption(GeneratedExtension<FieldOptions, O> extension) {
         super(extension);

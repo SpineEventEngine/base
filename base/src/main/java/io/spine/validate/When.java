@@ -36,7 +36,7 @@ public class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
         super(OptionsProto.when);
     }
 
-    /** Creates a new instance of this option.*/
+    /** Creates a new instance of this option. */
     public static When create() {
         return new When();
     }

@@ -23,7 +23,6 @@ package io.spine.validate;
 /**
  * An option that validates an arbitrary Protobuf entity.
  *
- *
  * @param <T>
  *         type of information that this option holds, e. g.
  *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
