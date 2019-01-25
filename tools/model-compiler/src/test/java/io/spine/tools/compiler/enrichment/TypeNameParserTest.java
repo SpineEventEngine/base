@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static io.spine.option.OptionsProto.enrichment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,26 +37,26 @@ class TypeNameParserTest {
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final TypeNameParser parser = new TypeNameParser(enrichment, PACKAGE_PREFIX);
+    private final TypeNameParser parser = TypeNameParser.ofEnrichment(PACKAGE_PREFIX);
 
     @Test
     @DisplayName("add package prefix to unqualified type")
-    void add_package_prefix_to_unqualified_type() {
-        TypeName parsedTypes = parser.parseTypeName(MESSAGE_NAME);
+    void withPrefix() {
+        TypeName parsedTypes = parser.toQualified(MESSAGE_NAME);
         assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, parsedTypes.value());
     }
 
     @Test
     @DisplayName("not add package prefix to fully qualified type")
-    void not_add_package_prefix_to_fully_qualified_type() {
+    void withoutPrefix() {
         String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
-        TypeName parsedType = parser.parseTypeName(fqn);
+        TypeName parsedType = parser.toQualified(fqn);
         assertEquals(fqn, parsedType.value());
     }
 
     @Test
     @DisplayName("return empty collection if option is not present")
-    void return_empty_collection_if_option_is_not_present() {
+    void emptyCollection() {
         DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                              .toProto();
         Collection<TypeName> result = parser.parse(definitionWithoutOption);

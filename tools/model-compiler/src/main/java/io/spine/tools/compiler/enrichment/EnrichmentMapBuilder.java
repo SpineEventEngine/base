@@ -34,9 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.OptionsProto.enrichmentFor;
-
 /**
  * Composes enrichment map for multiple message declarations.
  */
@@ -48,7 +45,7 @@ final class EnrichmentMapBuilder implements Logging {
     private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameParser eventType;
+    private final TypeNameParser sourceType;
     private final TypeNameParser enrichmentType;
 
     /** Multimap for storing intermediate results. */
@@ -56,8 +53,8 @@ final class EnrichmentMapBuilder implements Logging {
 
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventType = new TypeNameParser(enrichmentFor, packagePrefix);
-        this.enrichmentType = new TypeNameParser(enrichment, packagePrefix);
+        this.sourceType = TypeNameParser.ofEnrichmentFor(packagePrefix);
+        this.enrichmentType = TypeNameParser.ofEnrichment(packagePrefix);
     }
 
     /**
@@ -153,7 +150,7 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as an enrichment object.
         _debug("Scanning message {} for the enrichment annotations", messageName);
-        Collection<TypeName> eventTypes = eventType.parse(msg);
+        Collection<TypeName> eventTypes = sourceType.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
             _debug("Found target events: {}", mergedValue);

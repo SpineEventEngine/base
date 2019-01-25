@@ -27,7 +27,6 @@ import com.google.errorprone.annotations.Immutable;
  *
  * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
  * {@link com.google.protobuf.StringValue StringValue}.
- * @author Alexander Yevsyukov
  */
 @Immutable
 public abstract class StringTypeValue extends ValueHolder<String> {

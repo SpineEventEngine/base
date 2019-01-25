@@ -23,17 +23,19 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Extension;
 import io.spine.option.Options;
+import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
 
-import java.util.Collection;
-
-import static java.lang.String.valueOf;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.option.OptionsProto.enrichment;
+import static io.spine.option.OptionsProto.enrichmentFor;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
+import static java.util.Comparator.comparing;
 
 /**
  * A parser of {@link TypeName}s contained in a message option.
@@ -60,12 +62,28 @@ final class TypeNameParser {
      */
     private static final Splitter splitter = Splitter.on(TYPE_NAME_SEPARATOR);
 
+    private static final String PACKAGE_SEPARATOR = String.valueOf(TypeName.PACKAGE_SEPARATOR);
+
     private final Extension<MessageOptions, String> option;
     private final String packagePrefix;
 
-    TypeNameParser(Extension<MessageOptions, String> option, String prefix) {
+    /**
+     * Obtains the parser for the {@link OptionsProto#enrichmentFor} option values.
+     */
+    static TypeNameParser ofEnrichmentFor(String packagePrefix) {
+        return new TypeNameParser(enrichmentFor, packagePrefix);
+    }
+
+    /**
+     * Obtains the instance for the {@link OptionsProto#enrichment} option values.
+     */
+    static TypeNameParser ofEnrichment(String packagePrefix) {
+        return new TypeNameParser(enrichment, packagePrefix);
+    }
+
+    private TypeNameParser(Extension<MessageOptions, String> option, String packagePrefix) {
         this.option = option;
-        packagePrefix = prefix;
+        this.packagePrefix = packagePrefix;
     }
 
     /**
@@ -77,20 +95,24 @@ final class TypeNameParser {
      * @param descriptor the descriptor to parse
      * @return the list of parsed message types or an empty list if the option is absent or empty
      */
-    Collection<TypeName> parse(DescriptorProto descriptor) {
-        Collection<TypeName> result = Options.option(descriptor, option)
-                                             .map(splitter::splitToList)
-                                             .orElse(emptyList())
-                                             .stream()
-                                             .map(this::parseTypeName)
-                                             .collect(toList());
+    ImmutableList<TypeName> parse(DescriptorProto descriptor) {
+        ImmutableList<TypeName> result =
+                Options.option(descriptor, option)
+                       .map(splitter::splitToList)
+                       .orElse(emptyList())
+                       .stream()
+                       .map(this::toQualified)
+                       .sorted(comparing(TypeName::value))
+                       .collect(toImmutableList());
         return result;
     }
 
     @VisibleForTesting
-    TypeName parseTypeName(String value) {
-        boolean isFqn = value.contains(valueOf(TypeName.PACKAGE_SEPARATOR));
-        String typeNameValue = isFqn
+    TypeName toQualified(String value) {
+        //TODO:2019-01-25:alexander.yevsyukov: Checking only by having the dot in the name is
+        // the limitation which prevents from referencing nested types.
+        boolean isQualified = value.contains(PACKAGE_SEPARATOR);
+        String typeNameValue = isQualified
                                ? value
                                : packagePrefix + value;
         return TypeName.of(typeNameValue);
