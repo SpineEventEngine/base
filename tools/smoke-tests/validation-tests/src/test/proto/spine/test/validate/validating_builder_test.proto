@@ -144,16 +144,16 @@ message Essay {
 }
 
 message Blizzard {
-    repeated Snowflake snowflake = 1 [(on_duplicate) = ERROR];
+    repeated Snowflake snowflake = 1 [(distinct) = true];
 }
 
 message Constitution {
-    string amendments = 1 [(on_duplicate) = ERROR];
+    string amendments = 1 [(distinct) = true];
 }
 
 // Artificial blizzards allow repeating snowflakes.
 message ArtificialBlizzard {
-    repeated Snowflake snowflake = 1 [(on_duplicate) = IGNORE];
+    repeated Snowflake snowflake = 1 [(distinct) = false];
 }
 
 // A snowflake is represented by a polygon. Two snowflakes are equal if they have the same
