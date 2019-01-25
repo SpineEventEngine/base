@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Any;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
@@ -66,8 +65,9 @@ public class DigitsConstraint<V extends Number> implements Constraint<FieldValue
         return ImmutableList.of();
     }
 
-    private ConstraintViolation digitsViolated(FieldValue<V> fieldValue, DigitsOption digitsOption,
-                                       V actualValue) {
+    private ConstraintViolation digitsViolated(FieldValue<V> fieldValue,
+                                               DigitsOption digitsOption,
+                                               V actualValue) {
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
@@ -79,18 +79,8 @@ public class DigitsConstraint<V extends Number> implements Constraint<FieldValue
                 .addParam(intMax)
                 .addParam(fractionMax)
                 .setFieldPath(fieldPath)
-                .setFieldValue(wrap(actualValue))
+                .setFieldValue(toAny(actualValue))
                 .build();
         return violation;
-    }
-
-    /**
-     * Wraps a value to a corresponding message wrapper
-     * ({@link com.google.protobuf.DoubleValue DoubleValue},
-     * {@link com.google.protobuf.Int32Value Int32Value}, etc) and {@link Any}.
-     */
-    Any wrap(V value) {
-        Any result = toAny(value);
-        return result;
     }
 }

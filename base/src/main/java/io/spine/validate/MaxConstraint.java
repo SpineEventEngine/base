@@ -28,6 +28,7 @@ import io.spine.option.OptionsProto;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
 import static java.util.stream.Collectors.toList;
 
@@ -51,15 +52,17 @@ public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>
         List<ConstraintViolation> violations =
                 actualValue.stream()
                            .filter(exceeds)
-                           .map(exceedingNumber -> maxViolated(fieldValue, maxValue, exclusive))
+                           .map(exceedingNumber -> maxViolated(fieldValue, option, exceedingNumber))
                            .collect(toList());
         return violations;
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private ConstraintViolation maxViolated(FieldValue<V> fieldValue,
-                                            double maxValue,
-                                            boolean exclusive) {
+                                            MaxOption option,
+                                            V actualValue) {
+        String maxValue = option.getValue();
+        boolean exclusive = option.getExclusive();
         String format = "Number must be less than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
@@ -67,8 +70,9 @@ public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>
                 .newBuilder()
                 .setMsgFormat(format)
                 .addParam(exclusive ? "" : "or equal to")
-                .addParam(String.valueOf(maxValue))
+                .addParam(maxValue)
                 .setFieldPath(path)
+                .setFieldValue(toAny(actualValue))
                 .build();
         return violation;
     }

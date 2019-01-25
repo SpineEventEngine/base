@@ -28,6 +28,7 @@ import io.spine.option.OptionsProto;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
 import static java.util.stream.Collectors.toList;
 
@@ -46,29 +47,32 @@ public class MinConstraint<V extends Number> implements Constraint<FieldValue<V>
         ImmutableList<V> actualValue = fieldValue.asList();
         double minValue = parseDouble(option.getValue());
         boolean exclusive = option.getExclusive();
-        Predicate<V> exceeds = exclusive ?
-                               value -> value.doubleValue() <= minValue :
-                               value -> value.doubleValue() < minValue;
+        Predicate<V> undershoots = exclusive
+                                   ? value -> value.doubleValue() <= minValue
+                                   : value -> value.doubleValue() < minValue;
         List<ConstraintViolation> violations =
                 actualValue.stream()
-                           .filter(exceeds)
-                           .map(tooLittle -> undershoots(fieldValue, minValue, exclusive))
+                           .filter(undershoots)
+                           .map(belowMin -> minConstraintViolated(fieldValue, option, belowMin))
                            .collect(toList());
         return violations;
     }
 
-    private ConstraintViolation undershoots(FieldValue<V> fieldValue,
-                                            double minValue,
-                                            boolean exclusive) {
+    private ConstraintViolation minConstraintViolated(FieldValue<V> fieldValue,
+                                                      MinOption option,
+                                                      V actualValue) {
         String format = "Number must be greater than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
+        boolean exclusive = option.getExclusive();
+        double minValue = Double.parseDouble(option.getValue());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
                 .addParam(exclusive ? "" : "or equal to")
                 .addParam(String.valueOf(minValue))
                 .setFieldPath(path)
+                .setFieldValue(toAny(actualValue))
                 .build();
         return violation;
     }
