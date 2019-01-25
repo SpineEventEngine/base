@@ -32,7 +32,7 @@ import java.util.Optional;
  * @param <N>
  *         Numeric values that this option is applicable to
  */
-public class Digits<N extends Number> extends FieldValidatingOption<DigitsOption, N> {
+final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption, N> {
 
     private Digits() {
         super(OptionsProto.digits);

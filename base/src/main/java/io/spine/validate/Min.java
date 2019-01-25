@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * An option that defines a minimum value for a numeric field.
  */
-public class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
+final class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
 
     private Min() {
         super(OptionsProto.min);

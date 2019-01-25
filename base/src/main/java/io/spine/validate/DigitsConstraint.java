@@ -38,7 +38,7 @@ import static io.spine.validate.FieldValidator.getErrorMsgFormat;
  * @param <V>
  *         type of value that the field that is being validated holds
  */
-public class DigitsConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class DigitsConstraint<V extends Number> implements Constraint<FieldValue<V>> {
 
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
 

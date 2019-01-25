@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * An option that defines a maximum value for a numeric field.
  */
-public class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
+final class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
 
     private Max() {
         super(OptionsProto.max);

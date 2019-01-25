@@ -38,7 +38,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-public final class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
+final class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING

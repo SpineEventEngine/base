@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.option.OnDuplicate;
 import io.spine.option.OptionsProto;
 
 import java.util.Optional;
@@ -32,9 +31,9 @@ import java.util.Optional;
  * @param <T>
  *         type fields that can be checked against this option
  */
-final class DistinctOption<T> extends FieldValidatingOption<OnDuplicate, T> {
+final class OnDuplicate<T> extends FieldValidatingOption<io.spine.option.OnDuplicate, T> {
 
-    private DistinctOption() {
+    private OnDuplicate() {
         super(OptionsProto.onDuplicate);
     }
 
@@ -43,13 +42,13 @@ final class DistinctOption<T> extends FieldValidatingOption<OnDuplicate, T> {
      *
      * @param <T> type of fields that can be checked against this option
      */
-    static <T> DistinctOption<T> distinctFieldOption() {
-        return new DistinctOption<>();
+    static <T> OnDuplicate<T> create() {
+        return new OnDuplicate<>();
     }
 
     @Override
-    public Optional<OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
-        OnDuplicate option = fieldValue.valueOf(optionExtension());
+    public Optional<io.spine.option.OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
+        io.spine.option.OnDuplicate option = fieldValue.valueOf(optionExtension());
         boolean isDefault = option.getNumber() == 0;
         return isDefault ? Optional.empty() : Optional.of(option);
     }

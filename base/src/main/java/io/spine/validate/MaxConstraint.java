@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  * @param <V>
  *         value that the field validated by this constraint has
  */
-public class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>> {
 
     @Override
     public List<ConstraintViolation> check(FieldValue<V> fieldValue) {

@@ -37,7 +37,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
  * @param <T>
  *         type of the value that the constrained field holds
  */
-public class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
+final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
 
     /**
      * Types for which field presence of the field value can be checked.

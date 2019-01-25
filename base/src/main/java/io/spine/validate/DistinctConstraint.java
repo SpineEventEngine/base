@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  * @param <T>
  *         type of distinct entities
  */
-public class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
+final class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
 
     @Override
     public List<ConstraintViolation> check(FieldValue<T> fieldValue) {

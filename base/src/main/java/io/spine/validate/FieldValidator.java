@@ -133,10 +133,10 @@ abstract class FieldValidator<V> implements Logging {
         validateOwnRules();
         List<ConstraintViolation> ownViolations = assembleViolations();
         List<ConstraintViolation> optionViolations = optionViolations();
-        ImmutableList.Builder<ConstraintViolation> builder = ImmutableList.builder();
-        builder.addAll(ownViolations)
-               .addAll(optionViolations);
-        return builder.build();
+        ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
+        result.addAll(ownViolations)
+              .addAll(optionViolations);
+        return result.build();
     }
 
     final IfInvalidOption ifInvalid() {
@@ -290,7 +290,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private Set<FieldValidatingOption<?, V>> commonOptions(boolean isStrict) {
-        return ImmutableSet.of(DistinctOption.distinctFieldOption(),
+        return ImmutableSet.of(OnDuplicate.create(),
                                Required.create(isStrict));
     }
 }

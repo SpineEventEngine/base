@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
@@ -226,7 +227,8 @@ final class FieldValue<T> {
         if(this.value instanceof EnumValueDescriptor){
             return ((EnumValueDescriptor) this.value).getNumber() == 0;
         }
-        return Validate.isDefault(TypeConverter.toMessage(singleValue()));
+        Message thisAsMessage = TypeConverter.toMessage(singleValue());
+        return Validate.isDefault(thisAsMessage);
     }
 
     /** Returns the declaration of the value. */

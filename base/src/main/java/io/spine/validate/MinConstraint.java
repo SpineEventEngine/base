@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
  * @param <V>
  *         a type of value that is this constraint can be applied to
  */
-public class MinConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class MinConstraint<V extends Number> implements Constraint<FieldValue<V>> {
 
     @Override
     public List<ConstraintViolation> check(FieldValue<V> fieldValue) {

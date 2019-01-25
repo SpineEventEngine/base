@@ -21,30 +21,26 @@
 package io.spine.validate;
 
 import io.spine.option.OptionsProto;
+import io.spine.option.PatternOption;
 
 import java.util.Optional;
 
 /**
  * An option that defines a pattern that a field value has to match.
  */
-public class PatternOption extends FieldValidatingOption<io.spine.option.PatternOption, String> {
+final class Pattern extends FieldValidatingOption<PatternOption, String> {
 
-    private PatternOption() {
+    private Pattern() {
         super(OptionsProto.pattern);
     }
 
     /** Returns a new instance of this option. */
-    public static PatternOption create() {
-        return new PatternOption();
-    }
-
-    private static io.spine.option.PatternOption getOption(FieldValue<String> fieldValue) {
-        io.spine.option.PatternOption option = fieldValue.valueOf(OptionsProto.pattern);
-        return option;
+    public static Pattern create() {
+        return new Pattern();
     }
 
     @Override
-    public Optional<io.spine.option.PatternOption> valueFrom(FieldValue<String> bearer) {
+    public Optional<PatternOption> valueFrom(FieldValue<String> bearer) {
         io.spine.option.PatternOption option = bearer.valueOf(OptionsProto.pattern);
         boolean isDefault = option.getRegex().isEmpty();
         return isDefault ? Optional.empty() : Optional.of(option);

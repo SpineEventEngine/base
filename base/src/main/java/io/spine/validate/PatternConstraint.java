@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
  * A constraint that, when applied to a string field, checks whether that field matches the
  * specified pattern.
  */
-public class PatternConstraint implements Constraint<FieldValue<String>> {
+final class PatternConstraint implements Constraint<FieldValue<String>> {
 
     @Override
     public List<ConstraintViolation> check(FieldValue<String> fieldValue) {

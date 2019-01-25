@@ -30,7 +30,7 @@ import java.util.Optional;
  * A validating option that specified the point in time which a {@link Timestamp} field value
  * has.
  */
-public class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
+final class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
 
     private When() {
         super(OptionsProto.when);
