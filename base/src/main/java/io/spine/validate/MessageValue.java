@@ -82,10 +82,10 @@ final class MessageValue {
      */
     ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
         ImmutableList<FieldValue<?>> values = descriptor.getFields()
-                                                     .stream()
-                                                     .filter(MessageValue::isNotOneof)
-                                                     .map(this::valueOf)
-                                                     .collect(toImmutableList());
+                                                        .stream()
+                                                        .filter(MessageValue::isNotOneof)
+                                                        .map(this::valueOf)
+                                                        .collect(toImmutableList());
         return values;
     }
 

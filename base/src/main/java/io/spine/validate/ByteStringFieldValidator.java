@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.ByteString;
 
-
 /**
  * Validates fields of type {@link ByteString}.
  */
@@ -46,7 +45,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * <p>All of the additional validation logic is passed as the third
      * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.

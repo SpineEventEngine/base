@@ -52,7 +52,8 @@ final class PatternConstraint implements Constraint<FieldValue<String>> {
     private static ConstraintViolation newViolation(FieldValue<String> fieldValue,
                                                     PatternOption patternOption) {
         String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        FieldPath fieldPath = fieldValue.context().getFieldPath();
+        FieldPath fieldPath = fieldValue.context()
+                                        .getFieldPath();
         String regex = patternOption.getRegex();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()

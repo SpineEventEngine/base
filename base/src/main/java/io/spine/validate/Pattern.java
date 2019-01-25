@@ -42,7 +42,8 @@ final class Pattern extends FieldValidatingOption<PatternOption, String> {
     @Override
     public Optional<PatternOption> valueFrom(FieldValue<String> bearer) {
         io.spine.option.PatternOption option = bearer.valueOf(OptionsProto.pattern);
-        boolean isDefault = option.getRegex().isEmpty();
+        boolean isDefault = option.getRegex()
+                                  .isEmpty();
         return isDefault ? Optional.empty() : Optional.of(option);
     }
 

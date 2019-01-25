@@ -224,7 +224,7 @@ final class FieldValue<T> {
     }
 
     private boolean isSingleValueDefault() {
-        if(this.value instanceof EnumValueDescriptor){
+        if (this.value instanceof EnumValueDescriptor) {
             return ((EnumValueDescriptor) this.value).getNumber() == 0;
         }
         Message thisAsMessage = TypeConverter.toMessage(singleValue());

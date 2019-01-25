@@ -54,7 +54,8 @@ final class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
     private ConstraintViolation distinctViolated(FieldValue<T> value, T duplicate) {
         FieldPath path = value.context()
                               .getFieldPath();
-        return ConstraintViolation.newBuilder()
+        return ConstraintViolation
+                .newBuilder()
                 .setMsgFormat("Values must be distinct.")
                 .setFieldPath(path)
                 .setFieldValue(toAny(duplicate))
