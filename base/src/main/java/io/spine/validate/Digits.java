@@ -23,8 +23,6 @@ package io.spine.validate;
 import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
 
-import java.util.Optional;
-
 /**
  * An option that imposes a constraint on a numeric field, checking whether the amount
  * of digits in both whole and decimal parts of the numeric field exceed the specified maximum.
@@ -55,9 +53,8 @@ final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption,
     }
 
     @Override
-    public Optional<DigitsOption> valueFrom(FieldValue<N> bearer) {
-        DigitsOption option = bearer.valueOf(optionExtension());
-        boolean isDefault = option.getFractionMax() == 0 && option.getIntegerMax() == 0;
-        return isDefault ? Optional.empty() : Optional.of(option);
+    boolean isDefault(FieldValue<N> value) {
+        DigitsOption optionValue = optionValue(value).value();
+        return optionValue.getIntegerMax() < 1 || optionValue.getFractionMax() < 1;
     }
 }

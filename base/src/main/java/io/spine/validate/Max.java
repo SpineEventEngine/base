@@ -47,7 +47,14 @@ final class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
                                            .descriptor();
         boolean explicitlySet = Option.from(descriptor, optionExtension())
                                       .isExplicitlySet();
-        return explicitlySet ? Optional.of(bearer.valueOf(optionExtension())) : Optional.empty();
+        return explicitlySet
+               ? Optional.of(bearer.valueOf(optionExtension()))
+               : Optional.empty();
+    }
+
+    @Override
+    boolean isDefault(FieldValue<V> value) {
+        return !optionValue(value).isExplicitlySet();
     }
 
     @Override

@@ -50,4 +50,10 @@ final class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
     public Optional<TimeOption> valueFrom(FieldValue<Timestamp> bearer) {
         return Optional.of(bearer.valueOf(optionExtension()));
     }
+
+    @Override
+    boolean isDefault(FieldValue<Timestamp> value) {
+        TimeOption option = value.valueOf(optionExtension());
+        return !Validate.isDefault(option);
+    }
 }

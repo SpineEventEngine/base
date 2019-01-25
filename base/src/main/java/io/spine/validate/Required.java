@@ -25,7 +25,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
@@ -44,7 +43,7 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final Predicate<FieldValue<?>> isOptionPresent;
+    private final Predicate<FieldValue<T>> isOptionPresent;
     private final IfMissing ifMissing = new IfMissing();
 
     /**
@@ -53,25 +52,15 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
      * @param isOptionPresent
      *         a function that defines whether this option is present
      */
-    private Required(Predicate<FieldValue<?>> isOptionPresent) {
+    Required(boolean isStrict) {
         super(OptionsProto.required);
-        this.isOptionPresent = isOptionPresent;
+        this.isOptionPresent = isStrict
+                               ? value -> true
+                               : this::notAssumingRequired;
     }
 
-    /**
-     * Creates a new instance of this validating option.
-     *
-     * <p>Depending on the value of the {@code strict} parameter, created option either checks
-     * the option value of the field (if {@code strict} is {@code false}), or assumes it to be
-     * {@code required} by default (if {@code strict} is {@code true}).
-     *
-     * @param strict
-     *         whether it should be assumed that the field is {@code required} by default
-     * @return a new instance of this validating option
-     */
-    static <T> Required<T> create(boolean strict) {
-        Predicate<FieldValue<?>> isOptionPresent = strict ? value -> true : Required::optionValue;
-        return new Required<>(isOptionPresent);
+    private Boolean notAssumingRequired(FieldValue<T> fieldValue) {
+        return optionValue(fieldValue).value();
     }
 
     @Override
@@ -93,14 +82,9 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
         }
     }
 
-    private static Boolean optionValue(FieldValue<?> fieldValue) {
-        return fieldValue.valueOf(OptionsProto.required);
-
-    }
-
     @Override
-    public Optional<Boolean> valueFrom(FieldValue<T> fieldValue) {
-        return Optional.of(optionValue(fieldValue));
+    boolean isDefault(FieldValue<T> value) {
+        return !optionValue(value).isExplicitlySet();
     }
 
     @Override

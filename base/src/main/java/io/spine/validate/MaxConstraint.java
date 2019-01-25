@@ -20,17 +20,12 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A constraint that, when applied, checks whether a numeric field value exceeds a max value.
@@ -38,42 +33,43 @@ import static java.util.stream.Collectors.toList;
  * @param <V>
  *         value that the field validated by this constraint has
  */
-final class MaxConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<V> fieldValue) {
-        MaxOption option = fieldValue.valueOf(OptionsProto.max);
-        ImmutableList<V> actualValue = fieldValue.asList();
-        double maxValue = parseDouble(option.getValue());
-        boolean exclusive = option.getExclusive();
-        Predicate<V> exceeds = exclusive
-                               ? value -> value.doubleValue() >= maxValue
-                               : value -> value.doubleValue() > maxValue;
-        List<ConstraintViolation> violations =
-                actualValue.stream()
-                           .filter(exceeds)
-                           .map(exceedingNumber -> maxViolated(fieldValue, option, exceedingNumber))
-                           .collect(toList());
-        return violations;
+    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
+        double actualValue = value.doubleValue();
+        double maxValue = maxFrom(fieldValue);
+        return isExclusive(fieldValue)
+               ? actualValue >= maxValue
+               : actualValue > maxValue;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    private ConstraintViolation maxViolated(FieldValue<V> fieldValue,
-                                            MaxOption option,
-                                            V actualValue) {
-        String maxValue = option.getValue();
-        boolean exclusive = option.getExclusive();
+    @Override
+    ConstraintViolation constraintViolated(FieldValue<V> fieldValue,
+                                           V actualValue) {
         String format = "Number must be less than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
+        double maxValue= maxFrom(fieldValue);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(exclusive ? "" : "or equal to")
-                .addParam(maxValue)
+                .addParam(isExclusive(fieldValue) ? "" : "or equal to")
+                .addParam(String.valueOf(maxFrom(fieldValue)))
                 .setFieldPath(path)
                 .setFieldValue(toAny(actualValue))
                 .build();
         return violation;
+    }
+
+    private double maxFrom(FieldValue<V> fieldValue) {
+        MaxOption optionValue = fieldValue.valueOf(OptionsProto.max);
+        String stringValue = optionValue.getValue();
+        return parseDouble(stringValue);
+    }
+
+    private boolean isExclusive(FieldValue<V> fieldValue) {
+        return fieldValue.valueOf(OptionsProto.max)
+                         .getExclusive();
     }
 }

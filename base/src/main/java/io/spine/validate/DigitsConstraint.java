@@ -20,59 +20,54 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.getErrorMsgFormat;
 
 /**
- * A constraint that, when applied to a numeric field, limits the amount of digits that both a whole
- * and a decimal part of a number can have.
+ * A numerical field constraint that limits the number of whole and decimal digits.
  *
  * @param <V>
- *         type of value that the field that is being validated holds
+ *         a numeric value the digits of which are being controlled for length
  */
-final class DigitsConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<V> fieldValue) {
+    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
         DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
-        int intDigitsMax = digitsOption.getIntegerMax();
+        int wholeDigitsMax = digitsOption.getIntegerMax();
         int fractionDigitsMax = digitsOption.getFractionMax();
-        if (intDigitsMax < 1 || fractionDigitsMax < 1) {
-            return ImmutableList.of();
+        if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
+            return false;
         }
-        for (V val : fieldValue.asList()) {
-            double doubleValue = val.doubleValue();
-            String[] parts = PATTERN_DOT.split(String.valueOf(doubleValue));
-            int intDigitsCount = parts[0].length();
-            int fractionDigitsCount = parts[1].length();
-            boolean isInvalid = (intDigitsCount > intDigitsMax) ||
-                    (fractionDigitsCount > fractionDigitsMax);
-            if (isInvalid) {
-                ConstraintViolation digits = digitsViolated(fieldValue, digitsOption, val);
-                return ImmutableList.of(digits);
-            }
-        }
-        return ImmutableList.of();
+        double actualValue = value.doubleValue();
+        String[] parts = splitOnPeriod(actualValue);
+        int wholeDigitsCount = parts[0].length();
+        int fractionDigitsCount = parts[1].length();
+        boolean violated = wholeDigitsCount > wholeDigitsMax ||
+                           fractionDigitsCount > fractionDigitsMax;
+        return violated;
     }
 
-    private ConstraintViolation digitsViolated(FieldValue<V> fieldValue,
-                                               DigitsOption digitsOption,
-                                               V actualValue) {
+    private static String[] splitOnPeriod(double value) {
+        return PATTERN_DOT.split(String.valueOf(value));
+    }
+
+    @Override
+    ConstraintViolation constraintViolated(FieldValue<V> fieldValue, V actualValue) {
+        DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        FieldPath fieldPath = fieldValue.context()
-                                        .getFieldPath();
+        FieldPath fieldPath = fieldValue.context().getFieldPath();
+
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

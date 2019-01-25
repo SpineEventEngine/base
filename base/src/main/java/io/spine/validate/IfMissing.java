@@ -35,6 +35,8 @@ final class IfMissing implements Option<IfMissingOption, FieldValue<?>> {
         IfMissingOption option = fieldValue.valueOf(OptionsProto.ifMissing);
         boolean isDefault = option.getDefaultInstanceForType()
                                   .equals(option);
-        return isDefault ? Optional.empty() : Optional.of(option);
+        return isDefault
+               ? Optional.empty()
+               : Optional.of(option);
     }
 }

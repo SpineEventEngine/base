@@ -20,17 +20,12 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A constraint that, when applied to a numeric field, checks whether the value of that field is
@@ -39,41 +34,41 @@ import static java.util.stream.Collectors.toList;
  * @param <V>
  *         a type of value that is this constraint can be applied to
  */
-final class MinConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<V> fieldValue) {
-        MinOption option = fieldValue.valueOf(OptionsProto.min);
-        ImmutableList<V> actualValue = fieldValue.asList();
-        double minValue = parseDouble(option.getValue());
-        boolean exclusive = option.getExclusive();
-        Predicate<V> undershoots = exclusive
-                                   ? value -> value.doubleValue() <= minValue
-                                   : value -> value.doubleValue() < minValue;
-        List<ConstraintViolation> violations =
-                actualValue.stream()
-                           .filter(undershoots)
-                           .map(belowMin -> minConstraintViolated(fieldValue, option, belowMin))
-                           .collect(toList());
-        return violations;
+    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
+        double actualValue = value.doubleValue();
+        double minValue = minFrom(fieldValue);
+        return isExclusive(fieldValue)
+               ? actualValue <= minValue
+               : actualValue < minValue;
     }
 
-    private ConstraintViolation minConstraintViolated(FieldValue<V> fieldValue,
-                                                      MinOption option,
-                                                      V actualValue) {
+    @Override
+    ConstraintViolation constraintViolated(FieldValue<V> fieldValue, V actualValue) {
         String format = "Number must be greater than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
-        boolean exclusive = option.getExclusive();
-        double minValue = Double.parseDouble(option.getValue());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(exclusive ? "" : "or equal to")
-                .addParam(String.valueOf(minValue))
+                .addParam(isExclusive(fieldValue) ? "" : "or equal to")
+                .addParam(String.valueOf(minFrom(fieldValue)))
                 .setFieldPath(path)
                 .setFieldValue(toAny(actualValue))
                 .build();
         return violation;
+    }
+
+    private double minFrom(FieldValue<V> fieldValue) {
+        MinOption optionValue = fieldValue.valueOf(OptionsProto.min);
+        String stringValue = optionValue.getValue();
+        return parseDouble(stringValue);
+    }
+
+    private boolean isExclusive(FieldValue<V> fieldValue) {
+        return fieldValue.valueOf(OptionsProto.min)
+                         .getExclusive();
     }
 }

@@ -32,11 +32,10 @@ import static io.spine.protobuf.TypeConverter.toAny;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A constraint that, when applied to a repeated field, checks that all of the values are distinct
- * such that no two elements are equal to each other.
+ * A repeated field constraint that requires values to be distinct.
  *
  * @param <T>
- *         type of distinct entities
+ *         type of values that this constraint is applicable to
  */
 final class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
 

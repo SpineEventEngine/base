@@ -20,37 +20,49 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.Option;
 import io.spine.option.OptionsProto;
 
 import java.util.Optional;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values
- * represented by that {@code repeated} field don't contain duplicates.
+ * represented by that {@code repeated} field should not contain duplicates.
  *
  * @param <T>
- *         type fields that can be checked against this option
+ *         types of values that this option is applicable to
  */
-final class OnDuplicate<T> extends FieldValidatingOption<io.spine.option.OnDuplicate, T> {
+final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
 
-    private OnDuplicate() {
-        super(OptionsProto.onDuplicate);
+    private Distinct() {
+        super(OptionsProto.distinct);
     }
 
     /**
      * Returns a new instance of this option.
      *
-     * @param <T> type of fields that can be checked against this option
+     * @param <T>
+     *         type of fields that can be checked against this option
      */
-    static <T> OnDuplicate<T> create() {
-        return new OnDuplicate<>();
+    static <T> Distinct<T> create() {
+        return new Distinct<>();
     }
 
     @Override
-    public Optional<io.spine.option.OnDuplicate> valueFrom(FieldValue<T> fieldValue) {
-        io.spine.option.OnDuplicate option = fieldValue.valueOf(optionExtension());
-        boolean isDefault = option.getNumber() == 0;
-        return isDefault ? Optional.empty() : Optional.of(option);
+    public Optional<Boolean> valueFrom(FieldValue<T> fieldValue) {
+        FieldDescriptor descriptor = fieldValue.declaration()
+                                               .descriptor();
+        Option distinct = Option.from(descriptor, optionExtension());
+
+        return distinct.isExplicitlySet()
+               ? Optional.of(fieldValue.valueOf(optionExtension()))
+               : Optional.empty();
+    }
+
+    @Override
+    boolean isDefault(FieldValue<T> value) {
+        return !optionValue(value).isExplicitlySet();
     }
 
     @Override

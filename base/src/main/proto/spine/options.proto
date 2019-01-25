@@ -138,11 +138,11 @@ extend google.protobuf.FieldOptions {
     // Example:
     // For a message
     // message Blizzard {
-    //     repeated Snowflake = 1 [(on_duplicate).duplicatePolicy = ERROR];
+    //     repeated Snowflake = 1 [(distinct) = true];
     // }
     //
-    // Attempting to add a snowflake that is equal to an existing one should result in an exception.
-    OnDuplicate on_duplicate = 73825;
+    // Attempting to add a snowflake that is equal to an existing one results in a violation.
+    bool distinct = 73825;
 
     // reserved 73826 to 73849 for future validation options.
 
@@ -745,16 +745,6 @@ message GoesOption {
 
     // A user-defined validation error format message.
     string msg_format = 2;
-}
-
-// Defines options of a repeated field that defines a logic
-enum OnDuplicate {
-
-    // Duplicates are ignored.
-    IGNORE = 0;
-
-    // An error is produced if a duplicate was found.
-    ERROR = 1;
 }
 
 // Defines options of a message representing a state of an entity.

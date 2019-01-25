@@ -21,7 +21,11 @@
 package io.spine.validate;
 
 import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.Option;
+
+import java.util.Optional;
 
 /**
  * An option that validates a field.
@@ -45,6 +49,29 @@ abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValu
     boolean shouldValidate(FieldValue<F> value) {
         return valueFrom(value).isPresent();
     }
+
+    @Override
+    public Optional<T> valueFrom(FieldValue<F> bearer) {
+        T option = bearer.valueOf(optionExtension);
+        return isDefault(bearer)
+               ? Optional.empty()
+               : Optional.of(option);
+    }
+
+    /**
+     * Obtains a value of this option from the specified field.
+     *
+     * @param value
+     *         a field to obtain an option value for
+     * @return raw option value
+     */
+    io.spine.code.proto.Option<T> optionValue(FieldValue<F> value) {
+        FieldDescriptor descriptor = value.declaration()
+                                          .descriptor();
+        return Option.from(descriptor, optionExtension);
+    }
+
+    abstract boolean isDefault(FieldValue<F> value);
 
     /** Returns the extension that corresponds to this option. */
     final GeneratedExtension<FieldOptions, T> optionExtension() {

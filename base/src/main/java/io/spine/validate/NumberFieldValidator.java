@@ -40,7 +40,9 @@ abstract class NumberFieldValidator<V extends Number> extends FieldValidator<V> 
      *         the value to validate
      */
     NumberFieldValidator(FieldValue<V> fieldValue) {
-        super(fieldValue, false, ImmutableSet.of(Max.create(), Min.create(), Digits.create()));
+        super(fieldValue,
+              false,
+              ImmutableSet.of(Max.create(), Min.create(), Digits.create()));
     }
 
     /** Converts a string representation to a number. */
