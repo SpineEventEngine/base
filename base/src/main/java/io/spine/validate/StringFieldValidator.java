@@ -22,8 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Set;
-
 /**
  * Validates fields of type {@link String}.
  */
@@ -52,7 +50,7 @@ class StringFieldValidator extends FieldValidator<String> {
      * @inheritDoc
      *
      * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, Set )} super constructor} parameter.
+     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set )} super constructor} parameter.
      */
     @Override
     protected void validateOwnRules() {
