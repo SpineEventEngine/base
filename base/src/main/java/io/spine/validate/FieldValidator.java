@@ -119,9 +119,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     * <li>check the field to be set if it is {@code required};
-     * <li>validate the field as an Entity ID if required;
-     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -163,8 +163,7 @@ abstract class FieldValidator<V> implements Logging {
                 this.fieldValidatingOptions.stream()
                                            .filter(option -> option.shouldValidate(value))
                                            .map(ValidatingOption::constraint)
-                                           .flatMap(constraint -> constraint.check(value)
-                                                                            .stream())
+                                           .flatMap(constraint -> constraint.check(value).stream())
                                            .collect(Collectors.toList());
         return violations;
     }

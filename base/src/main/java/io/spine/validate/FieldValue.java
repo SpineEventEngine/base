@@ -22,12 +22,14 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
+import io.spine.protobuf.TypeConverter;
 
 import java.util.Collection;
 import java.util.Map;
@@ -128,12 +130,12 @@ final class FieldValue<T> {
      * Casts this value to a more accurately typed {@code FieldValue}.
      */
     @SuppressWarnings("unchecked"
-    /* Casting is safe, since {@link JavaType}, that is being checked by
-    * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
-    * is always going to be fitting validator.
-    */
+            /* Casting is safe, since {@link JavaType}, that is being checked by
+            * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
+            * is always going to be fitting validator.
+            */
     )
-    private <S> FieldValue<S> castThis(){
+    private <S> FieldValue<S> castThis() {
         return (FieldValue<S>) this;
     }
 
@@ -210,9 +212,21 @@ final class FieldValue<T> {
         }
     }
 
+    private T singleValue() {
+        return asList().get(0);
+    }
+
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
     boolean isDefault() {
-        return this.createValidator(false).fieldValueNotSet();
+        return asList().isEmpty() || (declaration.isNotCollection() &&
+                                      isSingleValueDefault());
+    }
+
+    private boolean isSingleValueDefault() {
+        if(this.value instanceof EnumValueDescriptor){
+            return ((EnumValueDescriptor) this.value).getNumber() == 0;
+        }
+        return Validate.isDefault(TypeConverter.toMessage(singleValue()));
     }
 
     /** Returns the declaration of the value. */

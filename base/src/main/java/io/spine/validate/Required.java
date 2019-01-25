@@ -105,6 +105,6 @@ public final class Required<T> extends FieldValidatingOption<Boolean, T> impleme
 
     @Override
     Constraint<FieldValue<T>> constraint() {
-        return new RequiredConstraint<>();
+        return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }

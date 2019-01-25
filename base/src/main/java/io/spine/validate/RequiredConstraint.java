@@ -21,11 +21,14 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
 import io.spine.option.IfMissingOption;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
 /**
  * A constraint that, when applied to a field, checks for whether the field is set to a non-default
@@ -36,8 +39,21 @@ import java.util.Optional;
  */
 public class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
 
+    /**
+     * Types for which field presence of the field value can be checked.
+     */
+    private final ImmutableSet<JavaType> allowedTypes;
+
+    RequiredConstraint(ImmutableSet<JavaType> allowedTypes) {
+        this.allowedTypes = allowedTypes;
+    }
+
     @Override
     public List<ConstraintViolation> check(FieldValue<T> value) {
+        boolean canNotCheckPresence = !allowedTypes.contains(value.javaType());
+        if (canNotCheckPresence) {
+            return ImmutableList.of();
+        }
         return value.isDefault() ?
                requiredViolated(value) :
                ImmutableList.of();
