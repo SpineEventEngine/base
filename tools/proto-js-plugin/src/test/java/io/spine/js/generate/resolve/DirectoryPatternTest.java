@@ -67,15 +67,7 @@ class DirectoryPatternTest {
     }
 
     @Test
-    @DisplayName("not match nested directories by default")
-    void notMatchNested() {
-        DirectoryPattern pattern = DirectoryPattern.of("first");
-        boolean matches = matches(pattern, "first/second");
-        assertFalse(matches);
-    }
-
-    @Test
-    @DisplayName("match same directories")
+    @DisplayName("match the same directory")
     void matchSame() {
         String name = "protos";
         DirectoryPattern pattern = DirectoryPattern.of(name);
@@ -95,14 +87,32 @@ class DirectoryPatternTest {
     }
 
     @Test
-    @DisplayName("match directories if structure is similar")
-    void matchSimilarDirectories() {
+    @DisplayName("not match nested directories by default")
+    void notMatchNested() {
+        DirectoryPattern pattern = DirectoryPattern.of("first");
+        boolean matches = matches(pattern, "first/second");
+        assertFalse(matches);
+    }
+
+    @Test
+    @DisplayName("match directory if it matches the pattern ending")
+    void matchAccordingToPatternEnding() {
         DirectoryPattern pattern = DirectoryPattern.of("base/nested");
         String directory = "nested";
         boolean matches = matches(pattern, directory);
         assertTrue(matches);
         assertTransform(pattern, directory, pattern.directoryName()
                                                    .value());
+    }
+
+    @Test
+    @DisplayName("match directory if it matches the pattern middle element")
+    void matchAccordingToPatternMiddle() {
+        DirectoryPattern pattern = DirectoryPattern.of("base/nested/*");
+        String directory = "nested/l2";
+        boolean matches = matches(pattern, directory);
+        assertTrue(matches);
+        assertTransform(pattern, directory, "base/nested/l2");
     }
 
     @Test

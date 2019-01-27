@@ -20,7 +20,10 @@
 
 package io.spine.code.js;
 
+import com.google.common.base.Splitter;
 import io.spine.value.StringTypeValue;
+
+import java.util.List;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -68,6 +71,11 @@ public final class DirectoryReference extends StringTypeValue {
      */
     public boolean endsWith(DirectoryReference suffix) {
         return value().endsWith(suffix.value());
+    }
+
+    public List<String> elements() {
+        return Splitter.on(ImportPath.separator())
+                       .splitToList(value());
     }
 
     private int length() {

@@ -20,7 +20,10 @@
 
 package io.spine.code.js;
 
+import com.google.common.base.Splitter;
 import io.spine.value.StringTypeValue;
+
+import java.util.List;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -82,6 +85,11 @@ public final class ImportPath extends StringTypeValue {
     public boolean isRelative() {
         boolean result = isRelativeToParent() || isRelativeToCurrent();
         return result;
+    }
+
+    public List<String> elements() {
+        return Splitter.on(separator())
+                       .splitToList(value());
     }
 
     private String withoutRelative() {

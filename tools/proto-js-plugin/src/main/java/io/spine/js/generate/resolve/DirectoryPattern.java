@@ -21,9 +21,14 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import io.spine.code.js.DirectoryReference;
+import io.spine.code.js.ImportPath;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -76,15 +81,32 @@ public final class DirectoryPattern {
      * Checks if the pattern matches the specified directory.
      */
     boolean matches(DirectoryReference target) {
-        if (directory.equals(target)) {
+        Optional<Integer> firstElementMatch = firstMatchIndex(target);
+        if (!firstElementMatch.isPresent()) {
+            return false;
+        }
+        if (includeNested) {
             return true;
         }
-        boolean rootMatches = directory.isParentFor(target);
-        if (includeNested && rootMatches) {
-            return true;
-        }
-        boolean endingMatches = directory.endsWith(target);
-        return endingMatches;
+        return matches(target, firstElementMatch.get());
+    }
+
+    private boolean matches(DirectoryReference target, int fromIndex) {
+        List<String> targetElements = target.elements();
+        List<String> patternElements = directory.elements();
+        List<String> relevantPatternElements = patternElements.subList(fromIndex,
+                                                                       patternElements.size());
+        return relevantPatternElements.equals(targetElements);
+    }
+
+    private Optional<Integer> firstMatchIndex(DirectoryReference target) {
+        List<String> patternElements = directory.elements();
+        String firstTargetElement = target.elements()
+                                          .get(0);
+        int index = patternElements.indexOf(firstTargetElement);
+        return index == -1
+               ? Optional.empty()
+               : Optional.of(index);
     }
 
     /**
@@ -96,10 +118,16 @@ public final class DirectoryPattern {
      */
     DirectoryReference transform(DirectoryReference origin) {
         checkState(matches(origin));
-        if (directory.equals(origin) || directory.isParentFor(origin)) {
-            return origin;
-        }
-        return directory;
+        Optional<Integer> firstMatchIndex = firstMatchIndex(origin);
+        checkState(firstMatchIndex.isPresent());
+        List<String> elementsToAdd = directory.elements()
+                                              .subList(0, firstMatchIndex.get());
+        List<String> resultElements = Lists.newArrayList();
+        resultElements.addAll(elementsToAdd);
+        resultElements.addAll(origin.elements());
+        String joined = Joiner.on(ImportPath.separator())
+                              .join(resultElements);
+        return DirectoryReference.of(joined);
     }
 
     /**
