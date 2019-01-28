@@ -261,5 +261,11 @@ class FieldReferenceTest {
             Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
         }
+
+        @Test
+        @DisplayName("allowing wildcard type references")
+        void wildcardRef() {
+            assertFound(new FieldReference("*.nanos"));
+        }
     }
 }

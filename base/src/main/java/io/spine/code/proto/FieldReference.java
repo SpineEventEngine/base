@@ -217,10 +217,17 @@ public final class FieldReference extends StringTypeValue {
      * @return the descriptor of the field, or empty {@code Optional} if there is no a field with
      * the {@linkplain #fieldName()} referenced name}
      */
-    Optional<FieldDescriptor> find(Descriptor message) {
+    public Optional<FieldDescriptor> find(Descriptor message) {
         checkNotNull(message);
-        if (hasType()) {
-            checkArgument(simpleTypeName().equals(message.getName()));
+        if (hasType() && !isWildcard()) {
+            String referencedType = simpleTypeName();
+            String messageType = message.getName();
+            checkArgument(
+                    referencedType.equals(messageType),
+                    "The referenced type (`%s`) does not match the type of the message (`%s`).",
+                    referencedType,
+                    messageType
+            );
         }
         @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
         return Optional.ofNullable(result);
