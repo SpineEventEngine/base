@@ -67,7 +67,7 @@ public class Extension {
      */
     public String testGenProtoDir;
     /**
-     * Names of JavaScript modules and Protobuf packages they provide.
+     * Names of JavaScript modules and directories they provide.
      *
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
@@ -77,16 +77,20 @@ public class Extension {
      * <p>An example of the definition:
      * <pre>{@code
      * modules = [
-     *      // The `client` module provides Protobuf types from `company.client` package
-     *      // (excluding nested packages).
-     *      'client' : ['company.client'],
+     *      // The module provides `company/client` directory (not including subdirectories).
+     *      // So, an import path like {@code ../company/client/file.js}
+     *      // becomes {@code client/company/client/file.js}.
+     *      'client' : ['company/client'],
      *
-     *      // The `server` module provides Protobuf types from `company.server` package
-     *      // (including nested packages).
+     *      // The module provides `company/server` directory (including subdirectories).
+     *      // So, an import path like {@code ../company/server/nested/file.js}
+     *      // becomes {@code server/company/server/nested/file.js}.
      *      'server' : ['company.server.*'],
      *
-     *      // The `common/proto` module provides Protobuf types from `company` package.
-     *      'common/proto' : ['company']
+     *      // The module provides 'proto/company` directory.
+     *      // So, an import pah like {@code ../company/file.js}
+     *      // becomes {@code common-types/proto/company/file.js}.
+     *      'common-types' : ['proto/company']
      * ]
      * }</pre>
      */

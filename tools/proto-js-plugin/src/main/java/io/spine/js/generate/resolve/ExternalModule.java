@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DirectoryReference;
 import io.spine.code.js.FileReference;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class ExternalModule {
 
     private final String name;
-    private final Collection<DirectoryPattern> directories;
+    private final List<DirectoryPattern> directories;
 
     /**
      * Creates a new instance.
@@ -50,7 +50,7 @@ public final class ExternalModule {
      * @param directories
      *         patterns of directories provided by the module
      */
-    public ExternalModule(String name, Collection<DirectoryPattern> directories) {
+    public ExternalModule(String name, List<DirectoryPattern> directories) {
         this.name = checkNotEmptyOrBlank(name);
         this.directories = ImmutableList.copyOf(directories);
     }
