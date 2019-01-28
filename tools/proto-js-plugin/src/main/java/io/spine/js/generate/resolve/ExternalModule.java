@@ -97,6 +97,27 @@ public final class ExternalModule {
         return Optional.empty();
     }
 
+    /**
+     * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
+     */
+    public static ExternalModule spineWeb() {
+        List<DirectoryPattern> directories = ImmutableList.of(
+                DirectoryPattern.of("client/parser"),
+                DirectoryPattern.of("proto/spine/base/*"),
+                DirectoryPattern.of("proto/spine/change/*"),
+                DirectoryPattern.of("proto/spine/client/*"),
+                DirectoryPattern.of("proto/spine/core/*"),
+                DirectoryPattern.of("proto/spine/net/*"),
+                DirectoryPattern.of("proto/spine/people/*"),
+                DirectoryPattern.of("proto/spine/time/*"),
+                DirectoryPattern.of("proto/spine/ui/*"),
+                DirectoryPattern.of("proto/spine/validate/*"),
+                DirectoryPattern.of("proto/spine/web/*"),
+                DirectoryPattern.of("proto/spine")
+        );
+        return new ExternalModule("spine-web", directories);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

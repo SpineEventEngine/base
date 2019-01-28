@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.code.js.Module;
 import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
 import org.gradle.api.Project;
@@ -175,27 +174,8 @@ public class Extension {
     @VisibleForTesting
     static List<ExternalModule> predefinedModules() {
         return ImmutableList.of(
-                spineWeb()
+                ExternalModule.spineWeb()
         );
-    }
-
-    private static ExternalModule spineWeb() {
-        String name = Module.spineWeb.artifactName();
-        List<DirectoryPattern> packages = ImmutableList.of(
-                DirectoryPattern.of("client/parser"),
-                DirectoryPattern.of("proto/spine/base/*"),
-                DirectoryPattern.of("proto/spine/change/*"),
-                DirectoryPattern.of("proto/spine/client/*"),
-                DirectoryPattern.of("proto/spine/core/*"),
-                DirectoryPattern.of("proto/spine/net/*"),
-                DirectoryPattern.of("proto/spine/people/*"),
-                DirectoryPattern.of("proto/spine/time/*"),
-                DirectoryPattern.of("proto/spine/ui/*"),
-                DirectoryPattern.of("proto/spine/validate/*"),
-                DirectoryPattern.of("proto/spine/web/*"),
-                DirectoryPattern.of("proto/spine")
-        );
-        return new ExternalModule(name, packages);
     }
 
     private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
