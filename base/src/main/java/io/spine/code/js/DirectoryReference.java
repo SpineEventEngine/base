@@ -67,6 +67,9 @@ public final class DirectoryReference extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Obtains all directory names composing this reference.
+     */
     public List<String> elements() {
         return Splitter.on(FileReference.separator())
                        .splitToList(value());
