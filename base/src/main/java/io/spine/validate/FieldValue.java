@@ -213,7 +213,7 @@ public final class FieldValue<T> {
         }
     }
 
-    private T singleValue() {
+    T singleValue() {
         return asList().get(0);
     }
 

@@ -61,8 +61,8 @@ public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
     }
 
     @Override
-    public Optional<O> valueFrom(FieldValue<T> bearer) {
-        FieldDescriptor descriptor = bearer.context()
+    public Optional<O> valueFrom(FieldValue<T> field) {
+        FieldDescriptor descriptor = field.context()
                                            .getTarget();
         FieldOptions options = descriptor.getOptions();
         boolean explicitlySet = options.hasExtension(optionExtension);

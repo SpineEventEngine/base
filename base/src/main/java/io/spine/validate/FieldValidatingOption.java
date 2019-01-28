@@ -41,7 +41,7 @@ abstract class FieldValidatingOption<O, F> extends FieldOption<O, F>
     }
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
-    boolean shouldValidate(FieldValue<F> value) {
-        return valueFrom(value).isPresent();
+    boolean shouldValidate(FieldValue<F> fieldValue) {
+        return valueFrom(fieldValue).isPresent();
     }
 }

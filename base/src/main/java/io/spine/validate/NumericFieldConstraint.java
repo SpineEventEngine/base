@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * A constraint that is applicable to numeric fields only.
  *
@@ -36,29 +34,23 @@ public abstract class NumericFieldConstraint<V extends Number> implements Constr
 
     @Override
     public List<ConstraintViolation> check(FieldValue<V> fieldValue) {
-        ImmutableList<V> actualValues = fieldValue.asList();
-        List<ConstraintViolation> violations =
-                actualValues.stream()
-                            .filter(actualValue -> doesNotSatisfy(actualValue, fieldValue))
-                            .map(unsatisfactory -> constraintViolated(fieldValue, unsatisfactory))
-                            .collect(toList());
-        return violations;
+        if(doesNotSatisfy(fieldValue)){
+            return constraintViolated(fieldValue);
+        }
+        return ImmutableList.of();
     }
 
     /**
      * Whether the actual value of the field satisfies this constraint.
      *
-     * @param value actual value that is being validated
-     * @param fieldValue a value of the field. The difference between this and the first parameter
-     *                   is that the repetetive fields are grouped in {@code fieldValue}, but are
-     *                   still distinct {@code values}
+     * @param fieldValue a value of the field.
      * @return {@code true} the specified does not satisfy this constraint
      */
-    abstract boolean doesNotSatisfy(V value, FieldValue<V> fieldValue);
+    abstract boolean doesNotSatisfy(FieldValue<V> fieldValue);
 
     /**
      * A violation that should vbe produced if this constraint is not
      * satisfied.
      */
-    abstract ConstraintViolation constraintViolated(FieldValue<V> fieldValue, V actualValue);
+    abstract List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue);
 }

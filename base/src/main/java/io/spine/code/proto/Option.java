@@ -35,9 +35,9 @@ public interface Option<T, K> {
     /**
      * Obtains the value of this option for the specified entity.
      *
-     * @param bearer
+     * @param object
      *         holder of the option
      * @return value of this option
      */
-    Optional<T> valueFrom(K bearer);
+    Optional<T> valueFrom(K object);
 }

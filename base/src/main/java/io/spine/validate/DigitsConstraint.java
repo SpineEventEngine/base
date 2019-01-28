@@ -20,10 +20,12 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -40,19 +42,28 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
 
     @Override
-    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
+    boolean doesNotSatisfy(FieldValue<V> fieldValue) {
         DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
         int wholeDigitsMax = digitsOption.getIntegerMax();
         int fractionDigitsMax = digitsOption.getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
             return false;
         }
+        boolean constraintViolated = fieldValue.asList()
+                                               .stream()
+                                               .anyMatch(value -> digitsViolated(wholeDigitsMax,
+                                                                                 fractionDigitsMax,
+                                                                                 value));
+        return constraintViolated;
+    }
+
+    private boolean digitsViolated(int wholeDigitsMax, int fractionDigitsMax, V value) {
         double actualValue = value.doubleValue();
         String[] parts = splitOnPeriod(actualValue);
         int wholeDigitsCount = parts[0].length();
         int fractionDigitsCount = parts[1].length();
         boolean violated = wholeDigitsCount > wholeDigitsMax ||
-                           fractionDigitsCount > fractionDigitsMax;
+                fractionDigitsCount > fractionDigitsMax;
         return violated;
     }
 
@@ -61,12 +72,13 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     }
 
     @Override
-    ConstraintViolation constraintViolated(FieldValue<V> fieldValue, V actualValue) {
+    List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
         DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        FieldPath fieldPath = fieldValue.context().getFieldPath();
+        FieldPath fieldPath = fieldValue.context()
+                                        .getFieldPath();
 
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
@@ -74,8 +86,8 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
                 .addParam(intMax)
                 .addParam(fractionMax)
                 .setFieldPath(fieldPath)
-                .setFieldValue(toAny(actualValue))
+                .setFieldValue(toAny(fieldValue.singleValue()))
                 .build();
-        return violation;
+        return ImmutableList.of(violation);
     }
 }

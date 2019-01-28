@@ -20,9 +20,13 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
@@ -37,16 +41,27 @@ import static java.lang.Double.parseDouble;
 final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
     @Override
-    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
-        double actualValue = value.doubleValue();
+    boolean doesNotSatisfy(FieldValue<V> fieldValue) {
+        return maxViolated(fieldValue);
+    }
+
+    private boolean maxViolated(FieldValue<V> fieldValue) {
         double minValue = minFrom(fieldValue);
+        Predicate<V> violates = doesNotFit(fieldValue, minValue);
+        ImmutableList<V> nestedValues = fieldValue.asList();
+        boolean violated = nestedValues.stream()
+                                       .anyMatch(violates);
+        return violated;
+    }
+
+    private Predicate<V> doesNotFit(FieldValue<V> fieldValue, double minValue) {
         return isExclusive(fieldValue)
-               ? actualValue <= minValue
-               : actualValue < minValue;
+                                   ? value -> value.doubleValue() <= minValue
+                                   : value -> value.doubleValue() < minValue;
     }
 
     @Override
-    ConstraintViolation constraintViolated(FieldValue<V> fieldValue, V actualValue) {
+    List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
         String format = "Number must be greater than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
@@ -56,9 +71,9 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
                 .addParam(isExclusive(fieldValue) ? "" : "or equal to")
                 .addParam(String.valueOf(minFrom(fieldValue)))
                 .setFieldPath(path)
-                .setFieldValue(toAny(actualValue))
+                .setFieldValue(toAny(fieldValue.singleValue()))
                 .build();
-        return violation;
+        return ImmutableList.of(violation);
     }
 
     private double minFrom(FieldValue<V> fieldValue) {

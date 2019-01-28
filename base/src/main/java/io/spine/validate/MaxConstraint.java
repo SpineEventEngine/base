@@ -20,9 +20,13 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.Double.parseDouble;
@@ -36,30 +40,40 @@ import static java.lang.Double.parseDouble;
 final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
     @Override
-    boolean doesNotSatisfy(V value, FieldValue<V> fieldValue) {
-        double actualValue = value.doubleValue();
+    boolean doesNotSatisfy(FieldValue<V> fieldValue) {
+        return maxViolated(fieldValue);
+    }
+
+    private boolean maxViolated(FieldValue<V> fieldValue) {
         double maxValue = maxFrom(fieldValue);
+        Predicate<V> exceeds = violates(fieldValue, maxValue);
+        ImmutableList<V> nestedValues = fieldValue.asList();
+        boolean violated = nestedValues.stream()
+                                       .anyMatch(exceeds);
+        return violated;
+    }
+
+    private Predicate<V> violates(FieldValue<V> fieldValue, double maxValue) {
         return isExclusive(fieldValue)
-               ? actualValue >= maxValue
-               : actualValue > maxValue;
+                                   ? value -> value.doubleValue() >= maxValue
+                                   : value -> value.doubleValue() > maxValue;
     }
 
     @Override
-    ConstraintViolation constraintViolated(FieldValue<V> fieldValue,
-                                           V actualValue) {
+    List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
         String format = "Number must be less than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
-        double maxValue= maxFrom(fieldValue);
+        double maxValue = maxFrom(fieldValue);
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
                 .addParam(isExclusive(fieldValue) ? "" : "or equal to")
-                .addParam(String.valueOf(maxFrom(fieldValue)))
+                .addParam(String.valueOf(maxValue))
                 .setFieldPath(path)
-                .setFieldValue(toAny(actualValue))
+                .setFieldValue(toAny(fieldValue.singleValue()))
                 .build();
-        return violation;
+        return ImmutableList.of(violation);
     }
 
     private double maxFrom(FieldValue<V> fieldValue) {
