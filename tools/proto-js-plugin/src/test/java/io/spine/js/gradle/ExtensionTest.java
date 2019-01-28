@@ -20,7 +20,6 @@
 
 package io.spine.js.gradle;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.js.generate.resolve.ExternalModule;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(TempDirectory.class)
@@ -137,30 +137,21 @@ class ExtensionTest {
     }
 
     @Test
-    @DisplayName("set modules to resolve")
-    void setModulesToResolve() {
-        pluginExtension().resolveSpineModules = false;
-        String moduleName = "foo-bar";
-        Map<String, List<String>> modulesExt = pluginExtension().modules;
-        modulesExt.put(moduleName, ImmutableList.of());
-        List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("not include predefined Spine modules")
-    void notIncludePredefinedModules() {
-        pluginExtension().resolveSpineModules = false;
-        List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).containsNoneIn(Extension.predefinedModules());
-    }
-
-    @Test
     @DisplayName("include predefined Spine modules")
     void includePredefinedModules() {
-        pluginExtension().resolveSpineModules = true;
         List<ExternalModule> modules = Extension.modules(project);
         assertThat(modules).containsAllIn(Extension.predefinedModules());
+    }
+
+    @Test
+    @DisplayName("add custom modules to resolve")
+    void setModulesToResolve() {
+        String moduleName = "foo-bar";
+        Map<String, List<String>> modulesExt = pluginExtension().modules;
+        modulesExt.put(moduleName, emptyList());
+        List<ExternalModule> modules = Extension.modules(project);
+        assertThat(modules).containsAllIn(Extension.predefinedModules());
+        assertThat(modules).contains(new ExternalModule(moduleName, emptyList()));
     }
 
     private Extension pluginExtension() {

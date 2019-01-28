@@ -102,7 +102,9 @@ public final class ExternalModule {
      */
     public static ExternalModule spineWeb() {
         List<DirectoryPattern> directories = ImmutableList.of(
+                // Directories with handcrafted JS files.
                 DirectoryPattern.of("client/parser"),
+                // Directories with Protobuf files.
                 DirectoryPattern.of("proto/spine/base/*"),
                 DirectoryPattern.of("proto/spine/change/*"),
                 DirectoryPattern.of("proto/spine/client/*"),

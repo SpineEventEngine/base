@@ -71,7 +71,7 @@ public class Extension {
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
      * <p>Additionally to modules specified via the property,
-     * the predefined Spine modules can be {@linkplain #resolveSpineModules used}.
+     * the {@linkplain #predefinedModules() predefined Spine} modules are used.
      *
      * <p>An example of the definition:
      * <pre>{@code
@@ -94,12 +94,6 @@ public class Extension {
      * }</pre>
      */
     public Map<String, List<String>> modules = newHashMap();
-    /**
-     * Determines whether to resolve {@linkplain #predefinedModules() predefined} Spine modules.
-     *
-     * <p>The option is enabled by default.
-     */
-    public boolean resolveSpineModules = true;
     private Task generateParsersTask;
 
     public static Directory getMainGenProto(Project project) {
@@ -141,9 +135,7 @@ public class Extension {
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
-        if (extension.resolveSpineModules) {
-            modules.addAll(predefinedModules());
-        }
+        modules.addAll(predefinedModules());
         return modules;
     }
 
@@ -171,6 +163,9 @@ public class Extension {
                        .getByName(ProtoJsPlugin.extensionName());
     }
 
+    /**
+     * Obtains the external modules published by Spine.
+     */
     @VisibleForTesting
     static List<ExternalModule> predefinedModules() {
         return ImmutableList.of(
