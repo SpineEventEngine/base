@@ -21,13 +21,17 @@
 package io.spine.js.generate.resolve.given;
 
 import io.spine.code.js.Directory;
+import io.spine.js.generate.resolve.DirectoryPattern;
+import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.js.generate.resolve.ImportStatement;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 
 public class Given {
 
@@ -57,5 +61,11 @@ public class Given {
                          .resolve(sourceSetName)
                          .resolve("proto");
         return Directory.at(path.toAbsolutePath());
+    }
+
+    public static ExternalModule newModule(String moduleName, String directoryPattern) {
+        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
+        List<DirectoryPattern> patterns = singletonList(pattern);
+        return new ExternalModule(moduleName, patterns);
     }
 }

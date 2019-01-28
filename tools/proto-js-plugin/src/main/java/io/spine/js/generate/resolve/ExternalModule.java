@@ -21,15 +21,14 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ImmutableSet;
 import io.spine.code.js.DirectoryReference;
 import io.spine.code.js.FileReference;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -42,7 +41,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class ExternalModule {
 
     private final String name;
-    private final Collection<DirectoryPattern> directories;
+    private final Set<DirectoryPattern> directories;
 
     /**
      * Creates a new instance.
@@ -54,7 +53,7 @@ public final class ExternalModule {
      */
     public ExternalModule(String name, Collection<DirectoryPattern> directories) {
         this.name = checkNotEmptyOrBlank(name);
-        this.directories = ImmutableList.copyOf(directories);
+        this.directories = ImmutableSet.copyOf(directories);
     }
 
     /**
@@ -103,7 +102,7 @@ public final class ExternalModule {
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static ExternalModule spineWeb() {
-        List<DirectoryPattern> directories = ImmutableList.of(
+        Set<DirectoryPattern> directories = ImmutableSet.of(
                 // Directories with handcrafted JS files.
                 DirectoryPattern.of("client/parser"),
                 // Directories with Protobuf files.
@@ -132,7 +131,7 @@ public final class ExternalModule {
         }
         ExternalModule module = (ExternalModule) o;
         return name.equals(module.name) &&
-                Iterables.elementsEqual(directories, module.directories);
+                directories.equals(module.directories);
     }
 
     @Override

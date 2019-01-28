@@ -20,6 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -57,12 +58,13 @@ public final class ResolveImports extends GenerationTask {
     protected void generateFor(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
             FileName fileName = FileName.from(file);
-            resolveInFile(fileName);
+            Path filePath = generatedRoot().resolve(fileName);
+            resolveInFile(filePath);
         }
     }
 
-    private void resolveInFile(FileName fileName) {
-        Path filePath = generatedRoot().resolve(fileName);
+    @VisibleForTesting
+    void resolveInFile(Path filePath) {
         JsFile file = new JsFile(filePath);
         file.processImports(new UnresolvedRelativeImport(), this::resolveImport);
     }
