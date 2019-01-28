@@ -64,9 +64,9 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      */
     private static final String IMPORT_PATH_PREFIX = "../client/parser/";
     @VisibleForTesting
-    static final FileName TYPE_PARSERS_FILE = FileName.of(IMPORT_PATH_PREFIX + "type-parsers.js");
+    static final String TYPE_PARSERS_FILE = IMPORT_PATH_PREFIX + "type-parsers.js";
     @VisibleForTesting
-    static final FileName OBJECT_PARSER_FILE = FileName.of(IMPORT_PATH_PREFIX + "object-parser.js");
+    static final String OBJECT_PARSER_FILE = IMPORT_PATH_PREFIX + "object-parser.js";
 
     private GenerateKnownTypeParsers(Directory generatedRoot) {
         super(generatedRoot);
@@ -137,8 +137,9 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
         return lines;
     }
 
-    private static Import defaultImport(FileName importedFile, FileName targetFile) {
-        return Import.fileRelativeTo(importedFile, targetFile)
+    private static Import defaultImport(String importedFile, FileName targetFile) {
+        String pathRelativeToTarget = targetFile.pathToRoot() + importedFile;
+        return Import.library(pathRelativeToTarget)
                      .toDefault();
     }
 

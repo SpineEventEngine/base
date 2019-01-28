@@ -34,6 +34,9 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a JavaScript source file.
+ *
+ * <p>The name includes the path of a file relative
+ * to the root directory of generated Protobuf files.
  */
 public final class FileName extends AbstractFileName<FileName> {
 
@@ -54,7 +57,7 @@ public final class FileName extends AbstractFileName<FileName> {
      * Creates new JavaScript file name with the passed value.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
-    public static FileName of(String value) {
+    static FileName of(String value) {
         checkNotEmptyOrBlank(value);
         checkArgument(value.endsWith(EXTENSION),
                       "`%s` is expected to contain `.js` extension.", value);
