@@ -53,8 +53,8 @@ final class JsFile {
         this.path = path;
     }
 
-    void resolveImports(Predicate<ImportSnippet> importFilter,
-                        Function<ImportSnippet, ImportSnippet> resolveFunction) {
+    void resolveImports(Predicate<ImportStatement> importFilter,
+                        Function<ImportStatement, ImportStatement> resolveFunction) {
         List<String> updatedLines = lines(path)
                 .map(line -> processLine(line, importFilter, resolveFunction))
                 .collect(toList());
@@ -62,14 +62,14 @@ final class JsFile {
     }
 
     private String processLine(String line,
-                               Predicate<ImportSnippet> importFilter,
-                               Function<ImportSnippet, ImportSnippet> resolveFunction) {
+                               Predicate<ImportStatement> importFilter,
+                               Function<ImportStatement, ImportStatement> resolveFunction) {
         File file = path.toFile();
-        if (ImportSnippet.hasImport(line)) {
-            ImportSnippet importLine = new ImportSnippet(line, file);
-            boolean matchesFilter = importFilter.test(importLine);
+        if (ImportStatement.hasImport(line)) {
+            ImportStatement importStatement = new ImportStatement(line, file);
+            boolean matchesFilter = importFilter.test(importStatement);
             if (matchesFilter) {
-                return resolveFunction.apply(importLine)
+                return resolveFunction.apply(importStatement)
                                       .text();
             }
         }

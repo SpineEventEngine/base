@@ -33,17 +33,18 @@ import static io.spine.js.generate.resolve.given.Given.importWithPath;
 import static io.spine.js.generate.resolve.given.Given.relativeImportPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("ImportSnippet should")
-class ImportSnippetTest {
+@DisplayName("ImportStatement should")
+class ImportStatementTest {
 
     private final File importOrigin = Paths.get("folder/nested/some-file.js")
                                            .toFile();
-    private final ImportSnippet importSnippet = importWithPath(relativeImportPath(), importOrigin);
+    private final ImportStatement statement = importWithPath(relativeImportPath(),
+                                                             importOrigin);
 
     @Test
     @DisplayName("extract the import path")
     void extractImportPath() {
-        FileReference fileReference = importSnippet.path();
+        FileReference fileReference = statement.path();
         assertThat(fileReference.value()).isEqualTo(relativeImportPath());
     }
 
@@ -51,15 +52,15 @@ class ImportSnippetTest {
     @DisplayName("replace the import path")
     void replaceImportPath() {
         String newPath = "b";
-        ImportSnippet updatedLine = importSnippet.replacePath(newPath);
-        FileReference updatedPath = updatedLine.path();
+        ImportStatement updatedStatement = statement.replacePath(newPath);
+        FileReference updatedPath = updatedStatement.path();
         assertThat(updatedPath.value()).isEqualTo(newPath);
     }
 
     @Test
     @DisplayName("know about the absolute path to the imported file")
     void obtainImportedFilePath() {
-        Path importedFilePath = importSnippet.importedFilePath();
+        Path importedFilePath = statement.importedFilePath();
         Path expectedRoot = importOrigin.getParentFile()
                                         .toPath();
         Path expectedPath = expectedRoot.resolve(relativeImportPath())

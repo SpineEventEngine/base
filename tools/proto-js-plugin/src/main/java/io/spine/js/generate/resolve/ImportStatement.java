@@ -30,9 +30,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A line of a source JavaScript file with an import statement, which is going to be resolved.
+ * An import statement extracted from a source file.
  */
-public class ImportSnippet implements Logging {
+public class ImportStatement implements Logging {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
@@ -48,7 +48,7 @@ public class ImportSnippet implements Logging {
      * @param originFile
      *         the name of the file the import belongs to
      */
-    public ImportSnippet(String text, File originFile) {
+    public ImportStatement(String text, File originFile) {
         checkArgument(hasImport(text), "The text should contain an import statement.");
         checkNotNull(originFile);
         this.text = text;
@@ -76,9 +76,9 @@ public class ImportSnippet implements Logging {
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
-    ImportSnippet replacePath(CharSequence newPath) {
+    ImportStatement replacePath(CharSequence newPath) {
         String updatedText = text.replace(path().value(), newPath);
-        return new ImportSnippet(updatedText, originFile);
+        return new ImportStatement(updatedText, originFile);
     }
 
     /**

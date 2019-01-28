@@ -69,7 +69,7 @@ public final class ResolveImports extends GenerationTask {
     /**
      * Attempts to resolve an import among external modules.
      */
-    private ImportSnippet resolveImport(ImportSnippet resolvable) {
+    private ImportStatement resolveImport(ImportStatement resolvable) {
         FileReference fileReference = resolvable.path();
         boolean shouldResolve = fileReference.isRelative() && !resolvable.importedFileExists();
         if (!shouldResolve) {
@@ -84,14 +84,14 @@ public final class ResolveImports extends GenerationTask {
         return resolvable;
     }
 
-    private static final class ImportFilter implements Predicate<ImportSnippet> {
+    private static final class ImportFilter implements Predicate<ImportStatement> {
 
         @CanIgnoreReturnValue
         @Override
-        public boolean apply(@Nullable ImportSnippet importSnippet) {
-            checkNotNull(importSnippet);
-            FileReference fileReference = importSnippet.path();
-            return importSnippet.importedFileExists() && fileReference.isRelative();
+        public boolean apply(@Nullable ImportStatement statement) {
+            checkNotNull(statement);
+            FileReference fileReference = statement.path();
+            return statement.importedFileExists() && fileReference.isRelative();
         }
     }
 }

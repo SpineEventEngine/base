@@ -43,8 +43,8 @@ import static io.spine.js.generate.resolve.given.Given.importWithPath;
 class JsFileTest {
 
     private static final String RESOLVED_IMPORT_PATH = "resolved";
-    private static final Function<ImportSnippet, ImportSnippet> RESOLVE_IMPORT_FUNCTION =
-            importSnippet -> importSnippet.replacePath(RESOLVED_IMPORT_PATH);
+    private static final Function<ImportStatement, ImportStatement> RESOLVE_IMPORT_FUNCTION =
+            statement -> statement.replacePath(RESOLVED_IMPORT_PATH);
 
     private Path filePath;
 
@@ -56,8 +56,8 @@ class JsFileTest {
     @Test
     @DisplayName("provide all imports")
     void provideAllImports() throws IOException {
-        ImportSnippet firstImport = importLine("first.js");
-        ImportSnippet secondImport = importLine("second.js");
+        ImportStatement firstImport = importStatement("first.js");
+        ImportStatement secondImport = importStatement("second.js");
         String comment = "// Just a comment";
         writeFile(firstImport.text(),
                   comment,
@@ -74,7 +74,7 @@ class JsFileTest {
 
     private void resolveImports() {
         JsFile file = new JsFile(filePath);
-        file.resolveImports(importSnippet -> true,
+        file.resolveImports(importStatement -> true,
                             RESOLVE_IMPORT_FUNCTION);
     }
 
@@ -83,11 +83,11 @@ class JsFileTest {
         Files.write(filePath, linesList);
     }
 
-    private ImportSnippet importLine(String importedFile) {
+    private ImportStatement importStatement(String importedFile) {
         return importWithPath(importedFile, filePath.toFile());
     }
 
-    private static String expectedImport(ImportSnippet originalImport) {
+    private static String expectedImport(ImportStatement originalImport) {
         return RESOLVE_IMPORT_FUNCTION.apply(originalImport)
                                       .text();
     }
