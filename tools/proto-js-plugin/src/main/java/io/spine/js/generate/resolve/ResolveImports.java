@@ -71,10 +71,6 @@ public final class ResolveImports extends GenerationTask {
      */
     private ImportStatement resolveImport(ImportStatement resolvable) {
         FileReference fileReference = resolvable.path();
-        boolean shouldResolve = fileReference.isRelative() && !resolvable.importedFileExists();
-        if (!shouldResolve) {
-            return resolvable;
-        }
         for (ExternalModule module : modules) {
             if (module.provides(fileReference)) {
                 FileReference pathInModule = module.pathInModule(fileReference);
@@ -91,7 +87,7 @@ public final class ResolveImports extends GenerationTask {
         public boolean apply(@Nullable ImportStatement statement) {
             checkNotNull(statement);
             FileReference fileReference = statement.path();
-            return statement.importedFileExists() && fileReference.isRelative();
+            return fileReference.isRelative() && !statement.importedFileExists();
         }
     }
 }
