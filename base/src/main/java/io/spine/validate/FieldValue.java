@@ -29,7 +29,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.Option;
+import io.spine.code.proto.FieldOption;
 import io.spine.protobuf.TypeConverter;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ import static java.lang.String.format;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
  *         Protobuf Maps</a>
  */
-final class FieldValue<T> {
+public final class FieldValue<T> {
 
     private final T value;
     private final FieldContext context;
@@ -169,14 +169,14 @@ final class FieldValue<T> {
      * @param <O>
      *         the type of the option value
      */
-    <O> Option<O> option(GeneratedExtension<FieldOptions, O> option) {
-        Optional<Option<O>> validationRuleOption = getOptionValue(context, option);
+    <O> O option(GeneratedExtension<FieldOptions, O> option) {
+        Optional<O> validationRuleOption = getOptionValue(context, option);
         if (validationRuleOption.isPresent()) {
             return validationRuleOption.get();
         }
 
-        Option<O> result = Option.from(context.getTarget(), option);
-        return result;
+        Optional<O> result = FieldOption.<O, T>someOption(option).valueFrom(this);
+        return result.orElseGet(option::getDefaultValue);
     }
 
     /**
@@ -189,7 +189,7 @@ final class FieldValue<T> {
      * @return the value of the option
      */
     <O> O valueOf(GeneratedExtension<FieldOptions, O> option) {
-        return option(option).value();
+        return option(option);
     }
 
     /**
@@ -220,7 +220,7 @@ final class FieldValue<T> {
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
     boolean isDefault() {
         return asList().isEmpty() || (declaration.isNotCollection() &&
-                                      isSingleValueDefault());
+                isSingleValueDefault());
     }
 
     private boolean isSingleValueDefault() {
@@ -232,12 +232,12 @@ final class FieldValue<T> {
     }
 
     /** Returns the declaration of the value. */
-    FieldDeclaration declaration() {
+    public FieldDeclaration declaration() {
         return declaration;
     }
 
     /** Returns the context of the value. */
-    FieldContext context() {
+    public FieldContext context() {
         return context;
     }
 }

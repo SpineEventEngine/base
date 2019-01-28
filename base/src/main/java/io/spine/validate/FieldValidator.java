@@ -32,6 +32,7 @@ import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -264,9 +265,9 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        boolean requiredSetExplicitly = value.option(OptionsProto.required)
-                                             .isExplicitlySet();
-        boolean notRequired = !value.valueOf(OptionsProto.required) && requiredSetExplicitly;
+        Required<V> requiredOption = new Required<>(assumeRequired);
+        Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(value);
+        boolean notRequired = requiredOptionValue.isPresent() && !requiredOptionValue.get();
         return declaration.isEntityId() && !notRequired;
     }
 

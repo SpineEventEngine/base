@@ -20,12 +20,8 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.Option;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
-
-import java.util.Optional;
 
 /**
  * An option that defines a minimum value for a numeric field.
@@ -42,21 +38,7 @@ final class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
     }
 
     @Override
-    public Optional<MinOption> valueFrom(FieldValue<V> bearer) {
-        FieldDescriptor descriptor = bearer.declaration()
-                                           .descriptor();
-        boolean explicitlySet = Option.from(descriptor, optionExtension())
-                                      .isExplicitlySet();
-        return explicitlySet ? Optional.of(bearer.valueOf(optionExtension())) : Optional.empty();
-    }
-
-    @Override
-    boolean isDefault(FieldValue<V> value) {
-        return optionValue(value).isExplicitlySet();
-    }
-
-    @Override
-    Constraint<FieldValue<V>> constraint() {
+    public Constraint<FieldValue<V>> constraint() {
         return new MinConstraint<>();
     }
 }

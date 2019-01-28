@@ -130,7 +130,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
          */
         ANY(Any.class) {
             @Override
-            void doValidate(MessageFieldValidator validator) {
+            void doValidate(MessageFieldValidator<?> validator) {
                 validator.validateAny();
             }
         };
@@ -145,12 +145,12 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
          * Validates the field with the given {@code validator} if the field is of
          * the {@code targetType}.
          */
-        private void validateIfApplies(MessageFieldValidator validator) {
+        private void validateIfApplies(MessageFieldValidator<?> validator) {
             if (validator.isOfType(targetType)) {
                 doValidate(validator);
             }
         }
 
-        abstract void doValidate(MessageFieldValidator validator);
+        abstract void doValidate(MessageFieldValidator<?> validator);
     }
 }

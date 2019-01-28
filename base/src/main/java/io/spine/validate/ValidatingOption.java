@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import io.spine.code.proto.Option;
+
 /**
  * An option that validates an arbitrary Protobuf entity.
  *
@@ -30,7 +32,7 @@ package io.spine.validate;
  * @param <K>
  *         kind of entities that can be validated by this option
  */
-abstract class ValidatingOption<T, K> implements Option<T, K> {
+interface ValidatingOption<T, K> extends Option<T, K> {
 
-    abstract Constraint<K> constraint();
+    Constraint<K> constraint();
 }

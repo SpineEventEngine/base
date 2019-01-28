@@ -44,7 +44,7 @@ import java.util.Optional;
  * The {@code PersonName} message is valid against the {@code RequiredField} either if it has a
  * non-default family name, or both honorific prefix and a family name.
  */
-final class RequiredField extends ValidatingOption<String, MessageValue> {
+final class RequiredField implements ValidatingOption<String, MessageValue> {
 
     /**
      * The name of the message option field.
@@ -64,7 +64,7 @@ final class RequiredField extends ValidatingOption<String, MessageValue> {
     }
 
     @Override
-    Constraint<MessageValue> constraint() {
+    public Constraint<MessageValue> constraint() {
         return new RequiredFieldConstraint();
     }
 }

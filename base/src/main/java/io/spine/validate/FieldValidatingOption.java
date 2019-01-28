@@ -21,60 +21,27 @@
 package io.spine.validate;
 
 import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.code.proto.Option;
-
-import java.util.Optional;
+import io.spine.code.proto.FieldOption;
 
 /**
  * An option that validates a field.
  *
  * <p>Validating options impose constraint on fields that they are applied to.
  *
- * @param <T>
+ * @param <O>
  *         type of information that this option holds
  */
-abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValue<F>> {
-
-    /** An extension that represents this option. */
-    private final GeneratedExtension<FieldOptions, T> optionExtension;
+abstract class FieldValidatingOption<O, F> extends FieldOption<O, F>
+                                           implements ValidatingOption<O, FieldValue<F>> {
 
     /** Specifies the extension that corresponds to this option. */
-    FieldValidatingOption(GeneratedExtension<FieldOptions, T> extension) {
-        this.optionExtension = extension;
+    protected FieldValidatingOption(GeneratedExtension<FieldOptions, O> optionExtension) {
+        super(optionExtension);
     }
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
     boolean shouldValidate(FieldValue<F> value) {
         return valueFrom(value).isPresent();
-    }
-
-    @Override
-    public Optional<T> valueFrom(FieldValue<F> value) {
-        T option = value.valueOf(optionExtension);
-        return isDefault(value)
-               ? Optional.empty()
-               : Optional.of(option);
-    }
-
-    /**
-     * Obtains a value of this option from the specified field.
-     *
-     * @param value
-     *         a field to obtain an option value for
-     * @return raw option value
-     */
-    io.spine.code.proto.Option<T> optionValue(FieldValue<F> value) {
-        FieldDescriptor descriptor = value.declaration()
-                                          .descriptor();
-        return Option.from(descriptor, optionExtension);
-    }
-
-    abstract boolean isDefault(FieldValue<F> value);
-
-    /** Returns the extension that corresponds to this option. */
-    final GeneratedExtension<FieldOptions, T> optionExtension() {
-        return optionExtension;
     }
 }

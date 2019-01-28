@@ -20,11 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.Option;
 import io.spine.option.OptionsProto;
-
-import java.util.Optional;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values
@@ -50,22 +46,7 @@ final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
     }
 
     @Override
-    public Optional<Boolean> valueFrom(FieldValue<T> fieldValue) {
-        FieldDescriptor descriptor = fieldValue.declaration()
-                                               .descriptor();
-        Option distinct = Option.from(descriptor, optionExtension());
-        return distinct.isExplicitlySet()
-               ? Optional.of(fieldValue.valueOf(optionExtension()))
-               : Optional.empty();
-    }
-
-    @Override
-    boolean isDefault(FieldValue<T> value) {
-        return !optionValue(value).isExplicitlySet();
-    }
-
-    @Override
-    Constraint<FieldValue<T>> constraint() {
+    public Constraint<FieldValue<T>> constraint() {
         return new DistinctConstraint<>();
     }
 }

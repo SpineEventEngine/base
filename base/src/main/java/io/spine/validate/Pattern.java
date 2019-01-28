@@ -38,14 +38,7 @@ final class Pattern extends FieldValidatingOption<PatternOption, String> {
     }
 
     @Override
-    boolean isDefault(FieldValue<String> value) {
-        String regex = optionValue(value).value()
-                                         .getRegex();
-        return regex.isEmpty();
-    }
-
-    @Override
-    Constraint<FieldValue<String>> constraint() {
+    public Constraint<FieldValue<String>> constraint() {
         return new PatternConstraint();
     }
 }

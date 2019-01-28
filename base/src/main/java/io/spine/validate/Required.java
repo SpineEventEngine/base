@@ -44,13 +44,13 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
     );
 
     private final Predicate<FieldValue<T>> isOptionPresent;
-    private final IfMissing ifMissing = new IfMissing();
+    private final IfMissing<T> ifMissing = new IfMissing<>();
 
     /**
      * Creates a new instance of this option.
      *
-     * @param isOptionPresent
-     *         a function that defines whether this option is present
+     * @param strict
+     *         whether the presence of this option should be assumed
      */
     Required(boolean strict) {
         super(OptionsProto.required);
@@ -60,7 +60,7 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
     }
 
     private Boolean notAssumingRequired(FieldValue<T> fieldValue) {
-        return optionValue(fieldValue).value();
+        return valueFrom(fieldValue).orElse(false);
     }
 
     @Override
@@ -83,12 +83,7 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
     }
 
     @Override
-    boolean isDefault(FieldValue<T> value) {
-        return !optionValue(value).isExplicitlySet();
-    }
-
-    @Override
-    Constraint<FieldValue<T>> constraint() {
+    public Constraint<FieldValue<T>> constraint() {
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }

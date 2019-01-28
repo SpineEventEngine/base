@@ -48,13 +48,7 @@ final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption,
     }
 
     @Override
-    Constraint<FieldValue<N>> constraint() {
+    public Constraint<FieldValue<N>> constraint() {
         return new DigitsConstraint<>();
-    }
-
-    @Override
-    boolean isDefault(FieldValue<N> value) {
-        DigitsOption optionValue = optionValue(value).value();
-        return optionValue.getIntegerMax() < 1 || optionValue.getFractionMax() < 1;
     }
 }
