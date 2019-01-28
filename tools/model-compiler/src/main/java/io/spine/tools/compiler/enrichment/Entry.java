@@ -79,7 +79,7 @@ final class Entry implements Logging {
                 continue;
             }
 
-            String fullTypeName = fieldRef.typeName();
+            String fullTypeName = fieldRef.fullTypeName();
             result.add(fullTypeName);
         }
 

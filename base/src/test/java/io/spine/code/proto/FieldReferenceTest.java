@@ -22,13 +22,17 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.Truth8;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Timestamp;
 import io.spine.test.code.proto.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -104,7 +108,7 @@ class FieldReferenceTest {
     @Test
     @DisplayName("obtain type name")
     void typeName() {
-        assertThat(new FieldReference("ReferencedType.some_field").typeName())
+        assertThat(new FieldReference("ReferencedType.some_field").fullTypeName())
                 .isEqualTo("ReferencedType");
     }
 
@@ -115,13 +119,13 @@ class FieldReferenceTest {
         @Test
         @DisplayName("as wildcard")
         void wildcardType() {
-            assertThat(ref(0).typeName()).isEqualTo("*");
+            assertThat(ref(0).fullTypeName()).isEqualTo("*");
         }
 
         @Test
         @DisplayName("as type name")
         void typeName() {
-            assertThat(ref(1).typeName()).isEqualTo("DocumentUpdated");
+            assertThat(ref(1).fullTypeName()).isEqualTo("DocumentUpdated");
         }
     }
 
@@ -141,7 +145,7 @@ class FieldReferenceTest {
         @DisplayName("constructing references of appropriate types")
         void wildcard() {
             assertThat(ref(0).isWildcard()).isTrue();
-            assertThat(ref(1).typeName()).isEqualTo("DocumentUpdated");
+            assertThat(ref(1).fullTypeName()).isEqualTo("DocumentUpdated");
             assertThat(ref(2).isContext()).isTrue();
         }
     }
@@ -174,6 +178,53 @@ class FieldReferenceTest {
         void nullRef() {
             assertThrows(NullPointerException.class,
                          () -> FieldReference.Via.context.matches(null));
+        }
+    }
+
+    @Nested
+    @DisplayName("obtain field descriptor from a message descriptor")
+    class FindFieldDescriptor {
+
+        private final FieldReference absoluteRef =
+                new FieldReference("google.protobuf.Timestamp.seconds");
+
+        private final FieldReference nonQualifiedTypedRef =
+                new FieldReference("Timestamp.seconds");
+
+        private final FieldReference onlyNameRef =
+                new FieldReference("seconds");
+
+        private final FieldReference invalidTypedRef =
+                new FieldReference("LocalTime.seconds");
+
+        @Test
+        @DisplayName("via filly-qualified reference")
+        void fullyQualifiedRef() {
+            assertFound(absoluteRef);
+        }
+
+        @Test
+        @DisplayName("via typed reference")
+        void typedRef() {
+            assertFound(nonQualifiedTypedRef);
+        }
+
+        @Test
+        @DisplayName("via name-only reference")
+        void nameOnlyRef() {
+            assertFound(onlyNameRef);
+        }
+
+        @Test
+        @DisplayName("rejecting a message which type name does not match")
+        void rejectWrongType() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> invalidTypedRef.find(Timestamp.getDescriptor()));
+        }
+
+        private void assertFound(FieldReference ref) {
+            Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
+            Truth8.assertThat(fd).isPresent();
         }
     }
 }

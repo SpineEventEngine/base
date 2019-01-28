@@ -25,9 +25,13 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.value.StringTypeValue;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -155,14 +159,32 @@ public final class FieldReference extends StringTypeValue {
 
     /**
      * Obtains the type name from the reference.
+     *
+     * @throws IllegalStateException if the reference does not have a type component
+     * @see #hasType()
      */
-    public String typeName() {
+    public String fullTypeName() {
+        checkHasType();
         String value = value();
-        checkState(hasType(), "The field reference (`%s`) does not have the type.", value);
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         String result = value.substring(0, index)
                              .trim();
         return result;
+    }
+
+    private void checkHasType() {
+        checkState(hasType(), "The field reference (`%s`) does not have the type.", value());
+    }
+
+    /**
+     * Obtains a non-qualified name of the type from the reference.
+     *
+     * @throws IllegalStateException if the reference does not have a type component
+     * @see #hasType()
+     */
+    public String simpleTypeName() {
+        checkHasType();
+        return parts.get(parts.size() - 2);
     }
 
     /**
@@ -177,6 +199,23 @@ public final class FieldReference extends StringTypeValue {
      */
     public String fieldName() {
         return parts.get(parts.size() - 1);
+    }
+
+    /**
+     * Obtains the descriptor of the field with the name {@linkplain #fieldName()} referenced}
+     * by this instance in the passed message.
+     *
+     * @param message the message in which to find the field
+     * @return the descriptor of the field, or empty {@code Optional} if there is no a field with
+     * the {@linkplain #fieldName()} referenced name}
+     */
+    Optional<FieldDescriptor> find(Descriptor message) {
+        checkNotNull(message);
+        if (hasType()) {
+            checkArgument(simpleTypeName().equals(message.getName()));
+        }
+        @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
+        return Optional.ofNullable(result);
     }
 
     /**
