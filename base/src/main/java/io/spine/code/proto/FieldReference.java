@@ -110,7 +110,14 @@ public final class FieldReference extends StringTypeValue {
      * Obtains references found in the passed field.
      */
     public static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
-        return ByOption.allFrom(field);
+        ImmutableList<String> refs = ByOption.allFrom(field);
+
+        ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
+        for (String ref : refs) {
+            result.add(new FieldReference(ref));
+        }
+        return result.build();
+
     }
 
     /**

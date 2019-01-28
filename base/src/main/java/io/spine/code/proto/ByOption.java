@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
@@ -41,6 +42,7 @@ public final class ByOption {
      */
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
+    private static final Pattern SPACE = compile(" ", Pattern.LITERAL);
 
     /** Prevents instantiation of this utility class. */
     private ByOption() {
@@ -50,6 +52,7 @@ public final class ByOption {
      * Verifies if the {@code (by)} option is set in the passed field.
      */
     public static boolean isSetFor(FieldDescriptorProto field) {
+        checkNotNull(field);
         return valueIn(field).isPresent();
     }
 
@@ -57,6 +60,7 @@ public final class ByOption {
      * Obtains the value of the {@code (by)} option in the passed field.
      */
     public static Optional<String> valueIn(FieldDescriptorProto field) {
+        checkNotNull(field);
         String value = field.getOptions()
                             .getExtension(by);
         if (value.isEmpty()) {
@@ -65,25 +69,23 @@ public final class ByOption {
         return Optional.of(value);
     }
 
-    static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
+    static ImmutableList<String> allFrom(FieldDescriptorProto field) {
         checkNotNull(field);
-        String[] found = parse(field);
-
-        ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
-        for (String ref : found) {
-            result.add(new FieldReference(ref));
-        }
-        return result.build();
+        String byRaw = valueIn(field)
+                .orElseThrow(() -> missingOptionIn(field));
+        ImmutableList<String> result = parse(byRaw);
+        return result;
     }
 
-    private static String[] parse(FieldDescriptorProto field) {
-        String byArgument = valueIn(field)
-                .orElseThrow(() -> missingOptionIn(field));
+    @VisibleForTesting
+    static ImmutableList<String> parse(String rawValue) {
+        String byArgument = SPACE.matcher(rawValue)
+                                 .replaceAll("");
         String[] result;
         result = byArgument.contains(PIPE_SEPARATOR)
                  ? PATTERN_PIPE_SEPARATOR.split(byArgument)
                  : new String[]{byArgument};
-        return result;
+        return ImmutableList.copyOf(result);
     }
 
     static IllegalArgumentException missingOptionIn(FieldDescriptorProto field) {
