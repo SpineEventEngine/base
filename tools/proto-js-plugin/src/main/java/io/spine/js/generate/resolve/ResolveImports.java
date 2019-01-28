@@ -20,22 +20,21 @@
 
 package io.spine.js.generate.resolve;
 
-import com.google.common.base.Charsets;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A task to resolve imports in generated files.
@@ -63,21 +62,12 @@ public final class ResolveImports extends GenerationTask {
 
     private void resolveInFile(FileName fileName) {
         Path filePath = generatedRoot().resolve(fileName);
-        List<String> lines = fileLines(filePath);
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            boolean isImport = ImportSnippet.hasImport(line);
-            if (isImport) {
-                ImportSnippet sourceImport = new ImportSnippet(line, filePath.toFile());
-                ImportSnippet updatedImport = resolveImport(sourceImport);
-                lines.set(i, updatedImport.text());
-            }
-        }
-        rewriteFile(fileName, lines);
+        JsFile file = new JsFile(filePath);
+        file.resolveImports(new ImportFilter(), this::resolveImport);
     }
 
     /**
-     * Attempts to resolve an import in the file.
+     * Attempts to resolve an import among external modules.
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
         FileReference fileReference = resolvable.path();
@@ -94,22 +84,14 @@ public final class ResolveImports extends GenerationTask {
         return resolvable;
     }
 
-    private void rewriteFile(FileName fileName, Iterable<String> lines) {
-        Path filePath = generatedRoot().resolve(fileName)
-                                       .toAbsolutePath();
-        try {
-            Files.write(filePath, lines, Charsets.UTF_8, TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
+    private static final class ImportFilter implements Predicate<ImportSnippet> {
 
-    private static List<String> fileLines(Path filePath) {
-        try {
-            List<String> lines = Files.readAllLines(filePath);
-            return lines;
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
+        @CanIgnoreReturnValue
+        @Override
+        public boolean apply(@Nullable ImportSnippet importSnippet) {
+            checkNotNull(importSnippet);
+            FileReference fileReference = importSnippet.path();
+            return importSnippet.importedFileExists() && fileReference.isRelative();
         }
     }
 }
