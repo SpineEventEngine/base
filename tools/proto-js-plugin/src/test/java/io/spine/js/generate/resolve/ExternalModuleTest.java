@@ -80,7 +80,7 @@ class ExternalModuleTest {
         ExternalModule module = newModule(moduleName, "d/d2/d3/*");
         FileReference origin = FileReference.of("./../../d2/d3/d4/f.js");
         FileReference result = module.pathInModule(origin);
-        FileReference expected = FileReference.of(moduleName + "/d/d2/d3/f.js");
+        FileReference expected = FileReference.of(moduleName + "/d/d2/d3/d4/f.js");
         assertEquals(expected, result);
     }
 

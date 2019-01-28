@@ -25,18 +25,20 @@ import io.spine.code.js.FileName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import spine.test.js.Task;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.google.common.io.Files.createTempDir;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 import static io.spine.js.generate.output.FileWriter.createFor;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("FileWriter should")
 class FileWriterTest {
 
@@ -49,12 +51,11 @@ class FileWriterTest {
     private Path filePath;
 
     @BeforeEach
-    void setUp() throws IOException {
-        File tempDir = createTempDir();
-        Directory directory = Directory.at(tempDir.toPath());
+    void setUp(@TempDir Path tempDir) throws IOException {
+        Directory directory = Directory.at(tempDir);
         writer = createFor(directory, TASKS_JS);
         filePath = directory.resolve(TASKS_JS);
-        Files.createDirectories(filePath);
+        Files.createDirectories(filePath.getParent());
     }
 
     @Test
