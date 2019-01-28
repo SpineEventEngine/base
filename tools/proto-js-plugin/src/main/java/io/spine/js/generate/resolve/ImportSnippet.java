@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 import io.spine.logging.Logging;
 
 import java.io.File;
@@ -64,13 +64,13 @@ public class ImportSnippet implements Logging {
     }
 
     /**
-     * Obtains the path specified in the import statement.
+     * Obtains the file reference used in this import.
      */
-    ImportPath path() {
+    FileReference path() {
         int beginIndex = text.indexOf(IMPORT_BEGIN_SIGN) + IMPORT_BEGIN_SIGN.length();
         int endIndex = text.indexOf(IMPORT_END_SIGN, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
-        return ImportPath.of(importPath);
+        return FileReference.of(importPath);
     }
 
     /**
@@ -103,8 +103,8 @@ public class ImportSnippet implements Logging {
      * Obtains the absolute path to the imported file.
      */
     Path importedFilePath() {
-        ImportPath importPath = path();
-        Path filePath = originDirectory().resolve(importPath.value());
+        FileReference fileReference = path();
+        Path filePath = originDirectory().resolve(fileReference.value());
         return filePath.normalize();
     }
 

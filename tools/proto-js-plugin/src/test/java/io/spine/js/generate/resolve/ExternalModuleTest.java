@@ -21,7 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,12 +49,12 @@ class ExternalModuleTest {
     }
 
     @Test
-    @DisplayName("resolve an import path if the file is provided by module")
-    void resolveMatchingImport() {
-        ImportPath originImport = ImportPath.of("spine/js_pb.js");
-        ImportPath importPath = module.pathInModule(originImport);
-        ImportPath expectedPath = ImportPath.of(moduleName + '/' + originImport);
-        assertEquals(expectedPath, importPath);
+    @DisplayName("convert a relative file reference to the reference of the module")
+    void convertRelativeToModuleReference() {
+        FileReference origin = FileReference.of("./../spine/js_pb.js");
+        FileReference inModule = module.pathInModule(origin);
+        FileReference expected = FileReference.of(moduleName + '/' + origin);
+        assertEquals(expected, inModule);
     }
 
     @Test
@@ -62,7 +62,7 @@ class ExternalModuleTest {
     void acceptOnlyProvidedProto() {
         assertThrows(
                 IllegalStateException.class,
-                () -> module.pathInModule(ImportPath.of("non/spine/index_pb.js"))
+                () -> module.pathInModule(FileReference.of("non/spine/index_pb.js"))
         );
     }
 }

@@ -30,7 +30,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A reference to a directory.
  *
- * <p>May include parent directories separated by {@linkplain ImportPath#separator() slashes}.
+ * <p>May include parent directories separated by {@linkplain FileReference#separator() slashes},
+ * e.g. {@code root/sub}.
  */
 public final class DirectoryReference extends StringTypeValue {
 
@@ -66,15 +67,8 @@ public final class DirectoryReference extends StringTypeValue {
         return result;
     }
 
-    /**
-     * Tells if the reference have the same ending with the specified reference.
-     */
-    public boolean endsWith(DirectoryReference suffix) {
-        return value().endsWith(suffix.value());
-    }
-
     public List<String> elements() {
-        return Splitter.on(ImportPath.separator())
+        return Splitter.on(FileReference.separator())
                        .splitToList(value());
     }
 

@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import io.spine.code.js.DirectoryReference;
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 
 import java.util.List;
 import java.util.Objects;
@@ -125,9 +125,9 @@ public final class DirectoryPattern {
         List<String> resultElements = Lists.newArrayList();
         resultElements.addAll(elementsToAdd);
         resultElements.addAll(origin.elements());
-        String joined = Joiner.on(ImportPath.separator())
+        String result = Joiner.on(FileReference.separator())
                               .join(resultElements);
-        return DirectoryReference.of(joined);
+        return DirectoryReference.of(result);
     }
 
     /**

@@ -30,8 +30,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A path to a file used in a JavaScript import statement.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
-public final class ImportPath extends StringTypeValue {
+public final class FileReference extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
     /** The path separator used in JavaScript imports. Not platform-dependant. */
@@ -39,7 +38,7 @@ public final class ImportPath extends StringTypeValue {
     private static final String PARENT_DIR = "../";
     private static final String CURRENT_DIR = "./";
 
-    private ImportPath(String value) {
+    private FileReference(String value) {
         super(value);
     }
 
@@ -50,19 +49,18 @@ public final class ImportPath extends StringTypeValue {
      *         the value of the path
      * @return a new instance
      */
-    public static ImportPath of(String value) {
+    public static FileReference of(String value) {
         checkNotEmptyOrBlank(value);
-        return new ImportPath(value);
+        return new FileReference(value);
     }
 
     /**
      * Obtains the name of the imported file skipping the path to it.
      */
-    public FileName fileName() {
-        String path = value();
-        int fileNameIndex = path.lastIndexOf(IMPORT_PATH_SEPARATOR) + 1;
-        String fileName = path.substring(fileNameIndex);
-        return FileName.of(fileName);
+    public String fileName() {
+        List<String> elements = elements();
+        String fileName = elements.get(elements.size() - 1);
+        return fileName;
     }
 
     /**

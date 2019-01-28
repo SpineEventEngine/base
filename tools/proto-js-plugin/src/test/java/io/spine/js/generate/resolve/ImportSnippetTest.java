@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,8 +43,8 @@ class ImportSnippetTest {
     @Test
     @DisplayName("extract the import path")
     void extractImportPath() {
-        ImportPath importPath = importSnippet.path();
-        assertThat(importPath.value()).isEqualTo(relativeImportPath());
+        FileReference fileReference = importSnippet.path();
+        assertThat(fileReference.value()).isEqualTo(relativeImportPath());
     }
 
     @Test
@@ -52,7 +52,7 @@ class ImportSnippetTest {
     void replaceImportPath() {
         String newPath = "b";
         ImportSnippet updatedLine = importSnippet.replacePath(newPath);
-        ImportPath updatedPath = updatedLine.path();
+        FileReference updatedPath = updatedLine.path();
         assertThat(updatedPath.value()).isEqualTo(newPath);
     }
 

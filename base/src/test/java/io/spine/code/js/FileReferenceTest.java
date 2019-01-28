@@ -29,13 +29,13 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ImportPath should")
-class ImportPathTest {
+@DisplayName("FileReference should")
+class FileReferenceTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ImportPath.class);
+        new NullPointerTester().testAllPublicStaticMethods(FileReference.class);
     }
 
     @Test
@@ -43,23 +43,23 @@ class ImportPathTest {
     void notAcceptEmptyString() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> ImportPath.of("")
+                () -> FileReference.of("")
         );
     }
 
     @Test
     @DisplayName("obtain file name skipping the path")
     void obtainFileName() {
-        ImportPath importPath = ImportPath.of("./../../foo/nested.js");
-        FileName fileName = importPath.fileName();
-        assertThat(fileName.value()).isEqualTo("nested.js");
+        FileReference fileReference = FileReference.of("./../../foo/nested.js");
+        String fileName = fileReference.fileName();
+        assertThat(fileName).isEqualTo("nested.js");
     }
 
     @Test
     @DisplayName("obtain the directory skipping relative path")
     void directorySkipRelative() {
-        ImportPath importPath = ImportPath.of("./../../foo/bar/f.js");
-        assertEquals("foo/bar", importPath.directory()
-                                          .value());
+        FileReference fileReference = FileReference.of("./../../foo/bar/f.js");
+        assertEquals("foo/bar", fileReference.directory()
+                                             .value());
     }
 }

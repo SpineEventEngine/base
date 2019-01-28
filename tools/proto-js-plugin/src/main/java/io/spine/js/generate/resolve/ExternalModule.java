@@ -23,8 +23,7 @@ package io.spine.js.generate.resolve;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DirectoryReference;
-import io.spine.code.js.FileName;
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -57,39 +56,39 @@ public final class ExternalModule {
     }
 
     /**
-     * Obtains an import path, which references this module.
+     * Obtains the file reference within this module.
      *
-     * @param importPath
-     *         the relative import path
-     * @return the import path of the file in this module
+     * @param fileReference
+     *         the relative file reference
+     * @return the file reference in this module
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    ImportPath pathInModule(ImportPath importPath) {
-        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(importPath);
+    FileReference pathInModule(FileReference fileReference) {
+        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
         checkState(matchingDirectory.isPresent());
         DirectoryReference directory = matchingDirectory.get()
-                                                        .transform(importPath.directory());
-        FileName file = importPath.fileName();
-        String path = Joiner.on(ImportPath.separator())
-                            .join(name, directory, file);
-        return ImportPath.of(path);
+                                                        .transform(fileReference.directory());
+        String fileName = fileReference.fileName();
+        String path = Joiner.on(FileReference.separator())
+                            .join(name, directory, fileName);
+        return FileReference.of(path);
     }
 
     /**
-     * Checks if the module provides imported file.
+     * Checks if the module provides the referenced file.
      *
-     * @param importPath
-     *         the import to check
+     * @param fileReference
+     *         the file to check
      * @return {@code true} if the module provides the file
      */
-    boolean provides(ImportPath importPath) {
-        boolean result = matchingDirectory(importPath).isPresent();
+    boolean provides(FileReference fileReference) {
+        boolean result = matchingDirectory(fileReference).isPresent();
         return result;
     }
 
-    private Optional<DirectoryPattern> matchingDirectory(ImportPath importPath) {
-        DirectoryReference directory = importPath.directory();
+    private Optional<DirectoryPattern> matchingDirectory(FileReference fileReference) {
+        DirectoryReference directory = fileReference.directory();
         for (DirectoryPattern pattern : directories) {
             if (pattern.matches(directory)) {
                 return Optional.of(pattern);

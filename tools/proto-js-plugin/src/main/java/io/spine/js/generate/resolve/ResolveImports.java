@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
-import io.spine.code.js.ImportPath;
+import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 
@@ -80,13 +80,13 @@ public final class ResolveImports extends GenerationTask {
      * Attempts to resolve an import in the file.
      */
     private ImportSnippet resolveImport(ImportSnippet resolvable) {
-        ImportPath importPath = resolvable.path();
-        if (!importPath.isRelative()) {
+        FileReference fileReference = resolvable.path();
+        if (!fileReference.isRelative()) {
             return resolvable;
         }
         for (ExternalModule module : modules) {
-            if (module.provides(importPath)) {
-                ImportPath pathInModule = module.pathInModule(importPath);
+            if (module.provides(fileReference)) {
+                FileReference pathInModule = module.pathInModule(fileReference);
                 return resolvable.replacePath(pathInModule.value());
             }
         }
