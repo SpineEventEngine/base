@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.ByteString;
 
 /**
@@ -35,7 +34,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      *         the value to validate
      */
     ByteStringFieldValidator(FieldValue<ByteString> fieldValue) {
-        super(fieldValue, false, ImmutableSet.of());
+        super(fieldValue, false);
     }
 
     @Override

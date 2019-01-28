@@ -85,6 +85,26 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     /**
+     * Creates a new validator instance.
+     *
+     * <p>Validator created by this constructors applies no additional validating options.
+     *
+     * @param fieldValue
+     *         the value to validate
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
+     */
+    protected FieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
+        this.value = fieldValue;
+        this.declaration = fieldValue.declaration();
+        this.values = fieldValue.asList();
+        this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.assumeRequired = assumeRequired;
+        this.fieldValidatingOptions = commonOptions(assumeRequired);
+    }
+
+    /**
      * Checks if the value of the validated field is not set.
      *
      * <p>Works for both repeated/map fields and ordinary single-value fields.
@@ -120,9 +140,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -152,7 +172,7 @@ abstract class FieldValidator<V> implements Logging {
      * <p>Do not call this method directly. Use {@link #validate() validate()} instead.
      */
     @SuppressWarnings("NoopMethodInAbstractClass"/* Does nothing for all but one subclasses. */)
-    protected void validateOwnRules(){
+    protected void validateOwnRules() {
     }
 
     private List<ConstraintViolation> assembleViolations() {
@@ -166,7 +186,8 @@ abstract class FieldValidator<V> implements Logging {
                 this.fieldValidatingOptions.stream()
                                            .filter(option -> option.shouldValidate(value))
                                            .map(ValidatingOption::constraint)
-                                           .flatMap(constraint -> constraint.check(value).stream())
+                                           .flatMap(constraint -> constraint.check(value)
+                                                                            .stream())
                                            .collect(Collectors.toList());
         return violations;
     }

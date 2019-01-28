@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
-
 /**
  * Validates fields of type {@link Boolean}.
  */
@@ -34,7 +32,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      *         the value to to validate
      */
     BooleanFieldValidator(FieldValue<Boolean> fieldValue) {
-        super(fieldValue, false, ImmutableSet.of());
+        super(fieldValue, false);
     }
 
     /**
