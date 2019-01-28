@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.type.MoreKnownTypes;
@@ -76,20 +75,25 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     private static Action<Task> createMergingAction(Configuration configuration,
                                                     String descriptorSetPath) {
         return task -> {
+
             File descriptorSet = new File(descriptorSetPath);
-            FileDescriptorSuperset superset = new FileDescriptorSuperset();
-            configuration.forEach(superset::addFromDependency);
-            if (descriptorSet.exists()) {
-                superset.addFromDependency(descriptorSet);
-            }
-            superset.merge()
-                    .writeTo(descriptorSet);
+//            FileDescriptorSuperset superset = new FileDescriptorSuperset();
+//            configuration.forEach(superset::addFromDependency);
+//            if (descriptorSet.exists()) {
+//                superset.addFromDependency(descriptorSet);
+//            }
+//            superset.merge()
+//                    .writeTo(descriptorSet);
 
             // Extend `KnownTypes` with all the type definitions from all the descriptors
             // found in the classpath of the project being built.
-            MoreKnownTypes.extendWith(descriptorSet);
+            if (descriptorSet.exists()) {
+                MoreKnownTypes.extendWith(descriptorSet);
+            }
         };
     }
+
+
 
     private static Configuration configuration(Project project, ConfigurationName name) {
         return project.getConfigurations()

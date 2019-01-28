@@ -23,6 +23,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.DescriptorReference.ResourceReference;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
 
@@ -133,7 +134,7 @@ public final class FileDescriptors {
      *         contained in the loaded files
      */
     static Set<FileDescriptorProto> load() {
-        Iterator<URL> resources = DescriptorReference.loadAll();
+        Iterator<ResourceReference> resources = DescriptorReference.loadAll();
         Set<FileDescriptorProto> files = stream(resources)
                 .map(FileDescriptors::loadFrom)
                 .flatMap(set -> set.getFileList().stream())
@@ -170,16 +171,16 @@ public final class FileDescriptors {
     /**
      * Reads an instance of {@link FileDescriptorSet} from the given {@link URL}.
      */
-    private static FileDescriptorSet loadFrom(URL file) {
-        checkNotNull(file);
-        try (InputStream stream = file.openStream()) {
+    private static FileDescriptorSet loadFrom(ResourceReference resource) {
+        checkNotNull(resource);
+        try (InputStream stream = resource.openStream()) {
             FileDescriptorSet parsed = FileDescriptorSets.parse(stream);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
                     e,
                     "Unable to load file descriptor set from %s.",
-                    file
+                    resource
             );
         }
     }

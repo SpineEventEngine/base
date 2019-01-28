@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.gradle.compiler.Artifact.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -25,6 +25,7 @@ import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
+import io.spine.tools.gradle.BaseExtension;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -48,7 +49,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
         "ClassWithTooManyFields" /* OK for a Gradle extension to have a flat structure. */})
-public class Extension {
+public class Extension extends BaseExtension {
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -166,13 +167,18 @@ public class Extension {
 
     public List<String> internalMethodNames = new ArrayList<>();
 
+    @Override
+    protected DefaultJavaProject defaultProject(Project project) {
+        return def(project);
+    }
+
     private static DefaultJavaProject def(Project project) {
         return DefaultJavaProject.at(project.getProjectDir());
     }
 
     public static String getMainProtoSrcDir(Project project) {
         Logger log = log();
-        Extension extension = spineProtobuf(project);
+        Extension extension = extension(project);
         log.debug("Extension is {}", extension);
         String protoDir = extension.mainProtoSrcDir;
         log.debug("modelCompiler.mainProtoSrcDir is {}", protoDir);
@@ -182,77 +188,79 @@ public class Extension {
     }
 
     public static String getMainTargetGenResourcesDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainTargetGenResourcesDir,
+        return pathOrDefault(extension(project).mainTargetGenResourcesDir,
                              def(project).generated()
                                          .mainResources());
     }
 
     public static String getMainGenGrpcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainGenGrpcDir,
+        return pathOrDefault(extension(project).mainGenGrpcDir,
                              def(project).generated()
                                          .mainGrpc());
     }
 
     public static String getMainGenProtoDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainGenProtoDir,
+        return pathOrDefault(extension(project).mainGenProtoDir,
                              def(project).generated()
                                          .mainJava());
     }
 
     public static String getTestTargetGenResourcesDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
+        return pathOrDefault(extension(project).testTargetGenResourcesDir,
                              def(project).generated()
                                          .testResources());
     }
 
     public static String getTestProtoSrcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
+        return pathOrDefault(extension(project).testProtoSrcDir,
                              def(project).src()
                                          .testProto());
     }
 
     public static String getTestGenGrpcDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).testGenGrpcDir,
+        return pathOrDefault(extension(project).testGenGrpcDir,
                              def(project).generated()
                                          .testGrpc());
     }
 
     public static String getTestGenProtoDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).testGenProtoDir,
+        return pathOrDefault(extension(project).testGenProtoDir,
                              def(project).generated()
                                          .testJava());
     }
 
     public static String getMainDescriptorSetPath(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainDescriptorSetPath,
-                             def(project).mainDescriptors());
+        Extension extension = extension(project);
+        return pathOrDefault(extension.mainDescriptorSetPath,
+                             extension.defaultMainDescriptor(project));
     }
 
     public static String getTestDescriptorSetPath(Project project) {
-        return pathOrDefault(spineProtobuf(project).testDescriptorSetPath,
-                             def(project).testDescriptors());
+        Extension extension = extension(project);
+        return pathOrDefault(extension.testDescriptorSetPath,
+                             extension.defaultTestDescriptor(project));
     }
 
     public static String getTargetGenRejectionsRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetGenRejectionsRootDir,
+        return pathOrDefault(extension(project).targetGenRejectionsRootDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
     public static String getTargetTestGenRejectionsRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetTestGenRejectionsRootDir,
+        return pathOrDefault(extension(project).targetTestGenRejectionsRootDir,
                              def(project).generated()
                                          .testSpine());
     }
 
     public static String getTargetGenValidatorsRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetGenVBuildersRootDir,
+        return pathOrDefault(extension(project).targetGenVBuildersRootDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
     public static String getTargetTestGenValidatorsRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetTestGenVBuildersRootDir,
+        return pathOrDefault(extension(project).targetTestGenVBuildersRootDir,
                              def(project).generated()
                                          .testSpine());
     }
@@ -264,13 +272,13 @@ public class Extension {
     }
 
     public static boolean isGenerateValidatingBuilders(Project project) {
-        boolean result = spineProtobuf(project).generateValidatingBuilders;
+        boolean result = extension(project).generateValidatingBuilders;
         log().debug("The current validating builder generation setting is {}", result);
         return result;
     }
 
     public static Indent getIndent(Project project) {
-        Indent result = spineProtobuf(project).indent;
+        Indent result = extension(project).indent;
         log().debug("The current indent is {}", result.getSize());
         return result;
     }
@@ -292,8 +300,8 @@ public class Extension {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
         Logger log = log();
         log.debug("Finding the directories to clean");
-        List<String> dirs = spineProtobuf(project).dirsToClean;
-        String singleDir = spineProtobuf(project).dirToClean;
+        List<String> dirs = extension(project).dirsToClean;
+        String singleDir = extension(project).dirToClean;
         if (dirs.size() > 0) {
             log.error("Found {} directories to clean: {}", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
@@ -310,7 +318,7 @@ public class Extension {
     }
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
-        Severity result = spineProtobuf(project).spineCheckSeverity;
+        Severity result = extension(project).spineCheckSeverity;
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;
@@ -341,22 +349,22 @@ public class Extension {
     }
 
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
-        CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
+        CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
     }
 
     public static GeneratedInterfaces getGeneratedInterfaces(Project project) {
-        GeneratedInterfaces interfaces = spineProtobuf(project).generateInterfaces;
+        GeneratedInterfaces interfaces = extension(project).generateInterfaces;
         return interfaces;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
-        List<String> patterns = spineProtobuf(project).internalClassPatterns;
+        List<String> patterns = extension(project).internalClassPatterns;
         return ImmutableSet.copyOf(patterns);
     }
 
     public static ImmutableSet<String> getInternalMethodNames(Project project) {
-        List<String> patterns = spineProtobuf(project).internalMethodNames;
+        List<String> patterns = extension(project).internalMethodNames;
         return ImmutableSet.copyOf(patterns);
     }
 
@@ -392,7 +400,7 @@ public class Extension {
         }
     }
 
-    private static Extension spineProtobuf(Project project) {
+    private static Extension extension(Project project) {
         return (Extension)
                 project.getExtensions()
                        .getByName(ModelCompilerPlugin.extensionName());

@@ -21,8 +21,10 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.code.DefaultProject;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.tools.gradle.BaseExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -32,13 +34,14 @@ import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
-public class Extension {
+public class Extension extends BaseExtension {
 
     private Task generateParsersTask;
 
@@ -81,14 +84,16 @@ public class Extension {
     }
 
     public static File getMainDescriptorSet(Project project) {
-        Path path = pathOrDefault(extension(project).mainDescriptorSetPath,
-                                  def(project).mainDescriptors());
+        Extension extension = extension(project);
+        Path path = pathOrDefault(extension.mainDescriptorSetPath,
+                                  extension.defaultMainDescriptor(project));
         return path.toFile();
     }
 
     public static File getTestDescriptorSet(Project project) {
-        Path path = pathOrDefault(extension(project).testDescriptorSetPath,
-                                  def(project).testDescriptors());
+        Extension extension = extension(project);
+        Path path = pathOrDefault(extension.testDescriptorSetPath,
+                                  extension.defaultTestDescriptor(project));
         return path.toFile();
     }
 
@@ -113,7 +118,7 @@ public class Extension {
     static Extension extension(Project project) {
         return (Extension)
                 project.getExtensions()
-                       .getByName(ProtoJsPlugin.extensionName());
+                       .getByName(extensionName());
     }
 
     private static Path pathOrDefault(String path, Object defaultValue) {
@@ -125,5 +130,10 @@ public class Extension {
 
     private static DefaultJsProject def(Project project) {
         return DefaultJsProject.at(project.getProjectDir());
+    }
+
+    @Override
+    protected DefaultProject defaultProject(Project project) {
+        return def(project);
     }
 }

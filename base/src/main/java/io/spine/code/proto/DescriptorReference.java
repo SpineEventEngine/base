@@ -20,13 +20,14 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
+import io.spine.io.ResourceFiles;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,20 +37,20 @@ import java.util.Iterator;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.lang.System.lineSeparator;
 import static java.nio.file.StandardOpenOption.APPEND;
 
 public final class DescriptorReference {
 
+    @VisibleForTesting
+    public static final String FILE_NAME = "desc.ref";
+
     private static final Splitter LINE_SPLITTER = Splitter.on(lineSeparator())
                                                           .omitEmptyStrings()
                                                           .trimResults();
-
-    private static final String FILE_NAME = "desc.ref";
-
     private final ImmutableSet<String> references;
 
     private DescriptorReference(ImmutableSet<String> references) {
@@ -65,7 +66,7 @@ public final class DescriptorReference {
     public static DescriptorReference toFiles(Collection<File> descriptorFiles) {
         checkNotNull(descriptorFiles);
         ImmutableSet<String> references = descriptorFiles.stream()
-                                                         .map(File::getPath)
+                                                         .map(File::getName)
                                                          .collect(toImmutableSet());
         return new DescriptorReference(references);
     }
@@ -73,8 +74,7 @@ public final class DescriptorReference {
     public void writeTo(Path directory) {
         checkNotNull(directory);
 
-        directory.toFile()
-                 .mkdirs();
+        directory.toFile().mkdirs();
         Path targetFile = directory.resolve(FILE_NAME);
         try {
             targetFile.toFile().createNewFile();
@@ -84,31 +84,47 @@ public final class DescriptorReference {
         }
     }
 
-    public static Iterator<URL> loadAll() {
-        try (InputStream catalog = readResource(FILE_NAME)) {
-            byte[] catalogBytes = toByteArray(catalog);
-            String calalog = new String(catalogBytes, UTF_8);
-            return LINE_SPLITTER.splitToList(calalog)
-                                .stream()
-                                .map(DescriptorReference::toUrl)
-                                .iterator();
+    public static Iterator<ResourceReference> loadAll() {
+        return stream(ResourceFiles.loadAll(FILE_NAME))
+                .map(DescriptorReference::readCatalog)
+                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
+                .distinct()
+                .map(ResourceReference::new)
+                .iterator();
+    }
+
+    private static String readCatalog(URL resourceUrl) {
+        try (InputStream catalogStream = resourceUrl.openStream()) {
+            byte[] catalogBytes = toByteArray(catalogStream);
+            String catalog = new String(catalogBytes, UTF_8);
+            return catalog;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    private static URL toUrl(String value) {
-        try {
-            return new URL(value);
-        } catch (MalformedURLException e) {
-            throw illegalArgumentWithCauseOf(e);
-        }
-    }
+    public static final class ResourceReference {
 
-    private static InputStream readResource(String name) {
-        InputStream result = DescriptorReference.class.getClassLoader()
-                                                      .getResourceAsStream(name);
-        checkNotNull(result, "`%s` not found.", name);
-        return result;
+        private final String resourceName;
+
+        private ResourceReference(String resourceName) {
+            this.resourceName = resourceName;
+        }
+
+        public InputStream openStream() {
+            return readResource(resourceName);
+        }
+
+        @Override
+        public String toString() {
+            return resourceName;
+        }
+
+        private static InputStream readResource(String name) {
+            InputStream result = DescriptorReference.class.getClassLoader()
+                                                          .getResourceAsStream(name);
+            checkNotNull(result, "`%s` not found.", name);
+            return result;
+        }
     }
 }
