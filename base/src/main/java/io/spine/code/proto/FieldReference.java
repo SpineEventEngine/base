@@ -30,6 +30,7 @@ import io.spine.value.StringTypeValue;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -148,7 +149,7 @@ public final class FieldReference extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = value().startsWith(Via.context.name());
+        boolean result = Via.context.matches(value());
         return result;
     }
 
@@ -179,13 +180,22 @@ public final class FieldReference extends StringTypeValue {
     }
 
     /**
-     * Enumeration of references to instances of specific message.
+     * Enumeration of references to instances of a specific message.
      */
     public enum Via {
 
         /**
          * The reference to an event context used in the {@code (by)} field option.
          */
-        context
+        context;
+
+        /**
+         * Verifies if the passed reference is one to a field of a specific message.
+         */
+        public boolean matches(String fieldReference) {
+            checkNotNull(fieldReference);
+            boolean result = fieldReference.startsWith(name());
+            return result;
+        }
     }
 }

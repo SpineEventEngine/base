@@ -165,7 +165,15 @@ class FieldReferenceTest {
         @DisplayName("suffix form of whilecard type reference")
         @Test
         void suffixForm() {
-            assertThrows(IllegalArgumentException.class, () -> FieldReference.isWildcard("*Event"));
+            assertThrows(IllegalArgumentException.class,
+                         () -> FieldReference.isWildcard("*Event"));
+        }
+
+        @DisplayName("null field reference to a specific message")
+        @Test
+        void nullRef() {
+            assertThrows(NullPointerException.class,
+                         () -> FieldReference.Via.context.matches(null));
         }
     }
 }
