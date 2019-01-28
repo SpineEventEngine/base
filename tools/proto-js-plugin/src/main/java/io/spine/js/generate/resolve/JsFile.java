@@ -65,10 +65,14 @@ final class JsFile {
      */
     void processImports(Predicate<ImportStatement> importFilter,
                         ProcessImport processFunction) {
-        List<String> updatedLines = lines(path)
-                .map(line -> processLine(line, importFilter, processFunction))
-                .collect(toList());
-        rewriteFile(updatedLines);
+        try (Stream<String> lines = Files.lines(path)) {
+            List<String> updatedLines = lines
+                    .map(line -> processLine(line, importFilter, processFunction))
+                    .collect(toList());
+            rewriteFile(updatedLines);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     private String processLine(String line,
@@ -84,15 +88,6 @@ final class JsFile {
             }
         }
         return line;
-    }
-
-    private static Stream<String> lines(Path filePath) {
-        try {
-            Stream<String> lines = Files.lines(filePath);
-            return lines;
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
     }
 
     private void rewriteFile(Iterable<String> lines) {
