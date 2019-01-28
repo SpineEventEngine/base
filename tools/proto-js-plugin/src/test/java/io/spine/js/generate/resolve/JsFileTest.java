@@ -54,8 +54,8 @@ class JsFileTest {
     }
 
     @Test
-    @DisplayName("provide all imports")
-    void provideAllImports() throws IOException {
+    @DisplayName("process imports")
+    void processImports() throws IOException {
         ImportStatement firstImport = importStatement("first.js");
         ImportStatement secondImport = importStatement("second.js");
         String comment = "// Just a comment";
