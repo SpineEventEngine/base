@@ -24,8 +24,6 @@ import static java.lang.String.format;
 /**
  * Exception that is thrown when unsupported message is obtained
  * or in case when there is no class for given Protobuf message.
- *
- * @author Mikhail Melnik
  */
 public class UnknownTypeException extends RuntimeException {
 

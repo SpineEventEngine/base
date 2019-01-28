@@ -36,10 +36,8 @@ import static java.util.regex.Pattern.compile;
 
 /**
  * A reference to a field found in the {@code "by"} option value.
- *
- * @author Alexander Yevsyukov
  */
-class FieldReference extends StringTypeValue {
+final class FieldReference extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
     /**

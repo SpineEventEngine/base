@@ -32,7 +32,6 @@ import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.RejectionType;
 import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,9 +72,8 @@ public class RejectionWriter implements Logging {
         this.declaration = rejection;
         this.messageClass = toJavaPoetName(rejection.messageClass());
         this.outputDirectory = outputDirectory;
-        this.builder = new RejectionBuilderWriter(rejection,
-                                                  messageClass,
-                                                  toJavaPoetName(rejection.throwableClass())
+        this.builder = new RejectionBuilderWriter(
+                rejection, messageClass, toJavaPoetName(rejection.throwableClass())
         );
         this.indent = indent;
     }
@@ -85,13 +83,12 @@ public class RejectionWriter implements Logging {
      */
     public void write() {
         try {
-            Logger log = log();
-            log.debug("Creating the output directory {}", outputDirectory.getPath());
+            _debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
             String className = declaration.simpleJavaClassName()
                                           .value();
-            log.debug("Constructing class {}", className);
+            _debug("Constructing class {}", className);
             TypeSpec rejection =
                     TypeSpec.classBuilder(className)
                             .addJavadoc(classJavadoc())
@@ -111,16 +108,16 @@ public class RejectionWriter implements Logging {
                             .skipJavaLangImports(true)
                             .indent(indent.toString())
                             .build();
-            log.debug("Writing {}", className);
+            _debug("Writing {}", className);
             javaFile.writeTo(outputDirectory);
-            log.debug("Rejection {} written successfully", className);
+            _debug("Rejection {} written successfully", className);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private MethodSpec constructor() {
-        log().debug("Creating the constructor for the type '{}'",
+        _debug("Creating the constructor for the type '{}'",
                     declaration.simpleJavaClassName());
         ParameterSpec builderParameter = builder.asParameter();
         CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
@@ -134,7 +131,7 @@ public class RejectionWriter implements Logging {
 
     private MethodSpec getMessageThrown() {
         String methodSignature = getMessageThrown.signature();
-        log().debug("Constructing method {}", methodSignature);
+        _debug("Constructing method {}", methodSignature);
         ClassName returnType = messageClass;
         return MethodSpec.methodBuilder(getMessageThrown.name())
                          .addAnnotation(Override.class)

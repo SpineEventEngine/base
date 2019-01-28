@@ -25,6 +25,7 @@ import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.util.ConfigureUtil;
@@ -157,7 +158,9 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
-    public CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+    public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+
+    public final GeneratedInterfaces generateInterfaces = GeneratedInterfaces.withDefaults();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -306,7 +309,7 @@ public class Extension {
         return ImmutableList.copyOf(dirsToClean);
     }
 
-    public static Severity getSpineCheckSeverity(Project project) {
+    public static @Nullable Severity getSpineCheckSeverity(Project project) {
         Severity result = spineProtobuf(project).spineCheckSeverity;
         log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
@@ -325,10 +328,26 @@ public class Extension {
         action.execute(generateAnnotations);
     }
 
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateInterfaces` with a closure.
+    public void generateInterfaces(Closure closure) {
+        ConfigureUtil.configure(closure, generateInterfaces);
+    }
+
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateInterfaces` with a closure.
+    public void generateInterfaces(Action<? super GeneratedInterfaces> action) {
+        action.execute(generateInterfaces);
+    }
+
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = spineProtobuf(project).generateAnnotations;
-        annotations = annotations != null ? annotations : new CodeGenAnnotations();
         return annotations;
+    }
+
+    public static GeneratedInterfaces getGeneratedInterfaces(Project project) {
+        GeneratedInterfaces interfaces = spineProtobuf(project).generateInterfaces;
+        return interfaces;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
@@ -354,7 +373,7 @@ public class Extension {
         return spineDirs;
     }
 
-    private static Optional<String> spineDir(Project project) {
+    public static Optional<String> spineDir(Project project) {
         File projectDir;
         try {
             projectDir = project.getProjectDir()

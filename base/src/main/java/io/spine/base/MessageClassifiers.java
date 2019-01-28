@@ -55,4 +55,12 @@ public final class MessageClassifiers {
         }
         return classifier;
     }
+
+    /**
+     * Obtains a {@code MessageClassifier} for types which define a single string {@code uuid}
+     * field.
+     */
+    public static MessageClassifier uuidContainer() {
+        return new UuidValueClassifier();
+    }
 }
