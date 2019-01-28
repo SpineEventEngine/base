@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -27,6 +27,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,7 +42,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A reference to a field found in the {@code "by"} option value.
  */
-public final class FieldReference extends StringTypeValue {
+public final class FieldRef extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
@@ -65,7 +66,7 @@ public final class FieldReference extends StringTypeValue {
     private final ImmutableList<String> parts;
 
     @VisibleForTesting
-    FieldReference(String value) {
+    FieldRef(String value) {
         super(checkValue(value));
         this.parts = parts(value);
     }
@@ -122,12 +123,12 @@ public final class FieldReference extends StringTypeValue {
     /**
      * Obtains references found in the passed field.
      */
-    public static ImmutableList<FieldReference> allFrom(FieldDescriptorProto field) {
+    public static ImmutableList<FieldRef> allFrom(FieldDescriptorProto field) {
         ImmutableList<String> refs = ByOption.allFrom(field);
 
-        ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
+        ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
         for (String ref : refs) {
-            result.add(new FieldReference(ref));
+            result.add(new FieldRef(ref));
         }
         return result.build();
 

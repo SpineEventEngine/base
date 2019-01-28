@@ -23,7 +23,7 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.code.proto.FieldReference;
+import io.spine.code.proto.ref.FieldRef;
 import io.spine.logging.Logging;
 
 import java.util.ArrayList;
@@ -64,10 +64,10 @@ final class Entry implements Logging {
      * obtaining the value of the given enrichment field.
      */
     private List<String> parse() {
-        List<FieldReference> fieldRefs = FieldReference.allFrom(field);
+        List<FieldRef> fieldRefs = FieldRef.allFrom(field);
 
         ImmutableList.Builder<String> result = ImmutableList.builder();
-        for (FieldReference fieldRef : fieldRefs) {
+        for (FieldRef fieldRef : fieldRefs) {
             if (fieldRef.isWildcard() && fieldRefs.size() > 1) {
                 // Multiple argument `by` annotation can not contain wildcard reference onto
                 // the source type if the type was not specified with a `enrichment_for` annotation.
@@ -95,7 +95,7 @@ final class Entry implements Logging {
                 throw invalidByOptionValue();
             }
             _debug("'by' option found on field {} targeting {}", fieldName, srcType);
-            if (FieldReference.isWildcard(srcType)) {
+            if (FieldRef.isWildcard(srcType)) {
                 _warn("Skipping a wildcard event");
                 /* Ignore the wildcard `by` options, as we don't know
                    the target event type in this case. */

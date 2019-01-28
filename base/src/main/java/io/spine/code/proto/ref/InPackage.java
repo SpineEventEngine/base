@@ -18,25 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Descriptors;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * Reference to all message types in a proto package.
+ */
+public class InPackage extends AbstractTypeRef {
 
-@DisplayName("ByOption should")
-class ByOptionTest extends UtilityClassTest<ByOption> {
+    private static final long serialVersionUID = 0L;
 
-    ByOptionTest() {
-        super(ByOption.class);
+    protected InPackage(String value) {
+        super(value);
     }
 
-    @Test
-    @DisplayName("remove space characters around field references")
-    void parseRaw() {
-        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
-                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
+    @Override
+    public boolean matches(Descriptors.Descriptor message) {
+        //TODO:2019-01-28:alexander.yevsyukov: Implement.
+        return false;
     }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
@@ -40,9 +40,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FieldReference should")
-class FieldReferenceTest {
+class FieldRefTest {
 
-    private ImmutableList<FieldReference> references;
+    private ImmutableList<FieldRef> references;
 
     /**
      * Creates field reference form test environment message defined in
@@ -53,22 +53,22 @@ class FieldReferenceTest {
         FieldDescriptorProto personNameField = UserInfo.getDescriptor()
                                                        .toProto()
                                                        .getField(0);
-        references = FieldReference.allFrom(personNameField);
+        references = FieldRef.allFrom(personNameField);
     }
 
-    private FieldReference ref(int index) {
+    private FieldRef ref(int index) {
         return references.get(index);
     }
 
     @Test
     void performNullCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(FieldReference.class);
+        new NullPointerTester().testAllPublicStaticMethods(FieldRef.class);
     }
 
     @Test
     @DisplayName("tell if a string represents all types")
     void isWildcardUtility() {
-        assertThat(FieldReference.isWildcard("*"))
+        assertThat(FieldRef.isWildcard("*"))
                 .isTrue();
     }
 
@@ -79,22 +79,22 @@ class FieldReferenceTest {
         @Test
         @DisplayName("wildcard reference")
         void wildcardRef() {
-            assertPositive(new FieldReference("*.user_id")::isWildcard);
-            assertNegative(new FieldReference("UserCreated.user_id")::isWildcard);
+            assertPositive(new FieldRef("*.user_id")::isWildcard);
+            assertNegative(new FieldRef("UserCreated.user_id")::isWildcard);
         }
 
         @Test
         @DisplayName("internal reference")
         void internalRef() {
-            assertPositive(new FieldReference("another_field")::isInner);
-            assertNegative(new FieldReference("AnotherMessage.another_field")::isInner);
+            assertPositive(new FieldRef("another_field")::isInner);
+            assertNegative(new FieldRef("AnotherMessage.another_field")::isInner);
         }
 
         @Test
         @DisplayName("context reference")
         void contextRef() {
-            assertPositive(new FieldReference("context.timestamp")::isContext);
-            assertNegative(new FieldReference("AnotherMessage.context")::isContext);
+            assertPositive(new FieldRef("context.timestamp")::isContext);
+            assertNegative(new FieldRef("AnotherMessage.context")::isContext);
         }
 
         void assertPositive(Supplier<Boolean> quality) {
@@ -109,7 +109,7 @@ class FieldReferenceTest {
     @Test
     @DisplayName("obtain type name")
     void typeName() {
-        assertThat(new FieldReference("ReferencedType.some_field").fullTypeName())
+        assertThat(new FieldRef("ReferencedType.some_field").fullTypeName())
                 .isEqualTo("ReferencedType");
     }
 
@@ -158,8 +158,8 @@ class FieldReferenceTest {
         @DisplayName("empty or blank type reference passed to wildcard checking")
         @Test
         void emptyTypeArg() {
-            assertRejects(() -> FieldReference.isWildcard(""));
-            assertRejects(() -> FieldReference.isWildcard(" "));
+            assertRejects(() -> FieldRef.isWildcard(""));
+            assertRejects(() -> FieldRef.isWildcard(" "));
         }
 
         /**
@@ -170,14 +170,14 @@ class FieldReferenceTest {
         @DisplayName("suffix form of whildcard type reference")
         @Test
         void suffixForm() {
-            assertRejects(() -> FieldReference.isWildcard("*Event"));
+            assertRejects(() -> FieldRef.isWildcard("*Event"));
         }
 
         @DisplayName("null field reference to a specific message")
         @Test
         void nullRef() {
             assertThrows(NullPointerException.class,
-                         () -> FieldReference.Via.context.matches(null));
+                         () -> FieldRef.Via.context.matches(null));
         }
 
         @DisplayName("empty or blank value")
@@ -212,7 +212,7 @@ class FieldReferenceTest {
         }
 
         void assertRejects(String fieldReference) {
-            assertRejects(() -> new FieldReference(fieldReference));
+            assertRejects(() -> new FieldRef(fieldReference));
         }
     }
 
@@ -220,17 +220,17 @@ class FieldReferenceTest {
     @DisplayName("obtain field descriptor from a message descriptor")
     class FindFieldDescriptor {
 
-        private final FieldReference absoluteRef =
-                new FieldReference("google.protobuf.Timestamp.seconds");
+        private final FieldRef absoluteRef =
+                new FieldRef("google.protobuf.Timestamp.seconds");
 
-        private final FieldReference nonQualifiedTypedRef =
-                new FieldReference("Timestamp.seconds");
+        private final FieldRef nonQualifiedTypedRef =
+                new FieldRef("Timestamp.seconds");
 
-        private final FieldReference onlyNameRef =
-                new FieldReference("seconds");
+        private final FieldRef onlyNameRef =
+                new FieldRef("seconds");
 
-        private final FieldReference invalidTypedRef =
-                new FieldReference("LocalTime.seconds");
+        private final FieldRef invalidTypedRef =
+                new FieldRef("LocalTime.seconds");
 
         @Test
         @DisplayName("via filly-qualified reference")
@@ -257,7 +257,7 @@ class FieldReferenceTest {
                          () -> invalidTypedRef.find(Timestamp.getDescriptor()));
         }
 
-        private void assertFound(FieldReference ref) {
+        private void assertFound(FieldRef ref) {
             Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
         }
@@ -265,7 +265,7 @@ class FieldReferenceTest {
         @Test
         @DisplayName("allowing wildcard type references")
         void wildcardRef() {
-            assertFound(new FieldReference("*.nanos"));
+            assertFound(new FieldRef("*.nanos"));
         }
     }
 
@@ -276,7 +276,7 @@ class FieldReferenceTest {
         @Test
         @DisplayName("for wildcard reference")
         void wildcardRef() {
-            assertThat(new FieldReference("*.nanos")
+            assertThat(new FieldRef("*.nanos")
                                .matchesType(Timestamp.getDescriptor()))
                     .isTrue();
         }
@@ -284,7 +284,7 @@ class FieldReferenceTest {
         @Test
         @DisplayName("for direct type reference")
         void directTypeRef() {
-            assertThat(new FieldReference("Timestamp.seconds")
+            assertThat(new FieldRef("Timestamp.seconds")
                                .matchesType(Timestamp.getDescriptor()))
                     .isTrue();
         }
