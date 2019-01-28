@@ -44,14 +44,4 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         boolean result = intValue <= 0;
         return result;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
-     */
-    @Override
-    protected void validateOwnRules() {
-    }
 }

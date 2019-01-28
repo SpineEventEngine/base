@@ -151,7 +151,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>Do not call this method directly. Use {@link #validate() validate()} instead.
      */
-    protected abstract void validateOwnRules();
+    @SuppressWarnings("NoopMethodInAbstractClass"/* Does nothing for all but one subclasses. */)
+    protected void validateOwnRules(){
+    }
 
     private List<ConstraintViolation> assembleViolations() {
         return ImmutableList.<ConstraintViolation>builder()

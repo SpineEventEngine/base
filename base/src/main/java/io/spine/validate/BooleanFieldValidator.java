@@ -46,14 +46,4 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     protected boolean isNotSet(Boolean value) {
         return false;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
-     */
-    @Override
-    protected void validateOwnRules() {
-    }
 }

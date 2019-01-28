@@ -40,7 +40,7 @@ public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
     private final GeneratedExtension<FieldOptions, O> optionExtension;
 
     /** Specifies the extension that corresponds to this option. */
-    protected FieldOption(GeneratedExtension<FieldOptions, O> optionExtension) {
+    public FieldOption(GeneratedExtension<FieldOptions, O> optionExtension) {
         this.optionExtension = optionExtension;
     }
 

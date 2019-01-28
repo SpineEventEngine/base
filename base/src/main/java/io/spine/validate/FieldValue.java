@@ -175,7 +175,7 @@ public final class FieldValue<T> {
             return validationRuleOption.get();
         }
 
-        Optional<O> result = FieldOption.<O, T>someOption(option).valueFrom(this);
+        Optional<O> result = new FieldOption<O, T>(option).valueFrom(this);
         return result.orElseGet(option::getDefaultValue);
     }
 

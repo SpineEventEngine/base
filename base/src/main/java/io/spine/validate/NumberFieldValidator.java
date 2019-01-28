@@ -62,17 +62,6 @@ abstract class NumberFieldValidator<V extends Number> extends FieldValidator<V> 
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
-     */
-    @SuppressWarnings("NoopMethodInAbstractClass")
-    @Override
-    protected void validateOwnRules() {
-    }
-
-    /**
      * Returns {@code false}.
      *
      * <p>There's no way to define whether a Protobuf numeric field is {@code 0} or not set.

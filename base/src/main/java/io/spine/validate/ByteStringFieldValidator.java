@@ -44,16 +44,6 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
-     */
-    @Override
-    protected void validateOwnRules() {
-    }
-
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {

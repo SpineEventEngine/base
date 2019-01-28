@@ -45,14 +45,4 @@ class StringFieldValidator extends FieldValidator<String> {
         boolean result = value.isEmpty();
         return result;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>All of the additional validation logic is passed as the third
-     * {@linkplain FieldValidator(FieldValue, boolean, java.util.Set)} super constructor} parameter.
-     */
-    @Override
-    protected void validateOwnRules() {
-    }
 }
