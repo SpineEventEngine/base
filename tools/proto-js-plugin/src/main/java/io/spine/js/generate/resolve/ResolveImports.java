@@ -28,7 +28,6 @@ import io.spine.code.js.FileName;
 import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
-import org.gradle.plugins.ide.eclipse.model.FileReference;
 
 import java.io.IOException;
 import java.nio.file.Files;

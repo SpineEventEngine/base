@@ -24,7 +24,7 @@ import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,50 +48,50 @@ class ExternalModuleTest {
     @DisplayName("resolve an import if the directory is same as in the pattern")
     void resolveIfDirectorySame() {
         ExternalModule module = newModule(moduleName, "d");
-        ImportPath originImport = ImportPath.of("./../../d/f.js");
-        ImportPath pathInModule = module.pathInModule(originImport);
-        ImportPath expectedPath = ImportPath.of(moduleName + "/d/f.js");
-        assertEquals(expectedPath, pathInModule);
+        FileReference origin = FileReference.of("./../../d/f.js");
+        FileReference result = module.pathInModule(origin);
+        FileReference expected = FileReference.of(moduleName + "/d/f.js");
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("resolve an import for a subdirectory of a pattern")
     void resolveForSubdirectoryPattern() {
         ExternalModule module = newModule(moduleName, "d/*");
-        ImportPath originImport = ImportPath.of("./../../d/d2/f.js");
-        ImportPath pathInModule = module.pathInModule(originImport);
-        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/f.js");
-        assertEquals(expectedPath, pathInModule);
+        FileReference origin = FileReference.of("./../../d/d2/f.js");
+        FileReference result = module.pathInModule(origin);
+        FileReference expected = FileReference.of(moduleName + "/d/d2/f.js");
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("resolve an import if subdirectories match but root is absent")
     void resolveImportMatchingSubdirectories() {
         ExternalModule module = newModule(moduleName, "d/d2/d3");
-        ImportPath originImport = ImportPath.of("./../../d2/d3/f.js");
-        ImportPath pathInModule = module.pathInModule(originImport);
-        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/d3/f.js");
-        assertEquals(expectedPath, pathInModule);
+        FileReference origin = FileReference.of("./../../d2/d3/f.js");
+        FileReference result = module.pathInModule(origin);
+        FileReference expected = FileReference.of(moduleName + "/d/d2/d3/f.js");
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("resolve an import if subdirectories match by pattern but root is absent")
     void resolveImportMatchingAnySubdirectories() {
         ExternalModule module = newModule(moduleName, "d/d2/d3/*");
-        ImportPath originImport = ImportPath.of("./../../d2/d3/d4/f.js");
-        ImportPath pathInModule = module.pathInModule(originImport);
-        ImportPath expectedPath = ImportPath.of(moduleName + "/d/d2/d3/f.js");
-        assertEquals(expectedPath, pathInModule);
+        FileReference origin = FileReference.of("./../../d2/d3/d4/f.js");
+        FileReference result = module.pathInModule(origin);
+        FileReference expected = FileReference.of(moduleName + "/d/d2/d3/f.js");
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("compose an import path only if package is provided by the module")
     void acceptOnlyProvidedProto() {
         ExternalModule module = newModule(moduleName, "should_not_match_it");
-        ImportPath importPath = ImportPath.of("d/index_pb.js");
+        FileReference reference = FileReference.of("d/index_pb.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.pathInModule(importPath)
+                () -> module.pathInModule(reference)
         );
     }
 

@@ -25,9 +25,11 @@ import io.spine.code.js.FileName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spine.test.js.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.google.common.io.Files.createTempDir;
@@ -38,7 +40,8 @@ import static io.spine.js.generate.output.FileWriter.createFor;
 @DisplayName("FileWriter should")
 class FileWriterTest {
 
-    private static final FileName TASKS_JS = FileName.of("tasks.js");
+    private static final FileName TASKS_JS = FileName.from(Task.getDescriptor()
+                                                               .getFile());
     private static final String CREATE_TASK_1 = "createTask1();";
     private static final String CREATE_TASK_2 = "createTask2();";
 
@@ -46,11 +49,12 @@ class FileWriterTest {
     private Path filePath;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         File tempDir = createTempDir();
         Directory directory = Directory.at(tempDir.toPath());
         writer = createFor(directory, TASKS_JS);
         filePath = directory.resolve(TASKS_JS);
+        Files.createDirectories(filePath);
     }
 
     @Test
