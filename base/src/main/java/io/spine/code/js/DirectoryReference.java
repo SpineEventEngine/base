@@ -55,29 +55,11 @@ public final class DirectoryReference extends StringTypeValue {
     }
 
     /**
-     * Tells if this directory is the parent for specified directory.
-     *
-     * @param target
-     *         the directory to check
-     * @return {@code true} if specified directory is a child of this one
-     */
-    public boolean isParentFor(DirectoryReference target) {
-        boolean sameBeginning = target.value()
-                                      .startsWith(value());
-        boolean result = sameBeginning && target.length() > length();
-        return result;
-    }
-
-    /**
      * Obtains all directory names composing this reference.
      */
     public List<String> elements() {
         Iterable<String> elements = Splitter.on(FileReference.separator())
                                             .split(value());
         return ImmutableList.copyOf(elements);
-    }
-
-    private int length() {
-        return value().length();
     }
 }

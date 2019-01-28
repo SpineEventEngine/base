@@ -20,12 +20,14 @@
 
 package io.spine.code.js;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("DirectoryReference should")
 class DirectoryReferenceTest {
@@ -40,25 +42,10 @@ class DirectoryReferenceTest {
     }
 
     @Test
-    @DisplayName("match the parent directory")
-    void matchParentDirectory() {
-        DirectoryReference parent = DirectoryReference.of("parent");
-        DirectoryReference child = DirectoryReference.of("parent/child");
-        assertTrue(parent.isParentFor(child));
-    }
-
-    @Test
-    @DisplayName("match indirect parents")
-    void matchIndirectParents() {
-        DirectoryReference indirectParent = DirectoryReference.of("source");
-        DirectoryReference child = DirectoryReference.of("source/something/else");
-        assertTrue(indirectParent.isParentFor(child));
-    }
-
-    @Test
-    @DisplayName("not match itself as parent")
-    void selfNotParent() {
-        DirectoryReference directory = DirectoryReference.of("self");
-        assertFalse(directory.isParentFor(directory));
+    @DisplayName("provide names it consists from")
+    void provideDirectoryNames() {
+        DirectoryReference reference = DirectoryReference.of("a/b/c");
+        List<String> expected = ImmutableList.of("a", "b", "c");
+        assertThat(reference.elements()).containsAllIn(expected);
     }
 }
