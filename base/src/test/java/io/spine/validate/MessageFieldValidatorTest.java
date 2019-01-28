@@ -61,22 +61,22 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
                                                                                     .get(0);
 
     @Override
-    protected MessageFieldValidator validatedRequiredRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator<Message> validatedRequiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator requiredRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator<Message> requiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator validatedRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator<Message> validatedRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator uncheckedRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator<Message> uncheckedRepeatedFieldValidator(List<Message> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 
@@ -100,6 +100,6 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     private static MessageFieldValidator getValidator(FieldDescriptor field,
                                                       Object rawValue) {
         FieldContext context = FieldContext.create(field);
-        return new MessageFieldValidator(FieldValue.of(rawValue, context), false);
+        return new MessageFieldValidator<>(FieldValue.of(rawValue, context), false);
     }
 }
