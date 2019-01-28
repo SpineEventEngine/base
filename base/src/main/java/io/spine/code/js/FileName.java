@@ -45,8 +45,6 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final String SUFFIX = "_pb";
     /** The standard file extension. */
     private static final String EXTENSION = ".js";
-    /** The file system separator as defined by Protobuf. Not platform-dependant. */
-    private static final String PATH_SEPARATOR = "/";
 
     private FileName(String value) {
         super(value);
@@ -112,7 +110,7 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     @VisibleForTesting
     List<String> pathElements() {
-        Iterable<String> elements = Splitter.on(PATH_SEPARATOR)
+        Iterable<String> elements = Splitter.on(FileReference.separator())
                                             .split(value());
         return ImmutableList.copyOf(elements);
     }
