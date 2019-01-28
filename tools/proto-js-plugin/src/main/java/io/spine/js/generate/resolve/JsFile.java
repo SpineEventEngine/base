@@ -53,23 +53,31 @@ final class JsFile {
         this.path = path;
     }
 
-    void resolveImports(Predicate<ImportStatement> importFilter,
-                        Function<ImportStatement, ImportStatement> resolveFunction) {
+    /**
+     * Processes import statements in this file.
+     *
+     * @param importFilter
+     *         the predicate to filter out imports to be processed
+     * @param processFunction
+     *         the function processing an import
+     */
+    void processImports(Predicate<ImportStatement> importFilter,
+                        ProcessImport processFunction) {
         List<String> updatedLines = lines(path)
-                .map(line -> processLine(line, importFilter, resolveFunction))
+                .map(line -> processLine(line, importFilter, processFunction))
                 .collect(toList());
         rewriteFile(updatedLines);
     }
 
     private String processLine(String line,
                                Predicate<ImportStatement> importFilter,
-                               Function<ImportStatement, ImportStatement> resolveFunction) {
+                               ProcessImport processFunction) {
         File file = path.toFile();
         if (ImportStatement.hasImport(line)) {
             ImportStatement importStatement = new ImportStatement(line, file);
             boolean matchesFilter = importFilter.test(importStatement);
             if (matchesFilter) {
-                return resolveFunction.apply(importStatement)
+                return processFunction.apply(importStatement)
                                       .text();
             }
         }
@@ -91,5 +99,11 @@ final class JsFile {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    /**
+     * A function processing an import statement.
+     */
+    interface ProcessImport extends Function<ImportStatement, ImportStatement> {
     }
 }

@@ -21,6 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.js.generate.resolve.JsFile.ProcessImport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.given.Given.importWithPath;
@@ -43,7 +43,7 @@ import static io.spine.js.generate.resolve.given.Given.importWithPath;
 class JsFileTest {
 
     private static final String RESOLVED_IMPORT_PATH = "resolved";
-    private static final Function<ImportStatement, ImportStatement> RESOLVE_IMPORT_FUNCTION =
+    private static final ProcessImport PROCESS_IMPORT_FUNCTION =
             statement -> statement.replacePath(RESOLVED_IMPORT_PATH);
 
     private Path filePath;
@@ -74,8 +74,8 @@ class JsFileTest {
 
     private void resolveImports() {
         JsFile file = new JsFile(filePath);
-        file.resolveImports(importStatement -> true,
-                            RESOLVE_IMPORT_FUNCTION);
+        file.processImports(importStatement -> true,
+                            PROCESS_IMPORT_FUNCTION);
     }
 
     private void writeFile(String... lines) throws IOException {
@@ -88,7 +88,7 @@ class JsFileTest {
     }
 
     private static String expectedImport(ImportStatement originalImport) {
-        return RESOLVE_IMPORT_FUNCTION.apply(originalImport)
+        return PROCESS_IMPORT_FUNCTION.apply(originalImport)
                                       .text();
     }
 }

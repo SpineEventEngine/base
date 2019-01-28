@@ -63,7 +63,7 @@ public final class ResolveImports extends GenerationTask {
     private void resolveInFile(FileName fileName) {
         Path filePath = generatedRoot().resolve(fileName);
         JsFile file = new JsFile(filePath);
-        file.resolveImports(new ImportFilter(), this::resolveImport);
+        file.processImports(new UnresolvedRelativeImport(), this::resolveImport);
     }
 
     /**
@@ -84,7 +84,7 @@ public final class ResolveImports extends GenerationTask {
         return resolvable;
     }
 
-    private static final class ImportFilter implements Predicate<ImportStatement> {
+    private static final class UnresolvedRelativeImport implements Predicate<ImportStatement> {
 
         @CanIgnoreReturnValue
         @Override
