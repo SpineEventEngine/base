@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.code.proto.Option;
 import io.spine.validate.FieldContext;
 
 import java.util.Collection;
@@ -58,16 +57,14 @@ public final class ValidationRuleOptions {
      * @return the {@code Optional} of option value
      *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
-    public static <T>
-    Optional<Option<T>> getOptionValue(FieldContext fieldContext,
-                                       GeneratedExtension<FieldOptions, T> option) {
+    public static <T> Optional<T> getOptionValue(FieldContext fieldContext,
+                                                 GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
                 T optionValue = fieldOptions.getExtension(option);
                 // A option is set explicitly if it was found in validation rules.
-                Option<T> fieldOption = Option.explicitlySet(optionValue);
-                return Optional.of(fieldOption);
+                return Optional.of(optionValue);
             }
         }
         return Optional.empty();
