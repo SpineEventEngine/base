@@ -91,24 +91,6 @@ public final class DirectoryPattern {
         return matches(target, firstElementMatch.get());
     }
 
-    private boolean matches(DirectoryReference target, int fromIndex) {
-        List<String> targetElements = target.elements();
-        List<String> patternElements = directory.elements();
-        List<String> relevantPatternElements = patternElements.subList(fromIndex,
-                                                                       patternElements.size());
-        return relevantPatternElements.equals(targetElements);
-    }
-
-    private Optional<Integer> firstMatchIndex(DirectoryReference target) {
-        List<String> patternElements = directory.elements();
-        String firstTargetElement = target.elements()
-                                          .get(0);
-        int index = patternElements.indexOf(firstTargetElement);
-        return index == -1
-               ? Optional.empty()
-               : Optional.of(index);
-    }
-
     /**
      * Transforms the directory reference according to the pattern.
      *
@@ -128,6 +110,24 @@ public final class DirectoryPattern {
         String result = Joiner.on(FileReference.separator())
                               .join(resultElements);
         return DirectoryReference.of(result);
+    }
+
+    private boolean matches(DirectoryReference target, int fromIndex) {
+        List<String> targetElements = target.elements();
+        List<String> patternElements = directory.elements();
+        List<String> relevantPatternElements = patternElements.subList(fromIndex,
+                                                                       patternElements.size());
+        return relevantPatternElements.equals(targetElements);
+    }
+
+    private Optional<Integer> firstMatchIndex(DirectoryReference target) {
+        List<String> patternElements = directory.elements();
+        String firstTargetElement = target.elements()
+                                          .get(0);
+        int index = patternElements.indexOf(firstTargetElement);
+        return index == -1
+               ? Optional.empty()
+               : Optional.of(index);
     }
 
     /**

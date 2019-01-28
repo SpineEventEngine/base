@@ -33,10 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A name of a JavaScript source file.
- *
- * <p>The name includes the path of a file relative
- * to the root directory of generated Protobuf files.
+ * A name of a JavaScript file, which is generated under the
+ * the root directory with compiled Protobuf files.
  */
 public final class FileName extends AbstractFileName<FileName> {
 

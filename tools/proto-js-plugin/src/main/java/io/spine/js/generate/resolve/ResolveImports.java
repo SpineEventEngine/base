@@ -73,8 +73,8 @@ public final class ResolveImports extends GenerationTask {
         FileReference fileReference = resolvable.path();
         for (ExternalModule module : modules) {
             if (module.provides(fileReference)) {
-                FileReference pathInModule = module.pathInModule(fileReference);
-                return resolvable.replacePath(pathInModule.value());
+                FileReference fileInModule = module.fileInModule(fileReference);
+                return resolvable.replacePath(fileInModule.value());
             }
         }
         return resolvable;

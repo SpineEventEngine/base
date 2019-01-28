@@ -64,7 +64,7 @@ public final class ExternalModule {
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    FileReference pathInModule(FileReference fileReference) {
+    FileReference fileInModule(FileReference fileReference) {
         Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
         checkState(matchingDirectory.isPresent());
         DirectoryReference directory = matchingDirectory.get()

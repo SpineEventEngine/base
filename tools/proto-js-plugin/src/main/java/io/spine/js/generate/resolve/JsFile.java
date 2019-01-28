@@ -56,6 +56,8 @@ final class JsFile {
     /**
      * Processes import statements in this file.
      *
+     * <p>Rewrites the file using the updated imports.
+     *
      * @param importFilter
      *         the predicate to filter out imports to be processed
      * @param processFunction

@@ -49,7 +49,7 @@ class ExternalModuleTest {
     void resolveIfDirectorySame() {
         ExternalModule module = newModule(moduleName, "d");
         FileReference origin = FileReference.of("./../../d/f.js");
-        FileReference result = module.pathInModule(origin);
+        FileReference result = module.fileInModule(origin);
         FileReference expected = FileReference.of(moduleName + "/d/f.js");
         assertEquals(expected, result);
     }
@@ -59,7 +59,7 @@ class ExternalModuleTest {
     void resolveForSubdirectoryPattern() {
         ExternalModule module = newModule(moduleName, "d/*");
         FileReference origin = FileReference.of("./../../d/d2/f.js");
-        FileReference result = module.pathInModule(origin);
+        FileReference result = module.fileInModule(origin);
         FileReference expected = FileReference.of(moduleName + "/d/d2/f.js");
         assertEquals(expected, result);
     }
@@ -69,7 +69,7 @@ class ExternalModuleTest {
     void resolveImportMatchingSubdirectories() {
         ExternalModule module = newModule(moduleName, "d/d2/d3");
         FileReference origin = FileReference.of("./../../d2/d3/f.js");
-        FileReference result = module.pathInModule(origin);
+        FileReference result = module.fileInModule(origin);
         FileReference expected = FileReference.of(moduleName + "/d/d2/d3/f.js");
         assertEquals(expected, result);
     }
@@ -79,7 +79,7 @@ class ExternalModuleTest {
     void resolveImportMatchingAnySubdirectories() {
         ExternalModule module = newModule(moduleName, "d/d2/d3/*");
         FileReference origin = FileReference.of("./../../d2/d3/d4/f.js");
-        FileReference result = module.pathInModule(origin);
+        FileReference result = module.fileInModule(origin);
         FileReference expected = FileReference.of(moduleName + "/d/d2/d3/d4/f.js");
         assertEquals(expected, result);
     }
@@ -91,7 +91,7 @@ class ExternalModuleTest {
         FileReference reference = FileReference.of("d/index_pb.js");
         assertThrows(
                 IllegalStateException.class,
-                () -> module.pathInModule(reference)
+                () -> module.fileInModule(reference)
         );
     }
 
