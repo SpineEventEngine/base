@@ -21,6 +21,7 @@
 package io.spine.code.js;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
 
 import java.util.List;
@@ -86,8 +87,9 @@ public final class FileReference extends StringTypeValue {
     }
 
     public List<String> elements() {
-        return Splitter.on(separator())
-                       .splitToList(value());
+        Iterable<String> elements = Splitter.on(separator())
+                                            .split(value());
+        return ImmutableList.copyOf(elements);
     }
 
     private String withoutRelative() {

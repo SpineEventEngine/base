@@ -21,6 +21,7 @@
 package io.spine.code.js;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
 
 import java.util.List;
@@ -71,8 +72,9 @@ public final class DirectoryReference extends StringTypeValue {
      * Obtains all directory names composing this reference.
      */
     public List<String> elements() {
-        return Splitter.on(FileReference.separator())
-                       .splitToList(value());
+        Iterable<String> elements = Splitter.on(FileReference.separator())
+                                            .split(value());
+        return ImmutableList.copyOf(elements);
     }
 
     private int length() {

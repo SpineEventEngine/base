@@ -23,6 +23,7 @@ package io.spine.code.js;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 
@@ -111,9 +112,9 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     @VisibleForTesting
     List<String> pathElements() {
-        List<String> result = Splitter.on(PATH_SEPARATOR)
-                                      .splitToList(value());
-        return result;
+        Iterable<String> elements = Splitter.on(PATH_SEPARATOR)
+                                            .split(value());
+        return ImmutableList.copyOf(elements);
     }
 
     /**
