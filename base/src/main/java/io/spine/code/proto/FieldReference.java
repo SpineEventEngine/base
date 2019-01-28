@@ -77,15 +77,23 @@ public final class FieldReference extends StringTypeValue {
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
         List<String> parts = parts(value);
+        checkThat(!parts.isEmpty(), value);
         if (parts.size() >= 2) {
             // Contains the type part.
             checkTypeReference(parts.get(0));
         }
+        parts.forEach(v -> checkThat(!v.trim()
+                                       .isEmpty(), value));
         return value;
     }
 
+    private static void checkThat(boolean b, String value) {
+        checkArgument(b, "The value (`%s`) is not a valid field reference.", value);
+    }
+
     private static ImmutableList<String> parts(String value) {
-        return ImmutableList.copyOf(fieldNameSplit.splitToList(value));
+        List<String> elements = fieldNameSplit.splitToList(value);
+        return ImmutableList.copyOf(elements);
     }
 
     /**

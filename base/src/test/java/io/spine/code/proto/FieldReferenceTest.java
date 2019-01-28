@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -154,11 +155,11 @@ class FieldReferenceTest {
     @DisplayName("reject")
     class Arguments {
 
-        @DisplayName("empty or blank type reference")
+        @DisplayName("empty or blank type reference passed to wildcard checking")
         @Test
         void emptyTypeArg() {
-            assertThrows(IllegalArgumentException.class, () -> FieldReference.isWildcard(""));
-            assertThrows(IllegalArgumentException.class, () -> FieldReference.isWildcard(" "));
+            assertRejects(() -> FieldReference.isWildcard(""));
+            assertRejects(() -> FieldReference.isWildcard(" "));
         }
 
         /**
@@ -166,11 +167,10 @@ class FieldReferenceTest {
          * {@code (by) = "*Event.user_id"}. Currently only single symbol {@code '*'} is allowed for
          * wildcard field references.
          */
-        @DisplayName("suffix form of whilecard type reference")
+        @DisplayName("suffix form of whildcard type reference")
         @Test
         void suffixForm() {
-            assertThrows(IllegalArgumentException.class,
-                         () -> FieldReference.isWildcard("*Event"));
+            assertRejects(() -> FieldReference.isWildcard("*Event"));
         }
 
         @DisplayName("null field reference to a specific message")
@@ -178,6 +178,41 @@ class FieldReferenceTest {
         void nullRef() {
             assertThrows(NullPointerException.class,
                          () -> FieldReference.Via.context.matches(null));
+        }
+
+        @DisplayName("empty or blank value")
+        @Test
+        void emptyOrBlank() {
+            assertRejects("");
+
+            assertRejects("  ");
+        }
+
+        @DisplayName("value with empty type reference")
+        @Test
+        void emptyTypeRef() {
+            assertRejects(".field_name");
+        }
+
+        @DisplayName("value with empty field reference")
+        @Test
+        void emptyFieldRef() {
+            assertRejects("TypeName.");
+        }
+
+        @DisplayName("value with missing package or nested type reference")
+        @Test
+        void emptyInterimTypeRef() {
+            assertRejects("Some. .field_name");
+            assertRejects("io.spine. .TypeName.field_name");
+        }
+
+        void assertRejects(Executable executable) {
+            assertThrows(IllegalArgumentException.class, executable);
+        }
+
+        void assertRejects(String fieldReference) {
+            assertRejects(() -> new FieldReference(fieldReference));
         }
     }
 
