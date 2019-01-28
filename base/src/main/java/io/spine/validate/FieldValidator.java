@@ -289,8 +289,8 @@ abstract class FieldValidator<V> implements Logging {
         return declaration;
     }
 
-    private Set<FieldValidatingOption<?, V>> commonOptions(boolean isStrict) {
+    private Set<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
         return ImmutableSet.of(Distinct.create(),
-                               new Required<>(isStrict));
+                               new Required<>(strict));
     }
 }

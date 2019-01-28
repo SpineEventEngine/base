@@ -52,9 +52,9 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
      * @param isOptionPresent
      *         a function that defines whether this option is present
      */
-    Required(boolean isStrict) {
+    Required(boolean strict) {
         super(OptionsProto.required);
-        this.isOptionPresent = isStrict
+        this.isOptionPresent = strict
                                ? value -> true
                                : this::notAssumingRequired;
     }

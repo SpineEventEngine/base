@@ -64,7 +64,8 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     private boolean shouldValidateFields() {
-        return fieldValue().valueOf(OptionsProto.valid) && !fieldValueNotSet();
+        boolean fieldValueSet = !fieldValueNotSet();
+        return fieldValue().valueOf(OptionsProto.valid) && fieldValueSet;
     }
 
     @Override

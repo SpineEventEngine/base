@@ -51,9 +51,9 @@ abstract class FieldValidatingOption<T, F> extends ValidatingOption<T, FieldValu
     }
 
     @Override
-    public Optional<T> valueFrom(FieldValue<F> bearer) {
-        T option = bearer.valueOf(optionExtension);
-        return isDefault(bearer)
+    public Optional<T> valueFrom(FieldValue<F> value) {
+        T option = value.valueOf(optionExtension);
+        return isDefault(value)
                ? Optional.empty()
                : Optional.of(option);
     }

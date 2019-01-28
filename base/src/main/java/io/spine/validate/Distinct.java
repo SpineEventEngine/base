@@ -54,7 +54,6 @@ final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
         FieldDescriptor descriptor = fieldValue.declaration()
                                                .descriptor();
         Option distinct = Option.from(descriptor, optionExtension());
-
         return distinct.isExplicitlySet()
                ? Optional.of(fieldValue.valueOf(optionExtension()))
                : Optional.empty();
