@@ -35,7 +35,7 @@ import java.util.Optional;
  * @param <T>
  *         type of field that this option is applied to
  */
-public abstract class FieldOption<O, T> implements Option<O, FieldValue<T>> {
+public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
 
     private final GeneratedExtension<FieldOptions, O> optionExtension;
 
@@ -57,8 +57,7 @@ public abstract class FieldOption<O, T> implements Option<O, FieldValue<T>> {
      */
     public static <O, T> FieldOption<O, T> someOption(
             GeneratedExtension<FieldOptions, O> extension) {
-        return new FieldOption<O, T>(extension) {
-        };
+        return new FieldOption<>(extension);
     }
 
     @Override
