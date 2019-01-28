@@ -268,4 +268,25 @@ class FieldReferenceTest {
             assertFound(new FieldReference("*.nanos"));
         }
     }
+
+    @Nested
+    @DisplayName("tell if a type matches")
+    class TypeMatch {
+
+        @Test
+        @DisplayName("for wildcard reference")
+        void wildcardRef() {
+            assertThat(new FieldReference("*.nanos")
+                               .matchesType(Timestamp.getDescriptor()))
+                    .isTrue();
+        }
+
+        @Test
+        @DisplayName("for direct type reference")
+        void directTypeRef() {
+            assertThat(new FieldReference("Timestamp.seconds")
+                               .matchesType(Timestamp.getDescriptor()))
+                    .isTrue();
+        }
+    }
 }

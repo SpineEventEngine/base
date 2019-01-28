@@ -210,6 +210,21 @@ public final class FieldReference extends StringTypeValue {
     }
 
     /**
+     * Verifies if the message type matches the one from the reference.
+     *
+     * <p>The method accepts all types if this instance is a wildcard type reference.
+     */
+    public boolean matchesType(Descriptor message) {
+        checkNotNull(message);
+        if (isWildcard()) {
+            return true;
+        }
+
+        boolean result = simpleTypeName().equals(message.getName());
+        return result;
+    }
+
+    /**
      * Obtains the descriptor of the field with the name {@linkplain #fieldName()} referenced}
      * by this instance in the passed message.
      *
@@ -223,7 +238,7 @@ public final class FieldReference extends StringTypeValue {
             String referencedType = simpleTypeName();
             String messageType = message.getName();
             checkArgument(
-                    referencedType.equals(messageType),
+                    matchesType(message),
                     "The referenced type (`%s`) does not match the type of the message (`%s`).",
                     referencedType,
                     messageType
