@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -33,11 +35,8 @@ public final class PackageName extends StringTypeValue {
     /**
      * The package used to identify standard Protobuf types.
      */
-    public static final PackageName googleProtobuf = of("google.protobuf");
-    /**
-     * The delimeter used in package names.
-     */
-    public static final String SEPARATOR = ".";
+    public static final PackageName googleProtobuf = of(Any.getDescriptor()
+                                                           .getFile());
 
     private PackageName(String value) {
         super(value);
@@ -46,25 +45,13 @@ public final class PackageName extends StringTypeValue {
     /**
      * Creates a new instance.
      *
-     * @param value
-     *         the dot separated package name
+     * @param file
+     *         the file to get the package name from
      * @return a new instance
      */
-    public static PackageName of(String value) {
+    public static PackageName of(FileDescriptor file) {
+        String value = file.getPackage();
         checkNotEmptyOrBlank(value);
         return new PackageName(value);
-    }
-
-    /**
-     * Tells whether the package is nested in the specified package.
-     *
-     * @param target
-     *         the package name to check
-     * @return {@code true} if this package is nested in the specified package,
-     *         {@code false} otherwise
-     */
-    public boolean isNestedIn(PackageName target) {
-        boolean result = value().startsWith(target.value());
-        return result;
     }
 }

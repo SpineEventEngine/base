@@ -21,13 +21,12 @@
 package io.spine.code.proto;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Any;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageName should")
 class PackageNameTest {
@@ -39,22 +38,10 @@ class PackageNameTest {
     }
 
     @Test
-    @DisplayName("not be empty")
-    void notAcceptEmptyString() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> PackageName.of("")
-        );
-    }
-
-    @Test
-    @DisplayName("match parent packages")
-    void matchParentPackages() {
-        PackageName firstLevel = PackageName.of("first");
-        PackageName secondLevel = PackageName.of("first.second");
-        PackageName thirdLevel = PackageName.of("first.second.third");
-        assertTrue(thirdLevel.isNestedIn(secondLevel));
-        assertTrue(thirdLevel.isNestedIn(firstLevel));
-        assertFalse(firstLevel.isNestedIn(secondLevel));
+    @DisplayName("be created using a file descriptor")
+    void createUsingFileDescriptor() {
+        PackageName packageName = PackageName.of(Any.getDescriptor()
+                                                    .getFile());
+        assertThat(packageName.value()).isEqualTo("google.protobuf");
     }
 }
