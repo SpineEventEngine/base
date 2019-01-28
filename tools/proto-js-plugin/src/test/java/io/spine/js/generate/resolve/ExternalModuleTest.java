@@ -24,7 +24,7 @@ import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,7 +97,7 @@ class ExternalModuleTest {
 
     private static ExternalModule newModule(String moduleName, String directoryPattern) {
         DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
-        Collection<DirectoryPattern> patterns = singletonList(pattern);
+        List<DirectoryPattern> patterns = singletonList(pattern);
         return new ExternalModule(moduleName, patterns);
     }
 }

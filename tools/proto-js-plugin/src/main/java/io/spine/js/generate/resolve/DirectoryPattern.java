@@ -22,7 +22,6 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import io.spine.code.js.DirectoryReference;
 import io.spine.code.js.FileReference;
 
@@ -32,6 +31,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -94,6 +94,10 @@ public final class DirectoryPattern {
     /**
      * Transforms the directory reference according to the pattern.
      *
+     * <p>It may prepend the specified reference with the root directories specified
+     * in the pattern. So, for a pattern {@code foo/bar/*}, the directory {@code bar/buzz}
+     * is transformed to {@code foo/bar/buzz}.
+     *
      * @param origin
      *         the reference to transform
      * @return the updated reference
@@ -102,10 +106,10 @@ public final class DirectoryPattern {
         checkState(matches(origin));
         Optional<Integer> firstMatchIndex = firstMatchIndex(origin);
         checkState(firstMatchIndex.isPresent());
-        List<String> elementsToAdd = directory.elements()
-                                              .subList(0, firstMatchIndex.get());
-        List<String> resultElements = Lists.newArrayList();
-        resultElements.addAll(elementsToAdd);
+        List<String> missingElements = directory.elements()
+                                                .subList(0, firstMatchIndex.get());
+        List<String> resultElements = newArrayList();
+        resultElements.addAll(missingElements);
         resultElements.addAll(origin.elements());
         String result = Joiner.on(FileReference.separator())
                               .join(resultElements);
