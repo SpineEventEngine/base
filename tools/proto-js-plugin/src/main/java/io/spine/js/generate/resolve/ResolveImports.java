@@ -41,7 +41,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>Supports only {@code CommonJs} imports.
  *
- * <p>The task should be performed last.
+ * <p>The task should be performed last among {@linkplain GenerationTask generation tasks}
+ * to ensure that imports won't be modified after execution of this task.
  */
 public final class ResolveImports extends GenerationTask {
 
@@ -80,6 +81,9 @@ public final class ResolveImports extends GenerationTask {
         return resolvable;
     }
 
+    /**
+     * A predicate to match an import of a file that cannot be found on a file system.
+     */
     private static final class UnresolvedRelativeImport implements Predicate<ImportStatement> {
 
         @CanIgnoreReturnValue
