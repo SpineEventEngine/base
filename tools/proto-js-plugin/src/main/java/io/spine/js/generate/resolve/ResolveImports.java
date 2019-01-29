@@ -30,6 +30,7 @@ import io.spine.code.js.FileName;
 import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
+import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;
@@ -48,7 +49,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The task should be performed last among {@linkplain GenerationTask generation tasks}
  * to ensure that imports won't be modified after execution of this task.
  */
-public final class ResolveImports extends GenerationTask {
+public final class ResolveImports extends GenerationTask implements Logging {
 
     /**
      * The relative path from the test sources directory to the main sources directory.
@@ -71,6 +72,7 @@ public final class ResolveImports extends GenerationTask {
     protected void generateFor(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
             FileName fileName = FileName.from(file);
+            _debug("Resolving imports in file {}.", fileName);
             Path filePath = generatedRoot().resolve(fileName);
             resolveInFile(filePath);
         }
