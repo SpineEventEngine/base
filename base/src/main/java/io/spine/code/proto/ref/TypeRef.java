@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -36,7 +37,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * {@linkplain Predicate#test(Object) matches} the reference.
  */
 @Immutable
-public interface TypeRef extends Predicate<Descriptor> {
+public interface TypeRef extends Predicate<Descriptor>, Serializable {
 
     /**
      * Obtains the value of the reference.

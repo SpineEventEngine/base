@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.ref.BuiltIn.ALL;
+import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -49,10 +51,10 @@ final class Direct extends AbstractTypeRef {
      */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.isEmpty()) {
+        if (value.equals(SELF.value())) {
             return Optional.empty();
         }
-        if (value.contains("*")) {
+        if (value.contains(ALL.value())) {
             return Optional.empty();
         }
         TypeRef result = new Direct(value);

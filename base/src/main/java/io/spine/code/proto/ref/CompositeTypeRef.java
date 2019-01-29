@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * A type reference consisting of two or more type references.
  */
 @Immutable
-public class CompositeTypeRef implements TypeRef, Serializable {
+public class CompositeTypeRef implements TypeRef {
 
     private static final long serialVersionUID = 0L;
 

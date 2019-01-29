@@ -36,6 +36,7 @@ import org.junit.jupiter.api.function.Executable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -173,13 +174,6 @@ class FieldRefTest {
             assertRejects(() -> FieldRef.isWildcard("*Event"));
         }
 
-        @DisplayName("null field reference to a specific message")
-        @Test
-        void nullRef() {
-            assertThrows(NullPointerException.class,
-                         () -> FieldRef.Via.context.matches(null));
-        }
-
         @DisplayName("empty or blank value")
         @Test
         void emptyOrBlank() {
@@ -288,5 +282,11 @@ class FieldRefTest {
                                .matchesType(Timestamp.getDescriptor()))
                     .isTrue();
         }
+    }
+
+    @Test
+    @DisplayName("serialize")
+    void serialize() {
+        reserializeAndAssert(new FieldRef("google.protobuf.Timestamp.seconds"));
     }
 }

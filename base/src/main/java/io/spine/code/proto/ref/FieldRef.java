@@ -37,6 +37,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.code.proto.ref.BuiltIn.ALL;
+import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static io.spine.code.proto.ref.BuiltIn.checkTypeReference;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -57,6 +59,9 @@ public final class FieldRef extends StringTypeValue {
      */
     private final ImmutableList<String> parts;
 
+    /**
+     * Reference to a proto type.
+     */
     private final TypeRef typeRef;
 
     @VisibleForTesting
@@ -119,7 +124,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field in all types having a field with the referenced name.
      */
     public boolean isWildcard() {
-        boolean result = value().startsWith(ALL.value());
+        boolean result = typeRef.equals(ALL);
         return result;
     }
 
@@ -127,7 +132,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
-        boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
+        boolean result = typeRef.equals(SELF);
         return result;
     }
 
@@ -135,7 +140,7 @@ public final class FieldRef extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = Via.context.matches(value());
+        boolean result = typeRef.equals(EVENT_CONTEXT);
         return result;
     }
 
@@ -233,25 +238,5 @@ public final class FieldRef extends StringTypeValue {
         }
         @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
         return Optional.ofNullable(result);
-    }
-
-    /**
-     * Enumeration of references to instances of a specific message.
-     */
-    public enum Via {
-
-        /**
-         * The reference to an event context used in the {@code (by)} field option.
-         */
-        context;
-
-        /**
-         * Verifies if the passed reference is one to a field of a specific message.
-         */
-        public boolean matches(String fieldReference) {
-            checkNotNull(fieldReference);
-            boolean result = fieldReference.startsWith(name());
-            return result;
-        }
     }
 }

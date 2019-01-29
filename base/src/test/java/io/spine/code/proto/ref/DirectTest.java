@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("Direct type reference should")
@@ -113,12 +114,19 @@ class DirectTest {
             assertThat(ref.test(FloatValue.getDescriptor()))
                     .isFalse();
         }
+    }
 
-        @SuppressWarnings("OptionalGetWithoutIsPresent" /* We check via Truth8. */)
-        TypeRef ref(String value) {
-            Optional<TypeRef> ref = Direct.parse(value);
-            Truth8.assertThat(ref).isPresent();
-            return ref.get();
-        }
+    @SuppressWarnings("OptionalGetWithoutIsPresent" /* We check via Truth8. */)
+    TypeRef ref(String value) {
+        Optional<TypeRef> ref = Direct.parse(value);
+        Truth8.assertThat(ref).isPresent();
+        return ref.get();
+    }
+
+    @Test
+    @DisplayName("serialize")
+    void serialize() {
+        reserializeAndAssert(ref("google.protobuf.Any"));
+        reserializeAndAssert(ref("Any"));
     }
 }
