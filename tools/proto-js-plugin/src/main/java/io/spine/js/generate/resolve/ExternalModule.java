@@ -123,6 +123,16 @@ public final class ExternalModule {
         return new ExternalModule("spine-web", directories);
     }
 
+    /**
+     * <a href="https://github.com/SpineEventEngine/users">The Spine Users</a> module.
+     */
+    public static ExternalModule spineUsers() {
+        Set<DirectoryPattern> directories = ImmutableSet.of(
+                DirectoryPattern.of("spine/users/*")
+        );
+        return new ExternalModule("spine-users", directories);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -169,7 +169,8 @@ public class Extension {
     @VisibleForTesting
     static List<ExternalModule> predefinedModules() {
         return ImmutableList.of(
-                ExternalModule.spineWeb()
+                ExternalModule.spineWeb(),
+                ExternalModule.spineUsers()
         );
     }
 
