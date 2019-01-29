@@ -183,8 +183,10 @@ public final class FieldRef extends StringTypeValue {
      * @see #hasType()
      */
     public String simpleTypeName() {
-        checkHasType();
-        return parts.get(parts.size() - 2);
+        checkState(typeRef instanceof Direct,
+                   "Unable to obtain a simple type name from the type reference `%s`.", typeRef);
+        String result = ((Direct) typeRef).simpleTypeName();
+        return result;
     }
 
     /**
@@ -208,11 +210,7 @@ public final class FieldRef extends StringTypeValue {
      */
     public boolean matchesType(Descriptor message) {
         checkNotNull(message);
-        if (isWildcard()) {
-            return true;
-        }
-
-        boolean result = simpleTypeName().equals(message.getName());
+        boolean result = typeRef.test(message);
         return result;
     }
 

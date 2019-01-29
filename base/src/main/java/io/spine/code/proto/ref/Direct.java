@@ -42,6 +42,7 @@ final class Direct extends AbstractTypeRef {
     private static final long serialVersionUID = 0L;
 
     private final @Nullable PackageName packageName;
+    private final String simpleTypeName;
 
     /**
      * Parses the passed value for the subject of direct type reference.
@@ -63,7 +64,15 @@ final class Direct extends AbstractTypeRef {
 
     private Direct(String value) {
         super(value);
-        this.packageName = parsePackage(value);
+        String delimiter = PackageName.delimiter();
+        List<String> parts =
+                Splitter.on(delimiter)
+                        .splitToList(value);
+        this.packageName =
+                value.contains(delimiter)
+                ? parsePackage(parts)
+                : null;
+        this.simpleTypeName = parts.get(parts.size() - 1);
     }
 
     /**
@@ -73,26 +82,31 @@ final class Direct extends AbstractTypeRef {
      *
      * @return the package name, if found, or {@code null} otherwise
      */
-    private static @Nullable PackageName parsePackage(String value) {
-        String delimiter = PackageName.delimiter();
-        if (!value.contains(delimiter)) {
-            return null;
-        }
-        List<String> parts = Splitter.on(delimiter)
-                                     .splitToList(value);
+    private static @Nullable PackageName parsePackage(List<String> parts) {
         List<String> packages =
                 parts.stream()
                      .filter(p -> Character.isLowerCase(p.charAt(0)))
                      .collect(toList());
-        String result = Joiner.on(delimiter).join(packages);
+        String result =
+                Joiner.on(PackageName.delimiter())
+                      .join(packages);
         return PackageName.of(result);
     }
 
     /**
      * Obtains package name used in the reference.
      */
-    public Optional<PackageName> packageName() {
+    Optional<PackageName> packageName() {
         return Optional.ofNullable(packageName);
+    }
+
+    /**
+     * Obtains simple type name of the direct type reference.
+     *
+     * <p>If a reference is for a nested type, returned value contains the most nested name.
+     */
+    String simpleTypeName() {
+        return this.simpleTypeName;
     }
 
     @Override
