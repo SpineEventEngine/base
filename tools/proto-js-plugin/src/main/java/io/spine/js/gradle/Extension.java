@@ -84,7 +84,7 @@ public class Extension {
      *      // The module provides `company/server` directory (including subdirectories).
      *      // So, an import path like {@code ../company/server/nested/file.js}
      *      // becomes {@code server/company/server/nested/file.js}.
-     *      'server' : ['company.server.*'],
+     *      'server' : ['company/server/*'],
      *
      *      // The module provides 'proto/company` directory.
      *      // So, an import pah like {@code ../company/file.js}
