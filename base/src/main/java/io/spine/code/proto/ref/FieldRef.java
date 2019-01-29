@@ -102,13 +102,11 @@ public final class FieldRef extends StringTypeValue {
      */
     public static ImmutableList<FieldRef> allFrom(FieldDescriptorProto field) {
         ImmutableList<String> refs = ByOption.allFrom(field);
-
         ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
         for (String ref : refs) {
             result.add(new FieldRef(ref));
         }
         return result.build();
-
     }
 
     /**
