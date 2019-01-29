@@ -20,11 +20,17 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.PackageName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A direct reference to a proto message type.
@@ -32,6 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class Direct extends AbstractTypeRef {
 
     private static final long serialVersionUID = 0L;
+
+    private final @Nullable PackageName packageName;
 
     /**
      * Parses the passed value for the subject of direct type reference.
@@ -53,11 +61,45 @@ final class Direct extends AbstractTypeRef {
 
     private Direct(String value) {
         super(value);
+        this.packageName = parsePackage(value);
+    }
+
+    /**
+     * Attempts to find a package name in the passed type reference.
+     *
+     * <p>Assumes that package names start from a lowercase letter.
+     *
+     * @return the package name, if found, or {@code null} otherwise
+     */
+    private static @Nullable PackageName parsePackage(String value) {
+        String delimiter = PackageName.delimiter();
+        if (!value.contains(delimiter)) {
+            return null;
+        }
+        List<String> parts = Splitter.on(delimiter)
+                                     .splitToList(value);
+        List<String> packages =
+                parts.stream()
+                     .filter(p -> Character.isLowerCase(p.charAt(0)))
+                     .collect(toList());
+        String result = Joiner.on(delimiter).join(packages);
+        return PackageName.of(result);
+    }
+
+    /**
+     * Obtains package name used in the reference.
+     */
+    public Optional<PackageName> packageName() {
+        return Optional.ofNullable(packageName);
     }
 
     @Override
     public boolean test(Descriptor message) {
-        //TODO:2019-01-29:alexander.yevsyukov: Handle package.
+        if (packageName != null) {
+            if (!packageName.equals(PackageName.of(message))) {
+                return false;
+            }
+        }
         boolean result = value().endsWith(message.getName());
         return result;
     }
