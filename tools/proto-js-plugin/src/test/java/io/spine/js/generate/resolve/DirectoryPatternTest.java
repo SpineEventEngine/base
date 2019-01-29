@@ -20,6 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import io.spine.code.js.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +48,16 @@ class DirectoryPatternTest {
                 IllegalArgumentException.class,
                 () -> DirectoryPattern.of("")
         );
+    }
+
+    @Test
+    @DisplayName("be equal if directory name and inclusion are same")
+    void equals() {
+        new EqualsTester()
+                .addEqualityGroup(DirectoryPattern.of("a"), DirectoryPattern.of("a"))
+                .addEqualityGroup(DirectoryPattern.of("b"))
+                .addEqualityGroup(DirectoryPattern.of("b/*"))
+                .testEquals();
     }
 
     @Test

@@ -22,7 +22,7 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
@@ -33,8 +33,9 @@ import io.spine.js.generate.GenerationTask;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -57,13 +58,13 @@ public final class ResolveImports extends GenerationTask {
     private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
     private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
     private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
-            Pattern.compile(GOOGLE_PROTOBUF_MODULE);
+            Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
 
-    private final List<ExternalModule> modules;
+    private final Set<ExternalModule> modules;
 
-    public ResolveImports(Directory generatedRoot, List<ExternalModule> modules) {
+    public ResolveImports(Directory generatedRoot, Collection<ExternalModule> modules) {
         super(generatedRoot);
-        this.modules = ImmutableList.copyOf(modules);
+        this.modules = ImmutableSet.copyOf(modules);
     }
 
     @Override
@@ -106,10 +107,12 @@ public final class ResolveImports extends GenerationTask {
     private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
         String fileReference = original.path()
                                        .value();
-        Path relativePathToRoot = original.sourceDirectory()
-                                          .relativize(generatedRoot().getPath());
-        String replacement = relativePathToRoot.toString()
-                                               .replace('\\', '/');
+        String relativePathToRoot = original.sourceDirectory()
+                                            .relativize(generatedRoot().getPath())
+                                            .toString();
+        String replacement = relativePathToRoot.isEmpty()
+                             ? FileReference.currentDirectory()
+                             : relativePathToRoot.replace('\\', '/') + FileReference.separator();
         String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
                                                                  .replaceFirst(replacement);
         return original.replacePath(relativeReference);

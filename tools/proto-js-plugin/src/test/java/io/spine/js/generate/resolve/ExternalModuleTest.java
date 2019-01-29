@@ -20,11 +20,13 @@
 
 package io.spine.js.generate.resolve;
 
+import com.google.common.testing.EqualsTester;
 import io.spine.code.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.js.generate.resolve.given.Given.newModule;
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,6 +42,16 @@ class ExternalModuleTest {
                 IllegalArgumentException.class,
                 () -> newModule("", "some/directory")
         );
+    }
+
+    @Test
+    @DisplayName("be equal if module name and patterns are same")
+    void equals() {
+        new EqualsTester()
+                .addEqualityGroup(ExternalModule.spineWeb(), ExternalModule.spineWeb())
+                .addEqualityGroup(new ExternalModule("a-module", emptySet()))
+                .addEqualityGroup(new ExternalModule("b-module", emptySet()))
+                .testEquals();
     }
 
     @Test
