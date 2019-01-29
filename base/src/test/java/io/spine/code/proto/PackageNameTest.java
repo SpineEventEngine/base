@@ -20,25 +20,25 @@
 
 package io.spine.code.proto;
 
-public enum ProtoPackage {
+import com.google.common.testing.NullPointerTester;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * The package used to identify standard Protobuf types.
-     */
-    GOOGLE_PROTOBUF_PACKAGE("google.protobuf");
+import static com.google.common.truth.Truth.assertThat;
 
-    private final String packageName;
+@DisplayName("PackageName should")
+class PackageNameTest {
 
-    ProtoPackage(String packageName) {
-        this.packageName = packageName;
+    @Test
+    void handleNullArgs() {
+        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
     }
 
-    public String packageName() {
-        return packageName;
-    }
-
-    @Override
-    public String toString() {
-        return packageName;
+    @Test
+    @DisplayName("create a new instance by value")
+    void newInstance() {
+        String packageName = "some.pack.age";
+        assertThat(PackageName.of(packageName)
+                              .value()).isEqualTo(packageName);
     }
 }

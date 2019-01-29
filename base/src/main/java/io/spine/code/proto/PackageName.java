@@ -18,53 +18,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.proto.PackageName;
-
-import java.util.Optional;
+import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Reference to all message types in a proto package.
+ * A name of a Protobuf package.
  */
-final class InPackage extends AbstractTypeRef {
+@Immutable
+public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+    private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
 
-    /**
-     * A suffix for referencing all types in a proto package.
-     */
-    private static final String WILDCARD = ".*";
-
-    /**
-     * The name of the referenced proto package.
-     */
-    private final PackageName packageName;
-
-    static Optional<TypeRef> parse(String value) {
-        checkNotNull(value);
-        if (value.endsWith(WILDCARD)) {
-            return Optional.of(new InPackage(value));
-        }
-        return Optional.empty();
-    }
-
-    private InPackage(String value) {
+    private PackageName(String value) {
         super(value);
-        int suffixIndex = value.lastIndexOf(WILDCARD);
-        String packageName = value.substring(0, suffixIndex);
-        this.packageName = PackageName.of(packageName);
     }
 
     /**
-     * Tests that the passed message <em>directly</em> belongs to the referenced package.
+     * Creates a new instance with the passed value.
      */
-    @Override
-    public boolean test(Descriptor message) {
-        boolean result = packageName.equals(PackageName.of(message));
+    public static PackageName of(String value) {
+        checkNotNull(value);
+        PackageName result = new PackageName(value);
         return result;
+    }
+
+    public static PackageName of(Descriptor message) {
+        checkNotNull(message);
+        PackageName result = of(message.getFile()
+                                       .getPackage());
+        return result;
+    }
+
+    /**
+     * Obtains the name of the Google Protobuf library package.
+     */
+    public static PackageName googleProtobuf() {
+        return GOOGLE_PROTOBUF;
     }
 }

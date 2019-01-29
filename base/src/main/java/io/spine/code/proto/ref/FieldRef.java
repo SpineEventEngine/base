@@ -57,10 +57,13 @@ public final class FieldRef extends StringTypeValue {
      */
     private final ImmutableList<String> parts;
 
+    private final TypeRef typeRef;
+
     @VisibleForTesting
     FieldRef(String value) {
         super(checkValue(value));
         this.parts = parts(value);
+        this.typeRef = TypeRef.parse(typeRef(value));
     }
 
     /**
@@ -145,7 +148,20 @@ public final class FieldRef extends StringTypeValue {
     public String fullTypeName() {
         checkHasType();
         String value = value();
+        return typeRef(value);
+    }
+
+    /**
+     * Obtains type reference part from the field reference string.
+     *
+     * @return the string until the {@linkplain FieldName#TYPE_SEPARATOR field name separator},
+     *         or en empty string, if type reference is not provided
+     */
+    private static String typeRef(String value) {
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
+        if (index == -1) {
+            return "";
+        }
         String result = value.substring(0, index)
                              .trim();
         return result;

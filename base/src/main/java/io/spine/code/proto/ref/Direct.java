@@ -22,20 +22,43 @@ package io.spine.code.proto.ref;
 
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A direct reference to a proto message type.
  */
-public class Direct extends AbstractTypeRef {
+final class Direct extends AbstractTypeRef {
 
     private static final long serialVersionUID = 0L;
 
-    protected Direct(String value) {
+    /**
+     * Parses the passed value for the subject of direct type reference.
+     *
+     * @return an instance if the passed value is not a wildcard reference or an empty string,
+     *         and empty {@code Optional} otherwise
+     */
+    static Optional<TypeRef> parse(String value) {
+        checkNotNull(value);
+        if (value.isEmpty()) {
+            return Optional.empty();
+        }
+        if (value.contains("*")) {
+            return Optional.empty();
+        }
+        TypeRef result = new Direct(value);
+        return Optional.of(result);
+    }
+
+    private Direct(String value) {
         super(value);
     }
 
     @Override
     public boolean test(Descriptor message) {
-        //TODO:2019-01-28:alexander.yevsyukov: Implement.
-        return false;
+        //TODO:2019-01-29:alexander.yevsyukov: Handle package.
+        boolean result = value().endsWith(message.getName());
+        return result;
     }
 }

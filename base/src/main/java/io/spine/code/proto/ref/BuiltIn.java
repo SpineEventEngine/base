@@ -24,6 +24,9 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -84,6 +87,14 @@ enum BuiltIn implements TypeRef {
      */
     EVENT_CONTEXT("context") {
 
+        @Override
+        Optional<TypeRef> parse(String value) {
+            if (value.startsWith(value())) {
+                return Optional.of(this);
+            }
+            return Optional.empty();
+        }
+
         /**
          * Accepts a message which type name is {@code EventContext}.
          */
@@ -98,6 +109,19 @@ enum BuiltIn implements TypeRef {
 
     BuiltIn(String value) {
         this.value = value;
+    }
+
+    /**
+     * Matches the passed string to see if it represents this type reference.
+     *
+     * @return {@code this} if the string matches this type reference,
+     *         empty {@code Optional} otherwise
+     */
+    Optional<TypeRef> parse(String value) {
+        if (value().equals(value)) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
     }
 
     /**
@@ -134,5 +158,18 @@ enum BuiltIn implements TypeRef {
     @Override
     public boolean test(Descriptor message) {
         return false;
+    }
+
+    /**
+     * Finds a value matching the passed string.
+     */
+    static Optional<TypeRef> find(String value) {
+        Optional<TypeRef> result =
+                Stream.of(values())
+                      .map(v -> v.parse(value))
+                      .filter(Optional::isPresent)
+                      .findFirst()
+                      .orElse(Optional.empty());
+        return result;
     }
 }

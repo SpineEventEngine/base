@@ -20,10 +20,16 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * References one or more message types, and can tell if a message type
@@ -36,4 +42,26 @@ public interface TypeRef extends Predicate<Descriptor> {
      * Obtains the value of the reference.
      */
     String value();
+
+    static TypeRef parse(String value) {
+        checkNotNull(value);
+
+        ImmutableList<Supplier<Optional<TypeRef>>> suppliers = ImmutableList.of(
+                () -> BuiltIn.find(value),
+                () -> InPackage.parse(value),
+                () -> Direct.parse(value)
+        );
+
+        for (Supplier<Optional<TypeRef>> supplier : suppliers) {
+            Optional<TypeRef> found = supplier.get();
+            if (found.isPresent()) {
+                return found.get();
+            }
+        }
+
+        throw newIllegalArgumentException(
+                "Unable to parse type reference from the value: `%s`.",
+                value
+        );
+    }
 }

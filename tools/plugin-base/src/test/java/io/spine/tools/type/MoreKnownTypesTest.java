@@ -75,7 +75,7 @@ class MoreKnownTypesTest extends UtilityClassTest<MoreKnownTypes> {
                 .build();
         FileOptions options = FileOptions
                 .newBuilder()
-                .setExtension(OptionsProto.typeUrlPrefix, "type.spine.io")
+                .setExtension(OptionsProto.typeUrlPrefix, TypeUrl.Prefix.SPINE.value())
                 .setJavaMultipleFiles(true)
                 .build();
         FileDescriptorProto newProtoFile = FileDescriptorProto
