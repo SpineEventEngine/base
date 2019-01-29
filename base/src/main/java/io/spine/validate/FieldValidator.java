@@ -124,23 +124,19 @@ abstract class FieldValidator<V> implements Logging {
      * Validates messages according to Spine custom protobuf options and returns validation
      * constraint violations found.
      *
-     * <p>This method defines the general flow of the field validation. Override
-     * {@link #validateOwnRules()} to customize the validation behavior.
-     *
      * <p>The flow of the validation is as follows:
      * <ol>
      *     <li>check the field to be set if it is {@code required};
      *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     *     <li>performs type-specific validation according to validation options;
      * </ol>
      *
-     * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
+     * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
      */
-    protected final List<ConstraintViolation> validate() {
+    protected List<ConstraintViolation> validate() {
         if (isRequiredId()) {
             validateEntityId();
         }
-        validateOwnRules();
         List<ConstraintViolation> ownViolations = assembleViolations();
         List<ConstraintViolation> optionViolations = optionViolations();
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
@@ -151,17 +147,6 @@ abstract class FieldValidator<V> implements Logging {
 
     final IfInvalidOption ifInvalid() {
         return ifInvalid;
-    }
-
-    /**
-     * Performs type-specific field validation.
-     *
-     * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
-     *
-     * <p>Do not call this method directly. Use {@link #validate() validate()} instead.
-     */
-    @SuppressWarnings("NoopMethodInAbstractClass"/* Does nothing for all but one subclasses. */)
-    protected void validateOwnRules() {
     }
 
     private List<ConstraintViolation> assembleViolations() {

@@ -40,7 +40,7 @@ interface Constraint<T> {
      *
      * @param value
      *         value that is being checked against this constraint
-     * @return a list of constraint violations, if a value breaks this
+     * @return violations of this constraint
      */
     List<ConstraintViolation> check(T value);
 }

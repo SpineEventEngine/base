@@ -32,7 +32,7 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldOption;
 import io.spine.protobuf.TypeConverter;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,12 +54,23 @@ import static java.lang.String.format;
  */
 public final class FieldValue<T> {
 
-    private final T value;
+    /**
+     * Actual field values.
+     *
+     * <p>Since a field can be, among other things, a repeated field or a map, the values are stored
+     * in a list.
+     *
+     * <p>For singular fields, a list contains a single value.
+     * For repeated fields, a list contains all of the values.
+     * For a map fields, a list contains a list of values, since the map values are being validated,
+     * not the keys.
+     */
+    private final List<T> values;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(T value, FieldContext context, FieldDeclaration declaration) {
-        this.value = value;
+    private FieldValue(List<T> values, FieldContext context, FieldDeclaration declaration) {
+        this.values = values;
         this.context = context;
         this.declaration = declaration;
     }
@@ -73,16 +84,26 @@ public final class FieldValue<T> {
      *         the context of the field
      * @return a new instance
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ConstantConditions", "ChainOfInstanceofChecks"})
     static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
         T value = rawValue instanceof ProtocolMessageEnum
-                       ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
-                       : (T) rawValue;
+                  ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
+                  : (T) rawValue;
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
-        return new FieldValue<>(value, context, declaration);
+
+        if (value instanceof List) {
+            List<T> values = (List<T>) value;
+            return new FieldValue<>(values, context, declaration);
+        } else if (value instanceof Map) {
+            Map<?, T> map = (Map<?, T>) value;
+            ImmutableList<T> values = ImmutableList.copyOf(map.values());
+            return new FieldValue<>(values, context, declaration);
+        } else {
+            return new FieldValue<>(ImmutableList.of(value), context, declaration);
+        }
     }
 
     FieldValidator<?> createValidator() {
@@ -202,15 +223,7 @@ public final class FieldValue<T> {
             "ChainOfInstanceofChecks" // No other possible way to check the value type.
     })
     ImmutableList<T> asList() {
-        if (value instanceof Collection) {
-            Collection<T> result = (Collection<T>) value;
-            return ImmutableList.copyOf(result);
-        } else if (value instanceof Map) {
-            Map<?, T> map = (Map<?, T>) value;
-            return ImmutableList.copyOf(map.values());
-        } else {
-            return ImmutableList.of(value);
-        }
+        return ImmutableList.copyOf(values);
     }
 
     T singleValue() {
@@ -224,8 +237,8 @@ public final class FieldValue<T> {
     }
 
     private boolean isSingleValueDefault() {
-        if (this.value instanceof EnumValueDescriptor) {
-            return ((EnumValueDescriptor) this.value).getNumber() == 0;
+        if (this.singleValue() instanceof EnumValueDescriptor) {
+            return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
         }
         Message thisAsMessage = TypeConverter.toMessage(singleValue());
         return Validate.isDefault(thisAsMessage);

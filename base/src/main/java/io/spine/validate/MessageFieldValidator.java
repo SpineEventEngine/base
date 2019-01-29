@@ -29,6 +29,7 @@ import io.spine.option.OptionsProto;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
+import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.validate.Validate.isDefault;
@@ -47,20 +48,18 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
-    @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
     MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
-        super(fieldValue,
-              assumeRequired,
-              ImmutableSet.of(((FieldValidatingOption<?, V>) When.create())));
+        super(fieldValue, assumeRequired, additionalOptions());
     }
 
     @Override
-    protected void validateOwnRules() {
+    protected List<ConstraintViolation> validate() {
         boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();
             BuiltInValidation.ANY.validateIfApplies(this);
         }
+        return super.validate();
     }
 
     private boolean shouldValidateFields() {
@@ -118,6 +117,11 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
                 .addAllViolation(violations)
                 .build();
         return violation;
+    }
+
+    @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
+    static <V extends Message> Set<FieldValidatingOption<?, V>> additionalOptions() {
+        return ImmutableSet.of(((FieldValidatingOption<?, V>) When.create()));
     }
 
     /**
