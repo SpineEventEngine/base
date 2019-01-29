@@ -92,7 +92,7 @@ public final class ResolveImports extends GenerationTask {
      * Then, these imports are resolved among external modules.
      *
      * <p>Such a replacement is required since we want to use own versions
-     * of standard types, which additionally processed by the Protobuf JS plugin.
+     * of standard types, which are additionally processed by the Protobuf JS plugin.
      *
      * <p>The custom versions of standard Protobuf types are provided by
      * the {@linkplain ExternalModule#spineWeb() Spine Web}.
