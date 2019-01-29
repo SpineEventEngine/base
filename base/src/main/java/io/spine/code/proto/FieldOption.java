@@ -44,22 +44,6 @@ public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
         this.optionExtension = optionExtension;
     }
 
-    /**
-     * Returns a new {@code FieldOption} instance based on the specified option.
-     *
-     * @param extension
-     *         extensions that corresponds to this option
-     * @param <O>
-     *         value of the option
-     * @param <T>
-     *         type of field that the returned option can be applied to
-     * @return a new instance
-     */
-    public static <O, T> FieldOption<O, T> someOption(
-            GeneratedExtension<FieldOptions, O> extension) {
-        return new FieldOption<>(extension);
-    }
-
     @Override
     public Optional<O> valueFrom(FieldValue<T> field) {
         FieldDescriptor descriptor = field.context()

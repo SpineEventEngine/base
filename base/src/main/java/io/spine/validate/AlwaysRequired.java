@@ -18,26 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
-
-import java.util.Optional;
+package io.spine.validate;
 
 /**
- * A Protobuf option.
+ * A special case of {@code Required} option that assumes that the option is present regardless
+ * of the actual field declaration.
  *
  * @param <T>
- *         type of information held by this option
- * @param <K>
- *         kind of value that this option is applied to
+ *         type of value that this option is applied to
  */
-public interface Option<T, K> {
+class AlwaysRequired<T> extends Required<T> {
 
     /**
-     * Obtains the value of this option for the specified entity.
-     *
-     * @param object
-     *         holder of the option
-     * @return value of this option
+     * Creates a new instance of this option.
      */
-    Optional<T> valueFrom(K object);
+    AlwaysRequired() {
+        super();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p> For {@code AlwaysRequired}, validation happens every time.
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored" /* Parent method contains useful logic.*/)
+    @Override
+    boolean shouldValidate(FieldValue<T> value) {
+        super.shouldValidate(value);
+        return true;
+    }
 }

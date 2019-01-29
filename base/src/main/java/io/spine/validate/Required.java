@@ -37,7 +37,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-final class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
+class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING
@@ -48,15 +48,30 @@ final class Required<T> extends FieldValidatingOption<Boolean, T> implements Log
 
     /**
      * Creates a new instance of this option.
+     */
+    Required() {
+        super(OptionsProto.required);
+        this.isOptionPresent = this::notAssumingRequired;
+    }
+
+    /**
+     * Creates a new instance of the {@code Required} option.
+     *
+     * <p>If the specified parameter is {@code true}, a returned option always assumes a field to
+     * be {@code required}, regardless of the field value.
+     * If the specified parameter is {@code false}, a returned option checks the actual value.
      *
      * @param strict
-     *         whether the presence of this option should be assumed
+     *         whether to assume a field to be required regardless of the actual Protobuf
+     *         option value
+     * @param <T>
+     *         type of value that the returned option is applied to
+     * @return a new instance of the {@code Required} option
      */
-    Required(boolean strict) {
-        super(OptionsProto.required);
-        this.isOptionPresent = strict
-                               ? value -> true
-                               : this::notAssumingRequired;
+    static <T> Required<T> create(boolean strict) {
+        return strict
+               ? new AlwaysRequired<>()
+               : new Required<>();
     }
 
     private Boolean notAssumingRequired(FieldValue<T> fieldValue) {

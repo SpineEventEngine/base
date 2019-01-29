@@ -62,17 +62,6 @@ abstract class FieldValidator<V> implements Logging {
     private final boolean assumeRequired;
     private final IfInvalidOption ifInvalid;
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     * @param assumeRequired
-     *         if {@code true} the validator would assume that the field is required even
-     *         if this constraint is not set explicitly
-     * @param validatingOptions
-     *         options that validate a field and are relevant to more concrete subtypes
-     */
     protected FieldValidator(FieldValue<V> fieldValue,
                              boolean assumeRequired,
                              Set<FieldValidatingOption<?, V>> validatingOptions) {
@@ -140,9 +129,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     * <li>check the field to be set if it is {@code required};
-     * <li>validate the field as an Entity ID if required;
-     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -240,7 +229,7 @@ abstract class FieldValidator<V> implements Logging {
      * @param violation
      *         a violation to add
      */
-    protected void addViolation(ConstraintViolation violation) {
+    void addViolation(ConstraintViolation violation) {
         violations.add(violation);
     }
 
@@ -288,7 +277,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        Required<V> requiredOption = new Required<>(assumeRequired);
+        Required<V> requiredOption = Required.create(assumeRequired);
         Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(value);
         boolean notRequired = requiredOptionValue.isPresent() && !requiredOptionValue.get();
         return declaration.isEntityId() && !notRequired;
@@ -315,6 +304,6 @@ abstract class FieldValidator<V> implements Logging {
 
     private Set<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
         return ImmutableSet.of(Distinct.create(),
-                               new Required<>(strict));
+                               Required.create(strict));
     }
 }
