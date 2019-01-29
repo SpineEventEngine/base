@@ -54,7 +54,7 @@ class ResolveImportsTest {
     @BeforeEach
     void setUp(@TempDir Path tempDir) {
         tempDirectory = tempDir;
-        testFile = tempDirectory.resolve("with-imports.js");
+        testFile = tempDirectory.resolve("js/with-imports.js");
     }
 
     @DisplayName("replace a relative import of a missing file")
@@ -68,9 +68,17 @@ class ResolveImportsTest {
     @Test
     void notResolveExistingFile() throws IOException {
         String originalImport = "require('./root-dir/not-missing.js');";
-        createFile("root-dir/not-missing.js");
+        createFile("js/root-dir/not-missing.js");
         writeTestFile(originalImport);
         fileAfterResolve().containsExactly(originalImport);
+    }
+
+    @DisplayName("resolve in main sources before external modules")
+    @Test
+    void resolveMainSourcesFirstly() throws IOException {
+        writeTestFile("require('./root-dir/main.js');");
+        createFile("main/root-dir/main.js");
+        fileAfterResolve().containsExactly("require('./../main/root-dir/main.js');");
     }
 
     @DisplayName("not replace a relative import if not matches patterns")
@@ -88,6 +96,7 @@ class ResolveImportsTest {
     }
 
     private void writeTestFile(String... lines) throws IOException {
+        Files.createDirectories(testFile.getParent());
         Files.write(testFile, asList(lines));
     }
 

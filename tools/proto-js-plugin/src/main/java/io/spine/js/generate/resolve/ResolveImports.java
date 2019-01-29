@@ -34,6 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,6 +47,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * to ensure that imports won't be modified after execution of this task.
  */
 public final class ResolveImports extends GenerationTask {
+
+    /**
+     * The relative path from the test sources directory to the main sources directory.
+     *
+     * <p>Depends on the structure of Spine Web project.
+     */
+    private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
 
     private final List<ExternalModule> modules;
 
@@ -66,13 +74,17 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     void resolveInFile(Path filePath) {
         JsFile file = new JsFile(filePath);
-        file.processImports(new UnresolvedRelativeImport(), this::resolveImport);
+        file.processImports(new UnresolvedRelativeImport(), this::resolveRelativeImports);
     }
 
     /**
-     * Attempts to resolve an import among external modules.
+     * Attempts to resolve a relative import.
      */
-    private ImportStatement resolveImport(ImportStatement resolvable) {
+    private ImportStatement resolveRelativeImports(ImportStatement resolvable) {
+        Optional<ImportStatement> mainSourceImport = resolveInMainSources(resolvable);
+        if (mainSourceImport.isPresent()) {
+            return mainSourceImport.get();
+        }
         FileReference fileReference = resolvable.path();
         for (ExternalModule module : modules) {
             if (module.provides(fileReference)) {
@@ -81,6 +93,23 @@ public final class ResolveImports extends GenerationTask {
             }
         }
         return resolvable;
+    }
+
+    /**
+     * Attempts to resolve a relative import among main sources.
+     */
+    private static Optional<ImportStatement> resolveInMainSources(ImportStatement resolvable) {
+        String fileReference = resolvable.path()
+                                         .value();
+        String delimiter = FileReference.currentDirectory();
+        int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
+        String updatedReference = fileReference.substring(0, insertionIndex)
+                + TEST_PROTO_RELATIVE_TO_MAIN
+                + fileReference.substring(insertionIndex);
+        ImportStatement updatedImport = resolvable.replacePath(updatedReference);
+        return updatedImport.importedFileExists()
+               ? Optional.of(updatedImport)
+               : Optional.empty();
     }
 
     /**

@@ -105,7 +105,9 @@ public final class ExternalModule {
         Set<DirectoryPattern> directories = ImmutableSet.of(
                 // Directories with handcrafted JS files.
                 DirectoryPattern.of("client/parser"),
-                // Directories with Protobuf files.
+                // Directories with standard Protobuf files.
+                DirectoryPattern.of("proto/google/protobuf/*"),
+                // Directories with Spine Protobuf files.
                 DirectoryPattern.of("proto/spine/base/*"),
                 DirectoryPattern.of("proto/spine/change/*"),
                 DirectoryPattern.of("proto/spine/client/*"),
