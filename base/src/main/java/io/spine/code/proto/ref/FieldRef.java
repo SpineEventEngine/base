@@ -23,7 +23,6 @@ package io.spine.code.proto.ref;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -37,6 +36,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.code.proto.ref.All.WILDCARD;
+import static io.spine.code.proto.ref.All.checkTypeReference;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -45,15 +46,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class FieldRef extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
-
-    /**
-     * Wildcard option used in {@code "by"} field option.
-     *
-     * <p>{@code string enrichment_value [(by) = "*.my_event_id"];} tells that this enrichment
-     * may have any target event types. That's why an FQN of the target type is replaced by
-     * this wildcard option.
-     */
-    private static final String ANY_BY_OPTION_TARGET = "*";
 
     /**
      * Separates a type name from a field name.
@@ -73,7 +65,7 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * Ensures that the passed value is not null, empty or blank, and if it contains a type
-     * reference, it's not the {@linkplain #checkTypeReference(String)} suffix form}.
+     * reference, it's not the {@linkplain All#checkTypeReference(String)} suffix form}.
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
@@ -98,29 +90,6 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
-     * Ensures that the passed value is:
-     * <ol>
-     * <li>not null
-     * <li>not empty or blank
-     * <li>not a wild card type reference in a suffix form
-     *  (such as {@code '*CommonEventNameSuffix.field_name'}, which is not currently supported.
-     * </ol>
-     */
-    @CanIgnoreReturnValue
-    private static String checkTypeReference(String typeReference) {
-        checkNotEmptyOrBlank(typeReference);
-        if (typeReference.startsWith(ANY_BY_OPTION_TARGET)) {
-            checkArgument(
-                    typeReference.equals(ANY_BY_OPTION_TARGET),
-                    "Referencing types with a suffix form (`%s`) in wildcard reference " +
-                            "is not supported . " +
-                            "Please use '*.<field_name>' when referencing a field of many types.",
-                    typeReference);
-        }
-        return typeReference;
-    }
-
-    /**
      * Obtains references found in the passed field.
      */
     public static ImmutableList<FieldRef> allFrom(FieldDescriptorProto field) {
@@ -139,14 +108,14 @@ public final class FieldRef extends StringTypeValue {
      */
     public static boolean isWildcard(String typeReference) {
         checkTypeReference(typeReference);
-        return ANY_BY_OPTION_TARGET.equals(typeReference);
+        return WILDCARD.equals(typeReference);
     }
 
     /**
      * Verifies if the reference is to a field in all types having a field with the referenced name.
      */
     public boolean isWildcard() {
-        boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
+        boolean result = value().startsWith(WILDCARD);
         return result;
     }
 
