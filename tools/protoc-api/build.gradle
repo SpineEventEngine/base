@@ -18,11 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
+group 'io.spine.tools'
+
+dependencies {
+    compile project(':base')
+}
+
+sourceSets.main {
+    java.srcDir "$projectDir/generated/main/java"
+    proto.srcDir "$projectDir/src/main/proto"
+}
+
+protobuf {
+    generatedFilesBaseDir = "$projectDir/generated"
+    protoc {
+        artifact = deps.build.protoc
     }
 }

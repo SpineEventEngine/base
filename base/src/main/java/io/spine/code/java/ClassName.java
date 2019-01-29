@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
 
@@ -79,7 +80,7 @@ public final class ClassName extends StringTypeValue {
      *         a fully-qualified Java class name
      * @return new
      */
-    public static ClassName of(String className) {
+    public static ClassName of(@FullyQualifiedName String className) {
         checkNotNull(className);
         checkArgument(className.length() > 0, "Class name cannot be empty.");
         return new ClassName(className);

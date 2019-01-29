@@ -47,14 +47,6 @@ import static java.util.Arrays.asList;
  */
 public final class GradleProject {
 
-    /**
-     * The name of the Gradle Java plugin.
-     *
-     * @deprecated use {@link #javaPlugin()}
-     */
-    @Deprecated
-    public static final String JAVA_PLUGIN_ID = javaPlugin();
-
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
 
@@ -160,7 +152,7 @@ public final class GradleProject {
         /**
          * Determines whether the code can be debugged.
          *
-         * <p>Affects the code executed during a {@linkplain #executeTask(TaskName) Gradle task}.
+         * <p>Affects the code executed during a {@linkplain #executeTask Gradle task}.
          *
          * <p>NOTE: when the value is {@code true}, all code is executed in a single JVM.
          * This leads to a high consumption of a memory.

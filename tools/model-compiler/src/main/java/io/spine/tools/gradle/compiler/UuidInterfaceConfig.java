@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
-    }
+package io.spine.tools.gradle.compiler;
+
+/**
+ * A {@link GeneratedInterfaceConfig} which configures messages with a single string field named
+ * {@code uuid}.
+ */
+final class UuidInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 }

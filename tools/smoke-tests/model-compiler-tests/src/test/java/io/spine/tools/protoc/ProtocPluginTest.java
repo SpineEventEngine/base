@@ -26,12 +26,14 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.UuidValue;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;
 import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
+import io.spine.test.tools.protoc.WeatherForecast;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -110,11 +112,12 @@ class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark as event messages")
-    void markEventMessages() {
-        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
-        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(FirstEvent.class);
-        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
+    @DisplayName("skip standard interfaces if overridden with `ignore()`")
+    void skipStandardTypesIfIgnored() {
+        assertThat(UserCreated.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+        assertThat(UserNotified.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+
+        assertThat(TypicalIdentifier.getDefaultInstance()).isNotInstanceOf(UuidValue.class);
     }
 
     @Test
@@ -164,6 +167,14 @@ class ProtocPluginTest {
         assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
         assertThat(University.class).isAssignableTo(EducationalInstitution.class);
         assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
+    }
+
+    @Test
+    @DisplayName("mark top-level message declarations with accordance with `modelCompiler.generatedInterfaces`")
+    void markMessagesByFilePattern() {
+        assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
+        assertThat(WeatherForecast.Temperature.getDefaultInstance())
+                .isNotInstanceOf(DocumentMessage.class);
     }
 
     @CanIgnoreReturnValue

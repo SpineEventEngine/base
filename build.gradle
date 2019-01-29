@@ -55,6 +55,7 @@ ext {
         'plugin-testlib',
 
         // Protoc compiler plugin
+        'protoc-api',
         'protoc-plugin'
     ]
 }

@@ -26,11 +26,12 @@ import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import static io.spine.tools.protoc.insert.BuiltInMessageInterface.scanForBuiltIns;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
 
@@ -46,20 +47,22 @@ import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
  *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
  */
-public class MessageInterfaceGenerator extends SpineProtoGenerator {
+public final class MessageInterfaceGenerator extends SpineProtoGenerator {
 
-    private static final SpineProtoGenerator instance = new MessageInterfaceGenerator();
+    private final PatternScanner patternScanner;
 
     /** Prevents singleton class instantiation. */
-    private MessageInterfaceGenerator() {
+    private MessageInterfaceGenerator(SpineProtocConfig parameter) {
         super();
+        this.patternScanner = new PatternScanner(parameter);
     }
 
     /**
      * Retrieves the single instance of the {@code MessageInterfaceGenerator} type.
      */
-    public static SpineProtoGenerator instance() {
-        return instance;
+    public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
+        checkNotNull(parameter);
+        return new MessageInterfaceGenerator(parameter);
     }
 
     /**
@@ -86,11 +89,11 @@ public class MessageInterfaceGenerator extends SpineProtoGenerator {
                : ImmutableList.of();
     }
 
-    private static ImmutableList<CompilerOutput> processMessageType(MessageType type) {
+    private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(type);
-        builtInMarkedInterface.ifPresent(result::add);
+        Optional<CompilerOutput> matched = patternScanner.scan(type);
+        matched.ifPresent(result::add);
 
         Collection<CompilerOutput> fromMsgOption = scanMsgOption(type);
         result.addAll(fromMsgOption);

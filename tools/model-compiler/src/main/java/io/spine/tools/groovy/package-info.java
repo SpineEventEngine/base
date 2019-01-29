@@ -18,11 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
-    }
-}
+/**
+ * This package contains components supporting Groovy interoperability.
+ */
+
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.groovy;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
+
+import javax.annotation.ParametersAreNonnullByDefault;
