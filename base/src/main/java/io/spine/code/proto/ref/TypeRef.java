@@ -20,15 +20,20 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.util.function.Predicate;
+
 /**
- * References one or more message types.
+ * References one or more message types, and can tell if a message type
+ * {@linkplain Predicate#test(Object) matches} the reference.
  */
-public interface TypeRef {
+@Immutable
+public interface TypeRef extends Predicate<Descriptor> {
 
     /**
-     * Verifies if the passed message type matches this type reference.
+     * Obtains the value of the reference.
      */
-    boolean matches(Descriptor message);
+    String value();
 }

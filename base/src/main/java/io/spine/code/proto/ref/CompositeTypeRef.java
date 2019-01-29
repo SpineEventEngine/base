@@ -20,7 +20,9 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
 import java.io.Serializable;
@@ -32,6 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * A type reference consisting of two or more type references.
  */
+@Immutable
 public class CompositeTypeRef implements TypeRef, Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -41,15 +44,14 @@ public class CompositeTypeRef implements TypeRef, Serializable {
     CompositeTypeRef(Iterable<TypeRef> elements) {
         this.elements = ImmutableList.copyOf(elements);
         int size = this.elements.size();
-        checkArgument(size > 0, "Composite type reference cannot be empty.");
         checkArgument(size > 1, "Composite type reference must have two or more elements.");
     }
 
     @Override
-    public boolean matches(Descriptor message) {
+    public boolean test(Descriptor message) {
         Optional<TypeRef> found =
                 elements.stream()
-                        .filter(e -> matches(message))
+                        .filter(e -> test(message))
                         .findFirst();
         return found.isPresent();
     }
@@ -69,5 +71,15 @@ public class CompositeTypeRef implements TypeRef, Serializable {
         }
         final CompositeTypeRef other = (CompositeTypeRef) obj;
         return Objects.equals(this.elements, other.elements);
+    }
+
+    @Override
+    public String value() {
+        return Joiner.on(',').join(elements);
+    }
+
+    @Override
+    public String toString() {
+        return '[' + value() + ']';
     }
 }

@@ -36,8 +36,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.code.proto.ref.All.WILDCARD;
-import static io.spine.code.proto.ref.All.checkTypeReference;
+import static io.spine.code.proto.ref.BuiltIn.ALL;
+import static io.spine.code.proto.ref.BuiltIn.checkTypeReference;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -65,7 +65,7 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * Ensures that the passed value is not null, empty or blank, and if it contains a type
-     * reference, it's not the {@linkplain All#checkTypeReference(String)} suffix form}.
+     * reference, it's not the {@linkplain BuiltIn#checkTypeReference(String)} suffix form}.
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
@@ -108,14 +108,15 @@ public final class FieldRef extends StringTypeValue {
      */
     public static boolean isWildcard(String typeReference) {
         checkTypeReference(typeReference);
-        return WILDCARD.equals(typeReference);
+        return ALL.value()
+                  .equals(typeReference);
     }
 
     /**
      * Verifies if the reference is to a field in all types having a field with the referenced name.
      */
     public boolean isWildcard() {
-        boolean result = value().startsWith(WILDCARD);
+        boolean result = value().startsWith(ALL.value());
         return result;
     }
 

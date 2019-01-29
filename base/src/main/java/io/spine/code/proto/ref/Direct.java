@@ -34,7 +34,7 @@ public class Direct extends AbstractTypeRef {
     }
 
     @Override
-    public boolean matches(Descriptor message) {
+    public boolean test(Descriptor message) {
         //TODO:2019-01-28:alexander.yevsyukov: Implement.
         return false;
     }

@@ -34,7 +34,7 @@ public class InPackage extends AbstractTypeRef {
     }
 
     @Override
-    public boolean matches(Descriptors.Descriptor message) {
+    public boolean test(Descriptors.Descriptor message) {
         //TODO:2019-01-28:alexander.yevsyukov: Implement.
         return false;
     }
