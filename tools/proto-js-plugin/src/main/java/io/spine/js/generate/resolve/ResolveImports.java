@@ -35,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -54,6 +55,9 @@ public final class ResolveImports extends GenerationTask {
      * <p>Depends on the structure of Spine Web project.
      */
     private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
+    private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
+    private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
+            Pattern.compile(GOOGLE_PROTOBUF_MODULE);
 
     private final List<ExternalModule> modules;
 
@@ -74,7 +78,41 @@ public final class ResolveImports extends GenerationTask {
     @VisibleForTesting
     void resolveInFile(Path filePath) {
         JsFile file = new JsFile(filePath);
-        file.processImports(new UnresolvedRelativeImport(), this::resolveRelativeImports);
+        relativizeStandardProtoImports(file);
+        resolveRelativeImports(file);
+    }
+
+    private void resolveRelativeImports(JsFile file) {
+        file.processImports(new IsUnresolvedRelativeImport(), this::resolveRelativeImports);
+    }
+
+    /**
+     * Replaces all imports from {@code google-protobuf} module by relative imports.
+     * Then, these imports are resolved among external modules.
+     *
+     * <p>Such a replacement is required since we want to use own versions
+     * of standard types, which additionally processed by the Protobuf JS plugin.
+     *
+     * <p>The custom versions of standard Protobuf types are provided by
+     * the {@linkplain ExternalModule#spineWeb() Spine Web}.
+     *
+     * @param file
+     *         the file to process imports in
+     */
+    private void relativizeStandardProtoImports(JsFile file) {
+        file.processImports(new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
+    }
+
+    private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
+        String fileReference = original.path()
+                                       .value();
+        Path relativePathToRoot = original.sourceDirectory()
+                                          .relativize(generatedRoot().getPath());
+        String replacement = relativePathToRoot.toString()
+                                               .replace('\\', '/');
+        String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
+                                                                 .replaceFirst(replacement);
+        return original.replacePath(relativeReference);
     }
 
     /**
@@ -115,7 +153,7 @@ public final class ResolveImports extends GenerationTask {
     /**
      * A predicate to match an import of a file that cannot be found on a file system.
      */
-    private static final class UnresolvedRelativeImport implements Predicate<ImportStatement> {
+    private static final class IsUnresolvedRelativeImport implements Predicate<ImportStatement> {
 
         @CanIgnoreReturnValue
         @Override
@@ -123,6 +161,24 @@ public final class ResolveImports extends GenerationTask {
             checkNotNull(statement);
             FileReference fileReference = statement.path();
             return fileReference.isRelative() && !statement.importedFileExists();
+        }
+    }
+
+    /**
+     * A predicate to match an import of a standard Protobuf type
+     * ({@code google-protobuf/google/protobuf/..}).
+     */
+    private static final class IsGoogleProtobufImport implements Predicate<ImportStatement> {
+
+        private static final String STANDARD_PREFIX = GOOGLE_PROTOBUF_MODULE + "/google/protobuf/";
+
+        @CanIgnoreReturnValue
+        @Override
+        public boolean apply(@Nullable ImportStatement statement) {
+            checkNotNull(statement);
+            FileReference fileReference = statement.path();
+            return fileReference.value()
+                                .startsWith(STANDARD_PREFIX);
         }
     }
 }

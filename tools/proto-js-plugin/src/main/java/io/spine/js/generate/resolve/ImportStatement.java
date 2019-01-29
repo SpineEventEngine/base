@@ -104,11 +104,14 @@ public class ImportStatement implements Logging {
      */
     Path importedFilePath() {
         FileReference fileReference = path();
-        Path filePath = originDirectory().resolve(fileReference.value());
+        Path filePath = sourceDirectory().resolve(fileReference.value());
         return filePath.normalize();
     }
 
-    private Path originDirectory() {
+    /**
+     * Obtains the path of the directory with the file containing this import.
+     */
+    Path sourceDirectory() {
         return originFile.getParentFile()
                          .toPath();
     }

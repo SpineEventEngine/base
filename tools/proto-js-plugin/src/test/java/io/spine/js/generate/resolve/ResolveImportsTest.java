@@ -24,12 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.code.js.Directory;
 import io.spine.js.generate.given.GivenProject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,8 +35,8 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.resolve.given.Given.newModule;
 import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("ResolveImports task should")
 class ResolveImportsTest {
 
@@ -48,20 +44,14 @@ class ResolveImportsTest {
     private final ExternalModule module = newModule("test-module", "root-dir");
     private final ResolveImports task = new ResolveImports(generatedProtoDir,
                                                            ImmutableList.of(module));
-    private Path tempDirectory;
-    private Path testFile;
-
-    @BeforeEach
-    void setUp(@TempDir Path tempDir) {
-        tempDirectory = tempDir;
-        testFile = tempDirectory.resolve("js/with-imports.js");
-    }
+    private final Path tempDirectory = generatedProtoDir.getPath();
+    private final Path testFile = tempDirectory.resolve("js/with-imports.js");
 
     @DisplayName("replace a relative import of a missing file")
     @Test
     void resolveMissingFileImport() throws IOException {
-        writeTestFile("require('./root-dir/missing.js');");
-        fileAfterResolve().containsExactly("require('test-module/root-dir/missing.js');");
+        writeFile(testFile, "require('./root-dir/missing.js');");
+        afterResolve(testFile).containsExactly("require('test-module/root-dir/missing.js');");
     }
 
     @DisplayName("not replace a relative import of an existing file")
@@ -69,24 +59,46 @@ class ResolveImportsTest {
     void notResolveExistingFile() throws IOException {
         String originalImport = "require('./root-dir/not-missing.js');";
         createFile("js/root-dir/not-missing.js");
-        writeTestFile(originalImport);
-        fileAfterResolve().containsExactly(originalImport);
+        writeFile(testFile, originalImport);
+        afterResolve(testFile).containsExactly(originalImport);
     }
 
     @DisplayName("resolve in main sources before external modules")
     @Test
     void resolveMainSourcesFirstly() throws IOException {
-        writeTestFile("require('./root-dir/main.js');");
+        writeFile(testFile, "require('./root-dir/main.js');");
         createFile("main/root-dir/main.js");
-        fileAfterResolve().containsExactly("require('./../main/root-dir/main.js');");
+        afterResolve(testFile).containsExactly("require('./../main/root-dir/main.js');");
     }
 
     @DisplayName("not replace a relative import if not matches patterns")
     @Test
     void notReplaceIfNotProvided() throws IOException {
         String originalImport = "require('./abcdef/missing.js');";
-        writeTestFile(originalImport);
-        fileAfterResolve().containsExactly(originalImport);
+        writeFile(testFile, originalImport);
+        afterResolve(testFile).containsExactly(originalImport);
+    }
+
+    @DisplayName("relativize imports of standard Protobuf types")
+    @Test
+    void relativizeStandardProtoImports() throws IOException {
+        writeFile(testFile, "require('google-protobuf/google/protobuf/compiler/plugin_pb.js');");
+        afterResolve(testFile).containsExactly(
+                "require('../google/protobuf/compiler/plugin_pb.js');");
+    }
+
+    @DisplayName("relativize imports of standard Protobuf types in the same directory")
+    @Test
+    void relativizeStandardProtoImportsInSameDir() throws IOException {
+        Path file = tempDirectory.resolve("google/protobuf/imports.js");
+        writeFile(file, "require('google-protobuf/google/protobuf/type_pb.js');");
+        afterResolve(file).containsExactly("require('../../google/protobuf/type_pb.js');");
+    }
+
+    @DisplayName("resolve relative imports of standard Protobuf types")
+    @Test
+    void resolveRelativeImportsOfStandardProtos() {
+        fail("The test is unimplemented.");
     }
 
     private void createFile(String name) throws IOException {
@@ -95,14 +107,14 @@ class ResolveImportsTest {
         Files.createFile(filePath);
     }
 
-    private void writeTestFile(String... lines) throws IOException {
-        Files.createDirectories(testFile.getParent());
-        Files.write(testFile, asList(lines));
+    private static void writeFile(Path file, String... lines) throws IOException {
+        Files.createDirectories(file.getParent());
+        Files.write(file, asList(lines));
     }
 
-    private IterableSubject fileAfterResolve() throws IOException {
-        task.resolveInFile(testFile);
-        List<String> lines = Files.readAllLines(testFile);
+    private IterableSubject afterResolve(Path file) throws IOException {
+        task.resolveInFile(file);
+        List<String> lines = Files.readAllLines(file);
         return assertThat(lines);
     }
 }
