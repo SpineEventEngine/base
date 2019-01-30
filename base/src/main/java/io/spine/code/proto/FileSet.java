@@ -171,6 +171,25 @@ public final class FileSet {
     }
 
     /**
+     * Creates a new set without filtered out files.
+     *
+     * @param predicate
+     *         the predicate to filter files
+     * @return a new file set
+     */
+    public FileSet filter(Predicate<FileDescriptor> predicate) {
+        Collection<FileDescriptor> filteredFiles = files.values()
+                                                        .stream()
+                                                        .filter(predicate)
+                                                        .collect(toList());
+        FileSet newFileSet = newInstance();
+        for (FileDescriptor file : filteredFiles) {
+            newFileSet.add(file);
+        }
+        return newFileSet;
+    }
+
+    /**
      * Obtains immutable view of the files in this set.
      */
     public Collection<FileDescriptor> files() {
