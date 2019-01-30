@@ -24,8 +24,3 @@
     See smoke-tests/build.gradle for all the config of the project.
     
 */
-
-//TODO:2018-12-27:alexander.yevsyukov: Disable generation of validating builders until nested types are supported.  
-modelCompiler {
-    generateValidatingBuilders = false
-}
