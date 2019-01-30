@@ -31,12 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("TypeNameParser should")
-class TypeNameParserTest {
+class TypeRefsTest {
 
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final TypeNameParser parser = TypeNameParser.ofEnrichment(PACKAGE_PREFIX);
+    private final TypeRefs parser = TypeRefs.enrichmentOption(PACKAGE_PREFIX);
 
     @Test
     @DisplayName("add package prefix to unqualified type")

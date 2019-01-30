@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentForOption;
+import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentOption;
+
 /**
  * Composes enrichment map for multiple message declarations.
  */
@@ -47,16 +50,16 @@ final class EnrichmentMapBuilder implements Logging {
     private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameParser enrichmentForOption;
-    private final TypeNameParser enrichmentOption;
+    private final TypeRefs enrichmentForOption;
+    private final TypeRefs enrichmentOption;
 
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
 
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.enrichmentForOption = TypeNameParser.ofEnrichmentFor(packagePrefix);
-        this.enrichmentOption = TypeNameParser.ofEnrichment(packagePrefix);
+        this.enrichmentForOption = enrichmentForOption(packagePrefix);
+        this.enrichmentOption = enrichmentOption(packagePrefix);
     }
 
     /**

@@ -28,7 +28,6 @@ import io.spine.code.proto.ref.EnrichmentForOption;
 import io.spine.code.proto.ref.EnrichmentOption;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
-import io.spine.type.TypeName;
 
 import java.util.List;
 
@@ -36,9 +35,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.Comparator.naturalOrder;
 
 /**
- * A parser of {@link TypeName}s contained in a message option.
+ * Helper class for obtaining type references from message options.
  */
-final class TypeNameParser {
+final class TypeRefs {
 
     /**
      * If {@code true} the parses would analyze {@code (enrichment_for)},
@@ -55,18 +54,18 @@ final class TypeNameParser {
     /**
      * Obtains the parser for the {@link OptionsProto#enrichmentFor} option values.
      */
-    static TypeNameParser ofEnrichmentFor(String packagePrefix) {
-        return new TypeNameParser(true, packagePrefix);
+    static TypeRefs enrichmentForOption(String packagePrefix) {
+        return new TypeRefs(true, packagePrefix);
     }
 
     /**
      * Obtains the instance for the {@link OptionsProto#enrichment} option values.
      */
-    static TypeNameParser ofEnrichment(String packagePrefix) {
-        return new TypeNameParser(false, packagePrefix);
+    static TypeRefs enrichmentOption(String packagePrefix) {
+        return new TypeRefs(false, packagePrefix);
     }
 
-    private TypeNameParser(boolean forOption, String packagePrefix) {
+    private TypeRefs(boolean forOption, String packagePrefix) {
         this.forOption = forOption;
         this.packagePrefix = packagePrefix;
     }
