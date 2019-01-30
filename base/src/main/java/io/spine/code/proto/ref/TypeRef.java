@@ -20,14 +20,11 @@
 
 package io.spine.code.proto.ref;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -44,25 +41,34 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
      */
     String value();
 
+    /**
+     * Creates a type reference by parsing the passed string.
+     *
+     * <p>The passed string may contain a reference to:
+     * <ul>
+     *     <li>a simple type name (e.g. "MyType");
+     *     <li>a fully-qualified type name (e.g. "some.qualified.TypeName");
+     *     <li>several types under a package (e.g. "google.protobuf.*");
+     *     <li>combination of such references separated with commas.
+     * </ul>
+     *
+     * @param value a type reference to one or more types
+     * @return an instance of type reference
+     * @throws IllegalArgumentException if the passed string is not a valid type reference
+     */
     static TypeRef parse(String value) {
         checkNotNull(value);
-
-        ImmutableList<Supplier<Optional<TypeRef>>> suppliers = ImmutableList.of(
-                () -> BuiltIn.find(value),
-                () -> InPackage.parse(value),
-                () -> DirectTypeRef.parse(value)
+        Parsing parsing = new Parsing(
+                value,
+                BuiltIn::parseAll,
+                InPackage::parse,
+                DirectTypeRef::parse
         );
-
-        for (Supplier<Optional<TypeRef>> supplier : suppliers) {
-            Optional<TypeRef> found = supplier.get();
-            if (found.isPresent()) {
-                return found.get();
-            }
-        }
-
-        throw newIllegalArgumentException(
-                "Unable to parse type reference from the value: `%s`.",
-                value
-        );
+        TypeRef result =
+                parsing.parse()
+                       .orElseThrow(() -> newIllegalArgumentException(
+                               "Unable to parse type reference from the value: `%s`.", value
+                       ));
+        return result;
     }
 }

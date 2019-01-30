@@ -20,40 +20,39 @@
 
 package io.spine.code.proto.ref;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 
 import java.util.Optional;
-
-import static io.spine.option.Options.option;
-import static io.spine.option.OptionsProto.enrichmentFor;
+import java.util.function.Function;
 
 /**
- * Parses {@code (enrichment_for)} option value of an enrichment type definition.
- *
- * <p>The option may have one or more reference to a type separated with commas.
+ * Attempts to parse the passed value by sequentially invoking provider functions.
  */
-public final class EnrichmentForOption {
+final class Parsing {
 
-    /** Splits type references separated with commas. */
-    private static final Splitter splitter = Splitter.on(',');
+    private final String value;
+    private final ImmutableList<Provider> provider;
 
-    /** Prevents instantiation of this utility class. */
-    private EnrichmentForOption() {
+    Parsing(String value, Provider... provider) {
+        this.value = value;
+        this.provider = ImmutableList.copyOf(provider);
+    }
+
+    Optional<TypeRef> parse() {
+        for (Provider supplier : provider) {
+            Optional<TypeRef> found = supplier.apply(value);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
     }
 
     /**
-     * Obtains parses the option, which may have comma-separated values.
-     *
-     * @return a list with found values, or an empty list if the message does not
-     *         have the option defined
+     * Provides a type reference if the format of the passed string matches the format
+     * of the provider, otherwise returns an empty {@code Optional}.
      */
-    public static ImmutableList<String> parse(DescriptorProto message) {
-        Optional<String> value = option(message, enrichmentFor);
-        ImmutableList<String> result =
-                value.map(s -> ImmutableList.copyOf(splitter.split(s)))
-                     .orElse(ImmutableList.of());
-        return result;
+    @FunctionalInterface
+    interface Provider extends Function<String, Optional<TypeRef>> {
     }
 }

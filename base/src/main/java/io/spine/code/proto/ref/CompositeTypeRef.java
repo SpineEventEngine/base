@@ -21,14 +21,17 @@
 package io.spine.code.proto.ref;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A type reference consisting of two or more type references.
@@ -38,7 +41,45 @@ public class CompositeTypeRef implements TypeRef {
 
     private static final long serialVersionUID = 0L;
 
+    /** Separator for two or more type references. */
+    private static final char SEPARATOR = ',';
+
+    /** A splitter for type references separated by comma. */
+    private static final Splitter splitter = Splitter.on(SEPARATOR);
+
+    /** Two or more type references. */
     private final ImmutableList<TypeRef> elements;
+
+    static CompositeTypeRef parse(String value) {
+        checkContainsComma(value);
+        List<String> parts = splitter.splitToList(value);
+        ImmutableList.Builder<TypeRef> builder = ImmutableList.builder();
+        for (String part : parts) {
+            TypeRef ref = parsePart(part);
+            builder.add(ref);
+        }
+        CompositeTypeRef result = new CompositeTypeRef(builder.build());
+        return result;
+    }
+
+    private static TypeRef parsePart(String part) {
+        Parsing p = new Parsing(part, InPackage::parse, DirectTypeRef::parse);
+        TypeRef result =
+                p.parse()
+                 .orElseThrow(() -> newIllegalArgumentException(
+                         "The value (`%s`) cannot be used in a composite type reference.", part
+                 ));
+        return result;
+    }
+
+    private static void checkContainsComma(String value) {
+        checkArgument(
+                value.indexOf(SEPARATOR) > -1,
+                "The value (`%s`) is not a composite type reference." +
+                " A composite type reference must contain two or more type references" +
+                " separated with commas."
+        );
+    }
 
     CompositeTypeRef(Iterable<TypeRef> elements) {
         this.elements = ImmutableList.copyOf(elements);
@@ -50,7 +91,7 @@ public class CompositeTypeRef implements TypeRef {
     public boolean test(Descriptor message) {
         Optional<TypeRef> found =
                 elements.stream()
-                        .filter(e -> test(message))
+                        .filter(e -> e.test(message))
                         .findFirst();
         return found.isPresent();
     }

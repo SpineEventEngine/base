@@ -163,7 +163,7 @@ enum BuiltIn implements TypeRef {
     /**
      * Finds a value matching the passed string.
      */
-    static Optional<TypeRef> find(String value) {
+    static Optional<TypeRef> parseAll(String value) {
         Optional<TypeRef> result =
                 Stream.of(values())
                       .map(v -> v.parse(value))
