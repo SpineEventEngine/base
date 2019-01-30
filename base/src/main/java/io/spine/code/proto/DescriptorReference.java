@@ -123,7 +123,7 @@ public final class DescriptorReference {
         private static InputStream readResource(String name) {
             InputStream result = DescriptorReference.class.getClassLoader()
                                                           .getResourceAsStream(name);
-            checkNotNull(result, "`%s` not found.", name);
+            checkNotNull(result, "Resource `%s` not found.", name);
             return result;
         }
     }
