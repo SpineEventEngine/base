@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.enrichment;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -37,6 +38,13 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Provides mapping from a enrichment type name to names of enriched types.
  */
 final class Entry implements Logging {
+
+    /**
+     * A joiner for Protobuf types.
+     *
+     * <p>Joins strings with the comma character in the value part of an entry.
+     */
+    private static final Joiner joiner = Joiner.on(',');
 
     private final DescriptorProto message;
     private final FieldDescriptorProto field;
@@ -104,7 +112,7 @@ final class Entry implements Logging {
             list.add(srcType);
         }
         list.sort(Comparator.naturalOrder());
-        String result = TypeNameParser.joiner.join(list);
+        String result = joiner.join(list);
         return result;
     }
 

@@ -181,9 +181,9 @@ public final class FieldRef extends StringTypeValue {
      * @see #hasType()
      */
     public String simpleTypeName() {
-        checkState(typeRef instanceof Direct,
+        checkState(typeRef instanceof DirectTypeRef,
                    "Unable to obtain a simple type name from the type reference `%s`.", typeRef);
-        String result = ((Direct) typeRef).simpleTypeName();
+        String result = ((DirectTypeRef) typeRef).simpleTypeName();
         return result;
     }
 

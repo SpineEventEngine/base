@@ -50,7 +50,7 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
         ImmutableList<Supplier<Optional<TypeRef>>> suppliers = ImmutableList.of(
                 () -> BuiltIn.find(value),
                 () -> InPackage.parse(value),
-                () -> Direct.parse(value)
+                () -> DirectTypeRef.parse(value)
         );
 
         for (Supplier<Optional<TypeRef>> supplier : suppliers) {

@@ -50,6 +50,9 @@ public final class PackageName extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Obtains a package name for the passed message type.
+     */
     public static PackageName of(Descriptor message) {
         checkNotNull(message);
         PackageName result = of(message.getFile()

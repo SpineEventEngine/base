@@ -37,7 +37,7 @@ import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("Direct type reference should")
-class DirectTest {
+class DirectTypeRefTest {
 
     @Nested
     @DisplayName("return Optional.empty() for")
@@ -57,7 +57,7 @@ class DirectTest {
         }
 
         void assertEmpty(String value) {
-            Truth8.assertThat(Direct.parse(value))
+            Truth8.assertThat(DirectTypeRef.parse(value))
                   .isEmpty();
         }
     }
@@ -66,12 +66,12 @@ class DirectTest {
     @DisplayName("obtain package name from the reference")
     void packageName() {
         String expected = "spine.test.SomeType";
-        Optional<TypeRef> ref = Direct.parse(expected);
+        Optional<TypeRef> ref = DirectTypeRef.parse(expected);
         Truth8.assertThat(ref)
               .isPresent();
 
-        Direct direct = ref.map(r -> (Direct) r)
-                           .get();
+        DirectTypeRef direct = ref.map(r -> (DirectTypeRef) r)
+                                  .get();
         assertThat(direct.value())
                 .isEqualTo(expected);
         Truth8.assertThat(direct.packageName())
@@ -118,7 +118,7 @@ class DirectTest {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent" /* We check via Truth8. */)
     TypeRef ref(String value) {
-        Optional<TypeRef> ref = Direct.parse(value);
+        Optional<TypeRef> ref = DirectTypeRef.parse(value);
         Truth8.assertThat(ref).isPresent();
         return ref.get();
     }

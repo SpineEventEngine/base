@@ -21,100 +21,87 @@
 package io.spine.tools.compiler.enrichment;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.Extension;
-import io.spine.option.Options;
+import io.spine.code.proto.ref.DirectTypeRef;
+import io.spine.code.proto.ref.EnrichmentForOption;
+import io.spine.code.proto.ref.EnrichmentOption;
+import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
 
+import java.util.List;
+
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.OptionsProto.enrichmentFor;
-import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
 
 /**
  * A parser of {@link TypeName}s contained in a message option.
  */
 final class TypeNameParser {
 
-    private static final char TYPE_NAME_SEPARATOR = ',';
+    /**
+     * If {@code true} the parses would analyze {@code (enrichment_for)},
+     * otherwise the {@code (enrichment)} option. Please not that the latter is deprecated
+     * and this field and the related code should be eliminated.
+     */
+    private final boolean forOption;
 
     /**
-     * A joiner for Protobuf types.
-     *
-     * <p>Joins strings with the {@code ,} (comma) character.
-     *
-     * @see #splitter
+     * The prefix to be added to a reference if it's not a fully-qualified one.
      */
-    static final Joiner joiner = Joiner.on(TYPE_NAME_SEPARATOR);
-
-    /**
-     * A splitter for Protobuf types.
-     *
-     * <p>Splits strings by the {@code ,} (comma) character.
-     *
-     * @see #joiner
-     */
-    private static final Splitter splitter = Splitter.on(TYPE_NAME_SEPARATOR);
-
-    private static final String PACKAGE_SEPARATOR = String.valueOf(TypeName.PACKAGE_SEPARATOR);
-
-    private final Extension<MessageOptions, String> option;
     private final String packagePrefix;
 
     /**
      * Obtains the parser for the {@link OptionsProto#enrichmentFor} option values.
      */
     static TypeNameParser ofEnrichmentFor(String packagePrefix) {
-        return new TypeNameParser(enrichmentFor, packagePrefix);
+        return new TypeNameParser(true, packagePrefix);
     }
 
     /**
      * Obtains the instance for the {@link OptionsProto#enrichment} option values.
      */
     static TypeNameParser ofEnrichment(String packagePrefix) {
-        return new TypeNameParser(enrichment, packagePrefix);
+        return new TypeNameParser(false, packagePrefix);
     }
 
-    private TypeNameParser(Extension<MessageOptions, String> option, String packagePrefix) {
-        this.option = option;
+    private TypeNameParser(boolean forOption, String packagePrefix) {
+        this.forOption = forOption;
         this.packagePrefix = packagePrefix;
     }
 
     /**
-     * Parses the {@linkplain #option} from the given message descriptor and
-     * {@linkplain #splitter splits} it into separate {@link TypeName}s.
+     * Parses the the given message descriptor and it into separate type references.
      *
-     * <p>If a type name is not an FQN, the {@code packagePrefix} is added to it.
+     * <p>If a type name is not fully-qualified, the {@code packagePrefix} is added to it.
      *
      * @param descriptor the descriptor to parse
-     * @return the list of parsed message types or an empty list if the option is absent or empty
+     * @return the list of parsed type references or an empty list if the option is absent or empty
      */
-    ImmutableList<TypeName> parse(DescriptorProto descriptor) {
-        ImmutableList<TypeName> result =
-                Options.option(descriptor, option)
-                       .map(splitter::splitToList)
-                       .orElse(emptyList())
-                       .stream()
+    ImmutableList<String> parse(DescriptorProto descriptor) {
+        List<String> parts = forOption
+                             ? EnrichmentForOption.parse(descriptor)
+                             : EnrichmentOption.parse(descriptor);
+        ImmutableList<String> result =
+                parts  .stream()
                        .map(this::toQualified)
-                       .sorted(comparing(TypeName::value))
+                       .sorted(naturalOrder())
                        .collect(toImmutableList());
         return result;
     }
 
     @VisibleForTesting
-    TypeName toQualified(String value) {
-        //TODO:2019-01-25:alexander.yevsyukov: Checking only by having the dot in the name is
-        // the limitation which prevents from referencing nested types.
-        boolean isQualified = value.contains(PACKAGE_SEPARATOR);
-        String typeNameValue = isQualified
-                               ? value
-                               : packagePrefix + value;
-        return TypeName.of(typeNameValue);
+    String toQualified(String value) {
+        TypeRef ref = TypeRef.parse(value);
+        if (ref instanceof DirectTypeRef) {
+            DirectTypeRef directRef = (DirectTypeRef) ref;
+            if (directRef.packageName()
+                         .isPresent()) {
+                return value;
+            }
+            return packagePrefix + directRef.nestedTypeName();
+        }
+        return value;
     }
 }

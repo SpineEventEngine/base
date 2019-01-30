@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
+import io.spine.type.TypeName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
@@ -37,12 +38,13 @@ import static java.util.stream.Collectors.toList;
 /**
  * A direct reference to a proto message type.
  */
-final class Direct extends AbstractTypeRef {
+public final class DirectTypeRef extends AbstractTypeRef {
 
     private static final long serialVersionUID = 0L;
 
     private final @Nullable PackageName packageName;
     private final String simpleTypeName;
+    private final String nestedName;
 
     /**
      * Parses the passed value for the subject of direct type reference.
@@ -58,11 +60,11 @@ final class Direct extends AbstractTypeRef {
         if (value.contains(ALL.value())) {
             return Optional.empty();
         }
-        TypeRef result = new Direct(value);
+        TypeRef result = new DirectTypeRef(value);
         return Optional.of(result);
     }
 
-    private Direct(String value) {
+    private DirectTypeRef(String value) {
         super(value);
         String delimiter = PackageName.delimiter();
         List<String> parts =
@@ -70,9 +72,10 @@ final class Direct extends AbstractTypeRef {
                         .splitToList(value);
         this.packageName =
                 value.contains(delimiter)
-                ? parsePackage(parts)
+                ? toPackageName(parts)
                 : null;
         this.simpleTypeName = parts.get(parts.size() - 1);
+        this.nestedName = toNestedName(parts);
     }
 
     /**
@@ -82,7 +85,7 @@ final class Direct extends AbstractTypeRef {
      *
      * @return the package name, if found, or {@code null} otherwise
      */
-    private static @Nullable PackageName parsePackage(List<String> parts) {
+    private static @Nullable PackageName toPackageName(List<String> parts) {
         List<String> packages =
                 parts.stream()
                      .filter(p -> Character.isLowerCase(p.charAt(0)))
@@ -94,9 +97,23 @@ final class Direct extends AbstractTypeRef {
     }
 
     /**
+     * Compose a potentially nested type name from the passed parts.
+     *
+     * <p>Assumes that a type name starts from an upper-case letter.
+     */
+    private static String toNestedName(List<String> parts) {
+        List<String> types =
+                parts.stream()
+                     .filter(p -> Character.isUpperCase(p.charAt(0)))
+                     .collect(toList());
+        return Joiner.on(TypeName.NESTED_TYPE_SEPARATOR)
+                     .join(types);
+    }
+
+    /**
      * Obtains package name used in the reference.
      */
-    Optional<PackageName> packageName() {
+    public Optional<PackageName> packageName() {
         return Optional.ofNullable(packageName);
     }
 
@@ -105,10 +122,25 @@ final class Direct extends AbstractTypeRef {
      *
      * <p>If a reference is for a nested type, returned value contains the most nested name.
      */
-    String simpleTypeName() {
+    public String simpleTypeName() {
         return this.simpleTypeName;
     }
 
+    /**
+     * Obtains the name of a type inside its package.
+     *
+     * <p>For a type nested inside another type(s) it would contain all type names in the
+     * nesting hierarchy.
+     *
+     * <p>For a top level type the returned value would be equal to {@link #simpleTypeName}.
+     */
+    public String nestedTypeName() {
+        return this.nestedName;
+    }
+
+    /**
+     * Verifies if the passed message type matches this type reference.
+     */
     @Override
     public boolean test(Descriptor message) {
         if (packageName != null && !packageName.equals(PackageName.of(message))) {

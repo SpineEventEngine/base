@@ -22,7 +22,6 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.StringValue;
-import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,16 +41,16 @@ class TypeNameParserTest {
     @Test
     @DisplayName("add package prefix to unqualified type")
     void withPrefix() {
-        TypeName parsedTypes = parser.toQualified(MESSAGE_NAME);
-        assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, parsedTypes.value());
+        String parsedTypes = parser.toQualified(MESSAGE_NAME);
+        assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, parsedTypes);
     }
 
     @Test
     @DisplayName("not add package prefix to fully qualified type")
     void withoutPrefix() {
         String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
-        TypeName parsedType = parser.toQualified(fqn);
-        assertEquals(fqn, parsedType.value());
+        String parsedType = parser.toQualified(fqn);
+        assertEquals(fqn, parsedType);
     }
 
     @Test
@@ -59,7 +58,7 @@ class TypeNameParserTest {
     void emptyCollection() {
         DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                              .toProto();
-        Collection<TypeName> result = parser.parse(definitionWithoutOption);
+        Collection<String> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

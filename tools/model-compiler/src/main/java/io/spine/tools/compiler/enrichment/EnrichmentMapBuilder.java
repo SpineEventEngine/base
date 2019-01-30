@@ -33,6 +33,7 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -46,16 +47,16 @@ final class EnrichmentMapBuilder implements Logging {
     private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameParser sourceType;
-    private final TypeNameParser enrichmentType;
+    private final TypeNameParser enrichmentForOption;
+    private final TypeNameParser enrichmentOption;
 
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
 
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.sourceType = TypeNameParser.ofEnrichmentFor(packagePrefix);
-        this.enrichmentType = TypeNameParser.ofEnrichment(packagePrefix);
+        this.enrichmentForOption = TypeNameParser.ofEnrichmentFor(packagePrefix);
+        this.enrichmentOption = TypeNameParser.ofEnrichment(packagePrefix);
     }
 
     /**
@@ -129,12 +130,11 @@ final class EnrichmentMapBuilder implements Logging {
             }
             return;
         }
-        Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
-        if (entryFromInnerMsg != null) {
-            put(entryFromInnerMsg);
-            _debug("Found enrichment: {} -> {}",
-                   entryFromInnerMsg.getKey(),
-                   entryFromInnerMsg.getValue());
+        Optional<Map.Entry<String, String>> entryFromInnerMsg = scanInnerMessages(msg);
+        if (entryFromInnerMsg.isPresent()) {
+            Map.Entry<String, String> entry = entryFromInnerMsg.get();
+            put(entry);
+            _debug("Found enrichment: {} -> {}", entry.getKey(), entry.getValue());
         } else {
             _debug("No enrichment or event annotations found for message {}", msg.getName());
         }
@@ -151,7 +151,7 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as an enrichment object.
         _debug("Scanning message {} for the enrichment annotations", messageName);
-        Collection<TypeName> eventTypes = sourceType.parse(msg);
+        Collection<String> eventTypes = enrichmentForOption.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
             _debug("Found target events: {}", mergedValue);
@@ -162,12 +162,11 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         _debug("Scanning message {} for the enrichment target annotations", messageName);
-        Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
+        Collection<String> enrichmentTypes = enrichmentOption.parse(msg);
         if (!enrichmentTypes.isEmpty()) {
             _debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
-            for (TypeName enrichmentType : enrichmentTypes) {
-                String typeNameValue = enrichmentType.value();
-                result.put(typeNameValue, messageName);
+            for (String enrichmentType : enrichmentTypes) {
+                result.put(enrichmentType, messageName);
             }
         } else {
             _debug("No enrichments for event {} found", messageName);
@@ -189,8 +188,8 @@ final class EnrichmentMapBuilder implements Logging {
         return enrichmentsMap;
     }
 
-    @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
-    private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
+    @SuppressWarnings("MethodWithMultipleLoops") // It's fine in this case.
+    private Optional<Map.Entry<String, String>> scanInnerMessages(DescriptorProto msg) {
         _debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
@@ -203,10 +202,11 @@ final class EnrichmentMapBuilder implements Logging {
                     _debug("'by' option found on field {} targeting outer event {}",
                            field.getName(),
                            outerEventName);
-                    return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
+                    return Optional.of(new AbstractMap.SimpleEntry<>(enrichmentName,
+                                                                     outerEventName));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
