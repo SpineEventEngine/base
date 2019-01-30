@@ -44,16 +44,16 @@ class ResolveImportsTest {
     private final Path tempDirectory = generatedProtoDir.getPath();
     private final Path testFile = tempDirectory.resolve("js/with-imports.js");
 
-    @DisplayName("replace a relative import of a missing file")
     @Test
+    @DisplayName("replace a relative import of a missing file")
     void resolveMissingFileImport() throws IOException {
         ResolveImports task = newTask(module);
         writeFile(testFile, "require('./root-dir/missing.js');");
         afterResolve(testFile, task).containsExactly("require('test-module/root-dir/missing.js');");
     }
 
-    @DisplayName("not replace a relative import of an existing file")
     @Test
+    @DisplayName("not replace a relative import of an existing file")
     void notResolveExistingFile() throws IOException {
         ResolveImports task = newTask(module);
         String originalImport = "require('./root-dir/not-missing.js');";
@@ -62,8 +62,8 @@ class ResolveImportsTest {
         afterResolve(testFile, task).containsExactly(originalImport);
     }
 
-    @DisplayName("resolve in main sources before external modules")
     @Test
+    @DisplayName("resolve in main sources before external modules")
     void resolveMainSourcesFirstly() throws IOException {
         ResolveImports task = newTask(module);
         writeFile(testFile, "require('./root-dir/main.js');");
@@ -71,8 +71,8 @@ class ResolveImportsTest {
         afterResolve(testFile, task).containsExactly("require('./../main/root-dir/main.js');");
     }
 
-    @DisplayName("not replace a relative import if not matches patterns")
     @Test
+    @DisplayName("not replace a relative import if not matches patterns")
     void notReplaceIfNotProvided() throws IOException {
         ResolveImports task = newTask(module);
         String originalImport = "require('./abcdef/missing.js');";
@@ -80,8 +80,8 @@ class ResolveImportsTest {
         afterResolve(testFile, task).containsExactly(originalImport);
     }
 
-    @DisplayName("relativize imports of standard Protobuf types")
     @Test
+    @DisplayName("relativize imports of standard Protobuf types")
     void relativizeStandardProtoImports() throws IOException {
         ResolveImports task = newTask(module);
         writeFile(testFile, "require('google-protobuf/google/protobuf/compiler/plugin_pb.js');");
@@ -89,8 +89,8 @@ class ResolveImportsTest {
                 .containsExactly("require('../google/protobuf/compiler/plugin_pb.js');");
     }
 
-    @DisplayName("relativize imports of standard Protobuf types in the same directory")
     @Test
+    @DisplayName("relativize imports of standard Protobuf types in the same directory")
     void relativizeStandardProtoImportsInSameDir() throws IOException {
         ResolveImports task = newTask(module);
         Path file = tempDirectory.resolve("google/protobuf/imports.js");
@@ -98,8 +98,8 @@ class ResolveImportsTest {
         afterResolve(file, task).containsExactly("require('../../google/protobuf/type_pb.js');");
     }
 
-    @DisplayName("relativize imports of standard Protobuf types in the root directory")
     @Test
+    @DisplayName("relativize imports of standard Protobuf types in the root directory")
     void relativizeStandardProtoImportsInRoot() throws IOException {
         ResolveImports task = newTask(module);
         Path file = tempDirectory.resolve("root.js");
@@ -107,8 +107,8 @@ class ResolveImportsTest {
         afterResolve(file, task).containsExactly("require('./google/protobuf/empty_pb.js');");
     }
 
-    @DisplayName("resolve relative imports of standard Protobuf types in Spine Web")
     @Test
+    @DisplayName("resolve relative imports of standard Protobuf types in Spine Web")
     void resolveRelativeImportsOfStandardProtos() throws IOException {
         ResolveImports task = newTask(ExternalModule.spineWeb());
         Path file = tempDirectory.resolve("imports.js");
