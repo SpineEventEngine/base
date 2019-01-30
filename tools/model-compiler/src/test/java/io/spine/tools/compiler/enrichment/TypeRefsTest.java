@@ -36,7 +36,7 @@ class TypeRefsTest {
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final TypeRefs parser = TypeRefs.enrichmentOption(PACKAGE_PREFIX);
+    private final TypeRefs parser = TypeRefs.enrichmentForOption(PACKAGE_PREFIX);
 
     @Test
     @DisplayName("add package prefix to unqualified type")

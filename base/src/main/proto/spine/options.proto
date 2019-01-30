@@ -187,12 +187,6 @@ extend google.protobuf.FieldOptions {
     //
     // message MyEvent {
     //    spine.base.UserId user_id = 1;
-    //    ...
-    //    message Enrichment {
-    //       spine.people.PersonName name = 1 [(by) = "user_id"];
-    //
-    //       string time = 2 [(by) = "context.timestamp"];
-    //    }
     // }
     //
     // message MyEventEnrichment {
@@ -208,23 +202,9 @@ extend google.protobuf.FieldOptions {
     //     string username = 1 [(by) = "*.user_id"];
     // }
     //
-    // message EventOne {
-    //     option (enrichment) = "EnrichmentForSeveralEvents";
-    //
-    //     int32 user_id = 1;
-    // }
-    //
-    // message EventTwo {
-    //     option (enrichment) = "EnrichmentForSeveralEvents";
-    //
-    //     int32 user_id = 1;
-    // }
-    //
     // Also, the multiple arguments are supported. The syntax is:
     //
     // message EnrichmentForSeveralEvents {
-    //     option (enrichment) = "EnrichmentForSeveralEvents";
-    //
     //     int32 user_id = 1 [(by) = "qualifier.One.target_field | qualifier.Two.alternate_target_field"];
     // }
     //
@@ -394,34 +374,7 @@ extend google.protobuf.MessageOptions {
     //
     string enrichment_for = 73922;
 
-    // An instruction to enrich an event with one or more enrichments.
-    //
-    // This option is defined in event messages.
-    // If more than one enrichment should be added, their type names should be separated with
-    // the comma. For example:
-    //
-    // message MyEvent {
-    //     option (enrichment) = "EnrichmentOne,"
-    //                           "EnrichmentTwo";
-    //     ...
-    // }
-    //
-    // Fields of the referenced enrichment types refer to the fields of the event message via
-    // `by` option. Therefore, if `enrichment` option is used in more than event message, the fields
-    // participating in the enrichment process must have the same names.
-    //
-    // In the enrichment message a wildcard `by` option syntax may be used to reference more than
-    // a single target events to enrich.
-    //
-    // For example:
-    //
-    // message EnrichmentForSeveralEvents {
-    //     string username = 1 [(by) = "*.user_id"];
-    // }
-    //
-    string enrichment = 73923;
-
-    // reserved 73924 to 73939 for future options.
+    // reserved 73923 to 73939 for future options.
 
     // Command Options
     //-------------------

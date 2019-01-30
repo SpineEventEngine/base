@@ -37,8 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentForOption;
-import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentOption;
-
 /**
  * Composes enrichment map for multiple message declarations.
  */
@@ -51,7 +49,6 @@ final class EnrichmentMapBuilder implements Logging {
 
     private final String packagePrefix;
     private final TypeRefs enrichmentForOption;
-    private final TypeRefs enrichmentOption;
 
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
@@ -59,7 +56,6 @@ final class EnrichmentMapBuilder implements Logging {
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
         this.enrichmentForOption = enrichmentForOption(packagePrefix);
-        this.enrichmentOption = enrichmentOption(packagePrefix);
     }
 
     /**
@@ -161,18 +157,6 @@ final class EnrichmentMapBuilder implements Logging {
             result.put(messageName, mergedValue);
         } else {
             _debug("No target events found");
-        }
-
-        // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
-        _debug("Scanning message {} for the enrichment target annotations", messageName);
-        Collection<String> enrichmentTypes = enrichmentOption.parse(msg);
-        if (!enrichmentTypes.isEmpty()) {
-            _debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
-            for (String enrichmentType : enrichmentTypes) {
-                result.put(enrichmentType, messageName);
-            }
-        } else {
-            _debug("No enrichments for event {} found", messageName);
         }
 
         return result.build();
