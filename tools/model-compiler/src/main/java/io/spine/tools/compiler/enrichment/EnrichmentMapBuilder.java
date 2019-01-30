@@ -78,7 +78,7 @@ final class EnrichmentMapBuilder implements Logging {
     }
 
     /**
-     * Obtains enrichment information as the the map.
+     * Obtains enrichment information as a map.
      */
     Map<String, String> toMap() {
         _debug("Found enrichments: {}", multimap);
