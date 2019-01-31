@@ -20,6 +20,7 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.common.testing.EqualsTester;
 import com.google.common.truth.StringSubject;
 import com.google.protobuf.Any;
 import io.spine.base.FieldFilter;
@@ -112,5 +113,16 @@ class CompositeTypeRefTest {
         assertValue.contains(expected);
         assertValue.startsWith("[");
         assertValue.endsWith("]");
+    }
+
+    @Test
+    @DisplayName("support equality by its content")
+    void equality() {
+        new EqualsTester()
+                .addEqualityGroup(parse("google.protobuf.*,spine.base.FieldFilter"),
+                                  parse("google.protobuf.*,spine.base.FieldFilter"))
+                .addEqualityGroup(parse("google.protobuf.StringValue,google.protobuf.Timestamp"),
+                                  parse("google.protobuf.StringValue,google.protobuf.Timestamp"))
+                .testEquals();
     }
 }

@@ -155,11 +155,6 @@ enum BuiltIn implements TypeRef {
         return this.value;
     }
 
-    @Override
-    public boolean test(Descriptor message) {
-        return false;
-    }
-
     /**
      * Finds a value matching the passed string.
      */
