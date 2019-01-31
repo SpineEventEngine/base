@@ -20,24 +20,19 @@
 
 package io.spine.js.generate.given;
 
-import com.google.common.io.Files;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
-import io.spine.code.proto.DescriptorReference;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.GradleProject;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
-import static com.google.common.truth.Truth.assertThat;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public final class GivenProject {
 
@@ -53,20 +48,8 @@ public final class GivenProject {
         Path mainDescriptorsDir = project().buildRoot()
                                            .descriptors()
                                            .mainDescriptors();
-        Path descriptorReferenceFile = mainDescriptorsDir.resolve(DescriptorReference.FILE_NAME);
-        String descriptorFileName = mainDescriptorName(descriptorReferenceFile);
-        Path descriptorSetFile = mainDescriptorsDir.resolve(descriptorFileName);
+        Path descriptorSetFile = mainDescriptorsDir.resolve(KNOWN_TYPES);
         return FileSet.parseOrEmpty(descriptorSetFile.toFile());
-    }
-
-    private static String mainDescriptorName(Path descRefFile) {
-        try {
-            List<String> lines = Files.readLines(descRefFile.toFile(), UTF_8);
-            assertThat(lines).hasSize(1);
-            return lines.get(0);
-        } catch (IOException e) {
-            return fail(e);
-        }
     }
 
     public static Directory mainProtoSources() {
