@@ -80,11 +80,24 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     @Override
     boolean shouldValidate(FieldValue<T> value) {
+        checkCorrectUsage(value);
+        return this.isOptionPresent.test(value);
+    }
+
+    /**
+     * Produces warnings if the {@code required} option was applied incorrectly.
+     *
+     * <p>Examples of incorrect application include attempting to apply the option to a numeric
+     * field.
+     *
+     * @param value
+     *         a value that the option is applied to
+     */
+    void checkCorrectUsage(FieldValue<T> value) {
         ifMissing.valueFrom(value)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));
         checkCanBeRequired(value);
-        return this.isOptionPresent.test(value);
     }
 
     private void checkCanBeRequired(FieldValue<?> value) {

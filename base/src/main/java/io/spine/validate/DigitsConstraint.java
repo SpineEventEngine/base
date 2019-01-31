@@ -20,12 +20,12 @@
 
 package io.spine.validate;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.getErrorMsgFormat;
@@ -38,7 +38,7 @@ import static io.spine.validate.FieldValidator.getErrorMsgFormat;
  */
 final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
-    private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
+    private static final Splitter DOT_SPLITTER = Splitter.on(".");
 
     private final DigitsOption digitsOption;
 
@@ -63,16 +63,18 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
 
     private boolean digitsViolated(int wholeDigitsMax, int fractionDigitsMax, V value) {
         double actualValue = value.doubleValue();
-        String[] parts = splitOnPeriod(actualValue);
-        int wholeDigitsCount = parts[0].length();
-        int fractionDigitsCount = parts[1].length();
-        boolean violated = wholeDigitsCount > wholeDigitsMax ||
-                fractionDigitsCount > fractionDigitsMax;
+        ImmutableList<String> parts = splitOnPeriod(actualValue);
+        int wholeDigitsCount = parts.get(0)
+                                    .length();
+        int fractionDigitsCount = parts.get(1)
+                                       .length();
+        boolean violated =
+                wholeDigitsCount > wholeDigitsMax || fractionDigitsCount > fractionDigitsMax;
         return violated;
     }
 
-    private static String[] splitOnPeriod(double value) {
-        return PATTERN_DOT.split(String.valueOf(value));
+    private static ImmutableList<String> splitOnPeriod(double value) {
+        return ImmutableList.copyOf(DOT_SPLITTER.split(String.valueOf(value)));
     }
 
     @Override

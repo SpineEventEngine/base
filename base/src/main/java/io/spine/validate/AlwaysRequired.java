@@ -39,12 +39,12 @@ class AlwaysRequired<T> extends Required<T> {
     /**
      * {@inheritDoc}
      *
-     * <p> For {@code AlwaysRequired}, validation happens every time.
+     * <p>For {@code AlwaysRequired}, validation happens every time.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored" /* Parent method contains useful logic.*/)
     @Override
     boolean shouldValidate(FieldValue<T> value) {
-        super.shouldValidate(value);
+        checkCorrectUsage(value);
         return true;
     }
 }
