@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
-    private static final String DELIMITER = String.valueOf('.');
+    private static final String DELIMITER = ".";
 
     private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
 
