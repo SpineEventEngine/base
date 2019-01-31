@@ -20,9 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.type.MoreKnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -34,7 +34,6 @@ import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
@@ -68,28 +67,19 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                 createMergingAction(configuration(project, TEST_RUNTIME),
                                     getTestDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_TEST_PROTO)
-                .insertBeforeTask(GENERATE_TEST_VALIDATING_BUILDERS)
                 .applyNowTo(project);
     }
 
     private static Action<Task> createMergingAction(Configuration configuration,
                                                     String descriptorSetPath) {
         return task -> {
-
             File descriptorSet = new File(descriptorSetPath);
-//            FileDescriptorSuperset superset = new FileDescriptorSuperset();
-//            configuration.forEach(superset::addFromDependency);
-//            if (descriptorSet.exists()) {
-//                superset.addFromDependency(descriptorSet);
-//            }
-//            superset.merge()
-//                    .writeTo(descriptorSet);
-
-            // Extend `KnownTypes` with all the type definitions from all the descriptors
-            // found in the classpath of the project being built.
+            FileDescriptorSuperset superset = new FileDescriptorSuperset();
+            configuration.forEach(superset::addFromDependency);
             if (descriptorSet.exists()) {
-                MoreKnownTypes.extendWith(descriptorSet);
+                superset.addFromDependency(descriptorSet);
             }
+            superset.loadIntoKnownTypes();
         };
     }
 

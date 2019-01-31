@@ -59,6 +59,12 @@ public final class MoreKnownTypes {
 
         FileSet protoFiles = FileSet.parse(descriptorSetFile);
         TypeSet types = TypeSet.messagesAndEnums(protoFiles);
+        extendWith(types);
+    }
+
+    public static void extendWith(TypeSet types) {
+        checkNotNull(types);
+
         KnownTypes.Holder.extendWith(types);
     }
 }

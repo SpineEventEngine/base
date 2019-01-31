@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.descriptor;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
@@ -68,7 +67,7 @@ public final class MergedDescriptorSet {
         }
     }
 
-    @VisibleForTesting
+
     ImmutableSet<FileDescriptorProto> descriptors() {
         return ImmutableSet.copyOf(descriptorSet.getFileList());
     }

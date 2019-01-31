@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -111,20 +112,15 @@ public final class DescriptorReference {
             this.resourceName = resourceName;
         }
 
-        public InputStream openStream() {
-            return readResource(resourceName);
+        public Optional<InputStream> openStream() {
+            InputStream result = DescriptorReference.class.getClassLoader()
+                                                          .getResourceAsStream(resourceName);
+            return Optional.ofNullable(result);
         }
 
         @Override
         public String toString() {
             return resourceName;
-        }
-
-        private static InputStream readResource(String name) {
-            InputStream result = DescriptorReference.class.getClassLoader()
-                                                          .getResourceAsStream(name);
-            checkNotNull(result, "Resource `%s` not found.", name);
-            return result;
         }
     }
 }

@@ -27,7 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -75,14 +75,14 @@ public final class ArchiveFile {
     /**
      * Finds a ZIP entry with the given name according to {@code ZipEntry.getName()}.
      *
-     * @param name
-     *         name of the entry to find
+     * @param fileExtension
+     *         file extension to look for; must start with a dot ({@code .})
      * @return the found entry or {@code Optional.empty()} if there is no such entry in this archive
      */
-    public Optional<ArchiveEntry> findEntry(String name) {
-        checkNotNull(name);
+    public Collection<ArchiveEntry> findByExtension(String fileExtension) {
+        checkNotNull(fileExtension);
         try (EntryLookup open = EntryLookup.open(this)) {
-            return open.findEntry(name);
+            return open.findByExtension(fileExtension);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }

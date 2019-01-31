@@ -186,28 +186,31 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Action<Task> task = newAction(getMainDescriptorSetPath(project), project, false);
+        Action<Task> task = newAction(project, false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
                 .applyNowTo(project);
 
-        Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
+        Action<Task> testTask = newAction(project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                 .applyNowTo(project);
     }
 
-    private Action<Task> newAction(String descriptorSetFile, Project project, boolean isTestTask) {
+    private Action<Task> newAction(Project project, boolean isTestTask) {
         return task -> {
+            String descriptorSetPath = isTestTask
+                                       ? getTestDescriptorSetPath(project)
+                                       : getMainDescriptorSetPath(project);
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
                                        : getMainGenProtoDir(project);
             String generatedGrpcDir = isTestTask
                                       ? getTestGenGrpcDir(project)
                                       : getMainGenGrpcDir(project);
-            File setFile = new File(descriptorSetFile);
+            File setFile = new File(descriptorSetPath);
             if (!setFile.exists()) {
                 logMissingDescriptorSetFile(setFile);
                 return;

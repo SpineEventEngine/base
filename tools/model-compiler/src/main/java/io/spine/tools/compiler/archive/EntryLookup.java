@@ -20,11 +20,12 @@
 
 package io.spine.tools.compiler.archive;
 
+import com.google.common.collect.ImmutableSet;
 import io.spine.logging.Logging;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -60,30 +61,31 @@ final class EntryLookup implements Closeable, Logging {
      * <p>This method should only be called once in the lifetime of an {@code EntryLookup}.
      * All subsequent calls will always return an empty result.
      *
-     * @param name
+     * @param fileExtension
      *         the name of the entry in terms of {@code ZipEntry.getName()}
      * @return a snapshot of the found entry or {@code Optional.empty()} if there is no such entry
      */
-    Optional<ArchiveEntry> findEntry(String name) {
+    Collection<ArchiveEntry> findByExtension(String fileExtension) {
         try {
-            return doFindEntry(name);
+            return doFindEntry(fileExtension);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    private Optional<ArchiveEntry> doFindEntry(String name) throws IOException {
+    private Collection<ArchiveEntry> doFindEntry(String fileExtension) throws IOException {
+        ImmutableSet.Builder<ArchiveEntry> result = ImmutableSet.builder();
         for (ZipEntry entry = stream.getNextEntry();
              entry != null;
              entry = stream.getNextEntry()) {
             String entryName = entry.getName();
-            if (name.equals(entryName)) {
+            if (entryName.endsWith(fileExtension)) {
                 _debug("Reading ZIP entry `{}`.", entryName);
                 ArchiveEntry read = readEntry();
-                return Optional.of(read);
+                result.add(read);
             }
         }
-        return Optional.empty();
+        return result.build();
     }
 
     private ArchiveEntry readEntry() throws IOException {
