@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import io.spine.io.ResourceFiles;
@@ -46,8 +45,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public final class DescriptorReference {
 
-    @VisibleForTesting
-    public static final String FILE_NAME = "desc.ref";
+    private static final String FILE_NAME = "desc.ref";
 
     private static final Splitter LINE_SPLITTER = Splitter.on(lineSeparator())
                                                           .omitEmptyStrings()
