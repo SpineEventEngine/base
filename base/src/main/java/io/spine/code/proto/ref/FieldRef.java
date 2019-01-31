@@ -222,7 +222,7 @@ public final class FieldRef extends StringTypeValue {
      */
     public Optional<FieldDescriptor> find(Descriptor message) {
         checkNotNull(message);
-        if (hasType() && !isWildcard()) {
+        if (hasType() && !(typeRef instanceof BuiltIn)) {
             String referencedType = simpleTypeName();
             String messageType = message.getName();
             checkArgument(
