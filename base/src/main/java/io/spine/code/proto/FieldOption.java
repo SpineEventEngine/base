@@ -23,7 +23,9 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.validate.FieldContext;
 import io.spine.validate.FieldValue;
+import io.spine.validate.rule.ValidationRuleOptions;
 
 import java.util.Optional;
 
@@ -46,8 +48,13 @@ public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
 
     @Override
     public Optional<O> valueFrom(FieldValue<T> field) {
+        FieldContext context = field.context();
+        Optional<O> optionValue = ValidationRuleOptions.getOptionValue(context, optionExtension);
+        if (optionValue.isPresent()) {
+            return optionValue;
+        }
         FieldDescriptor descriptor = field.context()
-                                           .getTarget();
+                                          .getTarget();
         FieldOptions options = descriptor.getOptions();
         boolean explicitlySet = options.hasExtension(optionExtension);
         O value = options.getExtension(optionExtension);
