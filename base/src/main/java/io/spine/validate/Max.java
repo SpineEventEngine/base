@@ -38,7 +38,8 @@ final class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraint() {
-        return new MaxConstraint<>();
+    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
+        MaxOption optionValue = valueFrom(fieldValue).get();
+        return new MaxConstraint<>(optionValue);
     }
 }

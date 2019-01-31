@@ -98,7 +98,7 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraint() {
+    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }

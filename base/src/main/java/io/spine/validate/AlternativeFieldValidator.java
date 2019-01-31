@@ -45,7 +45,7 @@ final class AlternativeFieldValidator implements Logging {
 
     List<ConstraintViolation> validate() {
         RequiredField requiredFieldOption = new RequiredField();
-        Constraint<MessageValue> required = requiredFieldOption.constraint();
+        Constraint<MessageValue> required = requiredFieldOption.constraintFor(message);
         return required.check(message);
     }
 }

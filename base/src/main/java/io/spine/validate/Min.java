@@ -38,7 +38,8 @@ final class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraint() {
-        return new MinConstraint<>();
+    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
+        MinOption optionValue = valueFrom(fieldValue).get();
+        return new MinConstraint<>(optionValue);
     }
 }

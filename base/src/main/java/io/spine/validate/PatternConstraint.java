@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
-import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
 import java.util.List;
@@ -36,25 +35,29 @@ import static java.util.stream.Collectors.toList;
  */
 final class PatternConstraint implements Constraint<FieldValue<String>> {
 
+    private final PatternOption optionValue;
+
+    PatternConstraint(PatternOption optionValue) {
+        this.optionValue = optionValue;
+    }
+
     @Override
     public List<ConstraintViolation> check(FieldValue<String> fieldValue) {
-        PatternOption patternOption = fieldValue.valueOf(OptionsProto.pattern);
-        String regex = patternOption.getRegex();
+        String regex = optionValue.getRegex();
         ImmutableList<String> values = fieldValue.asList();
         List<ConstraintViolation> violations =
                 values.stream()
                       .filter(value -> !value.matches(regex))
-                      .map(value -> newViolation(fieldValue, patternOption))
+                      .map(value -> newViolation(fieldValue))
                       .collect(toList());
         return violations;
     }
 
-    private static ConstraintViolation newViolation(FieldValue<String> fieldValue,
-                                                    PatternOption patternOption) {
-        String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
+    private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
+        String msg = getErrorMsgFormat(this.optionValue, this.optionValue.getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
-        String regex = patternOption.getRegex();
+        String regex = this.optionValue.getRegex();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

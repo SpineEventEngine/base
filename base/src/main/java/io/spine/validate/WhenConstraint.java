@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.base.FieldPath;
-import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
 
@@ -43,9 +42,14 @@ import static io.spine.validate.FieldValidator.getErrorMsgFormat;
  */
 final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
 
-    private static List<ConstraintViolation> validateTimestamps(FieldValue<Timestamp> fieldValue) {
-        TimeOption timeConstraint = fieldValue.valueOf(OptionsProto.when);
-        Time when = timeConstraint.getIn();
+    private final TimeOption optionValue;
+
+    WhenConstraint(TimeOption optionValue) {
+        this.optionValue = optionValue;
+    }
+
+    private List<ConstraintViolation> validateTimestamps(FieldValue<Timestamp> fieldValue) {
+        Time when = this.optionValue.getIn();
         if (when == TIME_UNDEFINED) {
             return ImmutableList.of();
         }
@@ -53,7 +57,7 @@ final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
         for (Message value : fieldValue.asList()) {
             Timestamp time = (Timestamp) value;
             if (isTimeInvalid(time, when, now)) {
-                return ImmutableList.of(newTimeViolation(fieldValue, time, timeConstraint));
+                return ImmutableList.of(newTimeViolation(fieldValue, time));
             }
         }
         return ImmutableList.of();
@@ -79,13 +83,12 @@ final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
         return isInvalid;
     }
 
-    private static ConstraintViolation newTimeViolation(FieldValue<Timestamp> fieldValue,
-                                                        Timestamp value,
-                                                        TimeOption timeConstraint) {
-        String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
-        String when = timeConstraint.getIn()
-                                    .toString()
-                                    .toLowerCase();
+    private ConstraintViolation newTimeViolation(FieldValue<Timestamp> fieldValue,
+                                                 Timestamp value) {
+        String msg = getErrorMsgFormat(this.optionValue, this.optionValue.getMsgFormat());
+        String when = this.optionValue.getIn()
+                                      .toString()
+                                      .toLowerCase();
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
         ConstraintViolation violation = ConstraintViolation

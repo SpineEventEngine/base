@@ -37,9 +37,13 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
      * Combination of fields are made with ampersand.
      */
     private static final char AMPERSAND = '&';
-    private final RequiredField requiredField = new RequiredField();
+    private final String optionValue;
 
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
+
+    RequiredFieldConstraint(String optionValue) {
+        this.optionValue = optionValue;
+    }
 
     @Override
     public List<ConstraintViolation> check(MessageValue value) {
@@ -47,20 +51,17 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
     }
 
     private boolean matches(MessageValue messageField) {
-        if (!requiredField.valueFrom(messageField)
-                          .isPresent()) {
+        if (optionValue.isEmpty()) {
             return true;
         }
-        String expression = requiredField.valueFrom(messageField)
-                                         .get();
-        ImmutableList<RequiredFieldAlternatives> alternatives = parse(expression);
+        ImmutableList<RequiredFieldAlternatives> alternatives = parse(this.optionValue);
         if (!alternativeFound(alternatives, messageField)) {
             String msgFormat =
                     "None of the fields match the `required_field` definition: %s";
             ConstraintViolation requiredFieldNotFound = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(msgFormat)
-                    .addParam(expression)
+                    .addParam(this.optionValue)
                     .build();
             violations.add(requiredFieldNotFound);
             return false;

@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
-import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -41,11 +40,16 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
 
     private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
 
+    private final DigitsOption digitsOption;
+
+    DigitsConstraint(DigitsOption digitsOption) {
+        this.digitsOption = digitsOption;
+    }
+
     @Override
     boolean doesNotSatisfy(FieldValue<V> fieldValue) {
-        DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
-        int wholeDigitsMax = digitsOption.getIntegerMax();
-        int fractionDigitsMax = digitsOption.getFractionMax();
+        int wholeDigitsMax = this.digitsOption.getIntegerMax();
+        int fractionDigitsMax = this.digitsOption.getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
             return false;
         }
@@ -73,10 +77,9 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
 
     @Override
     List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
-        DigitsOption digitsOption = fieldValue.valueOf(OptionsProto.digits);
-        String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
-        String intMax = String.valueOf(digitsOption.getIntegerMax());
-        String fractionMax = String.valueOf(digitsOption.getFractionMax());
+        String msg = getErrorMsgFormat(this.digitsOption, this.digitsOption.getMsgFormat());
+        String intMax = String.valueOf(this.digitsOption.getIntegerMax());
+        String fractionMax = String.valueOf(this.digitsOption.getFractionMax());
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
 

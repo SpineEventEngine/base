@@ -30,9 +30,9 @@ import io.spine.code.proto.Option;
  *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
  *         Boolean}
  * @param <K>
- *         kind of entities that can be validated by this option
+ *         kind entity that this option is applied to
  */
 interface ValidatingOption<T, K> extends Option<T, K> {
 
-    Constraint<K> constraint();
+    Constraint<K> constraintFor(K value);
 }

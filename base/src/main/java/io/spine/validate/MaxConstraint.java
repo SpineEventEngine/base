@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MaxOption;
-import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,24 +38,30 @@ import static java.lang.Double.parseDouble;
  */
 final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
+    private final MaxOption optionValue;
+
+    MaxConstraint(MaxOption optionValue) {
+        this.optionValue = optionValue;
+    }
+
     @Override
     boolean doesNotSatisfy(FieldValue<V> fieldValue) {
         return maxViolated(fieldValue);
     }
 
     private boolean maxViolated(FieldValue<V> fieldValue) {
-        double maxValue = maxFrom(fieldValue);
-        Predicate<V> exceeds = violates(fieldValue, maxValue);
+        double maxValue = max();
+        Predicate<V> exceeds = violates(maxValue);
         ImmutableList<V> nestedValues = fieldValue.asList();
         boolean violated = nestedValues.stream()
                                        .anyMatch(exceeds);
         return violated;
     }
 
-    private Predicate<V> violates(FieldValue<V> fieldValue, double maxValue) {
-        return isExclusive(fieldValue)
-                                   ? value -> value.doubleValue() >= maxValue
-                                   : value -> value.doubleValue() > maxValue;
+    private Predicate<V> violates(double maxValue) {
+        return isExclusive()
+               ? value -> value.doubleValue() >= maxValue
+               : value -> value.doubleValue() > maxValue;
     }
 
     @Override
@@ -64,11 +69,11 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
         String format = "Number must be less than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
-        double maxValue = maxFrom(fieldValue);
+        double maxValue = max();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(isExclusive(fieldValue) ? "" : "or equal to")
+                .addParam(isExclusive() ? "" : "or equal to")
                 .addParam(String.valueOf(maxValue))
                 .setFieldPath(path)
                 .setFieldValue(toAny(fieldValue.singleValue()))
@@ -76,14 +81,12 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
         return ImmutableList.of(violation);
     }
 
-    private double maxFrom(FieldValue<V> fieldValue) {
-        MaxOption optionValue = fieldValue.valueOf(OptionsProto.max);
-        String stringValue = optionValue.getValue();
+    private double max() {
+        String stringValue = this.optionValue.getValue();
         return parseDouble(stringValue);
     }
 
-    private boolean isExclusive(FieldValue<V> fieldValue) {
-        return fieldValue.valueOf(OptionsProto.max)
-                         .getExclusive();
+    private boolean isExclusive() {
+        return this.optionValue.getExclusive();
     }
 }

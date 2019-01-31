@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -53,8 +53,8 @@ final class RequiredField implements ValidatingOption<String, MessageValue> {
 
     @Override
     public Optional<String> valueFrom(MessageValue message) {
-        Map<Descriptors.FieldDescriptor, Object> options = message.options();
-        for (Descriptors.FieldDescriptor optionDescriptor : options.keySet()) {
+        Map<FieldDescriptor, Object> options = message.options();
+        for (FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
                 String expression = (String) options.get(optionDescriptor);
                 return Optional.of(expression);
@@ -64,7 +64,8 @@ final class RequiredField implements ValidatingOption<String, MessageValue> {
     }
 
     @Override
-    public Constraint<MessageValue> constraint() {
-        return new RequiredFieldConstraint();
+    public Constraint<MessageValue> constraintFor(MessageValue value) {
+        String expression = valueFrom(value).orElse("");
+        return new RequiredFieldConstraint(expression);
     }
 }

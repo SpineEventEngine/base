@@ -21,23 +21,18 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldOption;
 import io.spine.protobuf.TypeConverter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
 import static java.lang.String.format;
 
 /**
@@ -180,37 +175,6 @@ public final class FieldValue<T> {
         JavaType result = declaration.valueDeclaration()
                                      .javaType();
         return result;
-    }
-
-    /**
-     * Obtains the desired option for the field.
-     *
-     * @param option
-     *         an extension key used to obtain an option
-     * @param <O>
-     *         the type of the option value
-     */
-    <O> O option(GeneratedExtension<FieldOptions, O> option) {
-        Optional<O> validationRuleOption = getOptionValue(context, option);
-        if (validationRuleOption.isPresent()) {
-            return validationRuleOption.get();
-        }
-
-        Optional<O> result = new FieldOption<O, T>(option).valueFrom(this);
-        return result.orElseGet(option::getDefaultValue);
-    }
-
-    /**
-     * Obtains the value of the option.
-     *
-     * @param option
-     *         an extension key used to obtain an option
-     * @param <O>
-     *         the type of the option value
-     * @return the value of the option
-     */
-    <O> O valueOf(GeneratedExtension<FieldOptions, O> option) {
-        return option(option);
     }
 
     /**

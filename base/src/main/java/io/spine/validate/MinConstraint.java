@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MinOption;
-import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -40,24 +39,30 @@ import static java.lang.Double.parseDouble;
  */
 final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
 
+    private final MinOption optionValue;
+
+    MinConstraint(MinOption optionValue) {
+        this.optionValue = optionValue;
+    }
+
     @Override
     boolean doesNotSatisfy(FieldValue<V> fieldValue) {
         return maxViolated(fieldValue);
     }
 
     private boolean maxViolated(FieldValue<V> fieldValue) {
-        double minValue = minFrom(fieldValue);
-        Predicate<V> violates = doesNotFit(fieldValue, minValue);
+        double minValue = min();
+        Predicate<V> violates = doesNotFit(minValue);
         ImmutableList<V> nestedValues = fieldValue.asList();
         boolean violated = nestedValues.stream()
                                        .anyMatch(violates);
         return violated;
     }
 
-    private Predicate<V> doesNotFit(FieldValue<V> fieldValue, double minValue) {
-        return isExclusive(fieldValue)
-                                   ? value -> value.doubleValue() <= minValue
-                                   : value -> value.doubleValue() < minValue;
+    private Predicate<V> doesNotFit(double minValue) {
+        return isExclusive()
+               ? value -> value.doubleValue() <= minValue
+               : value -> value.doubleValue() < minValue;
     }
 
     @Override
@@ -68,22 +73,20 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(isExclusive(fieldValue) ? "" : "or equal to")
-                .addParam(String.valueOf(minFrom(fieldValue)))
+                .addParam(isExclusive() ? "" : "or equal to")
+                .addParam(String.valueOf(min()))
                 .setFieldPath(path)
                 .setFieldValue(toAny(fieldValue.singleValue()))
                 .build();
         return ImmutableList.of(violation);
     }
 
-    private double minFrom(FieldValue<V> fieldValue) {
-        MinOption optionValue = fieldValue.valueOf(OptionsProto.min);
-        String stringValue = optionValue.getValue();
+    private double min() {
+        String stringValue = this.optionValue.getValue();
         return parseDouble(stringValue);
     }
 
-    private boolean isExclusive(FieldValue<V> fieldValue) {
-        return fieldValue.valueOf(OptionsProto.min)
-                         .getExclusive();
+    private boolean isExclusive() {
+        return this.optionValue.getExclusive();
     }
 }

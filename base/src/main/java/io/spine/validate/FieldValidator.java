@@ -26,15 +26,16 @@ import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldOption;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
@@ -68,7 +69,7 @@ abstract class FieldValidator<V> implements Logging {
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
-        this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.ifInvalid = ifInvalid(fieldValue);
         this.assumeRequired = assumeRequired;
         this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), validatingOptions);
     }
@@ -88,7 +89,7 @@ abstract class FieldValidator<V> implements Logging {
         this.value = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
-        this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.ifInvalid = ifInvalid(fieldValue);
         this.assumeRequired = assumeRequired;
         this.fieldValidatingOptions = commonOptions(assumeRequired);
     }
@@ -157,12 +158,15 @@ abstract class FieldValidator<V> implements Logging {
 
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
-                this.fieldValidatingOptions.stream()
-                                           .filter(option -> option.shouldValidate(value))
-                                           .map(ValidatingOption::constraint)
-                                           .flatMap(constraint -> constraint.check(value)
-                                                                            .stream())
-                                           .collect(Collectors.toList());
+                new ArrayList<>();
+        for (FieldValidatingOption<?, V> option : this.fieldValidatingOptions) {
+            if (option.shouldValidate(value)) {
+                Constraint<FieldValue<V>> constraint = option.constraintFor(this.value);
+                for (ConstraintViolation violation : constraint.check(value)) {
+                    violations.add(violation);
+                }
+            }
+        }
         return violations;
     }
 
@@ -186,7 +190,8 @@ abstract class FieldValidator<V> implements Logging {
             return;
         }
         if (fieldValueNotSet()) {
-            addViolation(newViolation(value.valueOf(OptionsProto.ifMissing)));
+            IfMissingOption ifMissing = ifMissing();
+            addViolation(newViolation(ifMissing));
         }
     }
 
@@ -198,7 +203,10 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} if the field has required attribute or validation is strict.
      */
     protected boolean isRequiredField() {
-        boolean result = value.valueOf(OptionsProto.required) || assumeRequired;
+        Required<V> requiredOption = Required.create(assumeRequired);
+        Boolean required = requiredOption.valueFrom(this.value)
+                                         .orElse(false);
+        boolean result = required || assumeRequired;
         return result;
     }
 
@@ -266,6 +274,20 @@ abstract class FieldValidator<V> implements Logging {
         Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(value);
         boolean notRequired = requiredOptionValue.isPresent() && !requiredOptionValue.get();
         return declaration.isEntityId() && !notRequired;
+    }
+
+    private IfInvalidOption ifInvalid(FieldValue<V> fieldValue) {
+        FieldOption<IfInvalidOption, V> option = new FieldOption<>(OptionsProto.ifInvalid);
+        IfInvalidOption ifInvalid = option.valueFrom(fieldValue)
+                                          .orElse(IfInvalidOption.getDefaultInstance());
+        return ifInvalid;
+    }
+
+    private IfMissingOption ifMissing() {
+        FieldOption<IfMissingOption, V> ifMissingOption =
+                new FieldOption<>(OptionsProto.ifMissing);
+        return ifMissingOption.valueFrom(value)
+                              .orElse(IfMissingOption.getDefaultInstance());
     }
 
     /**

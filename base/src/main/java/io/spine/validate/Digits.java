@@ -48,7 +48,9 @@ final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption,
     }
 
     @Override
-    public Constraint<FieldValue<N>> constraint() {
-        return new DigitsConstraint<>();
+    public Constraint<FieldValue<N>> constraintFor(FieldValue<N> fieldValue) {
+        DigitsOption digitsOption = valueFrom(fieldValue).get();
+        return new DigitsConstraint<>(digitsOption);
+
     }
 }

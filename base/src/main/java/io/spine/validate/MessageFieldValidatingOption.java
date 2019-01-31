@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldOption;
 import io.spine.option.OptionsProto;
 
 /**
@@ -44,7 +45,9 @@ abstract class MessageFieldValidatingOption<O, M extends Message>
     @Override
     boolean shouldValidate(FieldValue<M> value) {
         FieldDeclaration declaration = value.declaration();
-        boolean valid = value.valueOf(OptionsProto.valid);
+        FieldOption<Boolean, M> option = new FieldOption<>(OptionsProto.valid);
+        Boolean valid = option.valueFrom(value)
+                              .orElse(false);
         boolean shouldValidateCollection = declaration.isNotCollection() || valid;
         return super.shouldValidate(value) && shouldValidateCollection;
     }
