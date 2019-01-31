@@ -67,7 +67,7 @@ public final class FieldRef extends StringTypeValue {
     @VisibleForTesting
     FieldRef(String value) {
         super(checkValue(value));
-        this.parts = parts(value);
+        this.parts = split(value);
         this.typeRef = TypeRef.parse(typeRef(value));
     }
 
@@ -77,7 +77,7 @@ public final class FieldRef extends StringTypeValue {
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
-        List<String> parts = parts(value);
+        List<String> parts = split(value);
         checkThat(!parts.isEmpty(), value);
         if (parts.size() >= 2) {
             // Contains the type part.
@@ -92,7 +92,7 @@ public final class FieldRef extends StringTypeValue {
         checkArgument(b, "The value (`%s`) is not a valid field reference.", value);
     }
 
-    private static ImmutableList<String> parts(String value) {
+    private static ImmutableList<String> split(String value) {
         List<String> elements = fieldNameSplit.splitToList(value);
         return ImmutableList.copyOf(elements);
     }
