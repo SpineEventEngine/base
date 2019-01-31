@@ -89,6 +89,33 @@ public final class FileSet {
 
     /**
      * Creates a new file set by parsing the passed descriptor set file.
+     *
+     * <p>Uses the specified file set to link the parsed files.
+     *
+     * <p>Use this method if the descriptor set file doesn't include
+     * information about descriptors used as dependencies.
+     *
+     * @param descriptorSet
+     *         the descriptor set to parse
+     * @param dependencies
+     *         the file set to link parsed files with
+     * @return the file set including parsed files and files from the dependency file set
+     */
+    public static FileSet parse(File descriptorSet, Collection<FileDescriptor> dependencies) {
+        List<FileDescriptorProto> parsedFiles = FileDescriptors.parse(descriptorSet);
+        List<FileDescriptorProto> dependencyFiles = dependencies.stream()
+                                                                .map(FileDescriptor::toProto)
+                                                                .collect(toList());
+        ImmutableSet<FileDescriptorProto> allFiles = ImmutableSet.<FileDescriptorProto>builder()
+                .addAll(parsedFiles)
+                .addAll(dependencyFiles)
+                .build();
+        FileSet result = ofFiles(allFiles);
+        return result;
+    }
+
+    /**
+     * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
         checkNotNull(descriptorSet);

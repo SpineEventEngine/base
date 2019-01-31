@@ -20,18 +20,66 @@
 
 package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Any;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.test.code.proto.AnyWrapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("FileSet should")
 class FileSetTest {
 
     @Test
     @DisplayName("load mains resources")
-    void load_main_resources() {
+    void loadMainResources() {
         assertFalse(FileSet.load()
                            .isEmpty());
+    }
+
+    @Test
+    @DisplayName("parse using dependencies")
+    void parseUsingDependencies(@TempDir Path tempDir) {
+        File descriptorSetFile = tempDir.resolve("test.desc")
+                                        .toFile();
+        ImmutableSet<FileDescriptor> dependencies = ImmutableSet.of(Any.getDescriptor()
+                                                                       .getFile());
+        FileDescriptor dependant = AnyWrapper.getDescriptor()
+                                             .getFile();
+        writeDescriptorSet(descriptorSetFile, dependant.toProto());
+        FileSet parsedFiles = FileSet.parse(descriptorSetFile, dependencies);
+        assertThat(parsedFiles.size()).isEqualTo(1 + dependencies.size());
+    }
+
+    private static void writeDescriptorSet(File file, FileDescriptorProto... descriptors) {
+        List<FileDescriptorProto> descriptorList = asList(descriptors);
+        FileDescriptorSet descriptorSet = FileDescriptorSet
+                .newBuilder()
+                .addAllFile(descriptorList)
+                .build();
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+            descriptorSet.writeTo(out);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 }

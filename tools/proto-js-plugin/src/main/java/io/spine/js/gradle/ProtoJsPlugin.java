@@ -21,6 +21,7 @@
 package io.spine.js.gradle;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
@@ -37,9 +38,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
-import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
@@ -129,13 +130,18 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateCode(Directory generatedRoot,
                                      File descriptors,
                                      List<ExternalModule> modules) {
+        if (!descriptors.exists()) {
+            return;
+        }
         List<GenerationTask> tasks = ImmutableList.of(
                 GenerateKnownTypeParsers.createFor(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)
         );
-        FileSet fileSet = parseOrEmpty(descriptors);
+        Collection<FileDescriptor> dependencies = FileSet.load()
+                                                         .files();
+        FileSet fileSet = FileSet.parse(descriptors, dependencies);
         for (GenerationTask task : tasks) {
             task.performFor(fileSet);
         }
