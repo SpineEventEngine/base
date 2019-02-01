@@ -93,10 +93,6 @@ public class KnownTypes implements Serializable {
         return typeSet.types();
     }
 
-    private TypeSet typeSet() {
-        return typeSet;
-    }
-
     /**
      * Loads known types from the classpath.
      */
@@ -132,6 +128,13 @@ public class KnownTypes implements Serializable {
     }
 
     /**
+     * Retrieves all Protobuf types known to the application.
+     */
+    public TypeSet getAllTypes() {
+        return typeSet;
+    }
+
+    /**
      * Assembles the known types into a
      * {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
      *
@@ -163,7 +166,7 @@ public class KnownTypes implements Serializable {
      */
     public boolean contains(TypeUrl typeUrl) {
         TypeName name = typeUrl.toName();
-        boolean result = typeSet().contains(name);
+        boolean result = typeSet.contains(name);
         return result;
     }
 
@@ -173,13 +176,13 @@ public class KnownTypes implements Serializable {
      * @see TypeSet#find(TypeName)
      */
     Optional<Type<?, ?>> find(TypeName typeName) {
-        Optional<Type<?, ?>> type = typeSet().find(typeName);
+        Optional<Type<?, ?>> type = typeSet.find(typeName);
         return type;
     }
 
     private Type get(TypeName name) throws UnknownTypeException {
-        Type result = typeSet().find(name)
-                               .orElseThrow(() -> new UnknownTypeException(name.value()));
+        Type result = typeSet.find(name)
+                             .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 

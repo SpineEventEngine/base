@@ -100,7 +100,7 @@ public final class FileDescriptorSuperset implements Logging {
         descriptors.add(fileSet);
     }
 
-    private static Collection<FileDescriptorSet> readDependency(File file) {
+    private Collection<FileDescriptorSet> readDependency(File file) {
         if (file.isDirectory()) {
             return mergeDirectory(file);
         } else if (isArchive(file)) {
@@ -112,7 +112,7 @@ public final class FileDescriptorSuperset implements Logging {
         }
     }
 
-    private static Collection<FileDescriptorSet> mergeDirectory(File directory) {
+    private Collection<FileDescriptorSet> mergeDirectory(File directory) {
         File[] descriptorFiles = directory.listFiles(
                 (dir, name) -> name.endsWith(DESC_EXTENSION)
         );
@@ -121,23 +121,28 @@ public final class FileDescriptorSuperset implements Logging {
             return ImmutableSet.of();
         } else {
             ImmutableSet<FileDescriptorSet> descriptors = Stream.of(descriptorFiles)
-                                                                .map(FileDescriptorSuperset::read)
+                                                                .map(this::read)
                                                                 .collect(toImmutableSet());
             return descriptors;
         }
     }
 
-    private static Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
+    private Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
-        return archive.findByExtension(DESC_EXTENSION)
-                      .stream()
-                      .map(ArchiveEntry::asDescriptorSet)
-                      .collect(toImmutableSet());
+        ImmutableSet<FileDescriptorSet> result = archive.findByExtension(DESC_EXTENSION)
+                                                         .stream()
+                                                         .map(ArchiveEntry::asDescriptorSet)
+                                                         .collect(toImmutableSet());
+        if (!result.isEmpty()) {
+            _debug("Found {} descriptor set file(s) in archive `{}`.", result.size(), archiveFile);
+        }
+        return result;
     }
 
-    private static FileDescriptorSet read(File file) {
-        checkArgument(file.exists());
+    private FileDescriptorSet read(File file) {
+        checkArgument(file.exists(), "File does not exist: `%s`.", file);
         Path path = file.toPath();
+        _debug("Reading descriptors from file `{}`.", file);
         try {
             byte[] bytes = Files.readAllBytes(path);
             return FileDescriptorSets.parse(bytes);
@@ -146,7 +151,7 @@ public final class FileDescriptorSuperset implements Logging {
         }
     }
 
-    private static Optional<FileDescriptorSet> readFromPlainFile(File file) {
+    private Optional<FileDescriptorSet> readFromPlainFile(File file) {
         if (file.getName().endsWith(DESC_EXTENSION)) {
             FileDescriptorSet result = read(file);
             return Optional.of(result);

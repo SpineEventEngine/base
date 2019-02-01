@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 
 import java.io.File;
@@ -32,7 +31,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * The default implementation of the {@link AnnotatorFactory}.
@@ -70,13 +68,9 @@ public final class DefaultAnnotatorFactory implements AnnotatorFactory {
     public static AnnotatorFactory newInstance(File descriptorSetFile,
                                                Path generatedProtoDir,
                                                Path generatedGrpcDir) {
-        Collection<FileDescriptor> descriptors = FileSet
-                .parse(descriptorSetFile)
-                .files()
-                .stream()
-                .filter(FileDescriptors::isNotGoogle)
-                .collect(toSet());
-        return new DefaultAnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
+        FileSet files = FileSet.parse(descriptorSetFile)
+                               .knownFiles();
+        return new DefaultAnnotatorFactory(files.files(), generatedProtoDir, generatedGrpcDir);
     }
 
     @Override

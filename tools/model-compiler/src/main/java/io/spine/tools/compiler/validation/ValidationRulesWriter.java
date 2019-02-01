@@ -55,14 +55,19 @@ public final class ValidationRulesWriter implements Logging {
     private final FileSet files;
     private final File targetDir;
 
-    private ValidationRulesWriter(File descriptorSetFile, File targetDir) {
-        this.files = FileSet.parse(descriptorSetFile);
+    private ValidationRulesWriter(FileSet files, File targetDir) {
+        this.files = files;
         this.targetDir = targetDir;
     }
 
     public static void processDescriptorSetFile(File descriptorSetFile, File targetDir) {
+        checkNotNull(descriptorSetFile);
+        checkNotNull(targetDir);
+
+        FileSet files = FileSet.parse(descriptorSetFile)
+                               .knownFiles();
         ValidationRulesWriter writer =
-                new ValidationRulesWriter(descriptorSetFile, targetDir);
+                new ValidationRulesWriter(files, targetDir);
         writer.findRulesAndWriteProperties();
     }
 

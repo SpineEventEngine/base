@@ -28,6 +28,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.type.KnownTypes;
 
 import java.io.File;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static io.spine.code.proto.Linker.link;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -94,15 +96,6 @@ public final class FileSet {
         checkNotNull(descriptorSet);
         checkState(descriptorSet.exists(), "File %s does not exist.", descriptorSet);
         return doParse(descriptorSet);
-    }
-
-    /**
-     * Creates file set by parsing the descriptor set file with the passed name.
-     */
-    public static FileSet parse(String descriptorSetFile) {
-        checkNotNull(descriptorSetFile);
-        File file = new File(descriptorSetFile);
-        return parse(file);
     }
 
     /**
@@ -173,8 +166,20 @@ public final class FileSet {
     /**
      * Obtains immutable view of the files in this set.
      */
-    public Collection<FileDescriptor> files() {
+    public ImmutableSet<FileDescriptor> files() {
         return ImmutableSet.copyOf(files.values());
+    }
+
+    public FileSet knownFiles() {
+        Map<FileName, FileDescriptor> knownFiles = KnownTypes
+                .instance()
+                .getAllTypes()
+                .types()
+                .stream()
+                .map(type -> type.descriptor().getFile())
+                .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
+                .collect(toMap(FileName::from, file -> file));
+        return new FileSet(knownFiles);
     }
 
     /**

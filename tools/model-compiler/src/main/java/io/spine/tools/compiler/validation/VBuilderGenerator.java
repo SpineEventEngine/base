@@ -72,7 +72,8 @@ public final class VBuilderGenerator implements Logging {
     public void process(File descriptorSetFile) {
         _debug("Generating validating builders for types from {}.", descriptorSetFile);
 
-        FileSet fileSet = FileSet.parse(descriptorSetFile);
+        FileSet fileSet = FileSet.parse(descriptorSetFile)
+                                 .knownFiles();
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
