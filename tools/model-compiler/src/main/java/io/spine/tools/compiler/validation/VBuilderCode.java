@@ -52,6 +52,7 @@ import static java.lang.String.format;
  */
 final class VBuilderCode implements Logging {
 
+    public static final Splitter DOT_SPLITTER = Splitter.on('.');
     private final File targetDir;
     private final Indent indent;
     private final MessageType type;
@@ -142,7 +143,7 @@ final class VBuilderCode implements Logging {
     private File resolve(String javaPackage, String className) {
         Path dir = targetDir.toPath();
         if (!javaPackage.isEmpty()) {
-            for (String packageDir :  Splitter.on('.').split(javaPackage)) {
+            for (String packageDir :  DOT_SPLITTER.split(javaPackage)) {
                 dir = dir.resolve(packageDir);
             }
         }
