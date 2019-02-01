@@ -44,9 +44,20 @@ final class InPackage extends AbstractTypeRef {
      */
     private final PackageName packageName;
 
+    /**
+     * Obtains a reference to a proto package from the passed string.
+     *
+     * <p>The reference to all proto types in a package is a package name followed
+     * with the {@code ".*"} suffix (e.g. {@code "spine.base.*"}).
+     *
+     * @param value
+     *         the string to parse
+     * @return a reference to all proto types in a package,
+     *         or empty {@code Optional} if the passed value is not a valid package reference
+     */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.endsWith(WILDCARD)) {
+        if (value.endsWith(WILDCARD) && !WILDCARD.equals(value)) {
             return Optional.of(new InPackage(value));
         }
         return Optional.empty();

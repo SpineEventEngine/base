@@ -57,6 +57,18 @@ class InPackageTest {
             assertNotParses("spine.test");
         }
 
+        @Test
+        @DisplayName("rejecting value without a package name")
+        void noPackage() {
+            assertNotParses(".*");
+        }
+
+        @Test
+        @DisplayName("rejecting all types reference (\"*\")")
+        void allTypes() {
+            assertNotParses("*");
+        }
+
         void assertParses(String value) {
             Optional<TypeRef> typeRef = InPackage.parse(value);
             OptionalSubject subject = Truth8.assertThat(typeRef);
