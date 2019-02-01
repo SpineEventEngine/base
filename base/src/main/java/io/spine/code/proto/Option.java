@@ -33,7 +33,7 @@ import java.util.Optional;
 public interface Option<T, K> {
 
     /**
-     * Obtains the value of this option for the specified entity.
+     * Obtains the value of this option for the specified object that holds it.
      *
      * @param object
      *         holder of the option

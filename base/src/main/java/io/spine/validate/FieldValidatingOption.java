@@ -36,13 +36,25 @@ import java.util.Optional;
  *         type of information that this option holds
  */
 abstract class FieldValidatingOption<O, F> extends FieldOption<O, F>
-                                           implements ValidatingOption<O, FieldValue<F>> {
+        implements ValidatingOption<O, FieldValue<F>> {
 
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, O> optionExtension) {
         super(optionExtension);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Apart from the value of the field option, checks whether any messages with {@code
+     * validation_for} options exist that override the option value of the specified field.
+     *
+     * @param field
+     *         a field that bears the option value
+     * @return either an empty {@code Optional}, if no option value was found for the specified
+     *         field,
+     *         or an {@code Optional} containing found value
+     */
     @Override
     public Optional<O> valueFrom(FieldValue<F> field) {
         FieldContext context = field.context();

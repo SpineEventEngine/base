@@ -43,6 +43,7 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     private final DigitsOption digitsOption;
 
     DigitsConstraint(DigitsOption digitsOption) {
+        super();
         this.digitsOption = digitsOption;
     }
 
@@ -69,7 +70,8 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
         int fractionDigitsCount = parts.get(1)
                                        .length();
         boolean violated =
-                wholeDigitsCount > wholeDigitsMax || fractionDigitsCount > fractionDigitsMax;
+                wholeDigitsCount > wholeDigitsMax ||
+                fractionDigitsCount > fractionDigitsMax;
         return violated;
     }
 

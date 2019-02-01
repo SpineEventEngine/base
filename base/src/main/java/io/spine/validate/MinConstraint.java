@@ -42,6 +42,7 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
     private final MinOption optionValue;
 
     MinConstraint(MinOption optionValue) {
+        super();
         this.optionValue = optionValue;
     }
 

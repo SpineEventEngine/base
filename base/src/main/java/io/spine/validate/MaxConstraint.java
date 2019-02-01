@@ -41,6 +41,7 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
     private final MaxOption optionValue;
 
     MaxConstraint(MaxOption optionValue) {
+        super();
         this.optionValue = optionValue;
     }
 

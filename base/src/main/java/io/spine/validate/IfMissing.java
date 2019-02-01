@@ -29,7 +29,7 @@ import io.spine.option.OptionsProto;
  */
 final class IfMissing<T> extends FieldOption<IfMissingOption, T> {
 
-    /** Specifies the extension that corresponds to this option. */
+    /** Creates a new instance of this option. */
     IfMissing() {
         super(OptionsProto.ifMissing);
     }

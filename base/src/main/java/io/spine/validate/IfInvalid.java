@@ -30,8 +30,9 @@ import io.spine.option.OptionsProto;
  * @param <T>
  *         type of field value that this option is applied to
  */
-public class IfInvalid<T> extends FieldOption<IfInvalidOption, T> {
+class IfInvalid<T> extends FieldOption<IfInvalidOption, T> {
 
+    /** Creates a new instance of this option. */
     IfInvalid() {
         super(OptionsProto.ifInvalid);
     }

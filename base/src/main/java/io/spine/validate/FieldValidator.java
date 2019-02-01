@@ -62,6 +62,17 @@ abstract class FieldValidator<V> implements Logging {
     private final boolean assumeRequired;
     private final IfInvalidOption ifInvalid;
 
+    /**
+     * Creates a new validator instance.
+     *
+     * @param fieldValue
+     *         the value to validate
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
+     * @param validatingOptions
+     *         additional options against which the field should be validated
+     */
     protected FieldValidator(FieldValue<V> fieldValue,
                              boolean assumeRequired,
                              Set<FieldValidatingOption<?, V>> validatingOptions) {
@@ -126,9 +137,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs type-specific validation according to validation options;
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs type-specific validation according to validation options;
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
