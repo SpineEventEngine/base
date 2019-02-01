@@ -23,6 +23,9 @@ package io.spine.validate;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.proto.FieldOption;
+import io.spine.validate.rule.ValidationRuleOptions;
+
+import java.util.Optional;
 
 /**
  * An option that validates a field.
@@ -38,6 +41,16 @@ abstract class FieldValidatingOption<O, F> extends FieldOption<O, F>
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, O> optionExtension) {
         super(optionExtension);
+    }
+
+    @Override
+    public Optional<O> valueFrom(FieldValue<F> field) {
+        FieldContext context = field.context();
+        Optional<O> validationForOption = ValidationRuleOptions.getOptionValue(context,
+                                                                               optionExtension());
+        return validationForOption.isPresent()
+               ? validationForOption
+               : super.valueFrom(field);
     }
 
     /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */

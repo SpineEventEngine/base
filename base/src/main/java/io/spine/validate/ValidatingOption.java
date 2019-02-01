@@ -23,14 +23,14 @@ package io.spine.validate;
 import io.spine.code.proto.Option;
 
 /**
- * An option that validates an arbitrary Protobuf entity.
+ * An option that validates a Protobuf entity.
  *
  * @param <T>
  *         type of information that this option holds, e. g.
  *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
  *         Boolean}
  * @param <K>
- *         kind entity that this option is applied to
+ *         kind of entity that this option is applied to
  */
 interface ValidatingOption<T, K> extends Option<T, K> {
 

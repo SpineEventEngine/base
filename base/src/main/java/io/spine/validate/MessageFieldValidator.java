@@ -24,9 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import io.spine.code.proto.FieldOption;
 import io.spine.option.IfInvalidOption;
-import io.spine.option.OptionsProto;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
@@ -65,7 +63,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
     private boolean shouldValidateFields() {
         boolean fieldValueSet = !fieldValueNotSet();
-        FieldOption<Boolean, V> validOption = new FieldOption<>(OptionsProto.valid);
+        Valid<V> validOption = new Valid<>();
         Boolean valid = validOption.valueFrom(this.fieldValue())
                                    .orElse(false);
         return valid && fieldValueSet;

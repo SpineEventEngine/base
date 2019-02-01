@@ -20,33 +20,18 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.Message;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.OptionsProto;
 
 /**
- * An option that validates a message field.
+ * An option that indicates that the fields internal field should be included into the validation.
  *
- * @param <O>
- *         type of option value
- * @param <M>
- *         type of the message being validated by this option
+ * @param <T>
+ *         type of field that this option is applied to
  */
-abstract class MessageFieldValidatingOption<O, M extends Message>
-        extends FieldValidatingOption<O, M> {
+class Valid<T> extends FieldOption<Boolean, T> {
 
-    MessageFieldValidatingOption(GeneratedExtension<FieldOptions, O> extension) {
-        super(extension);
-    }
-
-    @Override
-    boolean shouldValidate(FieldValue<M> value) {
-        FieldDeclaration declaration = value.declaration();
-        Valid<M> validOption = new Valid<>();
-        Boolean valid = validOption.valueFrom(value)
-                                   .orElse(false);
-        boolean shouldValidateCollection = declaration.isNotCollection() || valid;
-        return super.shouldValidate(value) && shouldValidateCollection;
+    Valid() {
+        super(OptionsProto.valid);
     }
 }

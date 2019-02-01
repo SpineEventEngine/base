@@ -26,18 +26,17 @@ import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldOption;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -158,15 +157,12 @@ abstract class FieldValidator<V> implements Logging {
 
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
-                new ArrayList<>();
-        for (FieldValidatingOption<?, V> option : this.fieldValidatingOptions) {
-            if (option.shouldValidate(value)) {
-                Constraint<FieldValue<V>> constraint = option.constraintFor(this.value);
-                for (ConstraintViolation violation : constraint.check(value)) {
-                    violations.add(violation);
-                }
-            }
-        }
+                this.fieldValidatingOptions.stream()
+                                           .filter(option -> option.shouldValidate(value))
+                                           .map(option -> option.constraintFor(this.value))
+                                           .flatMap(constraint -> constraint.check(value)
+                                                                            .stream())
+                                           .collect(toList());
         return violations;
     }
 
@@ -277,17 +273,16 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private IfInvalidOption ifInvalid(FieldValue<V> fieldValue) {
-        FieldOption<IfInvalidOption, V> option = new FieldOption<>(OptionsProto.ifInvalid);
-        IfInvalidOption ifInvalid = option.valueFrom(fieldValue)
-                                          .orElse(IfInvalidOption.getDefaultInstance());
+        IfInvalid<V> ifInvalidOption = new IfInvalid<>();
+        IfInvalidOption ifInvalid = ifInvalidOption.valueFrom(fieldValue)
+                                                   .orElse(IfInvalidOption.getDefaultInstance());
         return ifInvalid;
     }
 
     private IfMissingOption ifMissing() {
-        FieldOption<IfMissingOption, V> ifMissingOption =
-                new FieldOption<>(OptionsProto.ifMissing);
-        return ifMissingOption.valueFrom(value)
-                              .orElse(IfMissingOption.getDefaultInstance());
+        IfMissing<V> ifMissing = new IfMissing<>();
+        return ifMissing.valueFrom(value)
+                        .orElse(IfMissingOption.getDefaultInstance());
     }
 
     /**
