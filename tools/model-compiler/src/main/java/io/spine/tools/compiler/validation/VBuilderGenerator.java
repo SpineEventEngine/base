@@ -25,9 +25,10 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.ProtoBelongsToModule;
+import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.SourceProtoBelongsToModule;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -72,15 +73,20 @@ public final class VBuilderGenerator implements Logging {
     public void process(File descriptorSetFile) {
         _debug("Generating validating builders for types from {}.", descriptorSetFile);
 
-        FileSet fileSet = FileSet.parse(descriptorSetFile);
+        FileSet fileSet = moduleFiles(descriptorSetFile);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
                             .filter(MessageType::isNotRejection)
-                            .filter(new SourceProtoBelongsToModule(protoSrcDir))
                             .collect(toImmutableList());
         generate(customTypes);
+    }
+
+    private FileSet moduleFiles(File descriptorSetFile) {
+        FileSet fileSet = FileSet.parse(descriptorSetFile);
+        ProtoBelongsToModule predicate = new SourceProtoBelongsToModule(protoSrcDir);
+        return fileSet.filter(predicate.forDescriptor());
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {
@@ -108,5 +114,4 @@ public final class VBuilderGenerator implements Logging {
             log.warn(message);
         }
     }
-
 }

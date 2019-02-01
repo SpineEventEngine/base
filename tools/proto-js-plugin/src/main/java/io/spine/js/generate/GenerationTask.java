@@ -20,15 +20,13 @@
 
 package io.spine.js.generate;
 
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.logging.Logging;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.code.proto.ProtoBelongsToModule;
+import io.spine.code.proto.SourceFile;
 
 import java.nio.file.Path;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -74,8 +72,8 @@ public abstract class GenerationTask {
      * @return the files to perform the taks for
      */
     protected FileSet filter(FileSet fileSet) {
-        Predicate<FileDescriptor> predicate = new CompiledProtoBelongsToModule(generatedRoot);
-        return fileSet.filter(predicate);
+        ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedRoot);
+        return fileSet.filter(predicate.forDescriptor());
     }
 
     /**
@@ -104,10 +102,10 @@ public abstract class GenerationTask {
     }
 
     /**
-     * A predicate determining if the given Protobuf file was compiled to JavaScript.
+     * A predicate determining if the given Protobuf file was compiled to JavaScript
+     * and belongs to the specified module.
      */
-    private static final class CompiledProtoBelongsToModule
-            implements Predicate<FileDescriptor>, Logging {
+    private static final class CompiledProtoBelongsToModule extends ProtoBelongsToModule {
 
         private final Directory generatedRoot;
 
@@ -123,14 +121,10 @@ public abstract class GenerationTask {
         }
 
         @Override
-        public boolean test(@Nullable FileDescriptor file) {
-            checkNotNull(file);
-            FileName fileName = FileName.from(file);
+        protected Path resolve(SourceFile file) {
+            FileName fileName = FileName.from(file.getDescriptor());
             Path filePath = generatedRoot.resolve(fileName);
-            boolean exists = filePath.toFile()
-                                     .exists();
-            _debug("Checking if the file {} exists, result: {}", filePath, exists);
-            return exists;
+            return filePath;
         }
     }
 }

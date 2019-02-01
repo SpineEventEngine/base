@@ -26,7 +26,7 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
-import io.spine.tools.compiler.SourceProtoBelongsToModule;
+import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.spine.code.proto.RejectionsFile.findAll;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
@@ -134,7 +134,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             _debug("Generating from {}", descriptorSetFile.get());
 
             FileSet mainFiles = FileSet.parse(descriptorSetFile.get());
-            ImmutableSet<RejectionsFile> rejectionFiles = findAll(mainFiles);
+            ImmutableSet<RejectionsFile> rejectionFiles = findModuleRejections(mainFiles);
             _debug("Processing the file descriptors for the rejections {}", rejectionFiles);
             for (RejectionsFile source : rejectionFiles) {
                 // We are sure that this is a rejections file because we got them filtered.
@@ -142,12 +142,20 @@ public class RejectionGenPlugin extends SpinePlugin {
             }
         }
 
+        /**
+         * Obtains all rejection files belonging to the currently processed module.
+         */
+        private ImmutableSet<RejectionsFile> findModuleRejections(FileSet mainFiles) {
+            ImmutableSet<RejectionsFile> allRejections = findAll(mainFiles);
+            ImmutableSet<RejectionsFile> moduleRejections = allRejections
+                    .stream()
+                    .filter(new SourceProtoBelongsToModule(protoSrcDir()))
+                    .collect(toImmutableSet());
+            return moduleRejections;
+        }
+
         private void generateRejections(RejectionsFile source) {
-            List<RejectionType> rejections =
-                    source.getRejectionDeclarations()
-                          .stream()
-                          .filter(new SourceProtoBelongsToModule(protoSrcDir()))
-                          .collect(toImmutableList());
+            List<RejectionType> rejections = source.getRejectionDeclarations();
             if (rejections.isEmpty()) {
                 return;
             }
