@@ -50,6 +50,19 @@ public class CompositeTypeRef implements TypeRef {
     /** Two or more type references. */
     private final ImmutableList<TypeRef> elements;
 
+    /**
+     * Parses a value of a composite type references.
+     *
+     * <p>The value must contain two or more type references separated with comma.
+     * Each reference must be a valid type reference.
+     *
+     * @param value
+     *         the string to parse
+     * @return a new instance of the composite reference
+     * @throws IllegalArgumentException
+     *         if the passed string contains only one type reference, or one of the strings
+     *         from the reference is not a valid type reference
+     */
     static CompositeTypeRef parse(String value) {
         checkContainsComma(value);
         List<String> parts = splitter.splitToList(value);
