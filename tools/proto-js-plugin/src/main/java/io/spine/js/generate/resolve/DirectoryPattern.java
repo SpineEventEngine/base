@@ -116,6 +116,9 @@ public final class DirectoryPattern {
         List<String> relevantPattern = patternElements.subList(fromIndex,
                                                                patternElements.size());
         List<String> targetElements = target.elements();
+        if (relevantPattern.size() > targetElements.size()) {
+            return false;
+        }
         int lastRelevantTarget = includeNested
                                  ? relevantPattern.size()
                                  : targetElements.size();

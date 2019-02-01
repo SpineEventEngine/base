@@ -136,6 +136,14 @@ class DirectoryPatternTest {
     }
 
     @Test
+    @DisplayName("not match if pattern is longer than directory reference")
+    void notMatchIfPatternIsLonger() {
+        DirectoryPattern pattern = DirectoryPattern.of("spine/foo/bar/*");
+        boolean matches = matches(pattern, "spine/foo");
+        assertFalse(matches);
+    }
+
+    @Test
     @DisplayName("not transform if not matches")
     void notTransformNonMatching() {
         DirectoryPattern pattern = DirectoryPattern.of("a");
