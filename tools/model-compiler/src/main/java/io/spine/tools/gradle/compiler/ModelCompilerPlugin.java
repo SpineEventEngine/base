@@ -54,7 +54,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         // in the project classpath.
 
         Stream.of(new CleaningPlugin(),
-                  new DescriptorSetMergerPlugin(),
+                  new DescriptorSetLoaderPlugin(),
                   new EnrichmentLookupPlugin(),
                   new RejectionGenPlugin(),
                   new ValidatingBuilderGenPlugin(),

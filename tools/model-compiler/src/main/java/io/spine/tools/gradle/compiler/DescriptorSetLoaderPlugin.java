@@ -30,8 +30,8 @@ import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
 
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
+import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
  * <p>The merge result is used to {@linkplain
  * io.spine.tools.type.MoreKnownTypes#extendWith(java.io.File) extend the known type registry}.
  */
-public class DescriptorSetMergerPlugin extends SpinePlugin {
+public class DescriptorSetLoaderPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
@@ -56,7 +56,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private void createMainTask(Project project) {
         newTask(MERGE_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, RUNTIME),
+                createMergingAction(configuration(project, RUNTIME_CLASSPATH),
                                     getMainDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_PROTO)
                 .applyNowTo(project);
@@ -64,7 +64,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private void createTestTask(Project project) {
         newTask(MERGE_TEST_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, TEST_RUNTIME),
+                createMergingAction(configuration(project, TEST_RUNTIME_CLASSPATH),
                                     getTestDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .applyNowTo(project);

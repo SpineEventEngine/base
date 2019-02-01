@@ -22,6 +22,9 @@ package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
 
+import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME;
+
 /**
  * The names of Gradle configurations used by the Spine model compiler plugin.
  *
@@ -38,14 +41,14 @@ public enum ConfigurationName {
     CLASSPATH("classpath"),
 
     /**
-     * The {@code runtime} configuration.
+     * The {@code runtimeClasspath} configuration.
      */
-    RUNTIME("runtime"),
+    RUNTIME_CLASSPATH(RUNTIME_CLASSPATH_CONFIGURATION_NAME),
 
     /**
-     * The {@code testRuntime} configuration.
+     * The {@code testRuntimeClasspath} configuration.
      */
-    TEST_RUNTIME("testRuntime"),
+    TEST_RUNTIME_CLASSPATH(TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME),
 
     /**
      * A custom configuration for downloading artifacts from repositories.
