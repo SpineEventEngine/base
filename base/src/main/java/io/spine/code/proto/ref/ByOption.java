@@ -105,7 +105,7 @@ public final class ByOption {
         return ImmutableList.copyOf(result);
     }
 
-    static IllegalArgumentException missingOptionIn(FieldDescriptorProto field) {
+    private static IllegalArgumentException missingOptionIn(FieldDescriptorProto field) {
         return newIllegalArgumentException(
                 "There is no `by` option in the field `%s`.",
                 field.getName());
