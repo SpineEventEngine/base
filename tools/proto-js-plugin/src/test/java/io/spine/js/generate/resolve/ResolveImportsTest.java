@@ -63,6 +63,17 @@ class ResolveImportsTest {
     }
 
     @Test
+    @DisplayName("not clash Spine Web and Spine Users modules")
+    void notClashUsersWithWeb() throws IOException {
+        ImmutableList<ExternalModule> modules = ImmutableList.of(ExternalModule.spineWeb(),
+                                                                 ExternalModule.spineUsers());
+        ResolveImports task = new ResolveImports(generatedProtoDir, modules);
+        writeFile(testFile, "require('../../spine/users/identifiers_pb.js');");
+        afterResolve(testFile, task)
+                .containsExactly("require('spine-users/spine/users/identifiers_pb.js');");
+    }
+
+    @Test
     @DisplayName("resolve in main sources before external modules")
     void resolveMainSourcesFirstly() throws IOException {
         ResolveImports task = newTask(module);

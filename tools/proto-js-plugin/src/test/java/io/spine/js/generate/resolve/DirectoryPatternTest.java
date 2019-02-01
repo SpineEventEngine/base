@@ -127,6 +127,15 @@ class DirectoryPatternTest {
     }
 
     @Test
+    @DisplayName("not match a directory only if the root is same")
+    void notMatchIfOnlyRootSame() {
+        DirectoryPattern pattern = DirectoryPattern.of("proto/spine/base/*");
+        String directory = "spine/users";
+        boolean matches = matches(pattern, directory);
+        assertFalse(matches);
+    }
+
+    @Test
     @DisplayName("not transform if not matches")
     void notTransformNonMatching() {
         DirectoryPattern pattern = DirectoryPattern.of("a");

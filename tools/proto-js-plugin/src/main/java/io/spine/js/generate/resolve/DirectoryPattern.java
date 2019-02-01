@@ -82,13 +82,8 @@ public final class DirectoryPattern {
      */
     boolean matches(DirectoryReference target) {
         Optional<Integer> firstElementMatch = firstMatchIndex(target);
-        if (!firstElementMatch.isPresent()) {
-            return false;
-        }
-        if (includeNested) {
-            return true;
-        }
-        return matches(target, firstElementMatch.get());
+        return firstElementMatch.filter(index -> matches(target, index))
+                                .isPresent();
     }
 
     /**
@@ -117,11 +112,15 @@ public final class DirectoryPattern {
     }
 
     private boolean matches(DirectoryReference target, int fromIndex) {
-        List<String> targetElements = target.elements();
         List<String> patternElements = directory.elements();
-        List<String> relevantPatternElements = patternElements.subList(fromIndex,
-                                                                       patternElements.size());
-        return relevantPatternElements.equals(targetElements);
+        List<String> relevantPattern = patternElements.subList(fromIndex,
+                                                               patternElements.size());
+        List<String> targetElements = target.elements();
+        int lastRelevantTarget = includeNested
+                                 ? relevantPattern.size()
+                                 : targetElements.size();
+        List<String> relevantTarget = targetElements.subList(0, lastRelevantTarget);
+        return relevantPattern.equals(relevantTarget);
     }
 
     private Optional<Integer> firstMatchIndex(DirectoryReference target) {
