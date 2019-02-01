@@ -69,6 +69,18 @@ public final class ByOption {
         return Optional.of(value);
     }
 
+    /**
+     * Obtains all source field alternatives for a field annotated with {@code (by)} option.
+     *
+     * <p>If an enrichment field can be computed from more than one source field, those alternatives
+     * are separated with the pipe ({@code "|"}) symbol.
+     *
+     * @param field
+     *         the descriptor of the enrichment field
+     * @return the list of alternative references
+     * @throws IllegalArgumentException
+     *         if the passed field does not have the {@code (by)} option defined
+     */
     static ImmutableList<String> allFrom(FieldDescriptorProto field) {
         checkNotNull(field);
         String byRaw = valueIn(field)
@@ -77,6 +89,11 @@ public final class ByOption {
         return result;
     }
 
+    /**
+     * Parses the string with the value of the {@code (by)} option.
+     *
+     * @see #allFrom(FieldDescriptorProto)
+     */
     @VisibleForTesting
     static ImmutableList<String> parse(String rawValue) {
         String byArgument = SPACE.matcher(rawValue)
