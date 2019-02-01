@@ -35,7 +35,7 @@ import java.util.List;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * Provides mapping from a enrichment type name to names of enriched types.
+ * Provides mapping from an enrichment type name to names of enriched types.
  */
 final class Entry implements Logging {
 
