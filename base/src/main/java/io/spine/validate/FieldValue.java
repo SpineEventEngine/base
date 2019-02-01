@@ -79,7 +79,10 @@ public final class FieldValue<T> {
      *         the context of the field
      * @return a new instance
      */
-    @SuppressWarnings({"unchecked", "ConstantConditions", "ChainOfInstanceofChecks"})
+    @SuppressWarnings({
+            "ConstantConditions",
+            "unchecked" // Object to T is always safe, since validating builders only receive `T`s.
+    })
     static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
@@ -89,6 +92,18 @@ public final class FieldValue<T> {
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
+        return resolveType(context, value, declaration);
+    }
+
+    @SuppressWarnings({
+            "unchecked", /* Since the field value is created by validating builders,
+                           the raw value always corresponds to one of the types that Protobuf fields
+                           have, so the cast to `T` is always safe.
+                         */
+            "ChainOfInstanceofChecks" /* No common ancestor forces chain of `instanceofs`. */})
+    private static <T> FieldValue<T> resolveType(FieldContext context,
+                                                 T value,
+                                                 FieldDeclaration declaration) {
         if (value instanceof List) {
             List<T> values = (List<T>) value;
             return new FieldValue<>(values, context, declaration);

@@ -25,11 +25,10 @@ import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.protobuf.TypeConverter.toAny;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A repeated field constraint that requires values to be distinct.
@@ -40,13 +39,13 @@ import static java.util.stream.Collectors.toList;
 final class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<T> fieldValue) {
+    public ImmutableList<ConstraintViolation> check(FieldValue<T> fieldValue) {
         ImmutableList<T> values = fieldValue.asList();
         Set<T> duplicates = findDuplicates(values);
-        List<ConstraintViolation> violations =
+        ImmutableList<ConstraintViolation> violations =
                 duplicates.stream()
                           .map(duplicate -> distinctViolated(fieldValue, duplicate))
-                          .collect(toList());
+                          .collect(toImmutableList());
         return violations;
     }
 

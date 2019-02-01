@@ -89,17 +89,17 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>Validator created by this constructors applies no additional validating options.
      *
-     * @param fieldValue
+     * @param value
      *         the value to validate
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
-    protected FieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
-        this.value = fieldValue;
-        this.declaration = fieldValue.declaration();
-        this.values = fieldValue.asList();
-        this.ifInvalid = ifInvalid(fieldValue);
+    protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
+        this.value = value;
+        this.declaration = value.declaration();
+        this.values = value.asList();
+        this.ifInvalid = ifInvalid(value);
         this.assumeRequired = assumeRequired;
         this.fieldValidatingOptions = commonOptions(assumeRequired);
     }
@@ -139,7 +139,7 @@ abstract class FieldValidator<V> implements Logging {
      * <ol>
      * <li>check the field to be set if it is {@code required};
      * <li>validate the field as an Entity ID if required;
-     * <li>performs type-specific validation according to validation options;
+     * <li>performs type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
@@ -168,12 +168,12 @@ abstract class FieldValidator<V> implements Logging {
 
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
-                this.fieldValidatingOptions.stream()
-                                           .filter(option -> option.shouldValidate(value))
-                                           .map(option -> option.constraintFor(this.value))
-                                           .flatMap(constraint -> constraint.check(value)
-                                                                            .stream())
-                                           .collect(toList());
+                fieldValidatingOptions.stream()
+                                      .filter(option -> option.shouldValidate(value))
+                                      .map(option -> option.constraintFor(value))
+                                      .flatMap(constraint -> constraint.check(value)
+                                                                       .stream())
+                                      .collect(toList());
         return violations;
     }
 
@@ -203,7 +203,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     FieldValue<V> fieldValue() {
-        return this.value;
+        return value;
     }
 
     /**
@@ -211,7 +211,7 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected boolean isRequiredField() {
         Required<V> requiredOption = Required.create(assumeRequired);
-        Boolean required = requiredOption.valueFrom(this.value)
+        Boolean required = requiredOption.valueFrom(value)
                                          .orElse(false);
         boolean result = required || assumeRequired;
         return result;

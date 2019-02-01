@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
 import io.spine.option.IfMissingOption;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -49,7 +48,7 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
     }
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<T> value) {
+    public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
         boolean canNotCheckPresence = !allowedTypes.contains(value.javaType());
         if (canNotCheckPresence) {
             return ImmutableList.of();
@@ -59,7 +58,7 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
                ImmutableList.of();
     }
 
-    private List<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
+    private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
         ConstraintViolation violation = ConstraintViolation

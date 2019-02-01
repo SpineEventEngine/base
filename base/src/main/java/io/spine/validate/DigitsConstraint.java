@@ -25,8 +25,6 @@ import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 
-import java.util.List;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.getErrorMsgFormat;
 
@@ -49,20 +47,19 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
 
     @Override
     boolean doesNotSatisfy(FieldValue<V> fieldValue) {
-        int wholeDigitsMax = this.digitsOption.getIntegerMax();
-        int fractionDigitsMax = this.digitsOption.getFractionMax();
+        int wholeDigitsMax = digitsOption.getIntegerMax();
+        int fractionDigitsMax = digitsOption.getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
             return false;
         }
-        boolean constraintViolated = fieldValue.asList()
-                                               .stream()
-                                               .anyMatch(value -> digitsViolated(wholeDigitsMax,
-                                                                                 fractionDigitsMax,
-                                                                                 value));
+        boolean constraintViolated =
+                fieldValue.asList()
+                          .stream()
+                          .anyMatch(value -> violated(wholeDigitsMax, fractionDigitsMax, value));
         return constraintViolated;
     }
 
-    private boolean digitsViolated(int wholeDigitsMax, int fractionDigitsMax, V value) {
+    private boolean violated(int wholeDigitsMax, int fractionDigitsMax, V value) {
         double actualValue = value.doubleValue();
         ImmutableList<String> parts = splitOnPeriod(actualValue);
         int wholeDigitsCount = parts.get(0)
@@ -71,7 +68,7 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
                                        .length();
         boolean violated =
                 wholeDigitsCount > wholeDigitsMax ||
-                fractionDigitsCount > fractionDigitsMax;
+                        fractionDigitsCount > fractionDigitsMax;
         return violated;
     }
 
@@ -80,10 +77,10 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     }
 
     @Override
-    List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
-        String msg = getErrorMsgFormat(this.digitsOption, this.digitsOption.getMsgFormat());
-        String intMax = String.valueOf(this.digitsOption.getIntegerMax());
-        String fractionMax = String.valueOf(this.digitsOption.getFractionMax());
+    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
+        String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
+        String intMax = String.valueOf(digitsOption.getIntegerMax());
+        String fractionMax = String.valueOf(digitsOption.getFractionMax());
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
 

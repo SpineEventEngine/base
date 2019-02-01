@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * A rule that limits the set of possible values for {@code T} and produces
@@ -42,5 +42,5 @@ interface Constraint<T> {
      *         value that is being checked against this constraint
      * @return violations of this constraint
      */
-    List<ConstraintViolation> check(T value);
+    ImmutableList<ConstraintViolation> check(T value);
 }

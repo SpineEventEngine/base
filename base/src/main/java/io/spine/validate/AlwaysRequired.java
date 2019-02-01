@@ -27,7 +27,7 @@ package io.spine.validate;
  * @param <T>
  *         type of value that this option is applied to
  */
-class AlwaysRequired<T> extends Required<T> {
+final class AlwaysRequired<T> extends Required<T> {
 
     /**
      * Creates a new instance of this option.

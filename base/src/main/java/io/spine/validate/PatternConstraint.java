@@ -24,10 +24,8 @@ import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.PatternOption;
 
-import java.util.List;
-
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.FieldValidator.getErrorMsgFormat;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A constraint that, when applied to a string field, checks whether that field matches the
@@ -42,22 +40,22 @@ final class PatternConstraint implements Constraint<FieldValue<String>> {
     }
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<String> fieldValue) {
+    public ImmutableList<ConstraintViolation> check(FieldValue<String> fieldValue) {
         String regex = optionValue.getRegex();
         ImmutableList<String> values = fieldValue.asList();
-        List<ConstraintViolation> violations =
+        ImmutableList<ConstraintViolation> violations =
                 values.stream()
                       .filter(value -> !value.matches(regex))
                       .map(value -> newViolation(fieldValue))
-                      .collect(toList());
+                      .collect(toImmutableList());
         return violations;
     }
 
     private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
-        String msg = getErrorMsgFormat(this.optionValue, this.optionValue.getMsgFormat());
+        String msg = getErrorMsgFormat(optionValue, optionValue.getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
-        String regex = this.optionValue.getRegex();
+        String regex = optionValue.getRegex();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

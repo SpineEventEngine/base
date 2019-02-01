@@ -22,8 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.List;
-
 /**
  * A constraint that is applicable to numeric fields only.
  *
@@ -33,9 +31,9 @@ import java.util.List;
 public abstract class NumericFieldConstraint<V extends Number> implements Constraint<FieldValue<V>> {
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<V> fieldValue) {
-        if(doesNotSatisfy(fieldValue)){
-            return constraintViolated(fieldValue);
+    public ImmutableList<ConstraintViolation> check(FieldValue<V> value) {
+        if(doesNotSatisfy(value)){
+            return constraintViolated(value);
         }
         return ImmutableList.of();
     }
@@ -52,5 +50,5 @@ public abstract class NumericFieldConstraint<V extends Number> implements Constr
      * A violation that should vbe produced if this constraint is not
      * satisfied.
      */
-    abstract List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue);
+    abstract ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue);
 }

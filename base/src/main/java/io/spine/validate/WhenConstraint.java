@@ -27,8 +27,6 @@ import io.spine.base.FieldPath;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
 
-import java.util.List;
-
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
@@ -48,8 +46,8 @@ final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
         this.optionValue = optionValue;
     }
 
-    private List<ConstraintViolation> validateTimestamps(FieldValue<Timestamp> fieldValue) {
-        Time when = this.optionValue.getIn();
+    private ImmutableList<ConstraintViolation> validateTimestamps(FieldValue<Timestamp> fieldValue) {
+        Time when = optionValue.getIn();
         if (when == TIME_UNDEFINED) {
             return ImmutableList.of();
         }
@@ -85,8 +83,8 @@ final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
 
     private ConstraintViolation newTimeViolation(FieldValue<Timestamp> fieldValue,
                                                  Timestamp value) {
-        String msg = getErrorMsgFormat(this.optionValue, this.optionValue.getMsgFormat());
-        String when = this.optionValue.getIn()
+        String msg = getErrorMsgFormat(optionValue, optionValue.getMsgFormat());
+        String when = optionValue.getIn()
                                       .toString()
                                       .toLowerCase();
         FieldPath fieldPath = fieldValue.context()
@@ -102,7 +100,7 @@ final class WhenConstraint implements Constraint<FieldValue<Timestamp>> {
     }
 
     @Override
-    public List<ConstraintViolation> check(FieldValue<Timestamp> value) {
+    public ImmutableList<ConstraintViolation> check(FieldValue<Timestamp> value) {
         return validateTimestamps(value);
     }
 }

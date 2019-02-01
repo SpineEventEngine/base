@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.MaxOption;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -66,7 +65,7 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     @Override
-    List<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
+    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
         String format = "Number must be less than %s %s.";
         FieldPath path = fieldValue.context()
                                    .getFieldPath();
@@ -83,11 +82,11 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     private double max() {
-        String stringValue = this.optionValue.getValue();
+        String stringValue = optionValue.getValue();
         return parseDouble(stringValue);
     }
 
     private boolean isExclusive() {
-        return this.optionValue.getExclusive();
+        return optionValue.getExclusive();
     }
 }
