@@ -23,17 +23,20 @@ package io.spine.reflect;
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.reflect.Types.getArgument;
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
 import static io.spine.reflect.Types.resolveArguments;
@@ -80,9 +83,20 @@ class TypesTest extends UtilityClassTest<Types> {
         assertThat(types).isEmpty();
     }
 
+    @Test
+    @DisplayName("obtain type argument value from the inheritance chain")
+    void getTypeArgument() {
+        Class<?> argument = getArgument(ListOfMessages.class, Iterable.class, 0);
+        assertEquals(argument, Message.class);
+    }
+
     @Override
     protected void configure(NullPointerTester tester) {
         super.configure(tester);
         tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
+    }
+
+    @SuppressWarnings({"serial", "ClassExtendsConcreteCollection"})
+    private static class ListOfMessages extends ArrayList<Message> {
     }
 }
