@@ -46,7 +46,7 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
     }
 
     @Override
-    public List<ConstraintViolation> check(MessageValue value) {
+    public ImmutableList<ConstraintViolation> check(MessageValue value) {
         return matches(value) ? ImmutableList.of() : violations.build();
     }
 
