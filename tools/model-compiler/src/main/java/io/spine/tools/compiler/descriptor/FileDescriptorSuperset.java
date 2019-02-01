@@ -45,7 +45,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.compiler.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.util.stream.Collectors.toSet;
@@ -129,7 +128,7 @@ public final class FileDescriptorSuperset implements Logging {
 
     private static Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
-        return archive.findByExtension(KNOWN_TYPES)
+        return archive.findByExtension(DESC_EXTENSION)
                       .stream()
                       .map(ArchiveEntry::asDescriptorSet)
                       .collect(toImmutableSet());
