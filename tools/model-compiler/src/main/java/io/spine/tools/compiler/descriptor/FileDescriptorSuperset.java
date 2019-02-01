@@ -90,6 +90,8 @@ public final class FileDescriptorSuperset implements Logging {
     }
 
     public void addFromDependency(File dependencyFile) {
+        checkNotNull(dependencyFile);
+        _debug("Loading descriptors from `{}`.", dependencyFile);
         readDependency(dependencyFile)
                 .forEach(this::addFiles);
     }
@@ -98,8 +100,7 @@ public final class FileDescriptorSuperset implements Logging {
         descriptors.add(fileSet);
     }
 
-    private Collection<FileDescriptorSet> readDependency(File file) {
-        log().debug("Merging descriptors from `{}`.", file);
+    private static Collection<FileDescriptorSet> readDependency(File file) {
         if (file.isDirectory()) {
             return mergeDirectory(file);
         } else if (isArchive(file)) {
