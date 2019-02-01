@@ -31,15 +31,15 @@ import java.util.function.Function;
 final class Parsing {
 
     private final String value;
-    private final ImmutableList<Provider> provider;
+    private final ImmutableList<Provider> providers;
 
     Parsing(String value, Provider... provider) {
         this.value = value;
-        this.provider = ImmutableList.copyOf(provider);
+        this.providers = ImmutableList.copyOf(provider);
     }
 
     Optional<TypeRef> parse() {
-        for (Provider supplier : provider) {
+        for (Provider supplier : providers) {
             Optional<TypeRef> found = supplier.apply(value);
             if (found.isPresent()) {
                 return found;
