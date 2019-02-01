@@ -46,8 +46,8 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     @Override
-    boolean doesNotSatisfy(FieldValue<V> fieldValue) {
-        return maxViolated(fieldValue);
+    boolean doesNotSatisfy(FieldValue<V> value) {
+        return maxViolated(value);
     }
 
     private boolean maxViolated(FieldValue<V> fieldValue) {
@@ -66,17 +66,17 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     @Override
-    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
+    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
         String format = "Number must be greater than %s %s.";
-        FieldPath path = fieldValue.context()
-                                   .getFieldPath();
+        FieldPath path = value.context()
+                              .getFieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
                 .addParam(isExclusive() ? "" : "or equal to")
                 .addParam(String.valueOf(min()))
                 .setFieldPath(path)
-                .setFieldValue(toAny(fieldValue.singleValue()))
+                .setFieldValue(toAny(value.singleValue()))
                 .build();
         return ImmutableList.of(violation);
     }

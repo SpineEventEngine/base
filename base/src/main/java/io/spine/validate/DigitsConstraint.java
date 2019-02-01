@@ -46,21 +46,21 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     }
 
     @Override
-    boolean doesNotSatisfy(FieldValue<V> fieldValue) {
+    boolean doesNotSatisfy(FieldValue<V> value) {
         int wholeDigitsMax = digitsOption.getIntegerMax();
         int fractionDigitsMax = digitsOption.getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
             return false;
         }
         boolean constraintViolated =
-                fieldValue.asList()
-                          .stream()
-                          .anyMatch(value -> violated(wholeDigitsMax, fractionDigitsMax, value));
+                value.asList()
+                     .stream()
+                     .anyMatch(number -> violated(wholeDigitsMax, fractionDigitsMax, number));
         return constraintViolated;
     }
 
-    private boolean violated(int wholeDigitsMax, int fractionDigitsMax, V value) {
-        double actualValue = value.doubleValue();
+    private boolean violated(int wholeDigitsMax, int fractionDigitsMax, V number) {
+        double actualValue = number.doubleValue();
         ImmutableList<String> parts = splitOnPeriod(actualValue);
         int wholeDigitsCount = parts.get(0)
                                     .length();
@@ -77,12 +77,12 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
     }
 
     @Override
-    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> fieldValue) {
+    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        FieldPath fieldPath = fieldValue.context()
-                                        .getFieldPath();
+        FieldPath fieldPath = value.context()
+                                   .getFieldPath();
 
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
@@ -90,7 +90,7 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
                 .addParam(intMax)
                 .addParam(fractionMax)
                 .setFieldPath(fieldPath)
-                .setFieldValue(toAny(fieldValue.singleValue()))
+                .setFieldValue(toAny(value.singleValue()))
                 .build();
         return ImmutableList.of(violation);
     }
