@@ -23,7 +23,6 @@ package io.spine.code.proto.ref;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Attempts to parse the passed value by sequentially invoking provider functions.
@@ -31,16 +30,16 @@ import java.util.function.Function;
 final class Parsing {
 
     private final String value;
-    private final ImmutableList<Provider> providers;
+    private final ImmutableList<Parser> parsers;
 
-    Parsing(String value, Provider... provider) {
+    Parsing(String value, Parser... parser) {
         this.value = value;
-        this.providers = ImmutableList.copyOf(provider);
+        this.parsers = ImmutableList.copyOf(parser);
     }
 
     Optional<TypeRef> parse() {
-        for (Provider supplier : providers) {
-            Optional<TypeRef> found = supplier.apply(value);
+        for (Parser supplier : parsers) {
+            Optional<TypeRef> found = supplier.parse(value);
             if (found.isPresent()) {
                 return found;
             }
@@ -56,6 +55,7 @@ final class Parsing {
      * @see TypeRef#parse(String)
      */
     @FunctionalInterface
-    interface Provider extends Function<String, Optional<TypeRef>> {
+    interface Parser {
+        Optional<TypeRef> parse(String reference);
     }
 }
