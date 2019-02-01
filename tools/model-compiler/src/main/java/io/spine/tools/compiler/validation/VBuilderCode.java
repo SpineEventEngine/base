@@ -52,7 +52,7 @@ import static java.lang.String.format;
  */
 final class VBuilderCode implements Logging {
 
-    public static final Splitter DOT_SPLITTER = Splitter.on('.');
+    private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private final File targetDir;
     private final Indent indent;
     private final MessageType type;
