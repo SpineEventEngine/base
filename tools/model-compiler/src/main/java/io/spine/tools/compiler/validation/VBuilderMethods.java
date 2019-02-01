@@ -107,7 +107,7 @@ final class VBuilderMethods {
                 .addAnnotation(CanIgnoreReturnValue.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
-                .addStatement(checkAllFields())
+                .addCode(checkAllFields())
                 .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
                 .addStatement(returnThis())
                 .returns(className)
@@ -131,7 +131,7 @@ final class VBuilderMethods {
      *
      * @return a statement that checks whether all fields are present during a {@code mergeFrom()}
      */
-    private static String checkAllFields() {
+    private static CodeBlock checkAllFields() {
         String fieldsMap = "fieldsMap";
         String loopLocalVariable = "entry";
         CodeBlock codeBlock = CodeBlock
@@ -153,7 +153,7 @@ final class VBuilderMethods {
                 .addStatement("validateSetOnce($N.getKey())", loopLocalVariable)
                 .endControlFlow()
                 .build();
-        return codeBlock.toString();
+        return codeBlock;
     }
 
     private List<MethodSpec> fieldMethods() {
