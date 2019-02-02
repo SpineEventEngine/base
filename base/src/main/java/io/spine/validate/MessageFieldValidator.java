@@ -34,7 +34,8 @@ import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Validates fields of type {@link Message}.
+ * Validates fields of type {@link Message}, as opposed to primitive
+ * Protobuf fields.
  */
 class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
