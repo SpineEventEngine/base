@@ -88,14 +88,14 @@ public final class Types {
     }
 
     /**
-     * Resolves argument values of a generic type.
+     * Obtains argument values of a generic type.
      *
      * <p>If the arguments are generic types themselves, their parameter values are preserved.
      *
      * <p>For non-parameterized types, the empty list is returned.
      *
-     * <p>For the raw class, type arguments will be resolved to generic type variable declarations,
-     * as the information on their actual values is erased.
+     * <p>For the raw class, arguments will be resolved to a generic variable declarations, as the
+     * information on their actual values is erased.
      *
      * @param type
      *         a generic type
