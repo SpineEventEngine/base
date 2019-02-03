@@ -21,7 +21,6 @@
 package io.spine.js.gradle;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
@@ -32,14 +31,13 @@ import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.js.generate.resolve.ResolveImports;
 import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
@@ -75,7 +73,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * can be used as an example of the required project configuration.
  */
-public class ProtoJsPlugin extends SpinePlugin {
+public class ProtoJsPlugin extends ProtoPlugin {
 
     private static final String EXTENSION_NAME = "protoJs";
 
@@ -104,46 +102,52 @@ public class ProtoJsPlugin extends SpinePlugin {
      *
      * <p>See {@link DefaultJsProject} for the expected configuration.
      */
-    private static Action<Task> newAction(Project project) {
+    private Action<Task> newAction(Project project) {
         return task -> generateJsonParsers(project);
     }
 
-    private static void generateJsonParsers(Project project) {
+    private void generateJsonParsers(Project project) {
         generateForMain(project);
         generateForTest(project);
     }
 
-    private static void generateForMain(Project project) {
-        Directory generatedRoot = Extension.getMainGenProto(project);
-        File descriptors = Extension.getMainDescriptorSet(project);
-        List<ExternalModule> modules = Extension.modules(project);
-        generateCode(generatedRoot, descriptors, modules);
+    @Override
+    protected Supplier<String> mainDescriptorSetPath(Project project) {
+        return () -> Extension.getMainDescriptorSet(project)
+                              .toString();
     }
 
-    private static void generateForTest(Project project) {
-        Directory generatedRoot = Extension.getTestGenProtoDir(project);
-        File descriptors = Extension.getTestDescriptorSet(project);
+    @Override
+    protected Supplier<String> testDescriptorSetPath(Project project) {
+        return () -> Extension.getTestDescriptorSet(project)
+                              .toString();
+    }
+
+    private void generateForMain(Project project) {
+        Directory generatedRoot = Extension.getMainGenProto(project);
+        FileSet files = mainProtoFiles(project);
         List<ExternalModule> modules = Extension.modules(project);
-        generateCode(generatedRoot, descriptors, modules);
+        generateCode(generatedRoot, files, modules);
+    }
+
+    private void generateForTest(Project project) {
+        Directory generatedRoot = Extension.getTestGenProtoDir(project);
+        FileSet files = testProtoFiles(project);
+        List<ExternalModule> modules = Extension.modules(project);
+        generateCode(generatedRoot, files, modules);
     }
 
     private static void generateCode(Directory generatedRoot,
-                                     File descriptors,
+                                     FileSet files,
                                      List<ExternalModule> modules) {
-        if (!descriptors.exists()) {
-            return;
-        }
         List<GenerationTask> tasks = ImmutableList.of(
                 GenerateKnownTypeParsers.createFor(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)
         );
-        Collection<FileDescriptor> dependencies = FileSet.load()
-                                                         .files();
-        FileSet fileSet = FileSet.parse(descriptors, dependencies);
         for (GenerationTask task : tasks) {
-            task.performFor(fileSet);
+            task.performFor(files);
         }
     }
 

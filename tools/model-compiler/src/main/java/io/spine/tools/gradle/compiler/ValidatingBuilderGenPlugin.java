@@ -21,16 +21,15 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.code.generate.Indent;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.compiler.validation.VBuilderGenerator;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.io.File;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -77,14 +76,14 @@ import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuild
  *
  * @see io.spine.validate.ValidatingBuilder
  */
-public class ValidatingBuilderGenPlugin extends SpinePlugin {
+public class ValidatingBuilderGenPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
         _debug("Preparing to generate validating builders.");
         Action<Task> mainScopeAction =
                 createAction(project,
-                             () -> getMainDescriptorSetPath(project),
+                             () -> mainProtoFiles(project),
                              () -> getTargetGenValidatorsRootDir(project),
                              () -> getMainProtoSrcDir(project));
 
@@ -96,7 +95,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
         _debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
                 createAction(project,
-                             () -> getTestDescriptorSetPath(project),
+                             () -> testProtoFiles(project),
                              () -> getTargetTestGenValidatorsRootDir(project),
                              () -> getTestProtoSrcDir(project));
 
@@ -110,10 +109,20 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
     }
 
     private Action<Task> createAction(Project project,
-                                      Supplier<String> descriptorPath,
+                                      Supplier<FileSet> files,
                                       Supplier<String> targetDirPath,
                                       Supplier<String> protoSrcDirPath) {
-        return new GenAction(this, project, descriptorPath, targetDirPath, protoSrcDirPath);
+        return new GenAction(this, project, files, targetDirPath, protoSrcDirPath);
+    }
+
+    @Override
+    protected Supplier<String> mainDescriptorSetPath(Project project) {
+        return () -> getMainDescriptorSetPath(project);
+    }
+
+    @Override
+    protected Supplier<String> testDescriptorSetPath(Project project) {
+        return () -> getTestDescriptorSetPath(project);
     }
 
     /**
@@ -127,10 +136,10 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
 
         private GenAction(ValidatingBuilderGenPlugin plugin,
                           Project project,
-                          Supplier<String> descriptorPath,
+                          Supplier<FileSet> files,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            super(plugin, project, descriptorPath, targetDirPath, protoSrcDirPath);
+            super(plugin, project, files, targetDirPath, protoSrcDirPath);
         }
 
         @Override
@@ -138,14 +147,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             if (!isGenerateValidatingBuilders(project())) {
                 return;
             }
-            Optional<File> setFile = descriptorSetFile();
-            if (!setFile.isPresent()) {
-                return;
-            }
-
             VBuilderGenerator generator =
                     new VBuilderGenerator(protoSrcDir(), targetDir(), indent());
-            generator.process(setFile.get());
+            generator.process(protoFiles().get());
         }
 
         @Override

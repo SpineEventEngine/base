@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import io.spine.code.generate.Indent;
+import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.gradle.api.Action;
@@ -28,7 +29,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.SpinePlugin.resolve;
@@ -51,7 +51,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     /**
      * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
      */
-    private final Supplier<String> descriptorPath;
+    private final Supplier<FileSet> protoFiles;
 
     /**
      * Obtains an absolute path to the folder, serving as a target
@@ -82,8 +82,8 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      *         the plugin which runs the action
      * @param project
      *         the project for which we generated the code
-     * @param descriptorPath
-     *         the supplier of the descriptor set file path, which (as other suppliers passed
+     * @param files
+     *         the supplier of the Protobuf files, which (as other suppliers passed
      *         to the constructor) is dynamically evaluated when the task is executed
      * @param targetDirPath
      *         the supplier of the path of the directory for the generated sources
@@ -92,12 +92,12 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      */
     protected CodeGenerationAction(SpinePlugin plugin,
                                    Project project,
-                                   Supplier<String> descriptorPath,
+                                   Supplier<FileSet> files,
                                    Supplier<String> targetDirPath,
                                    Supplier<String> protoSrcDirPath) {
         this.plugin = plugin;
         this.project = project;
-        this.descriptorPath = descriptorPath;
+        this.protoFiles = files;
         this.targetDirPath = targetDirPath;
         this.protoSrcDirPath = protoSrcDirPath;
     }
@@ -132,19 +132,10 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     }
 
     /**
-     * Obtains the descriptor set file used for code generation.
-     *
-     * <p>If the file does not exists, logs this fact into
-     * {@linkplain SpinePlugin#logMissingDescriptorSetFile(File) plugin log} and returns empty
-     * {@code Optional}.
+     * Obtains the Protobuf files to be processed.
      */
-    protected final Optional<File> descriptorSetFile() {
-        File file = resolve(descriptorPath);
-        if (!file.exists()) {
-            plugin.logMissingDescriptorSetFile(file);
-            return Optional.empty();
-        }
-        return Optional.of(file);
+    protected final Supplier<FileSet> protoFiles() {
+        return protoFiles;
     }
 
     /**

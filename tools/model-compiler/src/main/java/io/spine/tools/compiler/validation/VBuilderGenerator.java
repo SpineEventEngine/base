@@ -70,10 +70,8 @@ public final class VBuilderGenerator implements Logging {
                        "Proto src dir: {} Target dir: {}", protoSrcDir, targetDir);
     }
 
-    public void process(File descriptorSetFile) {
-        _debug("Generating validating builders for types from {}.", descriptorSetFile);
-
-        FileSet fileSet = moduleFiles(descriptorSetFile);
+    public void process(FileSet files) {
+        FileSet fileSet = moduleFiles(files);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
@@ -83,14 +81,13 @@ public final class VBuilderGenerator implements Logging {
         generate(customTypes);
     }
 
-    private FileSet moduleFiles(File descriptorSetFile) {
-        FileSet fileSet = FileSet.parse(descriptorSetFile);
+    private FileSet moduleFiles(FileSet allFiles) {
         ProtoBelongsToModule predicate = new SourceProtoBelongsToModule(protoSrcDir);
-        return fileSet.filter(predicate.forDescriptor());
+        return allFiles.filter(predicate.forDescriptor());
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {
-
+        _debug("Generating validating builders for {} types.", messages.size());
         for (MessageType messageType : messages) {
             try {
                 VBuilderCode code = new VBuilderCode(targetDir, indent, messageType);
