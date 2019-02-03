@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.descriptor;
+package io.spine.tools.type;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
@@ -45,7 +45,7 @@ public final class MergedDescriptorSet {
 
     private final FileDescriptorSet descriptorSet;
 
-    MergedDescriptorSet(FileDescriptorSet descriptorSet) {
+    public MergedDescriptorSet(FileDescriptorSet descriptorSet) {
         this.descriptorSet = checkNotNull(descriptorSet);
     }
 
@@ -69,7 +69,7 @@ public final class MergedDescriptorSet {
     }
 
     @VisibleForTesting
-    ImmutableSet<FileDescriptorProto> descriptors() {
+    public ImmutableSet<FileDescriptorProto> descriptors() {
         return ImmutableSet.copyOf(descriptorSet.getFileList());
     }
 

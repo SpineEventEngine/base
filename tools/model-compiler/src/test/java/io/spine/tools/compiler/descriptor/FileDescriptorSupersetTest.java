@@ -21,6 +21,8 @@
 package io.spine.tools.compiler.descriptor;
 
 import com.google.common.truth.IterableSubject;
+import io.spine.tools.type.FileDescriptorSuperset;
+import io.spine.tools.type.MergedDescriptorSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

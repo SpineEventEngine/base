@@ -18,11 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.descriptor;
+package io.spine.tools.type;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.code.proto.FileDescriptorSets;
+import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import io.spine.tools.archive.ArchiveEntry;
 import io.spine.tools.archive.ArchiveFile;
@@ -36,12 +38,12 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of {@code FileDescriptorSet}s.
@@ -65,10 +67,7 @@ public final class FileDescriptorSuperset implements Logging {
      * @return the result of the sets merging
      */
     public MergedDescriptorSet merge() {
-        Set<FileDescriptorProto> allFiles = descriptors
-                .stream()
-                .flatMap(set -> set.getFileList().stream())
-                .collect(toSet());
+        Set<FileDescriptorProto> allFiles = files();
         FileDescriptorSet descriptorSet = FileDescriptorSet
                 .newBuilder()
                 .addAllFile(allFiles)
@@ -79,6 +78,22 @@ public final class FileDescriptorSuperset implements Logging {
     public void addFromDependency(File dependencyFile) {
         readDependency(dependencyFile)
                 .ifPresent(this::addFiles);
+    }
+
+    /**
+     * Obtains this superset converted to a {@link FileSet}.
+     */
+    public FileSet fileSet() {
+        ImmutableSet<FileDescriptorProto> files = files();
+        FileSet fileSet = FileSet.ofFiles(files);
+        return fileSet;
+    }
+
+    private ImmutableSet<FileDescriptorProto> files() {
+        return descriptors
+                .stream()
+                .flatMap(set -> set.getFileList().stream())
+                .collect(toImmutableSet());
     }
 
     private void addFiles(FileDescriptorSet fileSet) {
