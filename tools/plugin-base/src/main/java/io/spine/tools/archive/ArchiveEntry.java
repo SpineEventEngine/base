@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.archive;
+package io.spine.tools.archive;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.code.proto.FileDescriptorSets;
