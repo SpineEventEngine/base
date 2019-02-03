@@ -32,6 +32,7 @@ import org.gradle.api.Task;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
@@ -59,7 +60,7 @@ public class DescriptorSetMergerPlugin extends ProtoPlugin {
 
     private void createMainTask(Project project) {
         String descriptorSetPath = getMainDescriptorSetPath(project);
-        FileSet fileSet = mainProtoFiles(descriptorSetPath, project);
+        FileSet fileSet = mainProtoFiles(project);
         newTask(MERGE_DESCRIPTOR_SET,
                 createMergingAction(descriptorSetPath, fileSet))
                 .insertAfterTask(GENERATE_PROTO)
@@ -68,12 +69,22 @@ public class DescriptorSetMergerPlugin extends ProtoPlugin {
 
     private void createTestTask(Project project) {
         String descriptorSetPath = getTestDescriptorSetPath(project);
-        FileSet fileSet = testProtoFiles(descriptorSetPath, project);
+        FileSet fileSet = testProtoFiles(project);
         newTask(MERGE_TEST_DESCRIPTOR_SET,
                 createMergingAction(descriptorSetPath, fileSet))
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .insertBeforeTask(GENERATE_TEST_VALIDATING_BUILDERS)
                 .applyNowTo(project);
+    }
+
+    @Override
+    protected Supplier<String> mainDescriptorSetPath(Project project) {
+        return () -> getMainDescriptorSetPath(project);
+    }
+
+    @Override
+    protected Supplier<String> testDescriptorSetPath(Project project) {
+        return () -> getTestDescriptorSetPath(project);
     }
 
     private static Action<Task> createMergingAction(String descriptorSetPath, FileSet fileSet) {

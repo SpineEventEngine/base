@@ -27,30 +27,41 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 
 /**
  * A plugin performing code-generation based on a {@code .proto} files.
+ *
+ * @implNote This class uses {@code Supplier}s instead of direct values because at the time
+ *           of creation Gradle project is not fully evaluated, and the values
+ *           are not yet defined.
  */
 public abstract class ProtoPlugin extends SpinePlugin {
 
     /**
-     * Obtains {@linkplain #protoFiles(String, Configuration) Protobuf} files for the main scope.
+     * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the main scope.
      */
-    protected final FileSet mainProtoFiles(String descriptorSetPath, Project project) {
+    protected final FileSet mainProtoFiles(Project project) {
+        Supplier<String> descriptorSetPath = mainDescriptorSetPath(project);
         Configuration configuration = configuration(project, RUNTIME);
         return protoFiles(descriptorSetPath, configuration);
     }
 
     /**
-     * Obtains {@linkplain #protoFiles(String, Configuration) Protobuf} files for the test scope.
+     * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the test scope.
      */
-    protected final FileSet testProtoFiles(String descriptorSetPath, Project project) {
+    protected final FileSet testProtoFiles(Project project) {
+        Supplier<String> descriptorSetPath = testDescriptorSetPath(project);
         Configuration configuration = configuration(project, TEST_RUNTIME);
         return protoFiles(descriptorSetPath, configuration);
     }
+
+    protected abstract Supplier<String> mainDescriptorSetPath(Project project);
+
+    protected abstract Supplier<String> testDescriptorSetPath(Project project);
 
     /**
      * Obtains all files from the specified descriptor set file and the configuration.
@@ -63,8 +74,9 @@ public abstract class ProtoPlugin extends SpinePlugin {
      *         the configuration to scan descriptor set files from
      * @return the collected files
      */
-    private static FileSet protoFiles(String descriptorSetPath, Configuration configuration) {
-        File descriptorSet = new File(descriptorSetPath);
+    private static FileSet protoFiles(Supplier<String> descriptorSetPath,
+                                      Configuration configuration) {
+        File descriptorSet = new File(descriptorSetPath.get());
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         configuration.forEach(superset::addFromDependency);
         if (descriptorSet.exists()) {
