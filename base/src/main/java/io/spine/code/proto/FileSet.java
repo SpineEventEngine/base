@@ -30,6 +30,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.logging.Logging;
 import io.spine.type.KnownTypes;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,6 +51,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -103,44 +106,38 @@ public final class FileSet implements Logging {
     }
 
     public static FileSet parseAsKnownFiles(File descriptorSet) {
-        FileSet linked = parse(descriptorSet);
-        FileSet known = linked.knownFiles();
-        return known;
-    }
-
-    private FileSet knownFiles() {
-        KnownTypes knownTypes = KnownTypes.instance();
-        Map<FileName, FileDescriptor> knownFiles = knownTypes
+        Set<FileName> fileNames = FileDescriptors.parse(descriptorSet)
+                                                 .stream()
+                                                 .map(FileName::from)
+                                                 .collect(toSet());
+        Map<FileName, FileDescriptor> knownFiles = KnownTypes.instance()
                 .getAllTypes()
                 .types()
                 .stream()
-                .map(type -> type.descriptor()
-                                 .getFile())
-                .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
+                .map(type -> type.descriptor().getFile())
+                .filter(descriptor -> fileNames.contains(FileName.from(descriptor.getFile())))
                 .collect(toMap(FileName::from,       // File name as the key.
                                file -> file,         // File descriptor as the value.
                                (left, right) -> left // On duplicates, take the first option.
                 ));
-        FileSet knownFileSet = new FileSet(knownFiles);
-        int fileCount = size();
-        if (knownFiles.size() != fileCount) {
-            return onUnknownFile(knownTypes, knownFileSet);
+        if (knownFiles.size() != fileNames.size()) {
+            return onUnknownFile(knownFiles.keySet(), fileNames);
         }
-        _debug("Substituted {} linked files with file descriptors from known types.", fileCount);
-        return knownFileSet;
+        FileSet result = new FileSet(knownFiles);
+        return result;
     }
 
-    private FileSet onUnknownFile(KnownTypes knownTypes, FileSet knownFileSet) {
-        _debug("Failed to find files in the known types set. Looked for {}{}",
-               lineSeparator(),
-               files.keySet());
-        _debug(knownTypes.toString());
-        _debug("Could not find files: {}",
-               files.keySet()
-                    .stream()
-                    .filter(fileName -> !knownFileSet.contains(fileName))
-                    .map(FileName::toString)
-                    .collect(joining(", ")));
+    private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
+        Logger log = Logging.get(FileSet.class);
+        log.debug("Failed to find files in the known types set. Looked for {}{}",
+                  lineSeparator(),
+                  requestedFiles);
+        log.debug("Could not find files: {}",
+                  requestedFiles
+                          .stream()
+                          .filter(fileName -> !knownFiles.contains(fileName))
+                          .map(FileName::toString)
+                          .collect(joining(", ")));
         throw newIllegalStateException("Some files are not known.");
     }
 
