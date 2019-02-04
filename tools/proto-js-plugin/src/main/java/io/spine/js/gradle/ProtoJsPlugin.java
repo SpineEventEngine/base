@@ -145,8 +145,9 @@ public class ProtoJsPlugin extends ProtoPlugin {
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)
         );
+        FileSet suppliedFiles = files.get();
         for (GenerationTask task : tasks) {
-            task.performFor(files.get());
+            task.performFor(suppliedFiles);
         }
     }
 
