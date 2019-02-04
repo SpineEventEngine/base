@@ -23,38 +23,33 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.validate.FieldValue;
 
 import java.util.Optional;
 
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
- * @param <V>
- *         type of value held by this option
- * @param <T>
- *         type of field that this option is applied to
+ * @param <O>
+ *         value of this option
  */
-public class FieldOption<V, T> implements Option<V, FieldValue<T>> {
+public class FieldOption<O> implements Option<O, FieldDescriptor> {
 
-    private final GeneratedExtension<FieldOptions, V> optionExtension;
+    private final GeneratedExtension<FieldOptions, O> optionExtension;
 
     /** Specifies the extension that corresponds to this option. */
-    protected FieldOption(GeneratedExtension<FieldOptions, V> optionExtension) {
+    protected FieldOption(GeneratedExtension<FieldOptions, O> optionExtension) {
         this.optionExtension = optionExtension;
     }
 
-    protected GeneratedExtension<FieldOptions, V> optionExtension() {
+    protected GeneratedExtension<FieldOptions, O> optionExtension() {
         return optionExtension;
     }
 
     @Override
-    public Optional<V> valueFrom(FieldValue<T> field) {
-        FieldDescriptor descriptor = field.context()
-                                          .getTarget();
-        FieldOptions options = descriptor.getOptions();
+    public Optional<O> valueFrom(FieldDescriptor object) {
+        FieldOptions options = object.getOptions();
         boolean explicitlySet = options.hasExtension(optionExtension);
-        V value = options.getExtension(optionExtension);
+        O value = options.getExtension(optionExtension);
         return explicitlySet
                ? Optional.of(value)
                : Optional.empty();

@@ -20,10 +20,12 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.option.Options;
 
-import java.util.Map;
 import java.util.Optional;
+
+import static io.spine.option.OptionsProto.requiredField;
 
 /**
  * A message option that defines a combination of required fields for the message.
@@ -44,28 +46,17 @@ import java.util.Optional;
  * The {@code PersonName} message is valid against the {@code RequiredField} either if it has a
  * non-default family name, or both honorific prefix and a family name.
  */
-final class RequiredField implements ValidatingOption<String, MessageValue> {
-
-    /**
-     * The name of the message option field.
-     */
-    private static final String OPTION_REQUIRED_FIELD = "required_field";
+final class RequiredField implements ValidatingOption<String, Descriptor, MessageValue> {
 
     @Override
-    public Optional<String> valueFrom(MessageValue message) {
-        Map<FieldDescriptor, Object> options = message.options();
-        for (FieldDescriptor optionDescriptor : options.keySet()) {
-            if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
-                String expression = (String) options.get(optionDescriptor);
-                return Optional.of(expression);
-            }
-        }
-        return Optional.empty();
+    public Optional<String> valueFrom(Descriptor message) {
+        Optional<String> result = Options.option(message, requiredField);
+        return result;
     }
 
     @Override
-    public Constraint<MessageValue> constraintFor(MessageValue value) {
-        String expression = valueFrom(value).orElse("");
+    public Constraint<MessageValue> constraintFor(MessageValue message) {
+        String expression = valueFrom(message.descriptor()).orElse("");
         return new RequiredFieldConstraint(expression);
     }
 }

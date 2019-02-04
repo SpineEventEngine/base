@@ -25,11 +25,8 @@ import io.spine.option.OptionsProto;
 
 /**
  * An option that indicates that the fields internal field should be included into the validation.
- *
- * @param <T>
- *         type of field that this option is applied to
  */
-class Valid<T> extends FieldOption<Boolean, T> {
+class Valid<T> extends FieldOption<Boolean> {
 
     /** Creates a new instance of this option. */
     Valid() {

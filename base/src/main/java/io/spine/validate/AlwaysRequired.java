@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+
 /**
  * A special case of {@code Required} option that assumes that the option is present regardless
  * of the actual field declaration.
@@ -40,10 +42,11 @@ final class AlwaysRequired<T> extends Required<T> {
      * {@inheritDoc}
      *
      * <p>For {@code AlwaysRequired}, validation happens every time.
+     * @param value
      */
     @SuppressWarnings("ResultOfMethodCallIgnored" /* Parent method contains useful logic.*/)
     @Override
-    boolean shouldValidate(FieldValue<T> value) {
+    boolean shouldValidate(FieldDescriptor value) {
         checkCorrectUsage(value);
         return true;
     }

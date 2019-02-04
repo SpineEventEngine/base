@@ -44,7 +44,7 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
                 .setMsgFormat("Entity ID field `%s` must not be a floating point number.")
                 .addParam(field().descriptor()
                                  .getFullName())
-                .setFieldPath(getFieldPath())
+                .setFieldPath(fieldPath())
                 .build();
         addViolation(violation);
     }

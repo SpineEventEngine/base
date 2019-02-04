@@ -26,11 +26,8 @@ import io.spine.option.OptionsProto;
 
 /**
  * An option that, if applied to a field that is being validated, provides custom error messages.
- *
- * @param <T>
- *         type of field value that this option is applied to
  */
-final class IfInvalid<T> extends FieldOption<IfInvalidOption, T> {
+final class IfInvalid extends FieldOption<IfInvalidOption> {
 
     /** Creates a new instance of this option. */
     IfInvalid() {

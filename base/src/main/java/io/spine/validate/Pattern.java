@@ -39,7 +39,6 @@ final class Pattern extends FieldValidatingOption<PatternOption, String> {
 
     @Override
     public Constraint<FieldValue<String>> constraintFor(FieldValue<String> fieldValue) {
-        PatternOption optionValue = valueFrom(fieldValue).get();
-        return new PatternConstraint(optionValue);
+        return new PatternConstraint(optionValue(fieldValue));
     }
 }

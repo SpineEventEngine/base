@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.Descriptors.GenericDescriptor;
+
 import java.util.Optional;
 
 /**
@@ -30,7 +32,7 @@ import java.util.Optional;
  * @param <K>
  *         kind of value that this option is applied to
  */
-public interface Option<T, K> {
+public interface Option<T, K extends GenericDescriptor> {
 
     /**
      * Obtains the value of this option for the specified object that holds it.

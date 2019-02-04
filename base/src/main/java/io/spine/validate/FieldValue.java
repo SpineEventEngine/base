@@ -189,6 +189,10 @@ public final class FieldValue<T> {
         throw new IllegalArgumentException(msg);
     }
 
+    FieldDescriptor descriptor(){
+        return context.getTarget();
+    }
+
     /**
      * Obtains the {@link JavaType} of the value.
      *

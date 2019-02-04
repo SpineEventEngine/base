@@ -24,8 +24,6 @@ import com.google.protobuf.Timestamp;
 import io.spine.option.OptionsProto;
 import io.spine.option.TimeOption;
 
-import java.util.Optional;
-
 /**
  * A validating option that specified the point in time which a {@link Timestamp} field value
  * has.
@@ -43,7 +41,6 @@ final class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
 
     @Override
     public Constraint<FieldValue<Timestamp>> constraintFor(FieldValue<Timestamp> value) {
-        Optional<TimeOption> option = valueFrom(value);
-        return new WhenConstraint(option.get());
+        return new WhenConstraint(optionValue(value));
     }
 }

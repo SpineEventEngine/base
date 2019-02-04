@@ -24,10 +24,10 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.proto.FieldOption;
-import io.spine.validate.rule.ValidationRuleOptions;
 
 import java.util.Optional;
 
+import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
 import static java.lang.String.format;
 
 /**
@@ -40,8 +40,9 @@ import static java.lang.String.format;
  * @param <F>
  *         type of field that this option is applied to
  */
-abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
-                                           implements ValidatingOption<T, FieldValue<F>> {
+abstract class FieldValidatingOption<T, F>
+        extends FieldOption<T>
+        implements ValidatingOption<T, FieldDescriptor, FieldValue<F>> {
 
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {
@@ -52,17 +53,20 @@ abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
      * Returns an value of the option.
      *
      * @apiNote Should only be called by subclasses in circumstances that assume presence of
-     * the option. For all other cases refer to {@link this#valueFrom(FieldValue)}.
+     *         the option. For all other cases refer to {@link this#valueFrom(FieldDescriptor)}.
      */
     T optionValue(FieldValue<F> value) throws IllegalStateException {
-        Optional<T> option = valueFrom(value);
+        FieldDescriptor field = value.declaration()
+                                     .descriptor();
+        Optional<T> option = valueFrom(field);
         return option.orElseThrow(() -> {
             FieldDescriptor descriptor = optionExtension().getDescriptor();
 
             String fieldName = value.declaration()
                                     .name()
                                     .value();
-            String containingTypeName = descriptor.getContainingType().getName();
+            String containingTypeName = descriptor.getContainingType()
+                                                  .getName();
             return illegalState(fieldName, containingTypeName);
         });
     }
@@ -90,17 +94,21 @@ abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
      *         or an {@code Optional} containing found value
      */
     @Override
-    public Optional<T> valueFrom(FieldValue<F> field) {
-        FieldContext context = field.context();
-        Optional<T> validationForOption = ValidationRuleOptions.getOptionValue(context,
-                                                                               optionExtension());
+    public Optional<T> valueFrom(FieldDescriptor field) {
+        FieldContext context = FieldContext.create(field);
+        Optional<T> validationForOption = getOptionValue(context, optionExtension());
         return validationForOption.isPresent()
                ? validationForOption
                : super.valueFrom(field);
     }
 
-    /** Returns {@code true} if this option exists for the specified field, {@code false} otherwise. */
-    boolean shouldValidate(FieldValue<F> fieldValue) {
-        return valueFrom(fieldValue).isPresent();
+    /**
+     * Returns {@code true} if this option exists for the specified field, {@code false} otherwise.
+     *
+     * @param field
+     *         the type of the field
+     */
+    boolean shouldValidate(FieldDescriptor field) {
+        return valueFrom(field).isPresent();
     }
 }

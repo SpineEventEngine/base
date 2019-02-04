@@ -20,17 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.code.proto.FieldOption;
-import io.spine.option.IfMissingOption;
-import io.spine.option.OptionsProto;
+public interface OptionValue {
 
-/**
- * A field option that defines custom error message if a field is {@code required} but missing.
- */
-final class IfMissing extends FieldOption<IfMissingOption> {
-
-    /** Creates a new instance of this option. */
-    IfMissing() {
-        super(OptionsProto.ifMissing);
-    }
 }
