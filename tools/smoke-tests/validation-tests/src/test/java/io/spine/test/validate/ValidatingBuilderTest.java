@@ -21,6 +21,7 @@
 package io.spine.test.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
@@ -313,7 +314,7 @@ class ValidatingBuilderTest {
 
     @DisplayName("ignore duplicates in a `(on_duplicate) = IGNORE` marked field")
     @Test
-    void testDistinctIgnoresIfRequested(){
+    void testDistinctIgnoresIfRequested() {
         ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
         builder.addSnowflake(triangularSnowflake())
                .addSnowflake(triangularSnowflake());
@@ -377,12 +378,12 @@ class ValidatingBuilderTest {
     }
 
     private static Member member() {
-        ByteString bites = copyFrom(new byte[]{(byte) 1, (byte) 2, (byte) 3});
+        ByteString bytes = copyFrom(new byte[]{(byte) 1, (byte) 2, (byte) 3});
         Member.Builder member = Member
                 .newBuilder()
                 .setId(newUuid())
                 .setName("John Smith")
-                .setAvatarImage(bites);
+                .setAvatarImage(bytes);
         return member.build();
     }
 }
