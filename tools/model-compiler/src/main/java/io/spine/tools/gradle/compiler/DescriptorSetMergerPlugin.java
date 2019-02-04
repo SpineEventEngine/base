@@ -26,10 +26,10 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Action;
+import org.gradle.api.Buildable;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.tasks.TaskDependency;
 
 import java.io.File;
 
@@ -59,7 +59,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private void createTask(Project project, boolean tests) {
         Configuration configuration = configuration(project, configurationName(tests));
-        TaskDependency dependencies = configuration.getBuildDependencies();
+        Buildable dependencies = configuration.getAllDependencies();
         GradleTask task = newTask(taskName(tests), createMergingAction(tests))
                 .insertAfterTask(generateProtoTaskName(tests))
                 .applyNowTo(project);
