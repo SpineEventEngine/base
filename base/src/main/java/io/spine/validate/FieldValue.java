@@ -92,13 +92,14 @@ public final class FieldValue<T> {
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
-        return resolveType(context, value, declaration);
+        FieldValue<T> result = resolveType(context, value, declaration);
+        return result;
     }
 
     @SuppressWarnings({
             "unchecked", /* Since the field value is created by validating builders,
-                           the raw value always corresponds to one of the types that Protobuf fields
-                           have, so the cast to `T` is always safe.
+                           the raw value always corresponds to one of the Protobuf field types,
+                           so the cast to `T` is always safe.
                          */
             "ChainOfInstanceofChecks" /* No common ancestor forces chain of `instanceofs`. */})
     private static <T> FieldValue<T> resolveType(FieldContext context,

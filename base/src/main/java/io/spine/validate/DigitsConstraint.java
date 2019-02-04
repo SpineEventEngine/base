@@ -55,11 +55,11 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V>
         boolean constraintViolated =
                 value.asList()
                      .stream()
-                     .anyMatch(number -> violated(wholeDigitsMax, fractionDigitsMax, number));
+                     .anyMatch(number -> violated(number, wholeDigitsMax, fractionDigitsMax));
         return constraintViolated;
     }
 
-    private boolean violated(int wholeDigitsMax, int fractionDigitsMax, V number) {
+    private boolean violated(V number, int wholeDigitsMax, int fractionDigitsMax) {
         double actualValue = number.doubleValue();
         ImmutableList<String> parts = splitOnPeriod(actualValue);
         int wholeDigitsCount = parts.get(0)

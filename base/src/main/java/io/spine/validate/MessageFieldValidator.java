@@ -52,7 +52,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected ImmutableList<ConstraintViolation> validate() {
         boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();

@@ -28,7 +28,7 @@ import io.spine.option.OptionsProto;
  * of digits in both whole and decimal parts of the numeric field exceed the specified maximum.
  *
  * @param <N>
- *         Numeric values that this option is applied to
+ *         Numeric value that this option is applied to
  */
 final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption, N> {
 

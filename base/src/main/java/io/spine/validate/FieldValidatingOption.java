@@ -32,14 +32,16 @@ import java.util.Optional;
  *
  * <p>Validating options impose constraint on fields that they are applied to.
  *
- * @param <P>
+ * @param <T>
  *         type of information that this option holds
+ * @param <F>
+ *         type of field that this option is applied to
  */
-abstract class FieldValidatingOption<P, F> extends FieldOption<P, F>
-        implements ValidatingOption<P, FieldValue<F>> {
+abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
+                                           implements ValidatingOption<T, FieldValue<F>> {
 
     /** Specifies the extension that corresponds to this option. */
-    protected FieldValidatingOption(GeneratedExtension<FieldOptions, P> optionExtension) {
+    protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {
         super(optionExtension);
     }
 
@@ -56,9 +58,9 @@ abstract class FieldValidatingOption<P, F> extends FieldOption<P, F>
      *         or an {@code Optional} containing found value
      */
     @Override
-    public Optional<P> valueFrom(FieldValue<F> field) {
+    public Optional<T> valueFrom(FieldValue<F> field) {
         FieldContext context = field.context();
-        Optional<P> validationForOption = ValidationRuleOptions.getOptionValue(context,
+        Optional<T> validationForOption = ValidationRuleOptions.getOptionValue(context,
                                                                                optionExtension());
         return validationForOption.isPresent()
                ? validationForOption

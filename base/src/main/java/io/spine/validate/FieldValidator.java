@@ -137,14 +137,14 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     * <li>check the field to be set if it is {@code required};
-     * <li>validate the field as an Entity ID if required;
-     * <li>performs type-specific validation according to validation options.
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>performs type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
      */
-    protected List<ConstraintViolation> validate() {
+    protected ImmutableList<ConstraintViolation> validate() {
         if (isRequiredId()) {
             validateEntityId();
         }
