@@ -59,7 +59,7 @@ final class EnrichmentMapBuilder implements Logging {
      * Creates enrichment map builder with a supplied {@code packagePrefix}.
      *
      * @param packagePrefix
-     *         a Protobuf package prefix (including the dot)
+     *         a Protobuf package prefix (including the trailing dot)
      */
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;

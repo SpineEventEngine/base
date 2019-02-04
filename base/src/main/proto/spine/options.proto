@@ -192,7 +192,8 @@ extend google.protobuf.FieldOptions {
     //
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
-    // The value must have event/context plain field name (i.e. FQN names are not supported).
+    // The value of (by) option may contain more than one field reference,
+    // separated with the pipe character.
     //
     // An example:
     //
@@ -206,7 +207,7 @@ extend google.protobuf.FieldOptions {
     //     string username = 1 [(by) = "user_id"];
     // }
     //
-    // Also, the multiple arguments are supported. The syntax is:
+    // Multiple field references example:
     //
     // message FirstEvent {
     //     spine.base.UserId user_id = 1;
@@ -222,18 +223,6 @@ extend google.protobuf.FieldOptions {
     //     option (enrichment_for) = "FirstEvent,SecondEvent";
     //
     //     string username = 1 [(by) = "user_id | admin_id"];
-    // }
-    //
-    // If there is a complex (by) case, it is possible to supply a FQN of a rule that determines
-    // by which field the message should be enriched. The feature is experimental and can be
-    // changed without any notices.
-    //
-    // An example:
-    //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*"
-    //
-    //     string username = 1 [(by) = "rule:com.acme.UsernameEnrichmentRule"
     // }
     //
     string by = 73900;
@@ -389,7 +378,7 @@ extend google.protobuf.MessageOptions {
     // }
     //
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
-    // pattern (infix and prefix wildcards are not supported).
+    // pattern. Infix and prefix wildcards are not supported.
     //
     // For example:
     //
