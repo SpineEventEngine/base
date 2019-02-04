@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -136,7 +135,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
             return false;
         }
         Type<?, ?> type = (Type<?, ?>) o;
-        return Objects.equal(descriptor, type.descriptor);
+        return Objects.equal(descriptor.getFullName(), type.descriptor.getFullName());
     }
 
     @Override
