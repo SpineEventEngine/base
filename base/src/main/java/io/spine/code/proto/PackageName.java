@@ -18,50 +18,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The name of a type in the JavaScript code.
+ * A name of a Protobuf package.
  */
-public final class TypeName extends StringTypeValue {
+@Immutable
+public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+    private static final String DELIMITER = ".";
 
-    /**
-     * The prefix which is added to all proto types in the JS generated code.
-     */
-    private static final String PREFIX = "proto.";
+    private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
 
-    private TypeName(String value) {
+    private PackageName(String value) {
         super(value);
     }
 
     /**
-     * Obtains the type name of the specified Protobuf declaration.
-     *
-     * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
+     * Creates a new instance with the passed value.
      */
-    public static TypeName from(GenericDescriptor descriptor) {
-        checkNotNull(descriptor);
-        String typeName = descriptor.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return new TypeName(nameWithPrefix);
+    public static PackageName of(String value) {
+        checkNotNull(value);
+        PackageName result = new PackageName(value);
+        return result;
     }
 
     /**
-     * Obtains the type name of the parser of the specified message.
-     *
-     * <p>The parser is a static property on the corresponding message type.
+     * Obtains a package name for the passed message type.
      */
-    public static TypeName ofParser(Descriptor message) {
+    public static PackageName of(Descriptor message) {
         checkNotNull(message);
-        TypeName messageType = from(message);
-        return new TypeName(messageType + ".Parser");
+        PackageName result = of(message.getFile()
+                                       .getPackage());
+        return result;
+    }
+
+    /**
+     * Obtains the name of the Google Protobuf library package.
+     */
+    public static PackageName googleProtobuf() {
+        return GOOGLE_PROTOBUF;
+    }
+
+    /**
+     * Obtains Protobuf package delimiter.
+     */
+    public static String delimiter() {
+        return DELIMITER;
     }
 }

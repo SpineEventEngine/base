@@ -18,40 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+package io.spine.code.proto.ref;
 
-import com.google.errorprone.annotations.Immutable;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * Abstract base for string value objects.
- *
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link com.google.protobuf.StringValue StringValue}.
- */
-@Immutable
-public abstract class StringTypeValue extends ValueHolder<String> {
+import static com.google.common.truth.Truth.assertThat;
 
-    private static final long serialVersionUID = 0L;
+@DisplayName("ByOption should")
+class ByOptionTest extends UtilityClassTest<ByOption> {
 
-    protected StringTypeValue(String value) {
-        super(value);
+    ByOptionTest() {
+        super(ByOption.class);
     }
 
-    @Override
-    public String value() {
-        return super.value();
-    }
-
-    /**
-     * Returns {@code true} the length of the {@link #value() value} is zero,
-     * {@code false} otherwise.
-     */
-    public boolean isEmpty() {
-        return value().isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return this.value();
+    @Test
+    @DisplayName("remove space characters around field references")
+    void parseRaw() {
+        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
+                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
     }
 }

@@ -18,40 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
-
-import com.google.errorprone.annotations.Immutable;
-
 /**
- * Abstract base for string value objects.
- *
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link com.google.protobuf.StringValue StringValue}.
+ * This package provides classes referencing domain model elements from a proto code options.
  */
-@Immutable
-public abstract class StringTypeValue extends ValueHolder<String> {
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.proto.ref;
 
-    private static final long serialVersionUID = 0L;
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-    protected StringTypeValue(String value) {
-        super(value);
-    }
-
-    @Override
-    public String value() {
-        return super.value();
-    }
-
-    /**
-     * Returns {@code true} the length of the {@link #value() value} is zero,
-     * {@code false} otherwise.
-     */
-    public boolean isEmpty() {
-        return value().isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return this.value();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

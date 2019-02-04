@@ -18,40 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+syntax = "proto3";
 
-import com.google.errorprone.annotations.Immutable;
+package spine.test.code.proto;
 
-/**
- * Abstract base for string value objects.
- *
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link com.google.protobuf.StringValue StringValue}.
- */
-@Immutable
-public abstract class StringTypeValue extends ValueHolder<String> {
+import "spine/options.proto";
 
-    private static final long serialVersionUID = 0L;
+import "google/protobuf/any.proto";
 
-    protected StringTypeValue(String value) {
-        super(value);
-    }
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.proto";
+option java_outer_classname = "FieldReferenceTestEventsProto";
+option java_multiple_files = true;
 
-    @Override
-    public String value() {
-        return super.value();
-    }
+// Declaration for use in `FieldReferenceTest` only.
+//
+// Provides events that are target for enrichments declared in `field_reference_test.proto`.
 
-    /**
-     * Returns {@code true} the length of the {@link #value() value} is zero,
-     * {@code false} otherwise.
-     */
-    public boolean isEmpty() {
-        return value().isEmpty();
-    }
+message UserCreated {
+    string user_id = 1;
+}
 
-    @Override
-    public String toString() {
-        return this.value();
-    }
+message UserSuspended {
+    string user_id = 1;
+}
+
+message DocumentUpdated {
+    string editor_id = 1;
 }

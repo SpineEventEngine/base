@@ -32,6 +32,7 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.PackageName;
 import io.spine.code.proto.Type;
 import io.spine.option.OptionsProto;
 
@@ -42,7 +43,6 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Internal.getDefaultInstance;
-import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -54,7 +54,6 @@ import static java.lang.String.format;
  * The second part is a {@linkplain Descriptor#getFullName()
  * fully-qualified Protobuf type name}.
  *
- * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()
  */
 @Immutable
@@ -186,7 +185,8 @@ public final class TypeUrl implements Serializable {
     private static String prefixFor(GenericDescriptor descriptor) {
         FileDescriptor file = descriptor.getFile();
         if (file.getPackage()
-                .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName())) {
+                .startsWith(PackageName.googleProtobuf()
+                                       .value())) {
             return Prefix.GOOGLE_APIS.value();
         }
         String result = file.getOptions()
