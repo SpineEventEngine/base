@@ -102,6 +102,48 @@ public final class FileSet implements Logging {
         return doParse(descriptorSet);
     }
 
+    public static FileSet parseAsKnownFiles(File descriptorSet) {
+        FileSet linked = parse(descriptorSet);
+        FileSet known = linked.knownFiles();
+        return known;
+    }
+
+    private FileSet knownFiles() {
+        KnownTypes knownTypes = KnownTypes.instance();
+        Map<FileName, FileDescriptor> knownFiles = knownTypes
+                .getAllTypes()
+                .types()
+                .stream()
+                .map(type -> type.descriptor()
+                                 .getFile())
+                .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
+                .collect(toMap(FileName::from,       // File name as the key.
+                               file -> file,         // File descriptor as the value.
+                               (left, right) -> left // On duplicates, take the first option.
+                ));
+        FileSet knownFileSet = new FileSet(knownFiles);
+        int fileCount = size();
+        if (knownFiles.size() != fileCount) {
+            return onUnknownFile(knownTypes, knownFileSet);
+        }
+        _debug("Substituted {} linked files with file descriptors from known types.", fileCount);
+        return knownFileSet;
+    }
+
+    private FileSet onUnknownFile(KnownTypes knownTypes, FileSet knownFileSet) {
+        _debug("Failed to find files in the known types set. Looked for {}{}",
+               lineSeparator(),
+               files.keySet());
+        _debug(knownTypes.toString());
+        _debug("Could not find files: {}",
+               files.keySet()
+                    .stream()
+                    .filter(fileName -> !knownFileSet.contains(fileName))
+                    .map(FileName::toString)
+                    .collect(joining(", ")));
+        throw newIllegalStateException("Some files are not known.");
+    }
+
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
@@ -172,40 +214,6 @@ public final class FileSet implements Logging {
      */
     public ImmutableSet<FileDescriptor> files() {
         return ImmutableSet.copyOf(files.values());
-    }
-
-    public FileSet knownFiles() {
-        KnownTypes knownTypes = KnownTypes.instance();
-        Map<FileName, FileDescriptor> knownFiles = knownTypes
-                .getAllTypes()
-                .types()
-                .stream()
-                .map(type -> type.descriptor()
-                                 .getFile())
-                .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
-                .collect(toMap(FileName::from,       // File name as the key.
-                               file -> file,         // File descriptor as the value.
-                               (left, right) -> left // On duplicates, take the first option.
-                ));
-        FileSet knownFileSet = new FileSet(knownFiles);
-        if (knownFiles.size() != this.size()) {
-            return onUnknownFile(knownTypes, knownFileSet);
-        }
-        return knownFileSet;
-    }
-
-    private FileSet onUnknownFile(KnownTypes knownTypes, FileSet knownFileSet) {
-        _debug("Failed to find files in the known types set. Looked for {}{}",
-               lineSeparator(),
-               files.keySet());
-        _debug(knownTypes.toString());
-        _debug("Could not find files: {}",
-               files.keySet()
-                    .stream()
-                    .filter(fileName -> !knownFileSet.contains(fileName))
-                    .map(FileName::toString)
-                    .collect(joining(", ")));
-        throw newIllegalStateException("Some files are not known.");
     }
 
     /**
@@ -286,24 +294,15 @@ public final class FileSet implements Logging {
     }
 
     /**
-     * Obtains alphabetically sorted list of names of files of this set.
-     */
-    public List<FileName> getFileNames() {
-        List<FileName> fileNames =
-                files.keySet()
-                     .stream()
-                     .sorted()
-                     .collect(toList());
-        return fileNames;
-    }
-
-    /**
      * Returns a string with alphabetically sorted list of files of this set.
      */
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("files", getFileNames())
+                          .add("files", files.keySet()
+                                             .stream()
+                                             .sorted()
+                                             .collect(toList()))
                           .toString();
     }
 

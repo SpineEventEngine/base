@@ -20,10 +20,14 @@
 
 package io.spine.tools.compiler.descriptor;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
+import io.spine.tools.type.MoreKnownTypes;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -67,7 +71,13 @@ public final class MergedDescriptorSet {
         }
     }
 
+    public void loadIntoKnownTypes() {
+        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(descriptorSet.getFileList()));
+        TypeSet typeSet = TypeSet.from(fileSet);
+        MoreKnownTypes.extendWith(typeSet);
+    }
 
+    @VisibleForTesting
     ImmutableSet<FileDescriptorProto> descriptors() {
         return ImmutableSet.copyOf(descriptorSet.getFileList());
     }

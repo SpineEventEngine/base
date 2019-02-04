@@ -24,12 +24,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.code.proto.FileDescriptorSets;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.archive.ArchiveEntry;
 import io.spine.tools.compiler.archive.ArchiveFile;
-import io.spine.tools.type.MoreKnownTypes;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,13 +58,6 @@ public final class FileDescriptorSuperset implements Logging {
      */
     public FileDescriptorSuperset() {
         this.descriptors = newHashSet();
-    }
-
-    public void loadIntoKnownTypes() {
-        MergedDescriptorSet merged = merge();
-        FileSet fileSet = FileSet.ofFiles(merged.descriptors());
-        TypeSet typeSet = TypeSet.from(fileSet);
-        MoreKnownTypes.extendWith(typeSet);
     }
 
     /**

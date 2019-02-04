@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
@@ -38,6 +39,8 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A set of Protobuf types.
@@ -232,6 +235,23 @@ public final class TypeSet {
     @Override
     public int hashCode() {
         return Objects.hashCode(messageTypes, enumTypes);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("messageTypes", namesForDisplay(messageTypes))
+                          .add("enumTypes", namesForDisplay(enumTypes))
+                          .add("serviceTypes", namesForDisplay(serviceTypes))
+                          .toString();
+    }
+
+    private static String namesForDisplay(Map<TypeName, ?> types) {
+        return types.keySet()
+                    .stream()
+                    .map(TypeName::value)
+                    .sorted()
+                    .collect(joining(lineSeparator()));
     }
 
     /**

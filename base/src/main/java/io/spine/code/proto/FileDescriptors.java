@@ -101,8 +101,8 @@ public final class FileDescriptors {
      *         a filter predicate to apply to the files
      * @return a list of descriptors
      */
-    private static List<FileDescriptorProto> parseAndFilter(File descriptorSet,
-                                                            Predicate<FileDescriptorProto> filter) {
+    private static List<FileDescriptorProto>
+    parseAndFilter(File descriptorSet, Predicate<FileDescriptorProto> filter) {
         checkArgument(descriptorSet.exists(), "File %s does not exist", descriptorSet);
 
         Logger log = log();

@@ -76,7 +76,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
             if (descriptorSet.exists()) {
                 superset.addFromDependency(descriptorSet);
             }
-            superset.loadIntoKnownTypes();
+            superset.merge()
+                    .loadIntoKnownTypes();
         };
     }
 

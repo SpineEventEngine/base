@@ -30,7 +30,9 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -218,6 +220,8 @@ public class KnownTypes implements Serializable {
     @Internal
     public static final class Holder {
 
+        private static final Logger log = Logging.get(Holder.class);
+
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
 
@@ -243,6 +247,8 @@ public class KnownTypes implements Serializable {
          */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
+
+            log.debug("Adding types {} to known types.", moreKnownTypes);
 
             lock.lock();
             try {
