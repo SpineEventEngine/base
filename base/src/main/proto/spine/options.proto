@@ -212,18 +212,6 @@ extend google.protobuf.FieldOptions {
     //     string username = 1 [(by) = "user_id | admin_id"];
     // }
     //
-    // If there is a complex (by) case, it is possible to supply a FQN of a rule that determines
-    // by which field the message should be enriched. The feature is experimental and can be
-    // changed without any notices.
-    //
-    // An example:
-    //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*"
-    //
-    //     string username = 1 [(by) = "rule:com.acme.UsernameEnrichmentRule"
-    // }
-    //
     string by = 73900;
 }
 
