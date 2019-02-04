@@ -55,25 +55,22 @@ public class DescriptorSetLoaderPlugin extends SpinePlugin {
     }
 
     private void createMainTask(Project project) {
-        newTask(MERGE_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, RUNTIME_CLASSPATH),
-                                    getMainDescriptorSetPath(project)))
+        newTask(MERGE_DESCRIPTOR_SET, createMergingAction(false))
                 .insertAfterTask(GENERATE_PROTO)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
-        newTask(MERGE_TEST_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, TEST_RUNTIME_CLASSPATH),
-                                    getTestDescriptorSetPath(project)))
+        newTask(MERGE_TEST_DESCRIPTOR_SET, createMergingAction(true))
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .applyNowTo(project);
     }
 
-    private static Action<Task> createMergingAction(Configuration configuration,
-                                                    String descriptorSetPath) {
+    private static Action<Task> createMergingAction(boolean tests) {
         return task -> {
-            File descriptorSet = new File(descriptorSetPath);
+            Project project = task.getProject();
+            Configuration configuration = configuration(project, configurationName(tests));
+            File descriptorSet = descriptorSet(project, tests);
             FileDescriptorSuperset superset = new FileDescriptorSuperset();
             configuration.forEach(superset::addFromDependency);
             if (descriptorSet.exists()) {
@@ -86,5 +83,18 @@ public class DescriptorSetLoaderPlugin extends SpinePlugin {
     private static Configuration configuration(Project project, ConfigurationName name) {
         return project.getConfigurations()
                       .getByName(name.getValue());
+    }
+
+    private static ConfigurationName configurationName(boolean tests) {
+        return tests
+               ? TEST_RUNTIME_CLASSPATH
+               : RUNTIME_CLASSPATH;
+    }
+
+    private static File descriptorSet(Project project, boolean tests) {
+        String path = tests
+                      ? getTestDescriptorSetPath(project)
+                      : getMainDescriptorSetPath(project);
+        return new File(path);
     }
 }
