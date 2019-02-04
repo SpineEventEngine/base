@@ -24,9 +24,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors;
+import io.spine.tools.compiler.enrichment.mapbuilder.ImageIdListEnrichment;
+import io.spine.tools.compiler.enrichment.mapbuilder.ManagerIdEnrichment;
+import io.spine.tools.compiler.enrichment.mapbuilder.OwnerIdEnrichment;
+import io.spine.tools.compiler.enrichment.mapbuilder.SectionIdListEnrichment;
 import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -34,68 +37,54 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Ignore
-@DisplayName("EnrichmentMapBuilder should")
+@DisplayName("EnrichmentMapBuilder should build enrichments map for (enrichment_for) option")
 class EnrichmentMapBuilderTest {
 
-    private static final String PACKAGE_PREFIX = "io.spine.tools.compiler.enrichment.";
+    private static final String PACKAGE_PREFIX = "spine.tools.compiler.enrichment.mapbuilder.";
 
-    @DisplayName("build enrichments map for")
-    @Nested
-    class BuildEnrichmentsMapFor {
-
-        @DisplayName("(enrichment_for) option with multiple targets")
-        @Test
-        void enrichmentForOptionWithMultipleTargets() {
-            Map<String, String> expected = ImmutableMap.of(
-                    "io.spine.tools.compiler.enrichment.SectionIdListEnrichment",
-                    "spine.tools.compiler.enrichment.OrderCreated,spine.tools.compiler.enrichment.OrderUpdated");
-            assertHasEnrichments(SectionIdListEnrichment.getDescriptor(), expected);
-        }
-
-        @DisplayName("(by) option")
-        @Test
-        void byOption() {
-            Map<String, String> expected = ImmutableMap.of(
-                    "io.spine.tools.compiler.enrichment.UserIdEnrichment",
-                    "spine.tools.compiler.enrichment.OrderUpdated");
-            assertHasEnrichments(UserIdEnrichment.getDescriptor(), expected);
-        }
-
-        @DisplayName("nested into event enrichment with")
-        @Nested
-        class NestedEnrichment {
-
-            @DisplayName("FQN (by) option")
-            @Test
-            void fqnByOption() {
-                Map<String, String> expected = ImmutableMap.of(
-                        "io.spine.tools.compiler.enrichment.OrderCanceled.Enrichment",
-                        "io.spine.tools.compiler.enrichment.OrderCanceled"
-                );
-                assertHasEnrichments(OrderCanceled.getDescriptor(), expected);
-            }
-
-            @DisplayName("(enrichment_for) and (by) shortcut options")
-            @Test
-            void enrichmentForAndByOptions() {
-                Map<String, String> expected = ImmutableMap.of(
-                        "io.spine.tools.compiler.enrichment.OrderRefunded.Enrichment",
-                        "io.spine.tools.compiler.enrichment.OrderRefunded"
-                );
-                assertHasEnrichments(OrderRefunded.getDescriptor(), expected);
-            }
-        }
+    @DisplayName("with multiple targets")
+    @Test
+    void withMultipleTargets() {
+        Map<String, String> expected = ImmutableMap.of(
+                "spine.tools.compiler.enrichment.mapbuilder.SectionIdListEnrichment",
+                "spine.tools.compiler.enrichment.mapbuilder.OrderCreated," +
+                        "spine.tools.compiler.enrichment.mapbuilder.OrderUpdated");
+        assertHasEnrichments(SectionIdListEnrichment.getDescriptor(), expected);
     }
 
-    void assertHasEnrichments(Descriptors.Descriptor descriptor, Map<String, String> expected) {
-        assertHasEnrichments(PACKAGE_PREFIX, descriptor, expected);
+    @DisplayName("with a wildcard suffix")
+    @Test
+    void withWildcardSuffix() {
+        Map<String, String> expected = ImmutableMap.of(
+                "spine.tools.compiler.enrichment.mapbuilder.ImageIdListEnrichment",
+                "spine.tools.compiler.enrichment.mapbuilder.*");
+        assertHasEnrichments(ImageIdListEnrichment.getDescriptor(), expected);
     }
 
-    void assertHasEnrichments(String packagePrefix,
-                              Descriptors.Descriptor descriptor,
+    @DisplayName("with multiple targets and complex (by) option")
+    @Test
+    void withMultipleTargetsAndComplexByOption() {
+        Map<String, String> expected = ImmutableMap.of(
+                "spine.tools.compiler.enrichment.mapbuilder.OwnerIdEnrichment",
+                "spine.tools.compiler.enrichment.mapbuilder.OrderUpdated," +
+                        "spine.tools.compiler.enrichment.mapbuilder.SectionUpdated");
+        assertHasEnrichments(OwnerIdEnrichment.getDescriptor(), expected);
+    }
+
+    @DisplayName("with mixed wildcard and FQN syntax")
+    @Test
+    void withMixedWildcardAndFqnSyntax() {
+        Map<String, String> expected = ImmutableMap.of(
+                "spine.tools.compiler.enrichment.mapbuilder.ManagerIdEnrichment",
+                "spine.tools.compiler.enrichment.mapbuilder.SectionUpdated," +
+                        "spine.tools.compiler.enrichment.mapbuilder.inner.*");
+        assertHasEnrichments(ManagerIdEnrichment.getDescriptor(), expected);
+    }
+
+    void assertHasEnrichments(Descriptors.Descriptor descriptor,
                               Map<String, String> expected) {
         DescriptorProto descriptorProto = descriptor.toProto();
-        Map<String, String> actual = new EnrichmentMapBuilder(packagePrefix)
+        Map<String, String> actual = new EnrichmentMapBuilder(PACKAGE_PREFIX)
                 .addAll(ImmutableList.of(descriptorProto))
                 .toMap();
         assertEquals(expected, actual);

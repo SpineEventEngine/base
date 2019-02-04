@@ -22,6 +22,7 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -54,6 +55,12 @@ final class EnrichmentMapBuilder implements Logging {
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
 
+    /**
+     * Creates enrichment map builder with a supplied {@code packagePrefix}.
+     *
+     * @param packagePrefix
+     *         a Protobuf package prefix (including the dot)
+     */
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
         this.enrichmentForOption = enrichmentForOption(packagePrefix);
@@ -155,7 +162,7 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as an enrichment object.
         _debug("Scanning message {} for the enrichment annotations", messageName);
-        Collection<String> eventTypes = enrichmentForOption.parse(msg);
+        ImmutableList<String> eventTypes = enrichmentForOption.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
             _debug("Found target events: {}", mergedValue);
@@ -171,6 +178,7 @@ final class EnrichmentMapBuilder implements Logging {
      * Scans supplied {@code message} fields for a {@code (by)} option and builds a map
      * of enrichments out of the option.
      */
+    @Deprecated //TODO:2019-02-04:yuri.sergiichuk: this functionality should not be supported anymore. See https://github.com/SpineEventEngine/base/issues/310
     private Map<String, String> scanFields(DescriptorProto msg) {
         String msgName = msg.getName();
         _debug("Scanning fields of message {} for the enrichment annotations", msgName);
@@ -189,6 +197,7 @@ final class EnrichmentMapBuilder implements Logging {
      * of enrichments out of the option.
      */
     @SuppressWarnings("MethodWithMultipleLoops") // It's fine in this case.
+    @Deprecated //TODO:2019-02-04:yuri.sergiichuk: this functionality should not be supported anymore. See https://github.com/SpineEventEngine/base/issues/310
     private Optional<Map.Entry<String, String>> scanInnerMessages(DescriptorProto msg) {
         _debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
