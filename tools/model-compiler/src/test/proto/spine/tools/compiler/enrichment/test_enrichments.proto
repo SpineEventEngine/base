@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package spine.tools.compiler.enrichment;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.compiler.enrichment";
+option java_outer_classname = "TestEnrichmentsProto";
+option java_multiple_files = true;
+
+import "google/protobuf/descriptor.proto";
+
+// Declaration for use in enrichment package tests only.
+
+message SectionIdListEnrichment {
+    option (enrichment_for) = "spine.tools.compiler.enrichment.OrderUpdated,"
+                              "spine.tools.compiler.enrichment.OrderCreated";
+
+    repeated string section_ids = 1 [(by) = "id"];
+}
+
+message ImageIdListEnrichment {
+    option (enrichment_for) = "spine.tools.compiler.enrichment.OrderUpdated";
+
+    repeated string image_ids = 1 [(by) = "id"];
+}
+
+message ProducerEnrichment {
+
+    string producer = 1 [(by) = "*.id"];
+}
+
+message UserIdEnrichment {
+
+    string user_id = 1 [(by) = "spine.tools.compiler.enrichment.OrderUpdated.id"];
+}
+
+
+message UserNameEnrichment {
+
+    string user_name = 1 [(by) = "spine.tools.compiler.enrichment.OrderUpdated.id | spine.tools.compiler.enrichment.OrderCreated.id"];
+}

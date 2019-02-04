@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package spine.tools.compiler.enrichment;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.compiler.enrichment";
+option java_outer_classname = "TestNestedEnrichmentEventsProto";
+option java_multiple_files = true;
+
+// This file contains test event types.
+//
+// The name of the file matches the Spine convention. All the generated classes should implement
+// `io.spine.base.EventMessage`.
+
+
+message OrderCanceled {
+    string id = 1;
+
+    message Enrichment {
+        string customer_id = 1 [(by) = "id"];
+    }
+}
+
+message OrderRefunded {
+    string id = 1;
+
+    message Enrichment {
+        option (enrichment_for) = "OrderRefunded";
+
+        string customer_id = 1 [(by) = "id"];
+    }
+}
