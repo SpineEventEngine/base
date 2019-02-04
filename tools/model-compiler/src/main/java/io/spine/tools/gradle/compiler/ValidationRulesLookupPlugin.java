@@ -36,9 +36,9 @@ import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 
 /**
@@ -79,7 +79,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     private Action<Task> mainScopeActionFor(Project project) {
         _debug("Initializing the validation lookup for the `main` source code.");
         return task -> {
-            String descriptorSetFile = getMainDescriptorSetPath(project);
+            File descriptorSetFile = getMainDescriptorSet(project);
             String targetResourcesDir = getMainTargetGenResourcesDir(project);
             processDescriptorSet(descriptorSetFile, targetResourcesDir);
         };
@@ -88,19 +88,18 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     private Action<Task> testScopeActionFor(Project project) {
         _debug("Initializing the validation lookup for the `test` source code.");
         return task -> {
-            String descriptorSetPath = getTestDescriptorSetPath(project);
+            File descriptorSetFile = getTestDescriptorSet(project);
             String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
-            processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
+            processDescriptorSet(descriptorSetFile, targetGenResourcesDir);
         };
     }
 
-    private void processDescriptorSet(String descriptorSetFile, String targetDirectory) {
-        File setFile = new File(descriptorSetFile);
-        if (!setFile.exists()) {
-            logMissingDescriptorSetFile(setFile);
+    private void processDescriptorSet(File descriptorSetFile, String targetDirectory) {
+        if (!descriptorSetFile.exists()) {
+            logMissingDescriptorSetFile(descriptorSetFile);
         } else {
             File targetDir = new File(targetDirectory);
-            ValidationRulesWriter.processDescriptorSetFile(setFile, targetDir);
+            ValidationRulesWriter.processDescriptorSetFile(descriptorSetFile, targetDir);
         }
     }
 }

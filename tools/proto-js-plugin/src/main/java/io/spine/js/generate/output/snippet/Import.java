@@ -40,8 +40,7 @@ public class Import extends CodeLine {
      * <p>The placeholder represents the file to be imported.
      */
     private static final String IMPORT_FORMAT = "require('%s');";
-
-    private static final String DEFAULT_IMPORT_FORMAT = "require('%s').default;";
+    private static final String DEFAULT_IMPORT_ENDING = ".default;";
 
     /**
      * The named import format.
@@ -91,15 +90,6 @@ public class Import extends CodeLine {
         return new Import(content);
     }
 
-    /**
-     * Obtains the default import of the library.
-     */
-    public static Import libraryDefault(String libraryName) {
-        checkNotNull(libraryName);
-        String content = format(DEFAULT_IMPORT_FORMAT, libraryName);
-        return new Import(content);
-    }
-
     private static Import withPrefix(String prefix, FileName fileToImport) {
         String path = prefix + fileToImport;
         String content = format(IMPORT_FORMAT, path);
@@ -109,6 +99,19 @@ public class Import extends CodeLine {
     @Override
     public String content() {
         return content;
+    }
+
+    /**
+     * Converts the import to the default import.
+     *
+     * <p>Does nothing if the import is already default.
+     */
+    public Import toDefault() {
+        if (content.endsWith(DEFAULT_IMPORT_ENDING)) {
+            return this;
+        }
+        String withoutSemicolon = content.substring(0, content.length() - 1);
+        return new Import(withoutSemicolon + DEFAULT_IMPORT_ENDING);
     }
 
     /**

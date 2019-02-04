@@ -44,7 +44,7 @@ public final class GivenProject {
 
     public static FileSet mainFileSet() {
         File descriptorSetFile = project().mainDescriptors();
-        return FileSet.parseOrEmpty(descriptorSetFile);
+        return FileSet.parse(descriptorSetFile);
     }
 
     public static Directory mainProtoSources() {

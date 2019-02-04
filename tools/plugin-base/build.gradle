@@ -30,6 +30,21 @@ dependencies {
     testImplementation deps.test.mockito
 }
 
+protobuf {
+    generatedFilesBaseDir = generatedRootDir
+
+    protoc {
+        artifact = deps.build.protoc
+    }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+        }
+    }
+}
+
 sourceSets {
     test {
         resources.srcDirs += "$sourcesRootDir/test/resources"
