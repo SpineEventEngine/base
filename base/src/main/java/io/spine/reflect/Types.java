@@ -94,8 +94,8 @@ public final class Types {
      *
      * <p>For non-parameterized types, the empty list is returned.
      *
-     * <p>For the raw class, arguments will be resolved to a generic variable declarations, as the
-     * information on their actual values is erased.
+     * <p>Note: the arguments of a raw class will be resolved to generic variable declarations, as
+     * the information on their actual values is erased.
      *
      * @param type
      *         a generic type
