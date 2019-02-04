@@ -38,8 +38,8 @@ final class Parsing {
     }
 
     Optional<TypeRef> parse() {
-        for (Parser supplier : parsers) {
-            Optional<TypeRef> found = supplier.parse(value);
+        for (Parser parser : parsers) {
+            Optional<TypeRef> found = parser.parse(value);
             if (found.isPresent()) {
                 return found;
             }
