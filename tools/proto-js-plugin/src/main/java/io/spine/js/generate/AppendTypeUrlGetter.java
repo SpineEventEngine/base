@@ -67,7 +67,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
     @VisibleForTesting
     static CodeLines typeUrlMethods(FileDescriptor file) {
         CodeLines output = new CodeLines();
-        TypeSet types = TypeSet.messagesAndEnums(file);
+        TypeSet types = TypeSet.from(file);
         for (Type type : types.types()) {
             Snippet method = typeUrlMethod(type);
             output.append(emptyLine());

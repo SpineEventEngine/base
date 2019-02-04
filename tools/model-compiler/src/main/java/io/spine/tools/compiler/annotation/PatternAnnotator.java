@@ -61,7 +61,7 @@ final class PatternAnnotator extends Annotator {
     }
 
     private static Stream<ClassName> allClasses(FileDescriptor file) {
-        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        TypeSet typeSet = TypeSet.from(file);
         ClassName outerClass = ClassName.outerClass(file);
         Stream.Builder<ClassName> result = Stream.builder();
         result.accept(outerClass);

@@ -20,28 +20,27 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * An enumeration type.
- */
-@Internal
-public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
+public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptorProto> {
 
-    private EnumType(EnumDescriptor descriptor) {
+    private ServiceType(ServiceDescriptor descriptor) {
         super(descriptor, false);
     }
 
+    public static ServiceType of(ServiceDescriptor descriptor) {
+        checkNotNull(descriptor);
+        return new ServiceType(descriptor);
+    }
+
     @Override
-    public EnumDescriptorProto toProto() {
+    public ServiceDescriptorProto toProto() {
         return descriptor().toProto();
     }
 
@@ -55,34 +54,14 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         return ClassName.from(descriptor());
     }
 
-    static EnumType create(EnumDescriptor descriptor) {
-        return new EnumType(descriptor);
-    }
-
-    @SuppressWarnings("MethodWithMultipleLoops")
-        // Need to go through top level enums and those nested messages.
     static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
         TypeSet.Builder result = TypeSet.newBuilder();
 
-        for (EnumDescriptor enumDescriptor : file.getEnumTypes()) {
-            result.add(create(enumDescriptor));
+        for (ServiceDescriptor type : file.getServices()) {
+            result.add(of(type));
         }
 
-        for (Descriptor messageType : file.getMessageTypes()) {
-            addNested(messageType, result);
-        }
         return result.build();
-    }
-
-    @SuppressWarnings("MethodWithMultipleLoops") // Need to go through enums and nested messages.
-    private static void addNested(Descriptor messageType, TypeSet.Builder set) {
-        for (EnumDescriptor enumDescriptor : messageType.getEnumTypes()) {
-            set.add(create(enumDescriptor));
-        }
-
-        for (Descriptor nestedType : messageType.getNestedTypes()) {
-            addNested(nestedType, set);
-        }
     }
 }

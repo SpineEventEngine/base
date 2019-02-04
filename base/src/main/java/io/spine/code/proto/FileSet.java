@@ -182,7 +182,7 @@ public final class FileSet implements Logging {
                 .stream()
                 .map(type -> type.descriptor().getFile())
                 .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
-                .collect(toMap(FileName::from, file -> file));
+                .collect(toMap(FileName::from, file -> file, (left, right) -> left));
         FileSet knownFileSet = new FileSet(knownFiles);
         if (knownFiles.size() != this.size()) {
             _debug("Failed to find files in the known types set. Looked for {}{}",

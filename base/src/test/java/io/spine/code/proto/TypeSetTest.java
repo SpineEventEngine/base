@@ -37,14 +37,14 @@ class TypeSetTest {
     void obtain_messages_and_enums_from_a_file() {
         FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
                                      .get();
-        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        TypeSet typeSet = TypeSet.from(file);
         assertFalse(typeSet.isEmpty());
     }
 
     @Test
     @DisplayName("obtain message and enums")
     void obtain_messages_and_enum_from_a_set() {
-        assertFalse(TypeSet.messagesAndEnums(fileSet)
+        assertFalse(TypeSet.from(fileSet)
                            .isEmpty());
     }
 }

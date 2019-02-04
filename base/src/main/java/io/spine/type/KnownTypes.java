@@ -103,7 +103,7 @@ public class KnownTypes implements Serializable {
      */
     private static TypeSet load() {
         FileSet protoDefinitions = FileSet.load();
-        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
+        TypeSet types = TypeSet.from(protoDefinitions);
         return types;
     }
 

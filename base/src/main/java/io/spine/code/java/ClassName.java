@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -143,6 +144,20 @@ public final class ClassName extends StringTypeValue {
     public static ClassName from(EnumDescriptor enumType) {
         return construct(enumType.getFile(), enumType.getName(),
                          enumType.getContainingType());
+    }
+
+    /**
+     * Creates an instance of {@code ClassName} from the given Protobuf service descriptor.
+     *
+     * <p>The resulting class name is the name of the Java gRPC stub class which is generated from
+     * the given service type.
+     *
+     * @param serviceType
+     *         the gRPC service descriptor
+     * @return new instance of {@code ClassName}
+     */
+    public static ClassName from(ServiceDescriptor serviceType) {
+        return construct(serviceType.getFile(), serviceType.getName(), null);
     }
 
     private static String javaPackageName(FileDescriptor file) {

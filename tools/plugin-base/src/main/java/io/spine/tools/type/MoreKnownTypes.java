@@ -58,7 +58,7 @@ public final class MoreKnownTypes {
         checkArgument(descriptorSetFile.exists());
 
         FileSet protoFiles = FileSet.parse(descriptorSetFile);
-        TypeSet types = TypeSet.messagesAndEnums(protoFiles);
+        TypeSet types = TypeSet.from(protoFiles);
         extendWith(types);
     }
 

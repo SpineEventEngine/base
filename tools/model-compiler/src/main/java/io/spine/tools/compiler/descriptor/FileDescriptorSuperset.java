@@ -66,7 +66,7 @@ public final class FileDescriptorSuperset implements Logging {
     public void loadIntoKnownTypes() {
         MergedDescriptorSet merged = merge();
         FileSet fileSet = FileSet.ofFiles(merged.descriptors());
-        TypeSet typeSet = TypeSet.messagesAndEnums(fileSet);
+        TypeSet typeSet = TypeSet.from(fileSet);
         MoreKnownTypes.extendWith(typeSet);
     }
 

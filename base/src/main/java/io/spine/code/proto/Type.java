@@ -105,7 +105,9 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains simple class name for corresponding Java type.
      */
-    public abstract SimpleClassName simpleJavaClassName();
+    public final SimpleClassName simpleJavaClassName() {
+        return javaClassName().toSimple();
+    }
 
     /**
      * Defines whether or not the Java class generated from this type has a builder.

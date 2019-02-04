@@ -108,11 +108,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return ClassName.from(descriptor());
     }
 
-    @Override
-    public SimpleClassName simpleJavaClassName() {
-        return SimpleClassName.ofMessage(descriptor());
-    }
-
     /**
      * Obtains source file with the declaration of this message type.
      */

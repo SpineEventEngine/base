@@ -29,6 +29,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -119,6 +120,18 @@ public final class TypeUrl implements Serializable {
         String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
+
+    /**
+     * Creates a new instance by the passed service descriptor taking its type URL.
+     *
+     * @param descriptor the descriptor of the type
+     */
+    public static TypeUrl from(ServiceDescriptor descriptor) {
+        checkNotNull(descriptor);
+        String prefix = prefixFor(descriptor);
+        return create(prefix, descriptor.getFullName());
+    }
+
 
     /**
      * Creates a new instance from the passed type URL.
