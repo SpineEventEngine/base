@@ -54,7 +54,6 @@ import static java.lang.String.format;
  * The second part is a {@linkplain Descriptor#getFullName()
  * fully-qualified Protobuf type name}.
  *
- * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()
  */
 @Immutable
@@ -186,7 +185,8 @@ public final class TypeUrl implements Serializable {
     private static String prefixFor(GenericDescriptor descriptor) {
         FileDescriptor file = descriptor.getFile();
         if (file.getPackage()
-                .startsWith(PackageName.googleProtobuf.value())) {
+                .startsWith(PackageName.googleProtobuf()
+                                       .value())) {
             return Prefix.GOOGLE_APIS.value();
         }
         String result = file.getOptions()

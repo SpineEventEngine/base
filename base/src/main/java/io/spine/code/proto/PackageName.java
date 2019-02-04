@@ -20,38 +20,57 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.value.StringTypeValue;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Protobuf package name.
+ * A name of a Protobuf package.
  */
+@Immutable
 public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
-    /**
-     * The package used to identify standard Protobuf types.
-     */
-    public static final PackageName googleProtobuf = of(Any.getDescriptor()
-                                                           .getFile());
+    private static final String DELIMITER = ".";
+
+    private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
 
     private PackageName(String value) {
         super(value);
     }
 
     /**
-     * Creates a new instance.
-     *
-     * @param file
-     *         the file to get the package name from
-     * @return a new instance
+     * Creates a new instance with the passed value.
      */
-    public static PackageName of(FileDescriptor file) {
-        String value = file.getPackage();
-        checkNotEmptyOrBlank(value);
-        return new PackageName(value);
+    public static PackageName of(String value) {
+        checkNotNull(value);
+        PackageName result = new PackageName(value);
+        return result;
+    }
+
+    /**
+     * Obtains a package name for the passed message type.
+     */
+    public static PackageName of(Descriptor message) {
+        checkNotNull(message);
+        PackageName result = of(message.getFile()
+                                       .getPackage());
+        return result;
+    }
+
+    /**
+     * Obtains the name of the Google Protobuf library package.
+     */
+    public static PackageName googleProtobuf() {
+        return GOOGLE_PROTOBUF;
+    }
+
+    /**
+     * Obtains Protobuf package delimiter.
+     */
+    public static String delimiter() {
+        return DELIMITER;
     }
 }

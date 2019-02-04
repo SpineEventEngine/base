@@ -38,7 +38,7 @@ import static io.spine.code.proto.FileDescriptors.parseSkipGoogle;
  * Parses descriptor set file and creates enrichments map for discovered enrichment
  * definitions.
  */
-public class EnrichmentLookup implements Logging {
+public final class EnrichmentLookup implements Logging {
 
     private final File descriptorSetFile;
 

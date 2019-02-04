@@ -20,6 +20,7 @@
 
 package io.spine.test.validate;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
@@ -79,106 +80,108 @@ class ValidatingBuilderTest {
 
     @Test
     @DisplayName("check required validated repeated fields")
-    void check_required_validated_repeated_fields() {
-        assertThrows(ValidationException.class, () -> builder.addTask(Task.getDefaultInstance()));
+    void checkRequiredValidatedRepeatedFields() {
+        assertThrows(ValidationException.class,
+                     () -> builder.addTask(Task.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("ensure required validated repeated fields")
-    void ensure_required_validated_repeated_fields() {
+    void ensureRequiredValidatedRepeatedFields() {
         builder.clearTask();
-        assertThrows(ValidationException.class, () -> builder.build());
+        assertThrows(ValidationException.class,
+                     () -> builder.build());
     }
 
     @Test
     @DisplayName("check required validated map field values")
-    void check_required_validated_map_field_values() {
+    void checkRequiredValidatedMapFieldValues() {
         assertThrows(ValidationException.class,
                      () -> builder.putRole("Co-owner", Member.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("ensure required validated map fields")
-    void ensure_required_validated_map_fields() {
+    void ensureRequiredValidatedMapFields() {
         builder.clearRole();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("check validated repeated fields")
-    void check_validated_repeated_fields() {
+    void checkValidatedRepeatedFields() {
         assertThrows(ValidationException.class, () -> builder.addSubscriberEmail(""));
     }
 
     @Test
     @DisplayName("dispense with validated repeated fields")
-    void dispense_with_validated_repeated_fields() {
+    void dispenseWithValidatedRepeatedFields() {
         builder.clearSubscriberEmail();
         builder.build();
     }
 
     @Test
     @DisplayName("check validated map field values")
-    void check_validated_map_field_values() {
+    void checkValidatedMapFieldValues() {
         assertThrows(ValidationException.class,
                      () -> builder.putAttachment(newUuid(), Attachment.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("dispense with validated map fields")
-    void dispense_with_validated_map_fields() {
+    void dispenseWithValidatedMapFields() {
         builder.clearAttachment();
         builder.build();
     }
 
     @Test
     @DisplayName("accept any required repeated fields")
-    void accept_any_required_repeated_fields() {
+    void acceptAnyRequiredRepeatedFields() {
         builder.addMember(Member.getDefaultInstance());
     }
 
     @Test
     @DisplayName("ensure required repeated fields")
-    void ensure_required_repeated_fields() {
+    void ensureRequiredRepeatedFields() {
         builder.clearMember();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("accept any required map field value")
-    void accept_any_required_map_field_value() {
+    void acceptAnyRequiredMapFieldValue() {
         builder.putDeletedTask(newUuid(), timeInFuture());
     }
 
     @Test
     @DisplayName("ensure required map fields")
-    void ensure_required_map_fields() {
+    void ensureRequiredMapFields() {
         builder.clearDeletedTask();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("accept any unchecked repeated fields")
-    void accept_any_unchecked_repeated_fields() {
+    void acceptAnyUncheckedRepeatedFields() {
         builder.addDescription("");
     }
 
     @Test
     @DisplayName("dispense with unchecked repeated fields")
-    void dispense_with_unchecked_repeated_fields() {
+    void dispenseWithUncheckedRepeatedFields() {
         builder.clearDescription();
         builder.build();
     }
 
     @Test
     @DisplayName("accept any unchecked map field value")
-    void accept_any_unchecked_map_field_value() {
+    void acceptAnyUncheckedMapFieldValue() {
         builder.putLabel("empty", "none");
     }
 
     @Test
     @DisplayName("dispense with unchecked map fields")
-    void dispense_with_unchecked_map_fields() {
+    void dispenseWithUncheckedMapFields() {
         builder.clearLabel();
         builder.build();
     }
@@ -246,7 +249,7 @@ class ValidatingBuilderTest {
 
     @Nested
     @DisplayName("Produce an error if `(set_once) = true` is put for")
-    class InaplicableOption {
+    class InapplicableOption {
 
         private EssayVBuilder essay;
         private Queue<SubstituteLoggingEvent> loggedMessages;
@@ -335,10 +338,12 @@ class ValidatingBuilderTest {
     }
 
     private static Member member() {
-        Member.Builder member = Member.newBuilder()
-                                      .setId(newUuid())
-                                      .setName("John Smith")
-                                      .setAvatarImage(copyFrom(new byte[]{1, 2, 3}));
+        ByteString bites = copyFrom(new byte[]{(byte) 1, (byte) 2, (byte) 3});
+        Member.Builder member = Member
+                .newBuilder()
+                .setId(newUuid())
+                .setName("John Smith")
+                .setAvatarImage(bites);
         return member.build();
     }
 }

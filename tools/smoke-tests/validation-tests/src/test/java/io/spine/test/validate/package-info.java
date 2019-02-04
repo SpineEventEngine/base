@@ -18,27 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+/**
+ * Contains smoke tests for generated validating builders.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.test.validate;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("PackageName should")
-class PackageNameTest {
-
-    @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
-    }
-
-    @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        String packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

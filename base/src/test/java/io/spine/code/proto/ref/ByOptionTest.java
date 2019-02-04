@@ -18,27 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
-import com.google.common.testing.NullPointerTester;
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("PackageName should")
-class PackageNameTest {
+@DisplayName("ByOption should")
+class ByOptionTest extends UtilityClassTest<ByOption> {
 
-    @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
+    ByOptionTest() {
+        super(ByOption.class);
     }
 
     @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        String packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
+    @DisplayName("remove space characters around field references")
+    void parseRaw() {
+        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
+                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
     }
 }

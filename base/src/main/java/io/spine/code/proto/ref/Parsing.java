@@ -18,40 +18,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+package io.spine.code.proto.ref;
 
-import com.google.errorprone.annotations.Immutable;
+import com.google.common.collect.ImmutableList;
+
+import java.util.Optional;
 
 /**
- * Abstract base for string value objects.
- *
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link com.google.protobuf.StringValue StringValue}.
+ * Attempts to parse the passed value by sequentially invoking provider functions.
  */
-@Immutable
-public abstract class StringTypeValue extends ValueHolder<String> {
+final class Parsing {
 
-    private static final long serialVersionUID = 0L;
+    private final String value;
+    private final ImmutableList<Parser> parsers;
 
-    protected StringTypeValue(String value) {
-        super(value);
+    Parsing(String value, Parser... parser) {
+        this.value = value;
+        this.parsers = ImmutableList.copyOf(parser);
     }
 
-    @Override
-    public String value() {
-        return super.value();
+    Optional<TypeRef> parse() {
+        for (Parser parser : parsers) {
+            Optional<TypeRef> found = parser.parse(value);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
     }
 
     /**
-     * Returns {@code true} the length of the {@link #value() value} is zero,
-     * {@code false} otherwise.
+     * Provides a type reference <em>if</em> the passed string matches the format
+     * requirements of the provider, otherwise returns an empty {@code Optional}.
+     *
+     * @see CompositeTypeRef#parsePart(String)
+     * @see TypeRef#parse(String)
      */
-    public boolean isEmpty() {
-        return value().isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return this.value();
+    @FunctionalInterface
+    interface Parser {
+        Optional<TypeRef> parse(String reference);
     }
 }

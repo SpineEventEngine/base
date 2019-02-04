@@ -18,27 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+syntax = "proto3";
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+package spine.test.code.proto;
 
-import static com.google.common.truth.Truth.assertThat;
+import "spine/options.proto";
 
-@DisplayName("PackageName should")
-class PackageNameTest {
+import "google/protobuf/any.proto";
 
-    @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
-    }
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.proto";
+option java_outer_classname = "FieldReferenceTestEventsProto";
+option java_multiple_files = true;
 
-    @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        String packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
-    }
+// Declaration for use in `FieldReferenceTest` only.
+//
+// Provides events that are target for enrichments declared in `field_reference_test.proto`.
+
+message UserCreated {
+    string user_id = 1;
+}
+
+message UserSuspended {
+    string user_id = 1;
+}
+
+message DocumentUpdated {
+    string editor_id = 1;
 }

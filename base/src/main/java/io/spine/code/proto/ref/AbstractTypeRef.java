@@ -18,27 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.value.StringTypeValue;
 
-import static com.google.common.truth.Truth.assertThat;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
-@DisplayName("PackageName should")
-class PackageNameTest {
+/**
+ * Abstract base for string-based type references.
+ */
+abstract class AbstractTypeRef extends StringTypeValue implements TypeRef {
 
-    @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
-    }
+    private static final long serialVersionUID = 0L;
 
-    @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        String packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
+    /**
+     * Creates a new instance with a value which is not null, empty, or blank.
+     */
+    AbstractTypeRef(String value) {
+        super(checkNotEmptyOrBlank(value));
     }
 }

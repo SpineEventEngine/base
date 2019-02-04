@@ -37,7 +37,7 @@ class ValidatorTest {
 
     @Test
     @DisplayName("validate according to validation rules")
-    void validate_according_to_validation_rule() {
+    void multipleRules() {
         String validValue = "any text";
         InvalidMessage invalidMessage = InvalidMessage
                 .newBuilder()

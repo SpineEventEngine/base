@@ -18,27 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+/**
+ * This package provides classes referencing domain model elements from a proto code options.
+ */
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.proto.ref;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("PackageName should")
-class PackageNameTest {
-
-    @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
-    }
-
-    @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        String packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
