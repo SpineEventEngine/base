@@ -180,7 +180,8 @@ extend google.protobuf.FieldOptions {
     //
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
-    // The value must have event/context plain field name (i.e. FQN names are not supported).
+    // The value of (by) option may contain more than one field reference,
+    // separated with the pipe character.
     //
     // An example:
     //
@@ -194,7 +195,7 @@ extend google.protobuf.FieldOptions {
     //     string username = 1 [(by) = "user_id"];
     // }
     //
-    // Also, the multiple arguments are supported. The syntax is:
+    // Multiple field references example:
     //
     // message FirstEvent {
     //     spine.base.UserId user_id = 1;
