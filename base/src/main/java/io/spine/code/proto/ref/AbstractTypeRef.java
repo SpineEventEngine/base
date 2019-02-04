@@ -18,40 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+package io.spine.code.proto.ref;
 
-import com.google.errorprone.annotations.Immutable;
+import io.spine.value.StringTypeValue;
+
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Abstract base for string value objects.
- *
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link com.google.protobuf.StringValue StringValue}.
+ * Abstract base for string-based type references.
  */
-@Immutable
-public abstract class StringTypeValue extends ValueHolder<String> {
+abstract class AbstractTypeRef extends StringTypeValue implements TypeRef {
 
     private static final long serialVersionUID = 0L;
 
-    protected StringTypeValue(String value) {
-        super(value);
-    }
-
-    @Override
-    public String value() {
-        return super.value();
-    }
-
     /**
-     * Returns {@code true} the length of the {@link #value() value} is zero,
-     * {@code false} otherwise.
+     * Creates a new instance with a value which is not null, empty, or blank.
      */
-    public boolean isEmpty() {
-        return value().isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return this.value();
+    AbstractTypeRef(String value) {
+        super(checkNotEmptyOrBlank(value));
     }
 }

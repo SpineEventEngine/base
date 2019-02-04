@@ -25,6 +25,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.code.proto.ref.ByOption;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 
@@ -32,10 +33,11 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.OptionsProto.enrichmentFor;
+import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentForOption;
+import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentOption;
 
 /**
  * Composes enrichment map for multiple message declarations.
@@ -48,16 +50,16 @@ final class EnrichmentMapBuilder implements Logging {
     private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameParser eventType;
-    private final TypeNameParser enrichmentType;
+    private final TypeRefs enrichmentForOption;
+    private final TypeRefs enrichmentOption;
 
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
 
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventType = new TypeNameParser(enrichmentFor, packagePrefix);
-        this.enrichmentType = new TypeNameParser(enrichment, packagePrefix);
+        this.enrichmentForOption = enrichmentForOption(packagePrefix);
+        this.enrichmentOption = enrichmentOption(packagePrefix);
     }
 
     /**
@@ -76,7 +78,7 @@ final class EnrichmentMapBuilder implements Logging {
     }
 
     /**
-     * Obtains enrichment information as the the map.
+     * Obtains enrichment information as a map.
      */
     Map<String, String> toMap() {
         _debug("Found enrichments: {}", multimap);
@@ -131,12 +133,11 @@ final class EnrichmentMapBuilder implements Logging {
             }
             return;
         }
-        Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
-        if (entryFromInnerMsg != null) {
-            put(entryFromInnerMsg);
-            _debug("Found enrichment: {} -> {}",
-                   entryFromInnerMsg.getKey(),
-                   entryFromInnerMsg.getValue());
+        Optional<Map.Entry<String, String>> entryFromInnerMsg = scanInnerMessages(msg);
+        if (entryFromInnerMsg.isPresent()) {
+            Map.Entry<String, String> entry = entryFromInnerMsg.get();
+            put(entry);
+            _debug("Found enrichment: {} -> {}", entry.getKey(), entry.getValue());
         } else {
             _debug("No enrichment or event annotations found for message {}", msg.getName());
         }
@@ -153,7 +154,7 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as an enrichment object.
         _debug("Scanning message {} for the enrichment annotations", messageName);
-        Collection<TypeName> eventTypes = eventType.parse(msg);
+        Collection<String> eventTypes = enrichmentForOption.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
             _debug("Found target events: {}", mergedValue);
@@ -164,12 +165,11 @@ final class EnrichmentMapBuilder implements Logging {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         _debug("Scanning message {} for the enrichment target annotations", messageName);
-        Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
+        Collection<String> enrichmentTypes = enrichmentOption.parse(msg);
         if (!enrichmentTypes.isEmpty()) {
             _debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
-            for (TypeName enrichmentType : enrichmentTypes) {
-                String typeNameValue = enrichmentType.value();
-                result.put(typeNameValue, messageName);
+            for (String enrichmentType : enrichmentTypes) {
+                result.put(enrichmentType, messageName);
             }
         } else {
             _debug("No enrichments for event {} found", messageName);
@@ -184,16 +184,15 @@ final class EnrichmentMapBuilder implements Logging {
         Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
-                ByOption by = new ByOption(msg, field);
-                Map.Entry<String, String> foundEvents = by.collect(packagePrefix);
-                enrichmentsMap.put(foundEvents.getKey(), foundEvents.getValue());
+                Entry entry = new Entry(msg, field, packagePrefix);
+                enrichmentsMap.put(entry.enrichmentType(), entry.sourceTypes());
             }
         }
         return enrichmentsMap;
     }
 
-    @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
-    private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
+    @SuppressWarnings("MethodWithMultipleLoops") // It's fine in this case.
+    private Optional<Map.Entry<String, String>> scanInnerMessages(DescriptorProto msg) {
         _debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
@@ -206,10 +205,11 @@ final class EnrichmentMapBuilder implements Logging {
                     _debug("'by' option found on field {} targeting outer event {}",
                            field.getName(),
                            outerEventName);
-                    return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
+                    return Optional.of(new AbstractMap.SimpleEntry<>(enrichmentName,
+                                                                     outerEventName));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
