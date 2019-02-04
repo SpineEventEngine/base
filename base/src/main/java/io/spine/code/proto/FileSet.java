@@ -121,8 +121,8 @@ public final class FileSet implements Logging {
     /**
      * Constructs a new {@code FileSet} out of the given file descriptors.
      *
-     * <p>The file descriptors are {@linkplain Linker#link linked} in order to obtain normal
-     * {@code FileDescriptor}s out of {@code FileDescriptorProto}s.
+     * <p>The file descriptors are linked in order to obtain normal {@code FileDescriptor}s out
+     * of {@code FileDescriptorProto}s.
      *
      * @param protoDescriptors
      *         file descriptors to include in the set
@@ -180,24 +180,32 @@ public final class FileSet implements Logging {
                 .getAllTypes()
                 .types()
                 .stream()
-                .map(type -> type.descriptor().getFile())
+                .map(type -> type.descriptor()
+                                 .getFile())
                 .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
-                .collect(toMap(FileName::from, file -> file, (left, right) -> left));
+                .collect(toMap(FileName::from,       // File name as the key.
+                               file -> file,         // File descriptor as the value.
+                               (left, right) -> left // On duplicates, take the first option.
+                ));
         FileSet knownFileSet = new FileSet(knownFiles);
         if (knownFiles.size() != this.size()) {
-            _debug("Failed to find files in the known types set. Looked for {}{}",
-                   lineSeparator(),
-                   files.keySet());
-            _debug(knownTypes.toString());
-            _debug("Could not find files: {}",
-                   files.keySet()
-                        .stream()
-                        .filter(fileName -> !knownFileSet.contains(fileName))
-                        .map(FileName::toString)
-                        .collect(joining(", ")));
-            throw newIllegalStateException("Some files are not known.");
+            return onUnknownFile(knownTypes, knownFileSet);
         }
         return knownFileSet;
+    }
+
+    private FileSet onUnknownFile(KnownTypes knownTypes, FileSet knownFileSet) {
+        _debug("Failed to find files in the known types set. Looked for {}{}",
+               lineSeparator(),
+               files.keySet());
+        _debug(knownTypes.toString());
+        _debug("Could not find files: {}",
+               files.keySet()
+                    .stream()
+                    .filter(fileName -> !knownFileSet.contains(fileName))
+                    .map(FileName::toString)
+                    .collect(joining(", ")));
+        throw newIllegalStateException("Some files are not known.");
     }
 
     /**
