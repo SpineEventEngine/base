@@ -186,7 +186,7 @@ extend google.protobuf.FieldOptions {
     // An example:
     //
     // message MyEvent {
-    //    spine.base.UserId user_id = 1;
+    //     spine.base.UserId user_id = 1;
     // }
     //
     // message MyEventEnrichment {
@@ -198,7 +198,18 @@ extend google.protobuf.FieldOptions {
     //
     // An example:
     //
+    // message FirstEvent {
+    //     spine.base.UserId user_id = 1;
+    // }
+    //
+    // message SecondEvent {
+    //     spine.base.UserId user_id = 1;
+    // }
+    //
     // message EnrichmentForSeveralEvents {
+    //     option (enrichment_for) = "FirstEvent,"
+    //                               "SecondEvent";
+    //
     //     string username = 1 [(by) = "*.user_id"];
     // }
     //
@@ -213,6 +224,15 @@ extend google.protobuf.FieldOptions {
     //
     // If using the FQN field names, the `enrichment_for` annotation may be omitted
     // (the same behavior as with a single-argument `by` annotation).
+    //
+    // It is also possible to mix different syntax to obtained a fine-graded result:
+    //
+    // message MyEnrichment {
+    //     option enrichment_for) = "example.events.*,"
+    //                              "thirdExample.SecondEvent";
+    //
+    //     string username = 1 [(by) = "*.user_id | secondExample.FirstEvent.operator_id";
+    // }
     //
     string by = 73900;
 }
@@ -366,11 +386,57 @@ extend google.protobuf.MessageOptions {
     //     ...
     // }
     //
+    // The enrichment can qualify for a number of messages using the wildcard (*) pattern.
+    //
+    // For example:
+    //
+    // message MyEnrichment {
+    //     option (enrichment_for) = "example.events.*"
+    //     ...
+    // }
+    //
+    // It is also possible to mix different declarations as follows:
+    //
+    // message MyEnrichment {
+    //     option (enrichment_for) = "example.events.*,"
+    //                               "secondExample.FirstEvent,"
+    //                               "thirdExample.*";
+    //     ...
+    // }
+    //
     //
     // This option can be omitted if:
-    // - the enrichment message is enclosed into the target event message;
+    // - the enrichment message is enclosed into the target event message:
+    //
+    //   message MyEvent {
+    //
+    //       string id = 1;
+    //       ...
+    //
+    //       message Enrichment {
+    //           string details = 1 [(by) = "id"];
+    //       }
+    //   }
+    //
     // - all `by` options have the event name prefix ("example.events.MyEvent.user_id" instead of
-    //   just "user_id").
+    //   just "user_id"):
+    //
+    //   message MyEnrichment {
+    //       ...
+    //
+    //       string details = 1 [(by) = "example.events.FirstEvent.user_id | example.events.SecondEvent.operator_id];
+    //   }
+    //
+    // It is also possible to mix the option usage with `by` option.
+    //
+    // For example:
+    //
+    // message MyEnrichment {
+    //     option (enrichment_for) = "example.events.*,"
+    //                               "secondExample.FirstEvent";
+    //
+    //     string details = 1 [(by) = "*.id | thirdExample.SecondEvent.parent_id"
+    // }
     //
     string enrichment_for = 73922;
 
