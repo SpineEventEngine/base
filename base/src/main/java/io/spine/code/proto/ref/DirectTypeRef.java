@@ -123,7 +123,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
      * <p>If a reference is for a nested type, returned value contains the most nested name.
      */
     public String simpleTypeName() {
-        return this.simpleTypeName;
+        return simpleTypeName;
     }
 
     /**
