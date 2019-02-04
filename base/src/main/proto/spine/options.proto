@@ -366,7 +366,7 @@ extend google.protobuf.MessageOptions {
     // }
     //
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
-    // pattern (infix and prefix wildcards are not supported).
+    // pattern. Infix and prefix wildcards are not supported.
     //
     // For example:
     //
