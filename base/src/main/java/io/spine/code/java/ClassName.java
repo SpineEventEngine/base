@@ -55,6 +55,8 @@ public final class ClassName extends StringTypeValue {
      */
     static final char DOT_SEPARATOR = '.';
 
+    private static final String GRPC_POSTFIX = "Grpc";
+
     private ClassName(String value) {
         super(checkNotNull(value));
     }
@@ -157,7 +159,7 @@ public final class ClassName extends StringTypeValue {
      * @return new instance of {@code ClassName}
      */
     public static ClassName from(ServiceDescriptor serviceType) {
-        return construct(serviceType.getFile(), serviceType.getName(), null);
+        return construct(serviceType.getFile(), serviceType.getName() + GRPC_POSTFIX, null);
     }
 
     private static String javaPackageName(FileDescriptor file) {
