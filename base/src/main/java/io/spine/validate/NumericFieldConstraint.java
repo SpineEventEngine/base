@@ -28,7 +28,11 @@ import com.google.common.collect.ImmutableList;
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
-public abstract class NumericFieldConstraint<V extends Number> implements Constraint<FieldValue<V>> {
+public abstract class NumericFieldConstraint<V extends Number, T> extends FieldValueConstraint<V, T> {
+
+    NumericFieldConstraint(T optionValue) {
+        super(optionValue);
+    }
 
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<V> value) {

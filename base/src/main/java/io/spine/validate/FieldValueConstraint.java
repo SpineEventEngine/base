@@ -20,33 +20,33 @@
 
 package io.spine.validate;
 
-import io.spine.option.OptionsProto;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An option that can be applied to {@code repeated} Protobuf fields to specify that values
- * represented by that {@code repeated} field should not contain duplicates.
+ * A rule that limits a set of values that a Protobuf field can have.
  *
  * @param <T>
- *         type of value that this option is applied to
+ *         a type of value of the field that this constraint is applied to
+ * @param <V>
+ *         a type of value that describes the constraints
  */
-final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
+public abstract class FieldValueConstraint<T, V> implements Constraint<FieldValue<T>> {
 
-    private Distinct() {
-        super(OptionsProto.distinct);
-    }
+    private final V optionValue;
 
     /**
-     * Returns a new instance of this option.
+     * Creates a new instance of this constraint.
      *
-     * @param <T>
-     *         type of fields that can be checked against this option
+     * @param optionValue
+     *         a value that describes the field constraints
      */
-    static <T> Distinct<T> create() {
-        return new Distinct<>();
+    FieldValueConstraint(V optionValue) {
+        checkNotNull(optionValue);
+        this.optionValue = optionValue;
     }
 
-    @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        return new DistinctConstraint<>(optionValue(fieldValue));
+    /** Returns a value that describes the constraint.*/
+    public V optionValue() {
+        return optionValue;
     }
 }

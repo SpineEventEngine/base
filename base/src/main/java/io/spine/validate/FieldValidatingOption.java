@@ -21,11 +21,14 @@
 package io.spine.validate;
 
 import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.proto.FieldOption;
 import io.spine.validate.rule.ValidationRuleOptions;
 
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 /**
  * An option that validates a field.
@@ -43,6 +46,35 @@ abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {
         super(optionExtension);
+    }
+
+    /**
+     * Returns an value of the option.
+     *
+     * @apiNote Should only be called by subclasses in circumstances that assume presence of
+     * the option. For all other cases refer to {@link this#valueFrom(FieldValue)}.
+     */
+    T optionValue(FieldValue<F> value) throws IllegalStateException {
+        Optional<T> option = valueFrom(value);
+        return option.orElseThrow(() -> {
+            FieldDescriptor descriptor = optionExtension().getDescriptor();
+
+            String fieldName = value.declaration()
+                                    .name()
+                                    .value();
+            String containingTypeName = descriptor.getContainingType().getName();
+            return illegalState(fieldName, containingTypeName);
+        });
+    }
+
+    private IllegalStateException illegalState(String fieldName, String containingTypeName) {
+        String optionName = optionExtension().getDescriptor()
+                                             .getName();
+        String message = format("Could not get value of option %s from field %s in message %s.",
+                                optionName,
+                                fieldName,
+                                containingTypeName);
+        return new IllegalStateException(message);
     }
 
     /**
