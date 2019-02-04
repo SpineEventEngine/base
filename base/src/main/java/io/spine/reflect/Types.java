@@ -88,9 +88,9 @@ public final class Types {
     }
 
     /**
-     * Obtains argument values of a generic type.
+     * Obtains parameter values of a parameterized type.
      *
-     * <p>If the arguments are generic types themselves, their parameter values are preserved.
+     * <p>If the parameters are generic types themselves, their arguments are preserved.
      *
      * <p>For non-parameterized types, the empty list is returned.
      *
