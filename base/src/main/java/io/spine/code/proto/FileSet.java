@@ -29,7 +29,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.logging.Logging;
-import io.spine.type.KnownTypes;
 
 import java.io.File;
 import java.util.Collection;
@@ -44,11 +43,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static io.spine.code.proto.Linker.link;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -172,32 +167,6 @@ public final class FileSet implements Logging {
      */
     public ImmutableSet<FileDescriptor> files() {
         return ImmutableSet.copyOf(files.values());
-    }
-
-    public FileSet knownFiles() {
-        KnownTypes knownTypes = KnownTypes.instance();
-        Map<FileName, FileDescriptor> knownFiles = knownTypes
-                .getAllTypes()
-                .types()
-                .stream()
-                .map(type -> type.descriptor().getFile())
-                .filter(descriptor -> this.contains(FileName.from(descriptor.getFile())))
-                .collect(toMap(FileName::from, file -> file));
-        FileSet knownFileSet = new FileSet(knownFiles);
-        if (knownFiles.size() != this.size()) {
-            _debug("Failed to find files in the known types set. Looked for {}{}",
-                   lineSeparator(),
-                   files.keySet());
-            _debug(knownTypes.toString());
-            _debug("Could not find files: {}",
-                   files.keySet()
-                        .stream()
-                        .filter(fileName -> !knownFileSet.contains(fileName))
-                        .map(FileName::toString)
-                        .collect(joining(", ")));
-            throw newIllegalStateException("Some files are not known.");
-        }
-        return knownFileSet;
     }
 
     /**

@@ -133,8 +133,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             }
             _debug("Generating from {}", descriptorSetFile.get());
 
-            FileSet mainFiles = FileSet.parse(descriptorSetFile.get())
-                                       .knownFiles();
+            FileSet mainFiles = FileSet.parse(descriptorSetFile.get());
             ImmutableSet<RejectionsFile> rejectionFiles = findAll(mainFiles);
             _debug("Processing the file descriptors for the rejections {}", rejectionFiles);
             for (RejectionsFile source : rejectionFiles) {

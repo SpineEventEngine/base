@@ -47,6 +47,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static io.spine.tools.compiler.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -67,6 +68,7 @@ public final class FileDescriptorSuperset implements Logging {
         MergedDescriptorSet merged = merge();
         FileSet fileSet = FileSet.ofFiles(merged.descriptors());
         TypeSet typeSet = TypeSet.messagesAndEnums(fileSet);
+        _debug("Adding new types to the KnownTypes:{}{}", lineSeparator(), typeSet.types());
         MoreKnownTypes.extendWith(typeSet);
     }
 

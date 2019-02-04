@@ -64,8 +64,7 @@ public final class ValidationRulesWriter implements Logging {
         checkNotNull(descriptorSetFile);
         checkNotNull(targetDir);
 
-        FileSet files = FileSet.parse(descriptorSetFile)
-                               .knownFiles();
+        FileSet files = FileSet.parse(descriptorSetFile);
         ValidationRulesWriter writer =
                 new ValidationRulesWriter(files, targetDir);
         writer.findRulesAndWriteProperties();
