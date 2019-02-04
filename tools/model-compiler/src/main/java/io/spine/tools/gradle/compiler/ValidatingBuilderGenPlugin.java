@@ -83,7 +83,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
         _debug("Preparing to generate validating builders.");
         Action<Task> mainScopeAction =
                 createAction(project,
-                             () -> mainProtoFiles(project),
+                             mainProtoFiles(project),
                              () -> getTargetGenValidatorsRootDir(project),
                              () -> getMainProtoSrcDir(project));
 
@@ -95,7 +95,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
         _debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
                 createAction(project,
-                             () -> testProtoFiles(project),
+                             testProtoFiles(project),
                              () -> getTargetTestGenValidatorsRootDir(project),
                              () -> getTestProtoSrcDir(project));
 

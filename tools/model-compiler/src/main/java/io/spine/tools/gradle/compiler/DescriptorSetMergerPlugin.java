@@ -60,18 +60,16 @@ public class DescriptorSetMergerPlugin extends ProtoPlugin {
 
     private void createMainTask(Project project) {
         String descriptorSetPath = getMainDescriptorSetPath(project);
-        FileSet fileSet = mainProtoFiles(project);
         newTask(MERGE_DESCRIPTOR_SET,
-                createMergingAction(descriptorSetPath, fileSet))
+                createMergingAction(descriptorSetPath, mainProtoFiles(project)))
                 .insertAfterTask(GENERATE_PROTO)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
         String descriptorSetPath = getTestDescriptorSetPath(project);
-        FileSet fileSet = testProtoFiles(project);
         newTask(MERGE_TEST_DESCRIPTOR_SET,
-                createMergingAction(descriptorSetPath, fileSet))
+                createMergingAction(descriptorSetPath, testProtoFiles(project)))
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .insertBeforeTask(GENERATE_TEST_VALIDATING_BUILDERS)
                 .applyNowTo(project);
@@ -87,9 +85,11 @@ public class DescriptorSetMergerPlugin extends ProtoPlugin {
         return () -> getTestDescriptorSetPath(project);
     }
 
-    private static Action<Task> createMergingAction(String descriptorSetPath, FileSet fileSet) {
+    private static Action<Task> createMergingAction(String descriptorSetPath,
+                                                    Supplier<FileSet> fileSet) {
         return task -> {
             List<FileDescriptorProto> files = fileSet
+                    .get()
                     .files()
                     .stream()
                     .map(FileDescriptor::toProto)

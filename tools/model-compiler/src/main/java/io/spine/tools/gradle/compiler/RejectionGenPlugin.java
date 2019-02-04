@@ -77,7 +77,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
 
         Action<Task> mainScopeAction =
                 createAction(project,
-                             () -> mainProtoFiles(project),
+                             mainProtoFiles(project),
                              () -> getTargetGenRejectionsRootDir(project),
                              () -> getMainProtoSrcDir(project));
 
@@ -89,7 +89,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
 
         Action<Task> testScopeAction =
                 createAction(project,
-                             () -> testProtoFiles(project),
+                             testProtoFiles(project),
                              () -> getTargetTestGenRejectionsRootDir(project),
                              () -> getTestProtoSrcDir(project));
 

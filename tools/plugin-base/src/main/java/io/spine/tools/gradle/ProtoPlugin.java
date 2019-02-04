@@ -44,7 +44,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
     /**
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the main scope.
      */
-    protected final FileSet mainProtoFiles(Project project) {
+    protected final Supplier<FileSet> mainProtoFiles(Project project) {
         Supplier<String> descriptorSetPath = mainDescriptorSetPath(project);
         Configuration configuration = configuration(project, RUNTIME);
         return protoFiles(descriptorSetPath, configuration);
@@ -53,7 +53,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
     /**
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the test scope.
      */
-    protected final FileSet testProtoFiles(Project project) {
+    protected final Supplier<FileSet> testProtoFiles(Project project) {
         Supplier<String> descriptorSetPath = testDescriptorSetPath(project);
         Configuration configuration = configuration(project, TEST_RUNTIME);
         return protoFiles(descriptorSetPath, configuration);
@@ -74,16 +74,18 @@ public abstract class ProtoPlugin extends SpinePlugin {
      *         the configuration to scan descriptor set files from
      * @return the collected files
      */
-    private static FileSet protoFiles(Supplier<String> descriptorSetPath,
-                                      Configuration configuration) {
-        File descriptorSet = new File(descriptorSetPath.get());
-        FileDescriptorSuperset superset = new FileDescriptorSuperset();
-        configuration.forEach(superset::addFromDependency);
-        if (descriptorSet.exists()) {
-            superset.addFromDependency(descriptorSet);
-        }
-        MoreKnownTypes.extendWith(superset.fileSet());
-        return superset.fileSet();
+    private static Supplier<FileSet> protoFiles(Supplier<String> descriptorSetPath,
+                                                Configuration configuration) {
+        return () -> {
+            File descriptorSet = new File(descriptorSetPath.get());
+            FileDescriptorSuperset superset = new FileDescriptorSuperset();
+            configuration.forEach(superset::addFromDependency);
+            if (descriptorSet.exists()) {
+                superset.addFromDependency(descriptorSet);
+            }
+            MoreKnownTypes.extendWith(superset.fileSet());
+            return superset.fileSet();
+        };
     }
 
     private static Configuration configuration(Project project, ConfigurationName name) {

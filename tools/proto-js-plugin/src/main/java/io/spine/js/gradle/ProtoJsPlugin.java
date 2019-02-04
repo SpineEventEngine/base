@@ -125,20 +125,20 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
     private void generateForMain(Project project) {
         Directory generatedRoot = Extension.getMainGenProto(project);
-        FileSet files = mainProtoFiles(project);
+        Supplier<FileSet> files = mainProtoFiles(project);
         List<ExternalModule> modules = Extension.modules(project);
         generateCode(generatedRoot, files, modules);
     }
 
     private void generateForTest(Project project) {
         Directory generatedRoot = Extension.getTestGenProtoDir(project);
-        FileSet files = testProtoFiles(project);
+        Supplier<FileSet> files = testProtoFiles(project);
         List<ExternalModule> modules = Extension.modules(project);
         generateCode(generatedRoot, files, modules);
     }
 
     private static void generateCode(Directory generatedRoot,
-                                     FileSet files,
+                                     Supplier<FileSet> files,
                                      List<ExternalModule> modules) {
         List<GenerationTask> tasks = ImmutableList.of(
                 GenerateKnownTypeParsers.createFor(generatedRoot),
@@ -147,7 +147,7 @@ public class ProtoJsPlugin extends ProtoPlugin {
                 new ResolveImports(generatedRoot, modules)
         );
         for (GenerationTask task : tasks) {
-            task.performFor(files);
+            task.performFor(files.get());
         }
     }
 
