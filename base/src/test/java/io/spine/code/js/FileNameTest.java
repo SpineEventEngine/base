@@ -23,32 +23,35 @@ package io.spine.code.js;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FileName should")
 class FileNameTest {
 
-    private FileDescriptor file;
-
-    @BeforeEach
-    void setUp() {
-        file = Any.getDescriptor()
-                  .getFile();
-    }
+    private final FileDescriptor file = Any.getDescriptor()
+                                           .getFile();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(FileName.class);
+    }
+
+    @Test
+    @DisplayName("not accept names without extension")
+    void notAcceptNameWithoutExtension() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileName.of("no-extension")
+        );
     }
 
     @Test
@@ -63,10 +66,9 @@ class FileNameTest {
     @DisplayName("return path elements")
     void returnPathElements() {
         FileName fileName = FileName.from(file);
-        String[] pathElements = fileName.pathElements();
-        List<String> pathElementList = Arrays.asList(pathElements);
-        assertThat(pathElementList).contains("google");
-        assertThat(pathElementList).contains("protobuf");
-        assertThat(pathElementList).contains("any_pb.js");
+        List<String> pathElements = fileName.pathElements();
+        assertThat(pathElements).contains("google");
+        assertThat(pathElements).contains("protobuf");
+        assertThat(pathElements).contains("any_pb.js");
     }
 }

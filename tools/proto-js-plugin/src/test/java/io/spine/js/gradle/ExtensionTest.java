@@ -22,6 +22,7 @@ package io.spine.js.gradle;
 
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.js.generate.resolve.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -34,7 +35,11 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
+import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(TempDirectory.class)
@@ -129,6 +134,24 @@ class ExtensionTest {
         File file = Extension.getTestDescriptorSet(project);
         File expected = new File(customPath);
         assertEquals(expected, file);
+    }
+
+    @Test
+    @DisplayName("include predefined Spine modules")
+    void includePredefinedModules() {
+        List<ExternalModule> modules = Extension.modules(project);
+        assertThat(modules).containsAllIn(Extension.predefinedModules());
+    }
+
+    @Test
+    @DisplayName("add custom modules to resolve")
+    void setModulesToResolve() {
+        String moduleName = "foo-bar";
+        Map<String, List<String>> modulesExt = pluginExtension().modules;
+        modulesExt.put(moduleName, emptyList());
+        List<ExternalModule> modules = Extension.modules(project);
+        assertThat(modules).containsAllIn(Extension.predefinedModules());
+        assertThat(modules).contains(new ExternalModule(moduleName, emptyList()));
     }
 
     private Extension pluginExtension() {

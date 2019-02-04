@@ -21,157 +21,169 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.logging.Logging;
-import org.slf4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A task to resolve imports in generated files.
  *
  * <p>Supports only {@code CommonJs} imports.
  *
- * <p>The task should be performed last.
+ * <p>The task should be performed last among {@linkplain GenerationTask generation tasks}
+ * to ensure that imports won't be modified after execution of this task.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
-public final class ResolveImports extends GenerationTask {
+public final class ResolveImports extends GenerationTask implements Logging {
 
-    /** The path to parent directory. */
-    private static final String PARENT_DIR = "../";
-    private static final String SRC_RELATIVE_TO_MAIN_PROTO = PARENT_DIR;
     /**
-     * The relative path from the Protobuf root directory to the sources directory.
+     * The relative path from the test sources directory to the main sources directory.
      *
-     * <p>The path is specific to Spine Web.
+     * <p>Depends on the structure of Spine Web project.
      */
-    private static final String MODULE_RELATIVE_TO_PROTO = Strings.repeat(PARENT_DIR, 2);
-    /** A part of the import path to the main sources directory. */
-    private static final String PROJECT_SRC_DIR = "main";
+    private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
+    private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
+    private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
+            Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
 
-    public ResolveImports(Directory generatedRoot) {
+    private final Set<ExternalModule> modules;
+
+    public ResolveImports(Directory generatedRoot, Collection<ExternalModule> modules) {
         super(generatedRoot);
+        this.modules = ImmutableSet.copyOf(modules);
     }
 
     @Override
     protected void generateFor(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
             FileName fileName = FileName.from(file);
-            resolveInFile(fileName);
+            _debug("Resolving imports in file {}.", fileName);
+            Path filePath = generatedRoot().resolve(fileName);
+            resolveInFile(filePath);
         }
     }
 
-    private void resolveInFile(FileName fileName) {
-        List<String> lines = fileLines(fileName);
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            boolean isImport = ImportSnippet.hasImport(line);
-            if (isImport) {
-                ImportSnippet sourceImport = new ImportSnippet(line, fileName);
-                ImportSnippet updatedImport = resolveImport(sourceImport, generatedRoot());
-                lines.set(i, updatedImport.text());
+    @VisibleForTesting
+    void resolveInFile(Path filePath) {
+        JsFile file = new JsFile(filePath);
+        relativizeStandardProtoImports(file);
+        resolveRelativeImports(file);
+    }
+
+    private void resolveRelativeImports(JsFile file) {
+        file.processImports(new IsUnresolvedRelativeImport(), this::resolveRelativeImports);
+    }
+
+    /**
+     * Replaces all imports from {@code google-protobuf} module by relative imports.
+     * Then, these imports are resolved among external modules.
+     *
+     * <p>Such a replacement is required since we want to use own versions
+     * of standard types, which are additionally processed by the Protobuf JS plugin.
+     *
+     * <p>The custom versions of standard Protobuf types are provided by
+     * the {@linkplain ExternalModule#spineWeb() Spine Web}.
+     *
+     * @param file
+     *         the file to process imports in
+     */
+    private void relativizeStandardProtoImports(JsFile file) {
+        file.processImports(new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
+    }
+
+    private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
+        String fileReference = original.path()
+                                       .value();
+        String relativePathToRoot = original.sourceDirectory()
+                                            .relativize(generatedRoot().getPath())
+                                            .toString();
+        String replacement = relativePathToRoot.isEmpty()
+                             ? FileReference.currentDirectory()
+                             : relativePathToRoot.replace('\\', '/') + FileReference.separator();
+        String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
+                                                                 .replaceFirst(replacement);
+        return original.replacePath(relativeReference);
+    }
+
+    /**
+     * Attempts to resolve a relative import.
+     */
+    private ImportStatement resolveRelativeImports(ImportStatement resolvable) {
+        Optional<ImportStatement> mainSourceImport = resolveInMainSources(resolvable);
+        if (mainSourceImport.isPresent()) {
+            return mainSourceImport.get();
+        }
+        FileReference fileReference = resolvable.path();
+        for (ExternalModule module : modules) {
+            if (module.provides(fileReference)) {
+                FileReference fileInModule = module.fileInModule(fileReference);
+                return resolvable.replacePath(fileInModule.value());
             }
         }
-        rewriteFile(fileName, lines);
+        return resolvable;
     }
 
     /**
-     * Attempts to resolve an import in the file.
-     *
-     * <p>In particular, replaces library-like imports by relative paths
-     * if the imported file {@linkplain #belongsToModule(String, Directory) belongs}
-     * to the currently processed module.
+     * Attempts to resolve a relative import among main sources.
      */
-    @VisibleForTesting
-    static ImportSnippet resolveImport(ImportSnippet resolvable, Directory generatedRoot) {
-        boolean isSpine = resolvable.isSpine();
-        if (!isSpine) {
-            return resolvable;
-        }
-        String filePath = resolvable.importedFilePath();
-        if (!belongsToModule(filePath, generatedRoot)) {
-            return resolvable;
-        }
-        String pathPrefix = fileRelativeToSources(generatedRoot, resolvable.fileName());
-        ImportSnippet resolved = resolvable.replacePath(pathPrefix + filePath);
-        return resolved;
+    private static Optional<ImportStatement> resolveInMainSources(ImportStatement resolvable) {
+        String fileReference = resolvable.path()
+                                         .value();
+        String delimiter = FileReference.currentDirectory();
+        int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
+        String updatedReference = fileReference.substring(0, insertionIndex)
+                + TEST_PROTO_RELATIVE_TO_MAIN
+                + fileReference.substring(insertionIndex);
+        ImportStatement updatedImport = resolvable.replacePath(updatedReference);
+        return updatedImport.importedFileExists()
+               ? Optional.of(updatedImport)
+               : Optional.empty();
     }
 
     /**
-     * Tells whether a file with the specified path belongs to the currently processed module.
-     *
-     * <p>The method assumes the project structure similar to Spine Web.
+     * A predicate to match an import of a file that cannot be found on a file system.
      */
-    @VisibleForTesting
-    static boolean belongsToModule(String filePath, Directory generatedRoot) {
-        Path absolutePath = sourcesPath(generatedRoot).resolve(filePath);
-        boolean presentInModule = absolutePath.toFile()
-                                              .exists();
-        log().debug("Checking if the file {} belongs to the module, result: {}",
-                    absolutePath, presentInModule);
-        return presentInModule;
-    }
+    private static final class IsUnresolvedRelativeImport implements Predicate<ImportStatement> {
 
-    @VisibleForTesting
-    static Path sourcesPath(Directory generatedRoot) {
-        Path modulePath = generatedRoot.getPath()
-                                       .resolve(MODULE_RELATIVE_TO_PROTO);
-        Path result = modulePath.resolve(PROJECT_SRC_DIR)
-                                .normalize();
-        return result;
+        @CanIgnoreReturnValue
+        @Override
+        public boolean apply(@Nullable ImportStatement statement) {
+            checkNotNull(statement);
+            FileReference fileReference = statement.path();
+            return fileReference.isRelative() && !statement.importedFileExists();
+        }
     }
 
     /**
-     * Obtains the relative path to the sources directory from the path of the file.
-     *
-     * <p>The path should be relative and contain slashes as separators since it
-     * will be used in JS imports.
+     * A predicate to match an import of a standard Protobuf type
+     * ({@code google-protobuf/google/protobuf/..}).
      */
-    @VisibleForTesting
-    static String fileRelativeToSources(Directory generatedRoot, FileName fileName) {
-        Path protoRootPath = generatedRoot.getPath();
-        boolean isMainSourceSet = protoRootPath.toString()
-                                               .contains(PROJECT_SRC_DIR);
-        if (isMainSourceSet) {
-            return SRC_RELATIVE_TO_MAIN_PROTO + fileName.pathToRoot();
-        }
-        String pathToParentDir = MODULE_RELATIVE_TO_PROTO + fileName.pathToRoot();
-        return pathToParentDir + PROJECT_SRC_DIR + ImportSnippet.pathSeparator();
-    }
+    private static final class IsGoogleProtobufImport implements Predicate<ImportStatement> {
 
-    private void rewriteFile(FileName fileName, Iterable<String> lines) {
-        Path filePath = generatedRoot().resolve(fileName)
-                                       .toAbsolutePath();
-        try {
-            Files.write(filePath, lines, Charsets.UTF_8, TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
+        private static final String STANDARD_PREFIX = GOOGLE_PROTOBUF_MODULE + "/google/protobuf/";
 
-    private List<String> fileLines(FileName fileName) {
-        Path path = generatedRoot().resolve(fileName);
-        try {
-            List<String> lines = Files.readAllLines(path);
-            return lines;
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
+        @CanIgnoreReturnValue
+        @Override
+        public boolean apply(@Nullable ImportStatement statement) {
+            checkNotNull(statement);
+            FileReference fileReference = statement.path();
+            return fileReference.value()
+                                .startsWith(STANDARD_PREFIX);
         }
-    }
-
-    private static Logger log() {
-        return Logging.get(ResolveImports.class);
     }
 }

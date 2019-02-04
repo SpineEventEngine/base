@@ -20,14 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
-import com.google.protobuf.Message;
-import io.spine.option.DigitsOption;
-import io.spine.option.MaxOption;
-import io.spine.option.MinOption;
-import io.spine.option.OptionsProto;
-
-import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 
@@ -37,14 +31,7 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * @param <V>
  *         the type of the field value
  */
-abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends FieldValidator<V> {
-
-    private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
-
-    private final MinOption min;
-    private final MaxOption max;
-
-    private final DigitsOption digitsOption;
+abstract class NumberFieldValidator<V extends Number> extends FieldValidator<V> {
 
     /**
      * Creates a new validator instance.
@@ -52,11 +39,10 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      * @param fieldValue
      *         the value to validate
      */
-    NumberFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
-        this.min = fieldValue.valueOf(OptionsProto.min);
-        this.max = fieldValue.valueOf(OptionsProto.max);
-        this.digitsOption = fieldValue.valueOf(OptionsProto.digits);
+    NumberFieldValidator(FieldValue<V> fieldValue) {
+        super(fieldValue,
+              false,
+              ImmutableSet.of(Max.create(), Min.create(), Digits.create()));
     }
 
     /** Converts a string representation to a number. */
@@ -75,14 +61,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         return result;
     }
 
-    @Override
-    protected void validateOwnRules() {
-        for (V value : getValues()) {
-            validateRangeOptions(value);
-            validateDigitsOption(value);
-        }
-    }
-
     /**
      * Returns {@code false}.
      *
@@ -93,97 +71,4 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         return false;
     }
 
-    private void validateRangeOptions(V value) {
-        if (notFitToMin(value)) {
-            addViolation(minOrMax(value,
-                                  min,
-                                  min.getMsgFormat(),
-                                  min.getExclusive(),
-                                  min.getValue()));
-        }
-        if (notFitToMax(value)) {
-            addViolation(minOrMax(value,
-                                  max,
-                                  max.getMsgFormat(),
-                                  max.getExclusive(),
-                                  max.getValue()));
-        }
-    }
-
-    private boolean notFitToMin(V value) {
-        String minAsString = min.getValue();
-        if (minAsString.isEmpty()) {
-            return false;
-        }
-        int comparison = compareToValueOf(value, minAsString);
-        return min.getExclusive()
-               ? comparison <= 0
-               : comparison < 0;
-    }
-
-    private boolean notFitToMax(V value) {
-        String maxAsString = max.getValue();
-        if (maxAsString.isEmpty()) {
-            return false;
-        }
-        int comparison = compareToValueOf(value, maxAsString);
-        return max.getExclusive()
-               ? comparison >= 0
-               : comparison > 0;
-    }
-
-    private int compareToValueOf(V value, String number) {
-        V bound = toNumber(number);
-        int comparison = value.compareTo(bound);
-        return comparison;
-    }
-
-    private void validateDigitsOption(V value) {
-        int intDigitsMax = digitsOption.getIntegerMax();
-        int fractionDigitsMax = digitsOption.getFractionMax();
-        if (intDigitsMax < 1 || fractionDigitsMax < 1) {
-            return;
-        }
-        V abs = getAbs(value);
-        String[] parts = PATTERN_DOT.split(String.valueOf(abs));
-        int intDigitsCount = parts[0].length();
-        int fractionDigitsCount = parts[1].length();
-        boolean isInvalid = (intDigitsCount > intDigitsMax) ||
-                (fractionDigitsCount > fractionDigitsMax);
-        if (isInvalid) {
-            addViolation(digits(value));
-        }
-    }
-
-    private ConstraintViolation minOrMax(V value,
-                                         Message option,
-                                         String customMsg,
-                                         boolean exclusive,
-                                         String constraint) {
-        String msg = getErrorMsgFormat(option, customMsg);
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(exclusive ? "" : "or equal to")
-                .addParam(constraint)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value))
-                .build();
-        return violation;
-    }
-
-    private ConstraintViolation digits(V value) {
-        String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
-        String intMax = String.valueOf(digitsOption.getIntegerMax());
-        String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(intMax)
-                .addParam(fractionMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value))
-                .build();
-        return violation;
-    }
 }

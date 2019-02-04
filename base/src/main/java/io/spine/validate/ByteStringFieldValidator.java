@@ -33,25 +33,14 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      * @param fieldValue
      *         the value to validate
      */
-    ByteStringFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, true);
+    ByteStringFieldValidator(FieldValue<ByteString> fieldValue) {
+        super(fieldValue, false);
     }
 
     @Override
     protected boolean isNotSet(ByteString value) {
         boolean result = value.isEmpty();
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action since no special options are declared for the {@link ByteString}
-     * validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NoOp
     }
 
     @Override

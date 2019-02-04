@@ -62,15 +62,14 @@ class BooleanFieldValidatorTest {
                 .getFields()
                 .get(0);
         FieldContext context = FieldContext.create(descriptor);
-        FieldValue fieldValue = FieldValue.of(true, context);
+        FieldValue<Boolean> fieldValue = FieldValue.of(true, context);
         BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
 
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
-        Logging.redirect((SubstituteLogger) validator.log(), loggedMessages);
+        Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
         List<ConstraintViolation> validate = validator.validate();
 
         assertTrue(validate.isEmpty());
-        assertFalse(loggedMessages.isEmpty());
         assertEquals(1, loggedMessages.size());
         assertEquals(WARN, loggedMessages.peek().getLevel());
     }

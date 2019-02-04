@@ -21,30 +21,23 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.spine.option.IfInvalidOption;
-import io.spine.option.OptionsProto;
-import io.spine.option.Time;
-import io.spine.option.TimeOption;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
+import java.util.Set;
 
-import static io.spine.base.Time.getCurrentTime;
-import static io.spine.option.Time.FUTURE;
-import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Validates fields of type {@link Message}.
+ * Validates fields of type {@link Message}, as opposed to primitive
+ * Protobuf fields.
  */
-class MessageFieldValidator extends FieldValidator<Message> {
-
-    private final TimeOption timeConstraint;
+class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
     /**
      * Creates a new validator instance.
@@ -55,23 +48,26 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
-    MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, true);
-        this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
+    MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired, additionalOptions());
     }
 
     @Override
-    protected void validateOwnRules() {
+    protected ImmutableList<ConstraintViolation> validate() {
         boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();
             BuiltInValidation.ANY.validateIfApplies(this);
         }
-        BuiltInValidation.TIMESTAMP.validateIfApplies(this);
+        return super.validate();
     }
 
     private boolean shouldValidateFields() {
-        return getValidateOption() && !fieldValueNotSet();
+        boolean fieldValueSet = !fieldValueNotSet();
+        Valid<V> validOption = new Valid<>();
+        Boolean valid = validOption.valueFrom(this.fieldValue())
+                                   .orElse(false);
+        return valid && fieldValueSet;
     }
 
     @Override
@@ -82,7 +78,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
     private boolean isOfType(Class<? extends Message> type) {
-        ImmutableList<Message> values = getValues();
+        ImmutableList<V> values = getValues();
         Message value = values.isEmpty()
                         ? null
                         : values.get(0);
@@ -112,56 +108,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
         }
     }
 
-    private void validateTimestamps() {
-        Time when = timeConstraint.getIn();
-        if (when == TIME_UNDEFINED) {
-            return;
-        }
-        Timestamp now = getCurrentTime();
-        for (Message value : getValues()) {
-            Timestamp time = (Timestamp) value;
-            if (isTimeInvalid(time, when, now)) {
-                addViolation(newTimeViolation(time));
-                return; // return because one error message is enough for the "time" option
-            }
-        }
-    }
-
-    /**
-     * Checks the time.
-     *
-     * @param timeToCheck
-     *         a timestamp to check
-     * @param whenExpected
-     *         the time when the checked timestamp should be
-     * @param now
-     *         the current moment
-     * @return {@code true} if the time is valid according to {@code whenExpected} parameter,
-     *         {@code false} otherwise
-     */
-    private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
-        boolean isValid = (whenExpected == FUTURE)
-                          ? isLaterThan(timeToCheck, /*than*/ now)
-                          : isLaterThan(now, /*than*/ timeToCheck);
-        boolean isInvalid = !isValid;
-        return isInvalid;
-    }
-
-    private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
-        String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
-        String when = timeConstraint.getIn()
-                                    .toString()
-                                    .toLowerCase();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(when)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(pack(fieldValue))
-                .build();
-        return violation;
-    }
-
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
         IfInvalidOption ifInvalid = ifInvalid();
@@ -176,27 +122,22 @@ class MessageFieldValidator extends FieldValidator<Message> {
         return violation;
     }
 
+    @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
+    static <V extends Message> Set<FieldValidatingOption<?, V>> additionalOptions() {
+        return ImmutableSet.of(((FieldValidatingOption<?, V>) When.create()));
+    }
+
     /**
      * The enumeration of pre-defined custom validations for a message field.
      */
     private enum BuiltInValidation {
 
         /**
-         * Custom validation strategy for a {@link Timestamp} field.
-         */
-        TIMESTAMP(Timestamp.class) {
-            @Override
-            void doValidate(MessageFieldValidator validator) {
-                validator.validateTimestamps();
-            }
-        },
-
-        /**
          * Custom validation strategy for an {@link Any} field.
          */
         ANY(Any.class) {
             @Override
-            void doValidate(MessageFieldValidator validator) {
+            void doValidate(MessageFieldValidator<?> validator) {
                 validator.validateAny();
             }
         };
@@ -211,12 +152,12 @@ class MessageFieldValidator extends FieldValidator<Message> {
          * Validates the field with the given {@code validator} if the field is of
          * the {@code targetType}.
          */
-        private void validateIfApplies(MessageFieldValidator validator) {
+        private void validateIfApplies(MessageFieldValidator<?> validator) {
             if (validator.isOfType(targetType)) {
                 doValidate(validator);
             }
         }
 
-        abstract void doValidate(MessageFieldValidator validator);
+        abstract void doValidate(MessageFieldValidator<?> validator);
     }
 }

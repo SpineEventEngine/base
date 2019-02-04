@@ -99,9 +99,9 @@ class ExtensionTest {
     @Test
     @DisplayName("return default mainDescriptorSetPath if not set")
     void return_default_mainDescriptorSetPath_if_not_set() {
-        String dir = Extension.getMainDescriptorSetPath(project);
+        File file = Extension.getMainDescriptorSet(project);
 
-        assertNotEmptyAndIsInProjectDir(dir);
+        assertNotEmptyAndIsInProjectDir(file.toString());
     }
 
     @Test
@@ -109,17 +109,17 @@ class ExtensionTest {
     void return_mainDescriptorSetPath_if_set() {
         spineProtobuf().mainDescriptorSetPath = newUuid();
 
-        String dir = Extension.getMainDescriptorSetPath(project);
+        File file = Extension.getMainDescriptorSet(project);
 
-        assertEquals(spineProtobuf().mainDescriptorSetPath, dir);
+        assertEquals(spineProtobuf().mainDescriptorSetPath, file.toString());
     }
 
     @Test
     @DisplayName("return default testDescriptorSetPath if not set")
     void return_default_testDescriptorSetPath_if_not_set() {
-        String dir = Extension.getTestDescriptorSetPath(project);
+        File file = Extension.getTestDescriptorSet(project);
 
-        assertNotEmptyAndIsInProjectDir(dir);
+        assertNotEmptyAndIsInProjectDir(file.toString());
     }
 
     @Test
@@ -127,9 +127,9 @@ class ExtensionTest {
     void return_testDescriptorSetPath_if_set() {
         spineProtobuf().testDescriptorSetPath = newUuid();
 
-        String dir = Extension.getTestDescriptorSetPath(project);
+        File file = Extension.getTestDescriptorSet(project);
 
-        assertEquals(spineProtobuf().testDescriptorSetPath, dir);
+        assertEquals(spineProtobuf().testDescriptorSetPath, file.toString());
     }
 
     @Test

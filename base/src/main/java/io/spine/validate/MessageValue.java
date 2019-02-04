@@ -80,12 +80,12 @@ final class MessageValue {
      *
      * @return values of message fields excluding {@code Oneof} fields
      */
-    ImmutableList<FieldValue> fieldsExceptOneofs() {
-        ImmutableList<FieldValue> values = descriptor.getFields()
-                                                     .stream()
-                                                     .filter(MessageValue::isNotOneof)
-                                                     .map(this::valueOf)
-                                                     .collect(toImmutableList());
+    ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
+        ImmutableList<FieldValue<?>> values = descriptor.getFields()
+                                                        .stream()
+                                                        .filter(MessageValue::isNotOneof)
+                                                        .map(this::valueOf)
+                                                        .collect(toImmutableList());
         return values;
     }
 
@@ -97,7 +97,7 @@ final class MessageValue {
      * @return a value of the field
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
-    Optional<FieldValue> valueOf(String fieldName) {
+    Optional<FieldValue<?>> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
         return valueOfNullable(field);
     }
@@ -112,7 +112,7 @@ final class MessageValue {
      * @throws IllegalArgumentException
      *         if the if the message doesn't declares this oneof
      */
-    Optional<FieldValue> valueOf(OneofDescriptor oneof) {
+    Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
         checkArgument(oneofDescriptors().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
@@ -135,17 +135,17 @@ final class MessageValue {
         return context;
     }
 
-    private Optional<FieldValue> valueOfNullable(@Nullable FieldDescriptor field) {
+    private Optional<FieldValue<?>> valueOfNullable(@Nullable FieldDescriptor field) {
         if (field == null) {
             return Optional.empty();
         }
-        FieldValue fieldValue = valueOf(field);
+        FieldValue<?> fieldValue = valueOf(field);
         return Optional.of(fieldValue);
     }
 
-    private FieldValue valueOf(FieldDescriptor field) {
+    private FieldValue<?> valueOf(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
-        FieldValue value = FieldValue.of(message.getField(field), fieldContext);
+        FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
         return value;
     }
 
