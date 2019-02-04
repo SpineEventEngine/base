@@ -35,13 +35,10 @@ import static java.lang.Double.parseDouble;
  * @param <V>
  *         value that the field validated by this constraint has
  */
-final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
-
-    private final MaxOption optionValue;
+final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V, MaxOption> {
 
     MaxConstraint(MaxOption optionValue) {
-        super();
-        this.optionValue = optionValue;
+        super(optionValue);
     }
 
     @Override
@@ -82,11 +79,11 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     private double max() {
-        String stringValue = optionValue.getValue();
+        String stringValue = optionValue().getValue();
         return parseDouble(stringValue);
     }
 
     private boolean isExclusive() {
-        return optionValue.getExclusive();
+        return optionValue().getExclusive();
     }
 }

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import com.google.protobuf.Internal;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
@@ -106,12 +107,8 @@ public final class FieldValue<T> {
      * Casting to {@code T} is safe, because the {@code FieldValue} is always created by the
      * {@linkplain io.spine.validate.ValidatingBuilder validating builder} implementors, and the
      * raw value always corresponds to one of the Protobuf field types.
-     *
-     * @param field
-     * @param context
-     * @param value
-     * @param <T>
-     * @return
+
+     * @return a properly typed {@code FieldValue} instance.
      */
     @SuppressWarnings({
             "unchecked", // Raw value is always of a correct type, see javadoc.
@@ -233,7 +230,7 @@ public final class FieldValue<T> {
 
     private boolean isSingleValueDefault() {
         if (this.singleValue() instanceof EnumValueDescriptor) {
-            return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
+            return ((Internal.EnumLite) this.singleValue()).getNumber() == 0;
         }
         Message thisAsMessage = TypeConverter.toMessage(singleValue());
         return Validate.isDefault(thisAsMessage);
