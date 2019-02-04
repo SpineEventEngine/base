@@ -109,11 +109,11 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                generateValidator, generateTestValidator);
     }
 
-    private Action<Task> createAction(Project project,
-                                      Supplier<FileSet> files,
-                                      Supplier<String> targetDirPath,
-                                      Supplier<String> protoSrcDirPath) {
-        return new GenAction(this, project, files, targetDirPath, protoSrcDirPath);
+    private static Action<Task> createAction(Project project,
+                                             Supplier<FileSet> files,
+                                             Supplier<String> targetDirPath,
+                                             Supplier<String> protoSrcDirPath) {
+        return new GenAction(project, files, targetDirPath, protoSrcDirPath);
     }
 
     @Override
@@ -135,12 +135,11 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
      */
     private static class GenAction extends CodeGenerationAction {
 
-        private GenAction(ValidatingBuilderGenPlugin plugin,
-                          Project project,
+        private GenAction(Project project,
                           Supplier<FileSet> files,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            super(plugin, project, files, targetDirPath, protoSrcDirPath);
+            super(project, files, targetDirPath, protoSrcDirPath);
         }
 
         @Override

@@ -20,6 +20,7 @@
 
 package io.spine.js.generate;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileDescriptors;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -67,8 +67,7 @@ class GenerationTaskTest {
     @Test
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
-        File nonExistentDescriptors = new File(MISSING_PATH);
-        FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
+        FileSet emptyFileSet = FileSet.ofFiles(ImmutableSet.of());
         TestGenerationTask task = new TestGenerationTask(mainProtoSources());
         assertNotPerformed(task, emptyFileSet);
     }

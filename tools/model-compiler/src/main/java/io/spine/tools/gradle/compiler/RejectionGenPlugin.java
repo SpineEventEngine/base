@@ -103,12 +103,12 @@ public class RejectionGenPlugin extends ProtoPlugin {
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
-    private Action<Task> createAction(Project project,
-                                      Supplier<FileSet> files,
-                                      Supplier<String> targetDirPath,
-                                      Supplier<String> protoSrcDir) {
+    private static Action<Task> createAction(Project project,
+                                             Supplier<FileSet> files,
+                                             Supplier<String> targetDirPath,
+                                             Supplier<String> protoSrcDir) {
 
-        return new GenAction(this, project, files, targetDirPath, protoSrcDir);
+        return new GenAction(project, files, targetDirPath, protoSrcDir);
     }
 
     @Override
@@ -126,12 +126,11 @@ public class RejectionGenPlugin extends ProtoPlugin {
      */
     private static class GenAction extends CodeGenerationAction {
 
-        private GenAction(RejectionGenPlugin plugin,
-                          Project project,
+        private GenAction(Project project,
                           Supplier<FileSet> files,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            super(plugin, project, files, targetDirPath, protoSrcDirPath);
+            super(project, files, targetDirPath, protoSrcDirPath);
         }
 
         @Override

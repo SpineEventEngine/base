@@ -39,11 +39,6 @@ import static io.spine.tools.gradle.SpinePlugin.resolve;
 public abstract class CodeGenerationAction implements Action<Task>, Logging {
 
     /**
-     * The plugin which executes this task.
-     */
-    private final SpinePlugin plugin;
-
-    /**
      * Source Gradle project.
      */
     private final Project project;
@@ -78,8 +73,6 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     /**
      * Creates a new instance.
      *
-     * @param plugin
-     *         the plugin which runs the action
      * @param project
      *         the project for which we generated the code
      * @param files
@@ -88,14 +81,12 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      * @param targetDirPath
      *         the supplier of the path of the directory for the generated sources
      * @param protoSrcDirPath
-     *         the supplier of the root directory with proto sources
+     *         the supplier of the path of the directory with {@code .proto} files
      */
-    protected CodeGenerationAction(SpinePlugin plugin,
-                                   Project project,
+    protected CodeGenerationAction(Project project,
                                    Supplier<FileSet> files,
                                    Supplier<String> targetDirPath,
                                    Supplier<String> protoSrcDirPath) {
-        this.plugin = plugin;
         this.project = project;
         this.protoFiles = files;
         this.targetDirPath = targetDirPath;
@@ -116,13 +107,6 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      * Obtains indentation configuration from the project.
      */
     protected abstract Indent getIndent(Project project);
-
-    /**
-     * Obtains the plugin which runs the code generation.
-     */
-    protected final SpinePlugin plugin() {
-        return plugin;
-    }
 
     /**
      * Obtains the project for which the code is generated.
