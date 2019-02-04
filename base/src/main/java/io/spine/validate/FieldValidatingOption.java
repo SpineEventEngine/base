@@ -61,7 +61,7 @@ abstract class FieldValidatingOption<T, F> extends FieldOption<T, F>
     public Optional<T> valueFrom(FieldValue<F> field) {
         FieldContext context = field.context();
         Optional<T> validationForOption = ValidationRuleOptions.getOptionValue(context,
-                                                                               optionExtension());
+                                                                               extension());
         return validationForOption.isPresent()
                ? validationForOption
                : super.valueFrom(field);

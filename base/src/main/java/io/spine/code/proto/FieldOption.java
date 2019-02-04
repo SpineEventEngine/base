@@ -27,6 +27,8 @@ import io.spine.validate.FieldValue;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
@@ -37,15 +39,22 @@ import java.util.Optional;
  */
 public class FieldOption<V, T> implements Option<V, FieldValue<T>> {
 
-    private final GeneratedExtension<FieldOptions, V> optionExtension;
+    private final GeneratedExtension<FieldOptions, V> extension;
 
-    /** Specifies the extension that corresponds to this option. */
-    protected FieldOption(GeneratedExtension<FieldOptions, V> optionExtension) {
-        this.optionExtension = optionExtension;
+    /**
+     * Creates an instance with the
+     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf extension</a>
+     * that corresponds to this option.
+     */
+    protected FieldOption(GeneratedExtension<FieldOptions, V> extension) {
+        this.extension = checkNotNull(extension);
     }
 
-    protected GeneratedExtension<FieldOptions, V> optionExtension() {
-        return optionExtension;
+    /**
+     * Obtains the Protobuf extension associated with the option.
+     */
+    protected final GeneratedExtension<FieldOptions, V> extension() {
+        return extension;
     }
 
     @Override
@@ -53,8 +62,8 @@ public class FieldOption<V, T> implements Option<V, FieldValue<T>> {
         FieldDescriptor descriptor = field.context()
                                           .getTarget();
         FieldOptions options = descriptor.getOptions();
-        boolean explicitlySet = options.hasExtension(optionExtension);
-        V value = options.getExtension(optionExtension);
+        boolean explicitlySet = options.hasExtension(extension);
+        V value = options.getExtension(extension);
         return explicitlySet
                ? Optional.of(value)
                : Optional.empty();

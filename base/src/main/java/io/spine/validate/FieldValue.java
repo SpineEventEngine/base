@@ -79,10 +79,8 @@ public final class FieldValue<T> {
      *         the context of the field
      * @return a new instance
      */
-    @SuppressWarnings({
-            "ConstantConditions",
-            "unchecked" // Object to T is always safe, since validating builders only receive `T`s.
-    })
+    // Object to T is always safe, since validating builders only receive `T`s.
+    @SuppressWarnings("unchecked")
     static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
