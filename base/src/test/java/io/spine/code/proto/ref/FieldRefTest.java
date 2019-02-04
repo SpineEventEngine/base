@@ -22,6 +22,7 @@ package io.spine.code.proto.ref;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.Truth8;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors;
@@ -57,6 +58,7 @@ class FieldRefTest {
         references = FieldRef.allFrom(personNameField);
     }
 
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private FieldRef ref(int index) {
         return references.get(index);
     }
@@ -66,23 +68,9 @@ class FieldRefTest {
         new NullPointerTester().testAllPublicStaticMethods(FieldRef.class);
     }
 
-    @Test
-    @DisplayName("tell if a string represents all types")
-    void isWildcardUtility() {
-        assertThat(FieldRef.isWildcard("*"))
-                .isTrue();
-    }
-
     @Nested
     @DisplayName("recognize")
     class Recognize {
-
-        @Test
-        @DisplayName("wildcard reference")
-        void wildcardRef() {
-            assertPositive(new FieldRef("*.user_id")::isWildcard);
-            assertNegative(new FieldRef("UserCreated.user_id")::isWildcard);
-        }
 
         @Test
         @DisplayName("internal reference")
@@ -99,35 +87,15 @@ class FieldRefTest {
         }
 
         void assertPositive(Supplier<Boolean> quality) {
-            assertThat(quality.get()).isTrue();
+            assertQualify(quality).isTrue();
         }
 
         void assertNegative(Supplier<Boolean> quality) {
-            assertThat(quality.get()).isFalse();
-        }
-    }
-
-    @Test
-    @DisplayName("obtain type name")
-    void typeName() {
-        assertThat(new FieldRef("ReferencedType.some_field").fullTypeName())
-                .isEqualTo("ReferencedType");
-    }
-
-    @Nested
-    @DisplayName("obtain type reference")
-    class TypeRef {
-
-        @Test
-        @DisplayName("as wildcard")
-        void wildcardType() {
-            assertThat(ref(0).fullTypeName()).isEqualTo("*");
+            assertQualify(quality).isFalse();
         }
 
-        @Test
-        @DisplayName("as type name")
-        void typeName() {
-            assertThat(ref(1).fullTypeName()).isEqualTo("DocumentUpdated");
+        private BooleanSubject assertQualify(Supplier<Boolean> quality) {
+            return assertThat(quality.get());
         }
     }
 
@@ -146,8 +114,6 @@ class FieldRefTest {
         @Test
         @DisplayName("constructing references of appropriate types")
         void wildcard() {
-            assertThat(ref(0).isWildcard()).isTrue();
-            assertThat(ref(1).fullTypeName()).isEqualTo("DocumentUpdated");
             assertThat(ref(2).isContext()).isTrue();
         }
     }
@@ -155,24 +121,6 @@ class FieldRefTest {
     @Nested
     @DisplayName("reject")
     class Arguments {
-
-        @DisplayName("empty or blank type reference passed to wildcard checking")
-        @Test
-        void emptyTypeArg() {
-            assertRejects(() -> FieldRef.isWildcard(""));
-            assertRejects(() -> FieldRef.isWildcard(" "));
-        }
-
-        /**
-         * Tests that a wildcard field reference cannot be given in a suffix form such as
-         * {@code (by) = "*Event.user_id"}. Currently only single symbol {@code '*'} is allowed for
-         * wildcard field references.
-         */
-        @DisplayName("suffix form of whildcard type reference")
-        @Test
-        void suffixForm() {
-            assertRejects(() -> FieldRef.isWildcard("*Event"));
-        }
 
         @DisplayName("empty or blank value")
         @Test
