@@ -18,21 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.proto;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.nio.file.Path;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("Module should")
-class ModuleTest {
+/**
+ * A predicate determining if the given {@code .proto} source belongs to the specified module
+ */
+public class SourceProtoBelongsToModule extends ProtoBelongsToModule {
 
-    @Test
-    @DisplayName("provide the artifact name")
-    void provideArtifactName() {
-        String name = "someJsModule";
-        Module module = new Module(name);
-        assertThat(module.artifactName()).isEqualTo(name);
+    /**
+     * An absolute path to the root folder for the {@code .proto} files in the module.
+     */
+    private final Path rootPath;
+
+    public SourceProtoBelongsToModule(File rootDirectory) {
+        super();
+        checkNotNull(rootDirectory);
+        this.rootPath = rootDirectory.toPath();
+    }
+
+    @Override
+    protected Path resolve(SourceFile file) {
+        Path result = rootPath.resolve(file.getPath());
+        return result;
     }
 }

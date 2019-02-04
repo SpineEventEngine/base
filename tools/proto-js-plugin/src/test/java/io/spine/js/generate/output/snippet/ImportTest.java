@@ -58,11 +58,13 @@ class ImportTest {
     }
 
     @Test
-    @DisplayName("a default library")
-    void defaultLibrary() {
-        Import importLine = Import.libraryDefault("someJsLib");
+    @DisplayName("a default component")
+    void defaultComponent() {
+        Import defaultImport = Import.library("someJsLib")
+                                     .toDefault();
         String expected = "require('someJsLib').default;";
-        assertThat(importLine.content()).isEqualTo(expected);
+        assertThat(defaultImport.content()).isEqualTo(expected);
+        assertThat(defaultImport.toDefault()).isEqualTo(defaultImport);
     }
 
     @Test

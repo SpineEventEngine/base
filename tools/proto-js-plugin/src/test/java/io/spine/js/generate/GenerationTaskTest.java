@@ -20,19 +20,30 @@
 
 package io.spine.js.generate;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.TestGenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.GivenProject.mainFileSet;
 import static io.spine.js.generate.given.GivenProject.mainProtoSources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("GenerationTask should")
 class GenerationTaskTest {
 
@@ -56,10 +67,37 @@ class GenerationTaskTest {
     @Test
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
-        File nonExistentDescriptors = new File(MISSING_PATH);
-        FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
+        FileSet emptyFileSet = FileSet.ofFiles(ImmutableSet.of());
         TestGenerationTask task = new TestGenerationTask(mainProtoSources());
         assertNotPerformed(task, emptyFileSet);
+    }
+
+    @Test
+    @DisplayName("process files compiled to JavaScript")
+    void processCompiledJsFiles() {
+        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        FileSet passedFiles = mainFileSet();
+        task.performFor(passedFiles);
+        FileSet processedFiles = task.processedFileSet();
+        // It is expected that standard Protobuf types won't be generated (see test build script).
+        Collection<FileDescriptor> expectedFilteredFiles = passedFiles
+                .filter(FileDescriptors::isGoogle)
+                .files();
+        int expectedProcessedFiles = passedFiles.size() - expectedFilteredFiles.size();
+        assertThat(processedFiles.size()).isEqualTo(expectedProcessedFiles);
+    }
+
+    @Test
+    @DisplayName("skip files not compiled to JavaScript")
+    void skipNotCompiledJsFiles(@TempDir Path tempDir) {
+        Directory emptyDirectory = Directory.at(tempDir);
+        TestGenerationTask task = new TestGenerationTask(emptyDirectory);
+        FileSet passedFiles = mainFileSet();
+        // Check the file set is originally not empty.
+        assertFalse(passedFiles.isEmpty());
+        // Check all passed files were filtered out since they were not compiled to JS.
+        assertNotPerformed(task, passedFiles);
+        assertTrue(task.areFilesFiltered());
     }
 
     private static void assertPerformed(TestGenerationTask task, FileSet fileSet) {
@@ -74,6 +112,6 @@ class GenerationTaskTest {
                                         FileSet fileSet,
                                         boolean expectedToBePerformed) {
         task.performFor(fileSet);
-        assertEquals(expectedToBePerformed, task.isSourcesProcessed());
+        assertEquals(expectedToBePerformed, task.areSourcesProcessed());
     }
 }

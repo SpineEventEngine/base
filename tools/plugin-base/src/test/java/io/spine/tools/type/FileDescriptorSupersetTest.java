@@ -18,9 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.descriptor;
+package io.spine.tools.type;
 
 import com.google.common.truth.IterableSubject;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,18 +31,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.google.common.io.Files.createParentDirs;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static java.nio.file.Files.copy;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.createFile;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static java.util.stream.Collectors.toList;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("FileDescriptorSuperset should")
@@ -86,17 +94,20 @@ class FileDescriptorSupersetTest {
      */
     @BeforeEach
     void setUp(@TempDir Path sandbox) throws IOException {
-        Path directoryDependencyFile = sandbox.resolve("dir").resolve(KNOWN_TYPES);
+        Path directoryDependencyFile = sandbox.resolve("dir")
+                                              .resolve(KNOWN_TYPES);
         fileDependency = sandbox.resolve(KNOWN_TYPES);
         archiveDependency = sandbox.resolve("zipped_descriptors.zip");
-        emptyFileDependency = sandbox.resolve("empty-descriptor").resolve(KNOWN_TYPES);
-        writeResource("descriptors/dir/known_types.desc", directoryDependencyFile);
+        emptyFileDependency = sandbox.resolve("empty-descriptor")
+                                     .resolve(KNOWN_TYPES);
         directoryDependency = directoryDependencyFile.getParent();
         archiveWithNoDescriptors = sandbox.resolve("irrelevant.zip");
-        writeResource("descriptors/known_types.desc", fileDependency);
-        writeResource("descriptors/zipped_descriptors.zip", archiveDependency);
-        writeResource("descriptors/empty.desc", emptyFileDependency);
-        writeResource("descriptors/irrelevant.zip", archiveWithNoDescriptors);
+        writeDescriptorSet(fileDependency, PersonProto.getDescriptor());
+        writeDescriptorSet(directoryDependencyFile, ProjectProto.getDescriptor());
+        writeDescriptorSet(directoryDependencyFile, ProjectProto.getDescriptor());
+        writeDescriptorSetToZip(archiveDependency, TaskProto.getDescriptor());
+        writeDescriptorSet(emptyFileDependency);
+        writeIrrelevantZip(archiveWithNoDescriptors);
 
         nonDescriptorFile = sandbox.resolve("non-desc");
         createFile(nonDescriptorFile);
@@ -110,8 +121,7 @@ class FileDescriptorSupersetTest {
         superset.addFromDependency(fileDependency.toFile());
         superset.addFromDependency(archiveDependency.toFile());
 
-        MergedDescriptorSet mergedSet = superset.merge();
-        IterableSubject assertDescriptors = assertThat(mergedSet.descriptors());
+        IterableSubject assertDescriptors = assertThat(superset.files());
         assertDescriptors.hasSize(3);
         assertDescriptors.contains(TaskProto.getDescriptor().toProto());
         assertDescriptors.contains(PersonProto.getDescriptor().toProto());
@@ -123,8 +133,7 @@ class FileDescriptorSupersetTest {
     void ignoreEmptyFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(emptyFileDependency.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
     @Test
@@ -132,8 +141,7 @@ class FileDescriptorSupersetTest {
     void ignoreIrrelevantZips() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(archiveWithNoDescriptors.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
     @Test
@@ -141,16 +149,52 @@ class FileDescriptorSupersetTest {
     void ignoreNonDescriptorFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(nonDescriptorFile.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
-    private static void writeResource(String resourceName, Path destination) throws IOException {
-        File destinationFile = destination.toFile();
-        createParentDirs(destinationFile);
-        InputStream resource = FileDescriptorSupersetTest.class.getClassLoader()
-                                                               .getResourceAsStream(resourceName);
-        assertNotNull(resource);
-        copy(resource, destination, REPLACE_EXISTING);
+    private static void writeDescriptorSet(Path path, FileDescriptor... fileDescriptor)
+            throws IOException {
+        File destination = path.toFile();
+        createParentDirs(destination);
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
+            FileDescriptorSet descriptorSet = descriptorSet(fileDescriptor);
+            out.write(descriptorSet.toByteArray());
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static void writeDescriptorSetToZip(Path zipPath, FileDescriptor... fileDescriptor) {
+        File destination = zipPath.toFile();
+        try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(destination))) {
+            FileDescriptorSet descriptorSet = descriptorSet(fileDescriptor);
+            ZipEntry descEntry = new ZipEntry(KNOWN_TYPES);
+            out.putNextEntry(descEntry);
+            out.write(descriptorSet.toByteArray());
+            out.closeEntry();
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static void writeIrrelevantZip(Path zipPath) {
+        File destination = zipPath.toFile();
+        try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(destination))) {
+            out.putNextEntry(new ZipEntry("foo.txt"));
+            out.putNextEntry(new ZipEntry("bar.txt"));
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static FileDescriptorSet descriptorSet(FileDescriptor[] fileDescriptor) {
+        List<FileDescriptorProto> descriptors = Arrays
+                .stream(fileDescriptor)
+                .map(FileDescriptor::toProto)
+                .collect(toList());
+        return FileDescriptorSet
+                .newBuilder()
+                .addAllFile(descriptors)
+                .build();
     }
 }

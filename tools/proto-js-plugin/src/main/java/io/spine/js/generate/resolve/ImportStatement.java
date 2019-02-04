@@ -20,39 +20,39 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.FileName;
+import io.spine.code.js.FileReference;
+import io.spine.logging.Logging;
+
+import java.io.File;
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A line of a source JavaScript file with an import statement, which is going to be resolved.
+ * An import statement extracted from a source file.
  */
-public class ImportSnippet {
+public class ImportStatement implements Logging {
 
     private static final String IMPORT_BEGIN_SIGN = "require('";
     private static final String IMPORT_END_SIGN = "')";
-    static final String IMPORT_PATHS_SEPARATOR = "/";
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Has a different meaning. */)
-    private static final String SPINE_SIGN = "spine";
 
     private final String text;
-    private final FileName fileName;
+    private final File originFile;
 
     /**
      * Creates a new instance.
      *
      * @param text
      *         the line with an import statement
-     * @param fileName
-     *         the name of the file the text belongs to
+     * @param originFile
+     *         the name of the file the import belongs to
      */
-    public ImportSnippet(String text, FileName fileName) {
+    public ImportStatement(String text, File originFile) {
         checkArgument(hasImport(text), "The text should contain an import statement.");
-        checkNotNull(fileName);
+        checkNotNull(originFile);
         this.text = text;
-        this.fileName = fileName;
+        this.originFile = originFile;
     }
 
     /**
@@ -64,40 +64,21 @@ public class ImportSnippet {
     }
 
     /**
-     * Obtains the path specified in the import statement.
+     * Obtains the file reference used in this import.
      */
-    String path() {
+    FileReference path() {
         int beginIndex = text.indexOf(IMPORT_BEGIN_SIGN) + IMPORT_BEGIN_SIGN.length();
         int endIndex = text.indexOf(IMPORT_END_SIGN, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
-        return importPath;
-    }
-
-    /**
-     * Obtains the path of the imported file.
-     *
-     * <p>Unlike {@link #path()} the method skips a library name if it is present.
-     */
-    String importedFilePath() {
-        String path = path();
-        boolean relativeToParent = path.startsWith("../");
-        if (relativeToParent) {
-            return path;
-        }
-        int separatorIndex = path.indexOf(IMPORT_PATHS_SEPARATOR);
-        checkState(separatorIndex != -1,
-                   "The import path %s is expected to contain the separator `%s`.",
-                   path, IMPORT_PATHS_SEPARATOR);
-        String result = path.substring(separatorIndex + 1);
-        return result;
+        return FileReference.of(importPath);
     }
 
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
-    ImportSnippet replacePath(CharSequence newPath) {
-        String updatedText = text.replace(path(), newPath);
-        return new ImportSnippet(updatedText, fileName);
+    ImportStatement replacePath(CharSequence newPath) {
+        String updatedText = text.replace(path().value(), newPath);
+        return new ImportStatement(updatedText, originFile);
     }
 
     /**
@@ -108,26 +89,30 @@ public class ImportSnippet {
     }
 
     /**
-     * Obtains the name of the file the import belongs to.
+     * Tells whether the imported file is present on a file system.
      */
-    FileName fileName() {
-        return fileName;
+    boolean importedFileExists() {
+        Path filePath = importedFilePath();
+        boolean exists = filePath.toFile()
+                                 .exists();
+        _debug("Checking if the imported file {} exists, result: {}", filePath, exists);
+        return exists;
     }
 
     /**
-     * Tells whether the import refers to a Spine library.
-     *
-     * @return {@code true} if the import path starts with {@code spine}, {@code false} otherwise
+     * Obtains the absolute path to the imported file.
      */
-    boolean isSpine() {
-        boolean result = path().startsWith(SPINE_SIGN);
-        return result;
+    Path importedFilePath() {
+        FileReference fileReference = path();
+        Path filePath = sourceDirectory().resolve(fileReference.value());
+        return filePath.normalize();
     }
 
     /**
-     * Obtains the separator used in JavaScript imports.
+     * Obtains the path of the directory with the file containing this import.
      */
-    static String pathSeparator() {
-        return IMPORT_PATHS_SEPARATOR;
+    Path sourceDirectory() {
+        return originFile.getParentFile()
+                         .toPath();
     }
 }

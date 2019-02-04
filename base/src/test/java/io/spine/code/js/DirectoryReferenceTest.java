@@ -18,14 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains types working with the Protobuf type descriptors at built-time.
- */
+package io.spine.code.js;
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.descriptor;
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DisplayName("DirectoryReference should")
+class DirectoryReferenceTest {
+
+    @Test
+    @DisplayName("not be empty")
+    void notEmpty() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> DirectoryReference.of("")
+        );
+    }
+
+    @Test
+    @DisplayName("provide names it consists from")
+    void provideDirectoryNames() {
+        DirectoryReference reference = DirectoryReference.of("a/b/c");
+        List<String> expected = ImmutableList.of("a", "b", "c");
+        assertThat(reference.elements()).containsAllIn(expected);
+    }
+}

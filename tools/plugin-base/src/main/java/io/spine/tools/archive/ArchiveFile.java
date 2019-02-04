@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.archive;
+package io.spine.tools.archive;
 
 import java.io.BufferedInputStream;
 import java.io.File;
