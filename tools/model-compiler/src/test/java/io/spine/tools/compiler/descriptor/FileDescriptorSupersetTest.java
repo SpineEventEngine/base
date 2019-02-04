@@ -22,7 +22,6 @@ package io.spine.tools.compiler.descriptor;
 
 import com.google.common.truth.IterableSubject;
 import io.spine.tools.type.FileDescriptorSuperset;
-import io.spine.tools.type.MergedDescriptorSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,8 +111,7 @@ class FileDescriptorSupersetTest {
         superset.addFromDependency(fileDependency.toFile());
         superset.addFromDependency(archiveDependency.toFile());
 
-        MergedDescriptorSet mergedSet = superset.merge();
-        IterableSubject assertDescriptors = assertThat(mergedSet.descriptors());
+        IterableSubject assertDescriptors = assertThat(superset.files());
         assertDescriptors.hasSize(3);
         assertDescriptors.contains(TaskProto.getDescriptor().toProto());
         assertDescriptors.contains(PersonProto.getDescriptor().toProto());
@@ -125,8 +123,7 @@ class FileDescriptorSupersetTest {
     void ignoreEmptyFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(emptyFileDependency.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
     @Test
@@ -134,8 +131,7 @@ class FileDescriptorSupersetTest {
     void ignoreIrrelevantZips() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(archiveWithNoDescriptors.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
     @Test
@@ -143,8 +139,7 @@ class FileDescriptorSupersetTest {
     void ignoreNonDescriptorFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(nonDescriptorFile.toFile());
-        MergedDescriptorSet mergedSet = superset.merge();
-        assertThat(mergedSet.descriptors()).isEmpty();
+        assertThat(superset.files()).isEmpty();
     }
 
     private static void writeResource(String resourceName, Path destination) throws IOException {

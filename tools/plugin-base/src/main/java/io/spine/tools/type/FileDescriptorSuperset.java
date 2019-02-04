@@ -20,6 +20,7 @@
 
 package io.spine.tools.type;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
@@ -59,22 +60,6 @@ public final class FileDescriptorSuperset implements Logging {
         this.descriptors = newHashSet();
     }
 
-    /**
-     * Flattens this superset into a single descriptor set.
-     *
-     * <p>The descriptors in the output set are de-duplicated and unordered.
-     *
-     * @return the result of the sets merging
-     */
-    public MergedDescriptorSet merge() {
-        Set<FileDescriptorProto> allFiles = files();
-        FileDescriptorSet descriptorSet = FileDescriptorSet
-                .newBuilder()
-                .addAllFile(allFiles)
-                .build();
-        return new MergedDescriptorSet(descriptorSet);
-    }
-
     public void addFromDependency(File dependencyFile) {
         readDependency(dependencyFile)
                 .ifPresent(this::addFiles);
@@ -89,7 +74,8 @@ public final class FileDescriptorSuperset implements Logging {
         return fileSet;
     }
 
-    private ImmutableSet<FileDescriptorProto> files() {
+    @VisibleForTesting
+    public ImmutableSet<FileDescriptorProto> files() {
         return descriptors
                 .stream()
                 .flatMap(set -> set.getFileList().stream())

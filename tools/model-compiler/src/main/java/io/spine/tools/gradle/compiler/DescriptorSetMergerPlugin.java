@@ -25,15 +25,19 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.ProtoPlugin;
-import io.spine.tools.type.MergedDescriptorSet;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.google.common.io.Files.createParentDirs;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
@@ -41,6 +45,8 @@ import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
+import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -96,7 +102,35 @@ public class DescriptorSetMergerPlugin extends ProtoPlugin {
                     .newBuilder()
                     .addAllFile(files)
                     .build();
-            new MergedDescriptorSet(descriptorSet).writeTo(descriptorSetFile.get());
+            write(descriptorSet, descriptorSetFile.get());
         };
+    }
+
+    /**
+     * Writes this descriptor set into the given file.
+     *
+     * <p>If the file exists, it will be overridden. Otherwise, the file (and all its parent
+     * directories if necessary) will be created.
+     *
+     * @param destination
+     *         the file to write this descriptor set into
+     */
+    private static void write(FileDescriptorSet descriptorSet, File destination) {
+        prepareFile(destination);
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
+            descriptorSet.writeTo(out);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static void prepareFile(File destination) {
+        try {
+            destination.delete();
+            createParentDirs(destination);
+            destination.createNewFile();
+        } catch (IOException e) {
+            throw illegalArgumentWithCauseOf(e);
+        }
     }
 }
