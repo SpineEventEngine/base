@@ -180,8 +180,7 @@ extend google.protobuf.FieldOptions {
     //
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
-    // The value must have event/context FQN prefix if `enrichment_for` option is omitted
-    // ("example.events.MyEvent.user_id" instead of just "user_id").
+    // The value must have event/context plain field name (i.e. FQN names are not supported).
     //
     // An example:
     //
@@ -190,48 +189,27 @@ extend google.protobuf.FieldOptions {
     // }
     //
     // message MyEventEnrichment {
-    //     string username = 1 [(by) = "MyEvent.user_id"];
+    //     option (enrichment_for) = "MyEvent";
+    //
+    //     string username = 1 [(by) = "user_id"];
     // }
     //
-    // If a single enrichment message is used to enrich several events, a wildcard syntax may be
-    // used.
-    //
-    // An example:
+    // Also, the multiple arguments are supported. The syntax is:
     //
     // message FirstEvent {
     //     spine.base.UserId user_id = 1;
     // }
     //
     // message SecondEvent {
-    //     spine.base.UserId user_id = 1;
+    //     string id = 1;
+    //
+    //     spine.base.UserId admin_id = 1;
     // }
     //
     // message EnrichmentForSeveralEvents {
-    //     option (enrichment_for) = "FirstEvent,"
-    //                               "SecondEvent";
+    //     option (enrichment_for) = "FirstEvent,SecondEvent";
     //
-    //     string username = 1 [(by) = "*.user_id"];
-    // }
-    //
-    // Also, the multiple arguments are supported. The syntax is:
-    //
-    // message EnrichmentForSeveralEvents {
-    //     int32 user_id = 1 [(by) = "qualifier.One.target_field | qualifier.Two.alternate_target_field"];
-    // }
-    //
-    // Wildcard syntax for the target fields is supported in cases when annotation `enrichment_for`
-    // gives a not ambiguous definition for the target type.
-    //
-    // If using the FQN field names, the `enrichment_for` annotation may be omitted
-    // (the same behavior as with a single-argument `by` annotation).
-    //
-    // It is also possible to mix different syntax to obtained a fine-graded result:
-    //
-    // message MyEnrichment {
-    //     option enrichment_for) = "example.events.*,"
-    //                              "thirdExample.SecondEvent";
-    //
-    //     string username = 1 [(by) = "*.user_id | secondExample.FirstEvent.operator_id";
+    //     string username = 1 [(by) = "user_id | admin_id"];
     // }
     //
     string by = 73900;
