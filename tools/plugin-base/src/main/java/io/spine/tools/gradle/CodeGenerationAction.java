@@ -49,7 +49,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     private final Project project;
 
     /**
-     * Obtains the path to the generated Protobuf descriptor {@code .desc} file.
+     * The supplier of Protobuf files to process.
      */
     private final Supplier<FileSet> protoFiles;
 

@@ -36,6 +36,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -112,15 +113,13 @@ public class ProtoJsPlugin extends ProtoPlugin {
     }
 
     @Override
-    protected Supplier<String> mainDescriptorSetPath(Project project) {
-        return () -> Extension.getMainDescriptorSet(project)
-                              .toString();
+    protected Supplier<File> mainDescriptorFile(Project project) {
+        return () -> Extension.getMainDescriptorSet(project);
     }
 
     @Override
-    protected Supplier<String> testDescriptorSetPath(Project project) {
-        return () -> Extension.getTestDescriptorSet(project)
-                              .toString();
+    protected Supplier<File> testDescriptorFile(Project project) {
+        return () -> Extension.getTestDescriptorSet(project);
     }
 
     private void generateForMain(Project project) {

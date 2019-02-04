@@ -36,6 +36,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -47,11 +48,11 @@ import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
 /**
@@ -111,13 +112,13 @@ public class RejectionGenPlugin extends ProtoPlugin {
     }
 
     @Override
-    protected Supplier<String> mainDescriptorSetPath(Project project) {
-        return () -> getMainDescriptorSetPath(project);
+    protected Supplier<File> mainDescriptorFile(Project project) {
+        return () -> getMainDescriptorSet(project);
     }
 
     @Override
-    protected Supplier<String> testDescriptorSetPath(Project project) {
-        return () -> getTestDescriptorSetPath(project);
+    protected Supplier<File> testDescriptorFile(Project project) {
+        return () -> getTestDescriptorSet(project);
     }
 
     /**

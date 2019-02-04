@@ -45,43 +45,49 @@ public abstract class ProtoPlugin extends SpinePlugin {
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the main scope.
      */
     protected final Supplier<FileSet> mainProtoFiles(Project project) {
-        Supplier<String> descriptorSetPath = mainDescriptorSetPath(project);
+        Supplier<File> descriptorSet = mainDescriptorFile(project);
         Configuration configuration = configuration(project, RUNTIME);
-        return protoFiles(descriptorSetPath, configuration);
+        return protoFiles(descriptorSet, configuration);
     }
 
     /**
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the test scope.
      */
     protected final Supplier<FileSet> testProtoFiles(Project project) {
-        Supplier<String> descriptorSetPath = testDescriptorSetPath(project);
+        Supplier<File> descriptorSet = testDescriptorFile(project);
         Configuration configuration = configuration(project, TEST_RUNTIME);
-        return protoFiles(descriptorSetPath, configuration);
+        return protoFiles(descriptorSet, configuration);
     }
 
-    protected abstract Supplier<String> mainDescriptorSetPath(Project project);
+    /**
+     * Obtains the descriptor set file for the main scope.
+     */
+    protected abstract Supplier<File> mainDescriptorFile(Project project);
 
-    protected abstract Supplier<String> testDescriptorSetPath(Project project);
+    /**
+     * Obtains the descriptor set file for the test scope.
+     */
+    protected abstract Supplier<File> testDescriptorFile(Project project);
 
     /**
      * Obtains all files from the specified descriptor set file and the configuration.
      *
      * <p>Extends {@linkplain MoreKnownTypes known types} with types form collected files.
      *
-     * @param descriptorSetPath
+     * @param descriptorSet
      *         the path to the descriptor set file
      * @param configuration
      *         the configuration to scan descriptor set files from
      * @return the collected files
      */
-    private static Supplier<FileSet> protoFiles(Supplier<String> descriptorSetPath,
+    private static Supplier<FileSet> protoFiles(Supplier<File> descriptorSet,
                                                 Configuration configuration) {
         return () -> {
-            File descriptorSet = new File(descriptorSetPath.get());
             FileDescriptorSuperset superset = new FileDescriptorSuperset();
             configuration.forEach(superset::addFromDependency);
-            if (descriptorSet.exists()) {
-                superset.addFromDependency(descriptorSet);
+            File suppliedDescriptorSet = descriptorSet.get();
+            if (suppliedDescriptorSet.exists()) {
+                superset.addFromDependency(suppliedDescriptorSet);
             }
             MoreKnownTypes.extendWith(superset.fileSet());
             return superset.fileSet();

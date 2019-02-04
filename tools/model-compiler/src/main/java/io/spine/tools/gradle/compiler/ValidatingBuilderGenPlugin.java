@@ -30,6 +30,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -38,11 +39,11 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
 
@@ -116,13 +117,13 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
     }
 
     @Override
-    protected Supplier<String> mainDescriptorSetPath(Project project) {
-        return () -> getMainDescriptorSetPath(project);
+    protected Supplier<File> mainDescriptorFile(Project project) {
+        return () -> getMainDescriptorSet(project);
     }
 
     @Override
-    protected Supplier<String> testDescriptorSetPath(Project project) {
-        return () -> getTestDescriptorSetPath(project);
+    protected Supplier<File> testDescriptorFile(Project project) {
+        return () -> getTestDescriptorSet(project);
     }
 
     /**
