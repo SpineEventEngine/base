@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.base.Joiner;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -38,6 +39,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.System.lineSeparator;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -66,6 +69,8 @@ import static java.util.stream.Collectors.toSet;
 public class KnownTypes implements Serializable {
 
     private static final long serialVersionUID = 0L;
+
+    private static final Joiner NEW_LINE_JOINER = Joiner.on(lineSeparator());
 
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
@@ -190,6 +195,19 @@ public class KnownTypes implements Serializable {
         Type type = get(typeUrl.toName());
         ClassName result = type.javaClassName();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(KnownTypes.class.getSimpleName());
+        result.append(':')
+              .append(lineSeparator());
+        Object[] sortedUrls = getAllUrls()
+                .stream()
+                .sorted(comparing(TypeUrl::value))
+                .toArray();
+        NEW_LINE_JOINER.appendTo(result, sortedUrls);
+        return result.toString();
     }
 
     /**
