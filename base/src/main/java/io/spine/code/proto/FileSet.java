@@ -76,18 +76,6 @@ public final class FileSet {
     }
 
     /**
-     * Creates a new file set by parsing the passed file if it exists.
-     *
-     * <p>If the file does not exist, returns empty set.
-     */
-    public static FileSet parseOrEmpty(File descriptorSet) {
-        FileSet result = descriptorSet.exists()
-                ? parse(descriptorSet)
-                : newInstance();
-        return result;
-    }
-
-    /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
@@ -168,6 +156,25 @@ public final class FileSet {
         files.putAll(another.files);
         FileSet result = new FileSet(files);
         return result;
+    }
+
+    /**
+     * Creates a new set without filtered out files.
+     *
+     * @param predicate
+     *         the predicate to filter files
+     * @return a new file set
+     */
+    public FileSet filter(Predicate<FileDescriptor> predicate) {
+        Collection<FileDescriptor> filteredFiles = files.values()
+                                                        .stream()
+                                                        .filter(predicate)
+                                                        .collect(toList());
+        FileSet newFileSet = newInstance();
+        for (FileDescriptor file : filteredFiles) {
+            newFileSet.add(file);
+        }
+        return newFileSet;
     }
 
     /**

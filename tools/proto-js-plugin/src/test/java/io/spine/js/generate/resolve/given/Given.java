@@ -21,13 +21,17 @@
 package io.spine.js.generate.resolve.given;
 
 import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
-import io.spine.js.generate.resolve.ImportSnippet;
+import io.spine.js.generate.resolve.DirectoryPattern;
+import io.spine.js.generate.resolve.ExternalModule;
+import io.spine.js.generate.resolve.ImportStatement;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 
 public class Given {
 
@@ -35,13 +39,9 @@ public class Given {
     private Given() {
     }
 
-    public static ImportSnippet googleProtobufImport(FileName file, FileName importSource) {
-        return importWithPath("google-protobuf/" + file, importSource);
-    }
-
-    public static ImportSnippet importWithPath(String path, FileName importSource) {
+    public static ImportStatement importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
-        return new ImportSnippet(importText, importSource);
+        return new ImportStatement(importText, importOrigin);
     }
 
     public static Directory mainProtoRoot() {
@@ -52,10 +52,20 @@ public class Given {
         return protoRoot("test");
     }
 
+    public static String relativeImportPath() {
+        return "../path-relative-to-parent.js";
+    }
+
     private static Directory protoRoot(String sourceSetName) {
         Path path = Paths.get("src")
                          .resolve(sourceSetName)
                          .resolve("proto");
         return Directory.at(path.toAbsolutePath());
+    }
+
+    public static ExternalModule newModule(String moduleName, String directoryPattern) {
+        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
+        List<DirectoryPattern> patterns = singletonList(pattern);
+        return new ExternalModule(moduleName, patterns);
     }
 }

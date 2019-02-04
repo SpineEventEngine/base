@@ -48,10 +48,10 @@ import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
 import static io.spine.tools.gradle.compiler.Extension.getInternalClassPatterns;
 import static io.spine.tools.gradle.compiler.Extension.getInternalMethodNames;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
 
@@ -186,20 +186,20 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Action<Task> task = newAction(getMainDescriptorSetPath(project), project, false);
+        Action<Task> task = newAction(getMainDescriptorSet(project), project, false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
                 .applyNowTo(project);
 
-        Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
+        Action<Task> testTask = newAction(getTestDescriptorSet(project), project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                 .applyNowTo(project);
     }
 
-    private Action<Task> newAction(String descriptorSetFile, Project project, boolean isTestTask) {
+    private Action<Task> newAction(File descriptorSetFile, Project project, boolean isTestTask) {
         return task -> {
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
@@ -207,15 +207,14 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             String generatedGrpcDir = isTestTask
                                       ? getTestGenGrpcDir(project)
                                       : getMainGenGrpcDir(project);
-            File setFile = new File(descriptorSetFile);
-            if (!setFile.exists()) {
-                logMissingDescriptorSetFile(setFile);
+            if (!descriptorSetFile.exists()) {
+                logMissingDescriptorSetFile(descriptorSetFile);
                 return;
             }
             Path generatedProtoPath = Paths.get(generatedProtoDir);
             Path generatedGrpcPath = Paths.get(generatedGrpcDir);
             AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                    .newInstance(setFile, generatedProtoPath, generatedGrpcPath);
+                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
             ClassName internalClassName = annotations.internalClassName();
             ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);

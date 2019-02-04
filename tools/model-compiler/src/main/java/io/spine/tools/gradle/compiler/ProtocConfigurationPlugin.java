@@ -42,7 +42,6 @@ import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -50,8 +49,8 @@ import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static org.gradle.internal.os.OperatingSystem.current;
 
@@ -198,11 +197,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                   .getName()
                                   .contains("test");
         Project project = protocTask.getProject();
-        String descPath = tests
-                          ? getTestDescriptorSetPath(project)
-                          : getMainDescriptorSetPath(project);
+        File descFile = tests
+                        ? getTestDescriptorSet(project)
+                        : getMainDescriptorSet(project);
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
-        options.setPath(GStrings.fromPlain(descPath));
+        options.setPath(GStrings.fromPlain(descFile.toString()));
         options.setIncludeImports(true);
         options.setIncludeSourceInfo(true);
 
@@ -212,8 +211,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         javaConvention.getSourceSets()
                       .getByName(sourceSetName)
                       .getResources()
-                      .srcDir(Paths.get(descPath)
-                                   .getParent());
+                      .srcDir(descFile.toPath()
+                                      .getParent());
     }
 
     private static void configureProtocTasks(GenerateProtoTaskCollection tasks,

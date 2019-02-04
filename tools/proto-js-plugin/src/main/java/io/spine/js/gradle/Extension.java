@@ -21,17 +21,26 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.js.generate.resolve.DirectoryPattern;
+import io.spine.js.generate.resolve.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
@@ -39,8 +48,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 @SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
 public class Extension {
-
-    private Task generateParsersTask;
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
@@ -58,6 +65,36 @@ public class Extension {
      * The absolute path to the test Protobufs compiled to JavaScript.
      */
     public String testGenProtoDir;
+    /**
+     * Names of JavaScript modules and directories they provide.
+     *
+     * <p>Information about modules is used to resolve imports in generated Protobuf files.
+     *
+     * <p>Additionally to modules specified via the property,
+     * the {@linkplain #predefinedModules() predefined Spine} modules are used.
+     *
+     * <p>An example of the definition:
+     * <pre>{@code
+     * modules = [
+     *      // The module provides `company/client` directory (not including subdirectories).
+     *      // So, an import path like {@code ../company/client/file.js}
+     *      // becomes {@code client/company/client/file.js}.
+     *      'client' : ['company/client'],
+     *
+     *      // The module provides `company/server` directory (including subdirectories).
+     *      // So, an import path like {@code ../company/server/nested/file.js}
+     *      // becomes {@code server/company/server/nested/file.js}.
+     *      'server' : ['company/server/*'],
+     *
+     *      // The module provides 'proto/company` directory.
+     *      // So, an import pah like {@code ../company/file.js}
+     *      // becomes {@code common-types/proto/company/file.js}.
+     *      'common-types' : ['proto/company']
+     * ]
+     * }</pre>
+     */
+    public Map<String, List<String>> modules = newHashMap();
+    private Task generateParsersTask;
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);
@@ -89,6 +126,19 @@ public class Extension {
         return path.toFile();
     }
 
+    public static List<ExternalModule> modules(Project project) {
+        Extension extension = extension(project);
+        Map<String, List<String>> rawModules = extension.modules;
+        List<ExternalModule> modules = newArrayList();
+        for (String moduleName : rawModules.keySet()) {
+            List<DirectoryPattern> patterns = patterns(rawModules.get(moduleName));
+            ExternalModule module = new ExternalModule(moduleName, patterns);
+            modules.add(module);
+        }
+        modules.addAll(predefinedModules());
+        return modules;
+    }
+
     /**
      * Returns the {@code generateJsonParsers} task configured by the {@link ProtoJsPlugin}.
      */
@@ -111,6 +161,23 @@ public class Extension {
         return (Extension)
                 project.getExtensions()
                        .getByName(ProtoJsPlugin.extensionName());
+    }
+
+    /**
+     * Obtains the external modules published by Spine.
+     */
+    @VisibleForTesting
+    static List<ExternalModule> predefinedModules() {
+        return ImmutableList.of(
+                ExternalModule.spineWeb(),
+                ExternalModule.spineUsers()
+        );
+    }
+
+    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
+        return rawPatterns.stream()
+                          .map(DirectoryPattern::of)
+                          .collect(toList());
     }
 
     private static Path pathOrDefault(String path, Object defaultValue) {
