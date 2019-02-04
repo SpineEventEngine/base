@@ -92,28 +92,43 @@ public final class FieldValue<T> {
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
-        FieldValue<T> result = resolveType(context, value, declaration);
+        FieldValue<T> result = resolveType(declaration, context, value);
         return result;
     }
 
+    /**
+     * Returns a properly typed {@code FieldValue}.
+     *
+     * <p>To do so, performs a series of {@code instanceof} calls and casts, since there are no
+     * common ancestors between all the possible value types ({@code Map} for Protobuf {@code map}
+     * fields, {@code List} for {@code repeated} fields, and {@code T} for plain values).
+     *
+     * Casting to {@code T} is safe, because the {@code FieldValue} is always created by the
+     * {@linkplain io.spine.validate.ValidatingBuilder validating builder} implementors, and the
+     * raw value always corresponds to one of the Protobuf field types.
+     *
+     * @param field
+     * @param context
+     * @param value
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings({
-            "unchecked", /* Since the field value is created by validating builders,
-                           the raw value always corresponds to one of the Protobuf field types,
-                           so the cast to `T` is always safe.
-                         */
-            "ChainOfInstanceofChecks" /* No common ancestor forces chain of `instanceofs`. */})
-    private static <T> FieldValue<T> resolveType(FieldContext context,
-                                                 T value,
-                                                 FieldDeclaration declaration) {
+            "unchecked", // Raw value is always of a correct type, see javadoc.
+            "ChainOfInstanceofChecks" // No common ancestors.
+    })
+    private static <T> FieldValue<T> resolveType(FieldDeclaration field,
+                                                 FieldContext context,
+                                                 T value) {
         if (value instanceof List) {
             List<T> values = (List<T>) value;
-            return new FieldValue<>(values, context, declaration);
+            return new FieldValue<>(values, context, field);
         } else if (value instanceof Map) {
             Map<?, T> map = (Map<?, T>) value;
             ImmutableList<T> values = ImmutableList.copyOf(map.values());
-            return new FieldValue<>(values, context, declaration);
+            return new FieldValue<>(values, context, field);
         } else {
-            return new FieldValue<>(ImmutableList.of(value), context, declaration);
+            return new FieldValue<>(ImmutableList.of(value), context, field);
         }
     }
 

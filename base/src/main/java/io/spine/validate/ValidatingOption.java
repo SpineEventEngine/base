@@ -26,7 +26,7 @@ import io.spine.code.proto.Option;
  * An option that validates a Protobuf entity.
  *
  * @param <T>
- *         type of information that this option holds, e. g.
+ *         data type that this option holds, e.g.
  *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
  *         Boolean}
  * @param <K>

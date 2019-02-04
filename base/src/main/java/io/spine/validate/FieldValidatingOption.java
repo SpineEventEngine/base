@@ -33,7 +33,7 @@ import java.util.Optional;
  * <p>Validating options impose constraint on fields that they are applied to.
  *
  * @param <T>
- *         type of information that this option holds
+ *         type of value held by this option
  * @param <F>
  *         type of field that this option is applied to
  */

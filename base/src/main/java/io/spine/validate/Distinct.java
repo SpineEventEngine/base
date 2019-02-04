@@ -27,7 +27,7 @@ import io.spine.option.OptionsProto;
  * represented by that {@code repeated} field should not contain duplicates.
  *
  * @param <T>
- *         types of values that this option is applicable to
+ *         type of value that this option is applied to
  */
 final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
 

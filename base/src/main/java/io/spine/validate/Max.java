@@ -25,6 +25,9 @@ import io.spine.option.OptionsProto;
 
 /**
  * An option that defines a maximum value for a numeric field.
+ *
+ * @param <V>
+ *         numeric value type that this option is applied to
  */
 final class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
 

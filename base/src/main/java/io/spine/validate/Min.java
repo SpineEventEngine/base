@@ -25,6 +25,9 @@ import io.spine.option.OptionsProto;
 
 /**
  * An option that defines a minimum value for a numeric field.
+ *
+ * @param <V>
+ *         numeric value type that this option is applied to
  */
 final class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
 

@@ -28,15 +28,15 @@ import io.spine.code.proto.FieldDeclaration;
 /**
  * An option that validates a message field.
  *
- * @param <P>
+ * @param <T>
  *         type of option value
  * @param <M>
  *         type of the message being validated by this option
  */
-abstract class MessageFieldValidatingOption<P, M extends Message>
-        extends FieldValidatingOption<P, M> {
+abstract class MessageFieldValidatingOption<T, M extends Message>
+        extends FieldValidatingOption<T, M> {
 
-    MessageFieldValidatingOption(GeneratedExtension<FieldOptions, P> extension) {
+    MessageFieldValidatingOption(GeneratedExtension<FieldOptions, T> extension) {
         super(extension);
     }
 

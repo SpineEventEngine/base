@@ -30,31 +30,31 @@ import java.util.Optional;
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
- * @param <O>
- *         value of this option
+ * @param <V>
+ *         type of value held by this option
  * @param <T>
  *         type of field that this option is applied to
  */
-public class FieldOption<O, T> implements Option<O, FieldValue<T>> {
+public class FieldOption<V, T> implements Option<V, FieldValue<T>> {
 
-    private final GeneratedExtension<FieldOptions, O> optionExtension;
+    private final GeneratedExtension<FieldOptions, V> optionExtension;
 
     /** Specifies the extension that corresponds to this option. */
-    protected FieldOption(GeneratedExtension<FieldOptions, O> optionExtension) {
+    protected FieldOption(GeneratedExtension<FieldOptions, V> optionExtension) {
         this.optionExtension = optionExtension;
     }
 
-    protected GeneratedExtension<FieldOptions, O> optionExtension() {
+    protected GeneratedExtension<FieldOptions, V> optionExtension() {
         return optionExtension;
     }
 
     @Override
-    public Optional<O> valueFrom(FieldValue<T> field) {
+    public Optional<V> valueFrom(FieldValue<T> field) {
         FieldDescriptor descriptor = field.context()
                                           .getTarget();
         FieldOptions options = descriptor.getOptions();
         boolean explicitlySet = options.hasExtension(optionExtension);
-        O value = options.getExtension(optionExtension);
+        V value = options.getExtension(optionExtension);
         return explicitlySet
                ? Optional.of(value)
                : Optional.empty();

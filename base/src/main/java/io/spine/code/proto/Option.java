@@ -26,7 +26,7 @@ import java.util.Optional;
  * A Protobuf option.
  *
  * @param <T>
- *         type of information held by this option
+ *         type of value held by this option
  * @param <K>
  *         kind of value that this option is applied to
  */
