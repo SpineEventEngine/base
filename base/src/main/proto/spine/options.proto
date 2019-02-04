@@ -406,15 +406,29 @@ extend google.protobuf.MessageOptions {
     //
     //
     // This option can be omitted if:
-    // - the enrichment message is enclosed into the target event message:
+    // - the enrichment(s) message is enclosed into the target event message:
     //
-    //   message MyEvent {
+    //   message FirstEvent {
     //
     //       string id = 1;
     //       ...
     //
     //       message Enrichment {
     //           string details = 1 [(by) = "id"];
+    //       }
+    //   }
+    //
+    //   message SecondEvent {
+    //
+    //       string id = 1;
+    //       ...
+    //
+    //       message DetailsEnrichment {
+    //           string details = 1 [(by) = "id"];
+    //       }
+    //
+    //       message NameEnrichment {
+    //           string name = 1 [(by) = "id"];
     //       }
     //   }
     //
@@ -427,7 +441,7 @@ extend google.protobuf.MessageOptions {
     //       string details = 1 [(by) = "example.events.FirstEvent.user_id | example.events.SecondEvent.operator_id];
     //   }
     //
-    // It is also possible to mix the option usage with `by` option.
+    // It is also possible to mix `enrichment_for` option usage with `by` option.
     //
     // For example:
     //
