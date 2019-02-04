@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -65,7 +64,7 @@ public class CompositeTypeRef implements TypeRef {
      */
     static CompositeTypeRef parse(String value) {
         checkContainsComma(value);
-        List<String> parts = splitter.splitToList(value);
+        Iterable<String> parts = splitter.split(value);
         ImmutableList.Builder<TypeRef> builder = ImmutableList.builder();
         for (String part : parts) {
             TypeRef ref = parsePart(part);
