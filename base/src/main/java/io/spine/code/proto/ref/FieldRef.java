@@ -111,7 +111,10 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * Tells if the passed value reference all types.
+     *
+     * @deprecated Do not use {@code *.field_name} references in {@code (by)} options.
      */
+    @Deprecated
     public static boolean isWildcard(String typeReference) {
         checkTypeReference(typeReference);
         return ALL.value()
@@ -120,7 +123,10 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * Verifies if the reference is to a field in all types having a field with the referenced name.
+     *
+     * @deprecated Do not use {@code *.field_name} references in {@code (by)} options.
      */
+    @Deprecated
     public boolean isWildcard() {
         boolean result = typeRef.equals(ALL);
         return result;
@@ -147,7 +153,10 @@ public final class FieldRef extends StringTypeValue {
      *
      * @throws IllegalStateException if the reference does not have a type component
      * @see #hasType()
+     *
+     * @deprecated use type references only via {@code (enrichment_for)} type option.
      */
+    @Deprecated
     public String fullTypeName() {
         checkHasType();
         String value = value();
@@ -159,7 +168,9 @@ public final class FieldRef extends StringTypeValue {
      *
      * @return the string until the {@linkplain FieldName#TYPE_SEPARATOR field name separator},
      *         or en empty string, if type reference is not provided
+     * @deprecated use type references only via {@code (enrichment_for)} type option.
      */
+    @Deprecated
     private static String typeRef(String value) {
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         if (index == -1) {
