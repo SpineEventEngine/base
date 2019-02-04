@@ -99,7 +99,7 @@ public final class Types {
      * information on their actual values is erased.
      *
      * @param type
-     *         a generic type
+     *         the parameterized type
      * @return the list of the type argument values
      */
     public static ImmutableList<Type> resolveArguments(Type type) {
