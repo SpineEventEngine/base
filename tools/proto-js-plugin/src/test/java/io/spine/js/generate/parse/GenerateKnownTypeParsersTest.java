@@ -84,9 +84,13 @@ class GenerateKnownTypeParsersTest {
     @DisplayName("generate imports")
     void generateImports() {
         CodeLines code = GenerateKnownTypeParsers.codeFor(file);
-        String abstractParserImport = Import.libraryDefault(OBJECT_PARSER_FILE)
+        String importPrefix = FileName.from(file)
+                                      .pathToRoot();
+        String abstractParserImport = Import.library(importPrefix + OBJECT_PARSER_FILE)
+                                            .toDefault()
                                             .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
-        String typeParsersImport = Import.libraryDefault(TYPE_PARSERS_FILE)
+        String typeParsersImport = Import.library(importPrefix + TYPE_PARSERS_FILE)
+                                         .toDefault()
                                          .namedAs(TYPE_PARSERS_IMPORT_NAME);
         assertContains(code, abstractParserImport);
         assertContains(code, typeParsersImport);

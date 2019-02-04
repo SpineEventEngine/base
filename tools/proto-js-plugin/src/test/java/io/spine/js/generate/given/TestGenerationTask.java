@@ -24,12 +24,19 @@ import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A test implementation of {@link io.spine.js.generate.GenerationTask}.
  */
 public class TestGenerationTask extends GenerationTask {
 
     private boolean sourcesProcessed = false;
+    private boolean filesFiltered = false;
+    @Nullable
+    private FileSet processedFileSet;
 
     public TestGenerationTask(Directory generatedRoot) {
         super(generatedRoot);
@@ -38,9 +45,24 @@ public class TestGenerationTask extends GenerationTask {
     @Override
     protected void generateFor(FileSet fileSet) {
         sourcesProcessed = true;
+        processedFileSet = fileSet;
     }
 
-    public boolean isSourcesProcessed() {
+    @Override
+    protected FileSet filter(FileSet fileSet) {
+        filesFiltered = true;
+        return super.filter(fileSet);
+    }
+
+    public boolean areSourcesProcessed() {
         return sourcesProcessed;
+    }
+
+    public boolean areFilesFiltered() {
+        return filesFiltered;
+    }
+
+    public FileSet processedFileSet() {
+        return checkNotNull(processedFileSet);
     }
 }

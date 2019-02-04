@@ -58,6 +58,17 @@ public final class MoreKnownTypes {
         checkArgument(descriptorSetFile.exists());
 
         FileSet protoFiles = FileSet.parse(descriptorSetFile);
+        extendWith(protoFiles);
+    }
+
+    /**
+     * Extents {@link KnownTypes} with the types from the specified files.
+     *
+     * @param protoFiles
+     *         the files to get the types for extension
+     */
+    public static void extendWith(FileSet protoFiles) {
+        checkNotNull(protoFiles);
         TypeSet types = TypeSet.messagesAndEnums(protoFiles);
         KnownTypes.Holder.extendWith(types);
     }

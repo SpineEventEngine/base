@@ -223,14 +223,16 @@ public class Extension {
                                          .testJava());
     }
 
-    public static String getMainDescriptorSetPath(Project project) {
-        return pathOrDefault(spineProtobuf(project).mainDescriptorSetPath,
-                             def(project).mainDescriptors());
+    public static File getMainDescriptorSet(Project project) {
+        String path = pathOrDefault(spineProtobuf(project).mainDescriptorSetPath,
+                                 def(project).mainDescriptors());
+        return new File(path);
     }
 
-    public static String getTestDescriptorSetPath(Project project) {
-        return pathOrDefault(spineProtobuf(project).testDescriptorSetPath,
-                             def(project).testDescriptors());
+    public static File getTestDescriptorSet(Project project) {
+        String path = pathOrDefault(spineProtobuf(project).testDescriptorSetPath,
+                                 def(project).testDescriptors());
+        return new File(path);
     }
 
     public static String getTargetGenRejectionsRootDir(Project project) {

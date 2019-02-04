@@ -20,35 +20,46 @@
 
 package io.spine.code.js;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import io.spine.value.StringTypeValue;
+
+import java.util.List;
+
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A JavaScript module published to NPM.
+ * A reference to a directory.
+ *
+ * <p>May include parent directories separated by {@linkplain FileReference#separator() slashes},
+ * e.g. {@code root/sub}.
  */
-public final class Module {
+public final class DirectoryReference extends StringTypeValue {
 
-    /**
-     * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
-     */
-    public static final Module spineWeb = new Module("spine-web");
+    private static final long serialVersionUID = 0L;
 
-    private final String name;
+    private DirectoryReference(String value) {
+        super(value);
+    }
 
     /**
      * Creates a new instance.
      *
-     * @param name
-     *         the name of the module
+     * @param value
+     *         the value of the reference
+     * @return a new instance
      */
-    public Module(String name) {
-        checkNotEmptyOrBlank(name);
-        this.name = name;
+    public static DirectoryReference of(String value) {
+        checkNotEmptyOrBlank(value);
+        return new DirectoryReference(value);
     }
 
     /**
-     * Obtains the name of the published artifact.
+     * Obtains all directory names composing this reference.
      */
-    public String artifactName() {
-        return name;
+    public List<String> elements() {
+        Iterable<String> elements = Splitter.on(FileReference.separator())
+                                            .split(value());
+        return ImmutableList.copyOf(elements);
     }
 }
