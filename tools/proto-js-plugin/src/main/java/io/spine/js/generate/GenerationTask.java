@@ -116,6 +116,7 @@ public abstract class GenerationTask {
          *         the root directory for generated Protobufs
          */
         private CompiledProtoBelongsToModule(Directory generatedRoot) {
+            super();
             checkNotNull(generatedRoot);
             this.generatedRoot = generatedRoot;
         }

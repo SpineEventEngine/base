@@ -36,6 +36,7 @@ public class SourceProtoBelongsToModule extends ProtoBelongsToModule {
     private final Path rootPath;
 
     public SourceProtoBelongsToModule(File rootDirectory) {
+        super();
         checkNotNull(rootDirectory);
         this.rootPath = rootDirectory.toPath();
     }
