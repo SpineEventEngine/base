@@ -22,11 +22,14 @@ package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
+import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.tasks.TaskDependency;
 
 import java.io.File;
 
@@ -50,20 +53,17 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        createMainTask(project);
-        createTestTask(project);
+        createTask(project, false);
+        createTask(project, true);
     }
 
-    private void createMainTask(Project project) {
-        newTask(MERGE_DESCRIPTOR_SET, createMergingAction(false))
-                .insertAfterTask(GENERATE_PROTO)
+    private void createTask(Project project, boolean tests) {
+        Configuration configuration = configuration(project, configurationName(tests));
+        TaskDependency dependencies = configuration.getBuildDependencies();
+        GradleTask task = newTask(taskName(tests), createMergingAction(tests))
+                .insertAfterTask(generateProtoTaskName(tests))
                 .applyNowTo(project);
-    }
-
-    private void createTestTask(Project project) {
-        newTask(MERGE_TEST_DESCRIPTOR_SET, createMergingAction(true))
-                .insertAfterTask(GENERATE_TEST_PROTO)
-                .applyNowTo(project);
+        task.getTask().dependsOn(dependencies);
     }
 
     private static Action<Task> createMergingAction(boolean tests) {
@@ -90,6 +90,18 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         return tests
                ? TEST_RUNTIME_CLASSPATH
                : RUNTIME_CLASSPATH;
+    }
+
+    private static TaskName taskName(boolean tests) {
+        return tests
+               ? MERGE_TEST_DESCRIPTOR_SET
+               : MERGE_DESCRIPTOR_SET;
+    }
+
+    private static TaskName generateProtoTaskName(boolean tests) {
+        return tests
+               ? GENERATE_TEST_PROTO
+               : GENERATE_PROTO;
     }
 
     private static File descriptorSet(Project project, boolean tests) {
