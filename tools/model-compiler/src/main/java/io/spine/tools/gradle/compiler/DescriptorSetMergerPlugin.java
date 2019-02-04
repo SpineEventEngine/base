@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
  * <p>The merge result is used to {@linkplain
  * io.spine.tools.type.MoreKnownTypes#extendWith(java.io.File) extend the known type registry}.
  */
-public class DescriptorSetLoaderPlugin extends SpinePlugin {
+public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
