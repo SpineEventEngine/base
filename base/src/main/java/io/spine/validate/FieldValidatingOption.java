@@ -58,7 +58,8 @@ abstract class FieldValidatingOption<T, F>
     T optionValue(FieldValue<F> value) throws IllegalStateException {
         FieldDescriptor field = value.declaration()
                                      .descriptor();
-        Optional<T> option = valueFrom(field);
+        FieldContext context = value.context();
+        Optional<T> option = valueFromContextualized(field, context);
         return option.orElseThrow(() -> {
             FieldDescriptor descriptor = optionExtension().getDescriptor();
 
@@ -82,24 +83,22 @@ abstract class FieldValidatingOption<T, F>
     }
 
     /**
-     * {@inheritDoc}
+     * Takes the value of the option from the given descriptor, given the specified context.
      *
-     * <p>Apart from the value of the field option, checks whether any messages with {@code
-     * validation_for} options exist that override the option value of the specified field.
-     *
-     * @param field
-     *         a field that bears the option value
-     * @return either an empty {@code Optional}, if no option value was found for the specified
-     *         field,
-     *         or an {@code Optional} containing found value
+     * @param descriptor
+     *         descriptor of the field
+     * @param context
+     *         context of the field
+     * @return an {@code Optional} with an option value, if such exists, otherwise an empty
+     *         {@code Optional}
+     * @apiNote Use this in favour of {@link this#valueFrom(FieldDescriptor)} when
+     *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
      */
-    @Override
-    public Optional<T> valueFrom(FieldDescriptor field) {
-        FieldContext context = FieldContext.create(field);
-        Optional<T> validationForOption = getOptionValue(context, optionExtension());
-        return validationForOption.isPresent()
-               ? validationForOption
-               : super.valueFrom(field);
+    private Optional<T> valueFromContextualized(FieldDescriptor descriptor, FieldContext context) {
+        Optional<T> value = getOptionValue(context, optionExtension());
+        return value.isPresent()
+               ? value
+               : valueFrom(descriptor);
     }
 
     /**
