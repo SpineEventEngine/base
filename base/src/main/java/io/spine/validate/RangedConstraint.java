@@ -51,7 +51,8 @@ public abstract class RangedConstraint<V extends Number & Comparable, T>
 
     @Override
     ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
-        FieldPath path = value.context().getFieldPath();
+        FieldPath path = value.context()
+                              .getFieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(errorMsgFormat())
@@ -62,44 +63,51 @@ public abstract class RangedConstraint<V extends Number & Comparable, T>
         return ImmutableList.of(violation);
     }
 
-
     private String errorMsgFormat() {
         StringBuilder result = new StringBuilder("Number must be ");
-        if(range.hasLowerBound()){
+        if (range.hasLowerBound() && range.hasUpperBound()) {
+            result.append(forLowerBound());
+            result.append("and ");
+            result.append(forUpperBound());
+            return result.toString();
+        }
+        if (range.hasLowerBound()) {
             result.append(forLowerBound());
         }
-        if(range.hasUpperBound()){
-            result.append(" and ");
+        if (range.hasUpperBound()) {
             result.append(forUpperBound());
         }
         return result.toString();
     }
 
-    private ImmutableSet<String> formatParams(){
+    private ImmutableSet<String> formatParams() {
         ImmutableSet.Builder<String> result = ImmutableSet.builder();
-        if(range.hasLowerBound()){
-            result.add(range.lowerEndpoint().toString());
+        if (range.hasLowerBound()) {
+            result.add(range.lowerEndpoint()
+                            .toString());
         }
-        if(range.hasUpperBound()){
-            result.add(range.upperBoundType().toString());
+        if (range.hasUpperBound()) {
+            result.add(range.upperEndpoint()
+                            .toString());
         }
         return result.build();
     }
 
     private String forLowerBound() {
         String greaterThan = "greater than %s";
-        String appendix = appendix();
+        String appendix = appendix(range.lowerBoundType());
         return format(greaterThan, appendix);
     }
 
     private String forUpperBound() {
         String lessThan = "less than %s";
-        String appendix = appendix();
+        String appendix = appendix(range.upperBoundType());
         return format(lessThan, appendix);
     }
 
-    private String appendix() {
-        BoundType type = range.upperBoundType();
-        return type == CLOSED ? "" : OR_EQUAL_TO + " %s";
+    private static String appendix(BoundType type) {
+        return type == CLOSED
+               ? OR_EQUAL_TO + " %s."
+               : " %s.";
     }
 }

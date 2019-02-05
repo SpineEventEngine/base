@@ -42,6 +42,6 @@ final class MaxConstraint<V extends Number & Comparable> extends RangedConstrain
         Double minValue = Double.parseDouble(option.getValue());
         return inclusive
                ? Range.atMost((V) minValue)
-               : Range.greaterThan((V) minValue);
+               : Range.lessThan((V) minValue);
     }
 }

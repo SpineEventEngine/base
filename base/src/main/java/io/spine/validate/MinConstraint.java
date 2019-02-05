@@ -37,12 +37,12 @@ final class MinConstraint<V extends Number & Comparable> extends RangedConstrain
             "unchecked",
             "WrapperTypeMayBePrimitive" // primitive is uncastable
     })
-        // is safe because Double is a subtype of both Number and Comparable
+    // is safe because Double is a subtype of both Number and Comparable
     private static <V extends Number & Comparable> Range<V> minRange(MinOption option) {
         boolean inclusive = !option.getExclusive();
         Double minValue = Double.parseDouble(option.getValue());
         return inclusive
-               ? Range.atLeast( (V) minValue)
+               ? Range.atLeast((V) minValue)
                : Range.greaterThan((V) minValue);
     }
 }
