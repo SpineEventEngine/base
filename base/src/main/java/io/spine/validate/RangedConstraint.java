@@ -30,7 +30,15 @@ import static com.google.common.collect.BoundType.CLOSED;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static java.lang.String.format;
 
-public abstract class RangedConstraint<V extends Number & Comparable, T>
+/**
+ * A constraint that puts a numeric field value into a range.
+ *
+ * @param <V>
+ *         numeric value that the option is applied to
+ * @param <T>
+ *         value of the option
+ */
+abstract class RangedConstraint<V extends Number & Comparable, T>
         extends NumericFieldConstraint<V, T> {
 
     static final String OR_EQUAL_TO = "or equal to";
