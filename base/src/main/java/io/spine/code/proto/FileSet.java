@@ -93,6 +93,19 @@ public final class FileSet implements Logging {
         return doParse(descriptorSet);
     }
 
+    /**
+     * Parses the given descriptor set file and resolves the descriptors from {@link KnownTypes}.
+     *
+     * <p>The read descriptors are intentionally not linked. Instead, the descriptors with such
+     * names are found in the {@link KnownTypes} and returned as a file set. This way, all
+     * the dependencies get resolved.
+     *
+     * <p>If some of the parsed files are not found in the known types,
+     * an {@code IllegalStateException} is thrown.
+     *
+     * @param descriptorSet the descriptor set file to parse
+     * @return new file set
+     */
     public static FileSet parseAsKnownFiles(File descriptorSet) {
         Set<FileName> fileNames = FileDescriptors.parse(descriptorSet)
                                                  .stream()

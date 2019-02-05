@@ -28,15 +28,37 @@ import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A Protobuf service type as declared in a proto file.
+ */
 public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptorProto> {
 
     private ServiceType(ServiceDescriptor descriptor) {
         super(descriptor, false);
     }
 
+    /**
+     * Creates a new instance of {@code ServiceType} from the given service descriptor.
+     *
+     * @param descriptor
+     *         service descriptor
+     * @return new instance of {@code ServiceType}
+     */
     public static ServiceType of(ServiceDescriptor descriptor) {
         checkNotNull(descriptor);
         return new ServiceType(descriptor);
+    }
+
+    /**
+     * Collects all service types declared in the passed file.
+     */
+    static TypeSet allFrom(FileDescriptor file) {
+        checkNotNull(file);
+        TypeSet.Builder result = TypeSet.newBuilder();
+        for (ServiceDescriptor type : file.getServices()) {
+            result.add(of(type));
+        }
+        return result.build();
     }
 
     @Override
@@ -52,16 +74,5 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
     @Override
     public ClassName javaClassName() {
         return ClassName.from(descriptor());
-    }
-
-    static TypeSet allFrom(FileDescriptor file) {
-        checkNotNull(file);
-        TypeSet.Builder result = TypeSet.newBuilder();
-
-        for (ServiceDescriptor type : file.getServices()) {
-            result.add(of(type));
-        }
-
-        return result.build();
     }
 }

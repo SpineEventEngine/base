@@ -129,9 +129,7 @@ public final class FileDescriptors {
     }
 
     /**
-     * Loads the {@code known_types.desc} descriptor file from the classpath.
-     *
-     * <p>If several files found, all of them are loaded.
+     * Loads the descriptor files from the classpath.
      *
      * @return the set of {@linkplain FileDescriptorProto file descriptors}
      *         contained in the loaded files

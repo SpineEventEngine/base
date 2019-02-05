@@ -21,7 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import io.spine.io.ResourceFiles;
 
 import java.io.File;
@@ -30,19 +30,23 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.lang.System.lineSeparator;
 import static java.nio.file.StandardOpenOption.APPEND;
 
+/**
+ * Reference to descriptor set files.
+ *
+ * <p>Multiple reference files may be present at runtime of an application. The files may be merged
+ * by appending if a "fat" JAR artifact is required.
+ */
 public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
@@ -50,40 +54,53 @@ public final class DescriptorReference {
     private static final Splitter LINE_SPLITTER = Splitter.on(lineSeparator())
                                                           .omitEmptyStrings()
                                                           .trimResults();
-    private final ImmutableSet<String> references;
+    private final String reference;
 
-    private DescriptorReference(ImmutableSet<String> references) {
-        this.references = references;
+    private DescriptorReference(String reference) {
+        this.reference = reference;
     }
 
+    /**
+     * Creates a new reference to the given file.
+     *
+     * @param file
+     *         the descriptor set file to reference
+     * @return new instance
+     */
     public static DescriptorReference toOneFile(File file) {
         checkNotNull(file);
-
-        return toFiles(ImmutableSet.of(file));
+        return new DescriptorReference(file.getName());
     }
 
-    public static DescriptorReference toFiles(Collection<File> descriptorFiles) {
-        checkNotNull(descriptorFiles);
-        ImmutableSet<String> references = descriptorFiles.stream()
-                                                         .map(File::getName)
-                                                         .collect(toImmutableSet());
-        return new DescriptorReference(references);
-    }
-
+    /**
+     * Writes this reference into the {@code desc.ref} file under the given directory.
+     *
+     * <p>Appends the file of it already exists or creates a new file otherwise.
+     *
+     * @param directory
+     *         target dir for the {@code desc.ref} file
+     */
     public void writeTo(Path directory) {
         checkNotNull(directory);
 
-        directory.toFile().mkdirs();
+        directory.toFile()
+                 .mkdirs();
         Path targetFile = directory.resolve(FILE_NAME);
         try {
-            targetFile.toFile().createNewFile();
-            Files.write(targetFile, references, APPEND);
+            targetFile.toFile()
+                      .createNewFile();
+            Files.write(targetFile, ImmutableList.of(reference), APPEND);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    public static Iterator<ResourceReference> loadAll() {
+    /**
+     * Loads all the referenced descriptor set files from the current classpath.
+     *
+     * @return an iterator over application resources
+     */
+    static Iterator<ResourceReference> loadAll() {
         return stream(ResourceFiles.loadAll(FILE_NAME))
                 .map(DescriptorReference::readCatalog)
                 .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
@@ -102,6 +119,9 @@ public final class DescriptorReference {
         }
     }
 
+    /**
+     * A reference to an application resource.
+     */
     public static final class ResourceReference {
 
         private final String resourceName;
@@ -110,6 +130,11 @@ public final class DescriptorReference {
             this.resourceName = resourceName;
         }
 
+        /**
+         * Opens an {@code InputStream} for this resource.
+         *
+         * @return the resource stream or {@code Optional.empty()} if the resource does not exist
+         */
         public Optional<InputStream> openStream() {
             InputStream result = DescriptorReference.class.getClassLoader()
                                                           .getResourceAsStream(resourceName);

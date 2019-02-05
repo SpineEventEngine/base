@@ -26,10 +26,12 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.nio.file.Path;
 
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
+
+/**
+ * An abstract base for creating Gradle extensions.
+ */
 public abstract class BaseExtension {
-
-    private static final String DESC_EXTENSION = ".desc";
-
 
     protected final File defaultMainDescriptor(Project project) {
         Artifact artifact = Artifact

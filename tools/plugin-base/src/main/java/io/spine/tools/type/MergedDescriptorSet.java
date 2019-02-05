@@ -41,10 +41,16 @@ public final class MergedDescriptorSet {
         this.fileSet = FileSet.ofFiles(descriptors);
     }
 
+    /**
+     * Extends the {@code KnownTypes} of this application with the descriptor set.
+     */
     public void loadIntoKnownTypes() {
         MoreKnownTypes.extendWith(fileSet);
     }
 
+    /**
+     * Obtains the file set from the descriptor set.
+     */
     public FileSet fileSet() {
         return fileSet;
     }
