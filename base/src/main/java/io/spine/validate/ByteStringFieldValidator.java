@@ -51,7 +51,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
                 .setMsgFormat("Entity ID field `%s` must not be a ByteString.")
                 .addParam(field().descriptor()
                                  .getFullName())
-                .setFieldPath(getFieldPath())
+                .setFieldPath(fieldPath())
                 .build();
         addViolation(violation);
     }

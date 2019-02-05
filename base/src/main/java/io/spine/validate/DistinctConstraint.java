@@ -36,7 +36,11 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * @param <T>
  *         type of values that this constraint is applicable to
  */
-final class DistinctConstraint<T> implements Constraint<FieldValue<T>> {
+final class DistinctConstraint<T> extends FieldValueConstraint<T, Boolean> {
+
+    DistinctConstraint(Boolean optionValue) {
+        super(optionValue);
+    }
 
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<T> fieldValue) {

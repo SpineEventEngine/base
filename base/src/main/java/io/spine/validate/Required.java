@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
@@ -43,8 +44,8 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final Predicate<FieldValue<T>> isOptionPresent;
-    private final IfMissing<T> ifMissing = new IfMissing<>();
+    private final Predicate<FieldDescriptor> isOptionPresent;
+    private final IfMissing ifMissing = new IfMissing();
 
     /**
      * Creates a new instance of this option.
@@ -74,12 +75,12 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
                : new Required<>();
     }
 
-    private Boolean notAssumingRequired(FieldValue<T> fieldValue) {
-        return valueFrom(fieldValue).orElse(false);
+    private Boolean notAssumingRequired(FieldDescriptor field) {
+        return valueFrom(field).orElse(false);
     }
 
     @Override
-    boolean shouldValidate(FieldValue<T> value) {
+    boolean shouldValidate(FieldDescriptor value) {
         checkCorrectUsage(value);
         return this.isOptionPresent.test(value);
     }
@@ -90,22 +91,20 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
      * <p>Examples of incorrect application include attempting to apply the option to a numeric
      * field.
      *
-     * @param value
+     * @param field
      *         a value that the option is applied to
      */
-    void checkCorrectUsage(FieldValue<T> value) {
-        ifMissing.valueFrom(value)
+    void checkCorrectUsage(FieldDescriptor field) {
+        ifMissing.valueFrom(field)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));
-        checkCanBeRequired(value);
+        checkCanBeRequired(field);
     }
 
-    private void checkCanBeRequired(FieldValue<?> value) {
-        JavaType type = value.declaration()
-                             .javaType();
+    private void checkCanBeRequired(FieldDescriptor field) {
+        JavaType type = field.getJavaType();
         if (!CAN_BE_REQUIRED.contains(type)) {
-            String typeName = value.declaration()
-                                   .typeName();
+            String typeName = field.getType().name();
             _warn("Fields of type {} should not be declared as `(required)`.", typeName);
         }
     }

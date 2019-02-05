@@ -47,6 +47,6 @@ final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
 
     @Override
     public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        return new DistinctConstraint<>();
+        return new DistinctConstraint<>(optionValue(fieldValue));
     }
 }

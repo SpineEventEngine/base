@@ -31,17 +31,15 @@ import static io.spine.validate.FieldValidator.getErrorMsgFormat;
  * A constraint that, when applied to a string field, checks whether that field matches the
  * specified pattern.
  */
-final class PatternConstraint implements Constraint<FieldValue<String>> {
-
-    private final PatternOption optionValue;
+final class PatternConstraint extends FieldValueConstraint<String, PatternOption> {
 
     PatternConstraint(PatternOption optionValue) {
-        this.optionValue = optionValue;
+        super(optionValue);
     }
 
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<String> fieldValue) {
-        String regex = optionValue.getRegex();
+        String regex = optionValue().getRegex();
         ImmutableList<String> values = fieldValue.asList();
         ImmutableList<ConstraintViolation> violations =
                 values.stream()
@@ -52,10 +50,10 @@ final class PatternConstraint implements Constraint<FieldValue<String>> {
     }
 
     private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
-        String msg = getErrorMsgFormat(optionValue, optionValue.getMsgFormat());
+        String msg = getErrorMsgFormat(optionValue(), optionValue().getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
                                         .getFieldPath();
-        String regex = optionValue.getRegex();
+        String regex = optionValue().getRegex();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

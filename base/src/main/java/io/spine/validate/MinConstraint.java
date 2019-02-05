@@ -36,13 +36,10 @@ import static java.lang.Double.parseDouble;
  * @param <V>
  *         a type of value that is this constraint can be applied to
  */
-final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
-
-    private final MinOption optionValue;
+final class MinConstraint<V extends Number> extends NumericFieldConstraint<V, MinOption> {
 
     MinConstraint(MinOption optionValue) {
-        super();
-        this.optionValue = optionValue;
+        super(optionValue);
     }
 
     @Override
@@ -73,7 +70,7 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(isExclusive() ? "" : "or equal to")
+                .addParam(isExclusive() ? "" : OR_EQUAL_TO)
                 .addParam(String.valueOf(min()))
                 .setFieldPath(path)
                 .setFieldValue(toAny(value.singleValue()))
@@ -82,11 +79,11 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V> {
     }
 
     private double min() {
-        String stringValue = optionValue.getValue();
+        String stringValue = optionValue().getValue();
         return parseDouble(stringValue);
     }
 
     private boolean isExclusive() {
-        return optionValue.getExclusive();
+        return optionValue().getExclusive();
     }
 }

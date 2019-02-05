@@ -50,7 +50,7 @@ class BooleanFieldValidatorTest {
 
     @Test
     @DisplayName("convert string to number")
-    void convert_string_to_number() {
+    void convertStringToNumber() {
         assertFalse(validator.isNotSet(false));
     }
 
@@ -67,9 +67,9 @@ class BooleanFieldValidatorTest {
 
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
-        List<ConstraintViolation> validate = validator.validate();
+        List<ConstraintViolation> violations = validator.validate();
 
-        assertTrue(validate.isEmpty());
+        assertTrue(violations.isEmpty());
         assertEquals(1, loggedMessages.size());
         assertEquals(WARN, loggedMessages.peek().getLevel());
     }

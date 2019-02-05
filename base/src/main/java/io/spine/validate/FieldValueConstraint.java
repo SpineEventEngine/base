@@ -20,17 +20,33 @@
 
 package io.spine.validate;
 
-import io.spine.code.proto.FieldOption;
-import io.spine.option.IfMissingOption;
-import io.spine.option.OptionsProto;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A field option that defines custom error message if a field is {@code required} but missing.
+ * A rule that limits a set of values that a Protobuf field can have.
+ *
+ * @param <T>
+ *         a type of value of the field that this constraint is applied to
+ * @param <V>
+ *         a type of value that describes the constraints
  */
-final class IfMissing extends FieldOption<IfMissingOption> {
+public abstract class FieldValueConstraint<T, V> implements Constraint<FieldValue<T>> {
 
-    /** Creates a new instance of this option. */
-    IfMissing() {
-        super(OptionsProto.ifMissing);
+    private final V optionValue;
+
+    /**
+     * Creates a new instance of this constraint.
+     *
+     * @param optionValue
+     *         a value that describes the field constraints
+     */
+    FieldValueConstraint(V optionValue) {
+        checkNotNull(optionValue);
+        this.optionValue = optionValue;
+    }
+
+    /** Returns a value that describes the constraint.*/
+    public V optionValue() {
+        return optionValue;
     }
 }

@@ -49,6 +49,10 @@ final class MessageValue {
         this.context = checkNotNull(context);
     }
 
+    final Descriptor descriptor(){
+        return descriptor;
+    }
+
     /**
      * Creates a value of a message field.
      *
