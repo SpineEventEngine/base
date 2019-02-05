@@ -35,9 +35,9 @@ import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 
 /**
@@ -79,25 +79,23 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     private Action<Task> testScopeActionFor(Project project) {
         _debug("Initializing the enrichment lookup for the \"test\" source code");
-        return task -> findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
+        return task -> findEnrichmentsAndWriteProps(getTestDescriptorSet(project),
                                                     getTestTargetGenResourcesDir(project));
     }
 
     private Action<Task> mainScopeActionFor(Project project) {
         _debug("Initializing the enrichment lookup for the \"main\" source code");
-        return task -> findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
+        return task -> findEnrichmentsAndWriteProps(getMainDescriptorSet(project),
                                                     getMainTargetGenResourcesDir(project));
     }
 
-    private void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
-        File file = new File(descriptorSetFile);
-
-        if (!file.exists()) {
-            logMissingDescriptorSetFile(file);
+    private void findEnrichmentsAndWriteProps(File descriptorSetFile, String targetDir) {
+        if (!descriptorSetFile.exists()) {
+            logMissingDescriptorSetFile(descriptorSetFile);
             return;
         }
 
-        EnrichmentLookup lookup = new EnrichmentLookup(file);
+        EnrichmentLookup lookup = new EnrichmentLookup(descriptorSetFile);
         lookup.collectTo(targetDir);
     }
 }

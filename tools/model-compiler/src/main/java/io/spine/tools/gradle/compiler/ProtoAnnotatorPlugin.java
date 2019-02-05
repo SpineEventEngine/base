@@ -48,10 +48,10 @@ import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
 import static io.spine.tools.gradle.compiler.Extension.getInternalClassPatterns;
 import static io.spine.tools.gradle.compiler.Extension.getInternalMethodNames;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
 
@@ -201,24 +201,23 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     private Action<Task> newAction(Project project, boolean isTestTask) {
         return task -> {
-            String descriptorSetPath = isTestTask
-                                       ? getTestDescriptorSetPath(project)
-                                       : getMainDescriptorSetPath(project);
+            File descriptorSetFile = isTestTask
+                                       ? getTestDescriptorSet(project)
+                                       : getMainDescriptorSet(project);
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
                                        : getMainGenProtoDir(project);
             String generatedGrpcDir = isTestTask
                                       ? getTestGenGrpcDir(project)
                                       : getMainGenGrpcDir(project);
-            File setFile = new File(descriptorSetPath);
-            if (!setFile.exists()) {
-                logMissingDescriptorSetFile(setFile);
+            if (!descriptorSetFile.exists()) {
+                logMissingDescriptorSetFile(descriptorSetFile);
                 return;
             }
             Path generatedProtoPath = Paths.get(generatedProtoDir);
             Path generatedGrpcPath = Paths.get(generatedGrpcDir);
             AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                    .newInstance(setFile, generatedProtoPath, generatedGrpcPath);
+                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
             CodeGenAnnotations annotations = getCodeGenAnnotations(project);
             ClassName internalClassName = annotations.internalClassName();
             ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);

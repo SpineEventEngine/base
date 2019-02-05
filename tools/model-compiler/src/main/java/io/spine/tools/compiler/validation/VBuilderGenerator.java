@@ -25,9 +25,10 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.ProtoBelongsToModule;
+import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.SourceProtoBelongsToModule;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -69,22 +70,24 @@ public final class VBuilderGenerator implements Logging {
                        "Proto src dir: {} Target dir: {}", protoSrcDir, targetDir);
     }
 
-    public void process(File descriptorSetFile) {
-        _debug("Generating validating builders for types from {}.", descriptorSetFile);
-
-        FileSet fileSet = FileSet.parseAsKnownFiles(descriptorSetFile);
+    public void process(FileSet files) {
+        FileSet fileSet = moduleFiles(files);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
                             .filter(MessageType::isNotRejection)
-                            .filter(new SourceProtoBelongsToModule(protoSrcDir))
                             .collect(toImmutableList());
         generate(customTypes);
     }
 
-    private void generate(ImmutableCollection<MessageType> messages) {
+    private FileSet moduleFiles(FileSet allFiles) {
+        ProtoBelongsToModule predicate = new SourceProtoBelongsToModule(protoSrcDir);
+        return allFiles.filter(predicate.forDescriptor());
+    }
 
+    private void generate(ImmutableCollection<MessageType> messages) {
+        _debug("Generating validating builders for {} types.", messages.size());
         for (MessageType messageType : messages) {
             try {
                 VBuilderCode code = new VBuilderCode(targetDir, indent, messageType);
@@ -108,5 +111,4 @@ public final class VBuilderGenerator implements Logging {
             log.warn(message);
         }
     }
-
 }

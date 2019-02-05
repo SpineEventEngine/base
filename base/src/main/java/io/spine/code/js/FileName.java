@@ -20,26 +20,22 @@
 
 package io.spine.code.js;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * The JavaScript source file name.
- *
- * <p>When being created from {@link FileDescriptor}, the {@code .proto} extension is replaced by
- * {@code _pb.js} suffix, as per Protobuf standard.
- *
- * <p>For example, the {@code spine/options.proto} becomes {spine/options_pb.js}.
- *
- * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
- *
- * @author Dmytro Kuzmin
+ * A name of a JavaScript file, which is generated under the
+ * the root directory with compiled Protobuf files.
  */
 public final class FileName extends AbstractFileName<FileName> {
 
@@ -49,12 +45,6 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final String SUFFIX = "_pb";
     /** The standard file extension. */
     private static final String EXTENSION = ".js";
-    /** The path separator used in JavaScript imports. Not platform-dependant. */
-    private static final String PATH_SEPARATOR = "/";
-    /** The path to parent directory. */
-    private static final String PARENT_DIR = "../";
-    /** The path to the current directory. */
-    private static final String CURRENT_DIR = "./";
 
     private FileName(String value) {
         super(value);
@@ -64,53 +54,44 @@ public final class FileName extends AbstractFileName<FileName> {
      * Creates new JavaScript file name with the passed value.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
-    public static FileName of(String value) {
+    static FileName of(String value) {
         checkNotEmptyOrBlank(value);
-        checkArgument(value.endsWith(EXTENSION));
+        checkArgument(value.endsWith(EXTENSION),
+                      "`%s` is expected to contain `.js` extension.", value);
         return new FileName(value);
     }
 
     /**
-     * Gets the generated JavaScript file name for the proto file.
+     * Obtains the name of the generated JavaScript file using the file descriptor.
+     *
+     * <p>All generated files have {@code _pb.js} suffix,
+     * so the descriptor with name {@code spine/options.proto}
+     * becomes {@code spine/options_pb.js}.
+     *
+     * <p>The resulting name also includes the path denoting a Protobuf package.
      *
      * @param descriptor
      *         the descriptor of the file
-     * @return the generated JavaScript file name
-     */
-    public static FileName from(FileDescriptorProto descriptor) {
-        checkNotNull(descriptor);
-        io.spine.code.proto.FileName protoFileName = io.spine.code.proto.FileName.from(descriptor);
-        String fileName = protoFileName.nameWithoutExtension() + SUFFIX + EXTENSION;
-        return of(fileName);
-    }
-
-    /**
-     * Obtains the file name from the passed descriptor.
+     * @return the name of a generated JavaScript file
      */
     public static FileName from(FileDescriptor descriptor) {
         checkNotNull(descriptor);
-        return from(descriptor.toProto());
-    }
-
-    /**
-     * Returns all {@code FileName} elements, i.e. the relative path to the file and file name
-     * itself.
-     */
-    public String[] pathElements() {
-        String[] result = value().split(PATH_SEPARATOR);
-        return result;
+        io.spine.code.proto.FileName protoFileName = io.spine.code.proto.FileName.from(descriptor);
+        String fileName = protoFileName.nameWithoutExtension() + protoEnding();
+        return of(fileName);
     }
 
     /**
      * Composes the path from the given file to its root.
      *
-     * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
+     * <p>Basically, the method replaces all preceding path elements
+     * by the {@link FileReference#parentDirectory()}.
      */
     public String pathToRoot() {
-        String[] pathElements = pathElements();
-        int fileLocationDepth = pathElements.length - 1;
-        String pathToRoot = Strings.repeat(PARENT_DIR, fileLocationDepth);
-        String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
+        List<String> pathElements = pathElements();
+        int fileLocationDepth = pathElements.size() - 1;
+        String pathToRoot = Strings.repeat(FileReference.parentDirectory(), fileLocationDepth);
+        String result = pathToRoot.isEmpty() ? FileReference.currentDirectory() : pathToRoot;
         return result;
     }
 
@@ -120,6 +101,24 @@ public final class FileName extends AbstractFileName<FileName> {
      * <p>Assumes that the path is used at the root directory with generated Protobuf files.
      */
     public String pathFromRoot() {
-        return CURRENT_DIR + value();
+        return FileReference.currentDirectory() + value();
+    }
+
+    /**
+     * Returns all {@code FileName} elements, i.e. the relative path to the file and file name
+     * itself.
+     */
+    @VisibleForTesting
+    List<String> pathElements() {
+        Iterable<String> elements = Splitter.on(FileReference.separator())
+                                            .split(value());
+        return ImmutableList.copyOf(elements);
+    }
+
+    /**
+     * Obtains the ending of a {@code .proto} file compiled into JavaScript.
+     */
+    private static String protoEnding() {
+        return SUFFIX + EXTENSION;
     }
 }

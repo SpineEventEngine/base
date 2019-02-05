@@ -20,11 +20,11 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.compiler.descriptor.FileDescriptorSuperset;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.type.FileDescriptorSuperset;
 import org.gradle.api.Action;
 import org.gradle.api.Buildable;
 import org.gradle.api.Project;
@@ -39,8 +39,8 @@ import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from
@@ -105,9 +105,9 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     }
 
     private static File descriptorSet(Project project, boolean tests) {
-        String path = tests
-                      ? getTestDescriptorSetPath(project)
-                      : getMainDescriptorSetPath(project);
-        return new File(path);
+        File descriptor = tests
+                          ? getTestDescriptorSet(project)
+                          : getMainDescriptorSet(project);
+        return descriptor;
     }
 }

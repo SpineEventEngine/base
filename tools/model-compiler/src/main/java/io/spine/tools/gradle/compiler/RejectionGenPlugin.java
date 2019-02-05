@@ -26,11 +26,11 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
-import io.spine.tools.compiler.SourceProtoBelongsToModule;
+import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -38,10 +38,9 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.spine.code.proto.RejectionsFile.findAll;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
@@ -49,11 +48,11 @@ import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
 /**
@@ -63,7 +62,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
  *
  * <p>Logs a warning if there are no protobuf descriptors generated.
  */
-public class RejectionGenPlugin extends SpinePlugin {
+public class RejectionGenPlugin extends ProtoPlugin {
 
     /**
      * Applies the plug-in to a project.
@@ -79,7 +78,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         Action<Task> mainScopeAction =
                 createAction(project,
-                             () -> getMainDescriptorSetPath(project),
+                             mainProtoFiles(project),
                              () -> getTargetGenRejectionsRootDir(project),
                              () -> getMainProtoSrcDir(project));
 
@@ -91,7 +90,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         Action<Task> testScopeAction =
                 createAction(project,
-                             () -> getTestDescriptorSetPath(project),
+                             testProtoFiles(project),
                              () -> getTargetTestGenRejectionsRootDir(project),
                              () -> getTestProtoSrcDir(project));
 
@@ -104,12 +103,22 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
-    private Action<Task> createAction(Project project,
-                                      Supplier<String> descriptorSetPath,
-                                      Supplier<String> targetDirPath,
-                                      Supplier<String> protoSrcDir) {
+    private static Action<Task> createAction(Project project,
+                                             Supplier<FileSet> files,
+                                             Supplier<String> targetDirPath,
+                                             Supplier<String> protoSrcDir) {
 
-        return new GenAction(this, project, descriptorSetPath, targetDirPath, protoSrcDir);
+        return new GenAction(project, files, targetDirPath, protoSrcDir);
+    }
+
+    @Override
+    protected Supplier<File> mainDescriptorFile(Project project) {
+        return () -> getMainDescriptorSet(project);
+    }
+
+    @Override
+    protected Supplier<File> testDescriptorFile(Project project) {
+        return () -> getTestDescriptorSet(project);
     }
 
     /**
@@ -117,24 +126,16 @@ public class RejectionGenPlugin extends SpinePlugin {
      */
     private static class GenAction extends CodeGenerationAction {
 
-        private GenAction(RejectionGenPlugin plugin,
-                          Project project,
-                          Supplier<String> descriptorPath,
+        private GenAction(Project project,
+                          Supplier<FileSet> files,
                           Supplier<String> targetDirPath,
                           Supplier<String> protoSrcDirPath) {
-            super(plugin, project, descriptorPath, targetDirPath, protoSrcDirPath);
+            super(project, files, targetDirPath, protoSrcDirPath);
         }
 
         @Override
         public void execute(Task task) {
-            Optional<File> descriptorSetFile = descriptorSetFile();
-            if (!descriptorSetFile.isPresent()) {
-                return;
-            }
-            _debug("Generating from {}", descriptorSetFile.get());
-
-            FileSet mainFiles = FileSet.parseAsKnownFiles(descriptorSetFile.get());
-            ImmutableSet<RejectionsFile> rejectionFiles = findAll(mainFiles);
+            ImmutableSet<RejectionsFile> rejectionFiles = findModuleRejections(protoFiles().get());
             _debug("Processing the file descriptors for the rejections {}", rejectionFiles);
             for (RejectionsFile source : rejectionFiles) {
                 // We are sure that this is a rejections file because we got them filtered.
@@ -142,12 +143,20 @@ public class RejectionGenPlugin extends SpinePlugin {
             }
         }
 
+        /**
+         * Obtains all rejection files belonging to the currently processed module.
+         */
+        private ImmutableSet<RejectionsFile> findModuleRejections(FileSet allFiles) {
+            ImmutableSet<RejectionsFile> allRejections = findAll(allFiles);
+            ImmutableSet<RejectionsFile> moduleRejections = allRejections
+                    .stream()
+                    .filter(new SourceProtoBelongsToModule(protoSrcDir()))
+                    .collect(toImmutableSet());
+            return moduleRejections;
+        }
+
         private void generateRejections(RejectionsFile source) {
-            List<RejectionType> rejections =
-                    source.getRejectionDeclarations()
-                          .stream()
-                          .filter(new SourceProtoBelongsToModule(protoSrcDir()))
-                          .collect(toImmutableList());
+            List<RejectionType> rejections = source.getRejectionDeclarations();
             if (rejections.isEmpty()) {
                 return;
             }

@@ -22,20 +22,21 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.code.proto.ref.ByOption;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 
 import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.OptionsProto.enrichmentFor;
+import static io.spine.tools.compiler.enrichment.TypeRefs.enrichmentForOption;
 
 /**
  * Composes enrichment map for multiple message declarations.
@@ -48,16 +49,20 @@ final class EnrichmentMapBuilder implements Logging {
     private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameParser eventType;
-    private final TypeNameParser enrichmentType;
+    private final TypeRefs enrichmentForOption;
 
     /** Multimap for storing intermediate results. */
     private final HashMultimap<String, String> multimap = HashMultimap.create();
 
+    /**
+     * Creates enrichment map builder with a supplied {@code packagePrefix}.
+     *
+     * @param packagePrefix
+     *         a Protobuf package prefix (including the trailing dot)
+     */
     EnrichmentMapBuilder(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventType = new TypeNameParser(enrichmentFor, packagePrefix);
-        this.enrichmentType = new TypeNameParser(enrichment, packagePrefix);
+        this.enrichmentForOption = enrichmentForOption(packagePrefix);
     }
 
     /**
@@ -76,7 +81,7 @@ final class EnrichmentMapBuilder implements Logging {
     }
 
     /**
-     * Obtains enrichment information as the the map.
+     * Obtains enrichment information as a map.
      */
     Map<String, String> toMap() {
         _debug("Found enrichments: {}", multimap);
@@ -131,12 +136,11 @@ final class EnrichmentMapBuilder implements Logging {
             }
             return;
         }
-        Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
-        if (entryFromInnerMsg != null) {
-            put(entryFromInnerMsg);
-            _debug("Found enrichment: {} -> {}",
-                   entryFromInnerMsg.getKey(),
-                   entryFromInnerMsg.getValue());
+        Optional<Map.Entry<String, String>> entryFromInnerMsg = scanInnerMessages(msg);
+        if (entryFromInnerMsg.isPresent()) {
+            Map.Entry<String, String> entry = entryFromInnerMsg.get();
+            put(entry);
+            _debug("Found enrichment: {} -> {}", entry.getKey(), entry.getValue());
         } else {
             _debug("No enrichment or event annotations found for message {}", msg.getName());
         }
@@ -147,13 +151,17 @@ final class EnrichmentMapBuilder implements Logging {
         multimap.put(entry.getKey(), entry.getValue());
     }
 
+    /**
+     * Scans supplied {@code message} for a {@code (enrichment_for)} option and builds a map
+     * of enrichments out of the option.
+     */
     private Map<String, String> scanMsg(DescriptorProto msg) {
         ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
         String messageName = packagePrefix + msg.getName();
 
         // Treating current {@code msg} as an enrichment object.
         _debug("Scanning message {} for the enrichment annotations", messageName);
-        Collection<TypeName> eventTypes = eventType.parse(msg);
+        ImmutableList<String> eventTypes = enrichmentForOption.parse(msg);
         if (!eventTypes.isEmpty()) {
             String mergedValue = joiner.join(eventTypes);
             _debug("Found target events: {}", mergedValue);
@@ -162,54 +170,58 @@ final class EnrichmentMapBuilder implements Logging {
             _debug("No target events found");
         }
 
-        // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
-        _debug("Scanning message {} for the enrichment target annotations", messageName);
-        Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
-        if (!enrichmentTypes.isEmpty()) {
-            _debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
-            for (TypeName enrichmentType : enrichmentTypes) {
-                String typeNameValue = enrichmentType.value();
-                result.put(typeNameValue, messageName);
-            }
-        } else {
-            _debug("No enrichments for event {} found", messageName);
-        }
-
         return result.build();
     }
 
+    /**
+     * Scans supplied {@code message} fields for a {@code (by)} option and builds a map
+     * of enrichments out of the option.
+     */
+    @Deprecated //TODO:2019-02-04:yuri.sergiichuk: this functionality should not be supported anymore. See https://github.com/SpineEventEngine/base/issues/310
     private Map<String, String> scanFields(DescriptorProto msg) {
         String msgName = msg.getName();
         _debug("Scanning fields of message {} for the enrichment annotations", msgName);
         Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
-                ByOption by = new ByOption(msg, field);
-                Map.Entry<String, String> foundEvents = by.collect(packagePrefix);
-                enrichmentsMap.put(foundEvents.getKey(), foundEvents.getValue());
+                Entry entry = new Entry(msg, field, packagePrefix);
+                enrichmentsMap.put(entry.enrichmentType(), entry.sourceTypes());
             }
         }
         return enrichmentsMap;
     }
 
-    @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
-    private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
+    /**
+     * Scans supplied {@code message} inner messages for a (@code (by)} option and builds a map
+     * of enrichments out of the option.
+     */
+    @SuppressWarnings("MethodWithMultipleLoops") // It's fine in this case.
+    @Deprecated //TODO:2019-02-04:yuri.sergiichuk: this functionality should not be supported anymore. See https://github.com/SpineEventEngine/base/issues/310
+    private Optional<Map.Entry<String, String>> scanInnerMessages(DescriptorProto msg) {
         _debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
                 if (ByOption.isSetFor(field)) {
-                    String outerEventName = packagePrefix + msg.getName();
-                    String enrichmentName =
-                            outerEventName +
-                                    TypeName.NESTED_TYPE_SEPARATOR +
-                                    innerMsg.getName();
-                    _debug("'by' option found on field {} targeting outer event {}",
-                           field.getName(),
-                           outerEventName);
-                    return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
+                    Map.Entry<String, String> enrichmentEntry =
+                            innerMessageEnrichment(msg, innerMsg, field);
+                    return Optional.of(enrichmentEntry);
                 }
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    private Map.Entry<String, String> innerMessageEnrichment(DescriptorProto msg,
+                                                             DescriptorProto innerMsg,
+                                                             FieldDescriptorProto field) {
+        String outerEventName = packagePrefix + msg.getName();
+        String enrichmentName =
+                outerEventName +
+                        TypeName.NESTED_TYPE_SEPARATOR +
+                        innerMsg.getName();
+        _debug("'by' option found on field {} targeting outer event {}",
+               field.getName(),
+               outerEventName);
+        return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
     }
 }

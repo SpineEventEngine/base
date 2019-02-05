@@ -49,7 +49,7 @@ public final class GivenProject {
                                            .descriptors()
                                            .mainDescriptors();
         Path descriptorSetFile = mainDescriptorsDir.resolve(KNOWN_TYPES);
-        return FileSet.parseOrEmpty(descriptorSetFile.toFile());
+        return FileSet.parse(descriptorSetFile.toFile());
     }
 
     public static Directory mainProtoSources() {

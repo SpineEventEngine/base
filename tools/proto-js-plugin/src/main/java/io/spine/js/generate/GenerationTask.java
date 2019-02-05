@@ -21,7 +21,12 @@
 package io.spine.js.generate;
 
 import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.ProtoBelongsToModule;
+import io.spine.code.proto.SourceFile;
+
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -47,9 +52,28 @@ public abstract class GenerationTask {
      */
     public final void performFor(FileSet fileSet) {
         checkNotNull(fileSet);
-        if (hasFiles(fileSet)) {
-            generateFor(fileSet);
+        FileSet filtered = filter(fileSet);
+        if (hasFiles(filtered)) {
+            generateFor(filtered);
         }
+    }
+
+    /**
+     * Filters out files that should not processed by the task.
+     *
+     * <p>The method filters out files that don't belong to the module.
+     * A file is considered belonging to the module if it was compiled to JavaScript.
+     * A {@code .js} file is checked instead of an original {@code .proto} file
+     * since a module can expose Protobufs defined by other modules and these files
+     * still should be handled.
+     *
+     * @param fileSet
+     *         the files to filter
+     * @return the files to perform the taks for
+     */
+    protected FileSet filter(FileSet fileSet) {
+        ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedRoot);
+        return fileSet.filter(predicate.forDescriptor());
     }
 
     /**
@@ -75,5 +99,33 @@ public abstract class GenerationTask {
     private boolean hasFiles(FileSet fileSet) {
         boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
+    }
+
+    /**
+     * A predicate determining if the given Protobuf file was compiled to JavaScript
+     * and belongs to the specified module.
+     */
+    private static final class CompiledProtoBelongsToModule extends ProtoBelongsToModule {
+
+        private final Directory generatedRoot;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param generatedRoot
+         *         the root directory for generated Protobufs
+         */
+        private CompiledProtoBelongsToModule(Directory generatedRoot) {
+            super();
+            checkNotNull(generatedRoot);
+            this.generatedRoot = generatedRoot;
+        }
+
+        @Override
+        protected Path resolve(SourceFile file) {
+            FileName fileName = FileName.from(file.getDescriptor());
+            Path filePath = generatedRoot.resolve(fileName);
+            return filePath;
+        }
     }
 }

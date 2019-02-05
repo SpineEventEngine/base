@@ -20,91 +20,132 @@
 
 package io.spine.js.generate.resolve;
 
-import com.google.protobuf.Any;
-import io.spine.code.java.SourceFile;
+import com.google.common.collect.ImmutableList;
+import com.google.common.truth.IterableSubject;
 import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
-import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.given.GivenProject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.given.Given.importWithPath;
-import static io.spine.js.generate.resolve.given.Given.mainProtoRoot;
-import static io.spine.js.generate.resolve.given.Given.testProtoRoot;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.spine.js.generate.resolve.given.Given.newModule;
+import static java.util.Arrays.asList;
 
 @DisplayName("ResolveImports task should")
 class ResolveImportsTest {
 
-    private final SourceFile moduleMainFile = SourceFile.of(GenerationTask.class);
-    private final Path importedFilePath = Paths.get("java")
-                                               .resolve(moduleMainFile.getPath());
-    private final Directory fakeProtoRoot = mainProtoRoot();
-    private final FileName importInto = FileName.from(Any.getDescriptor()
-                                                         .getFile());
+    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
+    private final ExternalModule module = newModule("test-module", "root-dir");
+    private final Path tempDirectory = generatedProtoDir.getPath();
+    private final Path testFile = tempDirectory.resolve("js/with-imports.js");
 
     @Test
-    @DisplayName("resolve Spine library import if it is present in the module")
-    void resolveSpineImport() {
-        ImportSnippet importLine = importLine("spine/" + importedFilePath);
-        String expectedPathPrefix = ResolveImports.fileRelativeToSources(fakeProtoRoot, importInto);
-        String expectedPath = expectedPathPrefix + importedFilePath;
-        assertImportPath(importLine, expectedPath);
+    @DisplayName("replace a relative import of a missing file")
+    void resolveMissingFileImport() throws IOException {
+        ResolveImports task = newTask(module);
+        writeFile(testFile, "require('./root-dir/missing.js');");
+        afterResolve(testFile, task).containsExactly("require('test-module/root-dir/missing.js');");
     }
 
     @Test
-    @DisplayName("not resolve Spine library import if it present if the module")
-    void notResolveSpineImport() {
-        ImportSnippet importLine = importLine(importedFilePath.toString());
-        assertImportPath(importLine, importedFilePath.toString());
+    @DisplayName("not replace a relative import of an existing file")
+    void notResolveExistingFile() throws IOException {
+        ResolveImports task = newTask(module);
+        String originalImport = "require('./root-dir/not-missing.js');";
+        createFile("js/root-dir/not-missing.js");
+        writeFile(testFile, originalImport);
+        afterResolve(testFile, task).containsExactly(originalImport);
     }
 
     @Test
-    @DisplayName("check imported file belongs to the module")
-    void checkBelongsToModule() {
-        String path = importedFilePath.toString();
-        boolean belongs = ResolveImports.belongsToModule(path, fakeProtoRoot);
-        assertTrue(belongs);
+    @DisplayName("not clash Spine Web and Spine Users modules")
+    void notClashUsersWithWeb() throws IOException {
+        ImmutableList<ExternalModule> modules = ImmutableList.of(ExternalModule.spineWeb(),
+                                                                 ExternalModule.spineUsers());
+        ResolveImports task = new ResolveImports(generatedProtoDir, modules);
+        writeFile(testFile, "require('../../spine/users/identifiers_pb.js');");
+        afterResolve(testFile, task)
+                .containsExactly("require('spine-users/spine/users/identifiers_pb.js');");
     }
 
     @Test
-    @DisplayName("resolve the sources directory")
-    void resolveSourcesDirectory() {
-        Path sourcesDirectoryPath = ResolveImports.sourcesPath(fakeProtoRoot);
-        Path expected = Paths.get("src/main")
-                             .toAbsolutePath();
-        assertEquals(expected, sourcesDirectoryPath);
+    @DisplayName("resolve in main sources before external modules")
+    void resolveMainSourcesFirstly() throws IOException {
+        ResolveImports task = newTask(module);
+        writeFile(testFile, "require('./root-dir/main.js');");
+        createFile("main/root-dir/main.js");
+        afterResolve(testFile, task).containsExactly("require('./../main/root-dir/main.js');");
     }
 
     @Test
-    @DisplayName("compose the relative path to sources for a main file")
-    void mainFileRelativeToSources() {
-        String path = ResolveImports.fileRelativeToSources(mainProtoRoot(), importInto);
-        assertThat(path).isEqualTo("../../../");
+    @DisplayName("not replace a relative import if not matches patterns")
+    void notReplaceIfNotProvided() throws IOException {
+        ResolveImports task = newTask(module);
+        String originalImport = "require('./abcdef/missing.js');";
+        writeFile(testFile, originalImport);
+        afterResolve(testFile, task).containsExactly(originalImport);
     }
 
     @Test
-    @DisplayName("compose the relative path to sources for a test file")
-    void testFileRelativeToSources() {
-        String path = ResolveImports.fileRelativeToSources(testProtoRoot(), importInto);
-        assertThat(path).isEqualTo("../../../../main/");
+    @DisplayName("relativize imports of standard Protobuf types")
+    void relativizeStandardProtoImports() throws IOException {
+        ResolveImports task = newTask(module);
+        writeFile(testFile, "require('google-protobuf/google/protobuf/compiler/plugin_pb.js');");
+        afterResolve(testFile, task)
+                .containsExactly("require('../google/protobuf/compiler/plugin_pb.js');");
     }
 
-    private void assertImportPath(ImportSnippet importLine, String expectedImportPath) {
-        ImportSnippet resolved = resolveImport(importLine);
-        assertThat(resolved.path()).isEqualTo(expectedImportPath);
+    @Test
+    @DisplayName("relativize imports of standard Protobuf types in the same directory")
+    void relativizeStandardProtoImportsInSameDir() throws IOException {
+        ResolveImports task = newTask(module);
+        Path file = tempDirectory.resolve("google/protobuf/imports.js");
+        writeFile(file, "require('google-protobuf/google/protobuf/type_pb.js');");
+        afterResolve(file, task).containsExactly("require('../../google/protobuf/type_pb.js');");
     }
 
-    private ImportSnippet resolveImport(ImportSnippet importLine) {
-        return ResolveImports.resolveImport(importLine, fakeProtoRoot);
+    @Test
+    @DisplayName("relativize imports of standard Protobuf types in the root directory")
+    void relativizeStandardProtoImportsInRoot() throws IOException {
+        ResolveImports task = newTask(module);
+        Path file = tempDirectory.resolve("root.js");
+        writeFile(file, "require('google-protobuf/google/protobuf/empty_pb.js');");
+        afterResolve(file, task).containsExactly("require('./google/protobuf/empty_pb.js');");
     }
 
-    private ImportSnippet importLine(String importPath) {
-        return importWithPath(importPath, importInto);
+    @Test
+    @DisplayName("resolve relative imports of standard Protobuf types in Spine Web")
+    void resolveRelativeImportsOfStandardProtos() throws IOException {
+        ResolveImports task = newTask(ExternalModule.spineWeb());
+        Path file = tempDirectory.resolve("imports.js");
+        writeFile(file, "require('google-protobuf/google/protobuf/timestamp_pb.js');");
+        afterResolve(file, task)
+                .containsExactly("require('spine-web/proto/google/protobuf/timestamp_pb.js');");
+    }
+
+    private void createFile(String name) throws IOException {
+        Path filePath = tempDirectory.resolve(name);
+        Files.createDirectories(filePath.getParent());
+        Files.createFile(filePath);
+    }
+
+    private static void writeFile(Path file, String... lines) throws IOException {
+        Files.createDirectories(file.getParent());
+        Files.write(file, asList(lines));
+    }
+
+    private static IterableSubject afterResolve(Path file, ResolveImports task) throws IOException {
+        task.resolveInFile(file);
+        List<String> lines = Files.readAllLines(file);
+        return assertThat(lines);
+    }
+
+    private ResolveImports newTask(ExternalModule module) {
+        return new ResolveImports(generatedProtoDir, ImmutableList.of(module));
     }
 }

@@ -46,7 +46,6 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -56,8 +55,8 @@ import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
 import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
 import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static org.gradle.internal.os.OperatingSystem.current;
 
@@ -197,31 +196,31 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                   .getName()
                                   .contains("test");
         Project project = protocTask.getProject();
-        String descPath;
+        File descriptor;
         TaskName writeRefName;
         if (tests) {
-            descPath = getTestDescriptorSetPath(project);
+            descriptor = getTestDescriptorSet(project);
             writeRefName = WRITE_TEST_DESCRIPTOR_REFERENCE;
         } else {
-            descPath = getMainDescriptorSetPath(project);
+            descriptor = getMainDescriptorSet(project);
             writeRefName = WRITE_DESCRIPTOR_REFERENCE;
         }
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
-        options.setPath(GStrings.fromPlain(descPath));
-        options.setIncludeImports(false);
+        options.setPath(GStrings.fromPlain(descriptor.getPath()));
+        options.setIncludeImports(true);
         options.setIncludeSourceInfo(true);
 
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         String sourceSetName = tests ? "test" : "main";
-        Path resourceDirectory = Paths.get(descPath)
-                                      .getParent();
+        Path resourceDirectory = descriptor.toPath()
+                                           .getParent();
         javaConvention.getSourceSets()
                       .getByName(sourceSetName)
                       .getResources()
                       .srcDir(resourceDirectory);
         GradleTask writeRef = newTask(writeRefName, task -> {
-            DescriptorReference reference = DescriptorReference.toOneFile(new File(descPath));
+            DescriptorReference reference = DescriptorReference.toOneFile(descriptor);
             reference.writeTo(resourceDirectory);
         }).allowNoDependencies()
           .applyNowTo(project);

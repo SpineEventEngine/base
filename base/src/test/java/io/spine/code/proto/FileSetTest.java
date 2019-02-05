@@ -22,15 +22,18 @@ package io.spine.code.proto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("FileSet should")
 class FileSetTest {
 
     @Test
     @DisplayName("load mains resources")
-    void load_main_resources() {
+    void loadMainResources() {
         assertFalse(FileSet.load()
                            .isEmpty());
     }

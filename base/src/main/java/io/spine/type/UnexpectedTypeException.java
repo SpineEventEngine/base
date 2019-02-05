@@ -27,8 +27,6 @@ package io.spine.type;
  * <p>Typically this exception wraps
  * {@link com.google.protobuf.InvalidProtocolBufferException InvalidProtocolBufferException} thrown
  * in unsuccessful call of {@link com.google.protobuf.Any#unpack(Class) Any.unpack(Class)}.
- *
- * @author Alexander Yevsyukov
  */
 public class UnexpectedTypeException extends RuntimeException {
 

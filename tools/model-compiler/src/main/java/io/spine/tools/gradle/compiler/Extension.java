@@ -229,16 +229,18 @@ public class Extension extends BaseExtension {
                                          .testJava());
     }
 
-    public static String getMainDescriptorSetPath(Project project) {
+    public static File getMainDescriptorSet(Project project) {
         Extension extension = extension(project);
-        return pathOrDefault(extension.mainDescriptorSetPath,
-                             extension.defaultMainDescriptor(project));
+        String path = pathOrDefault(extension.mainDescriptorSetPath,
+                                    extension.defaultMainDescriptor(project));
+        return new File(path);
     }
 
-    public static String getTestDescriptorSetPath(Project project) {
+    public static File getTestDescriptorSet(Project project) {
         Extension extension = extension(project);
-        return pathOrDefault(extension.testDescriptorSetPath,
-                             extension.defaultTestDescriptor(project));
+        String path = pathOrDefault(extension.testDescriptorSetPath,
+                                    extension.defaultTestDescriptor(project));
+        return new File(path);
     }
 
     public static String getTargetGenRejectionsRootDir(Project project) {
