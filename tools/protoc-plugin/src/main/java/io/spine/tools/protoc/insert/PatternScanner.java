@@ -23,6 +23,7 @@ package io.spine.tools.protoc.insert;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
@@ -49,14 +50,52 @@ final class PatternScanner {
      * Finds an interface to be generated for the given type.
      */
     Optional<CompilerOutput> scan(MessageType type) {
-        UuidInterface uuidInterface = patterns.getUuidInterface();
-        if (isNotDefault(uuidInterface) && uuidContainer().test(type)) {
-            return Optional.of(uuidInterface(type, uuidInterface));
-        } else if (type.isTopLevel()) {
-            return postfixBasedInterface(type);
-        } else {
-            return Optional.empty();
+        if (isUuidMessage(type)) {
+            return uuidInterface(type);
         }
+        if (type.isEnrichment()) {
+            return enrichmentInterface(type);
+        }
+        if (type.isTopLevel()) {
+            return postfixBasedInterface(type);
+        }
+        return Optional.empty();
+    }
+
+    private boolean isUuidMessage(MessageType type) {
+        if (!patterns.hasUuidInterface()) {
+            return false;
+        }
+        UuidInterface uuidInterface = patterns.getUuidInterface();
+        return isNotDefault(uuidInterface) && uuidContainer().test(type);
+    }
+
+    private Optional<CompilerOutput> uuidInterface(MessageType type) {
+        UuidInterface uuidInterface = patterns.getUuidInterface();
+        return Optional.of(uuidInterface(type, uuidInterface));
+    }
+
+    private static CompilerOutput uuidInterface(MessageType type, UuidInterface uuidInterface) {
+        ClassName interfaceName = ClassName.of(uuidInterface.getInterfaceName());
+        MessageInterfaceParameters parameters =
+                MessageInterfaceParameters.of(new IdentityParameter());
+        MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
+        CompilerOutput insertionPoint = implementInterface(type, messageInterface);
+        return insertionPoint;
+    }
+
+    private Optional<CompilerOutput> enrichmentInterface(MessageType type) {
+        EnrichmentInterface enrichmentInterface = patterns.getEnrichmentInterface();
+        return Optional.of(enrichmentInterface(type, enrichmentInterface));
+    }
+
+    private static CompilerOutput
+    enrichmentInterface(MessageType type, EnrichmentInterface enrichmentInterface) {
+        MessageInterface messageInterface = new PredefinedInterface(
+                ClassName.of(enrichmentInterface.getInterfaceName()),
+                MessageInterfaceParameters.empty()
+        );
+        return implementInterface(type, messageInterface);
     }
 
     private Optional<CompilerOutput> postfixBasedInterface(MessageType type) {
@@ -66,7 +105,8 @@ final class PatternScanner {
                                     .toString();
         return generatedInterfaces
                 .stream()
-                .filter(target -> !target.getInterfaceName().isEmpty())
+                .filter(target -> !target.getInterfaceName()
+                                         .isEmpty())
                 .filter(target -> sourceFilePath.contains(target.getFilePostfix()))
                 .map(target -> implementByTargetTarget(type, target))
                 .findFirst();
@@ -79,14 +119,5 @@ final class PatternScanner {
                 MessageInterfaceParameters.empty()
         );
         return implementInterface(type, messageInterface);
-    }
-
-    private static CompilerOutput uuidInterface(MessageType type, UuidInterface uuidInterface) {
-        ClassName interfaceName = ClassName.of(uuidInterface.getInterfaceName());
-        MessageInterfaceParameters parameters =
-                MessageInterfaceParameters.of(new IdentityParameter());
-        MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
-        CompilerOutput insertionPoint = implementInterface(type, messageInterface);
-        return insertionPoint;
     }
 }
