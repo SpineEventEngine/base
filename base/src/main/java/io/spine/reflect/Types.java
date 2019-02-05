@@ -20,34 +20,40 @@
 
 package io.spine.reflect;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * Utility class for working with {@code Type}s.
- *
- * @author Illia Shepilov
  */
+@SuppressWarnings("UnstableApiUsage") // Guava's Reflection tools will probably be OK.
 public final class Types {
 
-    /** Prevent instantiation of this utility class. */
+    /** Prevents instantiation of this utility class. */
     private Types() {
     }
 
     /**
      * Creates the parametrized {@code Type} of the map.
      *
-     * @param keyClass   the class of keys are maintained by this map
-     * @param valueClass the class  of mapped values
-     * @param <K>        the type of keys are maintained by this map
-     * @param <V>        the type of the values stored in this map
+     * @param keyClass
+     *         the class of keys are maintained by this map
+     * @param valueClass
+     *         the class  of mapped values
+     * @param <K>
+     *         the type of keys are maintained by this map
+     * @param <V>
+     *         the type of the values stored in this map
      * @return the type of the map
      */
     public static <K, V> Type mapTypeOf(Class<K> keyClass, Class<V> valueClass) {
@@ -65,8 +71,10 @@ public final class Types {
     /**
      * Creates the parametrized {@code Type} of the list.
      *
-     * @param elementClass the class of the list elements
-     * @param <T>          the type of the elements in this list
+     * @param elementClass
+     *         the class of the list elements
+     * @param <T>
+     *         the type of the elements in this list
      * @return the type of the list
      */
     public static <T> Type listTypeOf(Class<T> elementClass) {
@@ -80,13 +88,45 @@ public final class Types {
     }
 
     /**
+     * Obtains parameter values of a parameterized type.
+     *
+     * <p>If the parameters are generic types themselves, their arguments are preserved.
+     *
+     * <p>For non-parameterized types, the empty list is returned.
+     *
+     * @implNote
+     * The arguments of a raw class will be resolved to generic variable declarations, as the
+     * information on their actual values is erased.
+     *
+     * @param type
+     *         the parameterized type
+     * @return the list of the type argument values
+     */
+    public static ImmutableList<Type> resolveArguments(Type type) {
+        checkNotNull(type);
+        TypeToken<?> token = TypeToken.of(type);
+        TypeVariable<? extends Class<?>>[] params = token.getRawType()
+                                                         .getTypeParameters();
+        ImmutableList<Type> result =
+                Arrays.stream(params)
+                      .map(token::resolveType)
+                      .map(TypeToken::getType)
+                      .collect(toImmutableList());
+        return result;
+    }
+
+    /**
      * Obtains the class of a generic type argument which is specified in the inheritance chain
      * of the passed class.
      *
-     * @param cls               the end class for which we find the generic argument
-     * @param genericSuperclass the superclass of the passed which has generic parameters
-     * @param argNumber         the index of the generic parameter in the superclass
-     * @param <T>               the type of superclass
+     * @param cls
+     *         the end class for which we find the generic argument
+     * @param genericSuperclass
+     *         the superclass of the passed which has generic parameters
+     * @param argNumber
+     *         the index of the generic parameter in the superclass
+     * @param <T>
+     *         the type of superclass
      * @return the class of the generic type argument
      */
     static <T> Class<?> getArgument(Class<? extends T> cls,
@@ -97,12 +137,10 @@ public final class Types {
         TypeToken<?> supertypeToken =
                 TypeToken.of(cls)
                          .getSupertype(genericSuperclass);
-        ParameterizedType genericSupertype =
-                (ParameterizedType) supertypeToken.getType();
-        Type[] typeArguments = genericSupertype.getActualTypeArguments();
-        Type typeArgument = typeArguments[argNumber];
-        @SuppressWarnings("unchecked") // The type is ensured by the calling code.
-                Class<?> result = (Class<?>) typeArgument;
+        ImmutableList<Type> typeArgs = resolveArguments(supertypeToken.getType());
+        Type argValue = typeArgs.get(argNumber);
+        Class<?> result = TypeToken.of(argValue)
+                                   .getRawType();
         return result;
     }
 }
