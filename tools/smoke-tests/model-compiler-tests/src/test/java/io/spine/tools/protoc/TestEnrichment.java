@@ -18,12 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
-        enrichmentMessage().markWith("io.spine.tools.protoc.TestEnrichment")
-    }
+package io.spine.tools.protoc;
+
+import io.spine.base.SerializableMessage;
+
+public interface TestEnrichment extends SerializableMessage {
 }

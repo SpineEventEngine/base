@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package spine.tools.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "TestEnrichmentsProto";
+option java_multiple_files = true;
+
+// This file contains test enrichment types.
+
+message UserNicknameEnrichment {
+    option (enrichment_for) = "spine.tools.protoc.UserCreated";
+
+    string nickname = 1 [(by) = "id"];
+}
+
+message NotEnrichment {
+    string id = 1;
+}
