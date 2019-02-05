@@ -61,7 +61,7 @@ abstract class FieldValidatingOption<T, F>
         FieldContext context = value.context();
         Optional<T> option = valueFromContextualized(field, context);
         return option.orElseThrow(() -> {
-            FieldDescriptor descriptor = optionExtension().getDescriptor();
+            FieldDescriptor descriptor = extension().getDescriptor();
 
             String fieldName = value.declaration()
                                     .name()
@@ -73,8 +73,8 @@ abstract class FieldValidatingOption<T, F>
     }
 
     private IllegalStateException illegalState(String fieldName, String containingTypeName) {
-        String optionName = optionExtension().getDescriptor()
-                                             .getName();
+        String optionName = extension().getDescriptor()
+                                       .getName();
         String message = format("Could not get value of option %s from field %s in message %s.",
                                 optionName,
                                 fieldName,
@@ -95,7 +95,7 @@ abstract class FieldValidatingOption<T, F>
      *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
      */
     private Optional<T> valueFromContextualized(FieldDescriptor descriptor, FieldContext context) {
-        Optional<T> value = getOptionValue(context, optionExtension());
+        Optional<T> value = getOptionValue(context, extension());
         return value.isPresent()
                ? value
                : valueFrom(descriptor);

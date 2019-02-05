@@ -34,22 +34,28 @@ import java.util.Optional;
  */
 public class FieldOption<O> implements Option<O, FieldDescriptor> {
 
-    private final GeneratedExtension<FieldOptions, O> optionExtension;
+    private final GeneratedExtension<FieldOptions, O> extension;
 
-    /** Specifies the extension that corresponds to this option. */
-    protected FieldOption(GeneratedExtension<FieldOptions, O> optionExtension) {
-        this.optionExtension = optionExtension;
+    /**
+     * Creates an instance with the
+     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
+     * extension</a>
+     * that corresponds to this option.
+     */
+    protected FieldOption(GeneratedExtension<FieldOptions, O> extension) {
+        this.extension = extension;
     }
 
-    protected GeneratedExtension<FieldOptions, O> optionExtension() {
-        return optionExtension;
+    /** Obtains the Protobuf extension associated with the option. */
+    protected GeneratedExtension<FieldOptions, O> extension() {
+        return extension;
     }
 
     @Override
     public Optional<O> valueFrom(FieldDescriptor object) {
         FieldOptions options = object.getOptions();
-        boolean explicitlySet = options.hasExtension(optionExtension);
-        O value = options.getExtension(optionExtension);
+        boolean explicitlySet = options.hasExtension(extension);
+        O value = options.getExtension(extension);
         return explicitlySet
                ? Optional.of(value)
                : Optional.empty();
