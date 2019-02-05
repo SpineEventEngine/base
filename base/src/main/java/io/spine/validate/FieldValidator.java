@@ -32,9 +32,9 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
@@ -97,7 +97,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if this constraint is not set explicitly
      */
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
-        this(value, assumeRequired, commonOptions(assumeRequired));
+        this(value, assumeRequired, ImmutableSet.of());
     }
 
     /**
@@ -164,15 +164,11 @@ abstract class FieldValidator<V> implements Logging {
 
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
-                new ArrayList<>();
-        for (FieldValidatingOption<?, V> option : fieldValidatingOptions) {
-            if (option.shouldValidate(descriptor())) {
-                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
-                for (ConstraintViolation violation : constraint.check(value)) {
-                    violations.add(violation);
-                }
-            }
-        }
+                fieldValidatingOptions.stream()
+                                      .filter(option -> option.shouldValidate(descriptor()))
+                                      .map(option -> option.constraintFor(value))
+                                      .flatMap(constraint -> constraint.check(value).stream())
+                                      .collect(Collectors.toList());
         return violations;
     }
 
