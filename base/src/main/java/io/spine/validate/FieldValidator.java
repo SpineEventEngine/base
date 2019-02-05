@@ -82,7 +82,8 @@ abstract class FieldValidator<V> implements Logging {
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
         this.ifInvalid = ifInvalid(descriptor(value));
-        this.fieldValidatingOptions = ImmutableSet.copyOf(Sets.union(commonOptions(assumeRequired), validatingOptions));
+        this.fieldValidatingOptions = ImmutableSet.copyOf(
+                Sets.union(commonOptions(assumeRequired), validatingOptions));
     }
 
     /**
@@ -167,7 +168,8 @@ abstract class FieldValidator<V> implements Logging {
                 fieldValidatingOptions.stream()
                                       .filter(option -> option.shouldValidate(descriptor()))
                                       .map(option -> option.constraintFor(value))
-                                      .flatMap(constraint -> constraint.check(value).stream())
+                                      .flatMap(constraint -> constraint.check(value)
+                                                                       .stream())
                                       .collect(Collectors.toList());
         return violations;
     }
@@ -279,16 +281,14 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private static IfInvalidOption ifInvalid(FieldDescriptor descriptor) {
-        IfInvalid ifInvalidOption = new IfInvalid();
-        IfInvalidOption ifInvalid = ifInvalidOption.valueFrom(descriptor)
-                                                   .orElse(IfInvalidOption.getDefaultInstance());
-        return ifInvalid;
+        IfInvalid ifInvalid = new IfInvalid();
+        IfInvalidOption result = ifInvalid.valueOrDefault(descriptor);
+        return result;
     }
 
     private IfMissingOption ifMissing() {
         IfMissing ifMissing = new IfMissing();
-        return ifMissing.valueFrom(descriptor())
-                        .orElse(IfMissingOption.getDefaultInstance());
+        return ifMissing.valueOrDefault(descriptor());
     }
 
     private static <V> FieldDescriptor descriptor(FieldValue<V> value) {
