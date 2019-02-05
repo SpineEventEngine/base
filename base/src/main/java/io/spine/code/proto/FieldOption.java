@@ -29,12 +29,12 @@ import java.util.Optional;
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
- * @param <O>
+ * @param <F>
  *         value of this option
  */
-public class FieldOption<O> implements Option<O, FieldDescriptor> {
+public class FieldOption<F> implements Option<F, FieldDescriptor> {
 
-    private final GeneratedExtension<FieldOptions, O> extension;
+    private final GeneratedExtension<FieldOptions, F> extension;
 
     /**
      * Creates an instance with the
@@ -42,20 +42,20 @@ public class FieldOption<O> implements Option<O, FieldDescriptor> {
      * extension</a>
      * that corresponds to this option.
      */
-    protected FieldOption(GeneratedExtension<FieldOptions, O> extension) {
+    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
         this.extension = extension;
     }
 
     /** Obtains the Protobuf extension associated with the option. */
-    protected GeneratedExtension<FieldOptions, O> extension() {
+    protected GeneratedExtension<FieldOptions, F> extension() {
         return extension;
     }
 
     @Override
-    public Optional<O> valueFrom(FieldDescriptor object) {
+    public Optional<F> valueFrom(FieldDescriptor object) {
         FieldOptions options = object.getOptions();
         boolean explicitlySet = options.hasExtension(extension);
-        O value = options.getExtension(extension);
+        F value = options.getExtension(extension);
         return explicitlySet
                ? Optional.of(value)
                : Optional.empty();
