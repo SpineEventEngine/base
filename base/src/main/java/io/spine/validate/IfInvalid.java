@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
@@ -33,13 +32,5 @@ final class IfInvalid extends FieldOption<IfInvalidOption> {
     /** Creates a new instance of this option. */
     IfInvalid() {
         super(OptionsProto.ifInvalid);
-    }
-
-    /**
-     * Returns the option value from the specified field, or a default value, if field does not
-     * have its own option value.
-     */
-    IfInvalidOption valueOrDefault(FieldDescriptor field){
-        return valueFrom(field).orElse(IfInvalidOption.getDefaultInstance());
     }
 }

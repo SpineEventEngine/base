@@ -20,12 +20,9 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
-
-import java.util.Optional;
 
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
@@ -35,14 +32,5 @@ final class IfMissing extends FieldOption<IfMissingOption> {
     /** Creates a new instance of this option. */
     IfMissing() {
         super(OptionsProto.ifMissing);
-    }
-
-    /**
-     * Returns the option value from the specified field, or a default value, if field does not
-     * have its own option value.
-     */
-    IfMissingOption valueOrDefault(FieldDescriptor field) {
-        Optional<IfMissingOption> option = valueFrom(field);
-        return option.orElse(IfMissingOption.getDefaultInstance());
     }
 }
