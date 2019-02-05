@@ -48,13 +48,13 @@ final class DigitsConstraint<V extends Number & Comparable>
         int wholeDigitsMax = optionValue().getIntegerMax();
         int fractionDigitsMax = optionValue().getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
-            return false;
+            return true;
         }
         boolean constraintViolated =
                 value.asList()
                      .stream()
                      .anyMatch(number -> violated(number, wholeDigitsMax, fractionDigitsMax));
-        return constraintViolated;
+        return !constraintViolated;
     }
 
     private boolean violated(V number, int wholeDigitsMax, int fractionDigitsMax) {

@@ -50,6 +50,5 @@ final class Digits<N extends Number & Comparable> extends FieldValidatingOption<
     @Override
     public Constraint<FieldValue<N>> constraintFor(FieldValue<N> fieldValue) {
         return new DigitsConstraint<>(optionValue(fieldValue));
-
     }
 }
