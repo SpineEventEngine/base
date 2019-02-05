@@ -214,26 +214,35 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                 logMissingDescriptorSetFile(descriptorSetFile);
                 return;
             }
-            Path generatedProtoPath = Paths.get(generatedProtoDir);
-            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
-            ClassName internalClassName = annotations.internalClassName();
-            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
-            ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-            ModuleAnnotator moduleAnnotator = ModuleAnnotator
-                    .newBuilder()
-                    .setAnnotatorFactory(annotatorFactory)
-                    .add(translate(spi()).as(annotations.spiClassName()))
-                    .add(translate(beta()).as(annotations.betaClassName()))
-                    .add(translate(experimental()).as(annotations.experimentalClassName()))
-                    .add(translate(internal()).as(internalClassName))
-                    .setInternalPatterns(internalClassPatterns)
-                    .setInternalMethodNames(internalMethodNames)
-                    .setInternalAnnotation(internalClassName)
-                    .build();
+            ModuleAnnotator moduleAnnotator = createAnnotator(project,
+                                                              descriptorSetFile,
+                                                              generatedProtoDir,
+                                                              generatedGrpcDir);
             moduleAnnotator.annotate();
         };
+    }
+
+    private static ModuleAnnotator createAnnotator(Project project, File descriptorSetFile,
+                                                   String generatedProtoDir,
+                                                   String generatedGrpcDir) {
+        Path generatedProtoPath = Paths.get(generatedProtoDir);
+        Path generatedGrpcPath = Paths.get(generatedGrpcDir);
+        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
+        CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+        ClassName internalClassName = annotations.internalClassName();
+        ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
+        ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
+        return ModuleAnnotator
+                .newBuilder()
+                .setAnnotatorFactory(annotatorFactory)
+                .add(translate(spi()).as(annotations.spiClassName()))
+                .add(translate(beta()).as(annotations.betaClassName()))
+                .add(translate(experimental()).as(annotations.experimentalClassName()))
+                .add(translate(internal()).as(internalClassName))
+                .setInternalPatterns(internalClassPatterns)
+                .setInternalMethodNames(internalMethodNames)
+                .setInternalAnnotation(internalClassName)
+                .build();
     }
 }
