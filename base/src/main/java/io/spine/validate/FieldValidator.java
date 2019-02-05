@@ -34,9 +34,9 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -82,8 +82,9 @@ abstract class FieldValidator<V> implements Logging {
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
         this.ifInvalid = ifInvalid(descriptor(value));
+        ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
         this.fieldValidatingOptions = ImmutableSet.copyOf(
-                Sets.union(commonOptions(assumeRequired), validatingOptions));
+                Sets.union(commonOptions, validatingOptions));
     }
 
     /**
@@ -170,7 +171,7 @@ abstract class FieldValidator<V> implements Logging {
                                       .map(option -> option.constraintFor(value))
                                       .flatMap(constraint -> constraint.check(value)
                                                                        .stream())
-                                      .collect(Collectors.toList());
+                                      .collect(toList());
         return violations;
     }
 
