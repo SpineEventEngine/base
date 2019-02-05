@@ -20,70 +20,29 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.base.FieldPath;
+import com.google.common.collect.Range;
 import io.spine.option.MinOption;
-
-import java.util.function.Predicate;
-
-import static io.spine.protobuf.TypeConverter.toAny;
-import static java.lang.Double.parseDouble;
 
 /**
  * A constraint that, when applied to a numeric field, checks whether the value of that field is
  * greater than (or equal to, if specified by the value of the respective option) a min value.
- *
- * @param <V>
- *         a type of value that is this constraint can be applied to
  */
-final class MinConstraint<V extends Number> extends NumericFieldConstraint<V, MinOption> {
+final class MinConstraint<V extends Number & Comparable> extends RangedConstraint<V, MinOption> {
 
     MinConstraint(MinOption optionValue) {
-        super(optionValue);
+        super(optionValue, minRange(optionValue));
     }
 
-    @Override
-    boolean doesNotSatisfy(FieldValue<V> value) {
-        return maxViolated(value);
-    }
-
-    private boolean maxViolated(FieldValue<V> fieldValue) {
-        double minValue = min();
-        Predicate<V> violates = doesNotFit(minValue);
-        ImmutableList<V> nestedValues = fieldValue.asList();
-        boolean violated = nestedValues.stream()
-                                       .anyMatch(violates);
-        return violated;
-    }
-
-    private Predicate<V> doesNotFit(double minValue) {
-        return isExclusive()
-               ? value -> value.doubleValue() <= minValue
-               : value -> value.doubleValue() < minValue;
-    }
-
-    @Override
-    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
-        String format = "Number must be greater than %s %s.";
-        FieldPath path = value.context()
-                              .getFieldPath();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(format)
-                .addParam(isExclusive() ? "" : "or equal to")
-                .addParam(String.valueOf(min()))
-                .setFieldPath(path)
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
-        return ImmutableList.of(violation);
-    }
-
-    private double min() {
-        String stringValue = optionValue().getValue();
-        return parseDouble(stringValue);
-    }
-
-    private boolean isExclusive() {
-        return optionValue().getExclusive();
+    @SuppressWarnings({
+            "unchecked",
+            "WrapperTypeMayBePrimitive" // primitive is uncastable
+    })
+        // is safe because Double is a subtype of both Number and Comparable
+    private static <V extends Number & Comparable> Range<V> minRange(MinOption option) {
+        boolean inclusive = !option.getExclusive();
+        Double minValue = Double.parseDouble(option.getValue());
+        return inclusive
+               ? Range.atLeast( (V) minValue)
+               : Range.greaterThan((V) minValue);
     }
 }

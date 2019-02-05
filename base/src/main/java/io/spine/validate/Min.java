@@ -29,14 +29,14 @@ import io.spine.option.OptionsProto;
  * @param <V>
  *         numeric value type that this option is applied to
  */
-final class Min<V extends Number> extends FieldValidatingOption<MinOption, V> {
+final class Min<V extends Number & Comparable> extends FieldValidatingOption<MinOption, V> {
 
     private Min() {
         super(OptionsProto.min);
     }
 
     /** Creates a new instance of this option. */
-    static <V extends Number> Min<V> create() {
+    static <V extends Number & Comparable> Min<V> create() {
         return new Min<>();
     }
 

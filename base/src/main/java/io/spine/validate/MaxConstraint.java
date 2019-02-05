@@ -20,70 +20,28 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.base.FieldPath;
+import com.google.common.collect.Range;
 import io.spine.option.MaxOption;
-
-import java.util.function.Predicate;
-
-import static io.spine.protobuf.TypeConverter.toAny;
-import static java.lang.Double.parseDouble;
 
 /**
  * A constraint that, when applied, checks whether a numeric field value exceeds a max value.
- *
- * @param <V>
- *         value that the field validated by this constraint has
  */
-final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V, MaxOption> {
+final class MaxConstraint<V extends Number & Comparable> extends RangedConstraint<V, MaxOption> {
 
     MaxConstraint(MaxOption optionValue) {
-        super(optionValue);
+        super(optionValue, maxRange(optionValue));
     }
 
-    @Override
-    boolean doesNotSatisfy(FieldValue<V> value) {
-        return maxViolated(value);
-    }
+    @SuppressWarnings({
+            "unchecked", // is safe because Double is a subtype of both Number and Comparable
+            "WrapperTypeMayBePrimitive" // primitive is uncastable
+    })
 
-    private boolean maxViolated(FieldValue<V> fieldValue) {
-        double maxValue = max();
-        Predicate<V> exceeds = violates(maxValue);
-        ImmutableList<V> nestedValues = fieldValue.asList();
-        boolean violated = nestedValues.stream()
-                                       .anyMatch(exceeds);
-        return violated;
-    }
-
-    private Predicate<V> violates(double maxValue) {
-        return isExclusive()
-               ? value -> value.doubleValue() >= maxValue
-               : value -> value.doubleValue() > maxValue;
-    }
-
-    @Override
-    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
-        String format = "Number must be less than %s %s.";
-        FieldPath path = value.context()
-                              .getFieldPath();
-        double maxValue = max();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(format)
-                .addParam(isExclusive() ? "" : "or equal to")
-                .addParam(String.valueOf(maxValue))
-                .setFieldPath(path)
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
-        return ImmutableList.of(violation);
-    }
-
-    private double max() {
-        String stringValue = optionValue().getValue();
-        return parseDouble(stringValue);
-    }
-
-    private boolean isExclusive() {
-        return optionValue().getExclusive();
+    private static <V extends Number & Comparable> Range<V> maxRange(MaxOption option) {
+        boolean inclusive = !option.getExclusive();
+        Double minValue = Double.parseDouble(option.getValue());
+        return inclusive
+               ? Range.atMost((V) minValue)
+               : Range.greaterThan((V) minValue);
     }
 }

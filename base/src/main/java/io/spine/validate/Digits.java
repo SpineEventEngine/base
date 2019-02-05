@@ -30,7 +30,7 @@ import io.spine.option.OptionsProto;
  * @param <N>
  *         numeric value that this option is applied to
  */
-final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption, N> {
+final class Digits<N extends Number & Comparable> extends FieldValidatingOption<DigitsOption, N> {
 
     private Digits() {
         super(OptionsProto.digits);
@@ -43,7 +43,7 @@ final class Digits<N extends Number> extends FieldValidatingOption<DigitsOption,
      *         type of value that a field marked with this option has
      * @return new instance of this option
      */
-    public static <V extends Number> Digits<V> create() {
+    public static <V extends Number & Comparable> Digits<V> create() {
         return new Digits<>();
     }
 

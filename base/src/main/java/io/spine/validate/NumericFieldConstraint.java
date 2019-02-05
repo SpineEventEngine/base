@@ -36,7 +36,7 @@ public abstract class NumericFieldConstraint<V extends Number, T> extends FieldV
 
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<V> value) {
-        if (doesNotSatisfy(value)) {
+        if (!satisfies(value)) {
             return constraintViolated(value);
         }
         return ImmutableList.of();
@@ -49,7 +49,7 @@ public abstract class NumericFieldConstraint<V extends Number, T> extends FieldV
      *         a value of the field.
      * @return {@code true} the specified does not satisfy this constraint
      */
-    abstract boolean doesNotSatisfy(FieldValue<V> value);
+    abstract boolean satisfies(FieldValue<V> value);
 
     /** Violations that should be produced if this constraint is not satisfied. */
     abstract ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value);
