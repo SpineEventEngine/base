@@ -23,45 +23,31 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.validate.FieldValue;
 
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
  * @param <V>
- *         type of value held by this option
- * @param <T>
- *         type of field that this option is applied to
+ *         value of this option
  */
-public class FieldOption<V, T> implements Option<V, FieldValue<T>> {
+public class FieldOption<V> implements Option<V, FieldDescriptor> {
 
     private final GeneratedExtension<FieldOptions, V> extension;
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf extension</a>
-     * that corresponds to this option.
-     */
+    /** Specifies the extension that corresponds to this option. */
     protected FieldOption(GeneratedExtension<FieldOptions, V> extension) {
-        this.extension = checkNotNull(extension);
+        this.extension = extension;
     }
 
-    /**
-     * Obtains the Protobuf extension associated with the option.
-     */
-    protected final GeneratedExtension<FieldOptions, V> extension() {
+    protected GeneratedExtension<FieldOptions, V> extension() {
         return extension;
     }
 
     @Override
-    public Optional<V> valueFrom(FieldValue<T> field) {
-        FieldDescriptor descriptor = field.context()
-                                          .getTarget();
-        FieldOptions options = descriptor.getOptions();
+    public Optional<V> valueFrom(FieldDescriptor object) {
+        FieldOptions options = object.getOptions();
         boolean explicitlySet = options.hasExtension(extension);
         V value = options.getExtension(extension);
         return explicitlySet

@@ -28,7 +28,6 @@ import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
-import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.validate.Validate.isDefault;
@@ -37,7 +36,7 @@ import static io.spine.validate.Validate.isDefault;
  * Validates fields of type {@link Message}, as opposed to primitive
  * Protobuf fields.
  */
-class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
+final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
     /**
      * Creates a new validator instance.
@@ -65,7 +64,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     private boolean shouldValidateFields() {
         boolean fieldValueSet = !fieldValueNotSet();
         Valid<V> validOption = new Valid<>();
-        Boolean valid = validOption.valueFrom(this.fieldValue())
+        Boolean valid = validOption.valueFrom(descriptor())
                                    .orElse(false);
         return valid && fieldValueSet;
     }
@@ -101,7 +100,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     private void validateSingle(Message message) {
-        MessageValidator validator = MessageValidator.newInstance(message, getFieldContext());
+        MessageValidator validator = MessageValidator.newInstance(message, fieldContext());
         List<ConstraintViolation> violations = validator.validate();
         if (!violations.isEmpty()) {
             addViolation(newValidViolation(message, violations));
@@ -115,7 +114,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
-                .setFieldPath(getFieldPath())
+                .setFieldPath(fieldPath())
                 .setFieldValue(pack(fieldValue))
                 .addAllViolation(violations)
                 .build();
@@ -123,7 +122,7 @@ class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
-    static <V extends Message> Set<FieldValidatingOption<?, V>> additionalOptions() {
+    private static <V extends Message> ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
         return ImmutableSet.of(((FieldValidatingOption<?, V>) When.create()));
     }
 

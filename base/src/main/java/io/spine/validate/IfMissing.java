@@ -27,7 +27,7 @@ import io.spine.option.OptionsProto;
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
  */
-final class IfMissing<T> extends FieldOption<IfMissingOption, T> {
+final class IfMissing extends FieldOption<IfMissingOption> {
 
     /** Creates a new instance of this option. */
     IfMissing() {

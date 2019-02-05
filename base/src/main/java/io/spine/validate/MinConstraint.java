@@ -70,7 +70,7 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V, Mi
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(isExclusive() ? "" : "or equal to")
+                .addParam(isExclusive() ? "" : OR_EQUAL_TO)
                 .addParam(String.valueOf(min()))
                 .setFieldPath(path)
                 .setFieldValue(toAny(value.singleValue()))

@@ -187,6 +187,10 @@ public final class FieldValue<T> {
         throw new IllegalArgumentException(msg);
     }
 
+    FieldDescriptor descriptor(){
+        return context.getTarget();
+    }
+
     /**
      * Obtains the {@link JavaType} of the value.
      *
@@ -208,10 +212,6 @@ public final class FieldValue<T> {
      *
      * @return the value as a list
      */
-    @SuppressWarnings({
-            "unchecked", // Specific validator must call with its type.
-            "ChainOfInstanceofChecks" // No other possible way to check the value type.
-    })
     ImmutableList<T> asList() {
         return ImmutableList.copyOf(values);
     }

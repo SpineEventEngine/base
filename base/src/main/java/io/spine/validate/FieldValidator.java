@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
@@ -31,12 +32,11 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -45,6 +45,7 @@ import static java.util.stream.Collectors.toList;
  * @param <V>
  *         a type of field values
  */
+@SuppressWarnings("ClassWithTooManyMethods") // OK for this central class.
 abstract class FieldValidator<V> implements Logging {
 
     private final FieldValue<V> value;
@@ -53,7 +54,7 @@ abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final Set<FieldValidatingOption<?, V>> fieldValidatingOptions;
+    private final ImmutableSet<FieldValidatingOption<?, V>> fieldValidatingOptions;
 
     /**
      * If set the validator would assume that the field is required even
@@ -65,23 +66,23 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldValue
+     * @param value
      *         the value to validate
      * @param assumeRequired
-     *         if {@code true} the validator would assume that the field is required even
-     *         if this constraint is not set explicitly
+     *         if {@code true} the validator would assume that the field is required regardless
+     *         of the {@code required} Protobuf option value
      * @param validatingOptions
      *         additional options against which the field should be validated
      */
-    protected FieldValidator(FieldValue<V> fieldValue,
+    protected FieldValidator(FieldValue<V> value,
                              boolean assumeRequired,
-                             Set<FieldValidatingOption<?, V>> validatingOptions) {
-        this.value = fieldValue;
-        this.declaration = fieldValue.declaration();
-        this.values = fieldValue.asList();
-        this.ifInvalid = ifInvalid(fieldValue);
+                             ImmutableSet<FieldValidatingOption<?, V>> validatingOptions) {
+        this.value = value;
+        this.declaration = value.declaration();
+        this.values = value.asList();
         this.assumeRequired = assumeRequired;
-        this.fieldValidatingOptions = Sets.union(commonOptions(assumeRequired), validatingOptions);
+        this.ifInvalid = ifInvalid(descriptor(value));
+        this.fieldValidatingOptions = ImmutableSet.copyOf(Sets.union(commonOptions(assumeRequired), validatingOptions));
     }
 
     /**
@@ -96,12 +97,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if this constraint is not set explicitly
      */
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
-        this.value = value;
-        this.declaration = value.declaration();
-        this.values = value.asList();
-        this.ifInvalid = ifInvalid(value);
-        this.assumeRequired = assumeRequired;
-        this.fieldValidatingOptions = commonOptions(assumeRequired);
+        this(value, assumeRequired, commonOptions(assumeRequired));
     }
 
     /**
@@ -111,7 +107,7 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    boolean fieldValueNotSet() {
+    final boolean fieldValueNotSet() {
         boolean valueNotSet =
                 values.isEmpty()
                         || (declaration.isNotCollection() && isNotSet(values.get(0)));
@@ -167,13 +163,14 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private List<ConstraintViolation> optionViolations() {
-        List<ConstraintViolation> violations =
-                fieldValidatingOptions.stream()
-                                      .filter(option -> option.shouldValidate(value))
-                                      .map(option -> option.constraintFor(value))
-                                      .flatMap(constraint -> constraint.check(value)
-                                                                       .stream())
-                                      .collect(toList());
+        List<ConstraintViolation> violations = new ArrayList<>();
+        for (FieldValidatingOption<?, V> option : fieldValidatingOptions) {
+            if (option.shouldValidate(descriptor())) {
+                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
+                ImmutableList<ConstraintViolation> found = constraint.check(value);
+                violations.addAll(found);
+            }
+        }
         return violations;
     }
 
@@ -191,7 +188,7 @@ abstract class FieldValidator<V> implements Logging {
                     .setMsgFormat("Entity ID field `%s` must not be a repeated field.")
                     .addParam(declaration.descriptor()
                                          .getFullName())
-                    .setFieldPath(getFieldPath())
+                    .setFieldPath(fieldPath())
                     .build();
             addViolation(violation);
             return;
@@ -211,7 +208,7 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected boolean isRequiredField() {
         Required<V> requiredOption = Required.create(assumeRequired);
-        Boolean required = requiredOption.valueFrom(value)
+        Boolean required = requiredOption.valueFrom(descriptor())
                                          .orElse(false);
         boolean result = required || assumeRequired;
         return result;
@@ -238,7 +235,7 @@ abstract class FieldValidator<V> implements Logging {
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
-                .setFieldPath(getFieldPath())
+                .setFieldPath(fieldPath())
                 .build();
         return violation;
     }
@@ -278,22 +275,31 @@ abstract class FieldValidator<V> implements Logging {
      */
     private boolean isRequiredEntityId() {
         Required<V> requiredOption = Required.create(assumeRequired);
-        Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(value);
+        Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(descriptor());
         boolean notRequired = requiredOptionValue.isPresent() && !requiredOptionValue.get();
         return declaration.isEntityId() && !notRequired;
     }
 
-    private IfInvalidOption ifInvalid(FieldValue<V> fieldValue) {
-        IfInvalid<V> ifInvalidOption = new IfInvalid<>();
-        IfInvalidOption ifInvalid = ifInvalidOption.valueFrom(fieldValue)
+    private static IfInvalidOption ifInvalid(FieldDescriptor descriptor) {
+        IfInvalid ifInvalidOption = new IfInvalid();
+        IfInvalidOption ifInvalid = ifInvalidOption.valueFrom(descriptor)
                                                    .orElse(IfInvalidOption.getDefaultInstance());
         return ifInvalid;
     }
 
     private IfMissingOption ifMissing() {
-        IfMissing<V> ifMissing = new IfMissing<>();
-        return ifMissing.valueFrom(value)
+        IfMissing ifMissing = new IfMissing();
+        return ifMissing.valueFrom(descriptor())
                         .orElse(IfMissingOption.getDefaultInstance());
+    }
+
+    private static <V> FieldDescriptor descriptor(FieldValue<V> value) {
+        return value.declaration()
+                    .descriptor();
+    }
+
+    final FieldDescriptor descriptor() {
+        return descriptor(value);
     }
 
     /**
@@ -301,21 +307,21 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return the field context
      */
-    protected FieldContext getFieldContext() {
+    protected final FieldContext fieldContext() {
         return value.context();
     }
 
     /** Returns a path to the current field. */
-    protected FieldPath getFieldPath() {
-        return getFieldContext().getFieldPath();
+    final FieldPath fieldPath() {
+        return fieldContext().getFieldPath();
     }
 
     /** Returns the declaration of the validated field. */
-    protected FieldDeclaration field() {
+    protected final FieldDeclaration field() {
         return declaration;
     }
 
-    private Set<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
+    private static <V> ImmutableSet<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
         return ImmutableSet.of(Distinct.create(),
                                Required.create(strict));
     }

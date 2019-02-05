@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
@@ -41,8 +42,8 @@ abstract class MessageFieldValidatingOption<T, M extends Message>
     }
 
     @Override
-    boolean shouldValidate(FieldValue<M> value) {
-        FieldDeclaration declaration = value.declaration();
+    boolean shouldValidate(FieldDescriptor value) {
+        FieldDeclaration declaration = new FieldDeclaration(value);
         Valid<M> validOption = new Valid<>();
         Boolean valid = validOption.valueFrom(value)
                                    .orElse(false);

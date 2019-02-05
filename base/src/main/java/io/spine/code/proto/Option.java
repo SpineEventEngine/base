@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.Descriptors.GenericDescriptor;
+
 import java.util.Optional;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Optional;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
  *         Custom Options</a>
  */
-public interface Option<T, K> {
+public interface Option<T, K extends GenericDescriptor> {
 
     /**
      * Obtains the value of this option for the specified object that holds it.

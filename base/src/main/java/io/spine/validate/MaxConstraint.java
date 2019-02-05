@@ -70,7 +70,7 @@ final class MaxConstraint<V extends Number> extends NumericFieldConstraint<V, Ma
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
-                .addParam(isExclusive() ? "" : "or equal to")
+                .addParam(isExclusive() ? "" : OR_EQUAL_TO)
                 .addParam(String.valueOf(maxValue))
                 .setFieldPath(path)
                 .setFieldValue(toAny(value.singleValue()))
