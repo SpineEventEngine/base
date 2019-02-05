@@ -32,16 +32,11 @@ final class MaxConstraint<V extends Number & Comparable> extends RangedConstrain
         super(optionValue, maxRange(optionValue));
     }
 
-    @SuppressWarnings({
-            "unchecked", // is safe because Double is a subtype of both Number and Comparable
-            "WrapperTypeMayBePrimitive" // primitive is uncastable
-    })
-
     private static <V extends Number & Comparable> Range<V> maxRange(MaxOption option) {
         boolean inclusive = !option.getExclusive();
-        Double minValue = Double.parseDouble(option.getValue());
+        V minValue = fromOption(option.getValue());
         return inclusive
-               ? Range.atMost((V) minValue)
-               : Range.lessThan((V) minValue);
+               ? Range.atMost(minValue)
+               : Range.lessThan(minValue);
     }
 }

@@ -28,7 +28,8 @@ import com.google.common.collect.ImmutableList;
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
-public abstract class NumericFieldConstraint<V extends Number, T> extends FieldValueConstraint<V, T> {
+public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
+        extends FieldValueConstraint<V, T> {
 
     NumericFieldConstraint(T optionValue) {
         super(optionValue);
@@ -40,6 +41,14 @@ public abstract class NumericFieldConstraint<V extends Number, T> extends FieldV
             return constraintViolated(value);
         }
         return ImmutableList.of();
+    }
+
+    /** Returns a number of type V based on its string representation. */
+    @SuppressWarnings("unchecked") // Safe since double is both a Number and Comparable.
+    static <V extends Number & Comparable> V fromOption(String numericValue) {
+        Double doubleValue = Double.parseDouble(numericValue);
+        V result = (V) doubleValue;
+        return result;
     }
 
     /**

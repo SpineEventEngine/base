@@ -41,7 +41,7 @@ import static java.lang.String.format;
 abstract class RangedConstraint<V extends Number & Comparable, T>
         extends NumericFieldConstraint<V, T> {
 
-    static final String OR_EQUAL_TO = "or equal to";
+    private static final String OR_EQUAL_TO = "or equal to";
 
     private final Range<V> range;
 
