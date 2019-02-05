@@ -97,11 +97,15 @@ public class Extension extends BaseExtension {
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
+     *
+     * <p>The file must have the {@code .desc} extension.
      */
     public String mainDescriptorSetPath;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
+     *
+     * <p>The file must have the {@code .desc} extension.
      */
     public String testDescriptorSetPath;
 
