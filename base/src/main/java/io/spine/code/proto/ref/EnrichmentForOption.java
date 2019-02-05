@@ -37,7 +37,8 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 public final class EnrichmentForOption {
 
     /** Splits type references separated with commas. */
-    private static final Splitter splitter = Splitter.on(',');
+    private static final Splitter splitter = Splitter.on(',')
+                                                     .trimResults();
 
     /** Prevents instantiation of this utility class. */
     private EnrichmentForOption() {

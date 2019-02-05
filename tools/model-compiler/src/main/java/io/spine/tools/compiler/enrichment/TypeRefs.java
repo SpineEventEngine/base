@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import io.spine.code.proto.ref.DirectTypeRef;
 import io.spine.code.proto.ref.EnrichmentForOption;
-import io.spine.code.proto.ref.EnrichmentOption;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
@@ -40,13 +39,6 @@ import static java.util.Comparator.naturalOrder;
 final class TypeRefs {
 
     /**
-     * If {@code true} the parses would analyze {@code (enrichment_for)},
-     * otherwise the {@code (enrichment)} option. Please not that the latter is deprecated
-     * and this field and the related code should be eliminated.
-     */
-    private final boolean forOption;
-
-    /**
      * The prefix to be added to a reference if it's not a fully-qualified one.
      */
     private final String packagePrefix;
@@ -55,18 +47,10 @@ final class TypeRefs {
      * Obtains the parser for the {@link OptionsProto#enrichmentFor} option values.
      */
     static TypeRefs enrichmentForOption(String packagePrefix) {
-        return new TypeRefs(true, packagePrefix);
+        return new TypeRefs(packagePrefix);
     }
 
-    /**
-     * Obtains the instance for the {@link OptionsProto#enrichment} option values.
-     */
-    static TypeRefs enrichmentOption(String packagePrefix) {
-        return new TypeRefs(false, packagePrefix);
-    }
-
-    private TypeRefs(boolean forOption, String packagePrefix) {
-        this.forOption = forOption;
+    private TypeRefs(String packagePrefix) {
         this.packagePrefix = packagePrefix;
     }
 
@@ -75,18 +59,17 @@ final class TypeRefs {
      *
      * <p>If a type name is not fully-qualified, the {@code packagePrefix} is added to it.
      *
-     * @param descriptor the descriptor to parse
+     * @param descriptor
+     *         the descriptor to parse
      * @return the list of parsed type references or an empty list if the option is absent or empty
      */
     ImmutableList<String> parse(DescriptorProto descriptor) {
-        List<String> parts = forOption
-                             ? EnrichmentForOption.parse(descriptor)
-                             : EnrichmentOption.parse(descriptor);
+        List<String> parts = EnrichmentForOption.parse(descriptor);
         ImmutableList<String> result =
-                parts  .stream()
-                       .map(this::toQualified)
-                       .sorted(naturalOrder())
-                       .collect(toImmutableList());
+                parts.stream()
+                     .map(this::toQualified)
+                     .sorted(naturalOrder())
+                     .collect(toImmutableList());
         return result;
     }
 
