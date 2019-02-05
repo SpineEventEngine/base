@@ -24,11 +24,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import io.spine.annotation.Internal;
 import io.spine.base.CommandMessage;
+import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
@@ -45,6 +47,7 @@ public final class GeneratedInterfaces {
 
     private final Map<FilePattern, PatternInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
+    private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
 
     private GeneratedInterfaces() {
         this.patternConfigs = newConcurrentMap();
@@ -59,7 +62,9 @@ public final class GeneratedInterfaces {
      *     <li>{@link EventMessage} interface for Proto files ending with {@code events.proto};
      *     <li>{@link RejectionMessage} interface for Proto files ending with
      *         {@code rejections.proto};
-     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages}.
+     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages};
+     *     <li>{@link EnrichmentMessage} interface
+     *         {@linkplain #enrichmentMessage() enrichment messages}.
      * </ul>
      *
      * @return new config
@@ -67,13 +72,16 @@ public final class GeneratedInterfaces {
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        config.filePattern(config.endsWith(MessageFile.COMMANDS.suffix()))
+        config.filePattern(config.endsWith(MessageFile.COMMANDS))
               .markWith(CommandMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.EVENTS.suffix()))
+        config.filePattern(config.endsWith(MessageFile.EVENTS))
               .markWith(EventMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.REJECTIONS.suffix()))
+        config.filePattern(config.endsWith(MessageFile.REJECTIONS))
               .markWith(RejectionMessage.class.getName());
-        config.uuidMessage().markWith(UuidValue.class.getName());
+        config.uuidMessage()
+              .markWith(UuidValue.class.getName());
+        config.enrichmentMessage()
+              .markWith(EnrichmentMessage.class.getName());
         return config;
     }
 
@@ -136,7 +144,8 @@ public final class GeneratedInterfaces {
      * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
      * are generated regardless the configuration.
      *
-     * @param pattern the file pattern
+     * @param pattern
+     *         the file pattern
      * @return a configuration object for Proto files matching the pattern
      */
     public GeneratedInterfaceConfig filePattern(FilePattern pattern) {
@@ -153,6 +162,10 @@ public final class GeneratedInterfaces {
      */
     public PostfixPattern endsWith(String postfix) {
         return new PostfixPattern(postfix);
+    }
+
+    private PostfixPattern endsWith(MessageFile messageFile) {
+        return endsWith(messageFile.suffix());
     }
 
     /**
@@ -173,26 +186,67 @@ public final class GeneratedInterfaces {
     }
 
     /**
+     * Configures an interface generation for messages with {@code (enrichment_for)} option.
+     *
+     * <p>This method functions are similar to the {@link #filePattern(FilePattern)} except for
+     * several differences:
+     * <ul>
+     * <li>the file in which the message type is defined does not matter;
+     * </ul>
+     *
+     * @return a configuration object for Proto messages matching enrichment message pattern
+     */
+    public GeneratedInterfaceConfig enrichmentMessage() {
+        return enrichmentConfig;
+    }
+
+    /**
      * Converts this config into a {@link SpineProtocConfig}.
      */
     @Internal
     @VisibleForTesting
     public SpineProtocConfig asProtocConfig() {
-        Optional<ClassName> name = uuidInterfaceConfig.interfaceName();
-        UuidInterface uuidInterface = name
-                .map(className -> UuidInterface
-                        .newBuilder()
-                        .setInterfaceName(className.value())
-                        .build())
-                .orElse(UuidInterface.getDefaultInstance());
+        UuidInterface uuidInterface = uuidInterface();
+        EnrichmentInterface enrichmentInterface = enrichmentConfig();
         SpineProtocConfig.Builder result = SpineProtocConfig
                 .newBuilder()
-                .setUuidInterface(uuidInterface);
+                .setUuidInterface(uuidInterface)
+                .setEnrichmentInterface(enrichmentInterface);
         patternConfigs.values()
                       .stream()
                       .map(PatternInterfaceConfig::generatedInterface)
                       .forEach(result::addGeneratedInterface);
         return result.build();
+    }
+
+    private EnrichmentInterface enrichmentConfig() {
+        Optional<ClassName> name = enrichmentConfig.interfaceName();
+        EnrichmentInterface enrichmentInterface = name
+                .map(GeneratedInterfaces::newEnrichmentInterface)
+                .orElse(EnrichmentInterface.getDefaultInstance());
+        return enrichmentInterface;
+    }
+
+    private static EnrichmentInterface newEnrichmentInterface(ClassName className) {
+        return EnrichmentInterface
+                .newBuilder()
+                .setInterfaceName(className.value())
+                .build();
+    }
+
+    private UuidInterface uuidInterface() {
+        Optional<ClassName> name = uuidInterfaceConfig.interfaceName();
+        UuidInterface uuidInterface = name
+                .map(GeneratedInterfaces::newUuidInterface)
+                .orElse(UuidInterface.getDefaultInstance());
+        return uuidInterface;
+    }
+
+    private static UuidInterface newUuidInterface(ClassName className) {
+        return UuidInterface
+                .newBuilder()
+                .setInterfaceName(className.value())
+                .build();
     }
 
     /**
