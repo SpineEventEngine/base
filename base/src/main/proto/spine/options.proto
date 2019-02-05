@@ -19,6 +19,8 @@
  */
 syntax = "proto3";
 
+// API Note on Packaging
+// =====================
 // We do not define the package for this file to allow shorter options for user-defined types.
 // This would allow to write:
 //
@@ -45,6 +47,7 @@ syntax = "proto3";
 // import "spine/options.proto";
 //
 // option (type_url_prefix) = "type.example.org";
+//
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
@@ -84,13 +87,15 @@ extend google.protobuf.FieldOptions {
     //
     // Example:
     //
-    // MyMessage field = 1 [(required) = true];
+    //     message MyOuterMessage {
+    //         MyMessage field = 1 [(required) = true];
+    //     }
     //
     bool required = 73812;
 
     IfMissingOption if_missing = 73813;
 
-    // reserved 73814 and 73815 for deleted options `decimal_max` and `decimal_min`.
+    // Reserved 73814 and 73815 for deleted options `decimal_max` and `decimal_min`.
 
     // A higher boundary to the range of values of a number.
     MaxOption max = 73816;
@@ -104,12 +109,15 @@ extend google.protobuf.FieldOptions {
 
     PatternOption pattern = 73820;
 
-    // The option to indicate that the fields's internal field should be included into the
-    // validation.
+    // The target type of the option is a message, a map or a repeated field. If set to `true`,
+    // the value
+
+    // The option to check validation constraints of a message instance or entries of the map
+    // of the annotated field. or validate the indicate that the fields of the message or a map fields's internal field should be included
+    // into the validation.
     //
-    // The target type of the option is a message, a map or a repeated field.
     //
-    // Default value is false.
+    // Default value is `false`.
     //
     bool valid = 73821;
 
@@ -122,11 +130,11 @@ extend google.protobuf.FieldOptions {
     // A typical use-case would include a value of an ID, which doesn't change over the course of
     // the life of an entity.
     //
-    // Example:
-    // message User {
+    // Example 1: Using `set_once` validation constraint.
     //
-    //     UserId id = 1 [(set_once) = true];
-    // }
+    //     message User {
+    //         UserId id = 1 [(set_once) = true];
+    //     }
     //
     // Once set, the `id` field cannot be changed.
     //
@@ -134,14 +142,18 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a repeated field as a collection of unique elements.
     //
+    // For example, the following message declaration would
     //
-    // Example:
-    // For a message
-    // message Blizzard {
-    //     repeated Snowflake = 1 [(distinct) = true];
-    // }
+    //    message Blizzard {
     //
-    // Attempting to add a snowflake that is equal to an existing one results in a violation.
+    //        // All snowflakes must be unique in this blizzard.
+    //        //
+    //        // Attempting to add a snowflake that is equal to an existing one would result
+    //        // in constraint violation error.
+    //        //
+    //        repeated Snowflake = 1 [(distinct) = true];
+    //    }
+    //
     bool distinct = 73825;
 
     // reserved 73826 to 73849 for future validation options.
@@ -192,38 +204,38 @@ extend google.protobuf.FieldOptions {
     //
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
-    // The value of (by) option may contain more than one field reference,
+    // The value of the `(by)` option may contain more than one field reference,
     // separated with the pipe character.
     //
     // An example:
     //
-    // message MyEvent {
-    //     spine.base.UserId user_id = 1;
-    // }
+    //     message MyEvent {
+    //         spine.base.UserId user_id = 1;
+    //     }
     //
-    // message MyEventEnrichment {
-    //     option (enrichment_for) = "MyEvent";
+    //     message MyEventEnrichment {
+    //        option (enrichment_for) = "MyEvent";
     //
-    //     string username = 1 [(by) = "user_id"];
-    // }
+    //        string username = 1 [(by) = "user_id"];
+    //     }
     //
     // Multiple field references example:
     //
-    // message FirstEvent {
-    //     spine.base.UserId user_id = 1;
-    // }
+    //     message FirstEvent {
+    //         spine.base.UserId user_id = 1;
+    //     }
     //
-    // message SecondEvent {
-    //     string id = 1;
+    //     message SecondEvent {
+    //         string id = 1;
     //
-    //     spine.base.UserId admin_id = 1;
-    // }
+    //         spine.base.UserId admin_id = 1;
+    //     }
     //
-    // message EnrichmentForSeveralEvents {
-    //     option (enrichment_for) = "FirstEvent,SecondEvent";
+    //     message EnrichmentForSeveralEvents {
+    //         option (enrichment_for) = "FirstEvent,SecondEvent";
     //
-    //     string username = 1 [(by) = "user_id | admin_id"];
-    // }
+    //         string username = 1 [(by) = "user_id | admin_id"];
+    //     }
     //
     string by = 73900;
 }
@@ -250,15 +262,15 @@ extend google.protobuf.MessageOptions {
     //
     // For example:
     //
-    // message PersonName {
-    //    option (required_field) = "given_name|honorific_prefix & family_name";
+    //     message PersonName {
+    //        option (required_field) = "given_name|honorific_prefix & family_name";
     //
-    //    string honorific_prefix = 1;
-    //    string given_name = 2;
-    //    string middle_name = 3;
-    //    string family_name = 4;
-    //    string honorific_suffix = 5;
-    // }
+    //        string honorific_prefix = 1;
+    //        string given_name = 2;
+    //        string middle_name = 3;
+    //        string family_name = 4;
+    //        string honorific_suffix = 5;
+    //     }
     //
     string required_field = 73902;
 
@@ -284,32 +296,32 @@ extend google.protobuf.MessageOptions {
     // that is reused in other messages. However, in each of the use-cases we want
     // to apply different validation rules to the `StringChange` field values.
     //
-    // package io.spine.example;
+    //     package io.spine.example;
     //
-    // // Definition of a change in a string field.
-    // message StringChange {
+    //     // Definition of a change in a string field.
+    //     message StringChange {
     //
-    //      // The value of the field that's changing.
-    //      string previous_value = 1;
+    //          // The value of the field that's changing.
+    //          string previous_value = 1;
     //
-    //      // The new value of the field.
-    //      string new_value = 2;
-    // }
+    //          // The new value of the field.
+    //          string new_value = 2;
+    //     }
     //
-    // // The validation rule for `StringChange` defined in `UpdateDescription`.
-    // message DescriptionChangeRule {
-    //      option (validation_of) = "io.spine.example.UpdateDescription.change";
+    //     // The validation rule for `StringChange` defined in `UpdateDescription`.
+    //     message DescriptionChangeRule {
+    //          option (validation_of) = "io.spine.example.UpdateDescription.change";
     //
-    //      // A description should not be empty.
-    //      string new_value = 2 [(required) = true];
-    // }
+    //          // A description should not be empty.
+    //          string new_value = 2 [(required) = true];
+    //     }
     //
-    // // A message that contains the validation rule target.
-    // message UpdateDescription {
+    //     // A message that contains the validation rule target.
+    //     message UpdateDescription {
     //
-    //      // The validation rule target.
-    //      StringChange change = 1 [(valid) = true];
-    // }
+    //          // The validation rule target.
+    //          StringChange change = 1 [(valid) = true];
+    //     }
     //
     string validation_of = 73904;
 
@@ -336,13 +348,12 @@ extend google.protobuf.MessageOptions {
     // Specifies a characteristic inherent in the the given message type.
     //
     // Example:
-    // ```
-    // message CreateProject {
-    //     option (is).java_type = "ProjectCommand";
     //
-    //     // Remainder omitted.
-    // }
-    // ```
+    //     message CreateProject {
+    //         option (is).java_type = "ProjectCommand";
+    //
+    //         // Remainder omitted.
+    //     }
     //
     // In the example above, `CreateProject` message is a `ProjectCommand`.
     //
@@ -366,35 +377,35 @@ extend google.protobuf.MessageOptions {
     //
     // For example:
     //
-    // message MyEventEnrichment {
-    //     option (enrichment_for) = "example.events.MyEvent";
-    //     ...
-    // }
+    //     message MyEventEnrichment {
+    //         option (enrichment_for) = "example.events.MyEvent";
+    //         ...
+    //     }
     //
-    // message EventEnrichmentForSeveralEvents {
-    //     option (enrichment_for) = "example.events.FirstEvent,"
-    //                               "example.events.SecondEvent";
-    //     ...
-    // }
+    //     message EventEnrichmentForSeveralEvents {
+    //         option (enrichment_for) = "example.events.FirstEvent,"
+    //                                   "example.events.SecondEvent";
+    //         ...
+    //     }
     //
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
     // pattern. Infix and prefix wildcards are not supported.
     //
     // For example:
     //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*"
-    //     ...
-    // }
+    //     message MyEnrichment {
+    //         option (enrichment_for) = "example.events.*"
+    //         ...
+    //     }
     //
     // It is also possible to mix different declarations as follows:
     //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*,"
-    //                               "secondExample.FirstEvent,"
-    //                               "thirdExample.*";
-    //     ...
-    // }
+    //     message MyEnrichment {
+    //         option (enrichment_for) = "example.events.*,"
+    //                                   "secondExample.FirstEvent,"
+    //                                   "thirdExample.*";
+    //         ...
+    //     }
     //
     string enrichment_for = 73922;
 

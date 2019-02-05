@@ -67,11 +67,12 @@ final class MinConstraint<V extends Number> extends NumericFieldConstraint<V, Mi
         String format = "Number must be greater than %s %s.";
         FieldPath path = value.context()
                               .getFieldPath();
+        double minValue = min();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(format)
                 .addParam(isExclusive() ? "" : OR_EQUAL_TO)
-                .addParam(String.valueOf(min()))
+                .addParam(String.valueOf( minValue))
                 .setFieldPath(path)
                 .setFieldValue(toAny(value.singleValue()))
                 .build();
