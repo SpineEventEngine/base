@@ -30,7 +30,9 @@ import io.spine.net.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
+import io.spine.test.code.proto.command.MttNotEnrichment;
 import io.spine.test.code.proto.command.MttStartProject;
+import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
 import org.junit.jupiter.api.DisplayName;
@@ -48,8 +50,9 @@ class MessageTypeTest {
     /**
      * Negates the passed predicate.
      *
-     * @apiNote Provided for brevity of tests, avoiding avoiding using {@code Predicates.not()}
-     * from Guava, util similar method is provided by Java 11.
+     * @apiNote Provided for brevity of tests, avoiding avoiding using {@code
+     *         Predicates.not()}
+     *         from Guava, util similar method is provided by Java 11.
      */
     static <T> Predicate<T> not(Predicate<T> yes) {
         return yes.negate();
@@ -106,10 +109,19 @@ class MessageTypeTest {
             );
         }
 
+        @DisplayName("an enrichment")
+        @Test
+        void enrichment() {
+            assertQuality(MessageType::isEnrichment,
+                          MttStartProjectEnrichment.getDescriptor()
+            );
+        }
+
         @Nested
-        @DisplayName("not a")
+        @DisplayName("not")
         class NotA {
-            @DisplayName("rejection")
+
+            @DisplayName("a rejection")
             @Test
             void rejection() {
                 assertQuality(not(MessageType::isRejection),
@@ -117,7 +129,7 @@ class MessageTypeTest {
                 );
             }
 
-            @DisplayName("command")
+            @DisplayName("a command")
             @Test
             void command() {
                 assertQuality(not(MessageType::isCommand),
@@ -125,11 +137,19 @@ class MessageTypeTest {
                 );
             }
 
-            @DisplayName("event")
+            @DisplayName("an event")
             @Test
             void event() {
                 assertQuality(not(MessageType::isEvent),
                               MttProjectStarted.Details.getDescriptor()
+                );
+            }
+
+            @DisplayName("an enrichment")
+            @Test
+            void enrichment() {
+                assertQuality(not(MessageType::isEnrichment),
+                              MttNotEnrichment.getDescriptor()
                 );
             }
         }
@@ -190,7 +210,8 @@ class MessageTypeTest {
         @DisplayName("second-level message")
         void secondLevel() {
             IterableSubject assertPath = assertPath(Uri.Protocol.getDescriptor());
-            assertPath.contains(Uri.getDescriptor().getIndex());
+            assertPath.contains(Uri.getDescriptor()
+                                   .getIndex());
         }
     }
 }
