@@ -37,7 +37,7 @@ public final class MessageClassifiers {
             EventMessage.class, MessageType::isEvent,
             RejectionMessage.class, MessageType::isRejection,
             UuidValue.class, new UuidValueClassifier(),
-            EnrichmentMessage.class, new EnrichmentMessageClassifier()
+            EnrichmentMessage.class, MessageType::isEnrichment
     );
 
     private MessageClassifiers() {
