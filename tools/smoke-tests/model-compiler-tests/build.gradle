@@ -24,5 +24,6 @@ modelCompiler {
         filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
         filePattern(endsWith("events.proto")).ignore()
         uuidMessage().ignore()
+        enrichmentMessage().markWith("io.spine.tools.protoc.TestEnrichment")
     }
 }

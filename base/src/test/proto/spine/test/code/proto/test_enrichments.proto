@@ -19,7 +19,7 @@
  */
 syntax = "proto3";
 
-package spine.test.code.proto.commands;
+package spine.test.code.proto.enrichments;
 
 import "spine/options.proto";
 
@@ -27,17 +27,27 @@ option (type_url_prefix) = "type.spine.io";
 option (SPI_all) = true;
 option java_package = "io.spine.test.code.proto.command";
 option java_multiple_files = true;
-option java_outer_classname = "MttCommandsProto";
+option java_outer_classname = "MttEnrichmentsProto";
 
 // This file defines test environment for `MessageTypeTest.java`.
 
-// A sample command to verify detecting that a message is a command from `MessageType`.
-message MttStartProject {
+// A sample enrichment to verify detecting that a message is an enrichment from `MessageType`.
+message MttStartProjectEnrichment {
+    option (enrichment_for) = "spine.test.code.proto.events.MttProjectStarted";
 
-    Details details = 1;
+    string id = 1 [(by) = "details"];
+}
 
-    message Details {
+message MttNotEnrichment {
+    int32 id = 1;
+}
 
-        string description = 1;
+message MttSomeMessage {
+    int32 id = 1;
+
+    message MttInnerMessageIsNotEnrichment {
+        option (enrichment_for) = "spine.test.code.proto.events.MttProjectStarted";
+
+        string id = 1 [(by) = "details"];
     }
 }
