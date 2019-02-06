@@ -31,6 +31,7 @@ import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
 import io.spine.test.code.proto.command.MttNotEnrichment;
+import io.spine.test.code.proto.command.MttSomeMessage;
 import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
@@ -150,6 +151,9 @@ class MessageTypeTest {
             void enrichment() {
                 assertQuality(not(MessageType::isEnrichment),
                               MttNotEnrichment.getDescriptor()
+                );
+                assertQuality(not(MessageType::isEnrichment),
+                              MttSomeMessage.MttInnerMessageIsNotEnrichment.getDescriptor()
                 );
             }
         }
