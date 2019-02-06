@@ -316,11 +316,9 @@ extend google.protobuf.MessageOptions {
 
     // An external validation constraint for a field.
     //
-    // Allows to re-define a validation constraint for a field of a message which already
-    // has a validation constraint. Such an external constraint definition is needed when:
-    //
-    //  1. It is not possible to modify the code of the constrained message.
-    //  2. Constraints of the message depend on the usage scenario.
+    // Allows to re-define validation constraints for a message when its usage as a field of
+    // another type requires alternative constraints. This includes definition of constraints for
+    // a message which does not have them defined within the type.
     //
     // A target field of an external constraint should be specified using a fully-qualified
     // field name (e.g. `mypackage.MessageName.field_name`).
@@ -364,24 +362,13 @@ extend google.protobuf.MessageOptions {
     //          StringChange change = 1 [(valid) = true];
     //     }
     //
-    //     // External validation constraint for `StringChange.new_value` in the scope of
-    //     // the `RenameTask` command.
+    //     // External validation constraint for both fields of the `StringChange` message
+    //     // in the scope of the `RenameTask` command.
     //     //
-    //     message RequireNewTaskName {
+    //     message RequireTaskNames {
     //          option (validation_of) = "spine.example.RenameTask.change";
-    //
-    //          // A description should not be empty.
-    //          string new_value = 1 [(required) = true];
-    //     }
-    //
-    //     // External validation constraint for `StringChange.previous_value` in the scope of
-    //     // the `RenameTask` command.
-    //     //
-    //     message RequirePreviousTaskName {
-    //          option (validation_of) = "spine.example.RenameTask.change";
-    //
-    //          // A description should not be empty.
     //          string previous_value = 1 [(required) = true];
+    //          string new_value = 2 [(required) = true];
     //     }
     //
     // NOTE: A target field for an external validation constraint must be have the option `(valid)`
@@ -389,9 +376,8 @@ extend google.protobuf.MessageOptions {
     //       above. If there is no such option defined, or it is set to `false`, the external
     //       constraint will not be applied.
     //
-    // An external validation constraints can be defined for more than one field
-    // (which have the same in different messages). To do so, separate fully-qualified references
-    // to these fields with with comma.
+    // External validation constraints can be applied to fields of several types.
+    // To do so, separate fully-qualified references to these fields with with comma.
     //
     // Example 9: External validation constraints for multiple fields.
     //
@@ -399,16 +385,13 @@ extend google.protobuf.MessageOptions {
     //     message RequireNewName {
     //         option (validation_of) = "spine.example.RenameTask.change,"
     //                                  "spine.example.RenameProject.change,";
-    //                                  "spine.example.ChangeComment.
+    //                                  "spine.example.UpdateComment.text_change;
+    //         string new_value = 1 [(required) = true];
     //     }
     //
-    // Limitation
-    // ----------
-    // An external validation constraint is defined for one field. It can apply to multiple types
-    // that have field with the same name. But if you change more than one constraint for a message,
-    // you need to define a new message holding an external constraint for each field.
-    // If this limitation is critical for your project, please leave a comment in this
-    // issue: https://github.com/SpineEventEngine/base/issues/315.
+    // NOTE: An external validation constraint for a field must be defined only once.
+    //       Spine Model Compiler does not check such an “overwriting”.
+    //       See the issue: https://github.com/SpineEventEngine/base/issues/318.
     //
     string validation_of = 73904;
 
