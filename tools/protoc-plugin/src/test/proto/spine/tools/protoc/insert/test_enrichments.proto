@@ -21,3 +21,14 @@ message NonEnrichmentMessage {
 
     string id = 1;
 }
+
+message SomeMessage {
+
+    string id = 1;
+
+    message InnerEnrichmentNotSupported {
+        option (enrichment_for) = "spine.tools.protoc.insert.ProjectCreated";
+
+        string name = 1 [(by) = "id"];
+    }
+}
