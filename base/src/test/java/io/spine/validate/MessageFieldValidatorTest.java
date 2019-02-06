@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.List;
 
 @DisplayName("MessageFieldValidator should")
+@SuppressWarnings("unchecked")
+// Since `FieldValues` can be created of either `T` or `Map<T>` or List<T>`, a cast has to happen.
 public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =

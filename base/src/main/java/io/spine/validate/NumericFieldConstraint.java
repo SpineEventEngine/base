@@ -22,12 +22,19 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
+import static io.spine.util.Exceptions.newIllegalStateException;
+
 /**
  * A constraint that is applicable to numeric fields only.
  *
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
+@SuppressWarnings("TypeParameterUnusedInFormals")
+// Numbers are not comparable, so having a V that is both a Number and Comparable is necessary.
 public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
         extends FieldValueConstraint<V, T> {
 
@@ -45,10 +52,34 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
 
     /** Returns a number of type V based on its string representation. */
     static <V extends Number & Comparable> V fromOption(String numericValue) {
-        Double doubleValue = Double.parseDouble(numericValue);
-        @SuppressWarnings("unchecked") // Safe since double is both a Number and Comparable.
-        V result = (V) doubleValue;
-        return result;
+        try {
+            V result = fromString(numericValue);
+            return result;
+        } catch (ParseException e) {
+            String errorMessage = "Could not extract numeric value from an option. Value: %s";
+            throw newIllegalStateException(e, errorMessage, numericValue);
+        }
+    }
+
+    @SuppressWarnings("unchecked") // Safe since the returned value is always both a Number and Comparable.
+    private static <V extends Number & Comparable> V fromString(String input)
+            throws ParseException {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        Number number = numberFormat.parse(input);
+        if (fitsIntoInt(number) && whole(number)) {
+            @SuppressWarnings("WrapperTypeMayBePrimitive") // Primitives are uncastable.
+            Integer result = number.intValue();
+            return (V) result;
+        }
+        return (V) number;
+    }
+
+    private static boolean fitsIntoInt(Number number) {
+        return number.longValue() <= Integer.MAX_VALUE;
+    }
+
+    private static boolean whole(Number number) {
+        return number.doubleValue() % 1 == 0;
     }
 
     /**
