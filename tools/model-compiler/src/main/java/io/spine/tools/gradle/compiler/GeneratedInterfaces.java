@@ -72,11 +72,11 @@ public final class GeneratedInterfaces {
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        config.filePattern(config.endsWith(MessageFile.COMMANDS))
+        config.filePattern(config.endsWith(MessageFile.COMMANDS.suffix()))
               .markWith(CommandMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.EVENTS))
+        config.filePattern(config.endsWith(MessageFile.EVENTS.suffix()))
               .markWith(EventMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.REJECTIONS))
+        config.filePattern(config.endsWith(MessageFile.REJECTIONS.suffix()))
               .markWith(RejectionMessage.class.getName());
         config.uuidMessage()
               .markWith(UuidValue.class.getName());
@@ -162,10 +162,6 @@ public final class GeneratedInterfaces {
      */
     public PostfixPattern endsWith(String postfix) {
         return new PostfixPattern(postfix);
-    }
-
-    private PostfixPattern endsWith(MessageFile messageFile) {
-        return endsWith(messageFile.suffix());
     }
 
     /**
