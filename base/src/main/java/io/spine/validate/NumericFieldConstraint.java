@@ -61,11 +61,11 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
         }
     }
 
-    @SuppressWarnings("unchecked") // Safe since double is both a Number and Comparable.
+    @SuppressWarnings("unchecked") // Safe since the returned value is always both a Number and Comparable.
     private static <V extends Number & Comparable> V fromString(String input)
             throws ParseException {
-        NumberFormat instance = NumberFormat.getNumberInstance();
-        Number number = instance.parse(input);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        Number number = numberFormat.parse(input);
         if (fitsIntoInt(number) && whole(number)) {
             @SuppressWarnings("WrapperTypeMayBePrimitive") // Primitives are uncastable.
             Integer result = number.intValue();
