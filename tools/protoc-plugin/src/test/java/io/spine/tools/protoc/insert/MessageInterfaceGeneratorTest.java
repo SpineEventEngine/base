@@ -27,6 +27,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
+import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
@@ -210,10 +211,7 @@ class MessageInterfaceGeneratorTest {
         List<File> files = response.getFileList();
         assertEquals(2, files.size());
         for (File file : files) {
-            assertTrue(file.hasInsertionPoint());
-            assertTrue(file.hasName());
-
-            assertEquals(EventMessage.class.getName() + ',', file.getContent());
+            assertGeneratedInterface(EventMessage.class, file);
         }
     }
 
@@ -229,10 +227,7 @@ class MessageInterfaceGeneratorTest {
         List<File> files = response.getFileList();
         assertEquals(2, files.size());
         for (File file : files) {
-            assertTrue(file.hasInsertionPoint());
-            assertTrue(file.hasName());
-
-            assertEquals(CommandMessage.class.getName() + ',', file.getContent());
+            assertGeneratedInterface(CommandMessage.class, file);
         }
     }
 
@@ -248,10 +243,23 @@ class MessageInterfaceGeneratorTest {
         List<File> files = response.getFileList();
         assertEquals(1, files.size());
         for (File file : files) {
-            assertTrue(file.hasInsertionPoint());
-            assertTrue(file.hasName());
+            assertGeneratedInterface(RejectionMessage.class, file);
+        }
+    }
 
-            assertEquals(RejectionMessage.class.getName() + ',', file.getContent());
+    @Test
+    @DisplayName("generate EnrichmentMessage insertion points")
+    void generateEnrichmentMessageInsertionPoints() {
+        String filePath = "spine/tools/protoc/insert/test_enrichments.proto";
+
+        FileDescriptorProto descriptor = TestEnrichmentsProto.getDescriptor()
+                                                             .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(1, files.size());
+        for (File file : files) {
+            assertGeneratedInterface(EnrichmentMessage.class, file);
         }
     }
 
@@ -441,5 +449,12 @@ class MessageInterfaceGeneratorTest {
         Path generatedFilePath = Paths.get(generatedFile.getName());
         assertTrue(generatedFilePath.startsWith(PACKAGE_NAME.toDirectory()
                                                             .getPath()));
+    }
+
+    private static void assertGeneratedInterface(Class<?> interfaceClass, File file) {
+        assertTrue(file.hasInsertionPoint());
+        assertTrue(file.hasName());
+
+        assertEquals(interfaceClass.getName() + ',', file.getContent());
     }
 }
