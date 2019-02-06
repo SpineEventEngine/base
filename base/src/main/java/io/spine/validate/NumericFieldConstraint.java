@@ -44,9 +44,9 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
     }
 
     /** Returns a number of type V based on its string representation. */
-    @SuppressWarnings("unchecked") // Safe since double is both a Number and Comparable.
     static <V extends Number & Comparable> V fromOption(String numericValue) {
         Double doubleValue = Double.parseDouble(numericValue);
+        @SuppressWarnings("unchecked") // Safe since double is both a Number and Comparable.
         V result = (V) doubleValue;
         return result;
     }
