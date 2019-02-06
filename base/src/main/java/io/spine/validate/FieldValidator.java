@@ -32,11 +32,11 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -82,7 +82,9 @@ abstract class FieldValidator<V> implements Logging {
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
         this.ifInvalid = ifInvalid(descriptor(value));
-        this.fieldValidatingOptions = ImmutableSet.copyOf(Sets.union(commonOptions(assumeRequired), validatingOptions));
+        ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
+        this.fieldValidatingOptions = ImmutableSet.copyOf(
+                Sets.union(commonOptions, validatingOptions));
     }
 
     /**
@@ -97,7 +99,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if this constraint is not set explicitly
      */
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
-        this(value, assumeRequired, commonOptions(assumeRequired));
+        this(value, assumeRequired, ImmutableSet.of());
     }
 
     /**
@@ -163,14 +165,13 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private List<ConstraintViolation> optionViolations() {
-        List<ConstraintViolation> violations = new ArrayList<>();
-        for (FieldValidatingOption<?, V> option : fieldValidatingOptions) {
-            if (option.shouldValidate(descriptor())) {
-                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
-                ImmutableList<ConstraintViolation> found = constraint.check(value);
-                violations.addAll(found);
-            }
-        }
+        List<ConstraintViolation> violations =
+                fieldValidatingOptions.stream()
+                                      .filter(option -> option.shouldValidate(descriptor()))
+                                      .map(option -> option.constraintFor(value))
+                                      .flatMap(constraint -> constraint.check(value)
+                                                                       .stream())
+                                      .collect(toList());
         return violations;
     }
 
@@ -281,16 +282,14 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private static IfInvalidOption ifInvalid(FieldDescriptor descriptor) {
-        IfInvalid ifInvalidOption = new IfInvalid();
-        IfInvalidOption ifInvalid = ifInvalidOption.valueFrom(descriptor)
-                                                   .orElse(IfInvalidOption.getDefaultInstance());
-        return ifInvalid;
+        IfInvalid ifInvalid = new IfInvalid();
+        IfInvalidOption result = ifInvalid.valueOrDefault(descriptor);
+        return result;
     }
 
     private IfMissingOption ifMissing() {
         IfMissing ifMissing = new IfMissing();
-        return ifMissing.valueFrom(descriptor())
-                        .orElse(IfMissingOption.getDefaultInstance());
+        return ifMissing.valueOrDefault(descriptor());
     }
 
     private static <V> FieldDescriptor descriptor(FieldValue<V> value) {

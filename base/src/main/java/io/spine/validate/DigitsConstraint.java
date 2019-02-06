@@ -34,7 +34,8 @@ import static io.spine.validate.FieldValidator.getErrorMsgFormat;
  * @param <V>
  *         a numeric value the digits of which are being controlled for length
  */
-final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V, DigitsOption> {
+final class DigitsConstraint<V extends Number & Comparable>
+        extends NumericFieldConstraint<V, DigitsOption> {
 
     private static final Splitter DOT_SPLITTER = Splitter.on(".");
 
@@ -43,17 +44,17 @@ final class DigitsConstraint<V extends Number> extends NumericFieldConstraint<V,
     }
 
     @Override
-    boolean doesNotSatisfy(FieldValue<V> value) {
+    boolean satisfies(FieldValue<V> value) {
         int wholeDigitsMax = optionValue().getIntegerMax();
         int fractionDigitsMax = optionValue().getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
-            return false;
+            return true;
         }
         boolean constraintViolated =
                 value.asList()
                      .stream()
                      .anyMatch(number -> violated(number, wholeDigitsMax, fractionDigitsMax));
-        return constraintViolated;
+        return !constraintViolated;
     }
 
     private boolean violated(V number, int wholeDigitsMax, int fractionDigitsMax) {

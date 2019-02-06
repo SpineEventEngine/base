@@ -29,19 +29,19 @@ import io.spine.option.OptionsProto;
  * @param <V>
  *         numeric value type that this option is applied to
  */
-final class Max<V extends Number> extends FieldValidatingOption<MaxOption, V> {
+final class Max<V extends Number & Comparable> extends FieldValidatingOption<MaxOption, V> {
 
     private Max() {
         super(OptionsProto.max);
     }
 
     /** Returns a new instance of this option. */
-    static <V extends Number> Max<V> create() {
+    static <V extends Number & Comparable> Max<V> create() {
         return new Max<>();
     }
 
     @Override
     public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
-        return new MaxConstraint<>(optionValue(fieldValue));
+        return new MaxConstraint<V>(optionValue(fieldValue));
     }
 }

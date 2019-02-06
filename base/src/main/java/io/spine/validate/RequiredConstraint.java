@@ -75,9 +75,8 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
     private String msgFormat(FieldValue<T> fieldValue) {
         IfMissing ifMissing = new IfMissing();
         Optional<IfMissingOption> ifMissingValue = ifMissing.valueFrom(fieldValue.descriptor());
-        return ifMissingValue.isPresent() ?
-               ifMissingValue.get()
-                             .getMsgFormat() :
-               ERROR_MESSAGE;
+        return ifMissingValue.isPresent()
+               ? ifMissingValue.get().getMsgFormat()
+               : ERROR_MESSAGE;
     }
 }

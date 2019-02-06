@@ -58,7 +58,8 @@ abstract class FieldValidatingOption<T, F>
     T optionValue(FieldValue<F> value) throws IllegalStateException {
         FieldDescriptor field = value.declaration()
                                      .descriptor();
-        Optional<T> option = valueFrom(field);
+        FieldContext context = value.context();
+        Optional<T> option = valueFrom(field, context);
         return option.orElseThrow(() -> {
             FieldDescriptor descriptor = extension().getDescriptor();
 
@@ -67,11 +68,12 @@ abstract class FieldValidatingOption<T, F>
                                     .value();
             String containingTypeName = descriptor.getContainingType()
                                                   .getName();
-            return illegalState(fieldName, containingTypeName);
+            return couldNotGetOptionValueFrom(fieldName, containingTypeName);
         });
     }
 
-    private IllegalStateException illegalState(String fieldName, String containingTypeName) {
+    private IllegalStateException couldNotGetOptionValueFrom(String fieldName,
+                                                             String containingTypeName) {
         String optionName = extension().getDescriptor()
                                        .getName();
         String message = format("Could not get value of option %s from field %s in message %s.",
@@ -82,24 +84,22 @@ abstract class FieldValidatingOption<T, F>
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * <p>Apart from the value of the field option, checks whether any messages with {@code
-     * validation_for} options exist that override the option value of the specified field.
+     * Takes the value of the option from the given descriptor, given the specified context.
      *
      * @param field
-     *         a field that bears the option value
-     * @return either an empty {@code Optional}, if no option value was found for the specified
-     *         field,
-     *         or an {@code Optional} containing found value
+     *         descriptor of the field
+     * @param context
+     *         context of the field
+     * @return an {@code Optional} with an option value, if such exists, otherwise an empty
+     *         {@code Optional}
+     * @apiNote Use this in favour of {@link this#valueFrom(FieldDescriptor)} when
+     *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
      */
-    @Override
-    public Optional<T> valueFrom(FieldDescriptor field) {
-        FieldContext context = FieldContext.create(field);
-        Optional<T> validationForOption = getOptionValue(context, extension());
-        return validationForOption.isPresent()
-               ? validationForOption
-               : super.valueFrom(field);
+    public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
+        Optional<T> value = getOptionValue(context, extension());
+        return value.isPresent()
+               ? value
+               : valueFrom(field);
     }
 
     /**
