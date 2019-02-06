@@ -322,14 +322,14 @@ extend google.protobuf.MessageOptions {
     //  1. It is not possible to modify the code of the constrained message.
     //  2. Constraints of the message depend on the usage scenario.
     //
-    // A target field of an external constraint should specified using a fully-qualified field name:
-    // `mypackage.MessageName.field_name`.
+    // A target field of an external constraint should be specified using a fully-qualified
+    // field name (e.g. `mypackage.MessageName.field_name`).
     //
-    // Example 7: Defining external validation constraint.
+    // Example 8: Defining external validation constraint.
     //
     //     package io.spine.example;
     //
-    //     // Defines a change in a value in a field of another message.
+    //     // Defines a change in a string value.
     //     //
     //     // Both of the fields of this message are not `required` to be able to describe
     //     // a change from empty value to non-empty value, or from a non-empty value to
@@ -368,24 +368,51 @@ extend google.protobuf.MessageOptions {
     //     // the `RenameTask` command.
     //     //
     //     message RequireNewTaskName {
-    //          option (validation_of) = "io.spine.example.RenameTask.change";
+    //          option (validation_of) = "spine.example.RenameTask.change";
     //
     //          // A description should not be empty.
     //          string new_value = 1 [(required) = true];
     //     }
     //
+    //     // External validation constraint for `StringChange.previous_value` in the scope of
+    //     // the `RenameTask` command.
+    //     //
+    //     message RequirePreviousTaskName {
+    //          option (validation_of) = "spine.example.RenameTask.change";
     //
-    // Validation rule limitations:
-    // - applicable only to field declarations of a `Message` type;
-    // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
-    // - a field can be a target of only one validation rule.
+    //          // A description should not be empty.
+    //          string previous_value = 1 [(required) = true];
+    //     }
     //
+    // NOTE: A target field for an external validation constraint must be have the option `(valid)`
+    //       set to `true`. See the definition of the `RenameTask.change` field in the example
+    //       above. If there is no such option defined, or it is set to `false`, the external
+    //       constraint will not be applied.
     //
-    // If the rule has multiple targets, their names are separated with comma.
+    // An external validation constraints can be defined for more than one field
+    // (which have the same in different messages). To do so, separate fully-qualified references
+    // to these fields with with comma.
+    //
+    // Example 9: External validation constraints for multiple fields.
+    //
+    //     // External validation constraint for requiring a new value in renaming commands.
+    //     message RequireNewName {
+    //         option (validation_of) = "spine.example.RenameTask.change,"
+    //                                  "spine.example.RenameProject.change,";
+    //                                  "spine.example.ChangeComment.
+    //     }
+    //
+    // Limitation
+    // ----------
+    // An external validation constraint is defined for one field. It can apply to multiple types
+    // that have field with the same name. But if you change more than one constraint for a message,
+    // you need to define a new message holding an external constraint for each field.
+    // If this limitation is critical for your project, please leave a comment in this
+    // issue: https://github.com/SpineEventEngine/base/issues/315.
     //
     string validation_of = 73904;
 
-    // reserved 73905 to 73910 for future validation options
+    // Reserved 73905 to 73910 for future validation options.
 
     // API Annotations
     //-----------------
@@ -401,13 +428,13 @@ extend google.protobuf.MessageOptions {
     // backward-compatibility.
     bool experimental_type = 73913;
 
-    // Signifies that a public API is subject to incompatible changes, or even removal, in a future
-    // release.
+    // Signifies that a public API is subject to incompatible changes, or even removal,
+    // in a future release.
     bool beta_type = 73914;
 
     // Specifies a characteristic inherent in the the given message type.
     //
-    // Example:
+    // Example 10: Using `(is)` message option.
     //
     //     message CreateProject {
     //         option (is).java_type = "ProjectCommand";
@@ -425,7 +452,7 @@ extend google.protobuf.MessageOptions {
     //
     IsOption is = 73915;
 
-    // reserved 73916 to 73921 for future API annotation options.
+    // Reserved 73916 to 73921 for future API annotation options.
 
     // Enrichment Options
     //--------------------
@@ -435,7 +462,7 @@ extend google.protobuf.MessageOptions {
     // qualified according to Protobuf conventions.
     // If the enrichment is for multiple events, their type names should be separated with comma.
     //
-    // For example:
+    // Example 11: Using `(enrichment_for)` message option.
     //
     //     message MyEventEnrichment {
     //         option (enrichment_for) = "example.events.MyEvent";
@@ -451,10 +478,10 @@ extend google.protobuf.MessageOptions {
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
     // pattern. Infix and prefix wildcards are not supported.
     //
-    // For example:
+    // Example 11: Using package reference in the `(enrichment_for)` option.
     //
     //     message MyEnrichment {
-    //         option (enrichment_for) = "example.events.*"
+    //         option (enrichment_for) = "example.events.*";
     //         ...
     //     }
     //
@@ -469,7 +496,7 @@ extend google.protobuf.MessageOptions {
     //
     string enrichment_for = 73922;
 
-    // reserved 73923 to 73939 for future options.
+    // Reserved 73923 to 73939 for future options.
 
     // Command Options
     //-------------------
@@ -517,19 +544,19 @@ extend google.protobuf.FileOptions {
 
     // Specifies a characteristic common for all the message types in the given file.
     //
-    // Example:
+    // Example 12: Marking all the messages using the `(every_is)` file option.
     // ```
-    // option (every_is).java_type = "ProjectCommand";
+    //     option (every_is).java_type = "ProjectCommand";
     //
-    // message CreateProject {
-    //     // ...
-    //
-    //     message WithAssignee {
+    //     message CreateProject {
     //         // ...
-    //     }
-    // }
     //
-    // message DeleteProject { /*...*/ }
+    //         message WithAssignee {
+    //         // ...
+    //         }
+    //     }
+    //
+    //     message DeleteProject { /*...*/ }
     // ```
     //
     // In the example above, `CreateProject`, `CreateProject.WithAssignee`, and `DeleteProject`
@@ -543,7 +570,7 @@ extend google.protobuf.FileOptions {
     //
     IsOption every_is = 73946;
 
-    // reserved 73947 to 73970 for future use.
+    // Reserved 73947 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {
@@ -551,10 +578,10 @@ extend google.protobuf.ServiceOptions {
     // Indicates that the service is a part of Service Provider Interface (SPI).
     bool SPI_service = 73971;
 
-    // reserved 73971 to 73980
+    // Reserved 73971 to 73980.
 }
 
-// reserved 73981 to 74000 for other future Spine Options numbers.
+// Reserved 73981 to 74000 for other future Spine Options numbers.
 
 //
 // Validation Option Types
@@ -565,9 +592,12 @@ extend google.protobuf.ServiceOptions {
 // Applies only to the fields marked as `required`.
 // Validation error message is composed according to the rules defined by this option.
 //
-// Example:
+// Example 13: Using the `(if_missing)` option.
 //
-// MyMessage field = 1 [(required) = true, (if_missing).msg_format = "This field is required."];
+//    message Holder {
+//        MyMessage field = 1 [(required) = true,
+//                             (if_missing).msg_format = "This field is required."];
+//    }
 //
 message IfMissingOption {
 
@@ -583,8 +613,11 @@ message IfMissingOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example:
-//     double value = 1 [(min).value = "10.5"];
+// Example 14: Defining lower boundary for a numeric field.
+//
+//     message KelvinTemperature {
+//         double value = 1 [(min).value = "0.0"];
+//     }
 //
 message MinOption {
 
@@ -614,8 +647,11 @@ message MinOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example:
-//     double value = 1 [(max).value = "10.5"];
+// Example 15: Defining upper boundary for a numeric field.
+//
+//     message Elevation {
+//         double value = 1 [(max).value = "8848.00"];
+//     }
 //
 message MaxOption {
 
@@ -647,8 +683,11 @@ message MaxOption {
 // This option is considered as not set if either `integer_max` or `fraction_max` parameter is not
 // set (is zero).
 //
-// Example:
-//     double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
+// Example 16: Using the `(digits) constraint.
+//
+//     message Measurement {
+//         double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
+//     }
 //
 message DigitsOption {
 
@@ -681,8 +720,11 @@ message DigitsOption {
 // Is applicable only to `Timestamp`s.
 // Repeated fields are supported.
 //
-// Example:
-//     google.protobuf.Timestamp field = 1 [(when).in = FUTURE];
+// Example 17: Using `(when)` option.
+//
+//     message ScheduleMeeting {
+//         google.protobuf.Timestamp start = 1 [(when).in = FUTURE];
+//     }
 //
 message TimeOption {
 
@@ -716,8 +758,11 @@ enum Time {
 // Is applicable only to strings.
 // Repeated fields are supported.
 //
-// Example:
-//     string field = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
+// Example 18: Using the `(pattern)` option.
+//
+//     message CreateAccount {
+//         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
+//     }
 //
 message PatternOption {
 
@@ -741,8 +786,11 @@ message PatternOption {
 // Is applicable only to messages.
 // Repeated fields are supported.
 //
-// Example:
-//     MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
+// Example 19: Using the `(if_invalid)` option.
+//
+//     message Holder {
+//         MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
+//    }
 //
 message IfInvalidOption {
 
@@ -755,17 +803,17 @@ message IfInvalidOption {
 
 // Specifies that a message field can be present only if another field is present.
 //
-// Unlike `required_field` that handles combination of required fields, this option is useful when
-// it is needed to say that an optional field makes sense only when another optional field is
+// Unlike the `required_field` that handles combination of required fields, this option is useful
+// when it is needed to say that an optional field makes sense only when another optional field is
 // present.
 //
-// Example:
+// Example 20: Requiring mutual presence of optional fields.
 //
-// message ScheduledItem {
-//     ...
-//     spine.time.LocalDate date = 4;
-//     spine.time.LocalTime time = 5 [(goes).with = "date"];
-// }
+//    message ScheduledItem {
+//        ...
+//        spine.time.LocalDate date = 4;
+//        spine.time.LocalTime time = 5 [(goes).with = "date"];
+//    }
 //
 message GoesOption {
 
@@ -849,9 +897,10 @@ message IsOption {
     // The generation is disabled by default.
     bool generate = 1;
 
-    // The reference to Java interface.
+    // The reference to a Java interface.
     //
-    // May be an FQN or a simple name. In the latter case, the interface should belong to the same
+    // May be an fully-qualified or a simple name. In the latter case, the interface should belong
+    // to the same
     // Java package as the message class which implements this interface.
     //
     // The framework does not ensure the referenced type exists.
@@ -862,9 +911,9 @@ message IsOption {
     //
     // The `.java` file is placed alongside with the code generated by the proto-to-java compiler.
     //
-    // If specified with an FQN, the package of the generated type matches the FQN.
-    // If specified with a simple name, the package of the interface matches the package of
-    // the message class.
+    // If fully-qualified name given, the package of the generated type matches the fully-qualified
+    // name. When a simple name is set in the option, the package of the interface matches the
+    // package of the message class.
     //
     string java_type = 2;
 }
