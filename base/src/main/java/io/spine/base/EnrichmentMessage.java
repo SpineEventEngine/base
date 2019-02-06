@@ -25,8 +25,8 @@ import com.google.errorprone.annotations.Immutable;
 /**
  * A common interface for enrichment messages.
  *
- * <p>The messages to which {@code (enrichment_for)} option is applied are spotted
- * by the Spine Model Compiler and marked with this interface automatically.
+ * <p>The messages which are top-level message and to which {@code (enrichment_for)} option
+ * is applied are spotted by the Spine Model Compiler and marked with this interface automatically.
  */
 @Immutable
 public interface EnrichmentMessage extends SerializableMessage {
