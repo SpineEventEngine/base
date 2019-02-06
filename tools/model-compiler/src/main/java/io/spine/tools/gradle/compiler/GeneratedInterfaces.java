@@ -191,7 +191,7 @@ public final class GeneratedInterfaces {
      * <p>This method functions are similar to the {@link #filePattern(FilePattern)} except for
      * several differences:
      * <ul>
-     * <li>the file in which the message type is defined does not matter;
+     *     <li>the file in which the message type is defined does not matter;
      * </ul>
      *
      * @return a configuration object for Proto messages matching enrichment message pattern
