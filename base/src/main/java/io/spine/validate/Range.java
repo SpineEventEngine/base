@@ -20,24 +20,27 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.Range;
-import io.spine.option.MinOption;
+import io.spine.option.OptionsProto;
 
 /**
- * A constraint that, when applied to a numeric field, checks whether the value of that field is
- * greater than (or equal to, if specified by the value of the respective option) a min value.
+ * A validating option that limits a numeric field to be in the specified range.
+ *
+ * @param <V>
+ *         a value that this option is applied to
  */
-final class MinConstraint<V extends Number & Comparable> extends RangedConstraint<V, MinOption> {
+public final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
 
-    MinConstraint(MinOption optionValue) {
-        super(optionValue, minRange(optionValue));
+    private Range() {
+        super(OptionsProto.range);
     }
 
-    private static <V extends Number & Comparable> Range<V> minRange(MinOption option) {
-        boolean inclusive = !option.getExclusive();
-        V minValue = fromStringValue(option.getValue());
-        return inclusive
-               ? Range.atLeast(minValue)
-               : Range.greaterThan(minValue);
+    /** Creates a new instance of this option. */
+    public static <V extends Number & Comparable> Range<V> create() {
+        return new Range<>();
+    }
+
+    @Override
+    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> value) {
+        return new RangeConstraint<>(optionValue(value));
     }
 }

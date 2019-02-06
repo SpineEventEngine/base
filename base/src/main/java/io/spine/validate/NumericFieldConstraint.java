@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -51,7 +52,7 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
     }
 
     /** Returns a number of type V based on its string representation. */
-    static <V extends Number & Comparable> V fromOption(String numericValue) {
+    static <V extends Number & Comparable> V fromStringValue(String numericValue) {
         try {
             V result = fromString(numericValue);
             return result;
@@ -64,7 +65,7 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
     @SuppressWarnings("unchecked") // Safe since the returned value is always both a Number and Comparable.
     private static <V extends Number & Comparable> V fromString(String input)
             throws ParseException {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        NumberFormat numberFormat = new DecimalFormat();
         Number number = numberFormat.parse(input);
         if (fitsIntoInt(number) && whole(number)) {
             @SuppressWarnings("WrapperTypeMayBePrimitive") // Primitives are uncastable.

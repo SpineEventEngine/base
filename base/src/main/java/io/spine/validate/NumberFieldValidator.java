@@ -42,7 +42,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable> extends Field
     NumberFieldValidator(FieldValue<V> fieldValue) {
         super(fieldValue,
               false,
-              ImmutableSet.of(Max.create(), Min.create(), Digits.create()));
+              ImmutableSet.of(Max.create(), Min.create(), Digits.create(), Range.create()));
     }
 
     /** Converts a string representation to a number. */

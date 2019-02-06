@@ -34,7 +34,7 @@ final class MaxConstraint<V extends Number & Comparable> extends RangedConstrain
 
     private static <V extends Number & Comparable> Range<V> maxRange(MaxOption option) {
         boolean inclusive = !option.getExclusive();
-        V minValue = fromOption(option.getValue());
+        V minValue = fromStringValue(option.getValue());
         return inclusive
                ? Range.atMost(minValue)
                : Range.lessThan(minValue);

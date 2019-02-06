@@ -144,7 +144,9 @@ extend google.protobuf.FieldOptions {
     // Attempting to add a snowflake that is equal to an existing one results in a violation.
     bool distinct = 73825;
 
-    // reserved 73826 to 73849 for future validation options.
+    string range = 73826;
+
+    // reserved 73827 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
