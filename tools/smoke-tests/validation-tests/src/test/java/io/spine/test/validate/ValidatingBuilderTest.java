@@ -20,15 +20,19 @@
 
 package io.spine.test.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.logging.Logging;
+import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
+import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
@@ -43,6 +47,7 @@ import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -194,7 +199,7 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearLabel
         );
-        testFields(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setLabel(IMPORTANT), enumFieldMutations);
     }
 
     @Test
@@ -205,7 +210,7 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearId
         );
-        testFields(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setId(newUuid()), stringFieldMutations);
     }
 
     @Test
@@ -216,33 +221,33 @@ class ValidatingBuilderTest {
                 taskVBuilder -> taskVBuilder.mergeFrom(sampleTask()),
                 TaskVBuilder::clearAssignee
         );
-        testFields(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
+        testSetOnce(taskVBuilder -> taskVBuilder.setAssignee(member()), messageFieldMutations);
     }
 
-    private static void testFields(Function<TaskVBuilder, TaskVBuilder> setup,
-                                   Stream<Function<TaskVBuilder, ?>> mutateOperations) {
+    private static void testSetOnce(Function<TaskVBuilder, TaskVBuilder> setup,
+                                    Stream<Function<TaskVBuilder, ?>> mutateOperations) {
         mutateOperations.forEach(
-                operation -> testSetOnce(TaskVBuilder.newBuilder(), setup, operation));
+                operation -> testOption(TaskVBuilder.newBuilder(), setup, operation));
     }
 
     /**
-     * Tests a validating builder that validates a message that declares a {@code (set_once)} field.
+     * Tests a validating builder that validates a field option by prohibiting some sort
+     * of mutation.
      *
-     * <p>To do so, sets up the builder and then applies a mutation operation against it to see
-     * whether it throws an exception.
+     * <p>First, applies the specified setup operation and then applies the specified rule-violating
+     * operation and checks, whether an exception was thrown.
      *
      * @param builder
      *         an initial value of a builder
      * @param builderSetup
      *         first mutation of a {@code set_once field}
      * @param violatingOperation
-     *         an operation that is supposed to be illegal against a
-     *         {@code set_once} field
+     *         an operation that is supposed to be illegal
      * @param <E>
      *         type of the builder
      */
     private static <E extends AbstractValidatingBuilder<?, ?>>
-    void testSetOnce(E builder, Function<E, E> builderSetup, Function<E, ?> violatingOperation) {
+    void testOption(E builder, Function<E, E> builderSetup, Function<E, ?> violatingOperation) {
         E initialBuilder = builderSetup.apply(builder);
         assertThrows(ValidationException.class, () -> violatingOperation.apply(initialBuilder));
     }
@@ -282,18 +287,53 @@ class ValidatingBuilderTest {
     @Test
     @DisplayName("not allow to change a state of an implicitly `(set_once)` field")
     void testSetOnceImplicitForEntities() {
-        testSetOnce(EditTaskStateVBuilder.newBuilder(),
-                    builder -> builder.setEditId(newUuid()),
-                    builder -> builder.setEditId(newUuid()));
+        testOption(EditTaskStateVBuilder.newBuilder(),
+                   builder -> builder.setEditId(newUuid()),
+                   builder -> builder.setEditId(newUuid())
+                                     .build());
+    }
+
+    @DisplayName("not allow to add duplicate entries to a `(onDuplicate) = ERROR` marked field")
+    @Test
+    void testDistinctThrows() {
+        testOption(BlizzardVBuilder.newBuilder(),
+                   builder -> builder.addSnowflake(triangularSnowflake()),
+                   builder -> builder.addSnowflake(triangularSnowflake())
+                                     .build());
+    }
+
+    @DisplayName("not allow to `allAdd` duplicate entries to a `(onDuplicate) = ERROR` marked field")
+    @Test
+    void testDistinctThrowsOnAddAll() {
+        List<Snowflake> snowflakes = ImmutableList.of(triangularSnowflake(), triangularSnowflake());
+        testOption(BlizzardVBuilder.newBuilder(),
+                   builder -> builder.addSnowflake(triangularSnowflake()),
+                   builder -> builder.addAllSnowflake(snowflakes)
+                                     .build());
+    }
+
+    @DisplayName("ignore duplicates in a `(on_duplicate) = IGNORE` marked field")
+    @Test
+    void testDistinctIgnoresIfRequested() {
+        ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
+        builder.addSnowflake(triangularSnowflake())
+               .addSnowflake(triangularSnowflake());
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
-    private static
-    Queue<SubstituteLoggingEvent> redirectLogging(Class<? extends AbstractValidatingBuilder> cls) {
+    private static Queue<SubstituteLoggingEvent> redirectLogging(
+            Class<? extends AbstractValidatingBuilder> cls) {
         SubstituteLogger logger = (SubstituteLogger) Logging.get(cls);
         Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
         Logging.redirect(logger, loggedMessages);
         return loggedMessages;
+    }
+
+    private static Snowflake triangularSnowflake() {
+        return Snowflake
+                .newBuilder()
+                .setEdges(3)
+                .build();
     }
 
     /**
@@ -338,12 +378,12 @@ class ValidatingBuilderTest {
     }
 
     private static Member member() {
-        ByteString bites = copyFrom(new byte[]{(byte) 1, (byte) 2, (byte) 3});
+        ByteString bytes = copyFrom(new byte[]{(byte) 1, (byte) 2, (byte) 3});
         Member.Builder member = Member
                 .newBuilder()
                 .setId(newUuid())
                 .setName("John Smith")
-                .setAvatarImage(bites);
+                .setAvatarImage(bytes);
         return member.build();
     }
 }
