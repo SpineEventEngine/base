@@ -34,6 +34,7 @@ import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
 import io.spine.test.tools.protoc.WeatherForecast;
+import io.spine.tools.protoc.SomeMessage.InnerMessageNotEnrichment;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -131,17 +132,18 @@ class ProtocPluginTest {
     @DisplayName("mark as rejection messages")
     void markRejectionMessages() {
         assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                   .isInstanceOf(RejectionMessage.class);
+                .isInstanceOf(RejectionMessage.class);
         assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                   .isInstanceOf(UserRejection.class);
+                .isInstanceOf(UserRejection.class);
     }
 
     @Test
     @DisplayName("mark messages with already existing interface types")
-    @SuppressWarnings("UnnecessaryLocalVariable") // Compile-time verification.
+    @SuppressWarnings("UnnecessaryLocalVariable")
+        // Compile-time verification.
     void implementHandcraftedInterfaces() {
         assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                   .isInstanceOf(UserRejection.class);
+                .isInstanceOf(UserRejection.class);
         assertFalse(Message.class.isAssignableFrom(UserRejection.class));
         String id = Identifier.newUuid();
         Rejections.UserAlreadyExists message = Rejections.UserAlreadyExists
@@ -175,6 +177,25 @@ class ProtocPluginTest {
         assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
         assertThat(WeatherForecast.Temperature.getDefaultInstance())
                 .isNotInstanceOf(DocumentMessage.class);
+    }
+
+    @Test
+    @DisplayName("mark message with (enrichment_for) option with a generated enrichment interface")
+    void markEnrichmentWithGeneratedInterface() {
+        assertThat(UserNicknameEnrichment.class).isAssignableTo(TestEnrichment.class);
+    }
+
+    @Test
+    @DisplayName("not mark message without (enrichment_for) option with a generated enrichment interface")
+    void notMarkEnrichmentWithGeneratedInterface() {
+        assertThat(NotEnrichment.getDefaultInstance()).isNotInstanceOf(TestEnrichment.class);
+    }
+
+    @Test
+    @DisplayName("not mark inner message with (enrichment_for) option with a generated enrichment interface")
+    void notMarkInnerEnrichmentWithGeneratedInterface() {
+        assertThat(InnerMessageNotEnrichment.getDefaultInstance())
+                .isNotInstanceOf(TestEnrichment.class);
     }
 
     @CanIgnoreReturnValue

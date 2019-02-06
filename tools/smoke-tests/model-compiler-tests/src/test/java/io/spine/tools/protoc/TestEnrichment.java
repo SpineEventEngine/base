@@ -17,27 +17,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.code.proto.commands;
+package io.spine.tools.protoc;
 
-import "spine/options.proto";
+import io.spine.base.SerializableMessage;
 
-option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
-option java_package = "io.spine.test.code.proto.command";
-option java_multiple_files = true;
-option java_outer_classname = "MttCommandsProto";
-
-// This file defines test environment for `MessageTypeTest.java`.
-
-// A sample command to verify detecting that a message is a command from `MessageType`.
-message MttStartProject {
-
-    Details details = 1;
-
-    message Details {
-
-        string description = 1;
-    }
+public interface TestEnrichment extends SerializableMessage {
 }
