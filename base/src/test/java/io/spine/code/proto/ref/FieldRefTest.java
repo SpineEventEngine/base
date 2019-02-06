@@ -76,22 +76,16 @@ class FieldRefTest {
         @DisplayName("internal reference")
         void internalRef() {
             assertPositive(new FieldRef("another_field")::isInner);
-            assertNegative(new FieldRef("AnotherMessage.another_field")::isInner);
         }
 
         @Test
         @DisplayName("context reference")
         void contextRef() {
             assertPositive(new FieldRef("context.timestamp")::isContext);
-            assertNegative(new FieldRef("AnotherMessage.context")::isContext);
         }
 
         void assertPositive(Supplier<Boolean> quality) {
             assertQualify(quality).isTrue();
-        }
-
-        void assertNegative(Supplier<Boolean> quality) {
-            assertQualify(quality).isFalse();
         }
 
         private BooleanSubject assertQualify(Supplier<Boolean> quality) {
@@ -130,23 +124,16 @@ class FieldRefTest {
             assertRejects("  ");
         }
 
-        @DisplayName("value with empty type reference")
+        @DisplayName("value with missing parent field")
         @Test
         void emptyTypeRef() {
             assertRejects(".field_name");
         }
 
-        @DisplayName("value with empty field reference")
-        @Test
-        void emptyFieldRef() {
-            assertRejects("TypeName.");
-        }
-
-        @DisplayName("value with missing package or nested type reference")
+        @DisplayName("value with missing interim reference")
         @Test
         void emptyInterimTypeRef() {
-            assertRejects("Some. .field_name");
-            assertRejects("io.spine. .TypeName.field_name");
+            assertRejects("some. .field_name");
         }
 
         void assertRejects(Executable executable) {
@@ -162,9 +149,6 @@ class FieldRefTest {
     @DisplayName("obtain field descriptor from a message descriptor")
     class FindFieldDescriptor {
 
-        private final FieldRef absoluteRef =
-                new FieldRef("google.protobuf.Timestamp.seconds");
-
         private final FieldRef nonQualifiedTypedRef =
                 new FieldRef("Timestamp.seconds");
 
@@ -173,12 +157,6 @@ class FieldRefTest {
 
         private final FieldRef invalidTypedRef =
                 new FieldRef("LocalTime.seconds");
-
-        @Test
-        @DisplayName("via filly-qualified reference")
-        void fullyQualifiedRef() {
-            assertFound(absoluteRef);
-        }
 
         @Test
         @DisplayName("via typed reference")
@@ -203,25 +181,11 @@ class FieldRefTest {
             Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
         }
-
-        @Test
-        @DisplayName("allowing wildcard type references")
-        void wildcardRef() {
-            assertFound(new FieldRef("*.nanos"));
-        }
     }
 
     @Nested
     @DisplayName("tell if a type matches")
     class TypeMatch {
-
-        @Test
-        @DisplayName("for wildcard reference")
-        void wildcardRef() {
-            assertThat(new FieldRef("*.nanos")
-                               .matchesType(Timestamp.getDescriptor()))
-                    .isTrue();
-        }
 
         @Test
         @DisplayName("for direct type reference")

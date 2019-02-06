@@ -33,38 +33,10 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * Provides typical type references used for referencing types in proto definitions.
  *
- * <p>A type reference is usually used in a field reference
+ * <p>A type reference is usually used in a field reference.
  */
 @Immutable
 enum BuiltIn implements TypeRef {
-
-    /**
-     * Wildcard option used to reference all types.
-     *
-     * <p>A typical usage would be in a field reference in the {@code (by)} option to
-     * specify all types containing a field with a certain name. Consider the following message
-     * declaration:
-     * <pre>{@code
-     * message MyEnrichment {
-     *    string enrichment_value = 1 [(by) = "*.my_id"];
-     * }}
-     * </pre>
-     * tells that the enrichment field is populated after the a field named {@code my_id}
-     * found in any type. This, in turn, means that the type {@code MyEnrichment} will be used
-     * for all the messages declaring a field with such name.
-     *
-     * <p>A special care should be taken for ensuring that such fields have the same type, and
-     * that an enrichment function is provided for obtaining enrichment field value from a source
-     * message field.
-     */
-    ALL("*") {
-
-        /** Accepts all message types. */
-        @Override
-        public boolean test(Descriptor message) {
-            return true;
-        }
-    },
 
     SELF("") {
 
@@ -136,7 +108,7 @@ enum BuiltIn implements TypeRef {
     @CanIgnoreReturnValue
     static String checkTypeReference(String typeReference) {
         checkNotEmptyOrBlank(typeReference);
-        String wildcard = ALL.value();
+        String wildcard = "*";
         if (typeReference.startsWith(wildcard)) {
             checkArgument(
                     typeReference.equals(wildcard),

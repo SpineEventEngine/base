@@ -44,7 +44,9 @@ message PersonName {
 // See `field_reference_test_events.proto`.
 //
 message UserInfo {
-    
+
+    option (enrichment_for) = "spine.test.code.proto.*";
+
     // Provides person name by alternative field references.
     //
     // The first reference is to all messages containing the `user_id` field.
@@ -55,5 +57,5 @@ message UserInfo {
     // The third alternative is to the field `actor` field of the `CommandContext` type, which
     // is referenced by the `command_context` field of the `EventContext` type.
     //
-    PersonName person_name = 1 [(by) = "*.user_id|DocumentUpdated.editor_id|context.command_context.actor"];
+    PersonName person_name = 1 [(by) = "user_id|editor_id|context.command_context.actor"];
 }

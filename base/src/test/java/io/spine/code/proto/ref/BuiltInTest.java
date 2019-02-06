@@ -24,7 +24,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Empty;
-import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.ref.BuiltIn.ALL;
 import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
 import static io.spine.code.proto.ref.BuiltIn.SELF;
 
@@ -43,13 +41,6 @@ class BuiltInTest {
     @Nested
     @DisplayName("Accept all types in")
     class AcceptAll {
-
-        @Test
-        @DisplayName("wildcard \"*\" reference")
-        void all() {
-            assertAccepts(ALL, Any.getDescriptor());
-            assertAccepts(ALL, StringValue.getDescriptor());
-        }
 
         @Test
         @DisplayName("reference to the same type")

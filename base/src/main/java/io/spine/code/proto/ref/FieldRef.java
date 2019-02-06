@@ -36,7 +36,6 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.code.proto.ref.BuiltIn.ALL;
 import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
 import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static io.spine.code.proto.ref.BuiltIn.checkTypeReference;
@@ -77,6 +76,11 @@ public final class FieldRef extends StringTypeValue {
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
+        checkArgument(
+                !value.contains("*"),
+                "Field reference cannot be wildcard. Found: `%s`.",
+                value
+        );
         List<String> parts = split(value);
         checkThat(!parts.isEmpty(), value);
         if (parts.size() >= 2) {
@@ -107,29 +111,6 @@ public final class FieldRef extends StringTypeValue {
             result.add(new FieldRef(ref));
         }
         return result.build();
-    }
-
-    /**
-     * Tells if the passed value reference all types.
-     *
-     * @deprecated Do not use {@code *.field_name} references in {@code (by)} options.
-     */
-    @Deprecated
-    public static boolean isWildcard(String typeReference) {
-        checkTypeReference(typeReference);
-        return ALL.value()
-                  .equals(typeReference);
-    }
-
-    /**
-     * Verifies if the reference is to a field in all types having a field with the referenced name.
-     *
-     * @deprecated Do not use {@code *.field_name} references in {@code (by)} options.
-     */
-    @Deprecated
-    public boolean isWildcard() {
-        boolean result = typeRef.equals(ALL);
-        return result;
     }
 
     /**
@@ -166,8 +147,6 @@ public final class FieldRef extends StringTypeValue {
     /**
      * Obtains type reference part from the field reference string.
      *
-     * @return the string until the {@linkplain FieldName#TYPE_SEPARATOR field name separator},
-     *         or en empty string, if type reference is not provided
      * @deprecated use type references only via {@code (enrichment_for)} type option.
      */
     @Deprecated
