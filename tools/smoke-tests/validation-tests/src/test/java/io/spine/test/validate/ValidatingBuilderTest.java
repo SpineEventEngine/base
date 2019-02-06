@@ -32,9 +32,13 @@ import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.SafeBetVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
+import io.spine.test.validate.msg.builder.UnopenedVBuilder;
+import io.spine.test.validate.msg.builder.UnsafeBetVBuilder;
+import io.spine.test.validate.msg.builder.UpToInfinityVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
@@ -320,6 +324,45 @@ class ValidatingBuilderTest {
                .addSnowflake(triangularSnowflake());
     }
 
+    @DisplayName("not allow values that don't fit into a closed range")
+    @Test
+    void testDoesNotAllowBelow() {
+        double unsafeOdds = safeOdds() - 0.1d;
+        testOption(SafeBetVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setOdds(unsafeOdds));
+    }
+
+    @DisplayName("allow values that are equal to the upper endpoint of an unclosed range")
+    @Test
+    void testFitsRightIntoAnOpenedRange() {
+        SafeBetVBuilder
+                .newBuilder()
+                .setOdds(safeOdds());
+    }
+
+    @DisplayName("disallow values that are equal to the upper endpoint of a closed range")
+    @Test
+    void testDoesNotFitRightIntoAClosedRange() {
+        testOption(UnsafeBetVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setOdds(safeOdds()));
+    }
+
+    @DisplayName("throw an exception upon finding a malformed range")
+    @Test
+    void throwsOnMalformedRangeNoLeftBorder() {
+        UnopenedVBuilder builder = UnopenedVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setValue(0));
+    }
+
+    @DisplayName("throw an exception upon finding a malformed range")
+    @Test
+    void throwsOnMalformedRangeNoRightBorder() {
+        UpToInfinityVBuilder builder = UpToInfinityVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setValue(0));
+    }
+
     /** Redirects logging of all validating builders to the queue that is returned. */
     private static Queue<SubstituteLoggingEvent> redirectLogging(
             Class<? extends AbstractValidatingBuilder> cls) {
@@ -356,6 +399,10 @@ class ValidatingBuilderTest {
 
     private static Timestamp timeInFuture() {
         return add(getCurrentTime(), fromSeconds(1000L));
+    }
+
+    private static double safeOdds() {
+        return 0.5d;
     }
 
     private static Task task() {
