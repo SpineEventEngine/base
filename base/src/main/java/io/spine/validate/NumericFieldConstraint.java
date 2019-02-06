@@ -31,8 +31,6 @@ import com.google.common.collect.ImmutableList;
 public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
         extends FieldValueConstraint<V, T> {
 
-    static final String OR_EQUAL_TO = "or equal to";
-
     NumericFieldConstraint(T optionValue) {
         super(optionValue);
     }
