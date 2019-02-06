@@ -20,3 +20,13 @@ message UserNicknameEnrichment {
 message NotEnrichment {
     string id = 1;
 }
+
+message SomeMessage {
+    string id = 1;
+
+    message InnerMessageNotEnrichment {
+        option (enrichment_for) = "spine.tools.protoc.UserCreated";
+
+        string nickname = 1 [(by) = "id"];
+    }
+}

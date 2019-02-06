@@ -34,6 +34,7 @@ import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
 import io.spine.test.tools.protoc.WeatherForecast;
+import io.spine.tools.protoc.SomeMessage.InnerMessageNotEnrichment;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -188,6 +189,13 @@ class ProtocPluginTest {
     @DisplayName("not mark message without (enrichment_for) option with a generated enrichment interface")
     void notMarkEnrichmentWithGeneratedInterface() {
         assertThat(NotEnrichment.getDefaultInstance()).isNotInstanceOf(TestEnrichment.class);
+    }
+
+    @Test
+    @DisplayName("not mark inner message with (enrichment_for) option with a generated enrichment interface")
+    void notMarkInnerEnrichmentWithGeneratedInterface() {
+        assertThat(InnerMessageNotEnrichment.getDefaultInstance())
+                .isNotInstanceOf(TestEnrichment.class);
     }
 
     @CanIgnoreReturnValue
