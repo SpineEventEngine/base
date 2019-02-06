@@ -63,7 +63,7 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
 
     private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
         FieldPath path = fieldValue.context()
-                                   .getFieldPath();
+                                   .fieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msgFormat(fieldValue))

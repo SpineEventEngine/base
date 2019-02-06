@@ -86,7 +86,7 @@ final class WhenConstraint extends FieldValueConstraint<Timestamp, TimeOption> {
                                       .toString()
                                       .toLowerCase();
         FieldPath fieldPath = fieldValue.context()
-                                        .getFieldPath();
+                                        .fieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

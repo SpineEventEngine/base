@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldOption;
 
 import java.util.Optional;

@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
 
@@ -87,7 +88,7 @@ public final class FieldValue<T> {
         T value = rawValue instanceof ProtocolMessageEnum
                   ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                   : (T) rawValue;
-        FieldDescriptor fieldDescriptor = context.getTarget();
+        FieldDescriptor fieldDescriptor = context.target();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
         FieldValue<T> result = resolveType(declaration, context, value);
@@ -187,7 +188,7 @@ public final class FieldValue<T> {
     }
 
     FieldDescriptor descriptor() {
-        return context.getTarget();
+        return context.target();
     }
 
     /**

@@ -21,8 +21,8 @@
 package io.spine.validate.given;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.field.Message;
-import io.spine.validate.FieldContext;
 
 public class GivenField {
 

@@ -80,7 +80,7 @@ final class DigitsConstraint<V extends Number & Comparable>
         String intMax = String.valueOf(optionValue().getIntegerMax());
         String fractionMax = String.valueOf(optionValue().getFractionMax());
         FieldPath fieldPath = value.context()
-                                   .getFieldPath();
+                                   .fieldPath();
 
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()

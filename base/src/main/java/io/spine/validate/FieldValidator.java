@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
@@ -312,7 +313,7 @@ abstract class FieldValidator<V> implements Logging {
 
     /** Returns a path to the current field. */
     final FieldPath fieldPath() {
-        return fieldContext().getFieldPath();
+        return fieldContext().fieldPath();
     }
 
     /** Returns the declaration of the validated field. */
