@@ -149,19 +149,14 @@ class FieldRefTest {
     @DisplayName("obtain field descriptor from a message descriptor")
     class FindFieldDescriptor {
 
-        private final FieldRef nonQualifiedTypedRef =
-                new FieldRef("Timestamp.seconds");
+        private final FieldRef nestedRef = new FieldRef("timestamp.seconds");
 
-        private final FieldRef onlyNameRef =
-                new FieldRef("seconds");
-
-        private final FieldRef invalidTypedRef =
-                new FieldRef("LocalTime.seconds");
+        private final FieldRef onlyNameRef = new FieldRef("seconds");
 
         @Test
-        @DisplayName("via typed reference")
+        @DisplayName("via nested reference")
         void typedRef() {
-            assertFound(nonQualifiedTypedRef);
+            assertFound(nestedRef);
         }
 
         @Test
@@ -170,35 +165,15 @@ class FieldRefTest {
             assertFound(onlyNameRef);
         }
 
-        @Test
-        @DisplayName("rejecting a message which type name does not match")
-        void rejectWrongType() {
-            assertThrows(IllegalArgumentException.class,
-                         () -> invalidTypedRef.find(Timestamp.getDescriptor()));
-        }
-
         private void assertFound(FieldRef ref) {
             Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
         }
     }
 
-    @Nested
-    @DisplayName("tell if a type matches")
-    class TypeMatch {
-
-        @Test
-        @DisplayName("for direct type reference")
-        void directTypeRef() {
-            assertThat(new FieldRef("Timestamp.seconds")
-                               .matchesType(Timestamp.getDescriptor()))
-                    .isTrue();
-        }
-    }
-
     @Test
     @DisplayName("serialize")
     void serialize() {
-        reserializeAndAssert(new FieldRef("google.protobuf.Timestamp.seconds"));
+        reserializeAndAssert(new FieldRef("context.timestamp"));
     }
 }

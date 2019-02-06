@@ -20,15 +20,11 @@
 
 package io.spine.code.proto.ref;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Provides typical type references used for referencing types in proto definitions.
@@ -94,31 +90,6 @@ enum BuiltIn implements TypeRef {
             return Optional.of(this);
         }
         return Optional.empty();
-    }
-
-    /**
-     * Ensures that the passed value is:
-     * <ol>
-     * <li>not null
-     * <li>not empty or blank
-     * <li>not a wild card type reference in a suffix form
-     *  (such as {@code '*CommonEventNameSuffix.field_name'}, which is not currently supported.
-     * </ol>
-     */
-    @CanIgnoreReturnValue
-    static String checkTypeReference(String typeReference) {
-        checkNotEmptyOrBlank(typeReference);
-        String wildcard = "*";
-        if (typeReference.startsWith(wildcard)) {
-            checkArgument(
-                    typeReference.equals(wildcard),
-                    "Referencing types with a suffix form (`%s`) in wildcard reference " +
-                            "is not supported . " +
-                            "Please use '%s.<field_name>' when referencing a field of many types.",
-                    typeReference,
-                    wildcard);
-        }
-        return typeReference;
     }
 
     /** Obtains the value of the reference. */
