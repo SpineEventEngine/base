@@ -143,6 +143,26 @@ message Essay {
     map<string, int32> table_of_contents = 2 [(set_once) = true];
 }
 
+message Blizzard {
+    repeated Snowflake snowflake = 1 [(distinct) = true];
+}
+
+message Constitution {
+    string amendments = 1 [(distinct) = true];
+}
+
+// Artificial blizzards allow repeating snowflakes.
+message ArtificialBlizzard {
+    repeated Snowflake snowflake = 1 [(distinct) = false];
+}
+
+// A snowflake is represented by a polygon. Two snowflakes are equal if they have the same
+// amount of edges.
+message Snowflake {
+
+    int32 edges = 1;
+}
+
 enum TaskLabel {
 
     NO_LABEL = 0;

@@ -31,8 +31,8 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      * @param fieldValue
      *         the value to to validate
      */
-    BooleanFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, false);
+    BooleanFieldValidator(FieldValue<Boolean> fieldValue) {
+        super(fieldValue, false);
     }
 
     /**
@@ -43,15 +43,5 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     @Override
     protected boolean isNotSet(Boolean value) {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action, since {@code boolean} fields require no additional validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NOP
     }
 }

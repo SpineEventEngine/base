@@ -20,18 +20,12 @@
 
 package io.spine.validate;
 
-import io.spine.option.OptionsProto;
-import io.spine.option.PatternOption;
-
-import static io.spine.protobuf.TypeConverter.toAny;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Validates fields of type {@link String}.
  */
 class StringFieldValidator extends FieldValidator<String> {
-
-    private final PatternOption patternOption;
-    private final String regex;
 
     /**
      * Creates a new validator instance.
@@ -42,38 +36,8 @@ class StringFieldValidator extends FieldValidator<String> {
      *         if {@code true} the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, true);
-        this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
-        this.regex = patternOption.getRegex();
-    }
-
-    @Override
-    protected void validateOwnRules() {
-        checkIfMatchesToRegexp();
-    }
-
-    private void checkIfMatchesToRegexp() {
-        if (regex.isEmpty()) {
-            return;
-        }
-        for (String value : getValues()) {
-            if (!value.matches(regex)) {
-                addViolation(newViolation(value));
-            }
-        }
-    }
-
-    private ConstraintViolation newViolation(String fieldValue) {
-        String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(regex)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(toAny(fieldValue))
-                .build();
-        return violation;
+    StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired, ImmutableSet.of(Pattern.create()));
     }
 
     @Override

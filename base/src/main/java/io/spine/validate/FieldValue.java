@@ -21,20 +21,18 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.Option;
+import io.spine.protobuf.TypeConverter;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
 import static java.lang.String.format;
 
 /**
@@ -49,14 +47,25 @@ import static java.lang.String.format;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
  *         Protobuf Maps</a>
  */
-final class FieldValue {
+public final class FieldValue<T> {
 
-    private final Object value;
+    /**
+     * Actual field values.
+     *
+     * <p>Since a field can be, among other things, a repeated field or a map, the values are stored
+     * in a list.
+     *
+     * <p>For singular fields, a list contains a single value.
+     * For repeated fields, a list contains all of the values.
+     * For a map fields, a list contains a list of values, since the map values are being validated,
+     * not the keys.
+     */
+    private final List<T> values;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Object value, FieldContext context, FieldDeclaration declaration) {
-        this.value = value;
+    private FieldValue(List<T> values, FieldContext context, FieldDeclaration declaration) {
+        this.values = values;
         this.context = context;
         this.declaration = declaration;
     }
@@ -70,15 +79,53 @@ final class FieldValue {
      *         the context of the field
      * @return a new instance
      */
-    static FieldValue of(Object rawValue, FieldContext context) {
+    @SuppressWarnings({
+            "ConstantConditions",
+            "unchecked" // Object to T is always safe, since validating builders only receive `T`s.
+    })
+    static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
-        Object value = rawValue instanceof ProtocolMessageEnum
-                       ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
-                       : rawValue;
+        T value = rawValue instanceof ProtocolMessageEnum
+                  ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
+                  : (T) rawValue;
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
-        return new FieldValue(value, context, declaration);
+
+        FieldValue<T> result = resolveType(declaration, context, value);
+        return result;
+    }
+
+    /**
+     * Returns a properly typed {@code FieldValue}.
+     *
+     * <p>To do so, performs a series of {@code instanceof} calls and casts, since there are no
+     * common ancestors between all the possible value types ({@code Map} for Protobuf {@code map}
+     * fields, {@code List} for {@code repeated} fields, and {@code T} for plain values).
+     *
+     * Casting to {@code T} is safe, because the {@code FieldValue} is always created by the
+     * {@linkplain io.spine.validate.ValidatingBuilder validating builder} implementors, and the
+     * raw value always corresponds to one of the Protobuf field types.
+     *
+     * @return a properly typed {@code FieldValue} instance.
+     */
+    @SuppressWarnings({
+            "unchecked", // Raw value is always of a correct type, see javadoc.
+            "ChainOfInstanceofChecks" // No common ancestors.
+    })
+    private static <T> FieldValue<T> resolveType(FieldDeclaration field,
+                                                 FieldContext context,
+                                                 T value) {
+        if (value instanceof List) {
+            List<T> values = (List<T>) value;
+            return new FieldValue<>(values, context, field);
+        } else if (value instanceof Map) {
+            Map<?, T> map = (Map<?, T>) value;
+            ImmutableList<T> values = ImmutableList.copyOf(map.values());
+            return new FieldValue<>(values, context, field);
+        } else {
+            return new FieldValue<>(ImmutableList.of(value), context, field);
+        }
     }
 
     FieldValidator<?> createValidator() {
@@ -96,36 +143,53 @@ final class FieldValue {
      *         if {@code true} validators would always assume that the field is required even
      *         if the constraint is not set explicitly
      */
-    @SuppressWarnings("OverlyComplexMethod")
+    @SuppressWarnings({"OverlyComplexMethod", "unchecked"})
     private FieldValidator<?> createValidator(boolean assumeRequired) {
         JavaType fieldType = javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(this, assumeRequired);
+                return new MessageFieldValidator(castThis(), assumeRequired);
             case INT:
-                return new IntegerFieldValidator(this);
+                return new IntegerFieldValidator(castThis());
             case LONG:
-                return new LongFieldValidator(this);
+                return new LongFieldValidator(castThis());
             case FLOAT:
-                return new FloatFieldValidator(this);
+                return new FloatFieldValidator(castThis());
             case DOUBLE:
-                return new DoubleFieldValidator(this);
+                return new DoubleFieldValidator(castThis());
             case STRING:
-                return new StringFieldValidator(this, assumeRequired);
+                return new StringFieldValidator(castThis(), assumeRequired);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(this);
+                return new ByteStringFieldValidator(castThis());
             case BOOLEAN:
-                return new BooleanFieldValidator(this);
+                return new BooleanFieldValidator(castThis());
             case ENUM:
-                return new EnumFieldValidator(this);
+                return new EnumFieldValidator(castThis());
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }
     }
 
+    /**
+     * Casts this value to a more accurately typed {@code FieldValue}.
+     */
+    @SuppressWarnings("unchecked"
+            /* Casting is safe, since {@link JavaType}, that is being checked by
+            * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
+            * is always going to be fitting validator.
+            */
+    )
+    private <S> FieldValue<S> castThis() {
+        return (FieldValue<S>) this;
+    }
+
     private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
         String msg = format("The field type is not supported for validation: %s", type);
         throw new IllegalArgumentException(msg);
+    }
+
+    FieldDescriptor descriptor() {
+        return context.getTarget();
     }
 
     /**
@@ -145,67 +209,44 @@ final class FieldValue {
     }
 
     /**
-     * Obtains the desired option for the field.
-     *
-     * @param option
-     *         an extension key used to obtain an option
-     * @param <T>
-     *         the type of the option value
-     */
-    <T> Option<T> option(GeneratedExtension<FieldOptions, T> option) {
-        Optional<Option<T>> validationRuleOption = getOptionValue(context, option);
-        if (validationRuleOption.isPresent()) {
-            return validationRuleOption.get();
-        }
-
-        Option<T> result = Option.from(context.getTarget(), option);
-        return result;
-    }
-
-    /**
-     * Obtains the value of the option.
-     *
-     * @param option
-     *         an extension key used to obtain an option
-     * @param <T>
-     *         the type of the option value
-     * @return the value of the option
-     */
-    <T> T valueOf(GeneratedExtension<FieldOptions, T> option) {
-        return option(option).value();
-    }
-
-    /**
      * Converts the value to a list.
      *
-     * @param <T>
-     *         the type of the list elements
      * @return the value as a list
      */
     @SuppressWarnings({
             "unchecked", // Specific validator must call with its type.
             "ChainOfInstanceofChecks" // No other possible way to check the value type.
     })
-    <T> ImmutableList<T> asList() {
-        if (value instanceof Collection) {
-            Collection<T> result = (Collection<T>) value;
-            return ImmutableList.copyOf(result);
-        } else if (value instanceof Map) {
-            Map<?, T> map = (Map<?, T>) value;
-            return ImmutableList.copyOf(map.values());
-        } else {
-            T result = (T) value;
-            return ImmutableList.of(result);
+    ImmutableList<T> asList() {
+        return ImmutableList.copyOf(values);
+    }
+
+    T singleValue() {
+        return asList().get(0);
+    }
+
+    /** Returns {@code true} if this field is default, {@code false} otherwise. */
+    boolean isDefault() {
+        return asList().isEmpty() || (declaration.isNotCollection() &&
+                isSingleValueDefault());
+    }
+
+    @SuppressWarnings("OverlyStrongTypeCast") // Casting to a sensible public class.
+    private boolean isSingleValueDefault() {
+        if (this.singleValue() instanceof EnumValueDescriptor) {
+            return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
         }
+        Message thisAsMessage = TypeConverter.toMessage(singleValue());
+        return Validate.isDefault(thisAsMessage);
     }
 
     /** Returns the declaration of the value. */
-    FieldDeclaration declaration() {
+    public FieldDeclaration declaration() {
         return declaration;
     }
 
     /** Returns the context of the value. */
-    FieldContext context() {
+    public FieldContext context() {
         return context;
     }
 }

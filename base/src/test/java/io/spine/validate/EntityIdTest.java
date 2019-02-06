@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
-import static io.spine.validate.given.MessageValidatorTestEnv.NO_VALUE_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 import static io.spine.validate.given.MessageValidatorTestEnv.newByteString;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
@@ -110,7 +109,7 @@ class EntityIdTest extends MessageValidatorTest {
         @DisplayName("provide one valid violation if is not valid")
         void provideOneValidViolationIfEntityIdInCommandIsNotValid() {
             EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
-            assertSingleViolation(msg, NO_VALUE_MSG, VALUE);
+            assertSingleViolation(msg, RequiredConstraint.ERROR_MESSAGE, VALUE);
         }
     }
 

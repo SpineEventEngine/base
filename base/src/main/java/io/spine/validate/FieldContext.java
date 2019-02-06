@@ -106,7 +106,7 @@ public final class FieldContext {
      *
      * @return the target descriptor
      */
-    FieldDescriptor getTarget() {
+    public FieldDescriptor getTarget() {
         checkState(!descriptors.isEmpty(), "Empty context cannot have a target.");
         int targetIndex = descriptors.size() - 1;
         return descriptors.get(targetIndex);

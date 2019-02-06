@@ -286,8 +286,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private void logError(FieldDescriptor field) {
         String fieldName = field.getFullName();
         _error("Error found in `%s`. " +
-                    "Repeated and map fields can't be marked as `(set_once) = true`",
-                    fieldName);
+               "Repeated and map fields cannot be marked as `(set_once) = true`.",
+               fieldName);
     }
 
     private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
