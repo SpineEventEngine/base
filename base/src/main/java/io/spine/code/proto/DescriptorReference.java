@@ -75,7 +75,7 @@ public final class DescriptorReference {
     /**
      * Writes this reference into the {@code desc.ref} file under the given directory.
      *
-     * <p>Appends the file of it already exists or creates a new file otherwise.
+     * <p>Appends the file if it already exists or creates a new file otherwise.
      *
      * @param directory
      *         target dir for the {@code desc.ref} file
