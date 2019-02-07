@@ -27,7 +27,7 @@ import com.google.common.base.Objects;
  *
  * <p>Note that for values that are outside {@code Long} range, or when a
  * precision beyond that of {@code Double} is required, instances of this class
- * yield incorrect results.
+ * yield incorrect comparison results.
  */
 final class ComparableNumber extends Number implements Comparable<Number> {
 
