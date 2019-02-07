@@ -62,7 +62,7 @@ public final class FieldRef extends StringTypeValue {
     private final ImmutableList<String> parts;
 
     /**
-     * Reference to a proto type.
+     * Reference to a containing type.
      */
     private final TypeRef typeRef;
 
