@@ -30,7 +30,9 @@ import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
+import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.Member;
+import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.SafeBetVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
@@ -333,7 +335,7 @@ class ValidatingBuilderTest {
                    builder -> builder.setOdds(unsafeOdds));
     }
 
-    @DisplayName("allow values that are equal to the upper endpoint of an unclosed range")
+    @DisplayName("allow values that are equal to the lower endpoint of an unclosed range")
     @Test
     void testFitsRightIntoAnOpenedRange() {
         SafeBetVBuilder
@@ -341,9 +343,17 @@ class ValidatingBuilderTest {
                 .setOdds(safeOdds());
     }
 
-    @DisplayName("disallow values that are equal to the upper endpoint of a closed range")
+    @DisplayName("disallow ranges with incorrect types")
     @Test
-    void testDoesNotFitRightIntoAClosedRange() {
+    void testInvalidRangeTypes() {
+        MinorCitizenVBuilder builder = MinorCitizenVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setAge(18));
+
+    }
+
+    @DisplayName("disallow values that are equal to the upper endpoint of an open range")
+    @Test
+    void testDoesNotFitRightIntoAnOpenRange() {
         testOption(UnsafeBetVBuilder.newBuilder(),
                    builder -> builder,
                    builder -> builder.setOdds(safeOdds()));
@@ -361,6 +371,16 @@ class ValidatingBuilderTest {
     void throwsOnMalformedRangeNoRightBorder() {
         UpToInfinityVBuilder builder = UpToInfinityVBuilder.newBuilder();
         assertThrows(IllegalStateException.class, () -> builder.setValue(0));
+    }
+
+    @DisplayName("correctly parse negative ranges")
+    @Test
+    void worksWithNegativeRanges() {
+        FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();
+        weatherBuilder.setCelcius(-6.5d);
+        testOption(FrostyWeatherVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setCelcius(-10.0d));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */

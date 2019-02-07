@@ -158,7 +158,6 @@ message ArtificialBlizzard {
 
 // A number between 0 and 9 incusive.
 message DecimalDigit {
-
     int32 value = 1 [(range) = "[0..10)"];
 }
 
@@ -181,6 +180,17 @@ message UnsafeBet {
 // A bet that has at least 50% chance to win.
 message SafeBet {
     double odds = 1 [(range) = "[0.5..1.0]"];
+}
+
+message FrostyWeather {
+    double celcius = 1 [(range) = "(-10.0..-5.5]"];
+}
+
+message MinorCitizen {
+
+    // Malformed range - the value the field is `int32` - whole number, while the value of the
+    // left range edge is a floating point number.
+    int32 age = 1 [(range) = "(0..18.01)"];
 }
 
 // A message with a value that has a malformed range.
