@@ -28,8 +28,6 @@ import com.google.common.collect.ImmutableList;
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
-@SuppressWarnings("TypeParameterUnusedInFormals")
-// Numbers are not comparable, so having a V that is both a Number and Comparable is necessary.
 public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
         extends FieldValueConstraint<V, T> {
 
