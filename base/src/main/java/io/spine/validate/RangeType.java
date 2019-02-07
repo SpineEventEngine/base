@@ -24,8 +24,9 @@ import com.google.common.collect.Range;
 
 import java.util.function.BiFunction;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.lang.String.format;
 
 /**
  * A type of range.
@@ -80,7 +81,7 @@ enum RangeType {
                 return type;
             }
         }
-        throw newIllegalStateException("Could not create a range for edges %s.", value);
+        throw newIllegalArgumentException(format("Could not create a range for edges %s.", value));
     }
 
     /**
