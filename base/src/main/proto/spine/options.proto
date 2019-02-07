@@ -157,7 +157,7 @@ extend google.protobuf.FieldOptions {
     //         int32 hour = 1 [(range) = "[0..24)"];
     //         uint32 minute = 2 [(range) = "[0..59]";
     //         float degree = 3 [(range) = "[0.0..360.0)";
-    //         double angle = 4 [(range) = "(0.0...180.0)"; 
+    //         double angle = 4 [(range) = "(0.0..180.0)";
     //     }
     //
     // NOTE: That definition of ranges must be consistent with the type they constrain.
