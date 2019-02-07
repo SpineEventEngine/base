@@ -27,15 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("String described number should")
-public class StringDescribedNumberTest {
+public class NumberTextTest {
 
     @Test
     @DisplayName("recognize that two numbers have different types")
     void differentTypeTest() {
         String plainNumber = "1";
         String numberWithDecimalPart = "1.0";
-        StringDescribedNumber plain = new StringDescribedNumber(plainNumber);
-        StringDescribedNumber withDecimal = new StringDescribedNumber(numberWithDecimalPart);
+        NumberText plain = new NumberText(plainNumber);
+        NumberText withDecimal = new NumberText(numberWithDecimalPart);
         assertFalse(plain.isOfSameType(withDecimal));
     }
 
@@ -44,8 +44,8 @@ public class StringDescribedNumberTest {
     void sameTypeTest() {
         String fitsIntoByte = "4";
         String maxInteger = String.valueOf(Integer.MAX_VALUE);
-        StringDescribedNumber small = new StringDescribedNumber(fitsIntoByte);
-        StringDescribedNumber large = new StringDescribedNumber(maxInteger);
+        NumberText small = new NumberText(fitsIntoByte);
+        NumberText large = new NumberText(maxInteger);
         assertTrue(small.isOfSameType(large));
     }
 
@@ -54,9 +54,9 @@ public class StringDescribedNumberTest {
     void comparisonTest() {
         String smallerValue = "0.1";
         String largerValue = "15";
-        StringDescribedNumber smaller = new StringDescribedNumber(smallerValue);
-        StringDescribedNumber larger = new StringDescribedNumber(largerValue);
-        int comparison = smaller.compareTo(larger);
+        NumberText smaller = new NumberText(smallerValue);
+        NumberText larger = new NumberText(largerValue);
+        int comparison = smaller.toNumber().compareTo(larger.toNumber());
         assertTrue(comparison < 0);
     }
 }

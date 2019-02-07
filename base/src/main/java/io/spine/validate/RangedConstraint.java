@@ -46,9 +46,9 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
 
     private static final String OR_EQUAL_TO = "or equal to";
 
-    private final Range<StringDescribedNumber> range;
+    private final Range<ComparableNumber> range;
 
-    RangedConstraint(T optionValue, Range<StringDescribedNumber> range) {
+    RangedConstraint(T optionValue, Range<ComparableNumber> range) {
         super(optionValue);
         this.range = range;
     }
@@ -58,14 +58,14 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         checkTypeConsistency(value);
         return value.asList()
                     .stream()
-                    .map(StringDescribedNumber::new)
+                    .map(ComparableNumber::new)
                     .allMatch(range);
     }
 
     private void checkTypeConsistency(FieldValue<V> value) {
         if (hasBothBoundaries()) {
-            StringDescribedNumber upper = range.upperEndpoint();
-            StringDescribedNumber lower = range.lowerEndpoint();
+            NumberText upper = range.upperEndpoint().toText();
+            NumberText lower = range.lowerEndpoint().toText();
             if (!upper.isOfSameType(lower)) {
                 String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
                 throw newIllegalStateException(errorMessage, upper, lower);
@@ -76,8 +76,8 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         }
     }
 
-    private void checkBoundaryAndValue(StringDescribedNumber boundary, FieldValue<V> value) {
-        StringDescribedNumber valueToCheck = new StringDescribedNumber(value.singleValue());
+    private void checkBoundaryAndValue(NumberText boundary, FieldValue<V> value) {
+        NumberText valueToCheck = new NumberText(value.singleValue());
         if (!boundary.isOfSameType(valueToCheck)) {
             String errorMessage =
                     "Boundary values must have types consistent with values they bind: " +
@@ -87,9 +87,9 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
     }
 
     private void checkSingleBoundary(FieldValue<V> value) {
-        StringDescribedNumber singleBoundary = range.hasLowerBound()
-                                               ? range.lowerEndpoint()
-                                               : range.upperEndpoint();
+        NumberText singleBoundary = range.hasLowerBound()
+                                               ? range.lowerEndpoint().toText()
+                                               : range.upperEndpoint().toText();
         checkBoundaryAndValue(singleBoundary, value);
     }
 

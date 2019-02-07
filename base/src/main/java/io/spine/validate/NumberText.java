@@ -32,9 +32,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A number that is described with a {@code String} of characters.
  */
-final class StringDescribedNumber extends Number implements Comparable<StringDescribedNumber> {
-
-    private static final long serialVersionUID = -1L;
+final class NumberText {
 
     private static final String DECIMAL_DELIMITER = ".";
     private static final Splitter DECIMAL_SPLIT = Splitter.on(DECIMAL_DELIMITER);
@@ -43,7 +41,7 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
     private final Number numericValue;
 
     /** Creates a new instance that is equal to the specified number. */
-    StringDescribedNumber(Number number) {
+    NumberText(Number number) {
         this.stringRepresentation = String.valueOf(number);
         this.numericValue = number;
     }
@@ -55,8 +53,8 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
      * @param representation
      *         a string representation of a number
      */
-    StringDescribedNumber(String representation) {
-        this.stringRepresentation = checkNotEmptyOrBlank(representation);
+    NumberText(String representation) {
+        this.stringRepresentation = checkNotEmptyOrBlank(representation).trim();
         this.numericValue = parseNumber(stringRepresentation);
     }
 
@@ -67,8 +65,8 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
      * <p>Example:
      * <pre>
      * {@code
-     *   StringDescribedNumber zeroWithDecimal = new StringDescribedNumber("0.0");
-     *   StringDescribedNumber plainZero = new StringDescribedNumber("0");
+     *   NumberText zeroWithDecimal = new NumberText("0.0");
+     *   NumberText plainZero = new NumberText("0");
      *
      *   zeroWithDecimal.isOfSameType(plainZero); // false
      * }
@@ -80,7 +78,7 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
      * @return whether this instance of a number is of the same {@code Number} subtype as
      *         the specified one.
      */
-    boolean isOfSameType(StringDescribedNumber anotherNumber) {
+    boolean isOfSameType(NumberText anotherNumber) {
         Class<? extends Number> classOfThisNumber = numericValue.getClass();
         Class<? extends Number> classOfAnotherNumber = anotherNumber.numericValue.getClass();
         return classOfThisNumber.equals(classOfAnotherNumber);
@@ -119,34 +117,18 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
         }
     }
 
-    @Override
-    public int compareTo(StringDescribedNumber anotherNumber) {
-        return Double.compare(doubleValue(), anotherNumber.doubleValue());
-    }
-
-    @Override
-    public int intValue() {
-        return Integer.parseInt(stringRepresentation);
-    }
-
-    @Override
-    public long longValue() {
-        return Long.parseLong(stringRepresentation);
-    }
-
-    @Override
-    public float floatValue() {
-        return Float.parseFloat(stringRepresentation);
-    }
-
-    @Override
-    public double doubleValue() {
-        return Double.parseDouble(stringRepresentation);
+    ComparableNumber toNumber() {
+        return new ComparableNumber(this.numericValue);
     }
 
     @Override
     public String toString() {
         return stringRepresentation;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(numericValue);
     }
 
     @Override
@@ -157,12 +139,8 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StringDescribedNumber number = (StringDescribedNumber) o;
-        return Objects.equal(numericValue, number.numericValue);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(numericValue);
+        NumberText text = (NumberText) o;
+        return Objects.equal(stringRepresentation, text.stringRepresentation) &&
+                Objects.equal(numericValue, text.numericValue);
     }
 }

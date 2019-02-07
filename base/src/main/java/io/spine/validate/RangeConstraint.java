@@ -42,12 +42,13 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
         super(optionValue, rangeFromOption(optionValue));
     }
 
-    private static Range<StringDescribedNumber> rangeFromOption(String value) {
+    private static Range<ComparableNumber> rangeFromOption(String value) {
         RangeType range = RangeType.ofRange(value);
         EdgeValues edgeValues = edgeValues(withoutBraces(value));
-        Range<StringDescribedNumber> result = range.rangeFrom()
-                                                   .apply(edgeValues.left(),
-                                                          edgeValues.right());
+        ComparableNumber left = edgeValues.leftEdge.toNumber();
+        ComparableNumber right = edgeValues.rightEdge.toNumber();
+        Range<ComparableNumber> result = range.rangeFrom()
+                                              .apply(left, right);
         return result;
     }
 
@@ -67,10 +68,10 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
      */
     private static class EdgeValues {
 
-        private final StringDescribedNumber leftEdge;
-        private final StringDescribedNumber rightEdge;
+        private final NumberText leftEdge;
+        private final NumberText rightEdge;
 
-        private EdgeValues(StringDescribedNumber leftEdge, StringDescribedNumber rightEdge) {
+        private EdgeValues(NumberText leftEdge, NumberText rightEdge) {
             this.leftEdge = leftEdge;
             this.rightEdge = rightEdge;
         }
@@ -90,23 +91,23 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
          */
         private static EdgeValues of(String leftEdge, String rightEdge) throws
                                                                         IllegalStateException {
-            StringDescribedNumber left = new StringDescribedNumber(leftEdge);
-            StringDescribedNumber right = new StringDescribedNumber(rightEdge);
+            NumberText left = new NumberText(leftEdge);
+            NumberText right = new NumberText(rightEdge);
             checkTypes(left, right);
             return new EdgeValues(left, right);
         }
 
         /** Returns the left edge of the range. */
-        private StringDescribedNumber left() {
+        private NumberText left() {
             return leftEdge;
         }
 
         /** Returns the right edge of the range. */
-        private StringDescribedNumber right() {
+        private NumberText right() {
             return rightEdge;
         }
 
-        private static void checkTypes(StringDescribedNumber left, StringDescribedNumber right)
+        private static void checkTypes(NumberText left, NumberText right)
                 throws IllegalStateException {
             if (!left.isOfSameType(right)) {
                 String errorMessage =

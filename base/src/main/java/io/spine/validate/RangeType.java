@@ -25,6 +25,7 @@ import com.google.common.collect.Range;
 import java.util.function.BiFunction;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A type of range.
@@ -35,34 +36,34 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 enum RangeType {
     CLOSED("[]") {
         @Override
-        BiFunction<StringDescribedNumber,
-                StringDescribedNumber,
-                com.google.common.collect.Range<StringDescribedNumber>>
+        BiFunction<ComparableNumber,
+                ComparableNumber,
+                com.google.common.collect.Range<ComparableNumber>>
         rangeFrom() {
             return com.google.common.collect.Range::closed;
         }
     },
     OPEN("()") {
         @Override
-        BiFunction<StringDescribedNumber,
-                StringDescribedNumber,
-                com.google.common.collect.Range<StringDescribedNumber>> rangeFrom() {
+        BiFunction<ComparableNumber,
+                ComparableNumber,
+                com.google.common.collect.Range<ComparableNumber>> rangeFrom() {
             return com.google.common.collect.Range::open;
         }
     },
     OPEN_CLOSED("(]") {
         @Override
-        BiFunction<StringDescribedNumber,
-                StringDescribedNumber,
-                com.google.common.collect.Range<StringDescribedNumber>> rangeFrom() {
+        BiFunction<ComparableNumber,
+                ComparableNumber,
+                com.google.common.collect.Range<ComparableNumber>> rangeFrom() {
             return com.google.common.collect.Range::openClosed;
         }
     },
     CLOSED_OPEN("[)") {
         @Override
-        BiFunction<StringDescribedNumber,
-                StringDescribedNumber,
-                com.google.common.collect.Range<StringDescribedNumber>> rangeFrom() {
+        BiFunction<ComparableNumber,
+                ComparableNumber,
+                com.google.common.collect.Range<ComparableNumber>> rangeFrom() {
             return com.google.common.collect.Range::closedOpen;
         }
     };
@@ -87,14 +88,17 @@ enum RangeType {
      * If such range could not be found, an {@code IllegalStateException} is thrown.
      */
     public static RangeType ofRange(String value) {
+        checkNotEmptyOrBlank(value);
         String trimmed = value.trim();
-        return from(trimmed);
+        char first = trimmed.charAt(0);
+        char last = trimmed.charAt(trimmed.length() - 1);
+        return from(String.valueOf(first) + last);
     }
 
     /**
      * Obtains a function that from two numbers, obtains a range of them, the kind of which
      * depends on the exact type of range.
      */
-    abstract BiFunction<StringDescribedNumber, StringDescribedNumber, Range<StringDescribedNumber>>
+    abstract BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>>
     rangeFrom();
 }
