@@ -22,7 +22,13 @@ package io.spine.validate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,7 +62,36 @@ public class NumberTextTest {
         String largerValue = "15";
         NumberText smaller = new NumberText(smallerValue);
         NumberText larger = new NumberText(largerValue);
-        int comparison = smaller.toNumber().compareTo(larger.toNumber());
+        int comparison = smaller.toNumber()
+                                .compareTo(larger.toNumber());
         assertTrue(comparison < 0);
+    }
+
+    @Test
+    @DisplayName("correctly store numbers that do not fit into int")
+    void testDoesNotFitIntoInt() {
+        String longMaxValue = String.valueOf(Long.MAX_VALUE);
+        String lessThanLongMaxValue = String.valueOf(Long.MAX_VALUE - 1);
+        NumberText larger = new NumberText(longMaxValue);
+        NumberText smaller = new NumberText(lessThanLongMaxValue);
+        assertEquals(1, larger.toNumber().compareTo(smaller.toNumber()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("strings")
+    @DisplayName("correctly stringify values")
+    void toStringTest(Number input, String expected) {
+        NumberText text = new NumberText(input);
+        assertEquals(expected, text.toString());
+    }
+
+    private static Stream<Arguments> strings() {
+        return Stream.of(
+                Arguments.of(0.0d, "0.0"),
+                Arguments.of(0, "0"),
+                Arguments.of(-1.0d, "-1.0"),
+                Arguments.of(-1, "-1"),
+                Arguments.of(-1.23456789d, "-1.23456789")
+        );
     }
 }

@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
@@ -42,7 +43,8 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
         super(optionValue, rangeFromOption(optionValue));
     }
 
-    private static Range<ComparableNumber> rangeFromOption(String value) {
+    @VisibleForTesting
+    static Range<ComparableNumber> rangeFromOption(String value) {
         String trimmed = value.trim();
         RangeType range = RangeType.parse(trimmed);
         EdgeValues edgeValues = edgeValues(withoutBraces(trimmed));
@@ -91,8 +93,8 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
          *         right edge of the range
          * @return a new instance of {@code EdgeValues}
          */
-        private static EdgeValues of(String leftEdge, String rightEdge) throws
-                                                                        IllegalStateException {
+        private static EdgeValues of(String leftEdge, String rightEdge)
+                throws IllegalStateException {
             NumberText left = new NumberText(leftEdge);
             NumberText right = new NumberText(rightEdge);
             checkTypes(left, right);
