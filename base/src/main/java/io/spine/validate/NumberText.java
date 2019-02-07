@@ -37,25 +37,25 @@ final class NumberText {
     private static final String DECIMAL_DELIMITER = ".";
     private static final Splitter DECIMAL_SPLIT = Splitter.on(DECIMAL_DELIMITER);
 
-    private final String stringRepresentation;
-    private final Number numericValue;
+    private final String text;
+    private final Number value;
 
     /** Creates a new instance that is equal to the specified number. */
     NumberText(Number number) {
-        this.stringRepresentation = String.valueOf(number);
-        this.numericValue = number;
+        this.text = String.valueOf(number);
+        this.value = number;
     }
 
     /**
      * Creates a new instance, the value being the specified {@code String} resolved to an
      * appropriate type.
      *
-     * @param representation
+     * @param text
      *         a string representation of a number
      */
-    NumberText(String representation) {
-        this.stringRepresentation = checkNotEmptyOrBlank(representation).trim();
-        this.numericValue = parseNumber(stringRepresentation);
+    NumberText(String text) {
+        this.text = checkNotEmptyOrBlank(text).trim();
+        this.value = parseNumber(this.text);
     }
 
     /**
@@ -79,35 +79,35 @@ final class NumberText {
      *         the specified one.
      */
     boolean isOfSameType(NumberText anotherNumber) {
-        Class<? extends Number> classOfThisNumber = numericValue.getClass();
-        Class<? extends Number> classOfAnotherNumber = anotherNumber.numericValue.getClass();
+        Class<? extends Number> classOfThisNumber = value.getClass();
+        Class<? extends Number> classOfAnotherNumber = anotherNumber.value.getClass();
         return classOfThisNumber.equals(classOfAnotherNumber);
     }
 
-    private static Number parseNumber(String stringRepresentation) {
+    private static Number parseNumber(String text) {
         ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(stringRepresentation));
+                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
         hasOnlyWholeAndDecimal(wholeAndDecimal);
-        if (hasDecimalPart(stringRepresentation)) {
-            return Double.parseDouble(stringRepresentation);
+        if (hasDecimalPart(text)) {
+            return Double.parseDouble(text);
         }
-        if (fitsIntoInteger(stringRepresentation)) {
-            return Integer.parseInt(stringRepresentation);
+        if (fitsIntoInteger(text)) {
+            return Integer.parseInt(text);
         } else {
-            return Long.parseLong(stringRepresentation);
+            return Long.parseLong(text);
         }
     }
 
-    private static boolean hasDecimalPart(String stringRepresentation) {
+    private static boolean hasDecimalPart(String text) {
         ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(stringRepresentation));
+                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
         boolean hasOnlyWhole = wholeAndDecimal.size() <= 1;
         return !hasOnlyWhole && !wholeAndDecimal.get(1)
                                                 .isEmpty();
     }
 
-    private static boolean fitsIntoInteger(String representation) {
-        long number = Long.parseLong(representation);
+    private static boolean fitsIntoInteger(String text) {
+        long number = Long.parseLong(text);
         return Integer.MAX_VALUE >= number;
     }
 
@@ -120,17 +120,17 @@ final class NumberText {
     }
 
     ComparableNumber toNumber() {
-        return new ComparableNumber(this.numericValue);
+        return new ComparableNumber(this.value);
     }
 
     @Override
     public String toString() {
-        return stringRepresentation;
+        return text;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(numericValue);
+        return Objects.hashCode(value);
     }
 
     @Override
@@ -142,7 +142,7 @@ final class NumberText {
             return false;
         }
         NumberText text = (NumberText) o;
-        return Objects.equal(stringRepresentation, text.stringRepresentation) &&
-                Objects.equal(numericValue, text.numericValue);
+        return Objects.equal(this.text, text.text) &&
+                Objects.equal(this.value, text.value);
     }
 }

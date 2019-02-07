@@ -87,7 +87,7 @@ enum RangeType {
      * Obtains a range instance that is described with the specified {@code String}
      * If such range could not be found, an {@code IllegalStateException} is thrown.
      */
-    public static RangeType ofRange(String value) {
+    public static RangeType parse(String value) {
         checkNotEmptyOrBlank(value);
         String trimmed = value.trim();
         char first = trimmed.charAt(0);

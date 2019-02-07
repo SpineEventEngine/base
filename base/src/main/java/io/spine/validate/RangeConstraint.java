@@ -44,7 +44,7 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
 
     private static Range<ComparableNumber> rangeFromOption(String value) {
         String trimmed = value.trim();
-        RangeType range = RangeType.ofRange(trimmed);
+        RangeType range = RangeType.parse(trimmed);
         EdgeValues edgeValues = edgeValues(withoutBraces(trimmed));
         ComparableNumber left = edgeValues.leftEdge.toNumber();
         ComparableNumber right = edgeValues.rightEdge.toNumber();
