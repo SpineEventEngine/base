@@ -366,14 +366,14 @@ class ValidatingBuilderTest {
     @Test
     void throwsOnMalformedRangeNoLeftBorder() {
         UnopenedVBuilder builder = UnopenedVBuilder.newBuilder();
-        assertThrows(IllegalStateException.class, () -> builder.setValue(0));
+        assertThrows(IllegalArgumentException.class, () -> builder.setValue(0));
     }
 
     @DisplayName("throw an exception upon finding a malformed range")
     @Test
     void throwsOnMalformedRangeNoRightBorder() {
         UpToInfinityVBuilder builder = UpToInfinityVBuilder.newBuilder();
-        assertThrows(IllegalStateException.class, () -> builder.setValue(0));
+        assertThrows(IllegalArgumentException.class, () -> builder.setValue(0));
     }
 
     @DisplayName("correctly parse negative ranges")
