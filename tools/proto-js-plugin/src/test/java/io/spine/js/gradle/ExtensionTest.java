@@ -31,6 +31,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -48,11 +49,14 @@ class ExtensionTest {
 
     private static final String PLUGIN_ID = "io.spine.tools.proto-js-plugin";
 
+    private static final String GROUP_ID = "my.company";
+    private static final String VERSION = "42";
+
     private Project project;
     private DefaultJsProject defaultProject;
 
     @BeforeEach
-    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+    void setUp(@TempDir Path tempDirPath) {
         project = ProjectBuilder.builder()
                                 .withProjectDir(tempDirPath.toFile())
                                 .build();
@@ -60,6 +64,9 @@ class ExtensionTest {
         pluginManager.apply("java");
         pluginManager.apply(PLUGIN_ID);
         defaultProject = DefaultJsProject.at(project.getProjectDir());
+
+        project.setGroup(GROUP_ID);
+        project.setVersion(VERSION);
     }
 
     @Test
@@ -104,7 +111,12 @@ class ExtensionTest {
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
         File file = Extension.getMainDescriptorSet(project);
-        File expected = defaultProject.mainDescriptors();
+        Path mainDescriptors = defaultProject.buildRoot()
+                                             .descriptors()
+                                             .mainDescriptors();
+        File expected = mainDescriptors
+                .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + ".desc")
+                .toFile();
         assertEquals(expected, file);
     }
 
@@ -122,7 +134,12 @@ class ExtensionTest {
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
         File file = Extension.getTestDescriptorSet(project);
-        File expected = defaultProject.testDescriptors();
+        Path testDescriptors = defaultProject.buildRoot()
+                                  .descriptors()
+                                  .testDescriptors();
+        File expected = testDescriptors
+                .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + "_test.desc")
+                .toFile();
         assertEquals(expected, file);
     }
 

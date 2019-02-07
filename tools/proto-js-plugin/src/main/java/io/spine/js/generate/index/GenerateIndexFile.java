@@ -79,7 +79,7 @@ public final class GenerateIndexFile extends GenerationTask {
     private static CodeLines knownTypesImports(FileSet fileSet) {
         Collection<Descriptors.FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
-                                     .filter(file -> !TypeSet.messagesAndEnums(file)
+                                     .filter(file -> !TypeSet.from(file)
                                                              .isEmpty())
                                      .map(FileName::from)
                                      .collect(toSet());

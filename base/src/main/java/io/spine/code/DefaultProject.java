@@ -23,8 +23,6 @@ package io.spine.code;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-
 /**
  * This class represents a default directory structure for a Spine-based project of any language.
  *
@@ -41,18 +39,6 @@ import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 public abstract class DefaultProject extends AbstractDirectory {
 
     /**
-     * Default file name for descriptor set generated from the proto files under
-     * the {@code main/proto} project directory.
-     */
-    private static final String MAIN_FILE = "main/" + KNOWN_TYPES;
-
-    /**
-     * Default file name for the descriptor set generated from the proto files under
-     * the {@code test/proto} project directory.
-     */
-    private static final String TEST_FILE = "test/" + KNOWN_TYPES;
-
-    /**
      * The Spine internal directory name for storing temporary build artifacts.
      *
      * @see #tempArtifacts()
@@ -63,22 +49,8 @@ public abstract class DefaultProject extends AbstractDirectory {
         super(path);
     }
 
-    public File mainDescriptors() {
-        BuildRoot build = BuildRoot.of(this);
-        File result = build.descriptors()
-                           .getPath()
-                           .resolve(MAIN_FILE)
-                           .toFile();
-        return result;
-    }
-
-    public File testDescriptors() {
-        BuildRoot build = BuildRoot.of(this);
-        File result = build.descriptors()
-                           .getPath()
-                           .resolve(TEST_FILE)
-                           .toFile();
-        return result;
+    public BuildRoot buildRoot() {
+        return BuildRoot.of(this);
     }
 
     /**
@@ -122,7 +94,7 @@ public abstract class DefaultProject extends AbstractDirectory {
     /**
      * The root directory for build output.
      */
-    static final class BuildRoot extends AbstractDirectory {
+    public static final class BuildRoot extends AbstractDirectory {
 
         @SuppressWarnings("DuplicateStringLiteralInspection") // different meanings around the code.
         private static final String DIR_NAME = "build";
@@ -136,16 +108,24 @@ public abstract class DefaultProject extends AbstractDirectory {
             return new BuildRoot(project);
         }
 
-        private BuildDir descriptors() {
-            return new BuildDir(this, "descriptors");
+        public DescriptorsDir descriptors() {
+            return new DescriptorsDir(this, "descriptors");
         }
     }
 
-    static final class BuildDir extends AbstractDirectory {
+    public static final class DescriptorsDir extends AbstractDirectory {
 
-        BuildDir(BuildRoot parent, String name) {
+        DescriptorsDir(BuildRoot parent, String name) {
             super(parent.getPath()
                         .resolve(name));
+        }
+
+        public Path mainDescriptors() {
+            return getPath().resolve("main");
+        }
+
+        public Path testDescriptors() {
+            return getPath().resolve("test");
         }
     }
 }

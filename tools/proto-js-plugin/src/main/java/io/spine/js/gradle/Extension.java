@@ -22,10 +22,12 @@ package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.spine.code.DefaultProject;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
+import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -40,6 +42,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -47,24 +50,28 @@ import static java.util.stream.Collectors.toList;
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
-public class Extension {
+public class Extension extends GradleExtension {
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
      */
     public String mainDescriptorSetPath;
+
     /**
      * The absolute path to the test Protobuf descriptor set file.
      */
     public String testDescriptorSetPath;
+
     /**
      * The absolute path to the main Protobufs compiled to JavaScript.
      */
     public String mainGenProtoDir;
+
     /**
      * The absolute path to the test Protobufs compiled to JavaScript.
      */
     public String testGenProtoDir;
+
     /**
      * Names of JavaScript modules and directories they provide.
      *
@@ -115,14 +122,16 @@ public class Extension {
     }
 
     public static File getMainDescriptorSet(Project project) {
-        Path path = pathOrDefault(extension(project).mainDescriptorSetPath,
-                                  def(project).mainDescriptors());
+        Extension extension = extension(project);
+        Path path = pathOrDefault(extension.mainDescriptorSetPath,
+                                  extension.defaultMainDescriptor(project));
         return path.toFile();
     }
 
     public static File getTestDescriptorSet(Project project) {
-        Path path = pathOrDefault(extension(project).testDescriptorSetPath,
-                                  def(project).testDescriptors());
+        Extension extension = extension(project);
+        Path path = pathOrDefault(extension.testDescriptorSetPath,
+                                  extension.defaultTestDescriptor(project));
         return path.toFile();
     }
 
@@ -160,7 +169,7 @@ public class Extension {
     static Extension extension(Project project) {
         return (Extension)
                 project.getExtensions()
-                       .getByName(ProtoJsPlugin.extensionName());
+                       .getByName(extensionName());
     }
 
     /**
@@ -189,5 +198,10 @@ public class Extension {
 
     private static DefaultJsProject def(Project project) {
         return DefaultJsProject.at(project.getProjectDir());
+    }
+
+    @Override
+    protected DefaultProject defaultProject(Project project) {
+        return def(project);
     }
 }

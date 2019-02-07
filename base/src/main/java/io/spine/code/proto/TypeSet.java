@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
@@ -38,6 +39,8 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A set of Protobuf types.
@@ -48,39 +51,44 @@ public final class TypeSet {
 
     private final ImmutableMap<TypeName, MessageType> messageTypes;
     private final ImmutableMap<TypeName, EnumType> enumTypes;
+    private final ImmutableMap<TypeName, ServiceType> serviceTypes;
 
     /** Creates a new empty set. */
     private TypeSet() {
-        this(ImmutableMap.of(), ImmutableMap.of());
+        this(ImmutableMap.of(), ImmutableMap.of(), ImmutableMap.of());
     }
 
-    private TypeSet(Map<TypeName, MessageType> messageTypes, Map<TypeName, EnumType> enumTypes) {
-        this.messageTypes = ImmutableMap.copyOf(messageTypes);
-        this.enumTypes = ImmutableMap.copyOf(enumTypes);
+    private TypeSet(ImmutableMap<TypeName, MessageType> messageTypes,
+                    ImmutableMap<TypeName, EnumType> enumTypes,
+                    ImmutableMap<TypeName, ServiceType> serviceTypes) {
+        this.messageTypes = messageTypes;
+        this.enumTypes = enumTypes;
+        this.serviceTypes = serviceTypes;
     }
 
     private TypeSet(Builder builder) {
         this(ImmutableMap.copyOf(builder.messageTypes),
-             ImmutableMap.copyOf(builder.enumTypes));
+             ImmutableMap.copyOf(builder.enumTypes),
+             ImmutableMap.copyOf(builder.serviceTypes));
     }
 
     /**
      * Obtains message and enum types declared in the passed file.
      */
-    public static TypeSet messagesAndEnums(FileDescriptor file) {
+    public static TypeSet from(FileDescriptor file) {
         TypeSet messages = MessageType.allFrom(file);
         TypeSet enums = EnumType.allFrom(file);
-        TypeSet result = messages.union(enums);
-        return result;
+        TypeSet services = ServiceType.allFrom(file);
+        return new TypeSet(messages.messageTypes, enums.enumTypes, services.serviceTypes);
     }
 
     /**
      * Obtains message and enum types declared in the files represented by the passed set.
      */
-    public static TypeSet messagesAndEnums(FileSet fileSet) {
+    public static TypeSet from(FileSet fileSet) {
         TypeSet result = new TypeSet();
         for (FileDescriptor file : fileSet.files()) {
-            result = result.union(messagesAndEnums(file));
+            result = result.union(from(file));
         }
         return result;
     }
@@ -105,7 +113,8 @@ public final class TypeSet {
     public int size() {
         int messagesCount = messageTypes.size();
         int enumsCount = enumTypes.size();
-        int result = messagesCount + enumsCount;
+        int servicesCount = serviceTypes.size();
+        int result = messagesCount + enumsCount + servicesCount;
         return result;
     }
 
@@ -122,10 +131,13 @@ public final class TypeSet {
         Type<?, ?> messageType = messageTypes.get(name);
         if (messageType != null) {
             return Optional.of(messageType);
-        } else {
-            Type<?, ?> enumType = enumTypes.get(name);
-            return Optional.ofNullable(enumType);
         }
+        Type<?, ?> enumType = enumTypes.get(name);
+        if (enumType != null) {
+            return Optional.of(enumType);
+        }
+        Type<?, ?> serviceType = serviceTypes.get(name);
+        return Optional.ofNullable(serviceType);
     }
 
     /**
@@ -175,18 +187,23 @@ public final class TypeSet {
         if (this.isEmpty()) {
             return another;
         }
-        Map<TypeName, MessageType> messages = unite(this.messageTypes, another.messageTypes);
-        Map<TypeName, EnumType> enums = unite(this.enumTypes, another.enumTypes);
-        TypeSet result = new TypeSet(messages, enums);
+        ImmutableMap<TypeName, MessageType> messages =
+                unite(this.messageTypes, another.messageTypes);
+        ImmutableMap<TypeName, EnumType> enums =
+                unite(this.enumTypes, another.enumTypes);
+        ImmutableMap<TypeName, ServiceType> services =
+                unite(this.serviceTypes, another.serviceTypes);
+        TypeSet result = new TypeSet(messages, enums, services);
         return result;
     }
 
-    private static <T extends Type<?, ?>> Map<TypeName, T> unite(Map<TypeName, T> left,
-                                                                 Map<TypeName, T> right) {
+    private static <T extends Type<?, ?>> ImmutableMap<TypeName, T>
+    unite(Map<TypeName, T> left, Map<TypeName, T> right) {
+        // Use HashMap instead of ImmutableMap.Builder to deal with duplicates.
         Map<TypeName, T> union = newHashMapWithExpectedSize(left.size() + right.size());
         union.putAll(left);
         union.putAll(right);
-        return union;
+        return ImmutableMap.copyOf(union);
     }
 
     /**
@@ -197,6 +214,7 @@ public final class TypeSet {
                 .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())
+                .addAll(serviceTypes.values())
                 .build();
         return types;
     }
@@ -219,6 +237,23 @@ public final class TypeSet {
         return Objects.hashCode(messageTypes, enumTypes);
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("messageTypes", namesForDisplay(messageTypes))
+                          .add("enumTypes", namesForDisplay(enumTypes))
+                          .add("serviceTypes", namesForDisplay(serviceTypes))
+                          .toString();
+    }
+
+    private static String namesForDisplay(Map<TypeName, ?> types) {
+        return types.keySet()
+                    .stream()
+                    .map(TypeName::value)
+                    .sorted()
+                    .collect(joining(lineSeparator()));
+    }
+
     /**
      * Creates a new instance of {@code Builder} for {@code TypeSet} instances.
      *
@@ -235,6 +270,7 @@ public final class TypeSet {
 
         private final Map<TypeName, MessageType> messageTypes = newHashMap();
         private final Map<TypeName, EnumType> enumTypes = newHashMap();
+        private final Map<TypeName, ServiceType> serviceTypes = newHashMap();
 
         /**
          * Prevents direct instantiation.
@@ -253,6 +289,13 @@ public final class TypeSet {
         public Builder add(EnumType type) {
             TypeName name = type.name();
             enumTypes.put(name, type);
+            return this;
+        }
+
+        @CanIgnoreReturnValue
+        public Builder add(ServiceType type) {
+            TypeName name = type.name();
+            serviceTypes.put(name, type);
             return this;
         }
 

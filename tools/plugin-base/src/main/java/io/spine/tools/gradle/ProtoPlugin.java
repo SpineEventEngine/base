@@ -22,6 +22,7 @@ package io.spine.tools.gradle;
 
 import io.spine.code.proto.FileSet;
 import io.spine.tools.type.FileDescriptorSuperset;
+import io.spine.tools.type.MergedDescriptorSet;
 import io.spine.tools.type.MoreKnownTypes;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -29,8 +30,8 @@ import org.gradle.api.artifacts.Configuration;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
+import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
 
 /**
  * A plugin performing code-generation based on a {@code .proto} files.
@@ -46,7 +47,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
      */
     protected final Supplier<FileSet> mainProtoFiles(Project project) {
         Supplier<File> descriptorSet = mainDescriptorFile(project);
-        Configuration configuration = configuration(project, RUNTIME);
+        Configuration configuration = configuration(project, RUNTIME_CLASSPATH);
         return protoFiles(descriptorSet, configuration);
     }
 
@@ -55,7 +56,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
      */
     protected final Supplier<FileSet> testProtoFiles(Project project) {
         Supplier<File> descriptorSet = testDescriptorFile(project);
-        Configuration configuration = configuration(project, TEST_RUNTIME);
+        Configuration configuration = configuration(project, TEST_RUNTIME_CLASSPATH);
         return protoFiles(descriptorSet, configuration);
     }
 
@@ -89,8 +90,9 @@ public abstract class ProtoPlugin extends SpinePlugin {
             if (suppliedDescriptorSet.exists()) {
                 superset.addFromDependency(suppliedDescriptorSet);
             }
-            MoreKnownTypes.extendWith(superset.fileSet());
-            return superset.fileSet();
+            MergedDescriptorSet mergedSet = superset.merge();
+            mergedSet.loadIntoKnownTypes();
+            return mergedSet.fileSet();
         };
     }
 

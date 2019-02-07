@@ -21,11 +21,14 @@
 package io.spine.code.proto;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.logging.Logging;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +37,8 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -63,11 +68,14 @@ class Linker {
 
     static FileSet link(Collection<FileDescriptorProto> files) {
         Linker linker = new Linker(files);
+        Logger log = Logging.get(Linker.class);
+        log.debug("Trying to link {} files.", files.size());
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
             throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
+        log.debug("Linking complete. {}", linker);
         FileSet result = linker.getResolved()
                                .union(linker.getPartiallyResolved())
                                .union(linker.getUnresolved());
@@ -188,5 +196,23 @@ class Linker {
 
     FileSet getUnresolved() {
         return unresolved;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("input", namesForDisplay(input))
+                          .add("remaining", namesForDisplay(remaining))
+                          .add("resolved", resolved)
+                          .add("partiallyResolved", partiallyResolved)
+                          .add("unresolved", unresolved)
+                          .toString();
+    }
+
+    private static String namesForDisplay(Collection<FileDescriptorProto> descriptors) {
+        return descriptors.stream()
+                          .map(FileDescriptorProto::getName)
+                          .sorted()
+                          .collect(joining(lineSeparator()));
     }
 }

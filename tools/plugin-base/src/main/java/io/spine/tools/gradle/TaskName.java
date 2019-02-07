@@ -205,7 +205,11 @@ public enum TaskName {
      */
     GENERATE_JSON_PARSERS("generateJsonParsers"),
 
-    COPY_PLUGIN_JAR("copyPluginJar");
+    COPY_PLUGIN_JAR("copyPluginJar"),
+
+    WRITE_DESCRIPTOR_REFERENCE("writeDescriptorReference"),
+
+    WRITE_TEST_DESCRIPTOR_REFERENCE("writeTestDescriptorReference");
 
     private final String value;
 

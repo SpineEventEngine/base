@@ -20,10 +20,8 @@
 
 package io.spine.code.java;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
@@ -148,23 +146,8 @@ public final class SimpleClassName extends StringTypeValue {
     /**
      * Obtains a Java class name corresponding the proto message declaration.
      */
-    public static SimpleClassName ofMessage(DescriptorProto descriptor) {
-        checkNotNull(descriptor);
-        SimpleClassName result = create(descriptor.getName());
-        return result;
-    }
-
-    /**
-     * Obtains a Java class name corresponding the proto message declaration.
-     */
     public static SimpleClassName ofMessage(Descriptor descriptor) {
-        return ofMessage(descriptor.toProto());
-    }
-
-    /**
-     * Obtains a Java class name for an enum type.
-     */
-    public static SimpleClassName ofEnum(EnumDescriptor descriptor) {
+        checkNotNull(descriptor);
         SimpleClassName result = create(descriptor.getName());
         return result;
     }
