@@ -105,7 +105,11 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
         JavaType type = field.getJavaType();
         if (!CAN_BE_REQUIRED.contains(type)) {
             String typeName = field.getType().name();
-            _warn("Fields of type {} should not be declared as `(required)`.", typeName);
+            _warn("Fields of type {} should not be declared as `(required)`. " +
+                          "Please see the declaration of `%s.%s`.",
+                  typeName,
+                  field.getContainingType().getFullName(),
+                  field.getName());
         }
     }
 
