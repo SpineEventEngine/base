@@ -37,6 +37,7 @@ import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.SafeBetVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
+import io.spine.test.validate.msg.builder.SpacedOutBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import io.spine.test.validate.msg.builder.UnopenedVBuilder;
@@ -394,7 +395,7 @@ class ValidatingBuilderTest {
 
     @DisplayName("produce correct error messages on numbers that don't fit the ranges")
     @Test
-    void testCorrectErrorMessageDoesNotFitTheRange(){
+    void testCorrectErrorMessageDoesNotFitTheRange() {
         String expectedMessageFormat =
                 "Number must be greater than %s and less than or equal to %s.";
         FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();
@@ -407,6 +408,14 @@ class ValidatingBuilderTest {
             String actualFormat = violation.getMsgFormat();
             assertEquals(expectedMessageFormat, actualFormat);
         }
+    }
+
+    @DisplayName("not get affected by ranges with spaces")
+    @Test
+    void testCorrectRangesWithSpaces() {
+        testOption(SpacedOutBoundariesVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setValue(32));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */

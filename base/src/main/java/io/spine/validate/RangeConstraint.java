@@ -43,8 +43,9 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
     }
 
     private static Range<ComparableNumber> rangeFromOption(String value) {
-        RangeType range = RangeType.ofRange(value);
-        EdgeValues edgeValues = edgeValues(withoutBraces(value));
+        String trimmed = value.trim();
+        RangeType range = RangeType.ofRange(trimmed);
+        EdgeValues edgeValues = edgeValues(withoutBraces(trimmed));
         ComparableNumber left = edgeValues.leftEdge.toNumber();
         ComparableNumber right = edgeValues.rightEdge.toNumber();
         Range<ComparableNumber> result = range.rangeFrom()
@@ -53,7 +54,8 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
     }
 
     private static EdgeValues edgeValues(String value) {
-        ImmutableList<String> edges = ImmutableList.copyOf(RANGE_SPLITTER.split(value));
+        String trimmed = value.trim();
+        ImmutableList<String> edges = ImmutableList.copyOf(RANGE_SPLITTER.split(trimmed));
         String leftEdge = edges.get(0);
         String rightEdge = edges.get(1);
         return EdgeValues.of(leftEdge, rightEdge);
@@ -95,16 +97,6 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
             NumberText right = new NumberText(rightEdge);
             checkTypes(left, right);
             return new EdgeValues(left, right);
-        }
-
-        /** Returns the left edge of the range. */
-        private NumberText left() {
-            return leftEdge;
-        }
-
-        /** Returns the right edge of the range. */
-        private NumberText right() {
-            return rightEdge;
         }
 
         private static void checkTypes(NumberText left, NumberText right)

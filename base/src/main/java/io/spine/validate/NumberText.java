@@ -91,9 +91,11 @@ final class NumberText {
         if (hasDecimalPart(stringRepresentation)) {
             return Double.parseDouble(stringRepresentation);
         }
-        return fitsIntoInteger(stringRepresentation)
-               ? Integer.parseInt(stringRepresentation)
-               : Long.parseLong(stringRepresentation);
+        if (fitsIntoInteger(stringRepresentation)) {
+            return Integer.parseInt(stringRepresentation);
+        } else {
+            return Long.parseLong(stringRepresentation);
+        }
     }
 
     private static boolean hasDecimalPart(String stringRepresentation) {
@@ -106,7 +108,7 @@ final class NumberText {
 
     private static boolean fitsIntoInteger(String representation) {
         long number = Long.parseLong(representation);
-        return Integer.MAX_VALUE <= number;
+        return Integer.MAX_VALUE >= number;
     }
 
     private static void hasOnlyWholeAndDecimal(Collection<String> wholeAndDecimal)
