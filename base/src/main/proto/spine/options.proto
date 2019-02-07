@@ -132,7 +132,19 @@ extend google.protobuf.FieldOptions {
     //
     bool set_once = 73824;
 
-    // reserved 73825 to 73849 for future validation options.
+    // The option to mark a repeated field as a collection of unique elements.
+    //
+    //
+    // Example:
+    // For a message
+    // message Blizzard {
+    //     repeated Snowflake = 1 [(distinct) = true];
+    // }
+    //
+    // Attempting to add a snowflake that is equal to an existing one results in a violation.
+    bool distinct = 73825;
+
+    // reserved 73826 to 73849 for future validation options.
 
     // API Annotations
     //-----------------

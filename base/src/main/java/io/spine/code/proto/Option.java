@@ -20,73 +20,28 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Descriptors.GenericDescriptor;
+
+import java.util.Optional;
 
 /**
- * An option of a Protobuf declaration.
+ * A Protobuf option.
  *
  * @param <T>
- *         the type of the option value
+ *         the type of a value held by this option
+ * @param <K>
+ *         the type of object which holds the option, such as “field”, “message”, or “file”
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
+ *         Custom Options</a>
  */
-public class Option<T> {
-
-    private final T value;
-    private final boolean explicitlySet;
-
-    private Option(T value, boolean explicitlySet) {
-        this.value = value;
-        this.explicitlySet = explicitlySet;
-    }
+public interface Option<T, K extends GenericDescriptor> {
 
     /**
-     * Creates the option from the value.
+     * Obtains the value of this option for the specified object that holds it.
      *
-     * @param value
-     *         the value of the option
-     * @param <T>
-     *         the type of the option value
-     * @return a new option, which is considered explicitly set
+     * @param object
+     *         holder of the option
+     * @return value of this option
      */
-    public static <T> Option<T> explicitlySet(T value) {
-        return new Option<>(value, true);
-    }
-
-    /**
-     * Creates the options by obtaining it from the descriptor.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @param option
-     *         the option to extract
-     * @param <T>
-     *         the type of the option value
-     * @return a new option
-     */
-    public static <T> Option<T> from(FieldDescriptor field,
-                                     GeneratedExtension<FieldOptions, T> option) {
-        FieldOptions options = field.getOptions();
-        T value = options.getExtension(option);
-        boolean explicitlySet = options.hasExtension(option);
-        return new Option<>(value, explicitlySet);
-    }
-
-    /**
-     * Obtains the value of the option.
-     *
-     * @return the value of the option
-     */
-    public T value() {
-        return value;
-    }
-
-    /**
-     * Determines whether the option was explicitly set.
-     *
-     * @return {@code true} if the option was explicitly set, {@code false} otherwise
-     */
-    public boolean isExplicitlySet() {
-        return explicitlySet;
-    }
+    Optional<T> valueFrom(K object);
 }

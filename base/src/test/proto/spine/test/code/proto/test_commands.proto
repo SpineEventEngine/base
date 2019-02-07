@@ -19,7 +19,7 @@
  */
 syntax = "proto3";
 
-package spine.test.code.proto.rejections;
+package spine.test.code.proto.commands;
 
 import "spine/options.proto";
 

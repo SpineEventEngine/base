@@ -33,8 +33,8 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
      * @param fieldValue
      *         the value to validate
      */
-    EnumFieldValidator(FieldValue fieldValue) {
-        super(fieldValue, false, true);
+    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
+        super(fieldValue, false);
     }
 
     @Override
@@ -42,15 +42,5 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         int intValue = value.getNumber();
         boolean result = intValue <= 0;
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action since no special options are declared for the enum values validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NoOp
     }
 }

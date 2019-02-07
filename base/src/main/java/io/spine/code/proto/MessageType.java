@@ -43,6 +43,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
+import static io.spine.option.OptionsProto.enrichmentFor;
 
 /**
  * A message type as declared in a proto file.
@@ -192,10 +193,20 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
+     * Tells if the message is an enrichment.
+     */
+    public boolean isEnrichment() {
+        DescriptorProtos.MessageOptions options = descriptor().getOptions();
+        boolean result = isTopLevel() && options.hasExtension(enrichmentFor);
+        return result;
+    }
+
+    /**
      * Obtains the name of a Validating Builder class for the type.
      *
-     * @throws java.lang.IllegalStateException if the message type does not have a corresponding
-     *  a Validating Builder class, for example, because it's a Google Protobuf message
+     * @throws java.lang.IllegalStateException
+     *         if the message type does not have a corresponding
+     *         a Validating Builder class, for example, because it's a Google Protobuf message
      */
     public SimpleClassName validatingBuilderClass() {
         checkState(isCustom(), "No validating builder class available for the type `%s`.", this);
@@ -290,7 +301,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * }</pre>
      *
      * @return the comments text or {@code Optional.empty()} if there are no comments
-     *
      * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
      *         Protobuf plugin configuration</a>
      */

@@ -49,7 +49,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
     @DisplayName("Create Stringifier with a delimeter for")
     class Delimited {
 
-        private static final char DELIMITER = '❤';
+        private static final char DELIMITER = '#';
         private static final int SIZE = 5;
 
         @Test
