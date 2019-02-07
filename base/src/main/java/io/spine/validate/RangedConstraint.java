@@ -28,6 +28,7 @@ import io.spine.base.FieldPath;
 
 import static com.google.common.collect.BoundType.CLOSED;
 import static io.spine.protobuf.TypeConverter.toAny;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -45,18 +46,61 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
 
     private static final String OR_EQUAL_TO = "or equal to";
 
-    private final Range<V> range;
+    private final Range<StringDescribedNumber> range;
 
-    RangedConstraint(T optionValue, Range<V> range) {
+    RangedConstraint(T optionValue, Range<StringDescribedNumber> range) {
         super(optionValue);
         this.range = range;
     }
 
     @Override
     boolean satisfies(FieldValue<V> value) {
+        checkTypeConsistency(value);
         return value.asList()
                     .stream()
-                    .allMatch(range::contains);
+                    .map(StringDescribedNumber::new)
+                    .allMatch(range);
+    }
+
+    private void checkTypeConsistency(FieldValue<V> value) {
+        if (hasBothBoundaries()) {
+            StringDescribedNumber upper = range.upperEndpoint();
+            StringDescribedNumber lower = range.lowerEndpoint();
+            if (!upper.isOfSameType(lower)) {
+                String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
+                throw newIllegalStateException(errorMessage, upper, lower);
+            }
+            checkBoundaryAndValue(upper, value);
+        } else {
+            checkSingleBoundary(value);
+        }
+    }
+
+    private void checkBoundaryAndValue(StringDescribedNumber boundary, FieldValue<V> value) {
+        StringDescribedNumber valueToCheck = new StringDescribedNumber(value.singleValue());
+        if (!boundary.isOfSameType(valueToCheck)) {
+            String errorMessage =
+                    "Boundary values must have types consistent with values they bind: " +
+                            "boundary %s, value %s";
+            throw newIllegalStateException(errorMessage, boundary, valueToCheck);
+        }
+    }
+
+    private void checkSingleBoundary(FieldValue<V> value) {
+        StringDescribedNumber singleBoundary = range.hasLowerBound()
+                                      ? range.lowerEndpoint()
+                                      : range.upperEndpoint();
+        checkBoundaryAndValue(singleBoundary, value);
+    }
+
+    private boolean hasBothBoundaries() {
+        return range.hasLowerBound() && range.hasUpperBound();
+    }
+
+    private StringDescribedNumber existingBound() {
+        return range.hasUpperBound()
+               ? range.upperEndpoint()
+               : range.lowerEndpoint();
     }
 
     @Override
