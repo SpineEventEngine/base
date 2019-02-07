@@ -39,7 +39,10 @@ message AValidationRule {
                              "spine.test.validate.SecondRuleTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
-    string invalid_field = 1 [(pattern).regex = "^.{1,}$"];
+    // The field index intentionally doesn't match the index in `AlwaysInvalid`
+    // to test that the field is matched by name only and index doesn't considered.
+    string always_invalid_a = 2 [(pattern).regex = "^.{1,}$"];
+    string always_invalid_b = 1 [(pattern).regex = "^.{1,}$"];
 }
 
 message RuleTargetAggregate {
@@ -49,17 +52,25 @@ message RuleTargetAggregate {
 }
 
 message FirstRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(valid) = true];
 }
 
 message SecondRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(valid) = true];
 }
 
-// A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
+// A message which is always invalid according to its constraints.
 //
-// The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,
-// which represents an empty string. Thus, any instance of this message type is invalid.
-message InvalidMessage {
-    string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
+// The field `always_invalid_a` must contain a non-empty value, but it also must match "^$" regex,
+// which represents an empty string. Thus, any instance of this message type is always invalid.
+//
+// This message declares two fields to check that external constraints
+message AlwaysInvalid {
+
+    // A required string should not be empty, but the declared regex "^$" match
+    // only an empty string, so the field is always invalid.
+    string always_invalid_a = 1 [(required) = true, (pattern).regex = "^$"];
+
+    // The second field with the same constraints as in the first field.
+    string always_invalid_b = 2 [(required) = true, (pattern).regex = "^$"];
 }

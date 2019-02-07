@@ -155,6 +155,18 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
+     * Verifies if the message type matches the one from the reference.
+     *
+     * <p>The method accepts all types if this instance is a wildcard type reference.
+     */
+    public boolean matchesType(Descriptor message) {
+        checkNotNull(message);
+        boolean typeMatches = typeRef.test(message);
+        boolean containsField = message.findFieldByName(fieldName()) != null;
+        return typeMatches && containsField;
+    }
+
+    /**
      * Obtains the descriptor of the field with the name {@linkplain #fieldName()} referenced}
      * by this instance in the passed message.
      *

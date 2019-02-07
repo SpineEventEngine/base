@@ -39,9 +39,10 @@ class ValidatorTest {
     @DisplayName("validate according to validation rules")
     void multipleRules() {
         String validValue = "any text";
-        InvalidMessage invalidMessage = InvalidMessage
+        AlwaysInvalid invalidMessage = AlwaysInvalid
                 .newBuilder()
-                .setInvalidField(validValue)
+                .setAlwaysInvalidA(validValue)
+                .setAlwaysInvalidB(validValue)
                 .build();
         FirstRuleTarget first = FirstRuleTarget
                 .newBuilder()

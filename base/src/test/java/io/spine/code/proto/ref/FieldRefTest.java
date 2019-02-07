@@ -26,6 +26,7 @@ import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.Truth8;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Timestamp;
 import io.spine.test.code.proto.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -168,6 +169,32 @@ class FieldRefTest {
         private void assertFound(FieldRef ref) {
             Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
+        }
+    }
+
+    @Nested
+    @DisplayName("tell if a type matches")
+    class TypeMatch {
+
+        @Test
+        @DisplayName("for non-nested reference")
+        void nonNestedRef() {
+            assertMatches("nanos", Timestamp.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("rejecting a type without referencing field")
+        void missingField() {
+            assertMatch("millis", Timestamp.getDescriptor())
+                    .isFalse();
+        }
+
+        void assertMatches(String ref, Descriptor message) {
+            assertMatch(ref, message).isTrue();
+        }
+
+        private BooleanSubject assertMatch(String ref, Descriptor message) {
+            return assertThat(new FieldRef(ref).matchesType(message));
         }
     }
 
