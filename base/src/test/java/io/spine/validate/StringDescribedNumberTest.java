@@ -41,11 +41,22 @@ public class StringDescribedNumberTest {
 
     @Test
     @DisplayName("recognize that two numbers are of the same types")
-    void sameTypeTest(){
+    void sameTypeTest() {
         String fitsIntoByte = "4";
         String maxInteger = String.valueOf(Integer.MAX_VALUE);
         StringDescribedNumber small = new StringDescribedNumber(fitsIntoByte);
         StringDescribedNumber large = new StringDescribedNumber(maxInteger);
         assertTrue(small.isOfSameType(large));
+    }
+
+    @Test
+    @DisplayName("correctly compare values")
+    void comparisonTest() {
+        String smallerValue = "0.1";
+        String largerValue = "15";
+        StringDescribedNumber smaller = new StringDescribedNumber(smallerValue);
+        StringDescribedNumber larger = new StringDescribedNumber(largerValue);
+        int comparison = smaller.compareTo(larger);
+        assertTrue(comparison < 0);
     }
 }

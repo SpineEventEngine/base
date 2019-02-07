@@ -129,9 +129,7 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
 
     @Override
     public int compareTo(StringDescribedNumber anotherNumber) {
-        return anotherNumber.hasDecimalPart()
-               ? Double.compare(this.doubleValue(), anotherNumber.doubleValue())
-               : Long.compare(this.longValue(), longValue());
+        return Double.compare(doubleValue(), anotherNumber.doubleValue());
     }
 
     @Override
