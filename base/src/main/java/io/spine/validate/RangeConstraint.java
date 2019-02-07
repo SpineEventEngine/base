@@ -24,8 +24,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import java.util.function.BiFunction;
-
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -45,9 +43,11 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
     }
 
     private static Range<StringDescribedNumber> rangeFromOption(String value) {
-        RangeType range = rangeType(value);
+        RangeType range = RangeType.ofRange(value);
         EdgeValues edgeValues = edgeValues(withoutBraces(value));
-        Range<StringDescribedNumber> result = rangeFrom(range).apply(edgeValues.left(), edgeValues.right());
+        Range<StringDescribedNumber> result = range.rangeFrom()
+                                                   .apply(edgeValues.left(),
+                                                          edgeValues.right());
         return result;
     }
 
@@ -60,29 +60,6 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
 
     private static String withoutBraces(String value) {
         return value.substring(1, value.length() - 1);
-    }
-
-    private static RangeType rangeType(String value) {
-        char first = value.charAt(0);
-        char last = value.charAt(value.length() - 1);
-        String result = String.valueOf(first) + last;
-        return RangeType.from(result);
-    }
-
-    private static BiFunction<StringDescribedNumber, StringDescribedNumber, Range<StringDescribedNumber>>
-    rangeFrom(RangeType ranges) {
-        switch (ranges) {
-            case OPEN:
-                return Range::open;
-            case CLOSED:
-                return Range::closed;
-            case OPEN_CLOSED:
-                return Range::openClosed;
-            case CLOSED_OPEN:
-                return Range::closedOpen;
-            default:
-                throw newIllegalStateException("Illegal range type instance %s", ranges);
-        }
     }
 
     /**
@@ -111,17 +88,19 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
          *         right edge of the range
          * @return a new instance of {@code EdgeValues}
          */
-        private static EdgeValues of(String leftEdge, String rightEdge) throws IllegalStateException {
+        private static EdgeValues of(String leftEdge, String rightEdge) throws
+                                                                        IllegalStateException {
             StringDescribedNumber left = new StringDescribedNumber(leftEdge);
             StringDescribedNumber right = new StringDescribedNumber(rightEdge);
             checkTypes(left, right);
             return new EdgeValues(left, right);
         }
 
-        /** Returns the left edge of the range.*/
+        /** Returns the left edge of the range. */
         private StringDescribedNumber left() {
             return leftEdge;
         }
+
         /** Returns the right edge of the range. */
         private StringDescribedNumber right() {
             return rightEdge;
@@ -137,42 +116,5 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
             }
         }
     }
-
-    /**
-     * A type of range.
-     *
-     * <p>Can be {@code open} or {@code closed} from both sides, meaning that the edge values
-     * is either excluded or included from the range.
-     */
-    private enum RangeType {
-        CLOSED("[]"),
-        OPEN("()"),
-        OPEN_CLOSED("(]"),
-        CLOSED_OPEN("[)");
-
-        private final String edges;
-
-        RangeType(String edges) {
-            this.edges = edges;
-        }
-
-        /**
-         * Find a {@code RangeType} instance that matches the given string.
-         *
-         * <p>If such instance could not be found, an {@code IllegalStateException} is thrown.
-         *
-         * @param edges
-         *         the string representation of the edges, can be any combinations of
-         *         {@code (}/{@code [} and {@code )}/{@code ]}
-         * @return an instance of {@code RangeType}
-         */
-        private static RangeType from(String edges) throws IllegalStateException {
-            for (RangeType value : values()) {
-                if (value.edges.equals(edges)) {
-                    return value;
-                }
-            }
-            throw newIllegalStateException("Could not construct edges from %s.", edges);
-        }
-    }
 }
+
