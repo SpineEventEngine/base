@@ -31,7 +31,7 @@ import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 /**
  * An abstract base for creating Gradle extensions.
  */
-public abstract class BaseExtension {
+public abstract class GradleExtension {
 
     protected final File defaultMainDescriptor(Project project) {
         Artifact artifact = Artifact

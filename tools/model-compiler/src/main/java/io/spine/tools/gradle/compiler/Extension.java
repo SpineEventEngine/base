@@ -25,7 +25,7 @@ import groovy.lang.Closure;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
-import io.spine.tools.gradle.BaseExtension;
+import io.spine.tools.gradle.GradleExtension;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -49,7 +49,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
         "ClassWithTooManyFields" /* OK for a Gradle extension to have a flat structure. */})
-public class Extension extends BaseExtension {
+public class Extension extends GradleExtension {
 
     /**
      * The absolute path to the main target generated resources directory.

@@ -27,7 +27,7 @@ import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
-import io.spine.tools.gradle.BaseExtension;
+import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -50,7 +50,7 @@ import static java.util.stream.Collectors.toList;
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
-public class Extension extends BaseExtension {
+public class Extension extends GradleExtension {
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
