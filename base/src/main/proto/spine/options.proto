@@ -144,6 +144,18 @@ extend google.protobuf.FieldOptions {
     // Attempting to add a snowflake that is equal to an existing one results in a violation.
     bool distinct = 73825;
 
+    // The option to indicate that a numeric field has to fit into the specified range.
+    //
+    // The range is described as a string that looks like `"(0..5]"`. This range describes
+    // an interval of numbers that are greater than 0 and are at most 5.
+    //
+    // Valid edges of a range are the following symbols: `(`, `[` for beginning of open and closed
+    // ranges i.e. ranges that have their edge values excluded from or included into the interval,
+    // and `)` `]`, which represent the ends of a range.
+    //
+    // Note that boundaries have to be consistent with the type they constrain, i.e. a field of
+    // type `int32` cannot have a `range = "(0.1..5]", because the type of the left boundary is
+    // inconsistent with the field type.
     string range = 73826;
 
     // reserved 73827 to 73849 for future validation options.
