@@ -31,6 +31,7 @@ import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
+import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
@@ -381,6 +382,13 @@ class ValidatingBuilderTest {
         testOption(FrostyWeatherVBuilder.newBuilder(),
                    builder -> builder,
                    builder -> builder.setCelcius(-10.0d));
+    }
+
+    @DisplayName("throw on boundaries with inconsistent types")
+    @Test
+    void throwOnInconsistentBoundaryTypes() {
+        InconsistentBoundariesVBuilder builder = InconsistentBoundariesVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setValue(3.2d));
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */

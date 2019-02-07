@@ -186,6 +186,12 @@ message FrostyWeather {
     double celcius = 1 [(range) = "(-10.0..-5.5]"];
 }
 
+message InconsistentBoundaries {
+
+    // Inconsistent boundary types should result in an error.
+    double value = 1 [(range) = "[0..4.2)"];
+}
+
 message MinorCitizen {
 
     // Malformed range - the value the field is `int32` - whole number, while the value of the
