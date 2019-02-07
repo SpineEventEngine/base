@@ -41,10 +41,10 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
     private static final Splitter RANGE_SPLITTER = Splitter.on("..");
 
     RangeConstraint(String optionValue) {
-        super(optionValue, from(optionValue));
+        super(optionValue, rangeFromOption(optionValue));
     }
 
-    private static Range<StringDescribedNumber> from(String value) {
+    private static Range<StringDescribedNumber> rangeFromOption(String value) {
         RangeType range = rangeType(value);
         EdgeValues edgeValues = edgeValues(withoutBraces(value));
         Range<StringDescribedNumber> result = rangeFrom(range).apply(edgeValues.left(), edgeValues.right());
@@ -111,7 +111,7 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
          *         right edge of the range
          * @return a new instance of {@code EdgeValues}
          */
-        static EdgeValues of(String leftEdge, String rightEdge) throws IllegalStateException {
+        private static EdgeValues of(String leftEdge, String rightEdge) throws IllegalStateException {
             StringDescribedNumber left = new StringDescribedNumber(leftEdge);
             StringDescribedNumber right = new StringDescribedNumber(rightEdge);
             checkTypes(left, right);
@@ -166,7 +166,7 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
          *         {@code (}/{@code [} and {@code )}/{@code ]}
          * @return an instance of {@code RangeType}
          */
-        static RangeType from(String edges) throws IllegalStateException {
+        private static RangeType from(String edges) throws IllegalStateException {
             for (RangeType value : values()) {
                 if (value.edges.equals(edges)) {
                     return value;

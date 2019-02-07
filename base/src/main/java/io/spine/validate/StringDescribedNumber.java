@@ -61,14 +61,6 @@ final class StringDescribedNumber extends Number implements Comparable<StringDes
     }
 
     /**
-     * Returns {@code true} if the number has a decimal part in its string representation.
-     * Note that {@code "0.0"} is assumed to have a decimal part.
-     */
-    private boolean hasDecimalPart() {
-        return hasDecimalPart(stringRepresentation);
-    }
-
-    /**
      * Returns whether this instance of a number is of the same {@code Number} subtype as
      * the specified one.
      *
