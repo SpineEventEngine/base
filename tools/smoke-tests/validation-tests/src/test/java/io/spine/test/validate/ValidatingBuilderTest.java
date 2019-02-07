@@ -43,6 +43,7 @@ import io.spine.test.validate.msg.builder.UnopenedVBuilder;
 import io.spine.test.validate.msg.builder.UnsafeBetVBuilder;
 import io.spine.test.validate.msg.builder.UpToInfinityVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -389,6 +390,23 @@ class ValidatingBuilderTest {
     void throwOnInconsistentBoundaryTypes() {
         InconsistentBoundariesVBuilder builder = InconsistentBoundariesVBuilder.newBuilder();
         assertThrows(IllegalStateException.class, () -> builder.setValue(3.2d));
+    }
+
+    @DisplayName("produce correct error messages on numbers that don't fit the ranges")
+    @Test
+    void testCorrectErrorMessageDoesNotFitTheRange(){
+        String expectedMessageFormat =
+                "Number must be greater than %s and less than or equal to %s.";
+        FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();
+        try {
+            weatherBuilder.setCelcius(30.0d);
+        } catch (ValidationException e) {
+            List<ConstraintViolation> violations = e.getConstraintViolations();
+            assertEquals(1, violations.size());
+            ConstraintViolation violation = violations.get(0);
+            String actualFormat = violation.getMsgFormat();
+            assertEquals(expectedMessageFormat, actualFormat);
+        }
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */

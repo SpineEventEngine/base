@@ -88,19 +88,13 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
 
     private void checkSingleBoundary(FieldValue<V> value) {
         StringDescribedNumber singleBoundary = range.hasLowerBound()
-                                      ? range.lowerEndpoint()
-                                      : range.upperEndpoint();
+                                               ? range.lowerEndpoint()
+                                               : range.upperEndpoint();
         checkBoundaryAndValue(singleBoundary, value);
     }
 
     private boolean hasBothBoundaries() {
         return range.hasLowerBound() && range.hasUpperBound();
-    }
-
-    private StringDescribedNumber existingBound() {
-        return range.hasUpperBound()
-               ? range.upperEndpoint()
-               : range.lowerEndpoint();
     }
 
     @Override
@@ -121,9 +115,9 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         StringBuilder result = new StringBuilder("Number must be ");
         if (range.hasLowerBound() && range.hasUpperBound()) {
             result.append(forLowerBound());
-            result.append("and ");
+            result.append(" and ");
             result.append(forUpperBound());
-            return result.toString();
+            return endOfSentence(result).toString();
         }
         if (range.hasLowerBound()) {
             result.append(forLowerBound());
@@ -131,7 +125,7 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         if (range.hasUpperBound()) {
             result.append(forUpperBound());
         }
-        return result.toString();
+        return endOfSentence(result).toString();
     }
 
     private ImmutableSet<String> formatParams() {
@@ -159,9 +153,13 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         return format(lessThan, appendix);
     }
 
+    private static StringBuilder endOfSentence(StringBuilder builder) {
+        return builder.append('.');
+    }
+
     private static String appendix(BoundType type) {
         return type == CLOSED
-               ? OR_EQUAL_TO + " %s."
-               : " %s.";
+               ? OR_EQUAL_TO + " %s"
+               : "%s";
     }
 }

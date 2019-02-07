@@ -28,14 +28,14 @@ import io.spine.option.OptionsProto;
  * @param <V>
  *         a value that this option is applied to
  */
-public final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
+final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
 
     private Range() {
         super(OptionsProto.range);
     }
 
     /** Creates a new instance of this option. */
-    public static <V extends Number & Comparable> Range<V> create() {
+    static <V extends Number & Comparable> Range<V> create() {
         return new Range<>();
     }
 
