@@ -22,22 +22,44 @@ package io.spine.validate;
 
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Comparable number should")
 class ComparableNumberTest {
 
-    @Test
+    @Nested
     @DisplayName("have a consistent equality relationship")
-    void testEquals() {
-        String longMaxValue = String.valueOf(Long.MAX_VALUE);
-        String doubleMinValue = String.valueOf(Double.MIN_VALUE);
-        new EqualsTester().addEqualityGroup(new NumberText(1).toNumber(),
-                                            new NumberText("1").toNumber())
-                          .addEqualityGroup(new NumberText(longMaxValue).toNumber(),
-                                            new NumberText(Long.MAX_VALUE).toNumber())
-                          .addEqualityGroup(new NumberText(doubleMinValue).toNumber(),
-                                            new NumberText(Double.MIN_VALUE).toNumber())
-                          .testEquals();
+    class EqualsTests {
+
+        @Test
+        @DisplayName("between instances")
+        void testEquals() {
+            String longMaxValue = String.valueOf(Long.MAX_VALUE);
+            String doubleMinValue = String.valueOf(Double.MIN_VALUE);
+            new EqualsTester()
+                    .addEqualityGroup(new NumberText(1).toNumber(), new NumberText("1").toNumber())
+                    .addEqualityGroup(new NumberText(longMaxValue).toNumber(),
+                                      new NumberText(Long.MAX_VALUE).toNumber())
+                    .addEqualityGroup(new NumberText(doubleMinValue).toNumber(),
+                                      new NumberText(Double.MIN_VALUE).toNumber())
+                    .testEquals();
+        }
+
+        @Test
+        @DisplayName("between instances and primitives")
+        void testEqualsBetweenPrimitives() {
+            double doubleValue = Double.MAX_VALUE;
+            int intValue = Integer.MAX_VALUE;
+            float floatValue = Float.MAX_VALUE;
+            long longValue = Long.MAX_VALUE;
+
+            new EqualsTester()
+                    .addEqualityGroup(doubleValue, new ComparableNumber(doubleValue).doubleValue())
+                    .addEqualityGroup(intValue, new ComparableNumber(intValue).intValue())
+                    .addEqualityGroup(floatValue, new ComparableNumber(floatValue).floatValue())
+                    .addEqualityGroup(longValue, new ComparableNumber(longValue).longValue())
+                    .testEquals();
+        }
     }
 }
