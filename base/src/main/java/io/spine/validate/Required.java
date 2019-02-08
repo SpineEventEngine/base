@@ -95,7 +95,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
      * @param field
      *         a value that the option is applied to
      */
-    void checkCorrectUsage(FieldDescriptor field) {
+    void checkUsage(FieldDescriptor field) {
         ifMissing.valueFrom(field)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));
@@ -112,7 +112,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
 
     @Override
     public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        checkCorrectUsage(fieldValue.descriptor());
+        checkUsage(fieldValue.descriptor());
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }
