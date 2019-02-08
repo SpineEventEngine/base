@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Range constraint should")
@@ -37,6 +38,23 @@ class RangeConstraintTest {
     @DisplayName("throw on incorrectly defined ranges")
     void throwOnMalformedRanges(String badRange) {
         assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
+    }
+
+    @ParameterizedTest
+    @MethodSource("validRanges")
+    @DisplayName("be able to obtain adequate ranges")
+    void acceptProperRanges(String range, RangeType expected) {
+        RangeType result = RangeType.parse(range);
+        assertEquals(expected, result);
+    }
+
+    private static Stream<Arguments> validRanges() {
+        return Stream.of(
+                Arguments.of("[1..2]", RangeType.CLOSED),
+                Arguments.of("(1..2)", RangeType.OPEN),
+                Arguments.of("[1..2)", RangeType.CLOSED_OPEN),
+                Arguments.of("(1..2]", RangeType.OPEN_CLOSED)
+        );
     }
 
     private static Stream<Arguments> badRanges() {
@@ -53,7 +71,9 @@ class RangeConstraintTest {
                 Arguments.of("[3..5 5]"),
                 Arguments.of("[3..5,5]"),
                 Arguments.of("[3;5]"),
-                Arguments.of("[3.5..5)")
+                Arguments.of("[3.5..5)"),
+                Arguments.of("[3..5.5)"),
+                Arguments.of("[3...5]")
         );
     }
 }

@@ -399,7 +399,7 @@ class ValidatingBuilderTest {
     void throwOnIncosistentBoundaryAndValueTypes() {
         FrostyWeatherButInWholeNumberVBuilder builder = FrostyWeatherButInWholeNumberVBuilder
                 .newBuilder();
-        assertThrows(IllegalStateException.class, ()->builder.setCelcius(-5.0d));
+        assertThrows(IllegalStateException.class, () -> builder.setCelcius(-5.0d));
     }
 
     @DisplayName("produce correct error messages on numbers that don't fit the ranges")
