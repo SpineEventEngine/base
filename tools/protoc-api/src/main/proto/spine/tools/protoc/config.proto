@@ -29,6 +29,15 @@ message GeneratedInterface {
     string file_postfix = 2 [(required) = true];
 }
 
+// Interface to mark Enrichment messages.
+//
+// An empty value signifies that the messages should not be marked.
+//
+message EnrichmentInterface {
+
+    string interface_name = 1;
+}
+
 // Configuration of the Spine Protoc plugin.
 //
 // The configuration is passed to the plugin as the single option. The passed value is serialized
@@ -39,4 +48,6 @@ message SpineProtocConfig {
     UuidInterface uuid_interface = 1;
 
     repeated GeneratedInterface generated_interface = 2;
+
+    EnrichmentInterface enrichment_interface= 3;
 }

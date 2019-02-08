@@ -20,12 +20,10 @@
 
 package io.spine.tools.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.code.proto.FileDescriptorSets;
-import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import io.spine.tools.archive.ArchiveEntry;
 import io.spine.tools.archive.ArchiveFile;
@@ -34,17 +32,19 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static io.spine.tools.archive.ArchiveFile.isArchive;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of {@code FileDescriptorSet}s.
@@ -60,67 +60,79 @@ public final class FileDescriptorSuperset implements Logging {
         this.descriptors = newHashSet();
     }
 
-    public void addFromDependency(File dependencyFile) {
-        readDependency(dependencyFile)
-                .ifPresent(this::addFiles);
-    }
-
     /**
-     * Obtains this superset converted to a {@link FileSet}.
+     * Flattens this superset into a single descriptor set.
+     *
+     * <p>The descriptors in the output set are de-duplicated and unordered.
+     *
+     * @return the result of the sets merging
      */
-    public FileSet fileSet() {
-        ImmutableSet<FileDescriptorProto> files = files();
-        FileSet fileSet = FileSet.ofFiles(files);
-        return fileSet;
-    }
-
-    @VisibleForTesting
-    public ImmutableSet<FileDescriptorProto> files() {
-        return descriptors
+    public MergedDescriptorSet merge() {
+        Set<FileDescriptorProto> allFiles = descriptors
                 .stream()
                 .flatMap(set -> set.getFileList().stream())
-                .collect(toImmutableSet());
+                .collect(toSet());
+        FileDescriptorSet descriptorSet = FileDescriptorSet
+                .newBuilder()
+                .addAllFile(allFiles)
+                .build();
+        return new MergedDescriptorSet(descriptorSet);
+    }
+
+    public void addFromDependency(File dependencyFile) {
+        checkNotNull(dependencyFile);
+        _debug("Loading descriptors from `{}`.", dependencyFile);
+        readDependency(dependencyFile)
+                .forEach(this::addFiles);
     }
 
     private void addFiles(FileDescriptorSet fileSet) {
         descriptors.add(fileSet);
     }
 
-    private Optional<FileDescriptorSet> readDependency(File file) {
-        log().debug("Merging descriptors from `{}`.", file);
+    private Collection<FileDescriptorSet> readDependency(File file) {
         if (file.isDirectory()) {
             return mergeDirectory(file);
         } else if (isArchive(file)) {
             return readFromArchive(file);
         } else {
-            return readFromPlainFile(file);
+            return readFromPlainFile(file)
+                    .map(ImmutableSet::of)
+                    .orElse(ImmutableSet.of());
         }
     }
 
-    private static Optional<FileDescriptorSet> mergeDirectory(File directory) {
-        File[] knownTypesFile = directory.listFiles(
-                (dir, name) -> KNOWN_TYPES.equals(name)
+    private Collection<FileDescriptorSet> mergeDirectory(File directory) {
+        File[] descriptorFiles = directory.listFiles(
+                (dir, name) -> name.endsWith(DESC_EXTENSION)
         );
-        checkNotNull(knownTypesFile);
-        if (knownTypesFile.length == 0) {
-            return Optional.empty();
-        } else if (knownTypesFile.length == 1) {
-            return readFromPlainFile(knownTypesFile[0]);
+        checkNotNull(descriptorFiles);
+        if (descriptorFiles.length == 0) {
+            return ImmutableSet.of();
         } else {
-            throw newIllegalStateException("Multiple descriptor files found in %s.",
-                                           directory.getPath());
+            ImmutableSet<FileDescriptorSet> descriptors = Stream.of(descriptorFiles)
+                                                                .map(this::read)
+                                                                .collect(toImmutableSet());
+            return descriptors;
         }
     }
 
-    private static Optional<FileDescriptorSet> readFromArchive(File archiveFile) {
+    private Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
-        return archive.findEntry(KNOWN_TYPES)
-                      .map(ArchiveEntry::asDescriptorSet);
+        ImmutableSet<FileDescriptorSet> result = archive.findByExtension(DESC_EXTENSION)
+                                                        .stream()
+                                                        .map(ArchiveEntry::asDescriptorSet)
+                                                        .collect(toImmutableSet());
+        if (!result.isEmpty()) {
+            _debug("Found {} descriptor set file(s) in archive `{}`.", result.size(), archiveFile);
+        }
+        return result;
     }
 
-    private static FileDescriptorSet read(File file) {
-        checkArgument(file.exists());
+    private FileDescriptorSet read(File file) {
+        checkArgument(file.exists(), "File does not exist: `%s`.", file);
         Path path = file.toPath();
+        _debug("Reading descriptors from file `{}`.", file);
         try {
             byte[] bytes = Files.readAllBytes(path);
             return FileDescriptorSets.parse(bytes);
@@ -129,8 +141,8 @@ public final class FileDescriptorSuperset implements Logging {
         }
     }
 
-    private static Optional<FileDescriptorSet> readFromPlainFile(File file) {
-        if (KNOWN_TYPES.equals(file.getName())) {
+    private Optional<FileDescriptorSet> readFromPlainFile(File file) {
+        if (file.getName().endsWith(DESC_EXTENSION)) {
             FileDescriptorSet result = read(file);
             return Optional.of(result);
         } else {

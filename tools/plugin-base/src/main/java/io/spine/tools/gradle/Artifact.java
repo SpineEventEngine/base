@@ -18,8 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.gradle;
 
+import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -30,6 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>An artifact must have a group, a name, and a version. Also, it may have a classifier and
  * an extension.
  */
+@Internal
 public final class Artifact {
 
     /**
@@ -39,6 +41,8 @@ public final class Artifact {
 
     private static final char COLON = ':';
     private static final char AT = '@';
+
+    private static final char FILE_SAFE_SEPARATOR = '_';
 
     private final String group;
     private final String name;
@@ -59,18 +63,30 @@ public final class Artifact {
      *
      * <p>The format of the notation is: {@code "group:name:version:classifier@extension"}.
      */
-    String notation() {
+    public String notation() {
+        return buildId(COLON, AT);
+    }
+
+    /**
+     * Prints this spec in the same way as {@link #notation()} but with
+     * {@code _} (underscore symbol) instead of any other separator characters.
+     */
+    public String fileSafeId() {
+        return buildId(FILE_SAFE_SEPARATOR, FILE_SAFE_SEPARATOR);
+    }
+
+    private String buildId(char primarySeparator, char secondarySeparator) {
         StringBuilder result = new StringBuilder(group)
-                .append(COLON)
+                .append(primarySeparator)
                 .append(name)
-                .append(COLON)
+                .append(primarySeparator)
                 .append(version);
         if (classifier != null) {
-            result.append(COLON)
+            result.append(primarySeparator)
                   .append(classifier);
         }
         if (extension != null) {
-            result.append(AT)
+            result.append(secondarySeparator)
                   .append(extension);
         }
         return result.toString();
@@ -86,14 +102,14 @@ public final class Artifact {
      * 
      * @return new instance of {@code Builder}
      */
-    static Builder newBuilder() {
+    public static Builder newBuilder() {
         return new Builder();
     }
     
     /**
      * A builder for the {@code Artifact} instances.
      */
-    static final class Builder {
+    public static final class Builder {
 
         private String group;
         private String name;
@@ -107,31 +123,35 @@ public final class Artifact {
         private Builder() {
         }
 
-        Builder setGroup(String group) {
+        public Builder setGroup(String group) {
             this.group = group;
             return this;
         }
 
-        Builder useSpineToolsGroup() {
+        public  Builder useSpineToolsGroup() {
             return setGroup(SPINE_TOOLS_GROUP);
         }
 
-        Builder setName(String name) {
+        public Builder setName(String name) {
             this.name = name;
             return this;
         }
 
-        Builder setVersion(String version) {
+        public  Builder setVersion(String version) {
             this.version = version;
             return this;
         }
 
-        Builder setClassifier(String classifier) {
+        public  Builder setClassifier(String classifier) {
             this.classifier = classifier;
             return this;
         }
 
-        Builder setExtension(String extension) {
+        public Builder useTestClassifier() {
+            return setClassifier("test");
+        }
+
+        public Builder setExtension(String extension) {
             this.extension = extension;
             return this;
         }
@@ -141,7 +161,7 @@ public final class Artifact {
          * 
          * @return new instance of {@code Artifact}
          */
-        Artifact build() {
+        public Artifact build() {
             checkNotNull(group);
             checkNotNull(name);
             checkNotNull(version);

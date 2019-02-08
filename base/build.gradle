@@ -50,8 +50,9 @@ protobuf {
     }
     generateProtoTasks {
         all().each { final task ->
+            final def scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
         }

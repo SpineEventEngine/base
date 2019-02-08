@@ -28,6 +28,9 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.logging.Logging;
+import io.spine.type.KnownTypes;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.Collection;
@@ -35,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,13 +46,18 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static io.spine.code.proto.Linker.link;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  */
 @Internal
-public final class FileSet {
+public final class FileSet implements Logging {
 
     private static final FileDescriptor[] EMPTY = {};
 
@@ -85,12 +94,52 @@ public final class FileSet {
     }
 
     /**
-     * Creates file set by parsing the descriptor set file with the passed name.
+     * Parses the given descriptor set file and resolves the descriptors from {@link KnownTypes}.
+     *
+     * <p>The read descriptors are intentionally not linked. Instead, the descriptors with such
+     * names are found in the {@link KnownTypes} and returned as a file set. This way, all
+     * the dependencies get resolved.
+     *
+     * <p>If some of the parsed files are not found in the known types,
+     * an {@code IllegalStateException} is thrown.
+     *
+     * @param descriptorSet the descriptor set file to parse
+     * @return new file set
      */
-    public static FileSet parse(String descriptorSetFile) {
-        checkNotNull(descriptorSetFile);
-        File file = new File(descriptorSetFile);
-        return parse(file);
+    public static FileSet parseAsKnownFiles(File descriptorSet) {
+        Set<FileName> fileNames = FileDescriptors.parse(descriptorSet)
+                                                 .stream()
+                                                 .map(FileName::from)
+                                                 .collect(toSet());
+        Map<FileName, FileDescriptor> knownFiles = KnownTypes.instance()
+                .getAllTypes()
+                .types()
+                .stream()
+                .map(type -> type.descriptor().getFile())
+                .filter(descriptor -> fileNames.contains(FileName.from(descriptor.getFile())))
+                .collect(toMap(FileName::from,       // File name as the key.
+                               file -> file,         // File descriptor as the value.
+                               (left, right) -> left // On duplicates, take the first option.
+                ));
+        if (knownFiles.size() != fileNames.size()) {
+            return onUnknownFile(knownFiles.keySet(), fileNames);
+        }
+        FileSet result = new FileSet(knownFiles);
+        return result;
+    }
+
+    private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
+        Logger log = Logging.get(FileSet.class);
+        log.debug("Failed to find files in the known types set. Looked for {}{}",
+                  lineSeparator(),
+                  requestedFiles);
+        log.debug("Could not find files: {}",
+                  requestedFiles
+                          .stream()
+                          .filter(fileName -> !knownFiles.contains(fileName))
+                          .map(FileName::toString)
+                          .collect(joining(", ")));
+        throw newIllegalStateException("Some files are not known.");
     }
 
     /**
@@ -112,8 +161,8 @@ public final class FileSet {
     /**
      * Constructs a new {@code FileSet} out of the given file descriptors.
      *
-     * <p>The file descriptors are {@linkplain Linker#link linked} in order to obtain normal
-     * {@code FileDescriptor}s out of {@code FileDescriptorProto}s.
+     * <p>The file descriptors are linked in order to obtain normal {@code FileDescriptor}s out
+     * of {@code FileDescriptorProto}s.
      *
      * @param protoDescriptors
      *         file descriptors to include in the set
@@ -180,7 +229,7 @@ public final class FileSet {
     /**
      * Obtains immutable view of the files in this set.
      */
-    public Collection<FileDescriptor> files() {
+    public ImmutableSet<FileDescriptor> files() {
         return ImmutableSet.copyOf(files.values());
     }
 
@@ -262,24 +311,15 @@ public final class FileSet {
     }
 
     /**
-     * Obtains alphabetically sorted list of names of files of this set.
-     */
-    public List<FileName> getFileNames() {
-        List<FileName> fileNames =
-                files.keySet()
-                     .stream()
-                     .sorted()
-                     .collect(toList());
-        return fileNames;
-    }
-
-    /**
      * Returns a string with alphabetically sorted list of files of this set.
      */
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("files", getFileNames())
+                          .add("files", files.keySet()
+                                             .stream()
+                                             .sorted()
+                                             .collect(toList()))
                           .toString();
     }
 

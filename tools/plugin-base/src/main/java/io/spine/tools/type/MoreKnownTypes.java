@@ -69,7 +69,7 @@ public final class MoreKnownTypes {
      */
     public static void extendWith(FileSet protoFiles) {
         checkNotNull(protoFiles);
-        TypeSet types = TypeSet.messagesAndEnums(protoFiles);
+        TypeSet types = TypeSet.from(protoFiles);
         KnownTypes.Holder.extendWith(types);
     }
 }

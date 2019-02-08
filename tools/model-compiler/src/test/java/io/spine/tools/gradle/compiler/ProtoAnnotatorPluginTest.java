@@ -296,9 +296,13 @@ class ProtoAnnotatorPluginTest {
     }
 
     private FileDescriptor getDescriptor(FileName fileName) {
-        File descriptorSet = DefaultJavaProject.at(testProjectDir)
-                                               .mainDescriptors();
-        FileSet fileSet = FileSet.parse(descriptorSet);
+        Path mainDescriptor = DefaultJavaProject
+                .at(testProjectDir)
+                .buildRoot()
+                .descriptors()
+                .mainDescriptors()
+                .resolve("io.spine.test_" + testProjectDir.getName() + "_3.14.desc");
+        FileSet fileSet = FileSet.parse(mainDescriptor.toFile());
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);
         return file.get();

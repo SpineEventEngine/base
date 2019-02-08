@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findAnnotation;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,9 +56,15 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
         Optional<? extends AnnotationSource<?>> annotationSource =
                 findAnnotation(source, annotation);
         if (shouldBeAnnotated) {
-            assertTrue(annotationSource.isPresent());
+            assertTrue(annotationSource.isPresent(),
+                       format("%s should be annotated with %s.",
+                              source.getCanonicalName(),
+                              annotation.getName()));
         } else {
-            assertFalse(annotationSource.isPresent());
+            assertFalse(annotationSource.isPresent(),
+                        format("%s should NOT be annotated with %s.",
+                               source.getCanonicalName(),
+                               annotation.getName()));
         }
     }
 }

@@ -26,7 +26,6 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -54,11 +53,6 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
     @Override
     public ClassName javaClassName() {
         return ClassName.from(descriptor());
-    }
-
-    @Override
-    public SimpleClassName simpleJavaClassName() {
-        return SimpleClassName.ofEnum(descriptor());
     }
 
     static EnumType create(EnumDescriptor descriptor) {

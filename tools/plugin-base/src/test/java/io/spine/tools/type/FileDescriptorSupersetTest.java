@@ -121,7 +121,8 @@ class FileDescriptorSupersetTest {
         superset.addFromDependency(fileDependency.toFile());
         superset.addFromDependency(archiveDependency.toFile());
 
-        IterableSubject assertDescriptors = assertThat(superset.files());
+        MergedDescriptorSet mergedSet = superset.merge();
+        IterableSubject assertDescriptors = assertThat(mergedSet.descriptors());
         assertDescriptors.hasSize(3);
         assertDescriptors.contains(TaskProto.getDescriptor().toProto());
         assertDescriptors.contains(PersonProto.getDescriptor().toProto());
@@ -133,7 +134,7 @@ class FileDescriptorSupersetTest {
     void ignoreEmptyFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(emptyFileDependency.toFile());
-        assertThat(superset.files()).isEmpty();
+        assertThat(superset.merge().descriptors()).isEmpty();
     }
 
     @Test
@@ -141,7 +142,7 @@ class FileDescriptorSupersetTest {
     void ignoreIrrelevantZips() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(archiveWithNoDescriptors.toFile());
-        assertThat(superset.files()).isEmpty();
+        assertThat(superset.merge().descriptors()).isEmpty();
     }
 
     @Test
@@ -149,7 +150,7 @@ class FileDescriptorSupersetTest {
     void ignoreNonDescriptorFiles() {
         FileDescriptorSuperset superset = new FileDescriptorSuperset();
         superset.addFromDependency(nonDescriptorFile.toFile());
-        assertThat(superset.files()).isEmpty();
+        assertThat(superset.merge().descriptors()).isEmpty();
     }
 
     private static void writeDescriptorSet(Path path, FileDescriptor... fileDescriptor)
