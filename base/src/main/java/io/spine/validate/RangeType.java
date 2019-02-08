@@ -22,9 +22,10 @@ package io.spine.validate;
 
 import com.google.common.collect.Range;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -35,44 +36,29 @@ import static java.lang.String.format;
  * is either excluded or included from the range.
  */
 enum RangeType {
-    CLOSED("[]") {
-        @Override
-        RangeFunction create() {
-            return Range::closed;
-        }
-    },
-    OPEN("()") {
-        @Override
-        RangeFunction create() {
-            return Range::open;
-        }
-    },
-    OPEN_CLOSED("(]") {
-        @Override
-        RangeFunction create() {
-            return Range::openClosed;
-        }
-    },
-    CLOSED_OPEN("[)") {
-        @Override
-        RangeFunction create() {
-            return Range::closedOpen;
-        }
-    };
+    CLOSED('[', ']', Range::closed),
+    OPEN('(', ')', Range::open),
+    OPEN_CLOSED('(', ']', Range::openClosed),
+    CLOSED_OPEN('[', ')', Range::closedOpen);
 
-    private final String edges;
+    private final char left;
+    private final char right;
+    @SuppressWarnings("NonSerializableFieldInSerializableClass")
+    private final RangeFunction function;
 
-    RangeType(String edges) {
-        this.edges = edges;
+    RangeType(char left, char right, RangeFunction function) {
+        this.left = left;
+        this.right = right;
+        this.function = function;
     }
 
-    private static RangeType from(String value) {
-        for (RangeType type : values()) {
-            if (value.equals(type.edges)) {
-                return type;
-            }
-        }
-        throw newIllegalArgumentException(format("Could not create a range for edges %s.", value));
+    private static RangeType from(char left, char right) {
+        Predicate<RangeType> edgesMatch = value -> value.left == left && value.right == right;
+        return Arrays.stream(values())
+                     .filter(edgesMatch)
+                     .findFirst()
+                     .orElseThrow(() -> new IllegalArgumentException(
+                             format("Could not create a range for edges %s, %s.", left, right)));
     }
 
     /**
@@ -84,20 +70,21 @@ enum RangeType {
         String trimmed = value.trim();
         char first = trimmed.charAt(0);
         char last = trimmed.charAt(trimmed.length() - 1);
-        return from(String.valueOf(first) + last);
+        return from(first, last);
     }
 
     /**
-     * Obtains a function that from two numbers, obtains a range of them, the kind of which
-     * depends on the exact type of range.
+     * Obtains a function that allows to create a {@link com.google.common.collect.Range} from
+     * two edge values.
      */
-    abstract RangeFunction create();
+    RangeFunction function() {
+        return function;
+    }
 
     /**
      * A function that returns a new range between two {@code ComparableNumbers}.
      */
     interface RangeFunction extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>> {
-
     }
 }
 
