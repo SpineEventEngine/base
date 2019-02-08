@@ -156,6 +156,24 @@ message ArtificialBlizzard {
     repeated Snowflake snowflake = 1 [(distinct) = false];
 }
 
+message Menu {
+
+    string name = 1;
+
+    oneof criterion {
+
+        bool vegetarian = 2;
+
+        string meat_dish = 3;
+    }
+}
+
+message RequiredBooleanField {
+
+    // should produce a warning
+    bool value = 1 [(required) = true];
+}
+
 // A snowflake is represented by a polygon. Two snowflakes are equal if they have the same
 // amount of edges.
 message Snowflake {

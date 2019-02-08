@@ -31,11 +31,15 @@ import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.Member;
+import io.spine.test.validate.msg.builder.Menu;
+import io.spine.test.validate.msg.builder.MenuVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.RequiredBooleanFieldVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.Required;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -318,6 +322,38 @@ class ValidatingBuilderTest {
         ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
         builder.addSnowflake(triangularSnowflake())
                .addSnowflake(triangularSnowflake());
+    }
+
+    @Nested
+    @DisplayName("upon finding a boolean field")
+    class RequiredLoggingTest {
+
+        private final Queue<SubstituteLoggingEvent> loggedMessages;
+
+        RequiredLoggingTest() {
+            this.loggedMessages = new ArrayDeque<>();
+            Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
+        }
+
+        @DisplayName("not produce warnings if it is not `required`")
+        @Test
+        void testNoWarningOnBoolField() {
+            int sizeBefore = loggedMessages.size();
+            MenuVBuilder builder = MenuVBuilder.newBuilder();
+            Menu menu = builder.setName("Non-vegetarian menu.")
+                               .setMeatDish("Non-vegetarian dish.")
+                               .build();
+            assertEquals(sizeBefore, loggedMessages.size());
+        }
+
+        @DisplayName("produce warning if it is `required`")
+        @Test
+        void testWarningOnBooleanRequired() {
+            int sizeBefore = loggedMessages.size();
+            RequiredBooleanFieldVBuilder builder = RequiredBooleanFieldVBuilder.newBuilder();
+            builder.setValue(true);
+           assertEquals(sizeBefore + 1, loggedMessages.size());
+        }
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
