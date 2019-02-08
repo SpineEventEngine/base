@@ -186,6 +186,15 @@ message FrostyWeather {
     double celcius = 1 [(range) = "(-10.0..-5.5]"];
 }
 
+// This message declares a field that has a value with boundary types inconsistent to its
+// value type.
+message FrostyWeatherButInWholeNumber {
+
+    // Since `celcius` is of type `double`, the boundaries cannot be of a whole
+    // number type.
+    double celcius = 1 [(range) = "[-10..-4)"];
+}
+
 message InconsistentBoundaries {
 
     // Inconsistent boundary types should result in an error.

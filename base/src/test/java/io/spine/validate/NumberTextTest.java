@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("String described number should")
@@ -74,18 +75,39 @@ public class NumberTextTest {
         String lessThanLongMaxValue = String.valueOf(Long.MAX_VALUE - 1);
         NumberText larger = new NumberText(longMaxValue);
         NumberText smaller = new NumberText(lessThanLongMaxValue);
-        assertEquals(1, larger.toNumber().compareTo(smaller.toNumber()));
+        assertEquals(1, larger.toNumber()
+                              .compareTo(smaller.toNumber()));
     }
 
     @ParameterizedTest
-    @MethodSource("strings")
+    @MethodSource("textNumbers")
     @DisplayName("correctly stringify values")
     void toStringTest(Number input, String expected) {
         NumberText text = new NumberText(input);
         assertEquals(expected, text.toString());
     }
 
-    private static Stream<Arguments> strings() {
+    @DisplayName("throw on malformed numbers")
+    @ParameterizedTest
+    @MethodSource("malformedNumbers")
+    void throwOnMalformedNumbers(String malformed) {
+        assertThrows(Exception.class, () -> new NumberText(malformed));
+    }
+
+    private static Stream<Arguments> malformedNumbers() {
+        return Stream.of(
+                Arguments.of("1.0.0"),
+                Arguments.of("1,0"),
+                // Even though those are technically expressions that evaluate to a number,
+                // they are not allowed.
+                Arguments.of("2!"),
+                Arguments.of("2/2"),
+                Arguments.of("2+2"),
+                Arguments.of("2-2")
+        );
+    }
+
+    private static Stream<Arguments> textNumbers() {
         return Stream.of(
                 Arguments.of(0.0d, "0.0"),
                 Arguments.of(0, "0"),

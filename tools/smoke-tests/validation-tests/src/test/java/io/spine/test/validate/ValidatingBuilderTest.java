@@ -30,6 +30,7 @@ import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
+import io.spine.test.validate.msg.builder.FrostyWeatherButInWholeNumberVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
@@ -391,6 +392,14 @@ class ValidatingBuilderTest {
     void throwOnInconsistentBoundaryTypes() {
         InconsistentBoundariesVBuilder builder = InconsistentBoundariesVBuilder.newBuilder();
         assertThrows(IllegalStateException.class, () -> builder.setValue(3.2d));
+    }
+
+    @DisplayName("throw on boundaries that are inconsistent with the constrained value type")
+    @Test
+    void throwOnIncosistentBoundaryAndValueTypes() {
+        FrostyWeatherButInWholeNumberVBuilder builder = FrostyWeatherButInWholeNumberVBuilder
+                .newBuilder();
+        assertThrows(IllegalStateException.class, ()->builder.setCelcius(-5.0d));
     }
 
     @DisplayName("produce correct error messages on numbers that don't fit the ranges")
