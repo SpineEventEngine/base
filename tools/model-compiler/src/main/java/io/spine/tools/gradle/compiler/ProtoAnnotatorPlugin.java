@@ -186,21 +186,24 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Action<Task> task = newAction(getMainDescriptorSet(project), project, false);
+        Action<Task> task = newAction(project, false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
                 .applyNowTo(project);
 
-        Action<Task> testTask = newAction(getTestDescriptorSet(project), project, true);
+        Action<Task> testTask = newAction(project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                 .applyNowTo(project);
     }
 
-    private Action<Task> newAction(File descriptorSetFile, Project project, boolean isTestTask) {
+    private Action<Task> newAction(Project project, boolean isTestTask) {
         return task -> {
+            File descriptorSetFile = isTestTask
+                                       ? getTestDescriptorSet(project)
+                                       : getMainDescriptorSet(project);
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
                                        : getMainGenProtoDir(project);
@@ -211,26 +214,35 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                 logMissingDescriptorSetFile(descriptorSetFile);
                 return;
             }
-            Path generatedProtoPath = Paths.get(generatedProtoDir);
-            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
-            ClassName internalClassName = annotations.internalClassName();
-            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
-            ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-            ModuleAnnotator moduleAnnotator = ModuleAnnotator
-                    .newBuilder()
-                    .setAnnotatorFactory(annotatorFactory)
-                    .add(translate(spi()).as(annotations.spiClassName()))
-                    .add(translate(beta()).as(annotations.betaClassName()))
-                    .add(translate(experimental()).as(annotations.experimentalClassName()))
-                    .add(translate(internal()).as(internalClassName))
-                    .setInternalPatterns(internalClassPatterns)
-                    .setInternalMethodNames(internalMethodNames)
-                    .setInternalAnnotation(internalClassName)
-                    .build();
+            ModuleAnnotator moduleAnnotator = createAnnotator(project,
+                                                              descriptorSetFile,
+                                                              generatedProtoDir,
+                                                              generatedGrpcDir);
             moduleAnnotator.annotate();
         };
+    }
+
+    private static ModuleAnnotator createAnnotator(Project project, File descriptorSetFile,
+                                                   String generatedProtoDir,
+                                                   String generatedGrpcDir) {
+        Path generatedProtoPath = Paths.get(generatedProtoDir);
+        Path generatedGrpcPath = Paths.get(generatedGrpcDir);
+        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
+        CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+        ClassName internalClassName = annotations.internalClassName();
+        ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
+        ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
+        return ModuleAnnotator
+                .newBuilder()
+                .setAnnotatorFactory(annotatorFactory)
+                .add(translate(spi()).as(annotations.spiClassName()))
+                .add(translate(beta()).as(annotations.betaClassName()))
+                .add(translate(experimental()).as(annotations.experimentalClassName()))
+                .add(translate(internal()).as(internalClassName))
+                .setInternalPatterns(internalClassPatterns)
+                .setInternalMethodNames(internalMethodNames)
+                .setInternalAnnotation(internalClassName)
+                .build();
     }
 }

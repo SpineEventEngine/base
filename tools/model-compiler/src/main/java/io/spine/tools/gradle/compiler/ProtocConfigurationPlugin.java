@@ -27,8 +27,11 @@ import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
 import io.spine.code.java.DefaultJavaProject;
+import io.spine.code.proto.DescriptorReference;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.TaskName;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
@@ -42,12 +45,15 @@ import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
+import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
+import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
@@ -179,7 +185,49 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         }
     }
 
-    private static void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
+    private void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
+        configureTaskPlugins(protocTask, dependency);
+        configureDescriptorSetGeneration(protocTask);
+    }
+
+    private void configureDescriptorSetGeneration(GenerateProtoTask protocTask) {
+        protocTask.setGenerateDescriptorSet(true);
+        boolean tests = protocTask.getSourceSet()
+                                  .getName()
+                                  .contains("test");
+        Project project = protocTask.getProject();
+        File descriptor;
+        TaskName writeRefName;
+        if (tests) {
+            descriptor = getTestDescriptorSet(project);
+            writeRefName = WRITE_TEST_DESCRIPTOR_REFERENCE;
+        } else {
+            descriptor = getMainDescriptorSet(project);
+            writeRefName = WRITE_DESCRIPTOR_REFERENCE;
+        }
+        GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
+        options.setPath(GStrings.fromPlain(descriptor.getPath()));
+        options.setIncludeImports(true);
+        options.setIncludeSourceInfo(true);
+
+        JavaPluginConvention javaConvention = project.getConvention()
+                                                     .getPlugin(JavaPluginConvention.class);
+        String sourceSetName = tests ? "test" : "main";
+        Path resourceDirectory = descriptor.toPath()
+                                           .getParent();
+        javaConvention.getSourceSets()
+                      .getByName(sourceSetName)
+                      .getResources()
+                      .srcDir(resourceDirectory);
+        GradleTask writeRef = newTask(writeRefName, task -> {
+            DescriptorReference reference = DescriptorReference.toOneFile(descriptor);
+            reference.writeTo(resourceDirectory);
+        }).allowNoDependencies()
+          .applyNowTo(project);
+        protocTask.finalizedBy(writeRef.getTask());
+    }
+
+    private static void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
         protocTask.dependsOn(dependency);
         protocTask.getPlugins()
                   .create(ProtocPlugin.GRPC.name);
@@ -192,30 +240,9 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                                     .encodeToString(param.toByteArray());
                               options.option(option);
                           });
-        protocTask.setGenerateDescriptorSet(true);
-        boolean tests = protocTask.getSourceSet()
-                                  .getName()
-                                  .contains("test");
-        Project project = protocTask.getProject();
-        File descFile = tests
-                        ? getTestDescriptorSet(project)
-                        : getMainDescriptorSet(project);
-        GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
-        options.setPath(GStrings.fromPlain(descFile.toString()));
-        options.setIncludeImports(true);
-        options.setIncludeSourceInfo(true);
-
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        String sourceSetName = tests ? "test" : "main";
-        javaConvention.getSourceSets()
-                      .getByName(sourceSetName)
-                      .getResources()
-                      .srcDir(descFile.toPath()
-                                      .getParent());
     }
 
-    private static void configureProtocTasks(GenerateProtoTaskCollection tasks,
+    private void configureProtocTasks(GenerateProtoTaskCollection tasks,
                                              GradleTask dependency) {
         tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
     }

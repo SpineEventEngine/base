@@ -51,7 +51,7 @@ public final class Given {
     public static Type typeFor(Descriptors.GenericDescriptor descriptor) {
         TypeName typeName = TypeName.of(descriptor.getFullName());
         FileDescriptor file = descriptor.getFile();
-        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        TypeSet typeSet = TypeSet.from(file);
         return typeSet
                 .find(typeName)
                 .orElseThrow(() -> newIllegalStateException("Cannot find Type %s.", typeName));

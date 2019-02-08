@@ -133,7 +133,7 @@ public abstract class SpineProtoGenerator {
                                                   .map(FileName::of)
                                                   .collect(toSet());
         FileSet requestedFiles = fileSet.find(requestedFileNames);
-        TypeSet typeSet = TypeSet.messagesAndEnums(requestedFiles);
+        TypeSet typeSet = TypeSet.from(requestedFiles);
         CodeGeneratorResponse response = process(typeSet);
         return response;
     }

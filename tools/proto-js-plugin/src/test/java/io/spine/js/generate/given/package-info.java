@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
-    This Smoke Tests module verifies correctness of composition of {@code KnownTypes}. 
-    No additional config is required. 
-    See smoke-tests/build.gradle for all the config of the project.
-    
-*/
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js.generate.given;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

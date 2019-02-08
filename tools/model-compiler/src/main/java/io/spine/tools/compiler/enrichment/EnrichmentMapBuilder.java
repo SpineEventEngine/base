@@ -31,7 +31,6 @@ import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 
 import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

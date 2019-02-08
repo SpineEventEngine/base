@@ -58,7 +58,7 @@ final class MethodNameAnnotator extends Annotator {
         if (!patterns.isEmpty()) {
             SourceVisitor<?> visitor = new AnnotateMethods();
             descriptors().stream()
-                         .map(TypeSet::messagesAndEnums)
+                         .map(TypeSet::from)
                          .flatMap(typeSet -> typeSet.types().stream())
                          .map(type -> type.javaClassName().resolveFile())
                          .forEach(file -> rewriteSource(file, visitor));

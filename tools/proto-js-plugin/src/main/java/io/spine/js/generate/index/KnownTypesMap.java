@@ -74,7 +74,7 @@ final class KnownTypesMap implements Snippet {
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Set<Type<?, ?>> types = TypeSet.messagesAndEnums(fileSet)
+        Set<Type<?, ?>> types = TypeSet.from(fileSet)
                                        .types();
         List<Map.Entry<String, TypeName>> entries = types.stream()
                                                          .map(KnownTypesMap::mapEntry)
