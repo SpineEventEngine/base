@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.code.proto.Option;
 
 /**
@@ -33,7 +33,7 @@ import io.spine.code.proto.Option;
  * @param <K>
  *         kind of entity that this option is applied to
  */
-interface ValidatingOption<T, K extends Descriptors.GenericDescriptor, V> extends Option<T, K> {
+interface ValidatingOption<T, K extends GenericDescriptor, V> extends Option<T, K> {
 
     Constraint<V> constraintFor(V value);
 }
