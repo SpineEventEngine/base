@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.BoundType;
+import com.google.common.collect.Range;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,17 +40,17 @@ class RangeConstraintTest {
     @ParameterizedTest
     @MethodSource("validRanges")
     @DisplayName("be able to obtain adequate ranges")
-    void acceptProperRanges(String range, RangeType expected) {
-        RangeType result = RangeType.parse(range);
-        assertEquals(expected, result);
+    void acceptProperRanges(String range, BoundType expected) {
+        Range<ComparableNumber> result = RangeConstraint.rangeFromOption(range);
+        assertEquals(expected, result.upperBoundType());
     }
 
     private static Stream<Arguments> validRanges() {
         return Stream.of(
-                Arguments.of("[1..2]", RangeType.CLOSED),
-                Arguments.of("(1..2)", RangeType.OPEN),
-                Arguments.of("[1..2)", RangeType.CLOSED_OPEN),
-                Arguments.of("(1..2]", RangeType.OPEN_CLOSED)
+                Arguments.of("[1..2]", BoundType.CLOSED),
+                Arguments.of("(1..2)", BoundType.OPEN),
+                Arguments.of("[1..2)", BoundType.OPEN),
+                Arguments.of("(1..2]", BoundType.CLOSED)
         );
     }
 
