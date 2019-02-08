@@ -35,9 +35,12 @@ import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
+import io.spine.test.validate.msg.builder.Menu;
+import io.spine.test.validate.msg.builder.MenuVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
 import io.spine.test.validate.msg.builder.SafeBet;
 import io.spine.test.validate.msg.builder.SafeBetVBuilder;
+import io.spine.test.validate.msg.builder.RequiredBooleanFieldVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.SpacedOutBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Task;
@@ -47,6 +50,7 @@ import io.spine.test.validate.msg.builder.UnsafeBetVBuilder;
 import io.spine.test.validate.msg.builder.UpToInfinityVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
 import io.spine.validate.ConstraintViolation;
+import io.spine.validate.Required;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -329,6 +333,38 @@ class ValidatingBuilderTest {
         ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
         builder.addSnowflake(triangularSnowflake())
                .addSnowflake(triangularSnowflake());
+    }
+
+    @Nested
+    @DisplayName("upon finding a boolean field")
+    class RequiredLoggingTest {
+
+        private final Queue<SubstituteLoggingEvent> loggedMessages;
+
+        RequiredLoggingTest() {
+            this.loggedMessages = new ArrayDeque<>();
+            Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
+        }
+
+        @DisplayName("not produce warnings if it is not `required`")
+        @Test
+        void testNoWarningOnBoolField() {
+            int sizeBefore = loggedMessages.size();
+            MenuVBuilder builder = MenuVBuilder.newBuilder();
+            Menu menu = builder.setName("Non-vegetarian menu.")
+                               .setMeatDish("Non-vegetarian dish.")
+                               .build();
+            assertEquals(sizeBefore, loggedMessages.size());
+        }
+
+        @DisplayName("produce warning if it is `required`")
+        @Test
+        void testWarningOnBooleanRequired() {
+            int sizeBefore = loggedMessages.size();
+            RequiredBooleanFieldVBuilder builder = RequiredBooleanFieldVBuilder.newBuilder();
+            builder.setValue(true);
+           assertEquals(sizeBefore + 1, loggedMessages.size());
+        }
     }
 
     @DisplayName("not allow values that don't fit into a closed range")
