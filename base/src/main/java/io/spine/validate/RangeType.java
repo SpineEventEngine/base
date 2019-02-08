@@ -84,7 +84,7 @@ enum RangeType {
         private final RangeType rangeType;
 
         private RangeFunction(RangeType type) {
-            rangeType = type;
+            this.rangeType = type;
         }
 
         @Override

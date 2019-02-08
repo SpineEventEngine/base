@@ -376,7 +376,7 @@ class ValidatingBuilderTest {
         assertThrows(IllegalArgumentException.class, () -> builder.setValue(0));
     }
 
-    @DisplayName("correctly parse negative ranges")
+    @DisplayName("correctly parse ranges with negative values")
     @Test
     void worksWithNegativeRanges() {
         FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();

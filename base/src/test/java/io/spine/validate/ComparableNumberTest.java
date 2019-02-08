@@ -38,7 +38,8 @@ class ComparableNumberTest {
                           .addEqualityGroup(new NumberText(longMaxValue).toNumber(),
                                             new NumberText(Long.MAX_VALUE).toNumber())
                           .addEqualityGroup(new NumberText(doubleMinValue).toNumber(),
-                                            new NumberText(Double.MIN_VALUE));
+                                            new NumberText(Double.MIN_VALUE))
+                          .testEquals();
     }
 
 }
