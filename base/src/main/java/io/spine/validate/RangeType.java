@@ -76,6 +76,7 @@ enum RangeType {
     Range<ComparableNumber> create(ComparableNumber left, ComparableNumber right) {
         return function.apply(left, right);
     }
+    
     /**
      * A function that returns a new range between two {@code ComparableNumbers}.
      */
