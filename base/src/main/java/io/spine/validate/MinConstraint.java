@@ -33,11 +33,11 @@ final class MinConstraint<V extends Number & Comparable> extends RangedConstrain
         super(optionValue, minRange(optionValue));
     }
 
-    private static <V extends Number & Comparable> Range<V> minRange(MinOption option) {
+    private static Range<ComparableNumber> minRange(MinOption option) {
         boolean inclusive = !option.getExclusive();
-        V minValue = fromOption(option.getValue());
+        NumberText minValue = new NumberText(option.getValue());
         return inclusive
-               ? Range.atLeast(minValue)
-               : Range.greaterThan(minValue);
+               ? Range.atLeast(minValue.toNumber())
+               : Range.greaterThan(minValue.toNumber());
     }
 }
