@@ -81,7 +81,6 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkCorrectUsage(value);
         return this.isOptionPresent.test(value);
     }
 
@@ -111,6 +110,7 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     @Override
     public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
+        checkCorrectUsage(fieldValue.descriptor());
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }

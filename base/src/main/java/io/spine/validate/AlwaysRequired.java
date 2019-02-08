@@ -47,7 +47,6 @@ final class AlwaysRequired<T> extends Required<T> {
     @SuppressWarnings("ResultOfMethodCallIgnored" /* Parent method contains useful logic.*/)
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkCorrectUsage(value);
         return true;
     }
 }
