@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.Range;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -43,7 +44,6 @@ enum RangeType {
 
     private final char left;
     private final char right;
-    @SuppressWarnings("NonSerializableFieldInSerializableClass")
     private final RangeFunction function;
 
     RangeType(char left, char right, RangeFunction function) {
@@ -73,18 +73,16 @@ enum RangeType {
         return from(first, last);
     }
 
-    /**
-     * Obtains a function that allows to create a {@link com.google.common.collect.Range} from
-     * two edge values.
-     */
-    RangeFunction function() {
-        return function;
+    Range<ComparableNumber> create(ComparableNumber left, ComparableNumber right) {
+        return function.apply(left, right);
     }
-
+    
     /**
      * A function that returns a new range between two {@code ComparableNumbers}.
      */
-    interface RangeFunction extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>> {
+    private interface RangeFunction
+            extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>>,
+                    Serializable {
     }
 }
 
