@@ -87,6 +87,16 @@ class NumberTextTest {
         assertEquals(expected, text.toString());
     }
 
+    private static Stream<Arguments> textNumbers() {
+        return Stream.of(
+                Arguments.of(0.0d, "0.0"),
+                Arguments.of(0, "0"),
+                Arguments.of(-1.0d, "-1.0"),
+                Arguments.of(-1, "-1"),
+                Arguments.of(-1.23456789d, "-1.23456789")
+        );
+    }
+
     @DisplayName("throw on malformed numbers")
     @ParameterizedTest
     @MethodSource("malformedNumbers")
@@ -104,16 +114,6 @@ class NumberTextTest {
                 Arguments.of("2/2"),
                 Arguments.of("2+2"),
                 Arguments.of("2-2")
-        );
-    }
-
-    private static Stream<Arguments> textNumbers() {
-        return Stream.of(
-                Arguments.of(0.0d, "0.0"),
-                Arguments.of(0, "0"),
-                Arguments.of(-1.0d, "-1.0"),
-                Arguments.of(-1, "-1"),
-                Arguments.of(-1.23456789d, "-1.23456789")
         );
     }
 }

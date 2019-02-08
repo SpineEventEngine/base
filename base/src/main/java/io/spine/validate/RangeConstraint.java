@@ -50,7 +50,7 @@ final class RangeConstraint<V extends Number & Comparable> extends RangedConstra
         EdgeValues edgeValues = edgeValues(withoutBraces(trimmed));
         ComparableNumber left = edgeValues.leftEdge.toNumber();
         ComparableNumber right = edgeValues.rightEdge.toNumber();
-        Range<ComparableNumber> result = range.rangeFrom()
+        Range<ComparableNumber> result = range.create()
                                               .apply(left, right);
         return result;
     }

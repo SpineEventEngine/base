@@ -35,8 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Range constraint should")
 class RangeConstraintTest {
 
-
-
     @ParameterizedTest
     @MethodSource("validRanges")
     @DisplayName("be able to obtain adequate ranges")

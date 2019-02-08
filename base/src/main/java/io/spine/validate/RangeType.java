@@ -35,10 +35,30 @@ import static java.lang.String.format;
  * is either excluded or included from the range.
  */
 enum RangeType {
-    CLOSED("[]"),
-    OPEN("()"),
-    OPEN_CLOSED("(]"),
-    CLOSED_OPEN("[)");
+    CLOSED("[]") {
+        @Override
+        RangeFunction create() {
+            return Range::closed;
+        }
+    },
+    OPEN("()") {
+        @Override
+        RangeFunction create() {
+            return Range::open;
+        }
+    },
+    OPEN_CLOSED("(]") {
+        @Override
+        RangeFunction create() {
+            return Range::openClosed;
+        }
+    },
+    CLOSED_OPEN("[)") {
+        @Override
+        RangeFunction create() {
+            return Range::closedOpen;
+        }
+    };
 
     private final String edges;
 
@@ -71,38 +91,13 @@ enum RangeType {
      * Obtains a function that from two numbers, obtains a range of them, the kind of which
      * depends on the exact type of range.
      */
-    BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>>
-    rangeFrom() {
-        return new RangeFunction(this);
-    }
+    abstract RangeFunction create();
 
     /**
      * A function that returns a new range between two {@code ComparableNumbers}.
      */
-    private static class RangeFunction implements BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>> {
+    interface RangeFunction extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>> {
 
-        private final RangeType rangeType;
-
-        private RangeFunction(RangeType type) {
-            this.rangeType = type;
-        }
-
-        @Override
-        public Range<ComparableNumber> apply(ComparableNumber left, ComparableNumber right) {
-            switch (rangeType) {
-                case OPEN:
-                    return Range.open(left, right);
-                case CLOSED:
-                    return Range.closed(left, right);
-                case OPEN_CLOSED:
-                    return Range.openClosed(left, right);
-                case CLOSED_OPEN:
-                    return Range.closedOpen(left, right);
-                default:
-                    throw new IllegalArgumentException(
-                            format("Could not create range from %s", rangeType));
-            }
-        }
     }
 
 }
