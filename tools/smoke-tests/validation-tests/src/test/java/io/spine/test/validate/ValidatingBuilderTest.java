@@ -36,6 +36,7 @@ import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
 import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.SafeBet;
 import io.spine.test.validate.msg.builder.SafeBetVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.SpacedOutBoundariesVBuilder;
@@ -342,9 +343,11 @@ class ValidatingBuilderTest {
     @DisplayName("allow values that are equal to the lower endpoint of an unclosed range")
     @Test
     void testFitsRightIntoAnOpenedRange() {
-        SafeBetVBuilder
+        SafeBet safeBet = SafeBetVBuilder
                 .newBuilder()
-                .setOdds(safeOdds());
+                .setOdds(safeOdds())
+                .build();
+        assertEquals(safeOdds(), safeBet.getOdds());
     }
 
     @DisplayName("disallow ranges with incorrect types")

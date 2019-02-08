@@ -33,12 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Range constraint should")
 class RangeConstraintTest {
 
-    @ParameterizedTest
-    @MethodSource("badRanges")
-    @DisplayName("throw on incorrectly defined ranges")
-    void throwOnMalformedRanges(String badRange) {
-        assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
-    }
+
 
     @ParameterizedTest
     @MethodSource("validRanges")
@@ -55,6 +50,13 @@ class RangeConstraintTest {
                 Arguments.of("[1..2)", RangeType.CLOSED_OPEN),
                 Arguments.of("(1..2]", RangeType.OPEN_CLOSED)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("badRanges")
+    @DisplayName("throw on incorrectly defined ranges")
+    void throwOnMalformedRanges(String badRange) {
+        assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
     }
 
     private static Stream<Arguments> badRanges() {
