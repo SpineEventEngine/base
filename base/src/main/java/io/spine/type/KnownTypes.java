@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.base.Joiner;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -29,7 +30,9 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -38,6 +41,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.System.lineSeparator;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -67,6 +72,8 @@ public class KnownTypes implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
+    private static final Joiner NEW_LINE_JOINER = Joiner.on(lineSeparator());
+
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
 
@@ -93,16 +100,12 @@ public class KnownTypes implements Serializable {
         return typeSet.types();
     }
 
-    private TypeSet typeSet() {
-        return typeSet;
-    }
-
     /**
      * Loads known types from the classpath.
      */
     private static TypeSet load() {
         FileSet protoDefinitions = FileSet.load();
-        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
+        TypeSet types = TypeSet.from(protoDefinitions);
         return types;
     }
 
@@ -129,6 +132,13 @@ public class KnownTypes implements Serializable {
         return types().stream()
                       .map(Type::url)
                       .collect(toSet());
+    }
+
+    /**
+     * Retrieves all Protobuf types known to the application.
+     */
+    public TypeSet getAllTypes() {
+        return typeSet;
     }
 
     /**
@@ -163,7 +173,7 @@ public class KnownTypes implements Serializable {
      */
     public boolean contains(TypeUrl typeUrl) {
         TypeName name = typeUrl.toName();
-        boolean result = typeSet().contains(name);
+        boolean result = typeSet.contains(name);
         return result;
     }
 
@@ -173,13 +183,13 @@ public class KnownTypes implements Serializable {
      * @see TypeSet#find(TypeName)
      */
     Optional<Type<?, ?>> find(TypeName typeName) {
-        Optional<Type<?, ?>> type = typeSet().find(typeName);
+        Optional<Type<?, ?>> type = typeSet.find(typeName);
         return type;
     }
 
     private Type get(TypeName name) throws UnknownTypeException {
-        Type result = typeSet().find(name)
-                               .orElseThrow(() -> new UnknownTypeException(name.value()));
+        Type result = typeSet.find(name)
+                             .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 
@@ -189,6 +199,19 @@ public class KnownTypes implements Serializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(KnownTypes.class.getSimpleName());
+        result.append(':')
+              .append(lineSeparator());
+        Object[] sortedUrls = getAllUrls()
+                .stream()
+                .sorted(comparing(TypeUrl::value))
+                .toArray();
+        NEW_LINE_JOINER.appendTo(result, sortedUrls);
+        return result.toString();
+    }
+
     /**
      * A holder of the {@link KnownTypes} instance.
      *
@@ -196,6 +219,8 @@ public class KnownTypes implements Serializable {
      */
     @Internal
     public static final class Holder {
+
+        private static final Logger log = Logging.get(Holder.class);
 
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
@@ -222,6 +247,8 @@ public class KnownTypes implements Serializable {
          */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
+
+            log.debug("Adding types {} to known types.", moreKnownTypes);
 
             lock.lock();
             try {

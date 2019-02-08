@@ -70,8 +70,9 @@ protobuf {
 
     generateProtoTasks {
         all().each { final task ->
+            final def scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
         }

@@ -54,13 +54,13 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         // in the project classpath.
 
         Stream.of(new CleaningPlugin(),
+                  new DescriptorSetMergerPlugin(),
                   new EnrichmentLookupPlugin(),
                   new RejectionGenPlugin(),
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new ValidationRulesLookupPlugin(),
                   new ProtocConfigurationPlugin(),
-                  new DescriptorSetMergerPlugin(),
                   new ErrorProneChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
     }

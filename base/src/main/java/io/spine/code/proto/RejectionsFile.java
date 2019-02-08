@@ -77,8 +77,8 @@ public final class RejectionsFile extends SourceFile {
                 fileSet.files()
                        .stream()
                        .filter(RejectionsFile::isRejections)
-                       .map(f -> {
-                           SourceFile sourceFile = SourceFile.from(f);
+                       .map(file -> {
+                           SourceFile sourceFile = SourceFile.from(file);
                            return from(sourceFile);
                        })
                        .collect(toImmutableSet());

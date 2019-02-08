@@ -26,9 +26,11 @@ import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.GradleProject;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static java.util.Collections.singletonList;
 
@@ -43,8 +45,11 @@ public final class GivenProject {
     }
 
     public static FileSet mainFileSet() {
-        File descriptorSetFile = project().mainDescriptors();
-        return FileSet.parse(descriptorSetFile);
+        Path mainDescriptorsDir = project().buildRoot()
+                                           .descriptors()
+                                           .mainDescriptors();
+        Path descriptorSetFile = mainDescriptorsDir.resolve(KNOWN_TYPES);
+        return FileSet.parse(descriptorSetFile.toFile());
     }
 
     public static Directory mainProtoSources() {
