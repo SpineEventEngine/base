@@ -46,7 +46,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final Predicate<FieldDescriptor> isOptionPresent;
+    private final Predicate<FieldDescriptor> hasOption;
     private final IfMissing ifMissing = new IfMissing();
 
     /**
@@ -54,7 +54,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
      */
     Required() {
         super(OptionsProto.required);
-        this.isOptionPresent = this::notAssumingRequired;
+        this.hasOption = this::notAssumingRequired;
     }
 
     /**
@@ -83,7 +83,8 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        return this.isOptionPresent.test(value);
+        checkUsage(value);
+        return this.hasOption.test(value);
     }
 
     /**

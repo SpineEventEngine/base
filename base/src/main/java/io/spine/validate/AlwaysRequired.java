@@ -44,9 +44,9 @@ final class AlwaysRequired<T> extends Required<T> {
      * <p>For {@code AlwaysRequired}, validation happens every time.
      * @param value
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored" /* Parent method contains useful logic.*/)
     @Override
     boolean shouldValidate(FieldDescriptor value) {
+        checkUsage(value);
         return true;
     }
 }
