@@ -39,7 +39,7 @@ class NumberTextTest {
 
     @Test
     @DisplayName("have a correct equality relationship")
-    void testEquals(){
+    void testEquals() {
         EqualsTester equalsTester = new EqualsTester();
         equalsTester.addEqualityGroup(new NumberText("0.0"), new NumberText("0.0"))
                     .addEqualityGroup(new NumberText("0.1"), new NumberText("0.10"))
@@ -111,12 +111,18 @@ class NumberTextTest {
     @ParameterizedTest
     @MethodSource("malformedNumbers")
     void throwOnMalformedNumbers(String malformed) {
-        assertThrows(Exception.class, () -> new NumberText(malformed));
+        assertThrows(NumberFormatException.class, () -> new NumberText(malformed));
+    }
+
+    @DisplayName("throw on a number with too many decimal separators")
+    @Test
+    void throwOnTooManySeparators() {
+        assertThrows(IllegalStateException.class, () -> new NumberText("1.0.0"));
     }
 
     private static Stream<Arguments> malformedNumbers() {
         return Stream.of(
-                Arguments.of("1.0.0"),
+                Arguments.of("1,0,0"),
                 Arguments.of("1,0"),
                 // Even though those are technically expressions that evaluate to a number,
                 // they are not allowed.
