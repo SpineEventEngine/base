@@ -99,6 +99,5 @@ enum RangeType {
     interface RangeFunction extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>> {
 
     }
-
 }
 
