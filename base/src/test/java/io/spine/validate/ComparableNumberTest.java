@@ -40,5 +40,4 @@ class ComparableNumberTest {
                                             new NumberText(Double.MIN_VALUE).toNumber())
                           .testEquals();
     }
-
 }

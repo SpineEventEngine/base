@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("String described number should")
-public class NumberTextTest {
+class NumberTextTest {
 
     @Test
     @DisplayName("recognize that two numbers have different types")

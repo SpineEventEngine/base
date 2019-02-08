@@ -52,7 +52,8 @@ class RangeConstraintTest {
                 Arguments.of("(3 5..5"),
                 Arguments.of("[3..5 5]"),
                 Arguments.of("[3..5,5]"),
-                Arguments.of("[3;5]")
+                Arguments.of("[3;5]"),
+                Arguments.of("[3.5..5)")
         );
     }
 }
