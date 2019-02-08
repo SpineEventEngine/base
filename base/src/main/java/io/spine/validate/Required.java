@@ -83,7 +83,6 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkUsage(value);
         return this.hasOption.test(value);
     }
 
