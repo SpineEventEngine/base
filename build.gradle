@@ -52,6 +52,8 @@ ext {
         'reflections-plugin',
         'model-compiler',
 
+        'mute-logging',
+
         'plugin-testlib',
 
         // Protoc compiler plugin

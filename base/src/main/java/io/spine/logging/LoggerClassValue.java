@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
 import org.slf4j.helpers.SubstituteLoggerFactory;
 
+import static org.slf4j.helpers.NOPLogger.NOP_LOGGER;
+
 /**
  * Obtains {@link Logger} instance for a passed class and associates the value with the class.
  *
@@ -46,6 +48,7 @@ class LoggerClassValue extends ClassValue<Logger> {
      * {@link org.slf4j.Logger} obtained from {@link org.slf4j.LoggerFactory} without substitution.
      */
     private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
+    private boolean muted;
 
     private LoggerClassValue() {
         super();
@@ -53,15 +56,31 @@ class LoggerClassValue extends ClassValue<Logger> {
                                        .isTests()
                             ? new SubstituteLoggerFactory()
                             : null;
+        this.muted = false;
     }
 
     static Logger getFor(Class<?> cls) {
         return INSTANCE.get(cls);
     }
 
+    static void muteAll() {
+        INSTANCE.setMuted(true);
+    }
+
+    static void unmuteAll() {
+        INSTANCE.setMuted(false);
+    }
+
     @Override
     protected Logger computeValue(Class<?> type) {
-        Logger result = computeLogger(type);
+        Logger result = muted
+                        ? noopLogger(type)
+                        : computeLogger(type);
+        return result;
+    }
+
+    private Logger noopLogger(Class<?> cls) {
+        Logger result = maybeCreateSubstituteLogger(cls, NOP_LOGGER);
         return result;
     }
 
@@ -75,11 +94,20 @@ class LoggerClassValue extends ClassValue<Logger> {
      */
     private Logger computeLogger(Class<?> cls) {
         Logger logger = LoggerFactory.getLogger(cls);
+        Logger result = maybeCreateSubstituteLogger(cls, logger);
+        return result;
+    }
+
+    private Logger maybeCreateSubstituteLogger(Class<?> cls, Logger logger) {
         if (substFactory != null) {
             SubstituteLogger substLogger = (SubstituteLogger) substFactory.getLogger(cls.getName());
             substLogger.setDelegate(logger);
             return substLogger;
         }
         return logger;
+    }
+
+    private void setMuted(boolean muted) {
+        this.muted = muted;
     }
 }

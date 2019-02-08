@@ -103,6 +103,14 @@ public interface Logging {
         log.setDelegate(new EventRecodingLogger(log, queue));
     }
 
+    static void mute() {
+        LoggerClassValue.muteAll();
+    }
+
+    static void unmute() {
+        LoggerClassValue.unmuteAll();
+    }
+
     /*
      * TRACE Level
      ****************/
