@@ -35,9 +35,14 @@ final class InPackage extends AbstractTypeRef {
     private static final long serialVersionUID = 0L;
 
     /**
+     * Specifies all types within a package.
+     */
+    static final String WILDCARD = "*";
+
+    /**
      * A suffix for referencing all types in a proto package.
      */
-    private static final String WILDCARD = ".*";
+    private static final String WILDCARD_SUFFIX = '.' + WILDCARD;
 
     /**
      * The name of the referenced proto package.
@@ -57,7 +62,7 @@ final class InPackage extends AbstractTypeRef {
      */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.endsWith(WILDCARD) && !WILDCARD.equals(value)) {
+        if (value.endsWith(WILDCARD_SUFFIX) && !WILDCARD_SUFFIX.equals(value)) {
             return Optional.of(new InPackage(value));
         }
         return Optional.empty();
@@ -65,7 +70,7 @@ final class InPackage extends AbstractTypeRef {
 
     private InPackage(String value) {
         super(value);
-        int suffixIndex = value.lastIndexOf(WILDCARD);
+        int suffixIndex = value.lastIndexOf(WILDCARD_SUFFIX);
         String packageName = value.substring(0, suffixIndex);
         this.packageName = PackageName.of(packageName);
     }

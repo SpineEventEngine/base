@@ -30,6 +30,7 @@ import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.MessageWithMapBoolField;
 import io.spine.test.validate.MessageWithMapByteStringField;
 import io.spine.test.validate.MessageWithMapDoubleField;

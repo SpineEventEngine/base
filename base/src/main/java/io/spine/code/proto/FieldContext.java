@@ -18,24 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.annotation.Internal;
 import io.spine.base.FieldPath;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.Collections.singleton;
 
 /**
  * Provides information about a proto field in the nesting hierarchy.
  */
-@Internal
+@Immutable
 public final class FieldContext {
 
     /**
@@ -58,16 +55,16 @@ public final class FieldContext {
      * <p>The value of this field for the {@code value} field of the {@code UserId} is
      * {@code [FieldDescriptor_for_id, FieldDescriptor_for_value]}.
      */
-    private final List<FieldDescriptor> descriptors;
+    private final ImmutableList<FieldDescriptor> descriptors;
 
     /**
      * Provides field names in the nesting hierarchy.
      */
     private final FieldPath fieldPath;
 
-    private FieldContext(Iterable<FieldDescriptor> descriptors) {
-        this.descriptors = newLinkedList(descriptors);
-        this.fieldPath = fieldPathOf(descriptors);
+    private FieldContext(ImmutableList<FieldDescriptor> descriptors) {
+        this.descriptors = descriptors;
+        this.fieldPath = toPath(descriptors);
     }
 
     /**
@@ -77,7 +74,7 @@ public final class FieldContext {
      * @return the field context
      */
     public static FieldContext create(FieldDescriptor field) {
-        return new FieldContext(singleton(field));
+        return new FieldContext(ImmutableList.of(field));
     }
 
     /**
@@ -85,8 +82,8 @@ public final class FieldContext {
      *
      * @return the descriptor context
      */
-    static FieldContext empty() {
-        return new FieldContext(Collections.emptyList());
+    public static FieldContext empty() {
+        return new FieldContext(ImmutableList.of());
     }
 
     /**
@@ -96,9 +93,12 @@ public final class FieldContext {
      * @return the child descriptor context
      */
     public FieldContext forChild(FieldDescriptor child) {
-        List<FieldDescriptor> newDescriptors = newLinkedList(descriptors);
-        newDescriptors.add(child);
-        return new FieldContext(newDescriptors);
+        return new FieldContext(
+                ImmutableList.<FieldDescriptor>builder()
+                        .addAll(descriptors)
+                        .add(child)
+                        .build()
+        );
     }
 
     /**
@@ -106,13 +106,13 @@ public final class FieldContext {
      *
      * @return the target descriptor
      */
-    public FieldDescriptor getTarget() {
+    public FieldDescriptor target() {
         checkState(!descriptors.isEmpty(), "Empty context cannot have a target.");
         int targetIndex = descriptors.size() - 1;
         return descriptors.get(targetIndex);
     }
 
-    private Optional<FieldDescriptor> getTargetParent() {
+    private Optional<FieldDescriptor> targetParent() {
         int targetParentIndex = descriptors.size() - 2;
         boolean parentExists = targetParentIndex > -1;
         return parentExists
@@ -125,7 +125,7 @@ public final class FieldContext {
      *
      * @return the field path
      */
-    FieldPath getFieldPath() {
+    public FieldPath fieldPath() {
         return fieldPath;
     }
 
@@ -137,21 +137,30 @@ public final class FieldContext {
      * @return {@code true} if this context has the same target and the same parent
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
-        String thisTargetName = getTarget().getFullName();
-        String otherTargetName = other.getTarget()
+        String thisTargetName = target().getFullName();
+        String otherTargetName = other.target()
                                       .getFullName();
         boolean sameTarget = thisTargetName.equals(otherTargetName);
         if (!sameTarget) {
             return false;
         }
-        Optional<String> parentFromThis = getTargetParent()
+        Optional<String> parentFromThis = targetParent()
                 .map(FieldDescriptor::getFullName);
         Optional<String> parentFromOther = other
-                .getTargetParent()
+                .targetParent()
                 .map(FieldDescriptor::getFullName);
         boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
         return bothHaveParents && parentFromThis.get()
                                                 .equals(parentFromOther.get());
+    }
+
+    private static FieldPath toPath(Iterable<FieldDescriptor> descriptors) {
+        FieldPath.Builder builder = FieldPath.newBuilder();
+        for (FieldDescriptor descriptor : descriptors) {
+            String fieldName = descriptor.getName();
+            builder = builder.addFieldName(fieldName);
+        }
+        return builder.build();
     }
 
     @Override
@@ -171,14 +180,5 @@ public final class FieldContext {
     @Override
     public int hashCode() {
         return descriptors.hashCode();
-    }
-
-    private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
-        FieldPath.Builder builder = FieldPath.newBuilder();
-        for (FieldDescriptor descriptor : descriptors) {
-            String fieldName = descriptor.getName();
-            builder = builder.addFieldName(fieldName);
-        }
-        return builder.build();
     }
 }

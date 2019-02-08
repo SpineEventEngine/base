@@ -52,7 +52,7 @@ final class PatternConstraint extends FieldValueConstraint<String, PatternOption
     private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
         String msg = getErrorMsgFormat(optionValue(), optionValue().getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
-                                        .getFieldPath();
+                                        .fieldPath();
         String regex = optionValue().getRegex();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
