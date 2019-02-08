@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,8 +34,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("String described number should")
+@DisplayName("NumberText numbers should")
 class NumberTextTest {
+
+    @Test
+    @DisplayName("have a correct equality relationship")
+    void testEquals(){
+        EqualsTester equalsTester = new EqualsTester();
+        equalsTester.addEqualityGroup(new NumberText("0.0"), new NumberText("0.0"))
+                    .addEqualityGroup(new NumberText("0.1"), new NumberText("0.10"))
+                    .testEquals();
+    }
 
     @Test
     @DisplayName("recognize that two numbers have different types")

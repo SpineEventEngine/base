@@ -142,7 +142,6 @@ final class NumberText {
             return false;
         }
         NumberText text = (NumberText) o;
-        return Objects.equal(this.text, text.text) &&
-                Objects.equal(this.value, text.value);
+        return Objects.equal(this.value, text.value);
     }
 }
