@@ -207,4 +207,15 @@ class AbstractValidatingBuilderTest {
         Method method = AbstractValidatingBuilder.class.getMethod("internalBuild");
         assertThat(Modifier.isPublic(method.getModifiers())).isTrue();
     }
+
+    @Test
+    @DisplayName("Verify if became 'dirty' on modification")
+    void dirty() {
+        StringValueVBuilder builder = StringValueVBuilder.newBuilder();
+        assertThat(builder.isDirty())
+                .isFalse();
+        assertThat(builder.setValue("get dirty")
+                          .isDirty())
+                .isTrue();
+    }
 }

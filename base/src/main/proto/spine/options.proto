@@ -173,7 +173,30 @@ extend google.protobuf.FieldOptions {
     //
     bool distinct = 73825;
 
-    // Reserved 73826 to 73849 for future validation options.
+    // The option to indicate that a numeric field is required to have a value which belongs
+    // to the specified bounded range. For unbounded ranges, please use `(min)` and `(max) options.
+    //
+    // The range can be open (not including the endpoint) or closed (including the endpoint) on
+    // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
+    // indicated using a square bracket (`[`, `]`).
+    //
+    // Example 4: Defining ranges of numeric values.
+    //
+    //     message NumRanges {
+    //         int32 hour = 1 [(range) = "[0..24)"];
+    //         uint32 minute = 2 [(range) = "[0..59]";
+    //         float degree = 3 [(range) = "[0.0..360.0)";
+    //         double angle = 4 [(range) = "(0.0..180.0)";
+    //     }
+    //
+    // NOTE: That definition of ranges must be consistent with the type they constrain.
+    //       An range for an integer field must be defined with integer endpoints.
+    //       A range for a floating point field must be defined with decimal separator (`.`),
+    //       even if the endpoint value does not have a fractional part.
+    //
+    string range = 73826;
+
+    // Reserved 73827 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
@@ -222,7 +245,7 @@ extend google.protobuf.FieldOptions {
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
     //
-    // Example 4: Referencing enrichment source fields via `(by)` field option.
+    // Example 5: Referencing enrichment source fields via `(by)` field option.
     //
     //     message MyEvent {
     //         spine.base.UserId user_id = 1;
@@ -237,7 +260,7 @@ extend google.protobuf.FieldOptions {
     // The value of the `(by)` option may contain more than one field reference,
     // separated with the pipe character.
     //
-    // Example 5: Referencing multiple enrichment source fields.
+    // Example 6: Referencing multiple enrichment source fields.
     //
     //     message FirstEvent {
     //         spine.base.UserId user_id = 1;
@@ -257,7 +280,7 @@ extend google.protobuf.FieldOptions {
     // An field of an enrichment can be created taking a field of an event context as its source.
     // A context of an event is referenced via the "context" string.
     //
-    // Example 6: Referencing event context fields.
+    // Example 7: Referencing event context fields.
     //
     //     message SomethingHappened {
     //         string target_id = 1;
@@ -461,7 +484,7 @@ extend google.protobuf.MessageOptions {
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
     // pattern. Infix and prefix wildcards are not supported.
     //
-    // Example 11: Using package reference in the `(enrichment_for)` option.
+    // Example 12: Using package reference in the `(enrichment_for)` option.
     //
     //     message MyEnrichment {
     //         option (enrichment_for) = "example.events.*";
@@ -527,7 +550,7 @@ extend google.protobuf.FileOptions {
 
     // Specifies a characteristic common for all the message types in the given file.
     //
-    // Example 12: Marking all the messages using the `(every_is)` file option.
+    // Example 13: Marking all the messages using the `(every_is)` file option.
     // ```
     //     option (every_is).java_type = "ProjectCommand";
     //
@@ -575,7 +598,7 @@ extend google.protobuf.ServiceOptions {
 // Applies only to the fields marked as `required`.
 // Validation error message is composed according to the rules defined by this option.
 //
-// Example 13: Using the `(if_missing)` option.
+// Example 14: Using the `(if_missing)` option.
 //
 //    message Holder {
 //        MyMessage field = 1 [(required) = true,
@@ -596,7 +619,7 @@ message IfMissingOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example 14: Defining lower boundary for a numeric field.
+// Example 15: Defining lower boundary for a numeric field.
 //
 //     message KelvinTemperature {
 //         double value = 1 [(min).value = "0.0"];
@@ -630,7 +653,7 @@ message MinOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example 15: Defining upper boundary for a numeric field.
+// Example 16: Defining upper boundary for a numeric field.
 //
 //     message Elevation {
 //         double value = 1 [(max).value = "8848.00"];
@@ -666,7 +689,7 @@ message MaxOption {
 // This option is considered as not set if either `integer_max` or `fraction_max` parameter is not
 // set (is zero).
 //
-// Example 16: Using the `(digits) constraint.
+// Example 17: Using the `(digits) constraint.
 //
 //     message Measurement {
 //         double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
@@ -703,7 +726,7 @@ message DigitsOption {
 // Is applicable only to `Timestamp`s.
 // Repeated fields are supported.
 //
-// Example 17: Using `(when)` option.
+// Example 18: Using `(when)` option.
 //
 //     message ScheduleMeeting {
 //         google.protobuf.Timestamp start = 1 [(when).in = FUTURE];
@@ -741,7 +764,7 @@ enum Time {
 // Is applicable only to strings.
 // Repeated fields are supported.
 //
-// Example 18: Using the `(pattern)` option.
+// Example 19: Using the `(pattern)` option.
 //
 //     message CreateAccount {
 //         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
@@ -769,7 +792,7 @@ message PatternOption {
 // Is applicable only to messages.
 // Repeated fields are supported.
 //
-// Example 19: Using the `(if_invalid)` option.
+// Example 20: Using the `(if_invalid)` option.
 //
 //     message Holder {
 //         MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
@@ -790,7 +813,7 @@ message IfInvalidOption {
 // when it is needed to say that an optional field makes sense only when another optional field is
 // present.
 //
-// Example 20: Requiring mutual presence of optional fields.
+// Example 21: Requiring mutual presence of optional fields.
 //
 //    message ScheduledItem {
 //        ...

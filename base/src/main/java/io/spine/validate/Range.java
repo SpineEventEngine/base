@@ -20,23 +20,27 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.Range;
-import io.spine.option.MaxOption;
+import io.spine.option.OptionsProto;
 
 /**
- * A constraint that, when applied, checks whether a numeric field value exceeds a max value.
+ * A validating option that limits a numeric field to be in the specified range.
+ *
+ * @param <V>
+ *         a value that this option is applied to
  */
-final class MaxConstraint<V extends Number & Comparable> extends RangedConstraint<V, MaxOption> {
+final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
 
-    MaxConstraint(MaxOption optionValue) {
-        super(optionValue, maxRange(optionValue));
+    private Range() {
+        super(OptionsProto.range);
     }
 
-    private static Range<ComparableNumber> maxRange(MaxOption option) {
-        boolean inclusive = !option.getExclusive();
-        NumberText maxValue = new NumberText(option.getValue());
-        return inclusive
-               ? Range.atMost(maxValue.toNumber())
-               : Range.lessThan(maxValue.toNumber());
+    /** Creates a new instance of this option. */
+    static <V extends Number & Comparable> Range<V> create() {
+        return new Range<>();
+    }
+
+    @Override
+    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> value) {
+        return new RangeConstraint<>(optionValue(value));
     }
 }

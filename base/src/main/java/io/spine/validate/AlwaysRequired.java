@@ -46,7 +46,7 @@ final class AlwaysRequired<T> extends Required<T> {
      */
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkCorrectUsage(value);
+        checkUsage(value);
         return true;
     }
 }
