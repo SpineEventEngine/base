@@ -83,7 +83,6 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkUsage(value);
         return this.hasOption.test(value);
     }
 
@@ -117,6 +116,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
 
     @Override
     public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
+        checkUsage(fieldValue.descriptor());
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }
