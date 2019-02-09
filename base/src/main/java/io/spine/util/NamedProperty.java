@@ -32,7 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @param <T> the type of the property
  * @param <O> the type of the object from which we get the value
- * @author Alexander Yevsyukov
  */
 public abstract class NamedProperty<T, O> {
 
