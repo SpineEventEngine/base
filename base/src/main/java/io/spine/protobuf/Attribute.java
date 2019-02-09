@@ -39,7 +39,6 @@ import static io.spine.protobuf.TypeConverter.toObject;
  *            implementing {@code Message}
  * @param <M> the type of the message object to which the attribute belongs
  * @param <B> the type of the message builder
- * @author Alexander Yevsyukov
  */
 public abstract class Attribute<T, M extends Message, B extends Message.Builder>
         extends NamedProperty<T, M> {
