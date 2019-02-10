@@ -27,7 +27,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
-import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
 import io.spine.string.StringifierRegistry;
 import org.checkerframework.checker.nullness.qual.Nullable;

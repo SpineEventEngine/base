@@ -20,7 +20,6 @@
 
 package io.spine.js.generate.field.parser;
 
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.js.generate.output.CodeLines;
@@ -64,7 +63,6 @@ public interface FieldParser {
         checkNotNull(jsOutput);
         FieldDeclaration fdecl = new FieldDeclaration(field);
         if (fdecl.isMessage()) {
-            Descriptors.Descriptor message = field.getMessageType();
             return MessageFieldParser.createFor(field, jsOutput);
         }
         if (fdecl.isEnum()) {

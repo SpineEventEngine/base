@@ -37,7 +37,7 @@ public final class MergedDescriptorSet {
     private final FileSet fileSet;
 
     MergedDescriptorSet(FileDescriptorSet descriptorSet) {
-        this.descriptors = ImmutableSet.copyOf(descriptorSet.getFileList());;
+        this.descriptors = ImmutableSet.copyOf(descriptorSet.getFileList());
         this.fileSet = FileSet.ofFiles(descriptors);
     }
 

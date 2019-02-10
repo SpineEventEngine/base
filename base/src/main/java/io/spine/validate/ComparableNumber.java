@@ -36,6 +36,7 @@ final class ComparableNumber extends Number implements Comparable<Number> {
 
     /** Creates a new instance from the specified number. */
     ComparableNumber(Number value) {
+        super();
         this.value = value;
     }
 
