@@ -31,9 +31,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The abstract base for classes obtaining a value of a named property.
  *
  * @param <T> the type of the property
- * @param <O> the type of the object from which we get the value
+ * @param <H> the type of the object from which we get the value
  */
-public abstract class NamedProperty<T, O> {
+public abstract class NamedProperty<T, H> {
 
     private final String name;
 
@@ -46,7 +46,7 @@ public abstract class NamedProperty<T, O> {
     /**
      * Extracts the property value from the passed object.
      */
-    protected abstract Optional<T> getValue(O obj);
+    protected abstract Optional<T> getValue(H obj);
 
     /**
      * Obtains the class of the value.
