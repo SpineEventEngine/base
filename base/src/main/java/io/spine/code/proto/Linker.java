@@ -43,10 +43,8 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
- *
- * @author Alexander Yevsyukov
  */
-class Linker {
+final class Linker {
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 
