@@ -263,6 +263,7 @@ public final class GeneratedInterfaces {
         private final String postfix;
 
         private PostfixPattern(String postfix) {
+            super();
             this.postfix = postfix;
         }
 
