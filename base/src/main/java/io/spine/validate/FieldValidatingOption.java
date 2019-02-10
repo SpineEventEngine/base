@@ -93,7 +93,7 @@ abstract class FieldValidatingOption<T, F>
      *         context of the field
      * @return an {@code Optional} with an option value, if such exists, otherwise an empty
      *         {@code Optional}
-     * @apiNote Use this in favour of {@link this#valueFrom(FieldDescriptor)} when
+     * @apiNote Use this in favour of {@link #valueFrom(FieldDescriptor)} when
      *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
      */
     public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
