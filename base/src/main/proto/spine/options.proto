@@ -296,6 +296,11 @@ extend google.protobuf.FieldOptions {
     // Please see the definition of the `spine.core.EventContext` message for names of the fields
     // that can be used with the `context` reference.
     //
+    // Limitations
+    // -----------
+    // The `(by)` option cannot be used with map fields. If you need a map in an enrichment type,
+    // please wrap it into a message type, providing corresponding field mapping function.
+    //
     string by = 73900;
 }
 
