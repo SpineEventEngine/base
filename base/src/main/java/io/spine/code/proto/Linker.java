@@ -74,9 +74,9 @@ final class Linker {
             throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
         log.debug("Linking complete. {}", linker);
-        FileSet result = linker.getResolved()
-                               .union(linker.getPartiallyResolved())
-                               .union(linker.getUnresolved());
+        FileSet result = linker.resolved()
+                               .union(linker.partiallyResolved())
+                               .union(linker.unresolved());
         return result;
     }
 
@@ -180,22 +180,23 @@ final class Linker {
     }
 
     @VisibleForTesting
-    List<FileDescriptorProto> getRemaining() {
+    List<FileDescriptorProto> remaining() {
         return ImmutableList.copyOf(remaining);
     }
 
-    FileSet getResolved() {
+    FileSet resolved() {
         return resolved;
     }
 
-    FileSet getPartiallyResolved() {
+    FileSet partiallyResolved() {
         return partiallyResolved;
     }
 
-    FileSet getUnresolved() {
+    FileSet unresolved() {
         return unresolved;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // field names
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
