@@ -73,7 +73,6 @@ class EnrichmentContainerTest {
 
         @Override
         public void writeTo(CodedOutputStream output) throws IOException {
-
         }
 
         @Override
@@ -103,8 +102,7 @@ class EnrichmentContainerTest {
         }
 
         @Override
-        public void writeDelimitedTo(OutputStream output) throws IOException {
-
+        public void writeDelimitedTo(OutputStream output) {
         }
 
         @Override
@@ -184,12 +182,17 @@ class EnrichmentContainerTest {
         }
     }
 
+    /**
+     * A stub implementation of {@link EnrichmentContainer} which returns {@link EmStub}
+     * instance when asked.
+     */
     private static class EcStub implements EnrichmentContainer {
 
         private final EnrichmentMessage enrichmentMessage = new EmStub();
         @Override
         public <E extends EnrichmentMessage> Optional<E> find(Class<E> cls) {
             if (cls.equals(EmStub.class)) {
+                @SuppressWarnings("unchecked") // Safe, as checked above.
                 E enr = (E) enrichmentMessage;
                 return Optional.of(enr);
             }
