@@ -109,6 +109,7 @@ subprojects {
     }
 
     apply plugin: 'java-library'
+    apply plugin: 'pmd'
     apply plugin: 'com.google.protobuf'
     apply plugin: 'net.ltgt.errorprone'
 
@@ -215,6 +216,8 @@ subprojects {
     }
 
     clean.dependsOn cleanGenerated
+
+    apply from: deps.scripts.pmd
 }
 
 // IDEA project configuration.

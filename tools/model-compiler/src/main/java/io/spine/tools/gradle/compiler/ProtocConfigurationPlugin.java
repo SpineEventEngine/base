@@ -257,6 +257,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         GRPC("grpc"),
         SPINE("spineProtoc");
 
+        @SuppressWarnings("PMD.SingularField") /* Accessed from the outer class. */
         private final String name;
 
         ProtocPlugin(String name) {
