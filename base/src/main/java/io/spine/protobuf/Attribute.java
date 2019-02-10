@@ -106,7 +106,6 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
     @FunctionalInterface
     public interface MapModifier<B extends Message.Builder> {
 
-        @SuppressWarnings("UnusedReturnValue") // returned builder instance can be ignored
         @CanIgnoreReturnValue
         B putEntry(String key, Any value);
     }
