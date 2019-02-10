@@ -59,7 +59,7 @@ class JsonTest extends UtilityClassTest<Json> {
 
         List<Descriptors.Descriptor> found = Lists.newLinkedList();
         for (TypeUrl typeUrl : KnownTypes.instance()
-                                         .getAllUrls()) {
+                                         .allUrls()) {
             Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.getTypeName());
             if (descriptor != null) {
                 found.add(descriptor);

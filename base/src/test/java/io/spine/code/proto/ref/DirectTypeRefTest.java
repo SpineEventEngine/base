@@ -22,6 +22,7 @@ package io.spine.code.proto.ref;
 
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
@@ -127,6 +128,15 @@ class DirectTypeRefTest {
         Optional<TypeRef> ref = DirectTypeRef.parse(value);
         Truth8.assertThat(ref).isPresent();
         return ref.get();
+    }
+
+    @Test
+    @DisplayName("obtain simple file name from a reference")
+    void simpleName() {
+        Descriptor type = Int32Value.getDescriptor();
+        DirectTypeRef ref = (DirectTypeRef) ref(type.getFullName());
+        assertThat(ref.simpleTypeName())
+                .isEqualTo(type.getName());
     }
 
     @Test

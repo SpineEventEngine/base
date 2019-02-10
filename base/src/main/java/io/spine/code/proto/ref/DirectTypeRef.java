@@ -53,7 +53,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.contains(InPackage.WILDCARD)) {
+        if (value.contains(InPackage.WILDCARD) || value.contains(CompositeTypeRef.SEPARATOR)) {
             return Optional.empty();
         }
         if (value.equals(SELF.value())) {

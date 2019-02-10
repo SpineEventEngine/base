@@ -34,7 +34,6 @@ import io.spine.type.TypeName;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -93,6 +92,9 @@ public final class TypeSet {
         return result;
     }
 
+    /**
+     * Obtains message types declared in the passed file set.
+     */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
         TypeSet result = new TypeSet();
         for (FileDescriptor file : fileSet.files()) {
@@ -102,6 +104,9 @@ public final class TypeSet {
         return result.messageTypes.values();
     }
 
+    /**
+     * Obtains message types declared in the passed file.
+     */
     public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
         TypeSet typeSet = MessageType.allFrom(file);
         return typeSet.messageTypes.values();
@@ -209,7 +214,7 @@ public final class TypeSet {
     /**
      * Obtains all the types contained in this set.
      */
-    public Set<Type<?, ?>> types() {
+    public ImmutableSet<Type<?, ?>> allTypes() {
         ImmutableSet<Type<?, ?>> types = ImmutableSet
                 .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
@@ -217,6 +222,13 @@ public final class TypeSet {
                 .addAll(serviceTypes.values())
                 .build();
         return types;
+    }
+
+    /**
+     * Obtains message types from this set.
+     */
+    public ImmutableSet<MessageType> messageTypes() {
+        return ImmutableSet.copyOf(messageTypes.values());
     }
 
     @Override

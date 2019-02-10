@@ -41,13 +41,25 @@ public class CompositeTypeRef implements TypeRef {
     private static final long serialVersionUID = 0L;
 
     /** Separator for two or more type references. */
-    private static final char SEPARATOR = ',';
+    static final String SEPARATOR = ",";
 
     /** A splitter for type references separated by comma. */
     private static final Splitter splitter = Splitter.on(SEPARATOR);
 
     /** Two or more type references. */
     private final ImmutableList<TypeRef> elements;
+
+    /**
+     * Parses the passed value returning composite type reference, if the passed value
+     * is comma-separated. Otherwise returns empty {@code Optional}.
+     */
+    static Optional<TypeRef> parse(String value) {
+        if (!value.contains(SEPARATOR)) {
+            return Optional.empty();
+        }
+        Optional<TypeRef> result = Optional.of(doParse(value));
+        return result;
+    }
 
     /**
      * Parses a value of a composite type references.
@@ -62,7 +74,7 @@ public class CompositeTypeRef implements TypeRef {
      *         if the passed string contains only one type reference, or one of the strings
      *         from the reference is not a valid type reference
      */
-    static CompositeTypeRef parse(String value) {
+    static CompositeTypeRef doParse(String value) {
         checkContainsComma(value);
         Iterable<String> parts = splitter.split(value);
         ImmutableList.Builder<TypeRef> builder = ImmutableList.builder();
@@ -87,7 +99,7 @@ public class CompositeTypeRef implements TypeRef {
 
     private static void checkContainsComma(String value) {
         checkArgument(
-                value.indexOf(SEPARATOR) > -1,
+                value.contains(SEPARATOR),
                 "The value (`%s`) is not a composite type reference." +
                 " A composite type reference must contain two or more type references" +
                 " separated with commas."
