@@ -20,11 +20,13 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("TypeSet should")
 class TypeSetTest {
@@ -33,18 +35,34 @@ class TypeSetTest {
 
     @Test
     @DisplayName("obtain messages and enums from a file")
-    @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
-    void obtain_messages_and_enums_from_a_file() {
+    void fromFile() {
+        @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
         FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
                                      .get();
         TypeSet typeSet = TypeSet.from(file);
-        assertFalse(typeSet.isEmpty());
+        assertNotEmpty(typeSet);
+        assertThat(typeSet.contains(TypeName.from(Any.getDescriptor())))
+                .isTrue();
     }
 
     @Test
     @DisplayName("obtain message and enums")
-    void obtain_messages_and_enum_from_a_set() {
-        assertFalse(TypeSet.from(fileSet)
-                           .isEmpty());
+    void fromSet() {
+        TypeSet typeSet = TypeSet.from(fileSet);
+        assertNotEmpty(typeSet);
+        // We have a number of test service declarations for testing annotations.
+        assertThat(typeSet.serviceTypes())
+                .isNotEmpty();
+    }
+
+    void assertNotEmpty(TypeSet typeSet) {
+        assertThat(typeSet.isEmpty())
+                .isFalse();
+        assertThat(typeSet.allTypes())
+                .isNotEmpty();
+        assertThat(typeSet.messageTypes())
+                .isNotEmpty();
+        assertThat(typeSet.enumTypes())
+                .isNotEmpty();
     }
 }

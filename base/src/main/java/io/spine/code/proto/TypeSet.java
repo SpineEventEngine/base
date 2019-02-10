@@ -231,6 +231,20 @@ public final class TypeSet {
         return ImmutableSet.copyOf(messageTypes.values());
     }
 
+    /**
+     * Obtains enum types from this set.
+     */
+    public ImmutableSet<EnumType> enumTypes() {
+        return ImmutableSet.copyOf(enumTypes.values());
+    }
+
+    /**
+     * Obtains service types from this set.
+     */
+    public ImmutableSet<ServiceType> serviceTypes() {
+        return ImmutableSet.copyOf(serviceTypes.values());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
