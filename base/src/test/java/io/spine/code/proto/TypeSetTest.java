@@ -20,7 +20,7 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.Any;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ class TypeSetTest {
                                      .get();
         TypeSet typeSet = TypeSet.from(file);
         assertNotEmpty(typeSet);
-        assertThat(typeSet.contains(TypeName.from(Any.getDescriptor())))
+        assertThat(typeSet.contains(TypeName.from(FileDescriptorSet.getDescriptor())))
                 .isTrue();
     }
 

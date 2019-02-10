@@ -38,6 +38,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 
@@ -322,6 +323,14 @@ public final class TypeSet {
         public Builder add(ServiceType type) {
             TypeName name = type.name();
             serviceTypes.put(name, type);
+            return this;
+        }
+
+        @CanIgnoreReturnValue
+        public Builder addAll(Iterable<MessageType> types) {
+            checkNotNull(types);
+            ImmutableMap<TypeName, MessageType> map = uniqueIndex(types, MessageType::name);
+            messageTypes.putAll(map);
             return this;
         }
 
