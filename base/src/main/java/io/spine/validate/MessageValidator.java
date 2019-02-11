@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldContext;
 
 import java.util.List;
 

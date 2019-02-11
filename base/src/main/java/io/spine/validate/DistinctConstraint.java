@@ -55,7 +55,7 @@ final class DistinctConstraint<T> extends FieldValueConstraint<T, Boolean> {
 
     private ConstraintViolation distinctViolated(FieldValue<T> value, T duplicate) {
         FieldPath path = value.context()
-                              .getFieldPath();
+                              .fieldPath();
         return ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Values must be distinct.")

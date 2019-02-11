@@ -283,12 +283,8 @@ public final class PackageGraph implements Graph<PackageInfo> {
                 return true;
             }
 
-            if (exclusions.stream()
-                          .anyMatch(packageName::startsWith)) {
-                return false;
-            }
-
-            return true;
+            return exclusions.stream()
+                             .noneMatch(packageName::startsWith);
         }
     }
 }

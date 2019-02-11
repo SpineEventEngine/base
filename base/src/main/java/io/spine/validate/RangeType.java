@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.Range;
+import com.google.errorprone.annotations.Immutable;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -80,6 +81,7 @@ enum RangeType {
     /**
      * A function that returns a new range between two {@code ComparableNumbers}.
      */
+    @Immutable
     private interface RangeFunction
             extends BiFunction<ComparableNumber, ComparableNumber, Range<ComparableNumber>>,
                     Serializable {

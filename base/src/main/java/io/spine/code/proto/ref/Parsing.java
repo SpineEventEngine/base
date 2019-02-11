@@ -51,7 +51,7 @@ final class Parsing {
      * Provides a type reference <em>if</em> the passed string matches the format
      * requirements of the provider, otherwise returns an empty {@code Optional}.
      *
-     * @see CompositeTypeRef#parsePart(String)
+     * @see CompositeTypeRef#parse(String)
      * @see TypeRef#parse(String)
      */
     @FunctionalInterface

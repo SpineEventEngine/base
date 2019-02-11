@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.validate.FieldContext;
+import io.spine.code.proto.FieldContext;
 
 import java.util.Collection;
 import java.util.Map;

@@ -22,7 +22,6 @@ package io.spine.base;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Internal;
 import com.google.protobuf.Message;
 import io.spine.protobuf.Messages;
 
