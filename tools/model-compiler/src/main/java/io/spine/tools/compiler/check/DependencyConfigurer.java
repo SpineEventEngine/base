@@ -36,8 +36,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 
 /**
  * Class which helps managing dependencies related to the Spine Error Prone Checks module and the

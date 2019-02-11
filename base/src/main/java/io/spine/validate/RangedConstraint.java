@@ -100,7 +100,7 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
     @Override
     ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
         FieldPath path = value.context()
-                              .getFieldPath();
+                              .fieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(errorMsgFormat())

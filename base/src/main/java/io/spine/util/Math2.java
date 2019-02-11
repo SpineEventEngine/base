@@ -26,8 +26,6 @@ import static java.lang.String.format;
 
 /**
  * Math utilities.
- *
- * @author Alexander Yevsyukov
  */
 public final class Math2 {
 

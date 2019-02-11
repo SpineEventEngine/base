@@ -43,6 +43,7 @@ import static com.google.common.collect.Lists.newLinkedList;
  * <p>Instantiated via {@link Builder}, forces the new task to be added to
  * the Gradle build lifecycle.
  */
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") /* Instantiated via Builder. */
 public final class GradleTask {
 
     private final Task task;

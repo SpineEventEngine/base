@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.InvalidMessage;
 import io.spine.test.validate.MessageWithMapMessageField;
 import io.spine.test.validate.MessageWithRepeatedRequiredValidatedMessageField;

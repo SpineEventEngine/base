@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,11 +34,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static io.spine.code.proto.ref.BuiltIn.ALL;
 import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
 import static io.spine.code.proto.ref.BuiltIn.SELF;
-import static io.spine.code.proto.ref.BuiltIn.checkTypeReference;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -50,9 +46,15 @@ public final class FieldRef extends StringTypeValue {
     private static final long serialVersionUID = 0L;
 
     /**
+     * A delimiter between a field name and its qualifier, which refers to another message
+     * like {@code "context"}.
+     */
+    private static final String TYPE_SEPARATOR = ".";
+
+    /**
      * Separates a type name from a field name.
      */
-    private static final Splitter fieldNameSplit = Splitter.on('.');
+    private static final Splitter fieldNameSplit = Splitter.on(TYPE_SEPARATOR);
 
     /**
      * Reference value parts separated by {@link #fieldNameSplit}.
@@ -60,7 +62,7 @@ public final class FieldRef extends StringTypeValue {
     private final ImmutableList<String> parts;
 
     /**
-     * Reference to a proto type.
+     * Reference to a containing type.
      */
     private final TypeRef typeRef;
 
@@ -72,17 +74,17 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
-     * Ensures that the passed value is not null, empty or blank, and if it contains a type
-     * reference, it's not the {@linkplain BuiltIn#checkTypeReference(String)} suffix form}.
+     * Ensures that the passed value is not null, empty or blank.
      */
     private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
+        checkArgument(
+                !value.contains("*"),
+                "Field reference cannot be wildcard. Found: `%s`.",
+                value
+        );
         List<String> parts = split(value);
         checkThat(!parts.isEmpty(), value);
-        if (parts.size() >= 2) {
-            // Contains the type part.
-            checkTypeReference(parts.get(0));
-        }
         parts.forEach(v -> checkThat(!v.trim()
                                        .isEmpty(), value));
         return value;
@@ -110,23 +112,6 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
-     * Tells if the passed value reference all types.
-     */
-    public static boolean isWildcard(String typeReference) {
-        checkTypeReference(typeReference);
-        return ALL.value()
-                  .equals(typeReference);
-    }
-
-    /**
-     * Verifies if the reference is to a field in all types having a field with the referenced name.
-     */
-    public boolean isWildcard() {
-        boolean result = typeRef.equals(ALL);
-        return result;
-    }
-
-    /**
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
@@ -143,47 +128,15 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
-     * Obtains the type name from the reference.
-     *
-     * @throws IllegalStateException if the reference does not have a type component
-     * @see #hasType()
-     */
-    public String fullTypeName() {
-        checkHasType();
-        String value = value();
-        return typeRef(value);
-    }
-
-    /**
      * Obtains type reference part from the field reference string.
-     *
-     * @return the string until the {@linkplain FieldName#TYPE_SEPARATOR field name separator},
-     *         or en empty string, if type reference is not provided
      */
     private static String typeRef(String value) {
-        int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
+        int index = value.lastIndexOf(TYPE_SEPARATOR);
         if (index == -1) {
             return "";
         }
         String result = value.substring(0, index)
                              .trim();
-        return result;
-    }
-
-    private void checkHasType() {
-        checkState(hasType(), "The field reference (`%s`) does not have the type.", value());
-    }
-
-    /**
-     * Obtains a non-qualified name of the type from the reference.
-     *
-     * @throws IllegalStateException if the reference does not have a type component
-     * @see #hasType()
-     */
-    public String simpleTypeName() {
-        checkState(typeRef instanceof DirectTypeRef,
-                   "Unable to obtain a simple type name from the type reference `%s`.", typeRef);
-        String result = ((DirectTypeRef) typeRef).simpleTypeName();
         return result;
     }
 
@@ -208,8 +161,9 @@ public final class FieldRef extends StringTypeValue {
      */
     public boolean matchesType(Descriptor message) {
         checkNotNull(message);
-        boolean result = typeRef.test(message);
-        return result;
+        boolean typeMatches = typeRef.test(message);
+        boolean containsField = message.findFieldByName(fieldName()) != null;
+        return typeMatches && containsField;
     }
 
     /**
@@ -222,16 +176,6 @@ public final class FieldRef extends StringTypeValue {
      */
     public Optional<FieldDescriptor> find(Descriptor message) {
         checkNotNull(message);
-        if (hasType() && !(typeRef instanceof BuiltIn)) {
-            String referencedType = simpleTypeName();
-            String messageType = message.getName();
-            checkArgument(
-                    matchesType(message),
-                    "The referenced type (`%s`) does not match the type of the message (`%s`).",
-                    referencedType,
-                    messageType
-            );
-        }
         @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
         return Optional.ofNullable(result);
     }

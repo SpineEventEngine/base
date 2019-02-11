@@ -18,18 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.base;
 
-import java.io.Serializable;
-import java.util.function.Function;
+import java.util.Optional;
 
 /**
- * A function that computes an output value of type {@code R} from an input value of type
- * {@code T} and is {@link Serializable}.
- *
- * @param <T> input value type
- * @param <R> output value type
+ * Contains one or more {@link EnrichmentMessage}s.
  */
-@FunctionalInterface
-public interface SerializableFunction<T, R> extends Function<T, R>, Serializable {
+public interface EnrichmentContainer {
+
+    /**
+     * Obtains an enrichment by its class.
+     *
+     * @return the instance of the enrichment, or empty {@code Optional} if there is no enrichment
+     *         of such class in the container
+     */
+    <E extends EnrichmentMessage> Optional<E> find(Class<E> cls);
 }

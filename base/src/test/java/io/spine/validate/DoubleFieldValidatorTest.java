@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.RequiredDoubleFieldValue;
 import org.junit.jupiter.api.DisplayName;
 
