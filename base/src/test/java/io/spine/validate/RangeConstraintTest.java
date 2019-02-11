@@ -64,14 +64,8 @@ class RangeConstraintTest {
     @MethodSource("emptyRanges")
     @DisplayName("throw on empty ranges")
     void throwOnEmptyRanges(String emptyRange) {
-        try {
-            RangeConstraint.rangeFromOption(emptyRange);
-        } catch (IllegalArgumentException e) {
-            String message = e.getMessage();
-            String expected =
-                    "Could not construct a range from %s, since the described range is empty";
-            assertEquals(format(expected, emptyRange), message);
-        }
+        assertThrows(IllegalArgumentException.class,
+                     () -> RangeConstraint.rangeFromOption(emptyRange));
     }
 
     private static Stream<Arguments> emptyRanges() {
