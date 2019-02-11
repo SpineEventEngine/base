@@ -213,7 +213,7 @@ public final class ApiOption {
         EXPERIMENTAL(new ApiOption(experimentalAll, experimentalType, null, experimental)),
         INTERNAL(new ApiOption(internalAll, internalType, null, internal));
 
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
             // This private enum should not be serialized.
         private final ApiOption option;
 

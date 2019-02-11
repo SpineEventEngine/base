@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
 
@@ -79,17 +80,15 @@ public final class FieldValue<T> {
      *         the context of the field
      * @return a new instance
      */
-    @SuppressWarnings({
-            "ConstantConditions",
-            "unchecked" // Object to T is always safe, since validating builders only receive `T`s.
-    })
+    // Object to T is always safe, since validating builders only receive `T`s.
+    @SuppressWarnings("unchecked")
     static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
         T value = rawValue instanceof ProtocolMessageEnum
                   ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                   : (T) rawValue;
-        FieldDescriptor fieldDescriptor = context.getTarget();
+        FieldDescriptor fieldDescriptor = context.target();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
         FieldValue<T> result = resolveType(declaration, context, value);
@@ -189,7 +188,7 @@ public final class FieldValue<T> {
     }
 
     FieldDescriptor descriptor() {
-        return context.getTarget();
+        return context.target();
     }
 
     /**
@@ -213,10 +212,6 @@ public final class FieldValue<T> {
      *
      * @return the value as a list
      */
-    @SuppressWarnings({
-            "unchecked", // Specific validator must call with its type.
-            "ChainOfInstanceofChecks" // No other possible way to check the value type.
-    })
     ImmutableList<T> asList() {
         return ImmutableList.copyOf(values);
     }

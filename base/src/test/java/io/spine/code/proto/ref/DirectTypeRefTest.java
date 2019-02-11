@@ -51,6 +51,12 @@ class DirectTypeRefTest {
 
         @Test
         @DisplayName("wildcard reference")
+        void allTypes() {
+            assertEmpty("*");
+        }
+
+        @Test
+        @DisplayName("wildcard package reference")
         void wildcardRef() {
             assertEmpty("*");
             assertEmpty("spine.test.*");

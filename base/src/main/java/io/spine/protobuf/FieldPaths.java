@@ -40,8 +40,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
  * Utilities for working with {@link io.spine.base.FieldPath} instances.
- *
- * @author Dmytro Dashenkov
  */
 public final class FieldPaths {
 

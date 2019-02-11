@@ -37,9 +37,6 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
 
     private static final long serialVersionUID = 0L;
 
-    /** A delimiter between a type name and a field name. */
-    public static final String TYPE_SEPARATOR = ".";
-
     /**
      * The separator is an underscore or a digit.
      *

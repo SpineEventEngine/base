@@ -19,8 +19,10 @@
  */
 syntax = "proto3";
 
+// API Note on Packaging
+// ---------------------
 // We do not define the package for this file to allow shorter options for user-defined types.
-// This would allow to write:
+// This allows to write:
 //
 //     option (internal) = true;
 //
@@ -29,6 +31,8 @@ syntax = "proto3";
 //      option (spine.base.internal) = true;
 //
 
+// Custom Type Prefix Option
+// -------------------------
 // The custom `type_url_prefix` option allows to define specify custom type URL prefix for messages
 // defined in a proto file. This option is declared in this file. Other proto files must import
 // `options.proto` to be able to specify custom type URL prefix.
@@ -45,6 +49,7 @@ syntax = "proto3";
 // import "spine/options.proto";
 //
 // option (type_url_prefix) = "type.example.org";
+//
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
@@ -54,6 +59,8 @@ option java_package = "io.spine.option";
 import "google/protobuf/descriptor.proto";
 
 //
+// Reserved Range of Option Field Numbers
+// --------------------------------------
 // Spine Options use the range of option field numbers from the internal range reserved for
 // individual organizations. For details of custom Protobuf options and this range please see:
 //
@@ -62,13 +69,17 @@ import "google/protobuf/descriptor.proto";
 // The whole range reserved for individual organizations is 50000-99999.
 // The range used by Spine Options is 73812-75000.
 // In order to prevent number collision with custom options used by a project based on Spine,
-// numbers for custom options in this project should be in the range 50000-73811 or 75001-99999.
+// numbers for custom options defined in this project should be in the range 50000-73811 or
+// 75001-99999.
 //
 
 extend google.protobuf.FieldOptions {
 
-    // Validation Options
-    //--------------------
+    // Field Validation Constraints
+    //-----------------------------
+    // For constraints defined via message-based types, please see documentation of corresponding
+    // message types.
+    //
 
     // The option to mark a field as required.
     //
@@ -82,15 +93,18 @@ extend google.protobuf.FieldOptions {
     // layer. Even if a message content violates the requirement set by the option, it would still
     // be a valid message for the Protobuf library.
     //
-    // Example:
+    // Example 1: Using `(required)` field validation constraint.
     //
-    // MyMessage field = 1 [(required) = true];
+    //     message MyOuterMessage {
+    //         MyMessage field = 1 [(required) = true];
+    //     }
     //
     bool required = 73812;
 
+    // See `IfMissingOption`
     IfMissingOption if_missing = 73813;
 
-    // reserved 73814 and 73815 for deleted options `decimal_max` and `decimal_min`.
+    // Reserved 73814 and 73815 for deleted options `decimal_max` and `decimal_min`.
 
     // A higher boundary to the range of values of a number.
     MaxOption max = 73816;
@@ -98,23 +112,34 @@ extend google.protobuf.FieldOptions {
     // A lower boundary to the range of values of a number.
     MinOption min = 73817;
 
+    // See `DigitsOption`.
     DigitsOption digits = 73818;
 
+    // See `TimeOption`.
     TimeOption when = 73819;
 
+    // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // The option to indicate that the fields's internal field should be included into the
-    // validation.
+    // Turns validation constraint checking for a value of a message, a map, or a repeated field.
     //
-    // The target type of the option is a message, a map or a repeated field.
+    // Default value is `false`.
     //
-    // Default value is false.
+    // If set to `true`, the outer message declaring the annotated field would be valid if:
+    //
+    //   1. A message field value satisfies the validation constraints defined in the corresponding
+    //      message type of the field.
+    //
+    //   2. Each value of a map entry satisfies validation constraints.
+    //
+    //   3. Each item of a repeated field satisfies validation constraints.
     //
     bool valid = 73821;
 
+    // See `IfInvalidOption`.
     IfInvalidOption if_invalid = 73822;
 
+    // See `GoesOption`.
     GoesOption goes = 73823;
 
     // Indicates that a field can only be set once.
@@ -122,26 +147,30 @@ extend google.protobuf.FieldOptions {
     // A typical use-case would include a value of an ID, which doesn't change over the course of
     // the life of an entity.
     //
-    // Example:
-    // message User {
+    // Example 2: Using `(set_once)` field validation constraint.
     //
-    //     UserId id = 1 [(set_once) = true];
-    // }
+    //     message User {
+    //         UserId id = 1 [(set_once) = true];
+    //     }
     //
     // Once set, the `id` field cannot be changed.
     //
     bool set_once = 73824;
 
-    // The option to mark a repeated field as a collection of unique elements.
+    // The option to mark a `repeated` field as a collection of unique elements.
     //
+    // Example 3: Using `(distinct)` constraint for a repeated field.
     //
-    // Example:
-    // For a message
-    // message Blizzard {
-    //     repeated Snowflake = 1 [(distinct) = true];
-    // }
+    //    message Blizzard {
     //
-    // Attempting to add a snowflake that is equal to an existing one results in a violation.
+    //        // All snowflakes must be unique in this blizzard.
+    //        //
+    //        // Attempting to add a snowflake that is equal to an existing one would result
+    //        // in constraint violation error.
+    //        //
+    //        repeated Snowflake = 1 [(distinct) = true];
+    //    }
+    //
     bool distinct = 73825;
 
     // The option to indicate that a numeric field is required to have a value which belongs
@@ -151,7 +180,7 @@ extend google.protobuf.FieldOptions {
     // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
     // indicated using a square bracket (`[`, `]`).
     //
-    // Example: Defining ranges of numeric values.
+    // Example 4: Defining ranges of numeric values.
     //
     //     message NumRanges {
     //         int32 hour = 1 [(range) = "[0..24)"];
@@ -167,7 +196,7 @@ extend google.protobuf.FieldOptions {
     //
     string range = 73826;
 
-    // reserved 73827 to 73849 for future validation options.
+    // Reserved 73827 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
@@ -181,7 +210,7 @@ extend google.protobuf.FieldOptions {
     //
     bool internal = 73850;
 
-    // reserved 73851 for the deleted SPI option.
+    // Reserved 73851 for the deleted SPI option.
 
     // Indicates a field that can change at any time, and has no guarantee of API stability and
     // backward-compatibility.
@@ -205,7 +234,7 @@ extend google.protobuf.FieldOptions {
     //
     bool beta = 73853;
 
-    // reserved 73854 to 73899 for future options.
+    // Reserved 73854 to 73899 for future options.
 
     // Reference Option `by` for Enrichments
     // ---------------------------------------
@@ -215,46 +244,65 @@ extend google.protobuf.FieldOptions {
     //
     // The value of the option is the name of the target event message/context field
     // which is used to set the corresponding enrichment's field.
-    // The value of (by) option may contain more than one field reference,
+    //
+    // Example 5: Referencing enrichment source fields via `(by)` field option.
+    //
+    //     message MyEvent {
+    //         spine.base.UserId user_id = 1;
+    //     }
+    //
+    //     message MyEventEnrichment {
+    //        option (enrichment_for) = "MyEvent";
+    //
+    //        string username = 1 [(by) = "user_id"];
+    //     }
+    //
+    // The value of the `(by)` option may contain more than one field reference,
     // separated with the pipe character.
     //
-    // An example:
+    // Example 6: Referencing multiple enrichment source fields.
     //
-    // message MyEvent {
-    //     spine.base.UserId user_id = 1;
-    // }
+    //     message FirstEvent {
+    //         spine.base.UserId user_id = 1;
+    //     }
     //
-    // message MyEventEnrichment {
-    //     option (enrichment_for) = "MyEvent";
+    //     message SecondEvent {
+    //         string id = 1;
+    //         spine.base.UserId admin_id = 1;
+    //     }
     //
-    //     string username = 1 [(by) = "user_id"];
-    // }
+    //     message EnrichmentForSeveralEvents {
+    //         option (enrichment_for) = "FirstEvent,SecondEvent";
     //
-    // Multiple field references example:
+    //         string username = 1 [(by) = "user_id | admin_id"];
+    //     }
     //
-    // message FirstEvent {
-    //     spine.base.UserId user_id = 1;
-    // }
+    // An field of an enrichment can be created taking a field of an event context as its source.
+    // A context of an event is referenced via the "context" string.
     //
-    // message SecondEvent {
-    //     string id = 1;
+    // Example 7: Referencing event context fields.
     //
-    //     spine.base.UserId admin_id = 1;
-    // }
+    //     message SomethingHappened {
+    //         string target_id = 1;
+    //     }
     //
-    // message EnrichmentForSeveralEvents {
-    //     option (enrichment_for) = "FirstEvent,SecondEvent";
+    //     message InfoOnSomething {
+    //         option (enrichment_for) = "SomethingHappened";
     //
-    //     string username = 1 [(by) = "user_id | admin_id"];
-    // }
+    //         string target_name = 1 [(by) = "target_id"];
+    //         string local_date_time = 2 [(by) = "context.timestamp"];
+    //     }
+    //
+    // Please see the definition of the `spine.core.EventContext` message for names of the fields
+    // that can be used with the `context` reference.
     //
     string by = 73900;
 }
 
 extend google.protobuf.MessageOptions {
 
-    // Validation Options
-    //--------------------
+    // Validation Constraints
+    //------------------------
 
     // The default format string for validation error message text.
     //
@@ -263,80 +311,114 @@ extend google.protobuf.MessageOptions {
     //
     string default_message = 73901;
 
-    // The option to require at least one of the fields or a combination of fields.
+    // The constraint to require at least one of the fields or a combination of fields.
     //
-    // Unlike the `required` field option which always require corresponding field,
-    // this message option allows to require alternative fields.
+    // Unlike the `required` field constraint which always require corresponding field,
+    // this message option allows to require alternative fields or a combination of them as
+    // an alternative.
     //
     // Field names are separated using the pipe (`|`) symbol. The combination of fields is defined
     // using the ampersand (`&`) symbol.
     //
-    // For example:
+    // Example 7: Pipe syntax for defining alternative required fields.
     //
-    // message PersonName {
-    //    option (required_field) = "given_name|honorific_prefix & family_name";
+    //     message PersonName {
+    //        option (required_field) = "given_name|honorific_prefix & family_name";
     //
-    //    string honorific_prefix = 1;
-    //    string given_name = 2;
-    //    string middle_name = 3;
-    //    string family_name = 4;
-    //    string honorific_suffix = 5;
-    // }
+    //        string honorific_prefix = 1;
+    //        string given_name = 2;
+    //        string middle_name = 3;
+    //        string family_name = 4;
+    //        string honorific_suffix = 5;
+    //     }
     //
     string required_field = 73902;
 
-    // The option to mark a message as state of an entity.
+    // See `EntityOption`.
     EntityOption entity = 73903;
 
-    // A validation rule for a field declaration.
+    // An external validation constraint for a field.
     //
-    // Allows to define validation options for fields of the field declaration.
-    // If a specified options is already defined in a target message,
-    // then options from the validation rule will be used.
+    // Allows to re-define validation constraints for a message when its usage as a field of
+    // another type requires alternative constraints. This includes definition of constraints for
+    // a message which does not have them defined within the type.
     //
-    // Validation rule limitations:
-    // - applicable only to field declarations of a `Message` type;
-    // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
-    // - a field can be a target of only one validation rule.
+    // A target field of an external constraint should be specified using a fully-qualified
+    // field name (e.g. `mypackage.MessageName.field_name`).
     //
-    // Target of a validation rule should be specified according to the pattern as follows:
-    // `package.MessageName.field_name`.
-    // If the rule has multiple targets, they have to be separated with comma.
+    // Example 8: Defining external validation constraint.
     //
-    // In the following example a `StringChange` message defines a value object,
-    // that is reused in other messages. However, in each of the use-cases we want
-    // to apply different validation rules to the `StringChange` field values.
+    //     package io.spine.example;
     //
-    // package io.spine.example;
+    //     // Defines a change in a string value.
+    //     //
+    //     // Both of the fields of this message are not `required` to be able to describe
+    //     // a change from empty value to non-empty value, or from a non-empty value to
+    //     // an empty string.
+    //     //
+    //     message StringChange {
     //
-    // // Definition of a change in a string field.
-    // message StringChange {
+    //          // The value of the field that's changing.
+    //          string previous_value = 1;
     //
-    //      // The value of the field that's changing.
-    //      string previous_value = 1;
+    //          // The new value of the field.
+    //          string new_value = 2;
+    //     }
     //
-    //      // The new value of the field.
-    //      string new_value = 2;
-    // }
+    //     // A command to change a name of a task.
+    //     //
+    //     // The task has a non-empty name. A new name cannot be empty.
+    //     //
+    //     message RenameTask {
     //
-    // // The validation rule for `StringChange` defined in `UpdateDescription`.
-    // message DescriptionChangeRule {
-    //      option (validation_of) = "io.spine.example.UpdateDescription.change";
+    //          // The ID of the task to rename.
+    //          string task_id = 1;
     //
-    //      // A description should not be empty.
-    //      string new_value = 2 [(required) = true];
-    // }
+    //          // Instruction for changing the name.
+    //          //
+    //          // The value of `change.previous_value` is the current name of the task.
+    //          // It cannot be empty.
+    //          //
+    //          // The value of `change.new_value` is the new name of the task.
+    //          // It cannot be empty either.
+    //          //
+    //          StringChange change = 1 [(valid) = true];
+    //     }
     //
-    // // A message that contains the validation rule target.
-    // message UpdateDescription {
+    //     // External validation constraint for both fields of the `StringChange` message
+    //     // in the scope of the `RenameTask` command.
+    //     //
+    //     message RequireTaskNames {
+    //          option (validation_of) = "spine.example.RenameTask.change";
+    //          string previous_value = 1 [(required) = true];
+    //          string new_value = 2 [(required) = true];
+    //     }
     //
-    //      // The validation rule target.
-    //      StringChange change = 1 [(valid) = true];
-    // }
+    // NOTE: A target field for an external validation constraint must be have the option `(valid)`
+    //       set to `true`. See the definition of the `RenameTask.change` field in the example
+    //       above. If there is no such option defined, or it is set to `false`, the external
+    //       constraint will not be applied.
+    //
+    // External validation constraints can be applied to fields of several types.
+    // To do so, separate fully-qualified references to these fields with with comma.
+    //
+    // Example 9: External validation constraints for multiple fields.
+    //
+    //     // External validation constraint for requiring a new value in renaming commands.
+    //     message RequireNewName {
+    //         option (validation_of) = "spine.example.RenameTask.change,"
+    //                                  "spine.example.RenameProject.change,";
+    //                                  "spine.example.UpdateComment.text_change;
+    //         string new_value = 1 [(required) = true];
+    //     }
+    //
+    // NOTE: An external validation constraint for a field must be defined only once.
+    //       Spine Model Compiler does not check such an “overwriting”.
+    //       See the issue: https://github.com/SpineEventEngine/base/issues/318.
     //
     string validation_of = 73904;
 
-    // reserved 73905 to 73910 for future validation options
+    // Reserved 73905 to 73910 for future validation options.
 
     // API Annotations
     //-----------------
@@ -352,20 +434,19 @@ extend google.protobuf.MessageOptions {
     // backward-compatibility.
     bool experimental_type = 73913;
 
-    // Signifies that a public API is subject to incompatible changes, or even removal, in a future
-    // release.
+    // Signifies that a public API is subject to incompatible changes, or even removal,
+    // in a future release.
     bool beta_type = 73914;
 
     // Specifies a characteristic inherent in the the given message type.
     //
-    // Example:
-    // ```
-    // message CreateProject {
-    //     option (is).java_type = "ProjectCommand";
+    // Example 10: Using `(is)` message option.
     //
-    //     // Remainder omitted.
-    // }
-    // ```
+    //     message CreateProject {
+    //         option (is).java_type = "ProjectCommand";
+    //
+    //         // Remainder omitted.
+    //     }
     //
     // In the example above, `CreateProject` message is a `ProjectCommand`.
     //
@@ -377,7 +458,7 @@ extend google.protobuf.MessageOptions {
     //
     IsOption is = 73915;
 
-    // reserved 73916 to 73921 for future API annotation options.
+    // Reserved 73916 to 73921 for future API annotation options.
 
     // Enrichment Options
     //--------------------
@@ -387,41 +468,41 @@ extend google.protobuf.MessageOptions {
     // qualified according to Protobuf conventions.
     // If the enrichment is for multiple events, their type names should be separated with comma.
     //
-    // For example:
+    // Example 11: Using `(enrichment_for)` message option.
     //
-    // message MyEventEnrichment {
-    //     option (enrichment_for) = "example.events.MyEvent";
-    //     ...
-    // }
+    //     message MyEventEnrichment {
+    //         option (enrichment_for) = "example.events.MyEvent";
+    //         ...
+    //     }
     //
-    // message EventEnrichmentForSeveralEvents {
-    //     option (enrichment_for) = "example.events.FirstEvent,"
-    //                               "example.events.SecondEvent";
-    //     ...
-    // }
+    //     message EventEnrichmentForSeveralEvents {
+    //         option (enrichment_for) = "example.events.FirstEvent,"
+    //                                   "example.events.SecondEvent";
+    //         ...
+    //     }
     //
     // The enrichment can qualify for all messages within a package using suffix wildcard (*)
     // pattern. Infix and prefix wildcards are not supported.
     //
-    // For example:
+    // Example 12: Using package reference in the `(enrichment_for)` option.
     //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*"
-    //     ...
-    // }
+    //     message MyEnrichment {
+    //         option (enrichment_for) = "example.events.*";
+    //         ...
+    //     }
     //
     // It is also possible to mix different declarations as follows:
     //
-    // message MyEnrichment {
-    //     option (enrichment_for) = "example.events.*,"
-    //                               "secondExample.FirstEvent,"
-    //                               "thirdExample.*";
-    //     ...
-    // }
+    //     message MyEnrichment {
+    //         option (enrichment_for) = "example.events.*,"
+    //                                   "secondExample.FirstEvent,"
+    //                                   "thirdExample.*";
+    //         ...
+    //     }
     //
     string enrichment_for = 73922;
 
-    // reserved 73923 to 73939 for future options.
+    // Reserved 73923 to 73939 for future options.
 
     // Command Options
     //-------------------
@@ -469,19 +550,19 @@ extend google.protobuf.FileOptions {
 
     // Specifies a characteristic common for all the message types in the given file.
     //
-    // Example:
+    // Example 13: Marking all the messages using the `(every_is)` file option.
     // ```
-    // option (every_is).java_type = "ProjectCommand";
+    //     option (every_is).java_type = "ProjectCommand";
     //
-    // message CreateProject {
-    //     // ...
-    //
-    //     message WithAssignee {
+    //     message CreateProject {
     //         // ...
-    //     }
-    // }
     //
-    // message DeleteProject { /*...*/ }
+    //         message WithAssignee {
+    //         // ...
+    //         }
+    //     }
+    //
+    //     message DeleteProject { /*...*/ }
     // ```
     //
     // In the example above, `CreateProject`, `CreateProject.WithAssignee`, and `DeleteProject`
@@ -495,7 +576,7 @@ extend google.protobuf.FileOptions {
     //
     IsOption every_is = 73946;
 
-    // reserved 73947 to 73970 for future use.
+    // Reserved 73947 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {
@@ -503,10 +584,10 @@ extend google.protobuf.ServiceOptions {
     // Indicates that the service is a part of Service Provider Interface (SPI).
     bool SPI_service = 73971;
 
-    // reserved 73971 to 73980
+    // Reserved 73971 to 73980.
 }
 
-// reserved 73981 to 74000 for other future Spine Options numbers.
+// Reserved 73981 to 74000 for other future Spine Options numbers.
 
 //
 // Validation Option Types
@@ -517,9 +598,12 @@ extend google.protobuf.ServiceOptions {
 // Applies only to the fields marked as `required`.
 // Validation error message is composed according to the rules defined by this option.
 //
-// Example:
+// Example 14: Using the `(if_missing)` option.
 //
-// MyMessage field = 1 [(required) = true, (if_missing).msg_format = "This field is required."];
+//    message Holder {
+//        MyMessage field = 1 [(required) = true,
+//                             (if_missing).msg_format = "This field is required."];
+//    }
 //
 message IfMissingOption {
 
@@ -535,8 +619,11 @@ message IfMissingOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example:
-//     double value = 1 [(min).value = "10.5"];
+// Example 15: Defining lower boundary for a numeric field.
+//
+//     message KelvinTemperature {
+//         double value = 1 [(min).value = "0.0"];
+//     }
 //
 message MinOption {
 
@@ -566,8 +653,11 @@ message MinOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example:
-//     double value = 1 [(max).value = "10.5"];
+// Example 16: Defining upper boundary for a numeric field.
+//
+//     message Elevation {
+//         double value = 1 [(max).value = "8848.00"];
+//     }
 //
 message MaxOption {
 
@@ -599,8 +689,11 @@ message MaxOption {
 // This option is considered as not set if either `integer_max` or `fraction_max` parameter is not
 // set (is zero).
 //
-// Example:
-//     double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
+// Example 17: Using the `(digits) constraint.
+//
+//     message Measurement {
+//         double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
+//     }
 //
 message DigitsOption {
 
@@ -633,8 +726,11 @@ message DigitsOption {
 // Is applicable only to `Timestamp`s.
 // Repeated fields are supported.
 //
-// Example:
-//     google.protobuf.Timestamp field = 1 [(when).in = FUTURE];
+// Example 18: Using `(when)` option.
+//
+//     message ScheduleMeeting {
+//         google.protobuf.Timestamp start = 1 [(when).in = FUTURE];
+//     }
 //
 message TimeOption {
 
@@ -668,8 +764,11 @@ enum Time {
 // Is applicable only to strings.
 // Repeated fields are supported.
 //
-// Example:
-//     string field = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
+// Example 19: Using the `(pattern)` option.
+//
+//     message CreateAccount {
+//         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
+//     }
 //
 message PatternOption {
 
@@ -693,8 +792,11 @@ message PatternOption {
 // Is applicable only to messages.
 // Repeated fields are supported.
 //
-// Example:
-//     MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
+// Example 20: Using the `(if_invalid)` option.
+//
+//     message Holder {
+//         MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
+//    }
 //
 message IfInvalidOption {
 
@@ -707,17 +809,17 @@ message IfInvalidOption {
 
 // Specifies that a message field can be present only if another field is present.
 //
-// Unlike `required_field` that handles combination of required fields, this option is useful when
-// it is needed to say that an optional field makes sense only when another optional field is
+// Unlike the `required_field` that handles combination of required fields, this option is useful
+// when it is needed to say that an optional field makes sense only when another optional field is
 // present.
 //
-// Example:
+// Example 21: Requiring mutual presence of optional fields.
 //
-// message ScheduledItem {
-//     ...
-//     spine.time.LocalDate date = 4;
-//     spine.time.LocalTime time = 5 [(goes).with = "date"];
-// }
+//    message ScheduledItem {
+//        ...
+//        spine.time.LocalDate date = 4;
+//        spine.time.LocalTime time = 5 [(goes).with = "date"];
+//    }
 //
 message GoesOption {
 
@@ -801,9 +903,10 @@ message IsOption {
     // The generation is disabled by default.
     bool generate = 1;
 
-    // The reference to Java interface.
+    // The reference to a Java interface.
     //
-    // May be an FQN or a simple name. In the latter case, the interface should belong to the same
+    // May be an fully-qualified or a simple name. In the latter case, the interface should belong
+    // to the same
     // Java package as the message class which implements this interface.
     //
     // The framework does not ensure the referenced type exists.
@@ -814,9 +917,9 @@ message IsOption {
     //
     // The `.java` file is placed alongside with the code generated by the proto-to-java compiler.
     //
-    // If specified with an FQN, the package of the generated type matches the FQN.
-    // If specified with a simple name, the package of the interface matches the package of
-    // the message class.
+    // If fully-qualified name given, the package of the generated type matches the fully-qualified
+    // name. When a simple name is set in the option, the package of the interface matches the
+    // package of the message class.
     //
     string java_type = 2;
 }

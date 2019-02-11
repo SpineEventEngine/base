@@ -243,7 +243,7 @@ public final class ModuleAnnotator {
          * @see #setInternalAnnotation
          */
         public Builder setInternalPatterns(ImmutableSet<@Regex String> patterns) {
-            this.internalPatterns = checkNotNull(patterns);;
+            this.internalPatterns = checkNotNull(patterns);
             return this;
         }
 
@@ -255,7 +255,7 @@ public final class ModuleAnnotator {
          * @see #setInternalAnnotation
          */
         public Builder setInternalMethodNames(ImmutableSet<String> methodNames) {
-            this.internalMethodNames = checkNotNull(methodNames);;
+            this.internalMethodNames = checkNotNull(methodNames);
             return this;
         }
 

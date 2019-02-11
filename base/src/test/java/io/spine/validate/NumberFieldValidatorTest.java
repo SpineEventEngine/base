@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.Any;
+import io.spine.code.proto.FieldContext;
 import io.spine.logging.Logging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
