@@ -29,7 +29,6 @@ import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
-import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
@@ -42,7 +41,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
-import static io.spine.option.Options.option;
 import static io.spine.protobuf.Messages.defaultInstance;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
@@ -215,13 +213,13 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
-        T result = (T) getMessageBuilder().build();
+                T result = (T) getMessageBuilder().build();
         return result;
     }
 
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
-        B result = (B) defaultInstance(messageClass).newBuilderForType();
+                B result = (B) defaultInstance(messageClass).newBuilderForType();
         return result;
     }
 
@@ -277,17 +275,18 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     private static boolean isSetOnce(FieldDescriptor field) {
-        Optional<Boolean> setOnceDeclaration = option(field, OptionsProto.setOnce);
+        Optional<Boolean> setOnceDeclaration = new SetOnce().valueFrom(field);
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault = fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        boolean requiredByDefault =
+                fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
         return setOnceValue || requiredByDefault;
     }
 
     private void logError(FieldDescriptor field) {
         String fieldName = field.getFullName();
         _error("Error found in `%s`. " +
-               "Repeated and map fields cannot be marked as `(set_once) = true`.",
+                       "Repeated and map fields cannot be marked as `(set_once) = true`.",
                fieldName);
     }
 
@@ -296,7 +295,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Attempted to change the value of the field `%s` which has " +
-                              "`(set_once) = true` and is already set.")
+                                      "`(set_once) = true` and is already set.")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
@@ -315,7 +314,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private static <T extends Message> Class<T>
     getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
         @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-                Class<T> result = (Class<T>)GenericParameter.MESSAGE.getArgumentIn(builderClass);
+                Class<T> result = (Class<T>) GenericParameter.MESSAGE.getArgumentIn(builderClass);
         return result;
     }
 

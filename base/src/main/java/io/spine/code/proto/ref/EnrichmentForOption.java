@@ -22,26 +22,27 @@ package io.spine.code.proto.ref;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import io.spine.option.OptionsProto;
+import io.spine.validate.MessageOption;
 
 import java.util.Optional;
-
-import static io.spine.option.Options.option;
-import static io.spine.option.OptionsProto.enrichmentFor;
 
 /**
  * Parses {@code (enrichment_for)} option value of an enrichment type definition.
  *
  * <p>The option may have one or more reference to a type separated with commas.
  */
-public final class EnrichmentForOption {
+public final class EnrichmentForOption extends MessageOption<String> {
 
     /** Splits type references separated with commas. */
     private static final Splitter splitter = Splitter.on(',')
                                                      .trimResults();
 
     /** Prevents instantiation of this utility class. */
-    private EnrichmentForOption() {
+    public EnrichmentForOption() {
+        super(OptionsProto.enrichmentFor);
     }
 
     /**
@@ -50,11 +51,18 @@ public final class EnrichmentForOption {
      * @return a list with found values, or an empty list if the message does not
      *         have the option defined
      */
-    public static ImmutableList<String> parse(DescriptorProto message) {
-        Optional<String> value = option(message, enrichmentFor);
+    public ImmutableList<String> parse(DescriptorProto message) {
+        Optional<String> value = valueFrom(message);
         ImmutableList<String> result =
                 value.map(s -> ImmutableList.copyOf(splitter.split(s)))
                      .orElse(ImmutableList.of());
         return result;
+    }
+
+    private Optional<String> valueFrom(DescriptorProto object) {
+        DescriptorProtos.MessageOptions options = object.getOptions();
+        return options.hasExtension(extension())
+               ? Optional.of(options.getExtension(extension()))
+               : Optional.empty();
     }
 }

@@ -64,7 +64,8 @@ final class TypeRefs {
      * @return the list of parsed type references or an empty list if the option is absent or empty
      */
     ImmutableList<String> parse(DescriptorProto descriptor) {
-        List<String> parts = EnrichmentForOption.parse(descriptor);
+
+        List<String> parts = new EnrichmentForOption().parse(descriptor);
         ImmutableList<String> result =
                 parts.stream()
                      .map(this::toQualified)

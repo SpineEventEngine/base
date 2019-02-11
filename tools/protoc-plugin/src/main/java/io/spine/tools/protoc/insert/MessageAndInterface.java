@@ -29,6 +29,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.proto.MessageType;
 import io.spine.option.IsOption;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.validate.EveryIs;
+import io.spine.validate.Is;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
@@ -36,9 +38,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.option.Options.option;
-import static io.spine.option.OptionsProto.everyIs;
-import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
 
 /**
@@ -70,7 +69,7 @@ final class MessageAndInterface {
     private static Optional<IsOption> getEveryIs(MessageType type) {
         Descriptors.FileDescriptor descriptor = type.descriptor()
                                                     .getFile();
-        Optional<IsOption> value = option(descriptor, everyIs);
+        Optional<IsOption> value = new EveryIs().valueFrom(descriptor);
         return value;
     }
 
@@ -86,7 +85,7 @@ final class MessageAndInterface {
     }
 
     private static Optional<IsOption> getIs(MessageType type) {
-        return option(type.descriptor(), is);
+        return new Is().valueFrom(type.descriptor());
     }
 
     private static MessageAndInterface generateFile(MessageType type,

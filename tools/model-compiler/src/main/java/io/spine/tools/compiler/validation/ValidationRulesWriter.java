@@ -25,8 +25,8 @@ import io.spine.code.properties.PropertiesWriter;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
-import io.spine.option.Options;
 import io.spine.type.TypeName;
+import io.spine.validate.ValidationOf;
 import io.spine.validate.rule.ValidationRules;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -37,7 +37,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -90,13 +89,14 @@ public final class ValidationRulesWriter implements Logging {
 
     private static Map<String, String> toMap(List<MessageType> ruleDeclarations) {
         Map<String, String> propsMap = newHashMap();
+        ValidationOf validationOf = new ValidationOf();
         for (MessageType declaration : ruleDeclarations) {
             TypeName typeName = declaration.name();
             String ruleTargets =
-                    Options.option(declaration.descriptor(), validationOf)
-                           .orElseThrow(() -> newIllegalArgumentException(declaration.name()
-                                                                                     .value())
-                           );
+                    validationOf.valueFrom(declaration.descriptor())
+                                .orElseThrow(() -> newIllegalArgumentException(declaration.name()
+                                                                                          .value())
+                                );
             propsMap.put(typeName.value(), ruleTargets);
         }
         return propsMap;
@@ -105,7 +105,7 @@ public final class ValidationRulesWriter implements Logging {
     private void writeToFile(Map<String, String> propsMap) {
         String fileName = ValidationRules.fileName();
         _debug("Writing the validation rules description to {}/{}.",
-                    targetDir, fileName);
+               targetDir, fileName);
         PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
     }
@@ -115,8 +115,8 @@ public final class ValidationRulesWriter implements Logging {
         @Override
         public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            boolean result = Options.option(input, validationOf)
-                                    .isPresent();
+            boolean result = new ValidationOf().valueFrom(input.getDescriptorForType())
+                                               .isPresent();
             _debug("[IsValidationRule] Tested {} with the result of {}.", input.getName(), result);
             return result;
         }
