@@ -75,7 +75,7 @@ public class CompositeTypeRef implements TypeRef {
     }
 
     private static TypeRef parsePart(String part) {
-        Parsing parsing = new Parsing(part, InPackage::parse, DirectTypeRef::parse);
+        ParsingChain parsing = new ParsingChain(part, InPackage::parse, DirectTypeRef::parse);
         TypeRef result =
                 parsing.parse()
                        .orElseThrow(() -> newIllegalArgumentException(

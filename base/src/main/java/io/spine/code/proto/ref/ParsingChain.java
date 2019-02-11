@@ -27,12 +27,12 @@ import java.util.Optional;
 /**
  * Attempts to parse the passed value by sequentially invoking provider functions.
  */
-final class Parsing {
+final class ParsingChain {
 
     private final String value;
     private final ImmutableList<Parser> parsers;
 
-    Parsing(String value, Parser... parser) {
+    ParsingChain(String value, Parser... parser) {
         this.value = value;
         this.parsers = ImmutableList.copyOf(parser);
     }
