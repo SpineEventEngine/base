@@ -52,7 +52,7 @@ public final class DescriptorReference {
     private static final String FILE_NAME = "desc.ref";
 
     @SuppressWarnings("HardcodedLineSeparator")
-        // Resources always come out being split by `\n`, even when the actual platform line
+        // Resources always come out being split by `\n`, even when the actual platform
         // line separator is `\r\n`.
     private static final Splitter LINE_SPLITTER = Splitter.on("\n")
                                                           .omitEmptyStrings()
