@@ -48,6 +48,11 @@ class LoggerClassValue extends ClassValue<Logger> {
      * {@link org.slf4j.Logger} obtained from {@link org.slf4j.LoggerFactory} without substitution.
      */
     private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
+
+    /**
+     * Is {@code true} if this class value should be resolved to a
+     * {@linkplain org.slf4j.helpers.NOPLogger NO-OP logger}.
+     */
     private boolean muted;
 
     private LoggerClassValue() {
@@ -66,7 +71,8 @@ class LoggerClassValue extends ClassValue<Logger> {
     /**
      * Mutes all computed logger instances.
      *
-     * <p>This will cause all class values to be resolved to a {@link org.slf4j.helpers.NOPLogger}.
+     * <p>This will cause all class values to be resolved to a
+     * {@linkplain org.slf4j.helpers.NOPLogger NO-OP logger}.
      */
     static void muteAll() {
         INSTANCE.setMuted(true);
