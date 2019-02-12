@@ -51,7 +51,10 @@ public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
 
-    private static final Splitter LINE_SPLITTER = Splitter.on(lineSeparator())
+    @SuppressWarnings("HardcodedLineSeparator")
+        // Resources always come out being split by `\n`, even when the actual platform line
+        // line separator is `\r\n`.
+    private static final Splitter LINE_SPLITTER = Splitter.on("\n")
                                                           .omitEmptyStrings()
                                                           .trimResults();
     private final String reference;
@@ -113,7 +116,7 @@ public final class DescriptorReference {
         try (InputStream catalogStream = resourceUrl.openStream()) {
             byte[] catalogBytes = toByteArray(catalogStream);
             String catalog = new String(catalogBytes, UTF_8);
-            return catalog;
+            return catalog.split(lineSeparator())[0];
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
