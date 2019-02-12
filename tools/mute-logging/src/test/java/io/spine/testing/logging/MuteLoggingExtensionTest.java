@@ -70,7 +70,7 @@ class MuteLoggingExtensionTest {
     }
 
     @Test
-    @DisplayName("print the program output into std err stream if the test fails")
+    @DisplayName("print the standard output into std err stream if the test fails")
     void printOutputOnException() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();

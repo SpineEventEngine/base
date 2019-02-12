@@ -43,6 +43,7 @@ ext {
         'base',
         'testlib',
         'errorprone-checks',
+        'mute-logging',
 
         // Gradle plugins
         'javadoc-filter',
@@ -51,8 +52,6 @@ ext {
         'plugin-base',
         'reflections-plugin',
         'model-compiler',
-
-        'mute-logging',
 
         'plugin-testlib',
 

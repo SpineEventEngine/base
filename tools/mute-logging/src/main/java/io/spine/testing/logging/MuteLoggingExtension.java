@@ -37,7 +37,6 @@ import java.util.Optional;
  * the {@link MuteLogging} annotation.
  *
  * @see MuteLogging
- * @author Dmytro Dashenkov
  */
 public final class MuteLoggingExtension implements BeforeEachCallback, AfterEachCallback {
 
@@ -52,7 +51,7 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        unMute(context);
+        unmute(context);
     }
 
     private void mute() {
@@ -60,7 +59,7 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
         temporaryOutput.install();
     }
 
-    private void unMute(ExtensionContext context) throws IOException {
+    private void unmute(ExtensionContext context) throws IOException {
         ProgramOutput standardOutput = ProgramOutput.fromSystem();
         standardOutput.install();
         Logging.unmute();

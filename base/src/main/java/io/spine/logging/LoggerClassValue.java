@@ -63,25 +63,20 @@ class LoggerClassValue extends ClassValue<Logger> {
         return INSTANCE.get(cls);
     }
 
+    /**
+     * Mutes all computed logger instances.
+     *
+     * <p>This will cause all class values to be resolved to a {@link org.slf4j.helpers.NOPLogger}.
+     */
     static void muteAll() {
         INSTANCE.setMuted(true);
     }
 
+    /**
+     * Unmutes all computed logger instances.
+     */
     static void unmuteAll() {
         INSTANCE.setMuted(false);
-    }
-
-    @Override
-    protected Logger computeValue(Class<?> type) {
-        Logger result = muted
-                        ? noopLogger(type)
-                        : computeLogger(type);
-        return result;
-    }
-
-    private Logger noopLogger(Class<?> cls) {
-        Logger result = maybeCreateSubstituteLogger(cls, NOP_LOGGER);
-        return result;
     }
 
     /**
@@ -92,13 +87,35 @@ class LoggerClassValue extends ClassValue<Logger> {
      *           which redirects to a {@code Logger} obtained from
      *           {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      */
-    private Logger computeLogger(Class<?> cls) {
-        Logger logger = LoggerFactory.getLogger(cls);
-        Logger result = maybeCreateSubstituteLogger(cls, logger);
+    @Override
+    protected Logger computeValue(Class<?> type) {
+        Logger result = muted
+                        ? noopLogger(type)
+                        : computeLogger(type);
         return result;
     }
 
-    private Logger maybeCreateSubstituteLogger(Class<?> cls, Logger logger) {
+    /**
+     * Obtains a logger implementation for the class.
+     */
+    private Logger computeLogger(Class<?> cls) {
+        Logger logger = LoggerFactory.getLogger(cls);
+        Logger result = maybeConvertToSubstitute(logger, cls);
+        return result;
+    }
+
+    /**
+     * Returns a NO-OP {@linkplain org.slf4j.helpers.NOPLogger implementation} of the logger.
+     *
+     * <p>In case of test environment, this logger's output can still be redirected via
+     * {@link SubstituteLogger#setDelegate(Logger)}.
+     */
+    private Logger noopLogger(Class<?> cls) {
+        Logger result = maybeConvertToSubstitute(NOP_LOGGER, cls);
+        return result;
+    }
+
+    private Logger maybeConvertToSubstitute(Logger logger, Class<?> cls) {
         if (substFactory != null) {
             SubstituteLogger substLogger = (SubstituteLogger) substFactory.getLogger(cls.getName());
             substLogger.setDelegate(logger);

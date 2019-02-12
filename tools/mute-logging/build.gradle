@@ -23,6 +23,5 @@ group 'io.spine.tools'
 dependencies {
     implementation project(':base')
     implementation project(':testlib')
-    implementation project(':plugin-base')
     implementation deps.test.junit5Api
 }

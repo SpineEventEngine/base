@@ -103,10 +103,20 @@ public interface Logging {
         log.setDelegate(new EventRecodingLogger(log, queue));
     }
 
+    /**
+     * Mutes all logging done with this utility.
+     *
+     * <p>To enable the logging back, use {@link #unmute()}.
+     */
     static void mute() {
         LoggerClassValue.muteAll();
     }
 
+    /**
+     * Unmutes the logging done with this utility.
+     *
+     * <p>In case the logging wasn't {@linkplain #mute() muted}, does nothing.
+     */
     static void unmute() {
         LoggerClassValue.unmuteAll();
     }
