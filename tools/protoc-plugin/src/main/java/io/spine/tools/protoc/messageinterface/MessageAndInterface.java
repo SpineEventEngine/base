@@ -46,10 +46,10 @@ import static io.spine.option.OptionsProto.is;
  */
 final class MessageAndInterface {
 
-    private final InsertionPoint messageFile;
+    private final MessageImplements messageFile;
     private final @Nullable CustomMessageInterface interfaceFile;
 
-    private MessageAndInterface(InsertionPoint messageFile,
+    private MessageAndInterface(MessageImplements messageFile,
                                 @Nullable CustomMessageInterface interfaceFile) {
         this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
@@ -92,7 +92,7 @@ final class MessageAndInterface {
                                                     IsOption optionValue) {
         MessageInterfaceSpec interfaceSpec = MessageInterfaceSpec.prepareInterface(optionValue, type);
         CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
-        InsertionPoint message = InsertionPoint.implementInterface(type, messageInterface);
+        MessageImplements message = MessageImplements.implementInterface(type, messageInterface);
         CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
                                                      ? messageInterface
                                                      : null;

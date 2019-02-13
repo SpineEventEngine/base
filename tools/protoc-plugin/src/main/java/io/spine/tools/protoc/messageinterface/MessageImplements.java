@@ -22,54 +22,54 @@ package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.java.SourceFile;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.tools.protoc.AbstractCompilerOutput;
-
-import static java.lang.String.format;
+import io.spine.tools.protoc.InsertionPoint;
+import io.spine.tools.protoc.ProtocPluginFiles;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
  * message class to implement a given interface.
  */
-final class InsertionPoint extends AbstractCompilerOutput {
+final class MessageImplements extends AbstractCompilerOutput {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
 
-    private InsertionPoint(File file) {
+    private MessageImplements(File file) {
         super(file);
     }
 
     /**
-     * Creates a new instance of {@code InsertionPoint}.
+     * Creates a new instance of {@code MessageImplements}.
      *
      * @param type
      *         the type declaration of which should be altered
      * @param messageInterface
      *         the interface to implement
-     * @return new instance of {@code InsertionPoint}
+     * @return new instance of {@code MessageImplements}
      */
-    static InsertionPoint implementInterface(MessageType type, MessageInterface messageInterface) {
-        File.Builder file = prepareFile(type);
-        String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, type.name());
-        String content =
-                messageInterface.name() + initGenericParams(messageInterface, type) + ',';
+    static MessageImplements implementInterface(MessageType type,
+                                                MessageInterface messageInterface) {
+        String insertionPoint = InsertionPoint.MESSAGE_IMPLEMENTS.forType(type);
+        String content = buildContent(type, messageInterface);
+        File.Builder file = ProtocPluginFiles.prepareFile(type);
         File result = file.setInsertionPoint(insertionPoint)
                           .setContent(content)
                           .build();
-        return new InsertionPoint(result);
+        return new MessageImplements(result);
     }
 
-    private static File.Builder prepareFile(Type<?, ?> type) {
-        String fileName = SourceFile.forType(type)
-                                    .toString();
-        // Protoc consumes only `/` path separators.
-        String uriStyleName = fileName.replace('\\', '/');
-        File.Builder srcFile = File.newBuilder()
-                                   .setName(uriStyleName);
-        return srcFile;
+    /**
+     * Creates an {@code implement INTERFACE_NAME,} string.
+     *
+     * <p>It is assumed that any Protobuf message always implements at least its own parent
+     * interface.
+     */
+    private static String buildContent(MessageType type, MessageInterface messageInterface) {
+        String result = messageInterface.name() + initGenericParams(messageInterface, type) + ',';
+        return result;
     }
 
     private static String initGenericParams(MessageInterface messageInterface,

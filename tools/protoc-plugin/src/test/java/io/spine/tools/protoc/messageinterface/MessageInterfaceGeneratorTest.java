@@ -47,7 +47,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.messageinterface.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.messageinterface.MessageImplements.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;

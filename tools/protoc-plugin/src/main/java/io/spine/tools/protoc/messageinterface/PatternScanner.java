@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.spine.base.MessageClassifiers.uuidContainer;
-import static io.spine.tools.protoc.messageinterface.InsertionPoint.implementInterface;
+import static io.spine.tools.protoc.messageinterface.MessageImplements.implementInterface;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
