@@ -17,24 +17,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.protoc.insert;
+package spine.tools.protoc.messageinterface;
 
-/**
- * An interface to be implemented by the Protobuf message.
- *
- * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
- * generated code.
- */
-public interface MessageInterface {
+import "spine/options.proto";
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "UserNameProto";
+option java_package = "io.spine.tools.protoc.messageinterface";
 
-    /**
-     * Obtains the generic params of the interface.
-     */
-    MessageInterfaceParameters parameters();
+message UserName {
+    option (is).java_type = "Name";
+
+    string given_name = 1;
+
+    string family_name = 2;
 }

@@ -19,23 +19,25 @@
  */
 syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package spine.tools.protoc.messageinterface;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "EveryIsTestProto";
-option java_package = "io.spine.tools.protoc.insert";
+option java_multiple_files = false;
+option java_outer_classname = "EveryIsInOneFileProto";
+option java_package = "io.spine.tools.protoc.messageinterface";
 
-option (every_is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
+option (every_is).java_type = "io.spine.tools.protoc.messageinterface.ProtocCustomerEvent";
 
-message ProtocCustomerCreated {
+message ProtocCustomerNotified {
 
     string uid = 1;
+    string email_content = 2;
 }
 
-message ProtocCustomerDeleted {
+message ProtocCustomerEmailReceived {
 
     string uid = 1;
+    string email_content = 2;
 }

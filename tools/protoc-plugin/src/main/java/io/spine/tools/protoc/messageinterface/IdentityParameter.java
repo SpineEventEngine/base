@@ -17,27 +17,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
-import "spine/options.proto";
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.Type;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = false;
-option java_outer_classname = "EveryIsInOneFileProto";
-option java_package = "io.spine.tools.protoc.insert";
+/**
+ * The message interface parameter whose value is the target {@code Message} itself.
+ *
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
+ * parameter will be {@code ProjectId}.
+ */
+@Immutable
+final class IdentityParameter implements MessageInterfaceParameter {
 
-option (every_is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
-
-message ProtocCustomerNotified {
-
-    string uid = 1;
-    string email_content = 2;
-}
-
-message ProtocCustomerEmailReceived {
-
-    string uid = 1;
-    string email_content = 2;
+    @Override
+    public String valueFor(Type<?, ?> type) {
+        return type.simpleJavaClassName().value();
+    }
 }

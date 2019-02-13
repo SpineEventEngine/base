@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -47,7 +47,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.insert.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.messageinterface.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
@@ -60,14 +60,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("MessageInterfaceGenerator should")
 class MessageInterfaceGeneratorTest {
 
-    private static final String PROTO_PACKAGE = "spine.tools.protoc.insert.";
+    private static final String PROTO_PACKAGE = "spine.tools.protoc.messageinterface.";
 
     private static final PackageName PACKAGE_NAME =
             PackageName.of(MessageInterfaceGeneratorTest.class);
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.insert\\.ProtocCustomerEvent\\s*,\\s*$");
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.messageinterface\\.ProtocCustomerEvent\\s*,\\s*$");
     private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.insert\\.ProtocProjectEvent\\s*,\\s*$");
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.messageinterface\\.ProtocProjectEvent\\s*,\\s*$");
 
     private static final Pattern PROJECT_EVENT_INTERFACE_DECL_PATTERN =
             compile("public\\s+interface\\s+ProtocProjectEvent\\s*extends\\s+Message\\s*\\{\\s*}");
@@ -102,7 +102,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs option")
     void generateInsertionPointContentsForEveryIsOption() {
-        String filePath = "spine/tools/protoc/insert/every_is_test.proto";
+        String filePath = "spine/tools/protoc/messageinterface/every_is_test.proto";
 
         FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
                                                          .toProto();
@@ -128,7 +128,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is option")
     void generateInsertionPointContentsForIsOption() {
-        String filePath = "spine/tools/protoc/insert/is_test.proto";
+        String filePath = "spine/tools/protoc/messageinterface/is_test.proto";
 
         FileDescriptorProto descriptor = IsTestProto.getDescriptor()
                                                     .toProto();
@@ -154,7 +154,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs in singe file")
     void generateInsertionPointContentsForEveryIsInSingleFile() {
-        String filePath = "spine/tools/protoc/insert/every_is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/messageinterface/every_is_in_one_file.proto";
 
         FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
                                                               .toProto();
@@ -179,7 +179,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is in single file")
     void generateInsertionPointContentsForIsInSingleFile() {
-        String filePath = "spine/tools/protoc/insert/is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/messageinterface/is_in_one_file.proto";
 
         FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
                                                          .toProto();
@@ -202,7 +202,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate EventMessage insertion points")
     void generateEventMessageInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/test_events.proto";
+        String filePath = "spine/tools/protoc/messageinterface/test_events.proto";
 
         FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
                                                         .toProto();
@@ -218,7 +218,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate CommandMessage insertion points")
     void generateCommandMessageInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/test_commands.proto";
+        String filePath = "spine/tools/protoc/messageinterface/test_commands.proto";
 
         FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
                                                           .toProto();
@@ -234,7 +234,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate RejectionMessage insertion points")
     void generateRejectionMessageInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/test_rejections.proto";
+        String filePath = "spine/tools/protoc/messageinterface/test_rejections.proto";
 
         FileDescriptorProto descriptor = Rejections.getDescriptor()
                                                    .toProto();
@@ -250,7 +250,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate EnrichmentMessage insertion points")
     void generateEnrichmentMessageInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/test_enrichments.proto";
+        String filePath = "spine/tools/protoc/messageinterface/test_enrichments.proto";
 
         FileDescriptorProto descriptor = TestEnrichmentsProto.getDescriptor()
                                                              .toProto();
@@ -266,7 +266,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate UuidValue insertion points")
     void generateUuidValueInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/uuid_values.proto";
+        String filePath = "spine/tools/protoc/messageinterface/uuid_values.proto";
 
         FileDescriptorProto descriptor = UuidValues.getDescriptor()
                                                    .toProto();
@@ -286,7 +286,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("not generate UuidValue insertion points for non-eligible messages")
     void notGenerateUuidValueForNonEligible() {
-        String filePath = "spine/tools/protoc/insert/non_uuid_values.proto";
+        String filePath = "spine/tools/protoc/messageinterface/non_uuid_values.proto";
 
         FileDescriptorProto descriptor = NonUuidValues.getDescriptor()
                                                       .toProto();
@@ -329,7 +329,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate message interfaces for (is) if `generate = true`")
     void generateInterfacesForIs() {
-        String filePath = "spine/tools/protoc/insert/is_generated.proto";
+        String filePath = "spine/tools/protoc/messageinterface/is_generated.proto";
 
         FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
                                                          .toProto();
@@ -363,7 +363,7 @@ class MessageInterfaceGeneratorTest {
     @Test
     @DisplayName("generate message interfaces for (every_is) if `generate = true`")
     void generateInterfacesForEveryIs() {
-        String filePath = "spine/tools/protoc/insert/every_is_generated.proto";
+        String filePath = "spine/tools/protoc/messageinterface/every_is_generated.proto";
 
         FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()
                                                               .toProto();
@@ -403,7 +403,7 @@ class MessageInterfaceGeneratorTest {
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version())
                                     .addFileToGenerate(
-                                            "spine/tools/protoc/insert/user.proto")
+                                            "spine/tools/protoc/messageinterface/user.proto")
                                     .addProtoFile(requestedTypes)
                                     .addProtoFile(includedTypes)
                                     .build();
@@ -412,11 +412,11 @@ class MessageInterfaceGeneratorTest {
                                              .stream()
                                              .map(File::getName)
                                              .collect(toSet());
-        assertTrue(generatedFiles.contains("io/spine/tools/protoc/insert/User.java"));
-        assertTrue(generatedFiles.contains("io/spine/tools/protoc/insert/LawSubject.java"));
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/messageinterface/User.java"));
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/messageinterface/LawSubject.java"));
 
-        assertFalse(generatedFiles.contains("io/spine/tools/protoc/insert/UserName.java"));
-        assertFalse(generatedFiles.contains("io/spine/tools/protoc/insert/Name.java"));
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/messageinterface/UserName.java"));
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/messageinterface/Name.java"));
     }
 
     private CodeGeneratorResponse processCodeGenRequest(String filePath,

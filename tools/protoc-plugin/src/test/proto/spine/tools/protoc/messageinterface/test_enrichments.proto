@@ -1,18 +1,18 @@
 syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package spine.tools.protoc.messageinterface;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.insert";
+option java_package = "io.spine.tools.protoc.messageinterface";
 option java_outer_classname = "TestEnrichmentsProto";
 option java_multiple_files = true;
 
 // This file contains test enrichment types.
 
 message ProjectNameEnrichment {
-    option (enrichment_for) = "spine.tools.protoc.insert.ProjectCreated";
+    option (enrichment_for) = "spine.tools.protoc.messageinterface.ProjectCreated";
 
     string name = 1 [(by) = "id"];
 }
@@ -27,7 +27,7 @@ message SomeMessage {
     string id = 1;
 
     message InnerEnrichmentNotSupported {
-        option (enrichment_for) = "spine.tools.protoc.insert.ProjectCreated";
+        option (enrichment_for) = "spine.tools.protoc.messageinterface.ProjectCreated";
 
         string name = 1 [(by) = "id"];
     }

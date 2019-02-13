@@ -25,7 +25,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.Options;
-import io.spine.tools.protoc.insert.MessageInterfaceGenerator;
+import io.spine.tools.protoc.messageinterface.MessageInterfaceGenerator;
 
 import java.io.IOException;
 import java.util.Base64;

@@ -17,32 +17,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.protoc.insert;
+package spine.tools.protoc.messageinterface;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import "spine/options.proto";
 
-import javax.annotation.Generated;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "EveryIsTestProto";
+option java_package = "io.spine.tools.protoc.messageinterface";
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+option (every_is).java_type = "io.spine.tools.protoc.messageinterface.ProtocCustomerEvent";
 
-@DisplayName("MessageInterfaceSpec should")
-class MessageInterfaceSpecTest {
+message ProtocCustomerCreated {
 
-    @Test
-    @DisplayName("generate interfaces")
-    void generateInterfaces() {
-        String packageName = "io.spine.test";
-        String interfaceName = "CustomerEvent";
-        JavaFile javaFile = new MessageInterfaceSpec(packageName, interfaceName).toJavaCode();
+    string uid = 1;
+}
 
-        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
-        assertEquals(Generated.class.getName(), generated.type.toString());
+message ProtocCustomerDeleted {
 
-        assertEquals(packageName, javaFile.packageName);
-        assertEquals(interfaceName, javaFile.typeSpec.name);
-    }
+    string uid = 1;
 }

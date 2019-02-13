@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.MessageType;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.spine.base.MessageClassifiers.uuidContainer;
-import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
+import static io.spine.tools.protoc.messageinterface.InsertionPoint.implementInterface;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**

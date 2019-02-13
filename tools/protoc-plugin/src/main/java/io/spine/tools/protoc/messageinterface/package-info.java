@@ -17,21 +17,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc.insert;
+/**
+ * This package contains the routines of manipulating the Protoc Insertion Point to alter the
+ * generated Protobuf messages.
+ */
 
-import "spine/options.proto";
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.messageinterface;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "UserNameProto";
-option java_package = "io.spine.tools.protoc.insert";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-message UserName {
-    option (is).java_type = "Name";
-
-    string given_name = 1;
-
-    string family_name = 2;
-}
+import javax.annotation.ParametersAreNonnullByDefault;

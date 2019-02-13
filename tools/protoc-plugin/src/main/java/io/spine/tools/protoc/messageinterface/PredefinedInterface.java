@@ -17,17 +17,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
-import "spine/options.proto";
+import io.spine.code.java.ClassName;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.insert";
-option java_outer_classname = "UuidValues";
-option java_multiple_files = true;
+/**
+ * An interface which already exists.
+ */
+final class PredefinedInterface implements MessageInterface {
 
-message ProjectId {
-    string uuid = 1;
+    private final ClassName name;
+    private final MessageInterfaceParameters parameters;
+
+    PredefinedInterface(ClassName name,
+                        MessageInterfaceParameters parameters) {
+        this.name = name;
+        this.parameters = parameters;
+    }
+
+    @Override
+    public String name() {
+        return name.value();
+    }
+
+    @Override
+    public MessageInterfaceParameters parameters() {
+        return parameters;
+    }
 }

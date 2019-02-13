@@ -19,29 +19,20 @@
  */
 syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package spine.tools.protoc.messageinterface;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "IsGeneratedProto";
-option java_package = "io.spine.tools.protoc.insert";
+option java_outer_classname = "UserProto";
+option java_package = "io.spine.tools.protoc.messageinterface";
 
-message ProtocSurnameUpdated {
-    option (is) = {java_type: "io.spine.tools.protoc.insert.ProtocCustomerEvent" generate: true};
+import "spine/tools/protoc/messageinterface/user_name.proto";
 
-    string uid = 1;
-    Surname new_surname = 2;
-}
+message User {
+    option (is).java_type = "LawSubject";
+    option (is).generate = true;
 
-message ProtocUpdateSurname {
-    option (is) = {java_type: "io.spine.tools.protoc.insert.ProtocCustomerCommand" generate: true};
-
-    string uid = 1;
-    Surname new_surname = 2;
-}
-
-message Surname {
-    string value = 1;
+    UserName name = 1;
 }

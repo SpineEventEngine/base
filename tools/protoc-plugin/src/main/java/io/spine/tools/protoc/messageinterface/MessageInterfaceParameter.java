@@ -17,34 +17,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
-import "spine/options.proto";
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.Type;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = false;
-option java_outer_classname = "IsInOneFileProto";
-option java_package = "io.spine.tools.protoc.insert";
+/**
+ * The generic parameter of the {@link MessageInterface}.
+ *
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
+ */
+@Immutable
+interface MessageInterfaceParameter {
 
-message ProtocAddressUpdated {
-    option (is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
-
-    string uid = 1;
-    string new_address = 2;
-}
-
-message ProtocPlanUpdated {
-    option (is).java_type = "io.spine.tools.protoc.insert.ProtocCustomerEvent";
-
-    string uid = 1;
-    Plan new_plan = 2;
-}
-
-enum Plan {
-    PLAN_UNDEFINED = 0;
-    FREE = 1;
-    TRIAL = 2;
-    FULL = 3;
+    /**
+     * Obtains a parameter value based on who is the message interface descendant.
+     *
+     * @param descendant
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
+     */
+    String valueFor(Type<?, ?> type);
 }

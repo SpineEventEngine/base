@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -32,8 +32,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protoc.insert.MessageAndInterface.scanFileOption;
-import static io.spine.tools.protoc.insert.MessageAndInterface.scanMsgOption;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
@@ -95,11 +93,11 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
         Optional<CompilerOutput> matched = patternScanner.scan(type);
         matched.ifPresent(result::add);
 
-        Collection<CompilerOutput> fromMsgOption = scanMsgOption(type);
+        Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(type);
         result.addAll(fromMsgOption);
 
         if (fromMsgOption.isEmpty()) {
-            Collection<CompilerOutput> fromFileOption = scanFileOption(type);
+            Collection<CompilerOutput> fromFileOption = MessageAndInterface.scanFileOption(type);
             result.addAll(fromFileOption);
         }
         return result.build();

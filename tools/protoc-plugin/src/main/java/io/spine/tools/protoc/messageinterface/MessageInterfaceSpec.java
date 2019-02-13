@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;

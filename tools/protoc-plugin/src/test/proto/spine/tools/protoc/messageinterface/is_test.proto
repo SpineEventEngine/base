@@ -17,16 +17,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-/**
- * This package contains the routines of manipulating the Protoc Insertion Point to alter the
- * generated Protobuf messages.
- */
+package spine.tools.protoc.messageinterface;
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.insert;
+import "spine/options.proto";
 
-import com.google.errorprone.annotations.CheckReturnValue;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "IsTestProto";
+option java_package = "io.spine.tools.protoc.messageinterface";
 
-import javax.annotation.ParametersAreNonnullByDefault;
+message ProtocNameUpdated {
+    option (is).java_type = "io.spine.tools.protoc.messageinterface.ProtocCustomerEvent";
+
+    string uid = 1;
+    Name new_name = 2;
+}
+
+message ProtocUpdateName {
+    option (is).java_type = "io.spine.tools.protoc.messageinterface.ProtocCustomerCommand";
+
+    string uid = 1;
+    Name new_name = 2;
+}
+
+message Name {
+    string value = 1;
+}

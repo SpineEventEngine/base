@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.insert;
+package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -39,7 +39,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.Options.option;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
 
 /**
  * A tuple of two {@link File} instances representing a message and the interface resolved for that
@@ -91,7 +90,7 @@ final class MessageAndInterface {
 
     private static MessageAndInterface generateFile(MessageType type,
                                                     IsOption optionValue) {
-        MessageInterfaceSpec interfaceSpec = prepareInterface(optionValue, type);
+        MessageInterfaceSpec interfaceSpec = MessageInterfaceSpec.prepareInterface(optionValue, type);
         CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
         InsertionPoint message = InsertionPoint.implementInterface(type, messageInterface);
         CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
