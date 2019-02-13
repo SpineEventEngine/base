@@ -21,17 +21,22 @@
 package io.spine.validate;
 
 import com.google.common.collect.BoundType;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
+import static com.google.common.collect.ImmutableSet.builder;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("Range constraint should")
 class RangeConstraintTest {
@@ -60,6 +65,26 @@ class RangeConstraintTest {
         assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
     }
 
+    private static ImmutableSet<Arguments> badRanges() {
+        return argumentsFrom(
+                "{3..5]",
+                "[3..5}",
+                "{3..5}",
+                "(3..5",
+                "3..5)",
+                "((3..5]",
+                "(3..5]]",
+                "(3,5..5)",
+                "(3 5..5",
+                "[3..5 5]",
+                "[3..5,5]",
+                "[3;5]",
+                "[3.5..5)",
+                "[3..5.5)",
+                "[3...5]"
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("emptyRanges")
     @DisplayName("throw on empty ranges")
@@ -68,37 +93,46 @@ class RangeConstraintTest {
                      () -> RangeConstraint.rangeFromOption(emptyRange));
     }
 
-    private static Stream<Arguments> emptyRanges() {
-        return Stream.concat(rangeCombinationsFor(1, 0),
-                             Stream.of(Arguments.of("(0..0)")));
+    private static Set<Arguments> emptyRanges() {
+        int right = 0;
+        int left = right + 1;
+        ImmutableSet<Arguments> leftGreaterThanRight =
+                rangeCombinationsFor(left,
+                                     right,
+                                     ImmutableSet.of('[', '('),
+                                     ImmutableSet.of(']', ')'));
+        Arguments closedWithSameNumber = arguments("(0..0)");
+        return Sets.union(leftGreaterThanRight, ImmutableSet.of(closedWithSameNumber));
     }
 
-    private static Stream<Arguments> badRanges() {
-        return Stream.of(
-                Arguments.of("{3..5]"),
-                Arguments.of("[3..5}"),
-                Arguments.of("{3..5}"),
-                Arguments.of("(3..5"),
-                Arguments.of("3..5)"),
-                Arguments.of("((3..5]"),
-                Arguments.of("(3..5]]"),
-                Arguments.of("(3,5..5)"),
-                Arguments.of("(3 5..5"),
-                Arguments.of("[3..5 5]"),
-                Arguments.of("[3..5,5]"),
-                Arguments.of("[3;5]"),
-                Arguments.of("[3.5..5)"),
-                Arguments.of("[3..5.5)"),
-                Arguments.of("[3...5]")
-        );
+    private static ImmutableSet<Arguments> rangeCombinationsFor(Number left,
+                                                                Number right,
+                                                                ImmutableSet<Character> leftBoundary,
+                                                                ImmutableSet<Character> rightBoundary) {
+        ImmutableSet<String> lefts = leftBoundary
+                .stream()
+                .map(boundary -> String.valueOf(boundary) + left + "..")
+                .collect(toImmutableSet());
+
+        ImmutableSet<String> rights = rightBoundary
+                .stream()
+                .map(boundary -> String.valueOf(right) + boundary)
+                .collect(toImmutableSet());
+
+        ImmutableSet<Arguments> result =
+                Sets.cartesianProduct(lefts, rights)
+                    .stream()
+                    .flatMap(product -> Stream.of(product.get(0) + product.get(1)))
+                    .map(Arguments::of)
+                    .collect(toImmutableSet());
+        return result;
     }
 
-    private static Stream<Arguments> rangeCombinationsFor(Number left, Number right) {
-        return Stream.of(
-                Arguments.of(format("[%s..%s]", left, right)),
-                Arguments.of(format("[%s..%s)", left, right)),
-                Arguments.of(format("(%s..%s]", left, right)),
-                Arguments.of(format("(%s..%s)", left, right))
-        );
+    private static ImmutableSet<Arguments> argumentsFrom(Object... elements) {
+        ImmutableSet.Builder<Arguments> builder = builder();
+        for (Object element : elements) {
+            builder.add(Arguments.of(element));
+        }
+        return builder.build();
     }
 }
