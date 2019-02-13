@@ -21,7 +21,6 @@
 package io.spine.tools.protoc;
 
 import io.spine.code.proto.EnumType;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 
 import static java.lang.String.format;
@@ -42,14 +41,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(message_implements:TYPENAME)}.
      */
-    MESSAGE_IMPLEMENTS("message_implements") {
-        /**
-         * Generates insertion point name for the supplied {@link MessageType message}.
-         */
-        public String forType(MessageType messageType) {
-            return super.forType(messageType);
-        }
-    },
+    MESSAGE_IMPLEMENTS("message_implements"),
 
     /**
      * Member declarations that belong in a message's builder class interface implementations.
@@ -58,14 +50,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(builder_implements:TYPENAME)}.
      */
-    BUILDER_IMPLEMENTS("builder_implements") {
-        /**
-         * Generates insertion point name for the supplied {@link MessageType message}.
-         */
-        public String forType(MessageType messageType) {
-            return super.forType(messageType);
-        }
-    },
+    BUILDER_IMPLEMENTS("builder_implements"),
 
     /**
      * Member declarations that belong in a message interface.
@@ -74,14 +59,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(interface_extends:TYPENAME)}.
      */
-    INTERFACE_EXTENDS("interface_extends") {
-        /**
-         * Generates insertion point name for the supplied {@link MessageType message}.
-         */
-        public String forType(MessageType messageType) {
-            return super.forType(messageType);
-        }
-    },
+    INTERFACE_EXTENDS("interface_extends"),
 
     /**
      * Member declarations that belong in a message class.
@@ -90,14 +68,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(class_scope:TYPENAME)}.
      */
-    CLASS_SCOPE("class_scope") {
-        /**
-         * Generates insertion point name for the supplied {@link MessageType message}.
-         */
-        public String forType(MessageType messageType) {
-            return super.forType(messageType);
-        }
-    },
+    CLASS_SCOPE("class_scope"),
 
     /**
      * Member declarations that belong in a message's builder class.
@@ -106,14 +77,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(builder_scope:TYPENAME)}.
      */
-    BUILDER_SCOPE("builder_scope") {
-        /**
-         * Generates insertion point name for the supplied {@link MessageType message}.
-         */
-        public String forType(MessageType messageType) {
-            return super.forType(messageType);
-        }
-    },
+    BUILDER_SCOPE("builder_scope"),
 
     /**
      * Member declarations that belong in an enum class.
@@ -122,14 +86,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(enum_scope:TYPENAME)}.
      */
-    ENUM_SCOPE("enum_scope:") {
-        /**
-         * Generates insertion point name for the supplied {@link EnumType enum}.
-         */
-        public String forType(EnumType enumType) {
-            return super.forType(enumType);
-        }
-    },
+    ENUM_SCOPE("enum_scope:"),
 
     /**
      * Member declarations that belong in the file's outer class.
@@ -138,7 +95,15 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(outer_class_scope)}.
      */
-    OUTER_CLASS_SCOPE("outer_class_scope");
+    OUTER_CLASS_SCOPE("outer_class_scope") {
+        /**
+         * Generates insertion point name for the supplied {@link EnumType enum}.
+         */
+        @Override
+        public String forType(Type ignored) {
+            return getDefinition();
+        }
+    };
 
     private final String definition;
 
@@ -150,7 +115,7 @@ public enum InsertionPoint {
         return definition;
     }
 
-    private String forType(Type protobufType) {
+    public String forType(Type protobufType) {
         String result = format("%s:%s", definition, protobufType.name());
         return result;
     }
