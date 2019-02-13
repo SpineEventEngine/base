@@ -21,6 +21,9 @@
 package io.spine.testing.logging;
 
 import io.spine.logging.Logging;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -44,6 +47,29 @@ import static org.mockito.Mockito.when;
 @DisplayName("MuteLogging JUnit Extension should")
 class MuteLoggingExtensionTest {
 
+    private static final PrintStream originalOut = System.out;
+    private static final PrintStream originalErr = System.err;
+    private static final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private static final ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+    @BeforeAll
+    static void init() {
+        System.setOut(new PrintStream(out));
+        System.setErr(new PrintStream(err));
+    }
+
+    @AfterAll
+    static void tearDown() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
+    }
+
+    @BeforeEach
+    void setUp() {
+        out.reset();
+        err.reset();
+    }
+
     @Test
     @DisplayName("have public parameter-less constructor")
     void ctor() throws NoSuchMethodException {
@@ -55,12 +81,6 @@ class MuteLoggingExtensionTest {
     @Test
     @DisplayName("hide the standard output")
     void hideStandardOutput() throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-
         MuteLoggingExtension extension = new MuteLoggingExtension();
         extension.beforeEach(successfulContext());
         System.out.println("Output Message");
@@ -74,12 +94,6 @@ class MuteLoggingExtensionTest {
     @Test
     @DisplayName("print the standard output into std err stream if the test fails")
     void printOutputOnException() throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-
         MuteLoggingExtension extension = new MuteLoggingExtension();
         extension.beforeEach(successfulContext());
         String outputMessage = "out";
@@ -100,12 +114,6 @@ class MuteLoggingExtensionTest {
     @Test
     @DisplayName("mute Spine Logging tool")
     void muteSpineLogging() throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-
         MuteLoggingExtension extension = new MuteLoggingExtension();
         extension.beforeEach(successfulContext());
         Logger muted = Logging.get(MuteLoggingExtensionTest.class);
