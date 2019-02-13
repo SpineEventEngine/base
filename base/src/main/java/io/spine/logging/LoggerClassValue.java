@@ -31,8 +31,6 @@ import static org.slf4j.helpers.NOPLogger.NOP_LOGGER;
 
 /**
  * Obtains {@link Logger} instance for a passed class and associates the value with the class.
- *
- * @author Alexander Yevsyukov
  */
 class LoggerClassValue extends ClassValue<Logger> {
 
@@ -50,7 +48,7 @@ class LoggerClassValue extends ClassValue<Logger> {
     private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
 
     /**
-     * Is {@code true} if this class value should be resolved to a
+     * {@code true} if this class value should be resolved to a
      * {@linkplain org.slf4j.helpers.NOPLogger NO-OP logger}.
      */
     private boolean muted;
@@ -106,7 +104,7 @@ class LoggerClassValue extends ClassValue<Logger> {
      */
     private Logger computeLogger(Class<?> cls) {
         Logger logger = LoggerFactory.getLogger(cls);
-        Logger result = maybeConvertToSubstitute(logger, cls);
+        Logger result = substituteIfAvailable(logger, cls);
         return result;
     }
 
@@ -117,11 +115,11 @@ class LoggerClassValue extends ClassValue<Logger> {
      * {@link SubstituteLogger#setDelegate(Logger)}.
      */
     private Logger noopLogger(Class<?> cls) {
-        Logger result = maybeConvertToSubstitute(NOP_LOGGER, cls);
+        Logger result = substituteIfAvailable(NOP_LOGGER, cls);
         return result;
     }
 
-    private Logger maybeConvertToSubstitute(Logger logger, Class<?> cls) {
+    private Logger substituteIfAvailable(Logger logger, Class<?> cls) {
         if (substFactory != null) {
             SubstituteLogger substLogger = (SubstituteLogger) substFactory.getLogger(cls.getName());
             substLogger.setDelegate(logger);
