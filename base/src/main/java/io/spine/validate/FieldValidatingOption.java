@@ -94,7 +94,7 @@ abstract class FieldValidatingOption<T, F>
      * @return an {@code Optional} with an option value, if such exists, otherwise an empty
      *         {@code Optional}
      * @apiNote Use this in favour of {@link FieldOption#valueFrom(FieldDescriptor)} when
-     *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
+     *         {@code FieldContext} matters, e.g. when handling {@code (validation_for)} options.
      */
     public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
         Optional<T> value = getOptionValue(context, extension());

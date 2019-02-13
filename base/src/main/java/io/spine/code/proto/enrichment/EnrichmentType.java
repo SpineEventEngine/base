@@ -21,14 +21,18 @@
 package io.spine.code.proto.enrichment;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.ref.TypeRef;
+import io.spine.type.KnownTypes;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * An enrichment type is a message which is added to a context of another message
@@ -48,21 +52,33 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 public final class EnrichmentType extends MessageType {
 
     private final ImmutableList<TypeRef> sourceTypes;
+    private final ImmutableList<FieldDef> fields;
 
-    private EnrichmentType(Descriptor descriptor) {
-        super(descriptor);
-        this.sourceTypes = sourceTypesOf(descriptor);
+    private EnrichmentType(Descriptor type) {
+        super(type);
+        this.sourceTypes = sourceTypesOf(type);
+        this.fields = fieldDefinitionsOf(type);
     }
 
     /**
-     * Obtains type references from the passed descriptor.
+     * Obtains an enrichment type for the passed name.
      */
-    private static ImmutableList<TypeRef> sourceTypesOf(Descriptor descriptor) {
-        List<String> sourceRefs = EnrichmentForOption.parse(descriptor.toProto());
+    public static EnrichmentType from(MessageType type) {
+        checkNotNull(type);
+        Descriptor descriptor = type.descriptor();
+        EnrichmentType result = new EnrichmentType(descriptor);
+        return result;
+    }
+
+    /**
+     * Obtains type references to the enrichable messages.
+     */
+    private static ImmutableList<TypeRef> sourceTypesOf(Descriptor type) {
+        List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
         checkArgument(
                 !sourceRefs.isEmpty(),
                 "Cannot create an enrichment type for `%s` which does not have the" +
-                        " `(enrichment_for)` option.", descriptor.getFullName()
+                        " `(enrichment_for)` option.", type.getFullName()
         );
         ImmutableList<TypeRef> result =
                 sourceRefs.stream()
@@ -72,12 +88,41 @@ public final class EnrichmentType extends MessageType {
     }
 
     /**
+     * Obtains sources for creating fields.
+     */
+    private static ImmutableList<FieldDef> fieldDefinitionsOf(Descriptor type) {
+        ImmutableList<FieldDef> result =
+                type.getFields()
+                    .stream()
+                    .map(FieldDef::new)
+                    .collect(toImmutableList());
+        return result;
+    }
+
+    /**
      * Verifies if the passed type is the source for this enrichment type.
      */
-    public boolean isSource(Descriptor message) {
-        boolean result = sourceTypes.stream()
-                                    .anyMatch(r -> r.test(message));
-        //TODO:2019-02-13:alexander.yevsyukov: This also should take into account field references.
+    private boolean isSource(Descriptor message) {
+        if (sourceTypes.stream()
+                       .noneMatch(r -> r.test(message))) {
+            return false;
+        }
+        boolean result = fields.stream()
+                               .anyMatch(s -> s.matchesType(message));
+        return result;
+    }
+
+    /**
+     * Obtains all known message types for which this type can serve as an enrichment.
+     */
+    public ImmutableSet<MessageType> knownSources() {
+        ImmutableSet<MessageType> result =
+                KnownTypes.instance()
+                          .asTypeSet()
+                          .messageTypes()
+                          .stream()
+                          .filter(m -> isSource(m.descriptor()))
+                          .collect(toImmutableSet());
         return result;
     }
 }
