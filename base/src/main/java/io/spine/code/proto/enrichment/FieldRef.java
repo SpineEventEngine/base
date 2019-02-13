@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.code.proto.enrichment;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -26,6 +26,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Message;
+import io.spine.base.FieldPath;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.ref.TypeRef;
+import io.spine.protobuf.FieldPaths;
+import io.spine.protobuf.Messages;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -34,8 +40,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
-import static io.spine.code.proto.ref.BuiltIn.SELF;
+import static io.spine.code.proto.enrichment.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.enrichment.BuiltIn.SELF;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -47,17 +53,18 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * A delimiter between a field name and its qualifier, which refers to another message
-     * like {@code "context"}.
+     * like {@code "context"}, or between nested field names like {@code "timestamp.seconds"}.
      */
-    private static final String TYPE_SEPARATOR = ".";
+    private static final String SEPARATOR = ".";
 
     /**
-     * Separates a type name from a field name.
+     * Separates tokens in a field reference.
      */
-    private static final Splitter fieldNameSplit = Splitter.on(TYPE_SEPARATOR);
+    private static final Splitter split = Splitter.on(SEPARATOR)
+                                                  .trimResults();
 
     /**
-     * Reference value parts separated by {@link #fieldNameSplit}.
+     * Reference value parts separated by {@link #split}.
      */
     private final ImmutableList<String> parts;
 
@@ -66,11 +73,22 @@ public final class FieldRef extends StringTypeValue {
      */
     private final TypeRef typeRef;
 
+    /**
+     * {@code true} if the referenced field is nested inside another field(s value.
+     */
+    private final FieldPath path;
+
     @VisibleForTesting
     FieldRef(String value) {
         super(checkValue(value));
-        this.parts = split(value);
-        this.typeRef = TypeRef.parse(typeRef(value));
+        ImmutableList<String> parts = split(value);
+        this.parts = parts;
+        this.typeRef = EVENT_CONTEXT.parse(parts.get(0))
+                                    .orElse(SELF);
+        // If the first element is context reference, skip it from the path.
+        ImmutableList<String> fieldPath =
+                parts.subList((this.typeRef == EVENT_CONTEXT ? 1 : 0), parts.size());
+        this.path = FieldPaths.fromElements(fieldPath);
     }
 
     /**
@@ -95,7 +113,7 @@ public final class FieldRef extends StringTypeValue {
     }
 
     private static ImmutableList<String> split(String value) {
-        List<String> elements = fieldNameSplit.splitToList(value);
+        List<String> elements = split.splitToList(value);
         return ImmutableList.copyOf(elements);
     }
 
@@ -128,19 +146,6 @@ public final class FieldRef extends StringTypeValue {
     }
 
     /**
-     * Obtains type reference part from the field reference string.
-     */
-    private static String typeRef(String value) {
-        int index = value.lastIndexOf(TYPE_SEPARATOR);
-        if (index == -1) {
-            return "";
-        }
-        String result = value.substring(0, index)
-                             .trim();
-        return result;
-    }
-
-    /**
      * Verifies if the reference contains a type name part.
      */
     public boolean hasType() {
@@ -149,6 +154,8 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * Obtains the field name part of the reference.
+     *
+     * <p>If the field reference is nested, the returned value is the name of the innermost field.
      */
     public String fieldName() {
         return parts.get(parts.size() - 1);
@@ -162,8 +169,14 @@ public final class FieldRef extends StringTypeValue {
     public boolean matchesType(Descriptor message) {
         checkNotNull(message);
         boolean typeMatches = typeRef.test(message);
-        boolean containsField = message.findFieldByName(fieldName()) != null;
-        return typeMatches && containsField;
+        if (!typeMatches) {
+            return false;
+        }
+        //TODO:2019-02-13:alexander.yevsyukov: Avoid creating message just for that.
+        Message msg = Messages.defaultInstance(MessageType.of(message)
+                                                          .javaClass());
+        Optional<Object> value = FieldPaths.find(path, msg);
+        return value.isPresent();
     }
 
     /**
@@ -176,7 +189,7 @@ public final class FieldRef extends StringTypeValue {
      */
     public Optional<FieldDescriptor> find(Descriptor message) {
         checkNotNull(message);
-        @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
+        @Nullable FieldDescriptor result = FieldPaths.findField(path, message);
         return Optional.ofNullable(result);
     }
 }

@@ -22,6 +22,7 @@ package io.spine.protobuf;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Empty;
 import io.spine.base.FieldPath;
 import io.spine.base.Time;
@@ -50,7 +51,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
 
     @Override
     protected void configure(NullPointerTester tester) {
-        tester.setDefault(FieldPath.class, FieldPath.getDefaultInstance());
+        tester.setDefault(FieldPath.class, FieldPath.getDefaultInstance())
+              .setDefault(Descriptor.class, Any.getDescriptor());
     }
 
     @Test

@@ -60,7 +60,6 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
         checkNotNull(value);
         ParsingChain parsing = new ParsingChain(
                 value,
-                BuiltIn::parseAll,
                 InPackage::parse,
                 DirectTypeRef::parse,
                 CompositeTypeRef::parse

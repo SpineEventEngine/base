@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,10 +52,9 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.contains(InPackage.WILDCARD) || value.contains(CompositeTypeRef.SEPARATOR)) {
-            return Optional.empty();
-        }
-        if (value.equals(SELF.value())) {
+        if (value.isEmpty()
+                || value.contains(InPackage.WILDCARD)
+                || value.contains(CompositeTypeRef.SEPARATOR)) {
             return Optional.empty();
         }
         TypeRef result = new DirectTypeRef(value);

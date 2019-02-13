@@ -18,25 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+/**
+ * This package provides classes and interfaces related to definition of enrichment messages.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.proto.enrichment;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("ByOption should")
-class ByOptionTest extends UtilityClassTest<ByOption> {
-
-    ByOptionTest() {
-        super(ByOption.class);
-    }
-
-    @Test
-    @DisplayName("remove space characters around field references")
-    void parseRaw() {
-        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
-                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

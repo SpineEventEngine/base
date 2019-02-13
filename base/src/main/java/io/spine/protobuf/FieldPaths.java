@@ -20,6 +20,7 @@
 
 package io.spine.protobuf;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -29,21 +30,27 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utilities for working with {@link io.spine.base.FieldPath} instances.
  */
 public final class FieldPaths {
 
-    private static final Splitter dotSplitter = Splitter.on('.').trimResults();
+    private static final char SEPARATOR = '.';
+    private static final Splitter dotSplitter = Splitter.on(SEPARATOR)
+                                                        .trimResults();
+    private static final Joiner joiner = Joiner.on(SEPARATOR);
 
     /**
      * Prevents the utility class instantiation.
@@ -63,9 +70,18 @@ public final class FieldPaths {
         checkArgument(!stringPath.isEmpty(), "Path must not be empty.");
 
         List<String> pathElements = dotSplitter.splitToList(stringPath);
+        return fromElements(pathElements);
+    }
+
+    /**
+     * Creates a new instance by the passed path elements.
+     */
+    public static FieldPath fromElements(List<String> elements) {
+        checkNotNull(elements);
+        checkArgument(!elements.isEmpty(), "Field path must contain at least one element.");
         FieldPath result = FieldPath
                 .newBuilder()
-                .addAllFieldName(pathElements)
+                .addAllFieldName(elements)
                 .build();
         return result;
     }
@@ -88,19 +104,70 @@ public final class FieldPaths {
         checkNotNull(path);
         checkNotEmpty(path);
 
+        Object fieldValue = find(path, holder, true);
+        return fieldValue;
+    }
+
+    private static @Nullable Object find(FieldPath path, Message holder, boolean strict) {
         Message message = holder;
         Object currentValue = message;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             String fieldName = iterator.next();
-            FieldDescriptor field = getField(message.getDescriptorForType(), fieldName);
+            Descriptor type = message.getDescriptorForType();
+            @Nullable FieldDescriptor field = type.findFieldByName(fieldName);
+            if (field == null) {
+                if (strict) {
+                    throw newIllegalArgumentException(
+                            "Unable to find the field named `%s` in the type `%s`",
+                            fieldName, type.getFullName());
+                }
+                return null;
+            }
             currentValue = message.getField(field);
             if (currentValue instanceof Message) {
                 message = (Message) currentValue;
             } else {
-                checkArgument(!iterator.hasNext(), "%s is not a message.", currentValue);
+                if (iterator.hasNext()) {
+                    /* We're not at the end of iteration, and the inner path item references a
+                       non-message field. We cannot continue going the path and need to exit
+                       the routine. */
+                    if (strict) {
+                        throw newIllegalArgumentException(
+                                "The field referenced by the name `%s` is not a message, and" +
+                                " it is not possible to obtain a nested field named `%s`. " +
+                                " The full field path is: `%s`.",
+                                fieldName,
+                                iterator.next(),
+                                toString(path)
+                        );
+                    }
+                    return null;
+                }
             }
         }
         return currentValue;
+    }
+
+    /**
+     * Obtains a value referenced by the passed path in the passed message.
+     *
+     * @return the value of the referenced field, or empty {@code Optional} if the full path
+     *         cannot be found
+     */
+    public static Optional<Object> find(FieldPath path, Message holder) {
+        checkNotNull(path);
+        checkNotNull(holder);
+        Object result = find(path, holder, false);
+        return Optional.ofNullable(result);
+    }
+
+    /**
+     * Obtains string representation of the passed field path.
+     */
+    public static String toString(FieldPath path) {
+        checkNotNull(path);
+        String result = joiner.join(path.getFieldNameList());
+        return result;
     }
 
     /**
@@ -118,27 +185,35 @@ public final class FieldPaths {
         checkNotEmpty(path);
 
         Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
-        FieldDescriptor field = null;
-        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
-            String fieldName = iterator.next();
-            field = getField(descriptor, fieldName);
-            if (iterator.hasNext()) {
-                checkArgument(field.getType() == MESSAGE,
-                              "Field %s of type %s is not a message field.");
-                descriptor = field.getMessageType();
-            }
-        }
+        FieldDescriptor field = findField(path, descriptor);
         checkNotNull(field);
         Class<?> result = classOf(field);
         return result;
+    }
+
+    public static @Nullable FieldDescriptor findField(FieldPath path, Descriptor descriptor) {
+        checkNotNull(path);
+        checkNotNull(descriptor);
+        Descriptor current = descriptor;
+        FieldDescriptor field = null;
+        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            String fieldName = iterator.next();
+            field = getField(current, fieldName);
+            if (iterator.hasNext()) {
+                checkArgument(field.getType() == MESSAGE,
+                              "Field %s of type %s is not a message field.");
+                current = field.getMessageType();
+            }
+        }
+        return field;
     }
 
     private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
         checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
     }
 
-    private static FieldDescriptor getField(Descriptor container, String name) {
-        FieldDescriptor field = container.findFieldByName(name);
+    private static FieldDescriptor getField(Descriptor message, String name) {
+        FieldDescriptor field = message.findFieldByName(name);
         checkArgument(field != null, "Field `%s` not found.", name);
         return field;
     }
