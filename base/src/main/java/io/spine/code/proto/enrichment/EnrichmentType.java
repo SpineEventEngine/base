@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.PackageName;
+import io.spine.code.proto.ref.DirectTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
 
@@ -80,10 +82,28 @@ public final class EnrichmentType extends MessageType {
                 "Cannot create an enrichment type for `%s` which does not have the" +
                         " `(enrichment_for)` option.", type.getFullName()
         );
+        PackageName thisPackage = PackageName.of(type);
         ImmutableList<TypeRef> result =
                 sourceRefs.stream()
                           .map(TypeRef::parse)
+                          .map(ref -> ensurePackage(thisPackage, ref))
                           .collect(toImmutableList());
+        return result;
+    }
+
+    /**
+     * Makes sure that if a passed type reference is direct reference to a type,
+     * it is a fully-qualified reference, or becomes one as the result of this method.
+     */
+    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
+        if (!(ref instanceof DirectTypeRef)) {
+            return ref;
+        }
+        DirectTypeRef directRef = (DirectTypeRef) ref;
+        if (directRef.hasPackage()) {
+            return ref;
+        }
+        DirectTypeRef result = directRef.withPackage(packageName);
         return result;
     }
 
