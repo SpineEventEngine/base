@@ -32,11 +32,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -48,11 +47,18 @@ import static java.nio.file.StandardOpenOption.APPEND;
  * <p>Multiple reference files may be present at runtime of an application. The files may be merged
  * by appending if a "fat" JAR artifact is required.
  */
+@SuppressWarnings("HardcodedLineSeparator")
+// Line separator that was used during the creation of a descriptor does not depend
+// on the current system line separator, therefore both of them are hardcoded.
 public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
 
-    private static final Splitter LINE_SPLITTER = Splitter.on(System.lineSeparator())
+    private static final Splitter WINDOWS_LINE_SPLITTER = Splitter.on("\r\n")
+                                                                  .omitEmptyStrings()
+                                                                  .trimResults();
+
+    private static final Splitter LINE_SPLITTER = Splitter.on("\n")
                                                           .omitEmptyStrings()
                                                           .trimResults();
     private final String reference;
@@ -104,54 +110,27 @@ public final class DescriptorReference {
     static Iterator<ResourceReference> loadAll() {
         return stream(ResourceFiles.loadAll(FILE_NAME))
                 .map(DescriptorReference::readCatalog)
-                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
+                .flatMap(DescriptorReference::splitNames)
                 .distinct()
                 .map(ResourceReference::new)
                 .iterator();
+    }
+
+    private static Stream<String> splitNames(String input) {
+        return Stream.concat(LINE_SPLITTER.splitToList(input)
+                                          .stream(),
+                             WINDOWS_LINE_SPLITTER.splitToList(input)
+                                                  .stream());
     }
 
     private static String readCatalog(URL resourceUrl) {
         try (InputStream catalogStream = resourceUrl.openStream()) {
             byte[] catalogBytes = toByteArray(catalogStream);
             String catalog = new String(catalogBytes, UTF_8);
-            return longestRepeatedSubstring(catalog);
+            return catalog;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
-    }
-
-    /**
-     * For a given string, returns a longest repeated substring that is also a prefix for this
-     * string,
-     *
-     * <p>E.g. for a {@code "111233333333111"} the output would be {@code "111"}, because even
-     * though {@code "3333"} is the longest repeated substring, it is not a prefix.
-     * If a string {@code s} does not contain a repeated substring that is longer than {@code s},
-     * the {@code s} itself is returned.
-     *
-     * <p>Used to filter catalog names which get duplicated as a result of being included in the
-     * resource URL twice.
-     *
-     * @param input
-     *         an input string
-     * @return the longest common substring that is also a prefix.
-     */
-    private static String longestRepeatedSubstring(String input) {
-        ImmutableList<String> suffixes = suffixes(input);
-        return suffixes.stream()
-                       .filter(s -> !s.equals(input))
-                       .reduce(input, (left, right) ->
-                               left.length() > right.length()
-                               ? left
-                               : right);
-    }
-
-    private static ImmutableList<String> suffixes(String input) {
-        int length = input.length();
-        return IntStream.range(0, length)
-                        .mapToObj(i -> input.substring(i, length))
-                        .filter(input::startsWith)
-                        .collect(toImmutableList());
     }
 
     /**
