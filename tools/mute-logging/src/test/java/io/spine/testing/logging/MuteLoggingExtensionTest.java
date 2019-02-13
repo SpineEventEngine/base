@@ -20,9 +20,11 @@
 
 package io.spine.testing.logging;
 
+import io.spine.logging.Logging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,8 +53,8 @@ class MuteLoggingExtensionTest {
     }
 
     @Test
-    @DisplayName("hide the program output")
-    void hideOutput() throws IOException {
+    @DisplayName("hide the standard output")
+    void hideStandardOutput() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
 
@@ -93,6 +95,25 @@ class MuteLoggingExtensionTest {
               + System.lineSeparator()
               + errorMessage
         );
+    }
+
+    @Test
+    @DisplayName("mute Spine Logging tool")
+    void muteSpineLogging() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        System.setOut(new PrintStream(out));
+        System.setErr(new PrintStream(err));
+
+        MuteLoggingExtension extension = new MuteLoggingExtension();
+        extension.beforeEach(successfulContext());
+        Logger muted = Logging.get(MuteLoggingExtensionTest.class);
+        muted.warn("Muted warning");
+        extension.afterEach(successfulContext());
+
+        assertEquals(0, out.size());
+        assertEquals(0, err.size());
     }
 
     private static ExtensionContext successfulContext() {
