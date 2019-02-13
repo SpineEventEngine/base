@@ -18,14 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf;
+package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Empty;
-import io.spine.base.FieldPath;
-import io.spine.base.Time;
 import io.spine.test.protobuf.AnyHolder;
 import io.spine.test.protobuf.GenericHolder;
 import io.spine.test.protobuf.StringHolder;
@@ -35,10 +33,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.FieldPaths.fieldAt;
+import static io.spine.base.FieldPaths.parse;
+import static io.spine.base.FieldPaths.typeOfFieldAt;
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.protobuf.FieldPaths.fieldAt;
-import static io.spine.protobuf.FieldPaths.parse;
-import static io.spine.protobuf.FieldPaths.typeOfFieldAt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

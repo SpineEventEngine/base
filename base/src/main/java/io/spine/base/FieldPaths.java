@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf;
+package io.spine.base;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.Message;
-import io.spine.base.FieldPath;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -43,7 +43,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Utilities for working with {@link io.spine.base.FieldPath} instances.
+ * Utilities for working with {@link FieldPath} instances.
  */
 public final class FieldPaths {
 
@@ -59,7 +59,7 @@ public final class FieldPaths {
     }
 
     /**
-     * Parses the given field path into a {@link io.spine.base.FieldPath}.
+     * Parses the given field path into a {@link FieldPath}.
      *
      * @param stringPath
      *         non-empty field path
@@ -76,6 +76,7 @@ public final class FieldPaths {
     /**
      * Creates a new instance by the passed path elements.
      */
+    @Internal
     public static FieldPath fromElements(List<String> elements) {
         checkNotNull(elements);
         checkArgument(!elements.isEmpty(), "Field path must contain at least one element.");
@@ -118,7 +119,7 @@ public final class FieldPaths {
             if (field == null) {
                 if (strict) {
                     throw newIllegalArgumentException(
-                            "Unable to find the field named `%s` in the type `%s`",
+                            "Unable to find the field named `%s` in the type `%s`.",
                             fieldName, type.getFullName());
                 }
                 return null;
@@ -186,11 +187,22 @@ public final class FieldPaths {
 
         Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
         FieldDescriptor field = findField(path, descriptor);
-        checkNotNull(field);
+        if (field == null) {
+            throw newIllegalArgumentException(
+                    "Unable to find a field referenced by the path `%s`" +
+                            " in the message of type `%s`.",
+                    toString(path),
+                    TypeName.of(holderType)
+            );
+        }
         Class<?> result = classOf(field);
         return result;
     }
 
+    /**
+     * Obtains the field descriptor referenced by the path.
+     */
+    @Internal
     public static @Nullable FieldDescriptor findField(FieldPath path, Descriptor descriptor) {
         checkNotNull(path);
         checkNotNull(descriptor);
@@ -198,10 +210,13 @@ public final class FieldPaths {
         FieldDescriptor field = null;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             String fieldName = iterator.next();
-            field = getField(current, fieldName);
+            field = current.findFieldByName(fieldName);
+            if (field == null) {
+                return null;
+            }
             if (iterator.hasNext()) {
                 checkArgument(field.getType() == MESSAGE,
-                              "Field %s of type %s is not a message field.");
+                              "Field `%s` of the type `%s` is not a message field.");
                 current = field.getMessageType();
             }
         }
@@ -210,12 +225,6 @@ public final class FieldPaths {
 
     private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
         checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
-    }
-
-    private static FieldDescriptor getField(Descriptor message, String name) {
-        FieldDescriptor field = message.findFieldByName(name);
-        checkArgument(field != null, "Field `%s` not found.", name);
-        return field;
     }
 
     private static Class<?> classOf(FieldDescriptor field) {
