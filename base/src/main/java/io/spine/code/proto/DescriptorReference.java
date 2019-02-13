@@ -38,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.lang.System.lineSeparator;
 import static java.nio.file.StandardOpenOption.APPEND;
 
 /**
@@ -50,7 +51,7 @@ public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
 
-    private static final Splitter LINE_SPLITTER = Splitter.on("\n")
+    private static final Splitter LINE_SPLITTER = Splitter.on(lineSeparator())
                                                           .omitEmptyStrings()
                                                           .trimResults();
     private final String reference;
