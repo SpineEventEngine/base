@@ -18,35 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FileOptions;
-import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Extension;
-import io.spine.code.proto.Option;
 
 import java.util.Optional;
 
 /**
- * An option that a {@code .proto} file has.
+ * An option that is applied to a Protobuf message.
  *
  * @param <V>
  *         value of the option
  */
-public class FileOption<V> implements Option<V, FileDescriptor> {
+public class MessageOption<V> implements Option<V, Descriptor> {
 
-    private final Extension<FileOptions, V> extension;
+    private final Extension<MessageOptions, V> extension;
 
-    FileOption(Extension<FileOptions, V> extension) {
+    protected MessageOption(Extension<MessageOptions, V> extension) {
         this.extension = extension;
     }
 
+    protected Extension<MessageOptions, V> extension() {
+        return extension;
+    }
+
     @Override
-    public Optional<V> valueFrom(FileDescriptor object) {
-        FileOptions options = object.getOptions();
+    public Optional<V> valueFrom(Descriptor object) {
+        // Code duplication with `FieldOption`. Could not solve right away,
+        // since `getOptions()` is something that both `FieldDescriptor` and `Descriptor`
+        // have coincidentally and not because of inheritance.
+        // TODO: 2019-02-11:serhii.lekariev: address comments above
+        MessageOptions options = object.getOptions();
         boolean explicitlySet = options.hasExtension(extension);
+        V value = options.getExtension(extension);
         return explicitlySet
-               ? Optional.of(options.getExtension(extension))
+               ? Optional.of(value)
                : Optional.empty();
     }
 }

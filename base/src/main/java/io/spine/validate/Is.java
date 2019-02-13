@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import io.spine.code.proto.MessageOption;
 import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 

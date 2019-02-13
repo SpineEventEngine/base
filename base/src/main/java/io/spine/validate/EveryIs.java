@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import io.spine.code.proto.FileOption;
 import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 
@@ -29,6 +30,7 @@ import io.spine.option.OptionsProto;
  */
 public class EveryIs extends FileOption<IsOption> {
 
+    /** Creates a new instance of this option. */
     public EveryIs() {
         super(OptionsProto.everyIs);
     }
