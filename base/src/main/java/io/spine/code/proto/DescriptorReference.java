@@ -32,13 +32,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.lang.System.lineSeparator;
 import static java.nio.file.StandardOpenOption.APPEND;
 
 /**
@@ -51,10 +52,7 @@ public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
 
-    @SuppressWarnings("HardcodedLineSeparator")
-        // Resources always come out being split by `\n`, even when the actual platform
-        // line separator is `\r\n`.
-    private static final Splitter LINE_SPLITTER = Splitter.on("\n")
+    private static final Splitter LINE_SPLITTER = Splitter.on(System.lineSeparator())
                                                           .omitEmptyStrings()
                                                           .trimResults();
     private final String reference;
@@ -116,10 +114,44 @@ public final class DescriptorReference {
         try (InputStream catalogStream = resourceUrl.openStream()) {
             byte[] catalogBytes = toByteArray(catalogStream);
             String catalog = new String(catalogBytes, UTF_8);
-            return catalog.split(lineSeparator())[0];
+            return longestRepeatedSubstring(catalog);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    /**
+     * For a given string, returns a longest repeated substring that is also a prefix for this
+     * string,
+     *
+     * <p>E.g. for a {@code "111233333333111"} the output would be {@code "111"}, because even
+     * though {@code "3333"} is the longest repeated substring, it is not a prefix.
+     * If a string {@code s} does not contain a repeated substring that is longer than {@code s},
+     * the {@code s} itself is returned.
+     *
+     * <p>Used to filter catalog names which get duplicated as a result of being included in the
+     * resource URL twice.
+     *
+     * @param input
+     *         an input string
+     * @return the longest common substring that is also a prefix.
+     */
+    private static String longestRepeatedSubstring(String input) {
+        ImmutableList<String> suffixes = suffixes(input);
+        return suffixes.stream()
+                       .filter(s -> !s.equals(input))
+                       .reduce(input, (left, right) ->
+                               left.length() > right.length()
+                               ? left
+                               : right);
+    }
+
+    private static ImmutableList<String> suffixes(String input) {
+        int length = input.length();
+        return IntStream.range(0, length)
+                        .mapToObj(i -> input.substring(i, length))
+                        .filter(input::startsWith)
+                        .collect(toImmutableList());
     }
 
     /**
