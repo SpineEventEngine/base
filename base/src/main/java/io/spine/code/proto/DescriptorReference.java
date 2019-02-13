@@ -48,8 +48,8 @@ import static java.nio.file.StandardOpenOption.APPEND;
  * by appending if a "fat" JAR artifact is required.
  */
 @SuppressWarnings("HardcodedLineSeparator")
-// Line separator that was used during the creation of a descriptor does not depend
-// on the current system line separator, therefore both of them are hardcoded.
+// Line separator that was used during the creation of the `desc.ref` does not depend
+// on the current system line separator, thus,  both of them are hardcoded.
 public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
@@ -96,7 +96,11 @@ public final class DescriptorReference {
         try {
             targetFile.toFile()
                       .createNewFile();
-            Files.write(targetFile, ImmutableList.of(reference), APPEND);
+            if (!Files.readAllLines(targetFile)
+                      .contains(reference)) {
+                Files.write(targetFile, ImmutableList.of(reference), APPEND);
+            }
+
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
