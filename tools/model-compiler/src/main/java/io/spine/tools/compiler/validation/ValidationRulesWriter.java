@@ -115,7 +115,7 @@ public final class ValidationRulesWriter implements Logging {
         @Override
         public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            boolean result = new ValidationOf().valueFrom(input.getDescriptorForType())
+            boolean result = new ValidationOf().valueFrom(input)
                                                .isPresent();
             _debug("[IsValidationRule] Tested {} with the result of {}.", input.getName(), result);
             return result;

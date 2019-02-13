@@ -20,8 +20,12 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.code.proto.MessageOption;
 import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
  * An external validation for a field.
@@ -32,5 +36,15 @@ public class ValidationOf extends MessageOption<String> {
 
     public ValidationOf() {
         super(OptionsProto.validationOf);
+    }
+
+    /**
+     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
+     */
+    public Optional<String> valueFrom(DescriptorProto object) {
+        MessageOptions options = object.getOptions();
+        return options.hasExtension(extension())
+               ? Optional.of(options.getExtension(extension()))
+               : Optional.empty();
     }
 }
