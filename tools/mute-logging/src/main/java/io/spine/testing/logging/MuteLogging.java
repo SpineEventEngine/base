@@ -18,32 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.testing.logging;
 
-include 'base'
+import org.junit.jupiter.api.extension.ExtendWith;
 
-include 'testlib'
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * Mutes all the logging for a certain test case or test suite.
+ *
+ * <p>Any kind of output into the standard output streams is blocked by this annotation.
+ *
+ * <p>If the test fails, the stack trace is printed into the standard error stream.
+ *
+ * <p>After the test completes, the standard output capabilities are restored.
  */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(MuteLoggingExtension.class)
+public @interface MuteLogging {
 }
-
-module 'plugin-base'
-module 'plugin-testlib'
-
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
-
-module 'proto-js-plugin'
-
-module 'reflections-plugin'
-
-module 'protoc-api'
-module 'protoc-plugin'
