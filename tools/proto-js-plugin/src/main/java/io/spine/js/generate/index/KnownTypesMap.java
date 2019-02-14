@@ -41,9 +41,6 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type".
- *
- * <p>Note that services are not included in the known types map as such types are basically
- * non-existent in Protobuf JS.
  */
 final class KnownTypesMap implements Snippet {
 
@@ -78,7 +75,7 @@ final class KnownTypesMap implements Snippet {
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
         Set<Type<?, ?>> types = TypeSet.from(fileSet)
-                                       .messagesAndEnums();
+                                       .types();
         List<Map.Entry<String, TypeName>> entries = types.stream()
                                                          .map(KnownTypesMap::mapEntry)
                                                          .collect(toList());
