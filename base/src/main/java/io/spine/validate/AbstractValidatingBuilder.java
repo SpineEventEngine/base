@@ -213,7 +213,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
-                T result = (T) getMessageBuilder().build();
+        T result = (T) getMessageBuilder().build();
         return result;
     }
 
@@ -275,7 +275,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     private static boolean isSetOnce(FieldDescriptor field) {
-        Optional<Boolean> setOnceDeclaration = new SetOnce().valueFrom(field);
+        Optional<Boolean> setOnceDeclaration = SetOnce.from(field);
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         boolean setOnceValue = setOnceDeclaration.orElse(false);
         boolean requiredByDefault =

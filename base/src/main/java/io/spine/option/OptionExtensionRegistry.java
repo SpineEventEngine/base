@@ -23,7 +23,7 @@ package io.spine.option;
 import io.spine.annotation.Internal;
 
 /**
- * A utility class for obtaining a registry of all Protobuf option extensions.
+ * A registry that contains all of Protobuf option extensions.
  */
 @Internal
 public final class OptionExtensionRegistry {
@@ -40,7 +40,7 @@ public final class OptionExtensionRegistry {
      * Obtains the {@link com.google.protobuf.ExtensionRegistry} with all the {@code
      * spine/options.proto} extensions.
      */
-    public static com.google.protobuf.ExtensionRegistry obtain() {
+    public static com.google.protobuf.ExtensionRegistry instance() {
         return EXTENSIONS;
     }
 

@@ -63,7 +63,7 @@ public class Plugin {
     private static CodeGeneratorRequest readRequest() {
         try {
             CodeGeneratorRequest request =
-                    CodeGeneratorRequest.parseFrom(System.in, OptionExtensionRegistry.obtain());
+                    CodeGeneratorRequest.parseFrom(System.in, OptionExtensionRegistry.instance());
             return request;
         } catch (IOException e) {
             throw new IllegalStateException(e);

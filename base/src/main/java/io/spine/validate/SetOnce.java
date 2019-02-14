@@ -20,8 +20,11 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
  * An option that indicates that a field value cannot be changed.
@@ -31,7 +34,12 @@ final class SetOnce extends FieldOption<Boolean> {
     /**
      * Specifies the extension that corresponds to this option.
      */
-    SetOnce() {
+    private SetOnce() {
         super(OptionsProto.setOnce);
+    }
+
+    /** Obtains a value of the {@code set_once} option from the given field. */
+    static Optional<Boolean> from(FieldDescriptor field){
+        return new SetOnce().valueFrom(field);
     }
 }

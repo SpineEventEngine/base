@@ -28,7 +28,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * An option that a {@code .proto} file has.
  *
  * @param <V>
- *         value of the option
+ *         the type of value held by this option
  */
 public class FileOption<V> extends ProtobufOption<V, FileDescriptor, FileOptions> {
 

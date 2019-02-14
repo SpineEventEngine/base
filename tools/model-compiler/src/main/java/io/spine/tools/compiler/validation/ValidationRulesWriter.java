@@ -26,7 +26,6 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
-import io.spine.validate.ValidationOf;
 import io.spine.validate.rule.ValidationRules;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

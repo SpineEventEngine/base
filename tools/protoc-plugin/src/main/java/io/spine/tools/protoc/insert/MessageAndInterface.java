@@ -29,8 +29,6 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.proto.MessageType;
 import io.spine.option.IsOption;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.validate.EveryIs;
-import io.spine.validate.Is;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
@@ -85,7 +83,7 @@ final class MessageAndInterface {
     }
 
     private static Optional<IsOption> getIs(MessageType type) {
-        return new Is().valueFrom(type.descriptor());
+        return Is.from(type.descriptor());
     }
 
     private static MessageAndInterface generateFile(MessageType type,

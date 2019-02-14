@@ -18,20 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.tools.protoc.insert;
 
-import io.spine.code.proto.FileOption;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.MessageOption;
 import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 
-/**
- * An option that applies a common characteristic to every Protobuf message in a
- * {@code .proto} file.
- */
-public class EveryIs extends FileOption<IsOption> {
+import java.util.Optional;
 
-    /** Creates a new instance of this option. */
-    public EveryIs() {
-        super(OptionsProto.everyIs);
+/**
+ * Specifies a characteristic that is present if every member of a Protobuf message.
+ *
+ * <p>Can be used to specify that every member of the field is of a certain Java type,
+ * or to toggle code generation.
+ */
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
+
+    Is() {
+        super(OptionsProto.is);
+    }
+
+    static Optional<IsOption> from(Descriptor field) {
+        return new Is().valueFrom(field);
     }
 }

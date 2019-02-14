@@ -18,19 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.tools.compiler.validation;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.code.proto.MessageOption;
-import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 
-/**
- * Specifies a characteristic inherent in a Protobuf message.
- */
-@SuppressWarnings("NewClassNamingConvention")
-public class Is extends MessageOption<IsOption> {
+import java.util.Optional;
 
-    public Is() {
-        super(OptionsProto.is);
+/**
+ * An external validation for a field.
+ *
+ * <p>Contains information about validation of another field, described by the option value.
+ */
+final class ValidationOf extends MessageOption<String> {
+
+    ValidationOf() {
+        super(OptionsProto.validationOf);
+    }
+
+    /**
+     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
+     */
+    public Optional<String> valueFrom(DescriptorProto message) {
+        MessageOptions options = message.getOptions();
+        return options.hasExtension(extension())
+               ? Optional.of(options.getExtension(extension()))
+               : Optional.empty();
     }
 }

@@ -52,14 +52,14 @@ public final class FileDescriptorSets {
      */
     public static FileDescriptorSet parse(byte[] bytes) {
         try {
-            return FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.obtain());
+            return FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
         } catch (InvalidProtocolBufferException e) {
             throw illegalArgumentWithCauseOf(e);
         }
     }
 
     /**
-     * Attempts to parse a descriptor set from the given byte array.
+     * Attempts to parse a descriptor set from the givenbyte array.
      *
      * @param bytes
      *         raw data to parse
@@ -68,7 +68,7 @@ public final class FileDescriptorSets {
      */
     public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
         try {
-            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.obtain());
+            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
             return Optional.of(descriptorSet);
         } catch (InvalidProtocolBufferException e) {
             return Optional.empty();
@@ -86,7 +86,7 @@ public final class FileDescriptorSets {
      */
     public static FileDescriptorSet parse(InputStream stream) {
         try {
-            return FileDescriptorSet.parseFrom(stream, OptionExtensionRegistry.obtain());
+            return FileDescriptorSet.parseFrom(stream, OptionExtensionRegistry.instance());
         } catch (IOException e) {
             throw illegalArgumentWithCauseOf(e);
         }
