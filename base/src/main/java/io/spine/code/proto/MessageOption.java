@@ -22,9 +22,7 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Extension;
-
-import java.util.Optional;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 /**
  * An option that is applied to a Protobuf message.
@@ -32,29 +30,14 @@ import java.util.Optional;
  * @param <V>
  *         value of the option
  */
-public class MessageOption<V> implements Option<V, Descriptor> {
+public class MessageOption<V> extends ProtobufOption<V, Descriptor, MessageOptions> {
 
-    private final Extension<MessageOptions, V> extension;
-
-    protected MessageOption(Extension<MessageOptions, V> extension) {
-        this.extension = extension;
-    }
-
-    protected Extension<MessageOptions, V> extension() {
-        return extension;
+    protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
+        super(extension);
     }
 
     @Override
-    public Optional<V> valueFrom(Descriptor object) {
-        // Code duplication with `FieldOption`. Could not solve right away,
-        // since `getOptions()` is something that both `FieldDescriptor` and `Descriptor`
-        // have coincidentally and not because of inheritance.
-        // TODO: 2019-02-11:serhii.lekariev: address comments above
-        MessageOptions options = object.getOptions();
-        boolean explicitlySet = options.hasExtension(extension);
-        V value = options.getExtension(extension);
-        return explicitlySet
-               ? Optional.of(value)
-               : Optional.empty();
+    protected MessageOptions optionsFrom(Descriptor object) {
+        return object.getOptions();
     }
 }

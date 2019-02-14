@@ -22,9 +22,7 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Extension;
-
-import java.util.Optional;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 /**
  * An option that a {@code .proto} file has.
@@ -32,20 +30,14 @@ import java.util.Optional;
  * @param <V>
  *         value of the option
  */
-public class FileOption<V> implements Option<V, FileDescriptor> {
+public class FileOption<V> extends ProtobufOption<V, FileDescriptor, FileOptions> {
 
-    private final Extension<FileOptions, V> extension;
-
-    public FileOption(Extension<FileOptions, V> extension) {
-        this.extension = extension;
+    protected FileOption(GeneratedExtension<FileOptions, V> extension) {
+        super(extension);
     }
 
     @Override
-    public Optional<V> valueFrom(FileDescriptor object) {
-        FileOptions options = object.getOptions();
-        boolean explicitlySet = options.hasExtension(extension);
-        return explicitlySet
-               ? Optional.of(options.getExtension(extension))
-               : Optional.empty();
+    protected FileOptions optionsFrom(FileDescriptor object) {
+        return object.getOptions();
     }
 }
