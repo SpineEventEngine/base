@@ -31,15 +31,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Reference to descriptor set files.
@@ -48,17 +48,14 @@ import static java.nio.file.StandardOpenOption.APPEND;
  * by appending if a "fat" JAR artifact is required.
  */
 @SuppressWarnings("HardcodedLineSeparator")
-// Line separator that was used during the creation of the `desc.ref` does not depend
-// on the current system line separator, thus,  both of them are hardcoded.
+// Since the line separators may vary between the system that has built the `desc.ref` and the
+// system that the code is ran on, a hardcoded `\n` is used.
 public final class DescriptorReference {
 
     private static final String FILE_NAME = "desc.ref";
 
-    private static final Splitter WINDOWS_LINE_SPLITTER = Splitter.on("\r\n")
-                                                                  .omitEmptyStrings()
-                                                                  .trimResults();
-
-    private static final Splitter LINE_SPLITTER = Splitter.on("\n")
+    private static final String SEPARATOR = "\n";
+    private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
                                                           .trimResults();
     private final String reference;
@@ -96,11 +93,11 @@ public final class DescriptorReference {
         try {
             targetFile.toFile()
                       .createNewFile();
-            if (!Files.readAllLines(targetFile)
-                      .contains(reference)) {
-                Files.write(targetFile, ImmutableList.of(reference), APPEND);
-            }
-
+            List<String> strings = Files.readAllLines(targetFile);
+            strings.add(reference);
+            String result = String.join(SEPARATOR, strings)
+                                  .trim();
+            Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
@@ -114,17 +111,10 @@ public final class DescriptorReference {
     static Iterator<ResourceReference> loadAll() {
         return stream(ResourceFiles.loadAll(FILE_NAME))
                 .map(DescriptorReference::readCatalog)
-                .flatMap(DescriptorReference::splitNames)
+                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
                 .distinct()
                 .map(ResourceReference::new)
                 .iterator();
-    }
-
-    private static Stream<String> splitNames(String input) {
-        return Stream.concat(LINE_SPLITTER.splitToList(input)
-                                          .stream(),
-                             WINDOWS_LINE_SPLITTER.splitToList(input)
-                                                  .stream());
     }
 
     private static String readCatalog(URL resourceUrl) {

@@ -20,34 +20,45 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Files;
+import com.google.common.io.MoreFiles;
+import com.google.common.io.RecursiveDeleteOption;
 import io.spine.code.proto.DescriptorReference.ResourceReference;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toKnownTypes;
+import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toSmokeTestModelCompiler;
 import static org.junit.Assert.assertEquals;
 
 @DisplayName("Descriptor reference should")
 class DescriptorReferenceTest {
 
-    /**
-     * The `desc.ref` file that is accessed by this test purposefully has duplicate entries.
-     * The obtained iterator of {@code ResourceReferences}, however, should not contain duplicates.
-     */
+    private static final Path PATH = Files.createTempDir()
+                                          .toPath();
+
+    @AfterEach
+    void tearDown() throws IOException {
+        MoreFiles.deleteRecursively(PATH, RecursiveDeleteOption.ALLOW_INSECURE);
+    }
+
     @Test
-    @DisplayName("be unaffected by duplicates")
+    @DisplayName("be unaffected by Windows line separator")
     void unaffectedByDuplicates() {
-        Iterator<ResourceReference> iterator = DescriptorReference.loadAll();
-        List<ResourceReference> references = newArrayList(iterator);
-        Set<ResourceReference> uniques = ImmutableSet.copyOf(references);
-        assertEquals(references, ImmutableList.copyOf(uniques));
+        DescriptorReference knownTypes = toKnownTypes().withCrLf();
+        DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withCrLf();
+        knownTypes.writeTo(PATH);
+        smokeTestModelCompiler.writeTo(PATH);
+        knownTypes.writeTo(PATH);
+        Iterator<ResourceReference> existingDescriptors = DescriptorReference.loadAll();
+        List<ResourceReference> result = newArrayList(existingDescriptors);
+        assertEquals(3, result.size());
     }
 }
-
-
