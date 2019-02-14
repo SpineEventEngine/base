@@ -20,22 +20,29 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.google.common.io.Resources;
 import io.spine.code.proto.DescriptorReference.ResourceReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.code.proto.DescriptorReference.loadFromResources;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toKnownTypes;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toSmokeTestModelCompiler;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static org.junit.Assert.assertEquals;
 
 @DisplayName("Descriptor reference should")
@@ -51,14 +58,47 @@ class DescriptorReferenceTest {
 
     @Test
     @DisplayName("be unaffected by Windows line separator")
-    void unaffectedByDuplicates() {
+    void unaffectedByCrLf() {
         DescriptorReference knownTypes = toKnownTypes().withCrLf();
         DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withCrLf();
         knownTypes.writeTo(PATH);
         smokeTestModelCompiler.writeTo(PATH);
+
+        assertExactAmount();
+    }
+
+    @Test
+    @DisplayName("be unaffected by Unix line separator")
+    void unaffectedByLf() {
+        DescriptorReference knownTypes = toKnownTypes().withLf();
+        DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withLf();
         knownTypes.writeTo(PATH);
-        Iterator<ResourceReference> existingDescriptors = DescriptorReference.loadAll();
+        smokeTestModelCompiler.writeTo(PATH);
+
+        assertExactAmount();
+    }
+
+    private static void assertExactAmount() {
+        Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator());
         List<ResourceReference> result = newArrayList(existingDescriptors);
-        assertEquals(3, result.size());
+        assertEquals(2, result.size());
+    }
+
+    private static Iterator<URL> iterator() {
+        File descRef = new File(PATH.toFile(), DescriptorReference.FILE_NAME);
+        ImmutableList.Builder<URL> builder = ImmutableList.builder();
+        try {
+            List<String> descriptorReferences = Files.readLines(descRef, Charsets.UTF_8);
+            for (String reference : descriptorReferences) {
+                URL url = Resources.getResource(reference);
+                builder.add(url);
+            }
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Cannot compose URL from %s",
+                                           PATH.toAbsolutePath());
+        }
+
+        return builder.build()
+                      .iterator();
     }
 }

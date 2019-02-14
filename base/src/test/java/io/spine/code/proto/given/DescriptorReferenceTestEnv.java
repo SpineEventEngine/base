@@ -20,10 +20,12 @@
 
 package io.spine.code.proto.given;
 
+import com.google.common.io.Resources;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.code.proto.FileDescriptors;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * A utility class that provides references to descriptors.
@@ -38,14 +40,14 @@ public class DescriptorReferenceTestEnv {
 
     /** Returns a reference to a {@code "smoke-test-model-compiler.desc"} file. */
     public static ReferenceWithNewline toSmokeTestModelCompiler() {
-        String reference = "smoke-tests_model-compiler-tests_unspecified.desc";
+        String reference = "smoke_tests_model-compiler_tests_unspecified.desc";
         return new ReferenceWithNewline(reference);
     }
 
     /** Returns a reference to a {@code "known_types.desc"} file. */
     public static ReferenceWithNewline toKnownTypes() {
-        String reference = FileDescriptors.KNOWN_TYPES;
-        return new ReferenceWithNewline(reference);
+        URL resource = Resources.getResource(FileDescriptors.KNOWN_TYPES);
+        return new ReferenceWithNewline(resource.toString());
     }
 
     /**
@@ -55,14 +57,21 @@ public class DescriptorReferenceTestEnv {
 
         private final String referencedFile;
         private static final String WINDOWS_SEPARATOR = "\r\n";
+        private static final String UNIX_SEPARATOR = "\n";
 
         private ReferenceWithNewline(String file) {
             this.referencedFile = file;
         }
 
-        /** Returns a reference to a descriptor with a {@code "\r\n"} newline symbol at the end. */
+        /** Returns a reference to a descriptor with {@code "\r\n"} newline symbol at the end. */
         public DescriptorReference withCrLf() {
             String result = referencedFile + WINDOWS_SEPARATOR;
+            return DescriptorReference.toOneFile(new File(result));
+        }
+
+        /** Returns a reference to a descriptor with {@code "\n"} newline symbol at the end. */
+        public DescriptorReference withLf(){
+            String result = referencedFile + UNIX_SEPARATOR;
             return DescriptorReference.toOneFile(new File(result));
         }
     }

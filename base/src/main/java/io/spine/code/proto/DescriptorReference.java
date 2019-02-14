@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.io.ResourceFiles;
@@ -52,7 +53,8 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 // system that the code is ran on, a hardcoded `\n` is used.
 public final class DescriptorReference {
 
-    private static final String FILE_NAME = "desc.ref";
+    @VisibleForTesting
+    static final String FILE_NAME = "desc.ref";
 
     private static final String SEPARATOR = "\n";
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
@@ -109,9 +111,15 @@ public final class DescriptorReference {
      * @return an iterator over application resources
      */
     static Iterator<ResourceReference> loadAll() {
-        return stream(ResourceFiles.loadAll(FILE_NAME))
+        return loadFromResources(ResourceFiles.loadAll(FILE_NAME));
+    }
+
+    @VisibleForTesting
+    static Iterator<ResourceReference> loadFromResources(Iterator<URL> resources) {
+        return stream(resources)
                 .map(DescriptorReference::readCatalog)
-                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
+                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog)
+                                                 .stream())
                 .distinct()
                 .map(ResourceReference::new)
                 .iterator();
