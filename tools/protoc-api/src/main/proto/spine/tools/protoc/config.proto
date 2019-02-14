@@ -38,14 +38,17 @@ message EnrichmentInterface {
     string interface_name = 1;
 }
 
-// Method generator that generates enrichment accessor methods.
+// Method generator that generates additional methods for a message with a certain option.
 //
 // An empty value signifies that the additional accessor methods should not be generated.
 //
-message EnrichmentGenerator {
+message GeneratedMethod {
 
-    // A fully-qualified name of the message generator.
+    // A fully-qualified name of the message generator class.
     string generator_name = 1;
+
+    // A name of a message option that the message should have.
+    string option_name = 2;
 }
 
 // Configuration of the Spine Protoc plugin.
@@ -60,4 +63,6 @@ message SpineProtocConfig {
     repeated GeneratedInterface generated_interface = 2;
 
     EnrichmentInterface enrichment_interface = 3;
+
+    repeated GeneratedMethod generated_method = 4;
 }
