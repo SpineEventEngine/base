@@ -38,6 +38,16 @@ message EnrichmentInterface {
     string interface_name = 1;
 }
 
+// Method generator that generates enrichment accessor methods.
+//
+// An empty value signifies that the additional accessor methods should not be generated.
+//
+message EnrichmentGenerator {
+
+    // A fully-qualified name of the message generator.
+    string generator_name = 1;
+}
+
 // Configuration of the Spine Protoc plugin.
 //
 // The configuration is passed to the plugin as the single option. The passed value is serialized
