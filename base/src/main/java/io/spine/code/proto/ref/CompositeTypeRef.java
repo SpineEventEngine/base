@@ -75,12 +75,13 @@ public class CompositeTypeRef implements TypeRef {
     }
 
     private static TypeRef parsePart(String part) {
-        Parsing p = new Parsing(part, InPackage::parse, DirectTypeRef::parse);
+        Parsing parsing = new Parsing(part, InPackage::parse, DirectTypeRef::parse);
         TypeRef result =
-                p.parse()
-                 .orElseThrow(() -> newIllegalArgumentException(
-                         "The value (`%s`) cannot be used in a composite type reference.", part
-                 ));
+                parsing.parse()
+                       .orElseThrow(() -> newIllegalArgumentException(
+                               "The value (`%s`) cannot be used in a composite type reference.",
+                               part
+                       ));
         return result;
     }
 

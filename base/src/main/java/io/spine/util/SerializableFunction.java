@@ -29,7 +29,6 @@ import java.util.function.Function;
  *
  * @param <T> input value type
  * @param <R> output value type
- * @author Alexander Yevsyukov
  */
 @FunctionalInterface
 public interface SerializableFunction<T, R> extends Function<T, R>, Serializable {

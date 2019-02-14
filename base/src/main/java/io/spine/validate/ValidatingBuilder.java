@@ -54,9 +54,8 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      * @param <V>        the type of the field value
      * @throws ValidationException if there are any constraint violations
      */
-    <V> void validate(FieldDescriptor descriptor,
-                      V fieldValue,
-                      String fieldName) throws ValidationException;
+    <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
+            throws ValidationException;
 
     /**
      * Validates and builds {@code Message}.

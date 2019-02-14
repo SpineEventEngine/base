@@ -78,8 +78,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
-    @DisplayName("tell that we are under tests if env variable set to true")
-    void tell_that_we_are_under_tests_if_env_var_set_to_true() {
+    @DisplayName("tell that we are under tests if env. variable set to true")
+    void environmentVarTrue() {
         Environment.getInstance()
                    .setToTests();
 
@@ -88,8 +88,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
-    @DisplayName("tell that we are under tests if env variable set to 1")
-    void tell_that_we_are_under_tests_if_env_var_set_to_1() {
+    @DisplayName("tell that we are under tests if env. variable set to 1")
+    void environmentVar1() {
         System.setProperty(Environment.ENV_KEY_TESTS, "1");
 
         assertTrue(environment.isTests());
@@ -98,7 +98,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
-    void tell_that_we_are_under_tests_if_run_under_known_framework() {
+    void underTestFramework() {
         // As we run this from under JUnit...
         assertTrue(environment.isTests());
         assertFalse(environment.isProduction());
@@ -106,7 +106,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("tell that we are not under tests if env set to something else")
-    void tell_that_we_are_not_under_tests_if_env_set_to_something_else() {
+    void environmentVarUknownValue() {
         System.setProperty(Environment.ENV_KEY_TESTS, "neitherTrueNor1");
 
         assertFalse(environment.isTests());
@@ -115,7 +115,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("turn tests mode on")
-    void turn_tests_mode_on() {
+    void turnTestsOn() {
         environment.setToTests();
 
         assertTrue(environment.isTests());
@@ -124,7 +124,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("turn production mode on")
-    void turn_production_mode_on() {
+    void turnProductionOn() {
         environment.setToProduction();
 
         assertFalse(environment.isTests());
@@ -133,7 +133,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("clear environment var on rest")
-    void clear_environment_var_on_reset() {
+    void clearOnReset() {
         environment.reset();
 
         assertNull(System.getProperty(Environment.ENV_KEY_TESTS));

@@ -28,6 +28,7 @@ import io.spine.base.FieldPath;
 
 import static com.google.common.collect.BoundType.CLOSED;
 import static io.spine.protobuf.TypeConverter.toAny;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -45,24 +46,61 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
 
     private static final String OR_EQUAL_TO = "or equal to";
 
-    private final Range<V> range;
+    private final Range<ComparableNumber> range;
 
-    RangedConstraint(T optionValue, Range<V> range) {
+    RangedConstraint(T optionValue, Range<ComparableNumber> range) {
         super(optionValue);
         this.range = range;
     }
 
     @Override
     boolean satisfies(FieldValue<V> value) {
+        checkTypeConsistency(value);
         return value.asList()
                     .stream()
-                    .allMatch(range::contains);
+                    .map(ComparableNumber::new)
+                    .allMatch(range);
+    }
+
+    private void checkTypeConsistency(FieldValue<V> value) {
+        if (hasBothBoundaries()) {
+            NumberText upper = range.upperEndpoint().toText();
+            NumberText lower = range.lowerEndpoint().toText();
+            if (!upper.isOfSameType(lower)) {
+                String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
+                throw newIllegalStateException(errorMessage, upper, lower);
+            }
+            checkBoundaryAndValue(upper, value);
+        } else {
+            checkSingleBoundary(value);
+        }
+    }
+
+    private void checkBoundaryAndValue(NumberText boundary, FieldValue<V> value) {
+        NumberText valueToCheck = new NumberText(value.singleValue());
+        if (!boundary.isOfSameType(valueToCheck)) {
+            String errorMessage =
+                    "Boundary values must have types consistent with values they bind: " +
+                            "boundary %s, value %s";
+            throw newIllegalStateException(errorMessage, boundary, valueToCheck);
+        }
+    }
+
+    private void checkSingleBoundary(FieldValue<V> value) {
+        NumberText singleBoundary = range.hasLowerBound()
+                                               ? range.lowerEndpoint().toText()
+                                               : range.upperEndpoint().toText();
+        checkBoundaryAndValue(singleBoundary, value);
+    }
+
+    private boolean hasBothBoundaries() {
+        return range.hasLowerBound() && range.hasUpperBound();
     }
 
     @Override
     ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
         FieldPath path = value.context()
-                              .getFieldPath();
+                              .fieldPath();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(errorMsgFormat())
@@ -77,9 +115,9 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         StringBuilder result = new StringBuilder("Number must be ");
         if (range.hasLowerBound() && range.hasUpperBound()) {
             result.append(forLowerBound());
-            result.append("and ");
+            result.append(" and ");
             result.append(forUpperBound());
-            return result.toString();
+            return endOfSentence(result).toString();
         }
         if (range.hasLowerBound()) {
             result.append(forLowerBound());
@@ -87,7 +125,7 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         if (range.hasUpperBound()) {
             result.append(forUpperBound());
         }
-        return result.toString();
+        return endOfSentence(result).toString();
     }
 
     private ImmutableSet<String> formatParams() {
@@ -115,9 +153,13 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
         return format(lessThan, appendix);
     }
 
+    private static StringBuilder endOfSentence(StringBuilder builder) {
+        return builder.append('.');
+    }
+
     private static String appendix(BoundType type) {
         return type == CLOSED
-               ? OR_EQUAL_TO + " %s."
-               : " %s.";
+               ? OR_EQUAL_TO + " %s"
+               : "%s";
     }
 }

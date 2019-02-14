@@ -18,28 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.base;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Optional;
 
 /**
- * Mutes all the logging for a certain test case or test suite.
- *
- * <p>Any kind of output into the standard output streams is blocked by this annotation.
- *
- * <p>If the test fails, the output is printed into the standard error stream.
- *
- * <p>After the test completes, the standard output capabilities are restored.
- *
- * @author Dmytro Dashenkov
+ * Contains one or more {@link EnrichmentMessage}s.
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(MuteLoggingExtension.class)
-public @interface MuteLogging {
+public interface EnrichmentContainer {
+
+    /**
+     * Obtains an enrichment by its class.
+     *
+     * @return the instance of the enrichment, or empty {@code Optional} if there is no enrichment
+     *         of such class in the container
+     */
+    <E extends EnrichmentMessage> Optional<E> find(Class<E> cls);
 }

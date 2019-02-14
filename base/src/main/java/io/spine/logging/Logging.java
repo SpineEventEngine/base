@@ -63,7 +63,7 @@ import static org.slf4j.LoggerFactory.getLogger;
         "ClassWithTooManyMethods"
         /* We provide shortcut methods for calling Slf4J Logger API. */,
 
-        "NewMethodNamingConvention"
+        "NewMethodNamingConvention", "PMD.MethodNamingConventions"
         /* These methods are prefixed with underscore to highlight the fact that these methods
            are for logging, and to make them more visible in the real code. */
 })
@@ -101,6 +101,24 @@ public interface Logging {
         checkNotNull(log);
         checkNotNull(queue);
         log.setDelegate(new EventRecodingLogger(log, queue));
+    }
+
+    /**
+     * Mutes all logging done with this utility.
+     *
+     * <p>To enable the logging back, use {@link #unmute()}.
+     */
+    static void mute() {
+        LoggerClassValue.muteAll();
+    }
+
+    /**
+     * Unmutes the logging done with this utility.
+     *
+     * <p>In case the logging wasn't {@linkplain #mute() muted}, does nothing.
+     */
+    static void unmute() {
+        LoggerClassValue.unmuteAll();
     }
 
     /*

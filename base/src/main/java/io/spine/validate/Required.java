@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -38,13 +39,14 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
+@VisibleForTesting
+public class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final Predicate<FieldDescriptor> isOptionPresent;
+    private final Predicate<FieldDescriptor> hasOption;
     private final IfMissing ifMissing = new IfMissing();
 
     /**
@@ -52,7 +54,7 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
      */
     Required() {
         super(OptionsProto.required);
-        this.isOptionPresent = this::notAssumingRequired;
+        this.hasOption = this::notAssumingRequired;
     }
 
     /**
@@ -81,8 +83,7 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        checkCorrectUsage(value);
-        return this.isOptionPresent.test(value);
+        return this.hasOption.test(value);
     }
 
     /**
@@ -94,7 +95,7 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
      * @param field
      *         a value that the option is applied to
      */
-    void checkCorrectUsage(FieldDescriptor field) {
+    void checkUsage(FieldDescriptor field) {
         ifMissing.valueFrom(field)
                  .ifPresent(ifMissingOption -> _warn(
                          "'if_missing' option is set without '(required) = true'"));
@@ -105,12 +106,17 @@ class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
         JavaType type = field.getJavaType();
         if (!CAN_BE_REQUIRED.contains(type)) {
             String typeName = field.getType().name();
-            _warn("Fields of type {} should not be declared as `(required)`.", typeName);
+            _warn("Fields of type {} should not be declared as `(required)`. " +
+                          "Please see the declaration of `{}.{}`.",
+                  typeName,
+                  field.getContainingType().getFullName(),
+                  field.getName());
         }
     }
 
     @Override
     public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
+        checkUsage(fieldValue.descriptor());
         return new RequiredConstraint<>(CAN_BE_REQUIRED);
     }
 }

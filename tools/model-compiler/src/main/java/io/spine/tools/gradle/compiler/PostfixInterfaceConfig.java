@@ -35,6 +35,7 @@ final class PostfixInterfaceConfig extends PatternInterfaceConfig {
     private final String postfix;
 
     PostfixInterfaceConfig(@Regex String postfix) {
+        super();
         this.postfix = postfix;
     }
 

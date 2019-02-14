@@ -30,12 +30,27 @@ import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
 import io.spine.test.validate.msg.builder.EssayVBuilder;
+import io.spine.test.validate.msg.builder.FrostyWeatherButInWholeNumberVBuilder;
+import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
+import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
+import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
+import io.spine.test.validate.msg.builder.Menu;
+import io.spine.test.validate.msg.builder.MenuVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.SafeBet;
+import io.spine.test.validate.msg.builder.SafeBetVBuilder;
+import io.spine.test.validate.msg.builder.RequiredBooleanFieldVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
+import io.spine.test.validate.msg.builder.SpacedOutBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Task;
 import io.spine.test.validate.msg.builder.TaskVBuilder;
+import io.spine.test.validate.msg.builder.UnopenedVBuilder;
+import io.spine.test.validate.msg.builder.UnsafeBetVBuilder;
+import io.spine.test.validate.msg.builder.UpToInfinityVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.Required;
 import io.spine.validate.ValidatingBuilder;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -320,6 +335,137 @@ class ValidatingBuilderTest {
                .addSnowflake(triangularSnowflake());
     }
 
+    @Nested
+    @DisplayName("upon finding a boolean field")
+    class RequiredLoggingTest {
+
+        private final Queue<SubstituteLoggingEvent> loggedMessages;
+
+        RequiredLoggingTest() {
+            this.loggedMessages = new ArrayDeque<>();
+            Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
+        }
+
+        @DisplayName("not produce warnings if it is not `required`")
+        @Test
+        void testNoWarningOnBoolField() {
+            int sizeBefore = loggedMessages.size();
+            MenuVBuilder builder = MenuVBuilder.newBuilder();
+            Menu menu = builder.setName("Non-vegetarian menu.")
+                               .setMeatDish("Non-vegetarian dish.")
+                               .build();
+            assertEquals(sizeBefore, loggedMessages.size());
+        }
+
+        @DisplayName("produce warning if it is `required`")
+        @Test
+        void testWarningOnBooleanRequired() {
+            int sizeBefore = loggedMessages.size();
+            RequiredBooleanFieldVBuilder builder = RequiredBooleanFieldVBuilder.newBuilder();
+            builder.setValue(true);
+           assertEquals(sizeBefore + 1, loggedMessages.size());
+        }
+    }
+
+    @DisplayName("not allow values that don't fit into a closed range")
+    @Test
+    void testDoesNotAllowBelow() {
+        double unsafeOdds = safeOdds() - 0.1d;
+        testOption(SafeBetVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setOdds(unsafeOdds));
+    }
+
+    @DisplayName("allow values that are equal to the lower endpoint of an unclosed range")
+    @Test
+    void testFitsRightIntoAnOpenedRange() {
+        SafeBet safeBet = SafeBetVBuilder
+                .newBuilder()
+                .setOdds(safeOdds())
+                .build();
+        assertEquals(safeOdds(), safeBet.getOdds());
+    }
+
+    @DisplayName("disallow ranges with incorrect types")
+    @Test
+    void testInvalidRangeTypes() {
+        MinorCitizenVBuilder builder = MinorCitizenVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setAge(18));
+
+    }
+
+    @DisplayName("disallow values that are equal to the upper endpoint of an open range")
+    @Test
+    void testDoesNotFitRightIntoAnOpenRange() {
+        testOption(UnsafeBetVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setOdds(safeOdds()));
+    }
+
+    @DisplayName("throw an exception upon finding a malformed range")
+    @Test
+    void throwsOnMalformedRangeNoLeftBorder() {
+        UnopenedVBuilder builder = UnopenedVBuilder.newBuilder();
+        assertThrows(IllegalArgumentException.class, () -> builder.setValue(0));
+    }
+
+    @DisplayName("throw an exception upon finding a malformed range")
+    @Test
+    void throwsOnMalformedRangeNoRightBorder() {
+        UpToInfinityVBuilder builder = UpToInfinityVBuilder.newBuilder();
+        assertThrows(IllegalArgumentException.class, () -> builder.setValue(0));
+    }
+
+    @DisplayName("correctly parse ranges with negative values")
+    @Test
+    void worksWithNegativeRanges() {
+        FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();
+        weatherBuilder.setCelcius(-6.5d);
+        testOption(FrostyWeatherVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setCelcius(-10.0d));
+    }
+
+    @DisplayName("throw on boundaries with inconsistent types")
+    @Test
+    void throwOnInconsistentBoundaryTypes() {
+        InconsistentBoundariesVBuilder builder = InconsistentBoundariesVBuilder.newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setValue(3.2d));
+    }
+
+    @DisplayName("throw on boundaries that are inconsistent with the constrained value type")
+    @Test
+    void throwOnIncosistentBoundaryAndValueTypes() {
+        FrostyWeatherButInWholeNumberVBuilder builder = FrostyWeatherButInWholeNumberVBuilder
+                .newBuilder();
+        assertThrows(IllegalStateException.class, () -> builder.setCelcius(-5.0d));
+    }
+
+    @DisplayName("produce correct error messages on numbers that don't fit the ranges")
+    @Test
+    void testCorrectErrorMessageDoesNotFitTheRange() {
+        String expectedMessageFormat =
+                "Number must be greater than %s and less than or equal to %s.";
+        FrostyWeatherVBuilder weatherBuilder = FrostyWeatherVBuilder.newBuilder();
+        try {
+            weatherBuilder.setCelcius(30.0d);
+        } catch (ValidationException e) {
+            List<ConstraintViolation> violations = e.getConstraintViolations();
+            assertEquals(1, violations.size());
+            ConstraintViolation violation = violations.get(0);
+            String actualFormat = violation.getMsgFormat();
+            assertEquals(expectedMessageFormat, actualFormat);
+        }
+    }
+
+    @DisplayName("not get affected by ranges with spaces")
+    @Test
+    void testCorrectRangesWithSpaces() {
+        testOption(SpacedOutBoundariesVBuilder.newBuilder(),
+                   builder -> builder,
+                   builder -> builder.setValue(32));
+    }
+
     /** Redirects logging of all validating builders to the queue that is returned. */
     private static Queue<SubstituteLoggingEvent> redirectLogging(
             Class<? extends AbstractValidatingBuilder> cls) {
@@ -356,6 +502,10 @@ class ValidatingBuilderTest {
 
     private static Timestamp timeInFuture() {
         return add(getCurrentTime(), fromSeconds(1000L));
+    }
+
+    private static double safeOdds() {
+        return 0.5d;
     }
 
     private static Task task() {

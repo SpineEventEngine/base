@@ -61,7 +61,7 @@ class OneofValidator {
 
     private ConstraintViolation noneFieldIsSet() {
         FieldPath oneofPath = message.context()
-                                     .getFieldPath()
+                                     .fieldPath()
                                      .toBuilder()
                                      .addFieldName(oneof.getName())
                                      .build();

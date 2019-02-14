@@ -32,11 +32,11 @@ final class MaxConstraint<V extends Number & Comparable> extends RangedConstrain
         super(optionValue, maxRange(optionValue));
     }
 
-    private static <V extends Number & Comparable> Range<V> maxRange(MaxOption option) {
+    private static Range<ComparableNumber> maxRange(MaxOption option) {
         boolean inclusive = !option.getExclusive();
-        V minValue = fromOption(option.getValue());
+        NumberText maxValue = new NumberText(option.getValue());
         return inclusive
-               ? Range.atMost(minValue)
-               : Range.lessThan(minValue);
+               ? Range.atMost(maxValue.toNumber())
+               : Range.lessThan(maxValue.toNumber());
     }
 }
