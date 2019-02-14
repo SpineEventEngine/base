@@ -80,6 +80,7 @@ public final class GenerateIndexFile extends GenerationTask {
         Collection<Descriptors.FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
                                      .filter(file -> !TypeSet.from(file)
+                                                             .messagesAndEnums()
                                                              .isEmpty())
                                      .map(FileName::from)
                                      .collect(toSet());
