@@ -40,7 +40,7 @@ class ResourceFilesTest {
 
     @Test
     @DisplayName("return an empty iterator if queried for a non-existing file ")
-    void throwOnInvalidFileName(@TempDir Path path) {
+    void emptyIteratorOnInvalidPath(@TempDir Path path) {
         Path nonExistentFilePath = path.resolve(UUID.randomUUID()
                                                     .toString());
         File nonExistingFile = nonExistentFilePath.toFile();
