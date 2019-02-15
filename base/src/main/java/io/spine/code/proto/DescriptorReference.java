@@ -53,6 +53,13 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 public final class DescriptorReference {
 
     @VisibleForTesting
+    @SuppressWarnings("DuplicateStringLiteralInspection") /* Different semantics: this literal
+                                                             declares a file that contains all
+                                                             descriptor references, while the
+                                                             duplication is a name of the file
+                                                             that is contained under `resources`
+                                                             directory.`
+                                                           */
     static final String FILE_NAME = "desc.ref";
 
     @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate

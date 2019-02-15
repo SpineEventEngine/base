@@ -20,6 +20,7 @@
 
 package io.spine.io;
 
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,14 +33,20 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.UUID;
 
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Resource files should")
 @ExtendWith(TempDirectory.class)
-class ResourceFilesTest {
+class ResourceFilesTest extends UtilityClassTest<ResourceFiles> {
+
+    ResourceFilesTest() {
+        super(ResourceFiles.class);
+    }
 
     @Test
-    @DisplayName("return an empty iterator if queried for a non-existing file ")
+    @DisplayName("return an empty iterator if queried for a non-existing file")
     void emptyIteratorOnInvalidPath(@TempDir Path path) {
         Path nonExistentFilePath = path.resolve(UUID.randomUUID()
                                                     .toString());
@@ -47,5 +54,19 @@ class ResourceFilesTest {
         String name = nonExistingFile.getName();
         Iterator<URL> result = ResourceFiles.loadAll(name);
         assertFalse(result.hasNext());
+    }
+
+    @Test
+    @DisplayName("correctly identify a file that is contained under the resources directory")
+    void correctlyPickUrlsUp() {
+        Iterator<URL> result = ResourceFiles.loadAll(existingResourceName());
+        assertNotNull(result);
+        assertTrue(result.hasNext());
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") /* A file that is guaranteed to be under
+                                                             the `resources` directory is needed. */
+    private static String existingResourceName() {
+        return "desc.ref";
     }
 }
