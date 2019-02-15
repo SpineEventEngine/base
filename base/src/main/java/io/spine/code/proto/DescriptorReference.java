@@ -49,14 +49,13 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * <p>Multiple reference files may be present at runtime of an application. The files may be merged
  * by appending if a "fat" JAR artifact is required.
  */
-@SuppressWarnings("HardcodedLineSeparator")
-// Since the line separators may vary between the system that has built the `desc.ref` and the
-// system that the code is ran on, a hardcoded `\n` is used.
 public final class DescriptorReference {
 
     @VisibleForTesting
     static final String FILE_NAME = "desc.ref";
 
+    @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
+                                                       platform-dependent issues in `desc.ref`.*/
     private static final String SEPARATOR = "\n";
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
