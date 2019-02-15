@@ -53,7 +53,8 @@ final class MethodFactories {
      */
     static MethodFactory newFactoryFor(GeneratedMethod spec) {
         String generatorName = spec.getGeneratorName();
-        if (Strings.isNullOrEmpty(generatorName)) {
+        if (generatorName.trim()
+                         .isEmpty()) {
             return NoOpMethodFactory.INSTANCE;
         }
         MethodFactory result = from(generatorName);
@@ -114,10 +115,12 @@ final class MethodFactories {
      * A no-operation stub implementation of a {@link MethodFactory} that is used if the
      * method generator is not configured and/or available.
      */
+    @VisibleForTesting
     @Immutable
-    private static class NoOpMethodFactory implements MethodFactory {
+    static class NoOpMethodFactory implements MethodFactory {
 
-        private static final MethodFactory INSTANCE = new NoOpMethodFactory();
+        @VisibleForTesting
+        static final MethodFactory INSTANCE = new NoOpMethodFactory();
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType ignored) {
