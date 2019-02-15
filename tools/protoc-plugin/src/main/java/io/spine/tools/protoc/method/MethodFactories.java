@@ -20,8 +20,9 @@
 
 package io.spine.tools.protoc.method;
 
-import com.google.common.base.Strings;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.protoc.MethodBody;
@@ -85,6 +86,7 @@ final class MethodFactories {
         return NoOpMethodFactory.INSTANCE;
     }
 
+    @SuppressWarnings("unchecked") //we do already know that the class represents MethodFactory
     private static Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
         Optional<Class<?>> generator = factoryClass(fqn);
         if (!generator.isPresent()) {
@@ -92,7 +94,6 @@ final class MethodFactories {
         }
         Class<?> generatorClass = generator.get();
         if (generatorClass.isAssignableFrom(MethodFactory.class)) {
-            //noinspection unchecked we do already know that the class represents MethodFactory
             return Optional.of((Class<MethodFactory>) generatorClass);
         }
         return Optional.empty();
