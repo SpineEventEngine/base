@@ -18,28 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package contains the tests for the {@link io.spine.testing.logging.MuteLogging} JUnit
+ * extension.
+ */
+
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package io.spine.testing.logging;
 
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
- * Mutes all the logging for a certain test case or test suite.
- *
- * <p>Any kind of output into the standard output streams is blocked by this annotation.
- *
- * <p>If the test fails, the output is printed into the standard error stream.
- *
- * <p>After the test completes, the standard output capabilities are restored.
- *
- * @author Dmytro Dashenkov
- */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(MuteLoggingExtension.class)
-public @interface MuteLogging {
-}
+import javax.annotation.ParametersAreNonnullByDefault;
