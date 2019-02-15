@@ -149,7 +149,8 @@ public abstract class SpineProtoGenerator {
     private CodeGeneratorResponse process(TypeSet types) {
         Set<CompilerOutput> rawOutput = types.types()
                                              .stream()
-                                             .flatMap(type -> processType(type).stream())
+                                             .map(this::processType)
+                                             .flatMap(Collection::stream)
                                              .collect(toSet());
         Collection<File> mergedFiles = mergeFiles(rawOutput);
         CodeGeneratorResponse response = CodeGeneratorResponse
