@@ -40,6 +40,7 @@ public class GeneratedMethodGenerator extends SpineProtoGenerator {
     private final OptionsScanner optionsScanner;
 
     private GeneratedMethodGenerator(SpineProtocConfig config) {
+        super();
         optionsScanner = new OptionsScanner(config);
     }
 
