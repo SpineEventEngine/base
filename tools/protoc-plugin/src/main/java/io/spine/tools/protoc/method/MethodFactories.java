@@ -97,6 +97,8 @@ final class MethodFactories {
         if (MethodFactory.class.isAssignableFrom(generatorClass)) {
             return Optional.of((Class<MethodFactory>) generatorClass);
         }
+        Logging.get(MethodFactories.class)
+               .warn("Class {} does not implement io.spine.protoc.MethodFactory.", fqn);
         return Optional.empty();
     }
 

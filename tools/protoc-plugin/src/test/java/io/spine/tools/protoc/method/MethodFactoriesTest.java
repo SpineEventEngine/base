@@ -25,46 +25,148 @@ import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.GeneratedMethod;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.google.common.truth.Truth.assertThat;
+
 @DisplayName("MessageFactories should")
 class MethodFactoriesTest {
 
-    @DisplayName("return NoOpMessageFactory if generator name is")
-    @ParameterizedTest(name = "\"{0}\"")
-    @ValueSource(strings = {"", "  "})
-    void returnNoOpFactoryForBlankGeneratorName(String generatorName) {
-        GeneratedMethod spec = GeneratedMethod.newBuilder()
-                                              .setGeneratorName(generatorName)
-                                              .build();
-        MethodFactory result = MethodFactories.newFactoryFor(spec);
-        Assertions.assertEquals(MethodFactories.NoOpMethodFactory.INSTANCE, result);
+    @DisplayName("return NoOpMessageFactory")
+    @Nested
+    class ReturnNoOpFactory {
+
+        @DisplayName("if generator name is")
+        @ParameterizedTest(name = "\"{0}\"")
+        @ValueSource(strings = {"", "  "})
+        void forBlankGeneratorName(String generatorName) {
+            GeneratedMethod spec = specForGenerator(generatorName);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if implementation does not have a public constructor")
+        @Test
+        void withoutPublicConstructor() {
+            GeneratedMethod spec = specForGenerator(WithoutPublicConstructor.class);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if implementation has private constructor")
+        @Test
+        void withPrivateConstructor() {
+            GeneratedMethod spec = specForGenerator(WithPrivateConstructor.class);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if exception is thrown during instantiation")
+        @Test
+        void exceptionThrownDuringInstantiation() {
+            GeneratedMethod spec = specForGenerator(WithExceptionDuringInstantiation.class);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if implementation is abstract")
+        @Test
+        void implementationIsAbstract() {
+            GeneratedMethod spec = specForGenerator(WithAbstractImplementation.class);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if implementation is not found or not available")
+        @Test
+        void classIsNotFound() {
+            GeneratedMethod spec = specForGenerator("com.example.NonExistingMethodFactory");
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
+
+        @DisplayName("if supplied class does not implement MethodFactory")
+        @Test
+        void doesNotImplementMethodFactory() {
+            GeneratedMethod spec = specForGenerator(NotMethodFactory.class);
+
+            assertThat(MethodFactories.newFactoryFor(spec))
+                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+        }
     }
 
     @DisplayName("return MethodFactory instance by it's fully-qualified name")
     @Test
     void returnMethodFactoryInstanceByFullyQualifiedName() {
-        GeneratedMethod spec = GeneratedMethod.newBuilder()
-                                              .setGeneratorName(StubMethodFactory.class.getName())
-                                              .build();
-        MethodFactory result = MethodFactories.newFactoryFor(spec);
-        Assertions.assertTrue(result instanceof StubMethodFactory);
+        GeneratedMethod spec = specForGenerator(StubMethodFactory.class);
+
+        assertThat(MethodFactories.newFactoryFor(spec))
+                .isInstanceOf(StubMethodFactory.class);
     }
 
-    public static class StubMethodFactory implements MethodFactory {
-
-        private final ImmutableList<MethodBody> methods = ImmutableList.of();
-
-        public StubMethodFactory() {
-        }
+    private static class EmptyMethodFactory implements MethodFactory {
 
         @Override
         public ImmutableList<MethodBody> newMethodsFor(MessageType messageType) {
-            return methods;
+            return ImmutableList.of();
         }
+    }
+
+    public static class StubMethodFactory extends EmptyMethodFactory {
+
+        public StubMethodFactory() {
+        }
+    }
+
+    @SuppressWarnings("EmptyClass") // for test reasons
+    private static class WithoutPublicConstructor extends EmptyMethodFactory {
+
+    }
+
+    public static class WithPrivateConstructor extends EmptyMethodFactory {
+
+        private WithPrivateConstructor() {
+        }
+    }
+
+    public static class WithExceptionDuringInstantiation extends EmptyMethodFactory {
+
+        public WithExceptionDuringInstantiation() {
+            throw new RuntimeException("Test exception during instantiation");
+        }
+    }
+
+    // for test reasons
+    @SuppressWarnings({"AbstractClassNeverImplemented", "ConstructorNotProtectedInAbstractClass"})
+    public abstract static class WithAbstractImplementation extends EmptyMethodFactory {
+
+        public WithAbstractImplementation() {
+        }
+    }
+
+    public static class NotMethodFactory {
+
+        public NotMethodFactory() {
+        }
+    }
+
+    private static GeneratedMethod specForGenerator(Class<?> generator) {
+        return specForGenerator(generator.getName());
+    }
+
+    private static GeneratedMethod specForGenerator(String generatorName) {
+        return GeneratedMethod.newBuilder()
+                              .setGeneratorName(generatorName)
+                              .build();
     }
 }
