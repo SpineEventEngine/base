@@ -46,17 +46,35 @@ import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toKnownTypes;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toSmokeTestModelCompiler;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Descriptor reference should")
 class DescriptorReferenceTest {
 
-    private static final Path PATH = Files.createTempDir()
-                                          .toPath();
+    private Path path = newTempDir();
+
+    private static Path newTempDir() {
+        return Files.createTempDir()
+                    .getAbsoluteFile()
+                    .toPath();
+    }
 
     @AfterEach
     void tearDown() throws IOException {
-        MoreFiles.deleteRecursively(PATH, RecursiveDeleteOption.ALLOW_INSECURE);
+        MoreFiles.deleteRecursively(path, RecursiveDeleteOption.ALLOW_INSECURE);
+        path = newTempDir();
+    }
+
+    @Test
+    @DisplayName("not gather resources that have not been written")
+    void fromWrongFile() {
+        // Not writing `knownTypes` anywhere
+        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+        File resourcesDirectory = path.toFile();
+        boolean isDirectory = resourcesDirectory
+                .isDirectory();
+        assertTrue(isDirectory && resourcesDirectory.listFiles().length == 0);
     }
 
     @Test
@@ -64,8 +82,8 @@ class DescriptorReferenceTest {
     void unaffectedByCrLf() {
         DescriptorReference knownTypes = toKnownTypes().withCrLf();
         DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withCrLf();
-        knownTypes.writeTo(PATH);
-        smokeTestModelCompiler.writeTo(PATH);
+        knownTypes.writeTo(path);
+        smokeTestModelCompiler.writeTo(path);
 
         assertExactAmount();
     }
@@ -75,8 +93,8 @@ class DescriptorReferenceTest {
     void unaffectedByLf() {
         DescriptorReference knownTypes = toKnownTypes().withLf();
         DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withLf();
-        knownTypes.writeTo(PATH);
-        smokeTestModelCompiler.writeTo(PATH);
+        knownTypes.writeTo(path);
+        smokeTestModelCompiler.writeTo(path);
 
         assertExactAmount();
     }
@@ -85,7 +103,7 @@ class DescriptorReferenceTest {
     @DisplayName("throw if the referenced path points to a file instead of a directory")
     void throwsOnDirectory() {
         DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
-        File newFile = createFileUnderPath(PATH);
+        File newFile = createFileUnderPath(path);
         assertThrows(IllegalStateException.class, () -> knownTypes.writeTo(newFile.toPath()));
     }
 
@@ -93,17 +111,17 @@ class DescriptorReferenceTest {
     @DisplayName("throw if the referenced path is null")
     void throwsOnNull() {
         DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
-        assertThrows(NullPointerException.class, ()->knownTypes.writeTo(null));
+        assertThrows(NullPointerException.class, () -> knownTypes.writeTo(null));
     }
 
-    private static void assertExactAmount() {
+    private void assertExactAmount() {
         Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator());
         List<ResourceReference> result = newArrayList(existingDescriptors);
         assertEquals(2, result.size());
     }
 
-    private static Iterator<URL> iterator() {
-        File descRef = new File(PATH.toFile(), DescriptorReference.FILE_NAME);
+    private Iterator<URL> iterator() {
+        File descRef = new File(path.toFile(), DescriptorReference.FILE_NAME);
         ImmutableList.Builder<URL> builder = ImmutableList.builder();
         try {
             List<String> descriptorReferences = Files.readLines(descRef, Charsets.UTF_8);
@@ -113,7 +131,7 @@ class DescriptorReferenceTest {
             }
         } catch (IOException e) {
             throw newIllegalStateException(e, "Cannot compose URL from %s",
-                                           PATH.toAbsolutePath());
+                                           path.toAbsolutePath());
         }
 
         return builder.build()
