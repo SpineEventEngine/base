@@ -131,7 +131,7 @@ class DescriptorReferenceTest {
     }
 
     @Test
-    @DisplayName("throw on missing `desc.ref` file")
+    @DisplayName("return an empty iterator upon missing `desc.ref` file")
     void onMissingDescRef() {
         Iterator<URL> emptyIterator = emptyIterator();
         Iterator<ResourceReference> result = DescriptorReference.loadFromResources(emptyIterator);
