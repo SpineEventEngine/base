@@ -21,8 +21,8 @@
 package io.spine.tools.protoc.method;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import com.squareup.javapoet.MethodSpec;
 import io.spine.code.proto.MessageType;
+import io.spine.protoc.MethodBody;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.ProtocPluginFiles;
@@ -39,16 +39,11 @@ final class MessageMethod extends AbstractCompilerOutput {
 
     /**
      * Creates a new instance of {@code MessageMethod}.
-     *
-     * @param spec
-     *         the enrichment accessor spec to create accessor from
      */
-    static MessageMethod fromSpec(GeneratedMethodSpec spec) {
-        MessageType enrichment = spec.messageType();
-        MethodSpec javaCode = spec.toJavaCode();
-        String insertionPoint = InsertionPoint.CLASS_SCOPE.forType(enrichment);
-        String content = javaCode.toString();
-        File.Builder file = ProtocPluginFiles.prepareFile(enrichment);
+    static MessageMethod from(MethodBody methodBody, MessageType messageType) {
+        String insertionPoint = InsertionPoint.CLASS_SCOPE.forType(messageType);
+        String content = methodBody.value();
+        File.Builder file = ProtocPluginFiles.prepareFile(messageType);
         File result = file.setInsertionPoint(insertionPoint)
                           .setContent(content)
                           .build();
