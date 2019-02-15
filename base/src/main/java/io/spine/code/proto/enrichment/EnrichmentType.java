@@ -24,17 +24,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.MessageType;
-import io.spine.code.proto.PackageName;
-import io.spine.code.proto.ref.DirectTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
 
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.code.proto.enrichment.EnrichmentForOption.sourceTypesOf;
 
 /**
  * An enrichment type is a message which is added to a context of another message
@@ -69,41 +65,6 @@ public final class EnrichmentType extends MessageType {
         checkNotNull(type);
         Descriptor descriptor = type.descriptor();
         EnrichmentType result = new EnrichmentType(descriptor);
-        return result;
-    }
-
-    /**
-     * Obtains type references to the enrichable messages.
-     */
-    private static ImmutableList<TypeRef> sourceTypesOf(Descriptor type) {
-        List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
-        checkArgument(
-                !sourceRefs.isEmpty(),
-                "Cannot create an enrichment type for `%s` which does not have the" +
-                        " `(enrichment_for)` option.", type.getFullName()
-        );
-        PackageName thisPackage = PackageName.of(type);
-        ImmutableList<TypeRef> result =
-                sourceRefs.stream()
-                          .map(TypeRef::parse)
-                          .map(ref -> ensurePackage(thisPackage, ref))
-                          .collect(toImmutableList());
-        return result;
-    }
-
-    /**
-     * Makes sure that if a passed type reference is direct reference to a type,
-     * it is a fully-qualified reference, or becomes one as the result of this method.
-     */
-    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
-        if (!(ref instanceof DirectTypeRef)) {
-            return ref;
-        }
-        DirectTypeRef directRef = (DirectTypeRef) ref;
-        if (directRef.hasPackage()) {
-            return ref;
-        }
-        DirectTypeRef result = directRef.withPackage(packageName);
         return result;
     }
 

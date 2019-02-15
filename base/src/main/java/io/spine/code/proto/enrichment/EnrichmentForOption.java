@@ -22,19 +22,29 @@ package io.spine.code.proto.enrichment;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import io.spine.code.proto.MessageOption;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.PackageName;
+import io.spine.code.proto.StringOption;
+import io.spine.code.proto.ref.DirectTypeRef;
+import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Parses {@code (enrichment_for)} option value of an enrichment type definition.
  *
  * <p>The option may have one or more reference to a type separated with commas.
  */
-public final class EnrichmentForOption extends MessageOption<String> {
+public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
+        Descriptor, MessageOptions> {
 
     /** Splits type references separated with commas. */
     private static final Splitter splitter = Splitter.on(',')
@@ -60,9 +70,55 @@ public final class EnrichmentForOption extends MessageOption<String> {
     }
 
     private Optional<String> valueFrom(DescriptorProto object) {
-        DescriptorProtos.MessageOptions options = object.getOptions();
+        MessageOptions options = object.getOptions();
         return options.hasExtension(extension())
                ? Optional.of(options.getExtension(extension()))
                : Optional.empty();
+    }
+
+    @Override
+    protected MessageOptions optionsFrom(Descriptor object) {
+        return object.getOptions();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Obtains type references to the enrichable messages.
+     */
+    @Override
+    protected Collection<TypeRef> parsedValueFrom(Descriptor type) {
+        String rawString = valueFrom(type).orElseThrow(
+                () -> newIllegalArgumentException(
+                        "Cannot create an enrichment type for `%s` which does not have the" +
+                                " `(enrichment_for)` option.", type.getFullName()));
+        List<String> rawTypeRefs = splitter.splitToList(rawString);
+        PackageName thisPackage = PackageName.of(type);
+        ImmutableList<TypeRef> result = rawTypeRefs.stream()
+                                                   .map(TypeRef::parse)
+                                                   .map(ref -> ensurePackage(thisPackage, ref))
+                                                   .collect(toImmutableList());
+        return result;
+    }
+
+    static ImmutableList<TypeRef> sourceTypesOf(Descriptor type){
+        Collection<TypeRef> result = new EnrichmentForOption().parsedValueFrom(type);
+        return ImmutableList.copyOf(result);
+    }
+
+    /**
+     * Makes sure that if a passed type reference is direct reference to a type,
+     * it is a fully-qualified reference, or becomes one as the result of this method.
+     */
+    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
+        if (!(ref instanceof DirectTypeRef)) {
+            return ref;
+        }
+        DirectTypeRef directRef = (DirectTypeRef) ref;
+        if (directRef.hasPackage()) {
+            return ref;
+        }
+        DirectTypeRef result = directRef.withPackage(packageName);
+        return result;
     }
 }
