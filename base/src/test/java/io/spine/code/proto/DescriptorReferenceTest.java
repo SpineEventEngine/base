@@ -46,8 +46,10 @@ import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyIterator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("HardcodedLineSeparator") /* Resistance to different separators is
@@ -126,6 +128,14 @@ class DescriptorReferenceTest {
     void throwsOnNull() {
         DescriptorReference knownTypes = knownTypesRef();
         assertThrows(NullPointerException.class, () -> knownTypes.writeTo(null));
+    }
+
+    @Test
+    @DisplayName("throw on missing `desc.ref` file")
+    void onMissingDescRef() {
+        Iterator<URL> emptyIterator = emptyIterator();
+        Iterator<ResourceReference> result = DescriptorReference.loadFromResources(emptyIterator);
+        assertFalse(result.hasNext());
     }
 
     private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {

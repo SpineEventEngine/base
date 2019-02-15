@@ -103,7 +103,7 @@ public final class DescriptorReference {
     }
 
     /**
-     * A testing method that reproduces a common pattern - a reference gets appended, but with
+     * A testing method that reproduces an illegal situation - a reference gets appended, but with
      * some newline symbol at the end. This should not affect extraction of resources.
      */
     @VisibleForTesting
