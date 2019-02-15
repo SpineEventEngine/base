@@ -29,6 +29,7 @@ dependencies {
 
     testCompile project(':base')
     testImplementation project(':model-compiler')
+    testImplementation deps.test.truth
 }
 
 protobuf {
