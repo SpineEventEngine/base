@@ -18,44 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.code.proto.enrichment;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.Optional;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
- * Attempts to parse the passed value by sequentially invoking provider functions.
+ * Provides references to fields of messages that serve as input for creating a field of
+ * an enrichment message.
  */
-final class Parsing {
+@Immutable
+final class FieldDef {
 
-    private final String value;
-    private final ImmutableList<Parser> parsers;
+    private final FieldDescriptor descriptor;
+    private final ImmutableList<FieldRef> sources;
 
-    Parsing(String value, Parser... parser) {
-        this.value = value;
-        this.parsers = ImmutableList.copyOf(parser);
+    FieldDef(FieldDescriptor descriptor) {
+        this.descriptor = descriptor;
+        this.sources = FieldRef.allFrom(descriptor.toProto());
     }
 
-    Optional<TypeRef> parse() {
-        for (Parser parser : parsers) {
-            Optional<TypeRef> found = parser.parse(value);
-            if (found.isPresent()) {
-                return found;
-            }
-        }
-        return Optional.empty();
+    boolean matchesType(Descriptor type) {
+        boolean result = sources.stream()
+                                .anyMatch(r -> r.matchesType(type));
+        return result;
     }
 
-    /**
-     * Provides a type reference <em>if</em> the passed string matches the format
-     * requirements of the provider, otherwise returns an empty {@code Optional}.
-     *
-     * @see CompositeTypeRef#parse(String)
-     * @see TypeRef#parse(String)
-     */
-    @FunctionalInterface
-    interface Parser {
-        Optional<TypeRef> parse(String reference);
+    FieldDescriptor descriptor() {
+        return descriptor;
     }
 }

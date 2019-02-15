@@ -80,7 +80,8 @@ final class InPackage extends AbstractTypeRef {
      */
     @Override
     public boolean test(Descriptor message) {
-        boolean result = packageName.equals(PackageName.of(message));
+        PackageName packageOfMessage = PackageName.of(message);
+        boolean result = packageOfMessage.isInnerOf(packageName);
         return result;
     }
 }
