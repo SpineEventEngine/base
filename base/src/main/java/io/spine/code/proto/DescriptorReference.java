@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -102,6 +103,26 @@ public final class DescriptorReference {
     }
 
     /**
+     * A testing method that reproduces a common pattern - a reference gets appended, but with
+     * some newline symbol at the end. This should not affect extraction of resources.
+     */
+    @VisibleForTesting
+    void writeToWithSeparator(Path directory, String separator) {
+        checkNotNull(directory);
+        Path targetFile = directory.resolve(FILE_NAME);
+        Files2.ensureFile(targetFile);
+        try {
+            List<String> resources = Files.readAllLines(targetFile);
+            resources.add(reference + separator);
+            String result = String.join(SEPARATOR, resources)
+                                  .trim();
+            Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    /**
      * Loads all the referenced descriptor set files from the current classpath.
      *
      * @return an iterator over application resources
@@ -131,6 +152,10 @@ public final class DescriptorReference {
         }
     }
 
+    ResourceReference asResource() {
+        return new ResourceReference(reference);
+    }
+
     /**
      * A reference to an application resource.
      */
@@ -156,6 +181,23 @@ public final class DescriptorReference {
         @Override
         public String toString() {
             return resourceName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ResourceReference reference = (ResourceReference) o;
+            return Objects.equals(resourceName, reference.resourceName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(resourceName);
         }
     }
 }
