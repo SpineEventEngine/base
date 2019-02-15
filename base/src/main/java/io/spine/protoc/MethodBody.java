@@ -35,7 +35,10 @@ public final class MethodBody extends StringTypeValue {
         super(value);
     }
 
-    MethodBody of(String value) {
+    /**
+     * Instantiates a new message body out of the passed value.
+     */
+    public static MethodBody of(String value) {
         return new MethodBody(value);
     }
 
