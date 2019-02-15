@@ -140,7 +140,7 @@ class KnownTypesTest {
 
     private void assertIsKnownType(String protoTypeName, String javaClassName) {
         TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoTypeName);
-        ClassName className = knownTypes.getClassName(url);
+        ClassName className = knownTypes.classNameOf(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaClassName, className.value());
     }
@@ -156,7 +156,7 @@ class KnownTypesTest {
                                 .join(parentsAndTypeName);
         TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoName);
 
-        ClassName className = knownTypes.getClassName(url);
+        ClassName className = knownTypes.classNameOf(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaName, className.value());
     }
