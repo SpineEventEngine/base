@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import io.spine.io.Files2;
 import io.spine.io.ResourceFiles;
 
 import java.io.File;
@@ -88,16 +89,12 @@ public final class DescriptorReference {
      */
     public void writeTo(Path directory) {
         checkNotNull(directory);
-
-        directory.toFile()
-                 .mkdirs();
         Path targetFile = directory.resolve(FILE_NAME);
+        Files2.ensureFile(targetFile);
         try {
-            targetFile.toFile()
-                      .createNewFile();
-            List<String> strings = Files.readAllLines(targetFile);
-            strings.add(reference);
-            String result = String.join(SEPARATOR, strings)
+            List<String> resources = Files.readAllLines(targetFile);
+            resources.add(reference);
+            String result = String.join(SEPARATOR, resources)
                                   .trim();
             Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
         } catch (IOException e) {
