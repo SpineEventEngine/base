@@ -94,7 +94,7 @@ final class MethodFactories {
             return Optional.empty();
         }
         Class<?> generatorClass = generator.get();
-        if (generatorClass.isAssignableFrom(MethodFactory.class)) {
+        if (MethodFactory.class.isAssignableFrom(generatorClass)) {
             return Optional.of((Class<MethodFactory>) generatorClass);
         }
         return Optional.empty();

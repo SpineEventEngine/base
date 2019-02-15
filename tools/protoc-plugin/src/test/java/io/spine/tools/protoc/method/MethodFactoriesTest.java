@@ -20,10 +20,14 @@
 
 package io.spine.tools.protoc.method;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.code.proto.MessageType;
+import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.GeneratedMethod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -41,4 +45,26 @@ class MethodFactoriesTest {
         Assertions.assertEquals(MethodFactories.NoOpMethodFactory.INSTANCE, result);
     }
 
+    @DisplayName("return MethodFactory instance by it's fully-qualified name")
+    @Test
+    void returnMethodFactoryInstanceByFullyQualifiedName() {
+        GeneratedMethod spec = GeneratedMethod.newBuilder()
+                                              .setGeneratorName(StubMethodFactory.class.getName())
+                                              .build();
+        MethodFactory result = MethodFactories.newFactoryFor(spec);
+        Assertions.assertTrue(result instanceof StubMethodFactory);
+    }
+
+    public static class StubMethodFactory implements MethodFactory {
+
+        private final ImmutableList<MethodBody> methods = ImmutableList.of();
+
+        public StubMethodFactory() {
+        }
+
+        @Override
+        public ImmutableList<MethodBody> newMethodsFor(MessageType messageType) {
+            return methods;
+        }
+    }
 }
