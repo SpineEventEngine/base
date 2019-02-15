@@ -78,6 +78,17 @@ class DescriptorReferenceTest {
     }
 
     @Test
+    @DisplayName("not gather resources that have been written to a different `desc.ref` file")
+    void fromDifferentFile() {
+        Path emptyPath = newTempDir();
+        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+        knownTypes.writeTo(path);
+        File[] files = emptyPath.toFile()
+                                .listFiles();
+        assertEquals(0, files.length);
+    }
+
+    @Test
     @DisplayName("be unaffected by Windows line separator")
     void unaffectedByCrLf() {
         DescriptorReference knownTypes = toKnownTypes().withCrLf();
@@ -115,12 +126,12 @@ class DescriptorReferenceTest {
     }
 
     private void assertExactAmount() {
-        Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator());
+        Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator(path));
         List<ResourceReference> result = newArrayList(existingDescriptors);
         assertEquals(2, result.size());
     }
 
-    private Iterator<URL> iterator() {
+    private static Iterator<URL> iterator(Path path) {
         File descRef = new File(path.toFile(), DescriptorReference.FILE_NAME);
         ImmutableList.Builder<URL> builder = ImmutableList.builder();
         try {
