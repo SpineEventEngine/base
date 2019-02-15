@@ -47,8 +47,12 @@ message GeneratedMethod {
     // A fully-qualified name of the message generator class.
     string generator_name = 1;
 
-    // A name of a message option that the message should have.
-    string option_name = 2;
+    // A filter that defines for which message types the method generator should be used.
+    oneof type_filter {
+
+        // A name of a message option that the message should have.
+        string option_name = 2;
+    }
 }
 
 // Configuration of the Spine Protoc plugin.
