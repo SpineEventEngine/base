@@ -28,7 +28,6 @@ import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating additional message methods.
@@ -56,7 +55,7 @@ public class GeneratedMethodGenerator extends SpineProtoGenerator {
         if (!(type instanceof MessageType)) {
             return ImmutableList.of();
         }
-        List<CompilerOutput> result = optionsScanner.scan((MessageType) type);
+        ImmutableList<CompilerOutput> result = optionsScanner.scan((MessageType) type);
         return result;
     }
 

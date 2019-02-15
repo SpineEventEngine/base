@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.MessageType;
+import io.spine.protoc.MethodGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -44,7 +45,7 @@ final class OptionsScanner {
     /**
      * Finds methods to be generated for the given type.
      */
-    List<CompilerOutput> scan(MessageType type) {
+    ImmutableList<CompilerOutput> scan(MessageType type) {
         List<GeneratedMethod> generatedMethods = config.getGeneratedMethodList();
 
         return generatedMethods
@@ -57,8 +58,13 @@ final class OptionsScanner {
                 .collect(toImmutableList());
     }
 
-    private static List<CompilerOutput> generateMethods(GeneratedMethod spec, MessageType type) {
-        //TODO:2019-02-14:yuri.sergiichuk: implement using MethodGenerator instantiated from the spec generator_name
-        return ImmutableList.of();
+    private static ImmutableList<CompilerOutput>
+    generateMethods(GeneratedMethod spec, MessageType type) {
+        MethodGenerator generator = MethodGeneratorFactory.forMethodSpec(spec);
+        return generator
+                .generate(type)
+                .stream()
+                .map(methodBody -> MessageMethod.from(methodBody, type))
+                .collect(toImmutableList());
     }
 }
