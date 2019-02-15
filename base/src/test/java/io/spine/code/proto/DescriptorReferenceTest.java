@@ -27,6 +27,7 @@ import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
 import com.google.common.io.Resources;
 import io.spine.code.proto.DescriptorReference.ResourceReference;
+import io.spine.util.Exceptions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.code.proto.DescriptorReference.loadFromResources;
@@ -44,6 +46,7 @@ import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toKnownTypes;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toSmokeTestModelCompiler;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Descriptor reference should")
 class DescriptorReferenceTest {
@@ -78,6 +81,21 @@ class DescriptorReferenceTest {
         assertExactAmount();
     }
 
+    @Test
+    @DisplayName("throw if the referenced path points to a file instead of a directory")
+    void throwsOnDirectory() {
+        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+        File newFile = createFileUnderPath(PATH);
+        assertThrows(IllegalStateException.class, () -> knownTypes.writeTo(newFile.toPath()));
+    }
+
+    @Test
+    @DisplayName("throw if the referenced path is null")
+    void throwsOnNull() {
+        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+        assertThrows(NullPointerException.class, ()->knownTypes.writeTo(null));
+    }
+
     private static void assertExactAmount() {
         Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator());
         List<ResourceReference> result = newArrayList(existingDescriptors);
@@ -101,4 +119,26 @@ class DescriptorReferenceTest {
         return builder.build()
                       .iterator();
     }
+
+    @SuppressWarnings("TailRecursion")
+    // As long as the specified path does not contain files with names matching a random UUID value,
+    // recursive calls will not happen.
+    private static File createFileUnderPath(Path path) {
+        // Ensures no existing file with such name.
+        String fileName = UUID.randomUUID()
+                              .toString();
+        File result = new File(path.toFile(), fileName);
+        if (result.exists()) {
+            return createFileUnderPath(path);
+        }
+        try {
+            result.createNewFile();
+            return result;
+        } catch (IOException e) {
+            throw Exceptions.newIllegalStateException(e,
+                                                      "Could not create a temporary file in %s.",
+                                                      path.toAbsolutePath());
+        }
+    }
+
 }

@@ -65,14 +65,21 @@ public class DescriptorReferenceTestEnv {
 
         /** Returns a reference to a descriptor with {@code "\r\n"} newline symbol at the end. */
         public DescriptorReference withCrLf() {
-            String result = referencedFile + WINDOWS_SEPARATOR;
-            return DescriptorReference.toOneFile(new File(result));
+            String path = referencedFile + WINDOWS_SEPARATOR;
+            File result = new File(path);
+            return DescriptorReference.toOneFile(result);
         }
 
         /** Returns a reference to a descriptor with {@code "\n"} newline symbol at the end. */
-        public DescriptorReference withLf(){
-            String result = referencedFile + UNIX_SEPARATOR;
-            return DescriptorReference.toOneFile(new File(result));
+        public DescriptorReference withLf() {
+            String path = referencedFile + UNIX_SEPARATOR;
+            File result = new File(path);
+            return DescriptorReference.toOneFile(result);
+        }
+
+        public DescriptorReference withoutNewLine() {
+            File result = new File(referencedFile);
+            return DescriptorReference.toOneFile(result);
         }
     }
 }
