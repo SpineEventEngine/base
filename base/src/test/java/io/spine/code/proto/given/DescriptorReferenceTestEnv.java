@@ -51,7 +51,8 @@ public class DescriptorReferenceTestEnv {
     }
 
     /**
-     * A reference to a descriptor that contains a new line at its end.
+     * A reference to a descriptor that might contain a new line at its end,
+     * which should not affect the way the referenced file is handled.
      */
     public static class ReferenceWithNewline {
 
@@ -77,6 +78,7 @@ public class DescriptorReferenceTestEnv {
             return DescriptorReference.toOneFile(result);
         }
 
+        /** Returns a reference to a descriptor without a newline symbol at the end. */
         public DescriptorReference withoutNewLine() {
             File result = new File(referencedFile);
             return DescriptorReference.toOneFile(result);
