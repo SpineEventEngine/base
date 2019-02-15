@@ -47,6 +47,7 @@ final class MessageOptions {
                 .build();
     }
 
+    /** Prevents instantiation of this utility class. */
     private MessageOptions() {
     }
 
