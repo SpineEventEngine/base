@@ -33,6 +33,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * An utility class for instantiating {@link MethodFactory} for a particular
+ * {@link GeneratedMethod} specification.
+ */
 final class MethodFactories {
 
     /** Prevents instantiation of this utility class. */
