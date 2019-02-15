@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.protoc.MethodBody;
-import io.spine.protoc.MethodGenerator;
+import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.GeneratedMethod;
 import org.slf4j.Logger;
 
@@ -33,85 +33,88 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
-final class MethodGeneratorFactory {
+final class MethodFactories {
 
     /** Prevents instantiation of this utility class. */
-    private MethodGeneratorFactory() {
+    private MethodFactories() {
     }
 
     /**
-     * Creates an instance of a {@link MethodGenerator} out of the supplied
+     * Creates an instance of a {@link MethodFactory} out of the supplied
      * {@link GeneratedMethod specification}.
      *
      * <p>If specification is invalid or the specified class for some reason could not be
-     * instantiated a {@link NoOpMethodGenerator} instance is returned.
+     * instantiated a {@link NoOpMethodFactory} instance is returned.
      */
-    static MethodGenerator forMethodSpec(GeneratedMethod spec) {
+    static MethodFactory newFactoryFor(GeneratedMethod spec) {
         String generatorName = spec.getGeneratorName();
         if (Strings.isNullOrEmpty(generatorName)) {
-            return NoOpMethodGenerator.INSTANCE;
+            return NoOpMethodFactory.INSTANCE;
         }
-        MethodGenerator result = loadMethodGenerator(generatorName);
+        MethodFactory result = from(generatorName);
         return result;
     }
 
-    private static MethodGenerator loadMethodGenerator(String fqn) {
-        Optional<Class<MethodGenerator>> generatorClass = loadMethodGeneratorClass(fqn);
-        if (!generatorClass.isPresent()) {
-            return NoOpMethodGenerator.INSTANCE;
+    /**
+     * Instantiates a new {@link MethodFactory} from the specified fully-qualified class name.
+     */
+    private static MethodFactory from(String fqn) {
+        Optional<Class<MethodFactory>> factoryClass = methodFactoryClass(fqn);
+        if (!factoryClass.isPresent()) {
+            return NoOpMethodFactory.INSTANCE;
         }
-        Logger logger = Logging.get(MethodGeneratorFactory.class);
+        Logger logger = Logging.get(MethodFactories.class);
         try {
-            MethodGenerator generator = generatorClass.get()
-                                                      .getConstructor()
-                                                      .newInstance();
+            MethodFactory generator = factoryClass.get()
+                                                  .getConstructor()
+                                                  .newInstance();
             return generator;
         } catch (InstantiationException e) {
-            logger.warn("Unable to instantiate MethodGenerator {}.", fqn, e);
+            logger.warn("Unable to instantiate MethodFactory {}.", fqn, e);
         } catch (IllegalAccessException e) {
-            logger.warn("Unable to access MethodGenerator {}.", fqn, e);
+            logger.warn("Unable to access MethodFactory {}.", fqn, e);
         } catch (NoSuchMethodException e) {
-            logger.warn("Unable to get constructor for MethodGenerator {}.", fqn, e);
+            logger.warn("Unable to get constructor for MethodFactory {}.", fqn, e);
         } catch (InvocationTargetException e) {
-            logger.warn("Unable to invoke public constructor for MethodGenerator {}.", fqn, e);
+            logger.warn("Unable to invoke public constructor for MethodFactory {}.", fqn, e);
         }
-        return NoOpMethodGenerator.INSTANCE;
+        return NoOpMethodFactory.INSTANCE;
     }
 
-    private static Optional<Class<MethodGenerator>> loadMethodGeneratorClass(String fqn) {
-        Optional<Class<?>> generator = loadGeneratorClass(fqn);
+    private static Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
+        Optional<Class<?>> generator = factoryClass(fqn);
         if (!generator.isPresent()) {
             return Optional.empty();
         }
         Class<?> generatorClass = generator.get();
-        if (generatorClass.isAssignableFrom(MethodGenerator.class)) {
-            //noinspection unchecked we do already know that the class represents MethodGenerator
-            return Optional.of((Class<MethodGenerator>) generatorClass);
+        if (generatorClass.isAssignableFrom(MethodFactory.class)) {
+            //noinspection unchecked we do already know that the class represents MethodFactory
+            return Optional.of((Class<MethodFactory>) generatorClass);
         }
         return Optional.empty();
     }
 
-    private static Optional<Class<?>> loadGeneratorClass(String fqn) {
+    private static Optional<Class<?>> factoryClass(String fqn) {
         try {
             Class<?> generator = Class.forName(fqn);
             return Optional.ofNullable(generator);
         } catch (ClassNotFoundException e) {
-            Logging.get(MethodGeneratorFactory.class)
-                   .warn("Unable to resolve MethodGenerator {}.", fqn, e);
+            Logging.get(MethodFactories.class)
+                   .warn("Unable to resolve MethodFactory {}.", fqn, e);
         }
         return Optional.empty();
     }
 
     /**
-     * A no-operation stub implementation of a {@link MethodGenerator} that is used if the
+     * A no-operation stub implementation of a {@link MethodFactory} that is used if the
      * method generator is not configured and/or available.
      */
-    private static class NoOpMethodGenerator implements MethodGenerator {
+    private static class NoOpMethodFactory implements MethodFactory {
 
-        private static final MethodGenerator INSTANCE = new NoOpMethodGenerator();
+        private static final MethodFactory INSTANCE = new NoOpMethodFactory();
 
         @Override
-        public List<MethodBody> generate(MessageType messageType) {
+        public List<MethodBody> newMethodsFor(MessageType ignored) {
             return ImmutableList.of();
         }
     }

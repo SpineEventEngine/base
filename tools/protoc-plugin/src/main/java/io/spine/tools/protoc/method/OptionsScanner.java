@@ -22,7 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.MessageType;
-import io.spine.protoc.MethodGenerator;
+import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -60,9 +60,9 @@ final class OptionsScanner {
 
     private static ImmutableList<CompilerOutput>
     generateMethods(GeneratedMethod spec, MessageType type) {
-        MethodGenerator generator = MethodGeneratorFactory.forMethodSpec(spec);
+        MethodFactory generator = MethodFactories.newFactoryFor(spec);
         return generator
-                .generate(type)
+                .newMethodsFor(type)
                 .stream()
                 .map(methodBody -> MessageMethod.from(methodBody, type))
                 .collect(toImmutableList());
