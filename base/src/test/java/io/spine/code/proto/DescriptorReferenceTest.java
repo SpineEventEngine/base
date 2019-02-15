@@ -62,13 +62,13 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("be unaffected by Windows line separator")
     void unaffectedByCrLf(@TempDir Path path) {
-        assertResourcesWrittenWithSeparator(path, WINDOWS_SEPARATOR);
+        assertDescriptorRefsWrittenCorrectly(path, WINDOWS_SEPARATOR, knownTypesRef(), randomRef());
     }
 
     @Test
     @DisplayName("be unaffected by Unix line separator")
     void unaffectedByLf(@TempDir Path path) {
-        assertResourcesWrittenWithSeparator(path, UNIX_SEPARATOR);
+        assertDescriptorRefsWrittenCorrectly(path, UNIX_SEPARATOR, knownTypesRef(), randomRef());
     }
 
     @Test
@@ -103,14 +103,14 @@ class DescriptorReferenceTest {
         assertEquals(expected, actual);
     }
 
-    private static void assertResourcesWrittenWithSeparator(@TempDir Path path,
-                                                            String separator) {
-        DescriptorReference knownTypes = knownTypesRef();
-        DescriptorReference smokeTestModelCompiler = smokeTestModelCompilerRef();
-        knownTypes.writeToWithSeparator(path, separator);
-        smokeTestModelCompiler.writeToWithSeparator(path, separator);
+    private static void assertDescriptorRefsWrittenCorrectly(@TempDir Path path,
+                                                             String separator,
+                                                             DescriptorReference... descriptors) {
+        for (DescriptorReference descriptor : descriptors) {
+            descriptor.writeToWithSeparator(path, separator);
+        }
 
-        assertResourcesLoaded(path, knownTypes, smokeTestModelCompiler);
+        assertResourcesLoaded(path, descriptors);
     }
 
     @Test
