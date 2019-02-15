@@ -52,13 +52,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("HardcodedLineSeparator") /* Resistance to different separators is
-                                               a part of the test. */
 @DisplayName("Descriptor reference should")
 @ExtendWith(TempDirectory.class)
 class DescriptorReferenceTest {
 
-    private static final String WINDOWS_SEPARATOR = "\r\n";
+    @SuppressWarnings("HardcodedLineSeparator")
+    private static final String WINDOWS_SEPARATOR = "\r\n"; /* Resistance to different separators is
+                                                             * a part of the test. */
+    @SuppressWarnings("HardcodedLineSeparator")
     private static final String UNIX_SEPARATOR = "\n";
 
     @Test
@@ -109,7 +110,7 @@ class DescriptorReferenceTest {
                                                              String separator,
                                                              DescriptorReference... descriptors) {
         for (DescriptorReference descriptor : descriptors) {
-            descriptor.writeToWithSeparator(path, separator);
+            descriptor.writeTo(path, separator);
         }
 
         assertResourcesLoaded(path, descriptors);
@@ -159,7 +160,7 @@ class DescriptorReferenceTest {
 
     @SuppressWarnings("TailRecursion")
     // As long as the specified path does not contain files with names matching a random UUID value,
-    // recursive calls will not happen.
+    // recursive calls should not happen.
     private static File createFileUnderPath(Path path) {
         // Ensures no existing file with such name.
         String fileName = UUID.randomUUID()
@@ -178,4 +179,3 @@ class DescriptorReferenceTest {
         }
     }
 }
-

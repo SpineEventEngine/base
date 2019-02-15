@@ -56,7 +56,7 @@ public final class DescriptorReference {
     static final String FILE_NAME = "desc.ref";
 
     @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
-                                                       platform-dependent issues in `desc.ref`.*/
+                                    platform-dependent issues in `desc.ref`.*/
     private static final String SEPARATOR = "\n";
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
@@ -77,6 +77,44 @@ public final class DescriptorReference {
     public static DescriptorReference toOneFile(File file) {
         checkNotNull(file);
         return new DescriptorReference(file.getName());
+    }
+
+    /**
+     * Loads all the referenced descriptor set files from the current classpath.
+     *
+     * @return an iterator over application resources
+     */
+    static Iterator<ResourceReference> loadAll() {
+        return loadFromResources(ResourceFiles.loadAll(FILE_NAME));
+    }
+
+    /**
+     * Loads all the referenced descriptor set files from the specified iterator of {@code URL}s.
+     *
+     * @param resources
+     *         {@code URL}s that contain referenced to descriptor sets
+     * @return an {@code Iterator} of referenced to resources, described by the given {@code
+     *         resources} iterator
+     */
+    @VisibleForTesting
+    static Iterator<ResourceReference> loadFromResources(Iterator<URL> resources) {
+        return stream(resources)
+                .map(DescriptorReference::readCatalog)
+                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog)
+                                                 .stream())
+                .distinct()
+                .map(ResourceReference::new)
+                .iterator();
+    }
+
+    private static String readCatalog(URL resourceUrl) {
+        try (InputStream catalogStream = resourceUrl.openStream()) {
+            byte[] catalogBytes = toByteArray(catalogStream);
+            String catalog = new String(catalogBytes, UTF_8);
+            return catalog;
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     /**
@@ -103,17 +141,30 @@ public final class DescriptorReference {
     }
 
     /**
-     * A testing method that reproduces an illegal situation - a reference gets appended, but with
-     * some newline symbol at the end. This should not affect extraction of resources.
+     * Writes this reference to a {@code desc.ref} file under the specified directory.
+     *
+     * <p>Appends the specified newline string after the reference text.
+     *
+     * <p>Preserves all of the existing content of the {@code desc.ref} file.
+     *
+     * <p>If the specified directory does not contain a {@code desc.ref} file, it gets
+     * created.
+     *
+     * <p>If one of the directories in the specified {@code Path} does ont exist, it gets created.
+     *
+     * @param directory
+     *         directory that contains a desired {@code desc.ref} file
+     * @param newline
+     *         a newline symbol that gets written after the reference text
      */
     @VisibleForTesting
-    void writeToWithSeparator(Path directory, String separator) {
+    void writeTo(Path directory, String newline) {
         checkNotNull(directory);
         Path targetFile = directory.resolve(FILE_NAME);
         Files2.ensureFile(targetFile);
         try {
             List<String> resources = Files.readAllLines(targetFile);
-            resources.add(reference + separator);
+            resources.add(reference + newline);
             String result = String.join(SEPARATOR, resources)
                                   .trim();
             Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
@@ -122,36 +173,8 @@ public final class DescriptorReference {
         }
     }
 
-    /**
-     * Loads all the referenced descriptor set files from the current classpath.
-     *
-     * @return an iterator over application resources
-     */
-    static Iterator<ResourceReference> loadAll() {
-        return loadFromResources(ResourceFiles.loadAll(FILE_NAME));
-    }
-
+    /** Obtains a {@code ResourceReference} that is described by this descriptor reference. */
     @VisibleForTesting
-    static Iterator<ResourceReference> loadFromResources(Iterator<URL> resources) {
-        return stream(resources)
-                .map(DescriptorReference::readCatalog)
-                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog)
-                                                 .stream())
-                .distinct()
-                .map(ResourceReference::new)
-                .iterator();
-    }
-
-    private static String readCatalog(URL resourceUrl) {
-        try (InputStream catalogStream = resourceUrl.openStream()) {
-            byte[] catalogBytes = toByteArray(catalogStream);
-            String catalog = new String(catalogBytes, UTF_8);
-            return catalog;
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
-
     ResourceReference asResource() {
         return new ResourceReference(reference);
     }
@@ -179,8 +202,8 @@ public final class DescriptorReference {
         }
 
         @Override
-        public String toString() {
-            return resourceName;
+        public int hashCode() {
+            return Objects.hash(resourceName);
         }
 
         @Override
@@ -196,8 +219,8 @@ public final class DescriptorReference {
         }
 
         @Override
-        public int hashCode() {
-            return Objects.hash(resourceName);
+        public String toString() {
+            return resourceName;
         }
     }
 }

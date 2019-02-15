@@ -30,8 +30,6 @@ import java.util.UUID;
 /**
  * A utility class that provides references to descriptors.
  */
-@SuppressWarnings("HardcodedLineSeparator")
-// Resistance against different line separators is one of the things being tested.
 public class DescriptorReferenceTestEnv {
 
     // Prevent instantiation.
