@@ -212,9 +212,20 @@ public final class TypeSet {
     public Set<Type<?, ?>> types() {
         ImmutableSet<Type<?, ?>> types = ImmutableSet
                 .<Type<?, ?>>builder()
+                .addAll(messagesAndEnums())
+                .addAll(serviceTypes.values())
+                .build();
+        return types;
+    }
+
+    /**
+     * Obtains message and enum types contained in this set.
+     */
+    public Set<Type<?, ?>> messagesAndEnums() {
+        ImmutableSet<Type<?, ?>> types = ImmutableSet
+                .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())
-                .addAll(serviceTypes.values())
                 .build();
         return types;
     }

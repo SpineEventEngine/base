@@ -20,10 +20,3 @@ message FieldContainer {
     repeated TaskId repeated_field = 6;
     map<int64, TaskId> map_field = 7;
 }
-
-enum TaskType {
-    CREATE = 0;
-    READ = 1;
-    UPDATE = 2;
-    DELETE = 3;
-}
