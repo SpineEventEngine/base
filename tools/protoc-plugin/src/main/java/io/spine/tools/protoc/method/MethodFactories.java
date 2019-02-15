@@ -114,6 +114,7 @@ final class MethodFactories {
      * A no-operation stub implementation of a {@link MethodFactory} that is used if the
      * method generator is not configured and/or available.
      */
+    @Immutable
     private static class NoOpMethodFactory implements MethodFactory {
 
         private static final MethodFactory INSTANCE = new NoOpMethodFactory();
