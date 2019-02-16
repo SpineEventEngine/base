@@ -25,6 +25,7 @@ import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
+import io.spine.test.code.enrichment.type.EttAlternativeFieldNames;
 import io.spine.test.code.enrichment.type.EttFieldSelection;
 import io.spine.test.code.enrichment.type.EttOnAnotherPackageMessage;
 import io.spine.test.code.enrichment.type.EttOnDeepPackage;
@@ -106,6 +107,13 @@ class EnrichmentTypeTest {
                 does not match the the name referenced in the `(by)` option. */
         }
 
+        @Test
+        @DisplayName("for message types with alternative field names")
+        void altFieldNames() {
+            assertSourceClassesOf(EttAlternativeFieldNames.class)
+                    .containsExactly(EttSharingRequestApproved.class,
+                                     EttPermissionGrantedEvent.class);
+        }
 
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
             Descriptor descriptor = TypeName.of(cls)
