@@ -204,19 +204,19 @@ class TypeUrlTest {
     @Test
     @DisplayName("obtain prefix")
     void getPrefix() {
-        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), stringValueTypeUrl.getPrefix());
+        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), stringValueTypeUrl.prefix());
     }
 
     @Test
     @DisplayName("obtain type name")
     void getTypeName() {
-        assertEquals(STRING_VALUE_TYPE_NAME, stringValueTypeUrl.getTypeName());
+        assertEquals(STRING_VALUE_TYPE_NAME, stringValueTypeUrl.typeName());
     }
 
     @Test
     @DisplayName("convert to TypeName")
     void toTypeName() {
-        assertEquals(TypeName.of(STRING_VALUE_TYPE_NAME), stringValueTypeUrl.toName());
+        assertEquals(TypeName.of(STRING_VALUE_TYPE_NAME), stringValueTypeUrl.toTypeName());
     }
 
     private static void assertCreatesTypeUrlFromEnum(String typeUrlPrefix,
@@ -230,8 +230,8 @@ class TypeUrlTest {
 
     private static void assertIsStringValueUrl(TypeUrl typeUrl) {
         assertEquals(STRING_VALUE_TYPE_URL_STR, typeUrl.value());
-        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), typeUrl.getPrefix());
-        assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.getTypeName());
+        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), typeUrl.prefix());
+        assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.typeName());
         assertEquals(StringValue.class.getSimpleName(), TypeName.from(typeUrl)
                                                                 .simpleName());
     }

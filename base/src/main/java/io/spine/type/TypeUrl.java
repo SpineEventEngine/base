@@ -228,31 +228,20 @@ public final class TypeUrl implements Serializable {
      * @throws IllegalStateException if the type URL represents an enum
      */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        return toName().toMessageClass();
-    }
-
-    /**
-     * Obtains a descriptor for the type of this URL.
-     *
-     * @return {@link Descriptor} if the URL represents a proto type,
-     *         {@link EnumDescriptor} if the URL represents a proto enum
-     */
-    @Internal
-    public GenericDescriptor getDescriptor() {
-        return type().descriptor();
+        return toTypeName().toMessageClass();
     }
 
     /**
      * Obtains the prefix of the type URL.
      */
-    public String getPrefix() {
+    public String prefix() {
         return prefix;
     }
 
     /**
      * Obtains the type name.
      */
-    public String getTypeName() {
+    public String typeName() {
         return typeName;
     }
 
@@ -264,7 +253,7 @@ public final class TypeUrl implements Serializable {
     /**
      * Converts the instance to {@code TypeName}.
      */
-    public TypeName toName() {
+    public TypeName toTypeName() {
         return TypeName.of(typeName);
     }
 
@@ -278,8 +267,8 @@ public final class TypeUrl implements Serializable {
 
     private Type<?, ?> type() throws UnknownTypeException {
         return KnownTypes.instance()
-                         .find(toName())
-                         .orElseThrow(() -> new UnknownTypeException(toName().value()));
+                         .find(toTypeName())
+                         .orElseThrow(() -> new UnknownTypeException(toTypeName().value()));
     }
 
     @Override

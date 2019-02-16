@@ -79,7 +79,7 @@ public final class TypeName extends StringTypeValue {
      */
     public static TypeName from(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
-        return create(typeUrl.getTypeName());
+        return create(typeUrl.typeName());
     }
 
     /**

@@ -123,7 +123,7 @@ public class KnownTypes implements Serializable {
      */
     public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
         if (!instance().contains(type)) {
-            throw new UnknownTypeException(type.getTypeName());
+            throw new UnknownTypeException(type.typeName());
         }
         ClassName result = instance().get(type);
         return result;
@@ -163,7 +163,7 @@ public class KnownTypes implements Serializable {
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
         Set<TypeUrl> result = allUrls().stream()
-                                       .filter(url -> url.toName()
+                                       .filter(url -> url.toTypeName()
                                                          .belongsTo(packageName))
                                        .collect(toSet());
         return result;
@@ -190,7 +190,7 @@ public class KnownTypes implements Serializable {
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {
-        TypeName name = typeUrl.toName();
+        TypeName name = typeUrl.toTypeName();
         boolean result = typeSet.contains(name);
         return result;
     }
@@ -212,7 +212,7 @@ public class KnownTypes implements Serializable {
     }
 
     private ClassName get(TypeUrl typeUrl) {
-        Type type = get(typeUrl.toName());
+        Type type = get(typeUrl.toTypeName());
         ClassName result = type.javaClassName();
         return result;
     }
