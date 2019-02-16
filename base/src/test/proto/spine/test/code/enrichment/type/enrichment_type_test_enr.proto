@@ -77,3 +77,33 @@ message EttOnDeepPackage {
 
     string time_zone = 1 [(by) = "user_uid"];
 }
+
+// The enrichment for all the events declared under the
+// `spine.test.code.enrichment.type.user.permission` package, and one event under the `user`
+// package.
+message EttSelectiveComposite {
+    option (enrichment_for) =
+           "spine.test.code.enrichment.type.user.permission.*,"
+           "spine.test.code.enrichment.type.user.EttUserLoggedInEvent";
+
+    // A non-zero security warning code on an event, or zero if everything is OK.
+    int32 security_warn = 1 [(by) = "user_uid"];
+}
+
+// The enrichment referring events from multiple sub-packages.
+message EttMultiPackageComposite {
+    option (enrichment_for) =
+           "spine.test.code.enrichment.type.user.permission.*,"
+           "spine.test.code.enrichment.type.user.sharing.*";
+
+    int32 sharing_type = 1 [(by) = "user_uid"];
+}
+
+// The enrichment for two types with different field names serving as the input.
+message EttAlternativeFieldNames {
+    option (enrichment_for) =
+           "spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved,"
+           "spine.test.code.enrichment.type.user.permission.EttPermissionGrantedEvent";
+
+    int32 user_google_uid = 1 [(by) = "second_user_uid | user_uid"];
+}

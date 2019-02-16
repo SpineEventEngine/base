@@ -35,6 +35,8 @@ import io.spine.test.code.enrichment.type.user.EttUserLoggedOutEvent;
 import io.spine.test.code.enrichment.type.user.EttUserMentionedEvent;
 import io.spine.test.code.enrichment.type.user.permission.EttPermissionGrantedEvent;
 import io.spine.test.code.enrichment.type.user.permission.EttPermissionRevokedEvent;
+import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved;
+import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -68,16 +70,37 @@ class EnrichmentTypeTest {
                 `(by)` option. */
         }
 
+        /**
+         * Tests that <em>all</em> events from a package are present.
+         *
+         * @apiNote If this test breaks with {@code unexpected (<number>)} output in console,
+         * which is followed with the enumeration of unexpected types like this:
+         *
+         * <pre>
+         * unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
+         * </pre>
+         *
+         * please make sure these types are added in the verification list in the body of this
+         * method. Do not relax the checking condition.
+         */
         @Test
-        @DisplayName("for all messages inside nested packages")
+        @DisplayName("for all messages inside nested packages, matching the field reference")
         void deepPackage() {
             IterableSubject assertThat = assertSourceClassesOf(EttOnDeepPackage.class);
-            assertThat.containsExactly(EttUserLoggedInEvent.class,
-                                       EttUserMentionedEvent.class,
-                                       EttUserLoggedOutEvent.class,
+            assertThat.containsExactly(
+                    // Events from the root of the `user` package.
+                    EttUserLoggedInEvent.class,
+                    EttUserMentionedEvent.class,
+                    EttUserLoggedOutEvent.class,
 
-                                       EttPermissionGrantedEvent.class,
-                                       EttPermissionRevokedEvent.class);
+                    // Events from the `permission` sub-package.
+                    EttPermissionGrantedEvent.class,
+                    EttPermissionRevokedEvent.class,
+
+                    // Events from the `sharing` sub-package.
+                    EttSharingRequestSent.class,
+                    EttSharingRequestApproved.class
+            );
 
             assertThat.doesNotContain(EttUserDeletedEvent.class); /* because its field name
                 does not match the the name referenced in the `(by)` option. */

@@ -20,40 +20,22 @@
 
 syntax = "proto3";
 
-package spine.test.code.enrichment.type.user;
+package spine.test.code.enrichment.type.user.sharing;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.type.user";
-option java_outer_classname = "EttUserEventsProto";
+option java_package = "io.spine.test.code.enrichment.type.user.sharing";
+option java_outer_classname = "EttSharingEventsProto";
 option java_multiple_files = true;
 
-// On special case for naming types in this file
-// ---------------------------------------------
-// Messages declared in this file are having the `Event` suffix to make it easier to distinguish
-// them from enrichment types of these test environment family types.
-// Normally, we would not use the `Event` suffix, sticking to names used in the Domain Language.
-//
-
-message EttUserLoggedInEvent {
+message EttSharingRequestSent {
     string user_uid = 1;
+    string second_user_uid = 2;
 }
 
-message EttUserMentionedEvent {
+message EttSharingRequestApproved {
     string user_uid = 1;
-    string title = 2;
-}
-
-message EttUserLoggedOutEvent {
-    string user_uid = 1;
-    string owner_email = 2;
-}
-
-// Unlike other events, this one does not have the common field named `user_uid`.
-// This is to test exclusion of messages that do not match field names specified in
-// the `(by)` field option.
-//
-message EttUserDeletedEvent {
-    string deleted_uid = 1;
+    string second_user_uid = 2;
+    int64 timestamp = 3;
 }
