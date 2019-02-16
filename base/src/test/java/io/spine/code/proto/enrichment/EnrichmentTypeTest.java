@@ -86,7 +86,7 @@ class EnrichmentTypeTest {
 
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
             Descriptor descriptor = TypeName.of(cls)
-                                            .getMessageDescriptor();
+                                            .messageDescriptor();
             EnrichmentType et = EnrichmentType.from(descriptor);
             ImmutableSet<MessageType> sources = et.knownSources();
             ImmutableSet<? extends Class<? extends Message>> sourceClasses =

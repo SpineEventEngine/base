@@ -228,7 +228,7 @@ public final class TypeUrl implements Serializable {
      * @throws IllegalStateException if the type URL represents an enum
      */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        return toName().getMessageClass();
+        return toName().toMessageClass();
     }
 
     /**

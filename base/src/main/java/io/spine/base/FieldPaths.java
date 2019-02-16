@@ -185,7 +185,7 @@ public final class FieldPaths {
         checkNotNull(path);
         checkNotEmpty(path);
 
-        Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
+        Descriptor descriptor = TypeName.of(holderType).messageDescriptor();
         FieldDescriptor field = findField(path, descriptor);
         if (field == null) {
             throw newIllegalArgumentException(

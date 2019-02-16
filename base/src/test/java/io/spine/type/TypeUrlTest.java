@@ -233,7 +233,7 @@ class TypeUrlTest {
         assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), typeUrl.getPrefix());
         assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.getTypeName());
         assertEquals(StringValue.class.getSimpleName(), TypeName.from(typeUrl)
-                                                                .getSimpleName());
+                                                                .simpleName());
     }
 
     @Test
