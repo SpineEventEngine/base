@@ -18,30 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+syntax = "proto3";
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+package spine.test.code.enrichment.type.event;
 
-/**
- * A base class for value objects storing references to message classes.
- */
-public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
+import "spine/options.proto";
 
-    private static final long serialVersionUID = 0L;
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.enrichment.type.event";
+option java_outer_classname = "EnrichmentTypeTestEventsProto";
+option java_multiple_files = true;
 
-    /** The name of the type of proto messages represented by this class. */
-    private final TypeName typeName;
+import "spine/test/code/enrichment/type/enrichment_type_test_identifiers.proto";
 
-    protected MessageClass(Class<? extends M> value) {
-        super(value);
-        this.typeName = TypeName.of(value);
-    }
-
-    /**
-     * Obtains a type name of the messages of this class.
-     */
-    public TypeName typeName() {
-        return typeName;
-    }
+message EttProjectCreated {
+    EttProjectId project_id = 1;
+    EttTeamId team_id = 2;
 }
+

@@ -20,6 +20,7 @@
 
 package io.spine.code.proto.enrichment;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -62,14 +63,19 @@ public final class EnrichmentType extends MessageType {
         this.fields = fieldDefinitionsOf(type);
     }
 
+    @VisibleForTesting
+    static EnrichmentType from(Descriptor descriptor) {
+        EnrichmentType result = new EnrichmentType(descriptor);
+        return result;
+    }
+
     /**
      * Obtains an enrichment type for the passed name.
      */
     public static EnrichmentType from(MessageType type) {
         checkNotNull(type);
         Descriptor descriptor = type.descriptor();
-        EnrichmentType result = new EnrichmentType(descriptor);
-        return result;
+        return from(descriptor);
     }
 
     /**

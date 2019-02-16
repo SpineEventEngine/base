@@ -18,30 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+syntax = "proto3";
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+package spine.test.code.enrichment.type.user;
 
-/**
- * A base class for value objects storing references to message classes.
- */
-public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
+import "spine/options.proto";
 
-    private static final long serialVersionUID = 0L;
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.enrichment.type.user";
+option java_outer_classname = "EttUserEventsProto";
+option java_multiple_files = true;
 
-    /** The name of the type of proto messages represented by this class. */
-    private final TypeName typeName;
+message EttUserLoggedInEvent {
+    string user_uid = 1;
+}
 
-    protected MessageClass(Class<? extends M> value) {
-        super(value);
-        this.typeName = TypeName.of(value);
-    }
+message EttUserMentionedEvent {
+    string user_uid = 1;
+    string title = 2;
+}
 
-    /**
-     * Obtains a type name of the messages of this class.
-     */
-    public TypeName typeName() {
-        return typeName;
-    }
+message EttUserLoggedOutEvent {
+    string user_uid = 1;
+    string owner_email = 2;
+}
+
+// Unlike other events, this one does not have the common field named `user_uid`.
+// This is to test exclusion of messages that do not match field names specified in
+// the `(by)` field option.
+//
+message EttUserDeletedEvent {
+    string deleted_uid = 1;
 }

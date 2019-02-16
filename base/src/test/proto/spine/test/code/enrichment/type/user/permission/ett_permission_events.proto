@@ -18,30 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+syntax = "proto3";
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+package spine.test.code.enrichment.type.user.permission;
 
-/**
- * A base class for value objects storing references to message classes.
- */
-public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
+import "spine/options.proto";
 
-    private static final long serialVersionUID = 0L;
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.enrichment.type.user.permission";
+option java_outer_classname = "EttPermissionEventsProto";
+option java_multiple_files = true;
 
-    /** The name of the type of proto messages represented by this class. */
-    private final TypeName typeName;
+message EttPermissionGrantedEvent {
 
-    protected MessageClass(Class<? extends M> value) {
-        super(value);
-        this.typeName = TypeName.of(value);
-    }
+    string user_uid = 1;
+    string permission_id = 2;
 
-    /**
-     * Obtains a type name of the messages of this class.
-     */
-    public TypeName typeName() {
-        return typeName;
-    }
+    // ID of the user who granted the permission
+    string granter_uid = 3;
+}
+
+// This event does not have the `granter_uid` field.
+message EttPermissionRevokedEvent {
+
+    string user_uid = 1;
+    string permission_id = 2;
+    string cause = 3;
 }
