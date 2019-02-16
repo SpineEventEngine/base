@@ -21,7 +21,7 @@
 package io.spine.json;
 
 import com.google.common.collect.Lists;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.json.given.Node;
@@ -57,10 +57,11 @@ class JsonTest extends UtilityClassTest<Json> {
     void build_JsonFormat_registry_for_known_types() {
         JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
 
-        List<Descriptors.Descriptor> found = Lists.newLinkedList();
+        List<Descriptor> found = Lists.newLinkedList();
         for (TypeUrl typeUrl : KnownTypes.instance()
                                          .allUrls()) {
-            Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.typeName());
+            Descriptor descriptor = typeRegistry.find(typeUrl.toTypeName()
+                                                             .value());
             if (descriptor != null) {
                 found.add(descriptor);
             }

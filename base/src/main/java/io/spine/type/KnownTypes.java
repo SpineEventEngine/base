@@ -123,7 +123,8 @@ public class KnownTypes implements Serializable {
      */
     public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
         if (!instance().contains(type)) {
-            throw new UnknownTypeException(type.typeName());
+            throw new UnknownTypeException(type.toTypeName()
+                                               .value());
         }
         ClassName result = instance().get(type);
         return result;

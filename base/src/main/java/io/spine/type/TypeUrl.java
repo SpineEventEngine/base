@@ -68,11 +68,11 @@ public final class TypeUrl implements Serializable {
     private final String prefix;
 
     /** The name of the Protobuf type. */
-    private final String typeName;
+    private final TypeName typeName;
 
     private TypeUrl(String prefix, String typeName) {
         this.prefix = checkNotNull(prefix);
-        this.typeName = checkNotEmptyOrBlank(typeName);
+        this.typeName = TypeName.of(checkNotEmptyOrBlank(typeName));
     }
 
     /**
@@ -214,7 +214,7 @@ public final class TypeUrl implements Serializable {
      * @return the Java class representing the Protobuf type
      * @throws UnknownTypeException if there is no corresponding Java class
      */
-    public Class<?> getJavaClass() throws UnknownTypeException {
+    public Class<?> toJavaClass() throws UnknownTypeException {
         return type().javaClass();
     }
 
@@ -238,13 +238,6 @@ public final class TypeUrl implements Serializable {
         return prefix;
     }
 
-    /**
-     * Obtains the type name.
-     */
-    public String typeName() {
-        return typeName;
-    }
-
     @Override
     public String toString() {
         return value();
@@ -254,21 +247,19 @@ public final class TypeUrl implements Serializable {
      * Converts the instance to {@code TypeName}.
      */
     public TypeName toTypeName() {
-        return TypeName.of(typeName);
+        return typeName;
     }
 
     /**
      * Obtains string representation of the URL.
      */
     public String value() {
-        String result = composeTypeUrl(prefix, typeName);
+        String result = composeTypeUrl(prefix, typeName.value());
         return result;
     }
 
     private Type<?, ?> type() throws UnknownTypeException {
-        return KnownTypes.instance()
-                         .find(toTypeName())
-                         .orElseThrow(() -> new UnknownTypeException(toTypeName().value()));
+        return toTypeName().type();
     }
 
     @Override

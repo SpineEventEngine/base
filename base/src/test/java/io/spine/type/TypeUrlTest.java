@@ -210,7 +210,8 @@ class TypeUrlTest {
     @Test
     @DisplayName("obtain type name")
     void getTypeName() {
-        assertEquals(STRING_VALUE_TYPE_NAME, stringValueTypeUrl.typeName());
+        assertEquals(STRING_VALUE_TYPE_NAME, stringValueTypeUrl.toTypeName()
+                                                               .value());
     }
 
     @Test
@@ -231,7 +232,8 @@ class TypeUrlTest {
     private static void assertIsStringValueUrl(TypeUrl typeUrl) {
         assertEquals(STRING_VALUE_TYPE_URL_STR, typeUrl.value());
         assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), typeUrl.prefix());
-        assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.typeName());
+        assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.toTypeName()
+                                                    .value());
         assertEquals(StringValue.class.getSimpleName(), TypeName.from(typeUrl)
                                                                 .simpleName());
     }
@@ -242,7 +244,7 @@ class TypeUrlTest {
         TypeUrl url = TypeUrl.parse("unknown/JavaClass");
         assertThrows(
                 UnknownTypeException.class,
-                url::getJavaClass
+                url::toJavaClass
         );
     }
 

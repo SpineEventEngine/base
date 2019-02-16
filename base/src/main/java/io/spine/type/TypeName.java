@@ -79,7 +79,7 @@ public final class TypeName extends StringTypeValue {
      */
     public static TypeName from(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
-        return create(typeUrl.typeName());
+        return typeUrl.toTypeName();
     }
 
     /**
@@ -179,7 +179,7 @@ public final class TypeName extends StringTypeValue {
         return inPackage;
     }
 
-    private Type<?, ?> type() {
+    Type<?, ?> type() {
         Type<?, ?> result = KnownTypes.instance()
                                       .find(this)
                                       .orElseThrow(() -> new UnknownTypeException(value()));
