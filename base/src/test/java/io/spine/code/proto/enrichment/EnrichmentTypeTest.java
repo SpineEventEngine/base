@@ -23,6 +23,7 @@ package io.spine.code.proto.enrichment;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
 import io.spine.test.code.enrichment.type.EttAlternativeFieldNames;
@@ -107,14 +108,46 @@ class EnrichmentTypeTest {
                 does not match the the name referenced in the `(by)` option. */
         }
 
-        @Test
+        @Nested
         @DisplayName("for message types with alternative field names")
-        void altFieldNames() {
-            assertSourceClassesOf(EttAlternativeFieldNames.class)
-                    .containsExactly(EttSharingRequestApproved.class,
-                                     EttPermissionGrantedEvent.class);
+        class AltFieldNames {
+
+            private final EnrichmentType et =
+                    EnrichmentType.from(EttAlternativeFieldNames.getDescriptor());
+
+            private final FieldDescriptor targetField =
+                    et.descriptor()
+                      .findFieldByName("user_google_uid");
+
+            @Test
+            @DisplayName("matching the referenced classes")
+            void matchingClasses() {
+                assertSourceClassesOf(EttAlternativeFieldNames.class)
+                        .containsExactly(EttSharingRequestApproved.class,
+                                         EttPermissionGrantedEvent.class);
+            }
+
+            @Test
+            @DisplayName("matching fields in the source types by the order")
+            void altFieldNames() {
+
+                assertSourceMatch(EttSharingRequestApproved.class, "second_user_uid");
+                assertSourceMatch(EttPermissionGrantedEvent.class, "user_uid");
+            }
+
+            private void assertSourceMatch(Class<? extends Message> source, String fieldName) {
+                MessageType srcType = MessageType.of(TypeName.of(source)
+                                                             .messageDescriptor());
+                FieldMatch match = et.sourceFieldsOf(srcType);
+                assertThat(match.sourceOf(targetField))
+                        .isEqualTo(srcType.descriptor()
+                                          .findFieldByName(fieldName));
+            }
         }
 
+        /**
+         * Creates an iterable subject for source types of the passed enrichment class.
+         */
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
             Descriptor descriptor = TypeName.of(cls)
                                             .messageDescriptor();

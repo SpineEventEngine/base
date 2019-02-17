@@ -25,6 +25,10 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
+import java.util.Optional;
+
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+
 /**
  * Provides references to fields of messages that serve as input for creating a field of
  * an enrichment message.
@@ -32,12 +36,19 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 @Immutable
 final class FieldDef {
 
+    /**
+     * The descriptor of the enrichment type field.
+     */
     private final FieldDescriptor descriptor;
+
+    /**
+     * Field references found in the {@code (by)} option of the field.
+     */
     private final ImmutableList<FieldRef> sources;
 
-    FieldDef(FieldDescriptor descriptor) {
-        this.descriptor = descriptor;
-        this.sources = FieldRef.allFrom(descriptor.toProto());
+    FieldDef(FieldDescriptor field) {
+        this.descriptor = field;
+        this.sources = FieldRef.allFrom(field.toProto());
     }
 
     boolean matchesType(Descriptor type) {
@@ -46,6 +57,32 @@ final class FieldDef {
         return result;
     }
 
+    /**
+     * Obtains the field descriptor of the source message field.
+     *
+     * @param type the passed type must have a {@linkplain #matchesType(Descriptor) matching} field
+     * @return the source field descriptor
+     */
+    FieldDescriptor find(Descriptor type) {
+        for (FieldRef ref : sources) {
+            Optional<FieldDescriptor> field = ref.find(type);
+            if (field.isPresent()) {
+                return field.get();
+            }
+        }
+        throw noneFieldMatches(type);
+    }
+
+    private IllegalArgumentException noneFieldMatches(Descriptor type) {
+        return newIllegalArgumentException(
+                "Unable to obtain any of the referenced fields `%s` in the message type `%s`.",
+                sources, type.getFullName()
+        );
+    }
+
+    /**
+     * Obtains the descriptor of the enrichment field.
+     */
     FieldDescriptor descriptor() {
         return descriptor;
     }

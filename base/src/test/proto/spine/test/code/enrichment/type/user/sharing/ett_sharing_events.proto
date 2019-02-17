@@ -34,6 +34,12 @@ message EttSharingRequestSent {
     string second_user_uid = 2;
 }
 
+// This message has both fields that are used in the `EttAlternativeFieldNames` enrichment
+// definition field mapping. See `enrichment_type_test.enr.proto`.
+//
+// Only the second field should be matched to this type.
+// See Java test case `EnrichmentTypeTest.AltFieldNames`.
+//
 message EttSharingRequestApproved {
     string user_uid = 1;
     string second_user_uid = 2;

@@ -105,5 +105,5 @@ message EttAlternativeFieldNames {
            "spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved,"
            "spine.test.code.enrichment.type.user.permission.EttPermissionGrantedEvent";
 
-    int32 user_google_uid = 1 [(by) = "second_user_uid | user_uid"];
+    string user_google_uid = 1 [(by) = "second_user_uid | user_uid"];
 }
