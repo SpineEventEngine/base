@@ -82,13 +82,24 @@ final class FieldDef {
      * @param type the passed type must have a {@linkplain #matchesType(Descriptor) matching} field
      * @return the source field descriptor
      */
-    FieldDescriptor find(Descriptor type) {
+    FieldSource find(Descriptor type) {
+        FieldRef contextReference = null;
         for (FieldRef ref : sources) {
             Optional<FieldDescriptor> field = ref.find(type);
             if (field.isPresent()) {
-                return field.get();
+                return new FieldSource(field.get(), ref);
+            }
+            if (ref.isContext()) {
+                contextReference = ref;
             }
         }
+        // None of the field references match the type, but we found context reference.
+        // Let's use it as the source.
+        if (contextReference != null) {
+            return new FieldSource(null, contextReference);
+        }
+        // None of the field references match. We don't have a context reference either.
+        // There is no information on how to construct the enrichment field.
         throw noneFieldMatches(type);
     }
 

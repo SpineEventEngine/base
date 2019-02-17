@@ -139,7 +139,10 @@ class EnrichmentTypeTest {
                 MessageType srcType = MessageType.of(TypeName.of(source)
                                                              .messageDescriptor());
                 FieldMatch match = et.sourceFieldsOf(srcType);
-                assertThat(match.sourceOf(targetField))
+                FieldSource fieldSource = match.sourceOf(targetField);
+                assertThat(fieldSource.viaReference())
+                        .isFalse();
+                assertThat(fieldSource.descriptor())
                         .isEqualTo(srcType.descriptor()
                                           .findFieldByName(fieldName));
             }

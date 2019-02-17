@@ -52,7 +52,7 @@ final class FieldMatch {
      * Maps the descriptor of the enrichment field, to instruction of how to obtain the value
      * of the enrichment field.
      */
-    private final ImmutableBiMap<FieldDescriptor, FieldDescriptor> targetToSource;
+    private final ImmutableBiMap<FieldDescriptor, FieldSource> targetToSource;
 
     FieldMatch(MessageType sourceType, MessageType targetType, ImmutableList<FieldDef> fields) {
         checkNotNull(sourceType);
@@ -71,8 +71,8 @@ final class FieldMatch {
                       ));
     }
 
-    FieldDescriptor sourceOf(FieldDescriptor target) {
-        FieldDescriptor source = targetToSource.get(target);
+    FieldSource sourceOf(FieldDescriptor target) {
+        FieldSource source = targetToSource.get(target);
         checkNotNull(source,
                      "Unable to find source field for the target field `%s`.",
                      target.getFullName());
