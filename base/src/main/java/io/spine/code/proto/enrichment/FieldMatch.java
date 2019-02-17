@@ -49,10 +49,10 @@ final class FieldMatch {
     private final MessageType targetType;
 
     /**
-     * Maps the descriptor of the enrichment source field, to the descriptor of
-     * the enrichment field.
+     * Maps the descriptor of the enrichment field, to instruction of how to obtain the value
+     * of the enrichment field.
      */
-    private final ImmutableBiMap<FieldDescriptor, FieldDescriptor> sourceToTarget;
+    private final ImmutableBiMap<FieldDescriptor, FieldDescriptor> targetToSource;
 
     FieldMatch(MessageType sourceType, MessageType targetType, ImmutableList<FieldDef> fields) {
         checkNotNull(sourceType);
@@ -63,17 +63,16 @@ final class FieldMatch {
         );
         this.sourceType = sourceType;
         this.targetType = targetType;
-        this.sourceToTarget =
+        this.targetToSource =
                 fields.stream()
                       .collect(toImmutableBiMap(
-                              f -> f.find(sourceType.descriptor()),
-                              FieldDef::descriptor
+                              FieldDef::descriptor,
+                              f -> f.find(sourceType.descriptor())
                       ));
     }
 
     FieldDescriptor sourceOf(FieldDescriptor target) {
-        FieldDescriptor source = sourceToTarget.inverse()
-                                               .get(target);
+        FieldDescriptor source = targetToSource.get(target);
         checkNotNull(source,
                      "Unable to find source field for the target field `%s`.",
                      target.getFullName());
@@ -82,7 +81,7 @@ final class FieldMatch {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourceType, targetType, sourceToTarget);
+        return Objects.hash(sourceType, targetType, targetToSource);
     }
 
     @Override
@@ -96,6 +95,6 @@ final class FieldMatch {
         final FieldMatch other = (FieldMatch) obj;
         return Objects.equals(sourceType, other.sourceType)
                 && Objects.equals(targetType, other.targetType)
-                && Objects.equals(sourceToTarget, other.sourceToTarget);
+                && Objects.equals(targetToSource, other.targetToSource);
     }
 }
