@@ -130,14 +130,12 @@ class EnrichmentTypeTest {
             @Test
             @DisplayName("matching fields in the source types by the order")
             void altFieldNames() {
-
                 assertSourceMatch(EttSharingRequestApproved.class, "second_user_uid");
                 assertSourceMatch(EttPermissionGrantedEvent.class, "user_uid");
             }
 
             private void assertSourceMatch(Class<? extends Message> source, String fieldName) {
-                MessageType srcType = MessageType.of(TypeName.of(source)
-                                                             .messageDescriptor());
+                MessageType srcType = MessageType.of(descriptorOf(source));
                 FieldMatch match = et.sourceFieldsOf(srcType);
                 FieldSource fieldSource = match.sourceOf(targetField);
                 assertThat(fieldSource.viaReference())
@@ -152,9 +150,7 @@ class EnrichmentTypeTest {
          * Creates an iterable subject for source types of the passed enrichment class.
          */
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
-            Descriptor descriptor = TypeName.of(cls)
-                                            .messageDescriptor();
-            EnrichmentType et = EnrichmentType.from(descriptor);
+            EnrichmentType et = EnrichmentType.from(descriptorOf(cls));
             ImmutableSet<MessageType> sources = et.knownSources();
             ImmutableSet<? extends Class<? extends Message>> sourceClasses =
                     sources.stream()
@@ -162,5 +158,10 @@ class EnrichmentTypeTest {
                            .collect(toImmutableSet());
             return assertThat(sourceClasses);
         }
+    }
+
+    private static Descriptor descriptorOf(Class<? extends Message> cls) {
+        return TypeName.of(cls)
+                       .messageDescriptor();
     }
 }
