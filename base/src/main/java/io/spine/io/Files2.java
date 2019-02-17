@@ -134,5 +134,4 @@ public final class Files2 {
         boolean nonEmpty = file.length() > 0;
         return nonEmpty;
     }
-
 }
