@@ -38,7 +38,20 @@ import static com.google.common.collect.ImmutableBiMap.toImmutableBiMap;
 @Immutable
 final class FieldMatch {
 
+    /**
+     * The source type of the enrichment.
+     */
     private final MessageType sourceType;
+
+    /**
+     * The target type of the enrichment.
+     */
+    private final MessageType targetType;
+
+    /**
+     * Maps the descriptor of the enrichment source field, to the descriptor of
+     * the enrichment field.
+     */
     private final ImmutableBiMap<FieldDescriptor, FieldDescriptor> sourceToTarget;
 
     FieldMatch(MessageType sourceType, MessageType targetType, ImmutableList<FieldDef> fields) {
@@ -49,6 +62,7 @@ final class FieldMatch {
                 "Enrichment type (`%s`) must have at least one field.", targetType
         );
         this.sourceType = sourceType;
+        this.targetType = targetType;
         this.sourceToTarget =
                 fields.stream()
                       .collect(toImmutableBiMap(
@@ -61,14 +75,14 @@ final class FieldMatch {
         FieldDescriptor source = sourceToTarget.inverse()
                                                .get(target);
         checkNotNull(source,
-                     "Unable to find source field for the target field `%s`", target.getFullName()
-        );
+                     "Unable to find source field for the target field `%s`.",
+                     target.getFullName());
         return source;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourceType, sourceToTarget);
+        return Objects.hash(sourceType, targetType, sourceToTarget);
     }
 
     @Override
@@ -81,6 +95,7 @@ final class FieldMatch {
         }
         final FieldMatch other = (FieldMatch) obj;
         return Objects.equals(sourceType, other.sourceType)
+                && Objects.equals(targetType, other.targetType)
                 && Objects.equals(sourceToTarget, other.sourceToTarget);
     }
 }
