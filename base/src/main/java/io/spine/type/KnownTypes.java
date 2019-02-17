@@ -150,11 +150,12 @@ public class KnownTypes implements Serializable {
     /**
      * Obtains known enrichment types.
      */
-    public ImmutableSet<MessageType> enrichments() {
-        ImmutableSet<MessageType> result =
+    public ImmutableSet<EnrichmentType> enrichments() {
+        ImmutableSet<EnrichmentType> result =
                 typeSet.messageTypes()
                        .stream()
                        .filter(t -> EnrichmentType.test(t.descriptor()))
+                       .map(EnrichmentType::from)
                        .collect(toImmutableSet());
         return result;
     }

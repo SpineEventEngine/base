@@ -20,7 +20,6 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.type.FileDescriptorSuperset;
@@ -94,9 +93,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
         long count = KnownTypes.instance()
                                .enrichments()
-                               .stream()
-                               .map(EnrichmentType::from)
-                               .count();
+                               .size();
 
         _info("Enrichment types discovered: {}.", count);
     }
