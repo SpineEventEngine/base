@@ -26,10 +26,14 @@ import io.spine.code.proto.MessageType;
 import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.type.FileDescriptorSuperset;
+import io.spine.tools.type.MergedDescriptorSet;
 import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+
+import java.io.File;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -38,6 +42,8 @@ import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 
 /**
  * Finds event enrichment Protobuf definitions and verifies their correctness.
@@ -53,7 +59,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     @CanIgnoreReturnValue
     private GradleTask findEnrichments(Project project) {
-        Action<Task> mainScopeAction = mainScopeActionFor();
+        Action<Task> mainScopeAction = mainScopeActionFor(project);
         return newTask(FIND_ENRICHMENTS, mainScopeAction)
                 .insertAfterTask(COMPILE_JAVA)
                 .insertBeforeTask(PROCESS_RESOURCES)
@@ -62,28 +68,34 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     @CanIgnoreReturnValue
     private GradleTask findTestEnrichments(Project project) {
-        Action<Task> testScopeAction = testScopeActionFor();
+        Action<Task> testScopeAction = testScopeActionFor(project);
         return newTask(FIND_TEST_ENRICHMENTS, testScopeAction)
                 .insertAfterTask(COMPILE_TEST_JAVA)
                 .insertBeforeTask(PROCESS_TEST_RESOURCES)
                 .applyNowTo(project);
     }
 
-    private Action<Task> testScopeActionFor() {
-        _debug("Initializing the enrichment lookup for the \"test\" source code");
-        return task -> findEnrichments();
+    private Action<Task> mainScopeActionFor(Project project) {
+        _debug("Initializing the enrichment lookup for the \"main\" source code.");
+        return task -> checkEnrichmentTypes(getMainDescriptorSet(project));
     }
 
-    private Action<Task> mainScopeActionFor() {
-        _debug("Initializing the enrichment lookup for the \"main\" source code");
-        return task -> findEnrichments();
+    private Action<Task> testScopeActionFor(Project project) {
+        _debug("Initializing the enrichment lookup for the \"test\" source code.");
+        return task -> checkEnrichmentTypes(getTestDescriptorSet(project));
     }
 
-    private void findEnrichments() {
-        checkEnrichmentTypes();
-    }
+    private void checkEnrichmentTypes(File descriptorSetFile) {
+        if (!descriptorSetFile.exists()) {
+            logMissingDescriptorSetFile(descriptorSetFile);
+            return;
+        }
 
-    private void checkEnrichmentTypes() {
+        FileDescriptorSuperset superset = new FileDescriptorSuperset();
+        superset.addFromDependency(descriptorSetFile);
+        MergedDescriptorSet merged = superset.merge();
+        merged.loadIntoKnownTypes();
+
         ImmutableList<MessageType> enrichmentTypes =
                 KnownTypes.instance()
                           .asTypeSet()

@@ -80,12 +80,11 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Loads the Java class representing this Protobuf type.
      */
     public Class<?> javaClass() {
-        String clsName = javaClassName().toDotted()
-                                        .value();
+        String clsName = javaClassName().value();
         try {
             return Class.forName(clsName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(descriptor.getName(), e);
+            throw new UnknownTypeException(descriptor.getFullName(), e);
         }
     }
 
