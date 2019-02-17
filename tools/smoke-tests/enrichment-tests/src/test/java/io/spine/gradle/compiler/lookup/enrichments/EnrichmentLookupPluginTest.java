@@ -22,6 +22,7 @@ package io.spine.gradle.compiler.lookup.enrichments;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.type.KnownTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,8 @@ class EnrichmentLookupPluginTest {
     @DisplayName("generate proper enrichments")
     @Test
     void generateProperEnrichments() {
-        ImmutableSet<MessageType> enrichments = KnownTypes.instance()
-                                                          .enrichments();
+        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
+                                                             .enrichments();
         assertThat(enrichments).containsExactly(
                 MessageType.of(FqnEnrichment.getDescriptor()),
                 MessageType.of(MixedSyntaxEnrichment.getDescriptor()),
