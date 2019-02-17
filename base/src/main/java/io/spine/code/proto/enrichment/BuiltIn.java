@@ -22,7 +22,7 @@ package io.spine.code.proto.enrichment;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.proto.FieldName;
+import io.spine.base.MessageContext;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
@@ -63,8 +63,8 @@ enum BuiltIn implements TypeRef {
         /**
          * The suffix for message types names which supports such a type reference.
          */
-        private final String typeSuffix = FieldName.of(value())
-                                                   .toCamelCase();
+        private final String typeSuffix = MessageContext.typeSuffix();
+
         /**
          * Accepts a message which type name ends with the {@code "Context"} suffix.
          */

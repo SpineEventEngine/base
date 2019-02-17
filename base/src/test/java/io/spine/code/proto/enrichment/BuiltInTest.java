@@ -20,11 +20,13 @@
 
 package io.spine.code.proto.enrichment;
 
+import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
+import io.spine.test.code.enrichment.fieldref.BttStubMessageContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,7 @@ class BuiltInTest {
     class AcceptAll {
 
         @Test
-        @DisplayName("reference to the same type")
+        @DisplayName("reference to a message type")
         void self() {
             assertAccepts(ANY, BoolValue.getDescriptor());
             assertAccepts(ANY, Empty.getDescriptor());
@@ -59,22 +61,27 @@ class BuiltInTest {
     @DisplayName("Support \"context\" reference")
     class ContextRef {
 
-        /**
-         * This tests only the negative case since we don't have real {@code EventContext}
-         * message defined in this project.
-         *
-         * <p>The {@code EventContext} message is defined in the {@code core-java} project.
-         */
         @Test
-        @DisplayName("which accept only EventContext type")
-        void eventContext() {
+        @DisplayName("which rejects types other than implementing `MessageContext`")
+        void nonMessageContext() {
             assertRejects(Any.getDescriptor());
             assertRejects(Timestamp.getDescriptor());
         }
 
+        @Test
+        @DisplayName("accepting `MessageContext` types")
+        void messageContext() {
+            assertMatch(BttStubMessageContext.getDescriptor())
+                    .isTrue();
+        }
+
         void assertRejects(Descriptor message) {
-            assertThat(CONTEXT.test(message))
+            assertMatch(message)
                     .isFalse();
+        }
+
+        private BooleanSubject assertMatch(Descriptor message) {
+            return assertThat(CONTEXT.test(message));
         }
     }
 }
