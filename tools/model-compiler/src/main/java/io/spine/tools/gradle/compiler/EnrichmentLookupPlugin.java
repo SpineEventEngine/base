@@ -19,36 +19,28 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.tools.compiler.enrichment.EnrichmentLookup;
+import io.spine.base.EnrichmentMessage;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.io.File;
-
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
-import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
-import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 
 /**
- * Finds event enrichment Protobuf definitions and creates a {@code .properties} file,
- * which contains entries like:
- *
- * <p>{@code ENRICHMENT_TYPE_NAME=EVENT_TO_ENRICH_TYPE_NAME}
- *
- * <p>There can be several event types:
- *
- * <p>{@code ENRICHMENT_TYPE_NAME=FIRST_EVENT_TYPE_NAME,SECOND_EVENT_TYPE_NAME}
+ * Finds event enrichment Protobuf definitions and verifies their correctness.
  */
 public class EnrichmentLookupPlugin extends SpinePlugin {
 
@@ -56,12 +48,12 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
     public void apply(Project project) {
         GradleTask mainTask = findEnrichments(project);
         GradleTask testTask = findTestEnrichments(project);
-        _debug("Enrichment lookup phase initialized with tasks: {}, {}", mainTask, testTask);
+        _debug("Enrichment lookup phase initialized with tasks: {}, {}.", mainTask, testTask);
     }
 
     @CanIgnoreReturnValue
     private GradleTask findEnrichments(Project project) {
-        Action<Task> mainScopeAction = mainScopeActionFor(project);
+        Action<Task> mainScopeAction = mainScopeActionFor();
         return newTask(FIND_ENRICHMENTS, mainScopeAction)
                 .insertAfterTask(COMPILE_JAVA)
                 .insertBeforeTask(PROCESS_RESOURCES)
@@ -70,32 +62,40 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     @CanIgnoreReturnValue
     private GradleTask findTestEnrichments(Project project) {
-        Action<Task> testScopeAction = testScopeActionFor(project);
+        Action<Task> testScopeAction = testScopeActionFor();
         return newTask(FIND_TEST_ENRICHMENTS, testScopeAction)
                 .insertAfterTask(COMPILE_TEST_JAVA)
                 .insertBeforeTask(PROCESS_TEST_RESOURCES)
                 .applyNowTo(project);
     }
 
-    private Action<Task> testScopeActionFor(Project project) {
+    private Action<Task> testScopeActionFor() {
         _debug("Initializing the enrichment lookup for the \"test\" source code");
-        return task -> findEnrichmentsAndWriteProps(getTestDescriptorSet(project),
-                                                    getTestTargetGenResourcesDir(project));
+        return task -> findEnrichments();
     }
 
-    private Action<Task> mainScopeActionFor(Project project) {
+    private Action<Task> mainScopeActionFor() {
         _debug("Initializing the enrichment lookup for the \"main\" source code");
-        return task -> findEnrichmentsAndWriteProps(getMainDescriptorSet(project),
-                                                    getMainTargetGenResourcesDir(project));
+        return task -> findEnrichments();
     }
 
-    private void findEnrichmentsAndWriteProps(File descriptorSetFile, String targetDir) {
-        if (!descriptorSetFile.exists()) {
-            logMissingDescriptorSetFile(descriptorSetFile);
-            return;
-        }
+    private void findEnrichments() {
+        checkEnrichmentTypes();
+    }
 
-        EnrichmentLookup lookup = new EnrichmentLookup(descriptorSetFile);
-        lookup.collectTo(targetDir);
+    private void checkEnrichmentTypes() {
+        ImmutableList<MessageType> enrichmentTypes =
+                KnownTypes.instance()
+                          .asTypeSet()
+                          .messageTypes()
+                          .stream()
+                          .filter(t -> EnrichmentMessage.class.isAssignableFrom(t.javaClass()))
+                          .collect(toImmutableList());
+
+        long count = enrichmentTypes.stream()
+                                    .map(EnrichmentType::from)
+                                    .count();
+
+        _info("Enrichment types discovered: {}.", count);
     }
 }

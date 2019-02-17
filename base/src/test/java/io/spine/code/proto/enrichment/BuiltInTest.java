@@ -26,7 +26,6 @@ import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
-import io.spine.test.code.enrichment.fieldref.BttStubMessageContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -66,13 +65,6 @@ class BuiltInTest {
         void nonMessageContext() {
             assertRejects(Any.getDescriptor());
             assertRejects(Timestamp.getDescriptor());
-        }
-
-        @Test
-        @DisplayName("accepting `MessageContext` types")
-        void messageContext() {
-            assertMatch(BttStubMessageContext.getDescriptor())
-                    .isTrue();
         }
 
         void assertRejects(Descriptor message) {
