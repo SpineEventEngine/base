@@ -20,41 +20,26 @@
 
 package io.spine.gradle.compiler.lookup.enrichments;
 
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.proto.MessageType;
+import io.spine.type.KnownTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("EnrichmentLookupPlugin should")
 class EnrichmentLookupPluginTest {
 
-    private static final String GENERATED_ENRICHMENTS = "generated/test/resources/enrichments.properties";
-
-    private static final String EXPECTED_ENRICHMENTS = "src/test/resources/expected_enrichments.properties";
-
     @DisplayName("generate proper enrichments")
     @Test
     void generateProperEnrichments() {
-        Properties generatedEnrichments = loadProperties(GENERATED_ENRICHMENTS);
-        Properties expectedEnrichments = loadProperties(EXPECTED_ENRICHMENTS);
-
-        assertEquals(expectedEnrichments, generatedEnrichments);
-    }
-
-    private static Properties loadProperties(String pathname) {
-        File propFile = new File(pathname);
-        try (InputStream input = new FileInputStream(propFile)) {
-            Properties props = new Properties();
-            props.load(input);
-            return props;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        ImmutableSet<MessageType> enrichments = KnownTypes.instance()
+                                                          .enrichments();
+        assertThat(enrichments).containsExactly(
+                MessageType.of(FqnEnrichment.getDescriptor()),
+                MessageType.of(MixedSyntaxEnrichment.getDescriptor()),
+                MessageType.of(WildcardEnrichment.getDescriptor())
+        );
     }
 }

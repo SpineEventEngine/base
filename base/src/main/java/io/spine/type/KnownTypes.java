@@ -32,6 +32,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
@@ -144,6 +145,18 @@ public class KnownTypes implements Serializable {
      */
     public TypeSet asTypeSet() {
         return typeSet;
+    }
+
+    /**
+     * Obtains known enrichment types.
+     */
+    public ImmutableSet<MessageType> enrichments() {
+        ImmutableSet<MessageType> result =
+                typeSet.messageTypes()
+                       .stream()
+                       .filter(t -> EnrichmentType.test(t.descriptor()))
+                       .collect(toImmutableSet());
+        return result;
     }
 
     /**

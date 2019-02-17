@@ -77,6 +77,15 @@ public final class EnrichmentType extends MessageType {
     }
 
     /**
+     * Verifies if the passed message type is an enrichment type.
+     */
+    public static boolean test(Descriptor type) {
+        List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
+        boolean result = !sourceRefs.isEmpty();
+        return result;
+    }
+
+    /**
      * Creates new instance by the passed enrichment type descriptor.
      *
      * @implNote This constructor implementation relies on the order of field initialization.

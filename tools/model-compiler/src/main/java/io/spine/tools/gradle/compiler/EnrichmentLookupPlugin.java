@@ -19,10 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.base.EnrichmentMessage;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -35,7 +32,6 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
@@ -96,17 +92,11 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         MergedDescriptorSet merged = superset.merge();
         merged.loadIntoKnownTypes();
 
-        ImmutableList<MessageType> enrichmentTypes =
-                KnownTypes.instance()
-                          .asTypeSet()
-                          .messageTypes()
-                          .stream()
-                          .filter(t -> EnrichmentMessage.class.isAssignableFrom(t.javaClass()))
-                          .collect(toImmutableList());
-
-        long count = enrichmentTypes.stream()
-                                    .map(EnrichmentType::from)
-                                    .count();
+        long count = KnownTypes.instance()
+                               .enrichments()
+                               .stream()
+                               .map(EnrichmentType::from)
+                               .count();
 
         _info("Enrichment types discovered: {}.", count);
     }
