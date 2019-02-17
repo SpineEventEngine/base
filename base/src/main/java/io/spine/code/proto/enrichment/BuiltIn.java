@@ -26,7 +26,6 @@ import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Provides typical type references used for referencing types in proto definitions.
@@ -67,19 +66,6 @@ enum BuiltIn implements TypeRef {
         private final String typeSuffix = FieldName.of(value())
                                                    .toCamelCase();
         /**
-         * The prefix used in a field references to message context fields.
-         */
-        private final String fieldPrefix = value();
-
-        @Override
-        Optional<TypeRef> parse(String value) {
-            if (value.startsWith(fieldPrefix)) {
-                return Optional.of(this);
-            }
-            return Optional.empty();
-        }
-
-        /**
          * Accepts a message which type name ends with the {@code "Context"} suffix.
          */
         @Override
@@ -110,7 +96,7 @@ enum BuiltIn implements TypeRef {
      * @return {@code this} if the string matches this type reference,
      *         empty {@code Optional} otherwise
      */
-    Optional<TypeRef> parse(String value) {
+    final Optional<TypeRef> parse(String value) {
         if (value().equals(value)) {
             return Optional.of(this);
         }
@@ -121,18 +107,5 @@ enum BuiltIn implements TypeRef {
     @Override
     public String value() {
         return this.value;
-    }
-
-    /**
-     * Finds a value matching the passed string.
-     */
-    static Optional<TypeRef> parseAll(String value) {
-        Optional<TypeRef> result =
-                Stream.of(values())
-                      .map(v -> v.parse(value))
-                      .filter(Optional::isPresent)
-                      .findFirst()
-                      .orElse(Optional.empty());
-        return result;
     }
 }
