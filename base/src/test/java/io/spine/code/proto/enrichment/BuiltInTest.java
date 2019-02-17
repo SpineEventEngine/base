@@ -32,8 +32,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.enrichment.BuiltIn.EVENT_CONTEXT;
-import static io.spine.code.proto.enrichment.BuiltIn.SELF;
+import static io.spine.code.proto.enrichment.BuiltIn.ANY;
+import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
 
 @DisplayName("BuiltIn type references should")
 class BuiltInTest {
@@ -45,8 +45,8 @@ class BuiltInTest {
         @Test
         @DisplayName("reference to the same type")
         void self() {
-            assertAccepts(SELF, BoolValue.getDescriptor());
-            assertAccepts(SELF, Empty.getDescriptor());
+            assertAccepts(ANY, BoolValue.getDescriptor());
+            assertAccepts(ANY, Empty.getDescriptor());
         }
 
         void assertAccepts(Predicate<Descriptor> p, Descriptor message) {
@@ -73,7 +73,7 @@ class BuiltInTest {
         }
 
         void assertRejects(Descriptor message) {
-            assertThat(EVENT_CONTEXT.test(message))
+            assertThat(CONTEXT.test(message))
                     .isFalse();
         }
     }

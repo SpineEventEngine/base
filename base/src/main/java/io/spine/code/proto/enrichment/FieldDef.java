@@ -48,7 +48,26 @@ final class FieldDef {
 
     FieldDef(FieldDescriptor field) {
         this.descriptor = field;
-        this.sources = FieldRef.allFrom(field.toProto());
+        ImmutableList<FieldRef> sources = FieldRef.allFrom(field.toProto());
+        checkDuplicatingContextRef(field, sources);
+        this.sources = sources;
+    }
+
+    /**
+     * Ensures that field references has at most one reference to a message context field.
+     */
+    private static
+    void checkDuplicatingContextRef(FieldDescriptor field, ImmutableList<FieldRef> sources) {
+        long count = sources.stream()
+                            .filter(FieldRef::isContext)
+                            .count();
+        if (count > 1) {
+            throw newIllegalArgumentException(
+                    "There can be only one `context` field reference per enrichment field." +
+                            " The field `%s` has %d references: `%s`.",
+                    field.getFullName(), count, sources
+            );
+        }
     }
 
     boolean matchesType(Descriptor type) {

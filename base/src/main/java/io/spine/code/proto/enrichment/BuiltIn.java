@@ -22,6 +22,7 @@ package io.spine.code.proto.enrichment;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
@@ -35,7 +36,7 @@ import java.util.stream.Stream;
 @Immutable
 enum BuiltIn implements TypeRef {
 
-    SELF("") {
+    ANY("") {
 
         /**
          * Accepts all message types.
@@ -52,24 +53,47 @@ enum BuiltIn implements TypeRef {
     },
 
     /**
-     * A reference to an event context.
+     * A reference to a message context.
+     *
+     * <p>The actual type of the message context message and syntax of fields allowed in
+     * such a reference is determined by the type of a message, such as {@code EventContext} or
+     * {@code CommandContext}.
      */
-    EVENT_CONTEXT("context") {
+    CONTEXT("context") {
+
+        /**
+         * The suffix for message types names which supports such a type reference.
+         */
+        private final String typeSuffix = FieldName.of(value())
+                                                   .toCamelCase();
+        /**
+         * The prefix used in a field references to message context fields.
+         */
+        private final String fieldPrefix = value();
 
         @Override
         Optional<TypeRef> parse(String value) {
-            if (value.startsWith(value())) {
+            if (value.startsWith(fieldPrefix)) {
                 return Optional.of(this);
             }
             return Optional.empty();
         }
 
         /**
-         * Accepts a message which type name is {@code EventContext}.
+         * Accepts a message which type name ends with the {@code "Context"} suffix.
          */
         @Override
         public boolean test(Descriptor message) {
-            return "EventContext".equals(message.getName());
+            return message.getName()
+                          .endsWith(typeSuffix);
+        }
+
+        /**
+         * Overrides to make final avoiding overridable call in the {@link #typeSuffix} initialization.
+         */
+        @Override
+        public final String value() {
+            return super.value();
         }
     };
 

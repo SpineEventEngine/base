@@ -24,6 +24,7 @@ import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.code.enrichment.fieldref.FdtAccountSuspended;
+import io.spine.test.code.enrichment.fieldref.FdtDuplicateContextRef;
 import io.spine.test.code.enrichment.fieldref.FdtUserCreated;
 import io.spine.test.code.enrichment.fieldref.FdtUserProfile;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FieldDef should")
 class FieldDefTest {
@@ -67,7 +69,7 @@ class FieldDefTest {
         }
 
         @Test
-        @DisplayName("negatively if type matches, but field refrerence does not")
+        @DisplayName("negatively if type matches, but field reference does not")
         void fieldDoesNotMatch() {
             assertMatches(FdtAccountSuspended.getDescriptor())
                 .isFalse();
@@ -75,6 +77,25 @@ class FieldDefTest {
 
         private BooleanSubject assertMatches(Descriptor type) {
             return assertThat(fieldDef.matchesType(type));
+        }
+    }
+
+    @Nested
+    @DisplayName("prohibit")
+    class InvalidRefCombinations {
+
+        @Test
+        @DisplayName("two or more `context` references in one field")
+        void twoContext() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> {
+                        FieldDescriptor field =
+                                FdtDuplicateContextRef.getDescriptor()
+                                                      .findFieldByName("context_info");
+                        new FieldDef(field);
+                    }
+            );
         }
     }
 }
