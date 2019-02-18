@@ -45,9 +45,8 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
  *
  * <p>An enrichment message declaration has:
  * <ol>
- *   <li>The {@link io.spine.option.OptionsProto#enrichmentFor
- *       (enrichment_for)} option with a {@linkplain TypeRef reference} to one or more message types
- *       this message enriches.
+ *   <li>The {@link io.spine.option.OptionsProto#enrichmentFor (enrichment_for)} option with a
+ *       {@linkplain TypeRef reference} to one or more message types this message enriches.
  *   <li>One or more fields with the {@link io.spine.option.OptionsProto#by (by)} option with
  *       the value {@linkplain FieldRef referencing} one ore more fields of source message types.
  * </ol>
