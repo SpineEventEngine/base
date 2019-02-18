@@ -34,6 +34,7 @@ import io.spine.type.TypeName;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -218,9 +219,20 @@ public final class TypeSet {
     public ImmutableSet<Type<?, ?>> allTypes() {
         ImmutableSet<Type<?, ?>> types = ImmutableSet
                 .<Type<?, ?>>builder()
+                .addAll(messagesAndEnums())
+                .addAll(serviceTypes.values())
+                .build();
+        return types;
+    }
+
+    /**
+     * Obtains message and enum types contained in this set.
+     */
+    public Set<Type<?, ?>> messagesAndEnums() {
+        ImmutableSet<Type<?, ?>> types = ImmutableSet
+                .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())
-                .addAll(serviceTypes.values())
                 .build();
         return types;
     }

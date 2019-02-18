@@ -107,7 +107,6 @@ class AppendTypeUrlGetterTest {
             checkMethodForTypePresent(codeLines, messageType());
         }
 
-
         @Test
         @DisplayName("for a enum class")
         void forEnumClass() {
