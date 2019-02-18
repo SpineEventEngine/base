@@ -91,9 +91,9 @@ build.doLast {
     command.add('--debug')
     command.add('--stacktrace')
 
-    // Ensure build error output log.
-    // Since we're executing this task in another process, we redirect error output to
-    // the file under the `build` directory.
+    // Ensure build error output log. 
+    // Since we're executing this task in another process, we redirect error output to 
+    // the file under the `build` directory.  
     final File buildDir = new File(directory, "build")
     if (!buildDir.exists()) {
         buildDir.mkdir()

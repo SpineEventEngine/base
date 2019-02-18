@@ -272,23 +272,13 @@ extend google.protobuf.FieldOptions {
     //     }
     //
     //     message EnrichmentForSeveralEvents {
-    //         option (enrichment_for) = "FirstEvent, SecondEvent";
+    //         option (enrichment_for) = "FirstEvent,SecondEvent";
     //
     //         string username = 1 [(by) = "user_id | admin_id"];
     //     }
     //
-    // Resolution of multiple field references
-    // ---------------------------------------
-    //
-    // If the source message type contains more than one field referenced in the `(by)` option,
-    // the one which comes first in the list of alternatives will be used as the source for
-    // creating the enrichment.
-    //
-    // Referencing message context fields
-    // ----------------------------------
-    //
-    // An field of an enrichment can be created taking a field of an event context as its source
-    // via the "context" string.
+    // An field of an enrichment can be created taking a field of an event context as its source.
+    // A context of an event is referenced via the "context" string.
     //
     // Example 7: Referencing event context fields.
     //

@@ -22,10 +22,10 @@ package io.spine.code.proto.enrichment;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.base.MessageContext;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Provides typical type references used for referencing types in proto definitions.
@@ -35,7 +35,7 @@ import java.util.Optional;
 @Immutable
 enum BuiltIn implements TypeRef {
 
-    ANY("") {
+    SELF("") {
 
         /**
          * Accepts all message types.
@@ -52,34 +52,24 @@ enum BuiltIn implements TypeRef {
     },
 
     /**
-     * A reference to a message context.
-     *
-     * <p>The actual type of the message context message and syntax of fields allowed in
-     * such a reference is determined by the type of a message, such as {@code EventContext} or
-     * {@code CommandContext}.
+     * A reference to an event context.
      */
-    CONTEXT("context") {
+    EVENT_CONTEXT("context") {
 
-        /**
-         * The suffix for message types names which supports such a type reference.
-         */
-        private final String typeSuffix = MessageContext.typeSuffix();
-
-        /**
-         * Accepts a message which type name ends with the {@code "Context"} suffix.
-         */
         @Override
-        public boolean test(Descriptor message) {
-            return message.getName()
-                          .endsWith(typeSuffix);
+        Optional<TypeRef> parse(String value) {
+            if (value.startsWith(value())) {
+                return Optional.of(this);
+            }
+            return Optional.empty();
         }
 
         /**
-         * Overrides to make final avoiding overridable call in the {@link #typeSuffix} initialization.
+         * Accepts a message which type name is {@code EventContext}.
          */
         @Override
-        public final String value() {
-            return super.value();
+        public boolean test(Descriptor message) {
+            return "EventContext".equals(message.getName());
         }
     };
 
@@ -96,7 +86,7 @@ enum BuiltIn implements TypeRef {
      * @return {@code this} if the string matches this type reference,
      *         empty {@code Optional} otherwise
      */
-    final Optional<TypeRef> parse(String value) {
+    Optional<TypeRef> parse(String value) {
         if (value().equals(value)) {
             return Optional.of(this);
         }
@@ -107,5 +97,18 @@ enum BuiltIn implements TypeRef {
     @Override
     public String value() {
         return this.value;
+    }
+
+    /**
+     * Finds a value matching the passed string.
+     */
+    static Optional<TypeRef> parseAll(String value) {
+        Optional<TypeRef> result =
+                Stream.of(values())
+                      .map(v -> v.parse(value))
+                      .filter(Optional::isPresent)
+                      .findFirst()
+                      .orElse(Optional.empty());
+        return result;
     }
 }

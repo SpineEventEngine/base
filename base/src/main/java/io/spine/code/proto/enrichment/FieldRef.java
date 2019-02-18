@@ -38,8 +38,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.FieldPaths.findField;
-import static io.spine.code.proto.enrichment.BuiltIn.ANY;
-import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
+import static io.spine.code.proto.enrichment.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.enrichment.BuiltIn.SELF;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -74,11 +74,11 @@ public final class FieldRef extends StringTypeValue {
     FieldRef(String value) {
         super(checkValue(value));
         ImmutableList<String> parts = split(value);
-        this.typeRef = CONTEXT.parse(parts.get(0))
-                              .orElse(ANY);
+        this.typeRef = EVENT_CONTEXT.parse(parts.get(0))
+                                    .orElse(SELF);
         // If the first element is context reference, skip it from the path.
         ImmutableList<String> fieldPath =
-                parts.subList((this.typeRef == CONTEXT ? 1 : 0), parts.size());
+                parts.subList((this.typeRef == EVENT_CONTEXT ? 1 : 0), parts.size());
         this.path = FieldPaths.fromElements(fieldPath);
     }
 
@@ -124,7 +124,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
-        boolean result = typeRef.equals(ANY);
+        boolean result = typeRef.equals(SELF);
         return result;
     }
 
@@ -132,7 +132,7 @@ public final class FieldRef extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = typeRef.equals(CONTEXT);
+        boolean result = typeRef.equals(EVENT_CONTEXT);
         return result;
     }
 

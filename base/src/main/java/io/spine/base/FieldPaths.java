@@ -185,7 +185,7 @@ public final class FieldPaths {
         checkNotNull(path);
         checkNotEmpty(path);
 
-        Descriptor descriptor = TypeName.of(holderType).messageDescriptor();
+        Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
         FieldDescriptor field = findField(path, descriptor);
         if (field == null) {
             throw newIllegalArgumentException(
@@ -230,10 +230,10 @@ public final class FieldPaths {
     private static Class<?> classOf(FieldDescriptor field) {
         Type type = field.getType();
         if (type == MESSAGE) {
-            Class<?> cls = TypeUrl.from(field.getMessageType()).toJavaClass();
+            Class<?> cls = TypeUrl.from(field.getMessageType()).getJavaClass();
             return cls;
         } else if (type == ENUM) {
-            Class<?> cls = TypeUrl.from(field.getEnumType()).toJavaClass();
+            Class<?> cls = TypeUrl.from(field.getEnumType()).getJavaClass();
             return cls;
         } else {
             Class<?> result = ScalarType.getJavaType(field.toProto().getType());

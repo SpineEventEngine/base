@@ -22,13 +22,13 @@ package io.spine.js.generate.output;
 
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.TaskProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import spine.test.js.Task;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,8 +42,8 @@ import static io.spine.js.generate.output.FileWriter.createFor;
 @DisplayName("FileWriter should")
 class FileWriterTest {
 
-    private static final FileName TASKS_JS = FileName.from(TaskProto.getDescriptor()
-                                                                    .getFile());
+    private static final FileName TASKS_JS = FileName.from(Task.getDescriptor()
+                                                               .getFile());
     private static final String CREATE_TASK_1 = "createTask1();";
     private static final String CREATE_TASK_2 = "createTask2();";
 

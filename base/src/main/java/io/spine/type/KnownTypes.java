@@ -32,7 +32,6 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
-import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
@@ -124,8 +123,7 @@ public class KnownTypes implements Serializable {
      */
     public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
         if (!instance().contains(type)) {
-            throw new UnknownTypeException(type.toTypeName()
-                                               .value());
+            throw new UnknownTypeException(type.getTypeName());
         }
         ClassName result = instance().get(type);
         return result;
@@ -148,19 +146,6 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Obtains known enrichment types.
-     */
-    public ImmutableSet<EnrichmentType> enrichments() {
-        ImmutableSet<EnrichmentType> result =
-                typeSet.messageTypes()
-                       .stream()
-                       .filter(t -> EnrichmentType.test(t.descriptor()))
-                       .map(EnrichmentType::from)
-                       .collect(toImmutableSet());
-        return result;
-    }
-
-    /**
      * Assembles the known types into a
      * {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
      *
@@ -178,7 +163,7 @@ public class KnownTypes implements Serializable {
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
         Set<TypeUrl> result = allUrls().stream()
-                                       .filter(url -> url.toTypeName()
+                                       .filter(url -> url.toName()
                                                          .belongsTo(packageName))
                                        .collect(toSet());
         return result;
@@ -205,7 +190,7 @@ public class KnownTypes implements Serializable {
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {
-        TypeName name = typeUrl.toTypeName();
+        TypeName name = typeUrl.toName();
         boolean result = typeSet.contains(name);
         return result;
     }
@@ -227,7 +212,7 @@ public class KnownTypes implements Serializable {
     }
 
     private ClassName get(TypeUrl typeUrl) {
-        Type type = get(typeUrl.toTypeName());
+        Type type = get(typeUrl.toName());
         ClassName result = type.javaClassName();
         return result;
     }

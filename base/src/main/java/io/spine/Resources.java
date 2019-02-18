@@ -31,12 +31,20 @@ public final class Resources {
       This class is a temporary solution for avoiding code duplication in declaration of
       resource file names under `base` and `core-java`.
 
-      Presumably, Validation would be extracted into separate libraries,
+      Presumably, Validation and Enrichments would be extracted into separate libraries,
       and Known Types would be based on parsing Descriptor Set added to program resources
       _instead_ of building a map.
 
       Therefore, it is expected that this class will be eliminated in the near future.
      */
+
+    /**
+     * The name of the file with enrichment rules.
+     *
+     * <p>NOTE: the filename is referenced by {@code core-java} as well,
+     * make sure to update {@code core-java} project upon changing this value.
+     */
+    public static final String ENRICHMENTS = "enrichments.properties";
 
     /**
      * A name of the file, which contains validation rules and their target field paths.

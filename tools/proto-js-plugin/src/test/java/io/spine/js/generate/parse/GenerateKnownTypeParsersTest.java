@@ -31,7 +31,6 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.TypeSet;
-import io.spine.js.generate.TaskId;
 import io.spine.js.generate.given.GivenProject;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.Comment;
@@ -39,6 +38,7 @@ import io.spine.js.generate.output.snippet.Import;
 import io.spine.option.OptionsProto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spine.test.js.Task;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -58,8 +58,8 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 @DisplayName("GenerateKnownTypeParsers should")
 class GenerateKnownTypeParsersTest {
 
-    private final FileDescriptor file = TaskId.getDescriptor()
-                                              .getFile();
+    private final FileDescriptor file = Task.TaskId.getDescriptor()
+                                                   .getFile();
     private final FileSet fileSet = GivenProject.mainFileSet();
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
     private final GenerateKnownTypeParsers writer = createFor(generatedProtoDir);

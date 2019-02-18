@@ -68,11 +68,11 @@ public final class TypeUrl implements Serializable {
     private final String prefix;
 
     /** The name of the Protobuf type. */
-    private final TypeName typeName;
+    private final String typeName;
 
     private TypeUrl(String prefix, String typeName) {
         this.prefix = checkNotNull(prefix);
-        this.typeName = TypeName.of(checkNotEmptyOrBlank(typeName));
+        this.typeName = checkNotEmptyOrBlank(typeName);
     }
 
     /**
@@ -214,7 +214,7 @@ public final class TypeUrl implements Serializable {
      * @return the Java class representing the Protobuf type
      * @throws UnknownTypeException if there is no corresponding Java class
      */
-    public Class<?> toJavaClass() throws UnknownTypeException {
+    public Class<?> getJavaClass() throws UnknownTypeException {
         return type().javaClass();
     }
 
@@ -228,14 +228,32 @@ public final class TypeUrl implements Serializable {
      * @throws IllegalStateException if the type URL represents an enum
      */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        return toTypeName().toMessageClass();
+        return toName().getMessageClass();
+    }
+
+    /**
+     * Obtains a descriptor for the type of this URL.
+     *
+     * @return {@link Descriptor} if the URL represents a proto type,
+     *         {@link EnumDescriptor} if the URL represents a proto enum
+     */
+    @Internal
+    public GenericDescriptor getDescriptor() {
+        return type().descriptor();
     }
 
     /**
      * Obtains the prefix of the type URL.
      */
-    public String prefix() {
+    public String getPrefix() {
         return prefix;
+    }
+
+    /**
+     * Obtains the type name.
+     */
+    public String getTypeName() {
+        return typeName;
     }
 
     @Override
@@ -246,20 +264,22 @@ public final class TypeUrl implements Serializable {
     /**
      * Converts the instance to {@code TypeName}.
      */
-    public TypeName toTypeName() {
-        return typeName;
+    public TypeName toName() {
+        return TypeName.of(typeName);
     }
 
     /**
      * Obtains string representation of the URL.
      */
     public String value() {
-        String result = composeTypeUrl(prefix, typeName.value());
+        String result = composeTypeUrl(prefix, typeName);
         return result;
     }
 
     private Type<?, ?> type() throws UnknownTypeException {
-        return toTypeName().type();
+        return KnownTypes.instance()
+                         .find(toName())
+                         .orElseThrow(() -> new UnknownTypeException(toName().value()));
     }
 
     @Override

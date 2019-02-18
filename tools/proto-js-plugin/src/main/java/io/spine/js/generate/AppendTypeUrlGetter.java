@@ -68,7 +68,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
     static CodeLines typeUrlMethods(FileDescriptor file) {
         CodeLines output = new CodeLines();
         TypeSet types = TypeSet.from(file);
-        for (Type type : types.messagesAndEnums()) {
+        for (Type type : types.allTypes()) {
             Snippet method = typeUrlMethod(type);
             output.append(emptyLine());
             output.append(Comment.generatedBySpine());

@@ -18,21 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+/**
+ * This package provides code generation classes for handling enrichments.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.enrichment;
 
-package spine.test.code.enrichment.type.event;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import "spine/options.proto";
-
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.type.event";
-option java_outer_classname = "EnrichmentTypeTestEventsProto";
-option java_multiple_files = true;
-
-import "spine/test/code/enrichment/type/enrichment_type_test_identifiers.proto";
-
-message EttProjectCreated {
-    EttProjectId project_id = 1;
-    EttTeamId team_id = 2;
-}
-
+import javax.annotation.ParametersAreNonnullByDefault;

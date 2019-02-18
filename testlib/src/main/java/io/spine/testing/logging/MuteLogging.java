@@ -18,20 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.testing.logging;
 
-import com.google.protobuf.Message;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Base interface for message contexts.
+ * Mutes all the logging for a certain test case or test suite.
+ *
+ * <p>Any kind of output into the standard output streams is blocked by this annotation.
+ *
+ * <p>If the test fails, the output is printed into the standard error stream.
+ *
+ * <p>After the test completes, the standard output capabilities are restored.
+ *
+ * @author Dmytro Dashenkov
  */
-@SuppressWarnings("InterfaceNeverImplemented") // implemented by generated code.
-public interface MessageContext extends Message {
-
-    /**
-     * Obtains type name suffix required for all message context classes.
-     */
-    static String typeSuffix() {
-        return "Context";
-    }
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(MuteLoggingExtension.class)
+public @interface MuteLogging {
 }

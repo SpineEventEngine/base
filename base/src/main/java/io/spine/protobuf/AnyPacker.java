@@ -69,7 +69,7 @@ public final class AnyPacker {
             return (Any) message;
         }
         TypeUrl typeUrl = TypeUrl.from(message.getDescriptorForType());
-        String typeUrlPrefix = typeUrl.prefix();
+        String typeUrlPrefix = typeUrl.getPrefix();
         Any result = Any.pack(message, typeUrlPrefix);
         return result;
     }
