@@ -117,6 +117,24 @@ public final class DirectTypeRef extends AbstractTypeRef {
     }
 
     /**
+     * Verifies if the type reference has a package in the referenced type name.
+     */
+    public boolean hasPackage(){
+        return packageName != null;
+    }
+
+    /**
+     * Creates a new instance reference a type with the same nested name, but in another package.
+     */
+    DirectTypeRef withPackage(PackageName anotherPackage) {
+        checkNotNull(anotherPackage);
+        DirectTypeRef result = new DirectTypeRef(
+                anotherPackage.value() + PackageName.delimiter() + this.nestedName
+        );
+        return result;
+    }
+
+    /**
      * Obtains simple type name of the direct type reference.
      *
      * <p>If a reference is for a nested type, returned value contains the most nested name.
