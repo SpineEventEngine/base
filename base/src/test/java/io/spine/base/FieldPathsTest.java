@@ -33,7 +33,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.FieldPaths.fieldAt;
+import static io.spine.base.FieldPaths.getValue;
 import static io.spine.base.FieldPaths.parse;
 import static io.spine.base.FieldPaths.typeOfFieldAt;
 import static io.spine.protobuf.AnyPacker.pack;
@@ -84,7 +84,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .setVal("foobar")
                 .build();
         FieldPath path = parse("val");
-        Object result = fieldAt(holder, path);
+        Object result = getValue(path, holder);
         assertEquals(holder.getVal(), result);
     }
 
@@ -101,7 +101,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .setAny(anyHolder)
                 .build();
         FieldPath pathToTypeUrl = parse("any.val.type_url");
-        Object actual = fieldAt(anyHolderHolder, pathToTypeUrl);
+        Object actual = getValue(pathToTypeUrl, anyHolderHolder);
         assertEquals(value.getTypeUrl(), actual);
     }
 
@@ -126,7 +126,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .setGeneric(holder2)
                 .build();
         FieldPath path = parse("generic.holder_holder.holder.val");
-        Object actual = fieldAt(holder3, path);
+        Object actual = getValue(path, holder3);
         assertEquals(value, actual);
     }
 
@@ -134,7 +134,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @DisplayName("fail when trying to obtain a value at an empty path")
     void notAllowEmptyPaths() {
         assertThrows(IllegalArgumentException.class,
-                     () -> fieldAt(Empty.getDefaultInstance(), FieldPath.getDefaultInstance()));
+                     () -> getValue(FieldPath.getDefaultInstance(), Empty.getDefaultInstance()));
         assertThrows(IllegalArgumentException.class,
                      () -> typeOfFieldAt(Empty.class, FieldPath.getDefaultInstance()));
     }
@@ -148,7 +148,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .setVal(value)
                 .build();
         FieldPath wrongPath = parse("wrong_field_name");
-        assertThrows(IllegalArgumentException.class, () -> fieldAt(holder, wrongPath));
+        assertThrows(IllegalArgumentException.class, () -> getValue(wrongPath, holder));
     }
 
     @Test
@@ -160,7 +160,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .setVal(value)
                 .build();
         FieldPath wrongPath = parse("val.this_field_is_absent");
-        assertThrows(IllegalArgumentException.class, () -> fieldAt(holder, wrongPath));
+        assertThrows(IllegalArgumentException.class, () -> getValue(wrongPath, holder));
     }
 
     @Test

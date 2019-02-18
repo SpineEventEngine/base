@@ -52,9 +52,7 @@ public final class FieldPaths {
                                                         .trimResults();
     private static final Joiner joiner = Joiner.on(SEPARATOR);
 
-    /**
-     * Prevents the utility class instantiation.
-     */
+    /** Prevents instantiation of this utility class. */
     private FieldPaths() {
     }
 
@@ -94,22 +92,36 @@ public final class FieldPaths {
      * type {@link io.spine.net.Uri io.spine.net.Uri}, the method invocation is equivalent to
      * {@code uri.getSchema().getName()}.
      *
-     * @param holder
-     *         message to obtain the (nested) field value from
      * @param path
      *         non-empty field path
+     * @param holder
+     *         the message from which to obtain a value of the field
      * @return the value of the field
      */
-    public static Object fieldAt(Message holder, FieldPath path) {
+    public static Object getValue(FieldPath path, Message holder) {
         checkNotNull(holder);
         checkNotNull(path);
         checkNotEmpty(path);
-
-        Object fieldValue = find(path, holder, true);
-        return fieldValue;
+        Object result = getValue(path, holder, true);
+        return result;
     }
 
-    private static @Nullable Object find(FieldPath path, Message holder, boolean strict) {
+    /**
+     * Obtains a value of the field represented by the passed path in the passed message.
+     *
+     * @param path
+     *         the path to the field in the message
+     * @param holder
+     *         the instance of message from which to obtain the value
+     * @param strict
+     *         If {@code true}, the method would fail with the {@code IllegalArgumentException}
+     *         if there is no field matching the passed path.
+     *         If {@code false}, and the field is not found, {@code null} will be returned
+     * @return the value of the field, or
+     *         {@code null} if the field was not found, and the {@code strict} parameter
+     *         is {@code false}
+     */
+    private static @Nullable Object getValue(FieldPath path, Message holder, boolean strict) {
         Message message = holder;
         Object currentValue = message;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
@@ -158,7 +170,7 @@ public final class FieldPaths {
     public static Optional<Object> find(FieldPath path, Message holder) {
         checkNotNull(path);
         checkNotNull(holder);
-        Object result = find(path, holder, false);
+        Object result = getValue(path, holder, false);
         return Optional.ofNullable(result);
     }
 
