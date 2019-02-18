@@ -20,17 +20,24 @@
 
 package io.spine.code.proto.enrichment;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.PackageName;
+import io.spine.code.proto.ref.DirectTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
 
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static io.spine.code.proto.enrichment.EnrichmentForOption.sourceTypesOf;
 
 /**
  * An enrichment type is a message which is added to a context of another message
@@ -49,13 +56,15 @@ import static io.spine.code.proto.enrichment.EnrichmentForOption.sourceTypesOf;
  */
 public final class EnrichmentType extends MessageType {
 
-    private final ImmutableList<TypeRef> sourceTypes;
+    private final ImmutableList<TypeRef> sourceTypeRefs;
+    private final ImmutableSet<MessageType> knownSources;
     private final ImmutableList<FieldDef> fields;
+    private final ImmutableMap<MessageType, FieldMatch> fieldMatches;
 
-    private EnrichmentType(Descriptor type) {
-        super(type);
-        this.sourceTypes = sourceTypesOf(type);
-        this.fields = fieldDefinitionsOf(type);
+    @VisibleForTesting
+    static EnrichmentType from(Descriptor descriptor) {
+        EnrichmentType result = new EnrichmentType(descriptor);
+        return result;
     }
 
     /**
@@ -64,14 +73,100 @@ public final class EnrichmentType extends MessageType {
     public static EnrichmentType from(MessageType type) {
         checkNotNull(type);
         Descriptor descriptor = type.descriptor();
-        EnrichmentType result = new EnrichmentType(descriptor);
+        return from(descriptor);
+    }
+
+    /**
+     * Verifies if the passed message type is an enrichment type.
+     */
+    public static boolean test(Descriptor type) {
+        List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
+        boolean result = !sourceRefs.isEmpty();
+        return result;
+    }
+
+    /**
+     * Creates new instance by the passed enrichment type descriptor.
+     *
+     * @implNote This constructor implementation relies on the order of field initialization.
+     * This approach is selected to minimize the number of parameters passed between the methods
+     * that are used only in construction. Reordering may break the construction, please note this
+     * if you plan to refactor or extend the construction of this class.
+     */
+    private EnrichmentType(Descriptor type) {
+        super(type);
+        this.sourceTypeRefs = parseSourceRefs();
+        this.fields = parseFieldDefs();
+        this.knownSources = collectSources();
+        this.fieldMatches = collectFieldMatches();
+    }
+
+    /**
+     * Obtains type references to the enrichable messages.
+     */
+    private ImmutableList<TypeRef> parseSourceRefs() {
+        Descriptor type = descriptor();
+        List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
+        checkArgument(
+                !sourceRefs.isEmpty(),
+                "Cannot create an enrichment type for `%s` which does not have the" +
+                        " `(enrichment_for)` option.", type.getFullName()
+        );
+        PackageName thisPackage = PackageName.of(type);
+        ImmutableList<TypeRef> result =
+                sourceRefs.stream()
+                          .map(TypeRef::parse)
+                          .map(ref -> ensurePackage(thisPackage, ref))
+                          .collect(toImmutableList());
+        return result;
+    }
+
+    /**
+     * Makes sure that if a passed type reference is direct reference to a type,
+     * it is a fully-qualified reference, or becomes one as the result of this method.
+     */
+    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
+        if (!(ref instanceof DirectTypeRef)) {
+            return ref;
+        }
+        DirectTypeRef directRef = (DirectTypeRef) ref;
+        if (directRef.hasPackage()) {
+            return ref;
+        }
+        DirectTypeRef result = directRef.withPackage(packageName);
+        return result;
+    }
+
+    /**
+     * Obtains all known source types for defined type references.
+     */
+    private ImmutableSet<MessageType> collectSources() {
+        return KnownTypes.instance()
+                         .asTypeSet()
+                         .messageTypes()
+                         .stream()
+                         .filter(m -> isSource(m.descriptor()))
+                         .collect(toImmutableSet());
+    }
+
+    /**
+     * Verifies if the passed type is the source for this enrichment type.
+     */
+    private boolean isSource(Descriptor message) {
+        if (sourceTypeRefs.stream()
+                          .noneMatch(r -> r.test(message))) {
+            return false;
+        }
+        boolean result = fields.stream()
+                               .anyMatch(s -> s.matchesType(message));
         return result;
     }
 
     /**
      * Obtains sources for creating fields.
      */
-    private static ImmutableList<FieldDef> fieldDefinitionsOf(Descriptor type) {
+    private ImmutableList<FieldDef> parseFieldDefs() {
+        Descriptor type = descriptor();
         ImmutableList<FieldDef> result =
                 type.getFields()
                     .stream()
@@ -81,15 +176,12 @@ public final class EnrichmentType extends MessageType {
     }
 
     /**
-     * Verifies if the passed type is the source for this enrichment type.
+     * For each source message type obtain a field which serves as an input for creating this
+     * enrichment type.
      */
-    private boolean isSource(Descriptor message) {
-        if (sourceTypes.stream()
-                       .noneMatch(r -> r.test(message))) {
-            return false;
-        }
-        boolean result = fields.stream()
-                               .anyMatch(s -> s.matchesType(message));
+    private ImmutableMap<MessageType, FieldMatch> collectFieldMatches() {
+        ImmutableMap<MessageType, FieldMatch> result =
+                Maps.toMap(knownSources, t -> new FieldMatch(checkNotNull(t), this, fields));
         return result;
     }
 
@@ -97,13 +189,13 @@ public final class EnrichmentType extends MessageType {
      * Obtains all known message types for which this type can serve as an enrichment.
      */
     public ImmutableSet<MessageType> knownSources() {
-        ImmutableSet<MessageType> result =
-                KnownTypes.instance()
-                          .asTypeSet()
-                          .messageTypes()
-                          .stream()
-                          .filter(m -> isSource(m.descriptor()))
-                          .collect(toImmutableSet());
+        return knownSources;
+    }
+
+    @VisibleForTesting
+    FieldMatch sourceFieldsOf(MessageType source) {
+        FieldMatch result = fieldMatches.get(source);
+        checkNotNull(result, "Unable to find field match for the source type `%s`", source);
         return result;
     }
 }

@@ -35,6 +35,7 @@ final def module = { final String name ->
 module 'plugin-base'
 module 'plugin-testlib'
 
+module 'mute-logging'
 module 'errorprone-checks'
 module 'javadoc-filter'
 module 'javadoc-prettifier'

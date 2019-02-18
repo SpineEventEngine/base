@@ -33,3 +33,11 @@ message FdtUserProfile {
     option (enrichment_for) = "io.spine.test.code.enrichment.fieldref.*";
     string given_name = 1 [(by) = "user_id"];
 }
+
+// This type defines illegal mapping in the `context_info` field.
+message FdtDuplicateContextRef {
+    option (enrichment_for) = "io.spine.test.code.enrichment.fieldref.*";
+    string given_name = 1 [(by) = "user_id"];
+    // ERROR: duplicating `context` usage.
+    string context_info = 2 [(by) = "context.timestamp | user_id | context.actor"];
+}

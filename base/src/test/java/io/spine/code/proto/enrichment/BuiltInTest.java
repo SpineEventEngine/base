@@ -20,6 +20,7 @@
 
 package io.spine.code.proto.enrichment;
 
+import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -32,8 +33,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.enrichment.BuiltIn.EVENT_CONTEXT;
-import static io.spine.code.proto.enrichment.BuiltIn.SELF;
+import static io.spine.code.proto.enrichment.BuiltIn.ANY;
+import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
 
 @DisplayName("BuiltIn type references should")
 class BuiltInTest {
@@ -43,10 +44,10 @@ class BuiltInTest {
     class AcceptAll {
 
         @Test
-        @DisplayName("reference to the same type")
+        @DisplayName("reference to a message type")
         void self() {
-            assertAccepts(SELF, BoolValue.getDescriptor());
-            assertAccepts(SELF, Empty.getDescriptor());
+            assertAccepts(ANY, BoolValue.getDescriptor());
+            assertAccepts(ANY, Empty.getDescriptor());
         }
 
         void assertAccepts(Predicate<Descriptor> p, Descriptor message) {
@@ -59,22 +60,20 @@ class BuiltInTest {
     @DisplayName("Support \"context\" reference")
     class ContextRef {
 
-        /**
-         * This tests only the negative case since we don't have real {@code EventContext}
-         * message defined in this project.
-         *
-         * <p>The {@code EventContext} message is defined in the {@code core-java} project.
-         */
         @Test
-        @DisplayName("which accept only EventContext type")
-        void eventContext() {
+        @DisplayName("which rejects types other than implementing `MessageContext`")
+        void nonMessageContext() {
             assertRejects(Any.getDescriptor());
             assertRejects(Timestamp.getDescriptor());
         }
 
         void assertRejects(Descriptor message) {
-            assertThat(EVENT_CONTEXT.test(message))
+            assertMatch(message)
                     .isFalse();
+        }
+
+        private BooleanSubject assertMatch(Descriptor message) {
+            return assertThat(CONTEXT.test(message));
         }
     }
 }

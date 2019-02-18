@@ -22,10 +22,10 @@ package io.spine.code.proto.enrichment;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.base.MessageContext;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Provides typical type references used for referencing types in proto definitions.
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 @Immutable
 enum BuiltIn implements TypeRef {
 
-    SELF("") {
+    ANY("") {
 
         /**
          * Accepts all message types.
@@ -52,24 +52,34 @@ enum BuiltIn implements TypeRef {
     },
 
     /**
-     * A reference to an event context.
+     * A reference to a message context.
+     *
+     * <p>The actual type of the message context message and syntax of fields allowed in
+     * such a reference is determined by the type of a message, such as {@code EventContext} or
+     * {@code CommandContext}.
      */
-    EVENT_CONTEXT("context") {
-
-        @Override
-        Optional<TypeRef> parse(String value) {
-            if (value.startsWith(value())) {
-                return Optional.of(this);
-            }
-            return Optional.empty();
-        }
+    CONTEXT("context") {
 
         /**
-         * Accepts a message which type name is {@code EventContext}.
+         * The suffix for message types names which supports such a type reference.
+         */
+        private final String typeSuffix = MessageContext.typeSuffix();
+
+        /**
+         * Accepts a message which type name ends with the {@code "Context"} suffix.
          */
         @Override
         public boolean test(Descriptor message) {
-            return "EventContext".equals(message.getName());
+            return message.getName()
+                          .endsWith(typeSuffix);
+        }
+
+        /**
+         * Overrides to make final avoiding overridable call in the {@link #typeSuffix} initialization.
+         */
+        @Override
+        public final String value() {
+            return super.value();
         }
     };
 
@@ -86,7 +96,7 @@ enum BuiltIn implements TypeRef {
      * @return {@code this} if the string matches this type reference,
      *         empty {@code Optional} otherwise
      */
-    Optional<TypeRef> parse(String value) {
+    final Optional<TypeRef> parse(String value) {
         if (value().equals(value)) {
             return Optional.of(this);
         }
@@ -97,18 +107,5 @@ enum BuiltIn implements TypeRef {
     @Override
     public String value() {
         return this.value;
-    }
-
-    /**
-     * Finds a value matching the passed string.
-     */
-    static Optional<TypeRef> parseAll(String value) {
-        Optional<TypeRef> result =
-                Stream.of(values())
-                      .map(v -> v.parse(value))
-                      .filter(Optional::isPresent)
-                      .findFirst()
-                      .orElse(Optional.empty());
-        return result;
     }
 }
