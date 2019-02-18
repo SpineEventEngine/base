@@ -52,12 +52,17 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public final class DescriptorReference {
 
+    /**
+     * A file that contains references to a number of Protobuf descriptor sets.
+     *
+     * <p>There may be multiple `desc.ref` files present in one project.
+     */
     @VisibleForTesting
     @SuppressWarnings("DuplicateStringLiteralInspection") /* Different semantics. */
     static final String FILE_NAME = "desc.ref";
 
     @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
-                                    platform-dependent issues in `desc.ref`.*/
+                                                       platform-dependent issues in `desc.ref`.*/
     private static final String SEPARATOR = "\n";
     private static final Splitter LINE_SPLITTER = Splitter.on(SEPARATOR)
                                                           .omitEmptyStrings()
