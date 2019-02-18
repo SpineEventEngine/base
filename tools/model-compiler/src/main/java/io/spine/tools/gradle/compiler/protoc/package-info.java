@@ -18,29 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
-
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
-
 /**
- * Configuration of a generated interface for a certain target.
- *
- * @see GeneratedInterfaces#filePattern
- * @see GeneratedInterfaces#uuidMessage
+ * Spine Protoc Gradle plugin configurations.
  */
-public interface GeneratedInterfaceConfig {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.gradle.compiler.protoc;
 
-    /**
-     * For the given target, marks the target with the interface with the given fully qualified name.
-     *
-     * <p>The interface itself is not generated and the user should define it manually.
-     *
-     * @param interfaceName the FQN of the interface
-     */
-    void markWith(@FullyQualifiedName String interfaceName);
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * For the given target, turns off interface generation.
-     */
-    void ignore();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

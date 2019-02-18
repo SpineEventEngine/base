@@ -26,6 +26,7 @@ import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;

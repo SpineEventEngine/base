@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;

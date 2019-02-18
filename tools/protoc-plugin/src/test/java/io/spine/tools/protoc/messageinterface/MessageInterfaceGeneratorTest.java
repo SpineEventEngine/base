@@ -34,7 +34,7 @@ import io.spine.base.UuidValue;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
-import io.spine.tools.gradle.compiler.GeneratedInterfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

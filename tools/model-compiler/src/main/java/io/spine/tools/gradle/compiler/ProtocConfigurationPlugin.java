@@ -32,6 +32,7 @@ import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;

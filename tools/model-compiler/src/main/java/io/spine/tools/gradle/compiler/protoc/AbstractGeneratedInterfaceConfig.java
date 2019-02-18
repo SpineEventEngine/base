@@ -18,11 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link GeneratedInterfaceConfig} which configures messages with {@code (enrichment_for)} option.
+ * Abstract implementation base for {@link GeneratedInterfaceConfig}.
  */
-final class EnrichmentInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
+
+    private @Nullable ClassName interfaceName;
+
+    @Override
+    public final void markWith(String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
+    }
+
+    @Override
+    public final void ignore() {
+        this.interfaceName = null;
+    }
+
+    final Optional<ClassName> interfaceName() {
+        return Optional.ofNullable(interfaceName);
+    }
 }

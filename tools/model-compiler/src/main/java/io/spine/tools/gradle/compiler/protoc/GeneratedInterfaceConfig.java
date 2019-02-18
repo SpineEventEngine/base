@@ -18,34 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.code.java.ClassName;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 /**
- * Abstract implementation base for {@link GeneratedInterfaceConfig}.
+ * Configuration of a generated interface for a certain target.
+ *
+ * @see GeneratedInterfaces#filePattern
+ * @see GeneratedInterfaces#uuidMessage
  */
-abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
+public interface GeneratedInterfaceConfig {
 
-    private @Nullable ClassName interfaceName;
+    /**
+     * For the given target, marks the target with the interface with the given fully qualified name.
+     *
+     * <p>The interface itself is not generated and the user should define it manually.
+     *
+     * @param interfaceName the FQN of the interface
+     */
+    void markWith(@FullyQualifiedName String interfaceName);
 
-    @Override
-    public final void markWith(String interfaceName) {
-        checkNotNull(interfaceName);
-        this.interfaceName = ClassName.of(interfaceName);
-    }
-
-    @Override
-    public final void ignore() {
-        this.interfaceName = null;
-    }
-
-    final Optional<ClassName> interfaceName() {
-        return Optional.ofNullable(interfaceName);
-    }
+    /**
+     * For the given target, turns off interface generation.
+     */
+    void ignore();
 }
