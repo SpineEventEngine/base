@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.code.proto.enrichment;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -27,6 +27,8 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.StringOption;
+import io.spine.code.proto.ref.DirectTypeRef;
+import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
 import java.util.Collection;

@@ -113,12 +113,12 @@ public final class FieldDeclaration implements Logging {
         TypeName typeName = TypeName.from(field.getMessageType());
         KnownTypes knownTypes = KnownTypes.instance();
         try {
-            TypeUrl fieldTypeUrl = typeName.toUrl();
-            ClassName className = knownTypes.classNameOf(fieldTypeUrl);
+            TypeUrl fieldType = typeName.toUrl();
+            ClassName className = knownTypes.classNameOf(fieldType);
             return className.value();
         } catch (UnknownTypeException e) {
             List<String> allUrls =
-                    knownTypes.getAllUrls()
+                    knownTypes.allUrls()
                               .stream()
                               .map(TypeUrl::value)
                               .sorted()

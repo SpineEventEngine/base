@@ -73,4 +73,15 @@ public final class PackageName extends StringTypeValue {
     public static String delimiter() {
         return DELIMITER;
     }
+
+    /**
+     * Verifies if the package represented by this package name is
+     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#packages-and-name-resolution">
+     * nested</a> in the passed package.
+     */
+    public boolean isInnerOf(PackageName parentCandidate) {
+        checkNotNull(parentCandidate);
+        boolean result = value().startsWith(parentCandidate.value());
+        return result;
+    }
 }
