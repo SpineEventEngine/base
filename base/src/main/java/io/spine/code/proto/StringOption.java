@@ -27,17 +27,19 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 /**
  * A Protobuf option with a {@code String value}.
  *
- * <p>Some options are defined as having a single {@code String} value, this value might bear
- * more sense and require additional handling, thus, this class adds a
- * {@linkplain this#parsedValueFrom(GenericDescriptor) bridge method} to avoid working with plain
- * {@code Strings} in user code.
- *
  * @param <V>
  *         value that is obtained from the Protobuf string option value
  * @param <K>
  *         the type of values that this option is applied to
  * @param <E>
  *         the type of object that holds all options of {@code K}
+ * @apiNote While some Protobuf options may be defined as having a type {@code String}, the value
+ *         of the option might be a raw representation of a group of objects, or a representation of
+ *         an alternative, e.g. {@code (enrichment_for)} option, while having a {@code String}
+ *         value, represents a collection of messages that are enriched.
+ *         Thus, a {@linkplain this#parsedValueFrom(GenericDescriptor) converting method} is defined
+ *         to separate the raw value from the intended one, to avoid having to work with {@code
+ *         Strings} in the user code.
  */
 public abstract class StringOption<V, K extends GenericDescriptor, E extends ExtendableMessage<E>>
         extends ProtobufOption<String, K, E> {

@@ -32,6 +32,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  */
 public class FileOption<V> extends ProtobufOption<V, FileDescriptor, FileOptions> {
 
+    /** Creates a new instance of this option, based on the specified extension. */
     protected FileOption(GeneratedExtension<FileOptions, V> extension) {
         super(extension);
     }

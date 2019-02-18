@@ -28,10 +28,11 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * An option that is applied to a Protobuf message.
  *
  * @param <V>
- *         value of the option
+ *         type of the option value
  */
 public class MessageOption<V> extends ProtobufOption<V, Descriptor, MessageOptions> {
 
+    /** Creates a new instance of the option based on the specified extension. */
     protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
         super(extension);
     }

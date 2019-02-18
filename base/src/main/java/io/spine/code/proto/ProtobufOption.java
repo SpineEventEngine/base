@@ -43,6 +43,7 @@ public abstract class ProtobufOption<T, K extends GenericDescriptor, E extends E
 
     private final GeneratedMessage.GeneratedExtension<E, T> extension;
 
+    /** Creates a new instance of the option using the specified extension. */
     ProtobufOption(GeneratedMessage.GeneratedExtension<E, T> extension) {
         this.extension = extension;
     }
