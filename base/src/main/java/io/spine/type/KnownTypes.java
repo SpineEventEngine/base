@@ -117,7 +117,7 @@ public class KnownTypes implements Serializable {
      * @return Java class name
      * @throws UnknownTypeException if there is no such type known to the application
      */
-    public ClassName getClassName(TypeUrl typeUrl) throws UnknownTypeException {
+    public ClassName classNameOf(TypeUrl typeUrl) throws UnknownTypeException {
         if (!instance().contains(typeUrl)) {
             throw new UnknownTypeException(typeUrl.getTypeName());
         }

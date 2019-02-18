@@ -85,7 +85,7 @@ class KnownTypesTest {
 
     private void assertContainsClass(Class<? extends Message> msgClass) {
         TypeUrl typeUrl = TypeUrl.of(msgClass);
-        ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.classNameOf(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
@@ -94,7 +94,7 @@ class KnownTypesTest {
     @DisplayName("contain nested proto types")
     void containNestedProtoTypes() {
         TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
-        ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.classNameOf(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
@@ -150,7 +150,7 @@ class KnownTypesTest {
         TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         assertThrows(
                 UnknownTypeException.class,
-                () -> knownTypes.getClassName(unexpectedUrl)
+                () -> knownTypes.classNameOf(unexpectedUrl)
         );
     }
 }
