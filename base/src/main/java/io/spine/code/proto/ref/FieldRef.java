@@ -75,7 +75,7 @@ public final class FieldRef extends StringTypeValue {
     /**
      * Ensures that the passed value is not null, empty or blank.
      */
-    static String checkValue(String value) {
+    private static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
         checkArgument(
                 !value.contains("*"),
@@ -146,7 +146,7 @@ public final class FieldRef extends StringTypeValue {
      *
      * <p>The method accepts all types if this instance is a wildcard type reference.
      */
-    public boolean matchesType(Descriptor message) {
+    boolean matchesType(Descriptor message) {
         checkNotNull(message);
         boolean typeMatches = typeRef.test(message);
         boolean containsField = message.findFieldByName(fieldName()) != null;

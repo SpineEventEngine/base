@@ -36,7 +36,9 @@ import static java.util.regex.Pattern.compile;
 /**
  * Obtains source type names from the {@code "by"} field option of a message.
  */
-public final class ByOption extends StringOption<Collection<FieldRef>, FieldDescriptor, FieldOptions> {
+public final class ByOption extends StringOption<Collection<FieldRef>,
+                                                 FieldDescriptor,
+                                                 FieldOptions> {
 
     /**
      * Separates two or more alternative references.
