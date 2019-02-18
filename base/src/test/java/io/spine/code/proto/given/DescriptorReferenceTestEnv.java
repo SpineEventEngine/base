@@ -25,13 +25,11 @@ import io.spine.code.proto.DescriptorReference;
 import io.spine.code.proto.FileDescriptors;
 
 import java.io.File;
-import java.net.URL;
+import java.util.UUID;
 
 /**
  * A utility class that provides references to descriptors.
  */
-@SuppressWarnings("HardcodedLineSeparator")
-// Resistance against different line separators is one of the things being tested.
 public class DescriptorReferenceTestEnv {
 
     // Prevent instantiation.
@@ -39,49 +37,27 @@ public class DescriptorReferenceTestEnv {
     }
 
     /** Returns a reference to a {@code "smoke-test-model-compiler.desc"} file. */
-    public static ReferenceWithNewline toSmokeTestModelCompiler() {
+    public static DescriptorReference smokeTestModelCompilerRef() {
         String reference = "smoke_tests_model-compiler_tests_unspecified.desc";
-        return new ReferenceWithNewline(reference);
+        return DescriptorReference.toOneFile(new File(reference));
     }
 
     /** Returns a reference to a {@code "known_types.desc"} file. */
-    public static ReferenceWithNewline toKnownTypes() {
-        URL resource = Resources.getResource(FileDescriptors.KNOWN_TYPES);
-        return new ReferenceWithNewline(resource.toString());
+    public static DescriptorReference knownTypesRef() {
+        String asFile = Resources.getResource(FileDescriptors.KNOWN_TYPES)
+                                 .getFile();
+        File result = new File(asFile);
+        return DescriptorReference.toOneFile(result);
     }
 
     /**
-     * A reference to a descriptor that might contain a new line at its end,
-     * which should not affect the way the referenced file is handled.
+     * Return a reference to a descriptor file with a random name. Note that returned file does not
+     * exist.
      */
-    public static class ReferenceWithNewline {
-
-        private final String referencedFile;
-        private static final String WINDOWS_SEPARATOR = "\r\n";
-        private static final String UNIX_SEPARATOR = "\n";
-
-        private ReferenceWithNewline(String file) {
-            this.referencedFile = file;
-        }
-
-        /** Returns a reference to a descriptor with {@code "\r\n"} newline symbol at the end. */
-        public DescriptorReference withCrLf() {
-            String path = referencedFile + WINDOWS_SEPARATOR;
-            File result = new File(path);
-            return DescriptorReference.toOneFile(result);
-        }
-
-        /** Returns a reference to a descriptor with {@code "\n"} newline symbol at the end. */
-        public DescriptorReference withLf() {
-            String path = referencedFile + UNIX_SEPARATOR;
-            File result = new File(path);
-            return DescriptorReference.toOneFile(result);
-        }
-
-        /** Returns a reference to a descriptor without a newline symbol at the end. */
-        public DescriptorReference withoutNewLine() {
-            File result = new File(referencedFile);
-            return DescriptorReference.toOneFile(result);
-        }
+    public static DescriptorReference randomRef() {
+        String reference = UUID.randomUUID()
+                               .toString();
+        File result = new File(reference);
+        return DescriptorReference.toOneFile(result);
     }
 }
