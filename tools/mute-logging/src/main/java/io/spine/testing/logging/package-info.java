@@ -18,32 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
-
-include 'base'
-
-include 'testlib'
-
 /**
- * Includes a module and sets custom project directory to it.
+ * This package contains the classes of the {@link io.spine.testing.logging.MuteLogging} JUnit
+ * extension.
  */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
-}
 
-module 'plugin-base'
-module 'plugin-testlib'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.testing.logging;
 
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
+import com.google.errorprone.annotations.CheckReturnValue;
 
-module 'proto-js-plugin'
-
-module 'reflections-plugin'
-
-module 'protoc-api'
-module 'protoc-plugin'
+import javax.annotation.ParametersAreNonnullByDefault;
