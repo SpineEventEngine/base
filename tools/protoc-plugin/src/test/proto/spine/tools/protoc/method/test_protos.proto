@@ -28,7 +28,7 @@ option java_package = "io.spine.tools.protoc.method";
 option java_outer_classname = "MessageOptionsProto";
 option java_multiple_files = true;
 
-// This file contains message types for the MessageOptionsTest.
+// This file contains message types for the io.spine.tools.protoc.method tests.
 
 message EnrichedMessage {
     string id = 1;
