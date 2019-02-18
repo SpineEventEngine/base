@@ -76,7 +76,10 @@ public final class EnrichmentType extends MessageType {
     }
 
     /**
-     * Verifies if the passed message type is an enrichment type.
+     * Verifies if the passed message type has the {@code (enrichment_for)} option, and as such
+     * is a candidate for being a valid enrichment type.
+     *
+     * @see #test(MessageType) 
      */
     public static boolean test(Descriptor type) {
         checkNotNull(type);
@@ -86,7 +89,10 @@ public final class EnrichmentType extends MessageType {
     }
 
     /**
-     * Verifies if the passed message type is an enrichment type.
+     * Verifies if the passed message type has the {@code (enrichment_for)} option, and as such
+     * is a candidate for being a valid enrichment type.
+     *
+     * @see #test(Descriptor)
      */
     public static boolean test(MessageType type) {
         checkNotNull(type);
