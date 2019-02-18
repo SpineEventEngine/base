@@ -20,20 +20,20 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.io.Files;
-import com.google.common.io.MoreFiles;
-import com.google.common.io.RecursiveDeleteOption;
-import com.google.common.io.Resources;
 import io.spine.code.proto.DescriptorReference.ResourceReference;
 import io.spine.util.Exceptions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -42,78 +42,84 @@ import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.code.proto.DescriptorReference.loadFromResources;
-import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toKnownTypes;
-import static io.spine.code.proto.given.DescriptorReferenceTestEnv.toSmokeTestModelCompiler;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef;
+import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
+import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyIterator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Descriptor reference should")
+@ExtendWith(TempDirectory.class)
 class DescriptorReferenceTest {
 
-    private Path path = newTempDir();
-
-    private static Path newTempDir() {
-        return Files.createTempDir()
-                    .getAbsoluteFile()
-                    .toPath();
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        MoreFiles.deleteRecursively(path, RecursiveDeleteOption.ALLOW_INSECURE);
-        path = newTempDir();
-    }
-
-    @Test
-    @DisplayName("not gather resources that have not been written")
-    void fromWrongFile() {
-        // Not writing `knownTypes` anywhere
-        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
-        File resourcesDirectory = path.toFile();
-        boolean isDirectory = resourcesDirectory
-                .isDirectory();
-        assertTrue(isDirectory && resourcesDirectory.listFiles().length == 0);
-    }
-
-    @Test
-    @DisplayName("not gather resources that have been written to a different `desc.ref` file")
-    void fromDifferentFile() {
-        Path emptyPath = newTempDir();
-        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
-        knownTypes.writeTo(path);
-        File[] files = emptyPath.toFile()
-                                .listFiles();
-        assertEquals(0, files.length);
-    }
+    @SuppressWarnings("HardcodedLineSeparator")
+    private static final String WINDOWS_SEPARATOR = "\r\n"; /* Resistance to different separators is
+                                                             * a part of the test. */
+    @SuppressWarnings("HardcodedLineSeparator")
+    private static final String UNIX_SEPARATOR = "\n";
 
     @Test
     @DisplayName("be unaffected by Windows line separator")
-    void unaffectedByCrLf() {
-        DescriptorReference knownTypes = toKnownTypes().withCrLf();
-        DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withCrLf();
-        knownTypes.writeTo(path);
-        smokeTestModelCompiler.writeTo(path);
-
-        assertExactAmount();
+    void unaffectedByCrLf(@TempDir Path path) {
+        assertDescriptorRefsWrittenCorrectly(path, WINDOWS_SEPARATOR, knownTypesRef(), randomRef());
     }
 
     @Test
     @DisplayName("be unaffected by Unix line separator")
-    void unaffectedByLf() {
-        DescriptorReference knownTypes = toKnownTypes().withLf();
-        DescriptorReference smokeTestModelCompiler = toSmokeTestModelCompiler().withLf();
-        knownTypes.writeTo(path);
-        smokeTestModelCompiler.writeTo(path);
+    void unaffectedByLf(@TempDir Path path) {
+        assertDescriptorRefsWrittenCorrectly(path, UNIX_SEPARATOR, knownTypesRef(), randomRef());
+    }
 
-        assertExactAmount();
+    @Test
+    @DisplayName("ignore previous content of the `desc.ref` file")
+    void ignorePreviousDescRef(@TempDir Path path) {
+        DescriptorReference firstReference = randomRef();
+        firstReference.writeTo(path);
+        assertResourcesLoaded(path, firstReference);
+
+        DescriptorReference secondReference = knownTypesRef();
+        secondReference.writeTo(path);
+        assertResourcesLoaded(path, firstReference, secondReference);
+
+        DescriptorReference thirdReference = smokeTestModelCompilerRef();
+        thirdReference.writeTo(path);
+        assertResourcesLoaded(path, firstReference, secondReference, thirdReference);
+    }
+
+    @Test
+    @DisplayName("write a reference with expected content")
+    void properContent(@TempDir Path path) throws IOException {
+        DescriptorReference knownTypes = knownTypesRef();
+        knownTypes.writeTo(path);
+
+        File descRef = path.resolve(DescriptorReference.FILE_NAME)
+                           .toFile();
+        List<String> linesWritten = Files.readLines(descRef, UTF_8);
+        assertEquals(1, linesWritten.size());
+        String actual = linesWritten.get(0);
+        String expected = knownTypes.asResource()
+                                    .toString();
+        assertEquals(expected, actual);
+    }
+
+    private static void assertDescriptorRefsWrittenCorrectly(@TempDir Path path,
+                                                             String separator,
+                                                             DescriptorReference... descriptors) {
+        for (DescriptorReference descriptor : descriptors) {
+            descriptor.writeTo(path, separator);
+        }
+
+        assertResourcesLoaded(path, descriptors);
     }
 
     @Test
     @DisplayName("throw if the referenced path points to a file instead of a directory")
-    void throwsOnDirectory() {
-        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+    void throwsOnDirectory(@TempDir Path path) {
+        DescriptorReference knownTypes = knownTypesRef();
         File newFile = createFileUnderPath(path);
         assertThrows(IllegalStateException.class, () -> knownTypes.writeTo(newFile.toPath()));
     }
@@ -121,37 +127,40 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("throw if the referenced path is null")
     void throwsOnNull() {
-        DescriptorReference knownTypes = toKnownTypes().withoutNewLine();
+        DescriptorReference knownTypes = knownTypesRef();
         assertThrows(NullPointerException.class, () -> knownTypes.writeTo(null));
     }
 
-    private void assertExactAmount() {
-        Iterator<ResourceReference> existingDescriptors = loadFromResources(iterator(path));
-        List<ResourceReference> result = newArrayList(existingDescriptors);
-        assertEquals(2, result.size());
+    @Test
+    @DisplayName("return an empty iterator upon missing `desc.ref` file")
+    void onMissingDescRef() {
+        Iterator<URL> emptyIterator = emptyIterator();
+        Iterator<ResourceReference> result = DescriptorReference.loadFromResources(emptyIterator);
+        assertFalse(result.hasNext());
     }
 
-    private static Iterator<URL> iterator(Path path) {
-        File descRef = new File(path.toFile(), DescriptorReference.FILE_NAME);
-        ImmutableList.Builder<URL> builder = ImmutableList.builder();
-        try {
-            List<String> descriptorReferences = Files.readLines(descRef, Charsets.UTF_8);
-            for (String reference : descriptorReferences) {
-                URL url = Resources.getResource(reference);
-                builder.add(url);
-            }
-        } catch (IOException e) {
-            throw newIllegalStateException(e, "Cannot compose URL from %s",
-                                           path.toAbsolutePath());
+    private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {
+        Path descRef = path.resolve(DescriptorReference.FILE_NAME);
+        Iterator<ResourceReference> existingDescriptors = loadFromResources(asIterator(descRef));
+        List<ResourceReference> result = newArrayList(existingDescriptors);
+        assertEquals(expected.length, result.size());
+        for (DescriptorReference reference : expected) {
+            assertTrue(result.contains(reference.asResource()));
         }
+    }
 
-        return builder.build()
-                      .iterator();
+    private static UnmodifiableIterator<URL> asIterator(Path descRef) {
+        try {
+            return Iterators.singletonIterator(descRef.toUri()
+                                                      .toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("TailRecursion")
     // As long as the specified path does not contain files with names matching a random UUID value,
-    // recursive calls will not happen.
+    // recursive calls should not happen.
     private static File createFileUnderPath(Path path) {
         // Ensures no existing file with such name.
         String fileName = UUID.randomUUID()
