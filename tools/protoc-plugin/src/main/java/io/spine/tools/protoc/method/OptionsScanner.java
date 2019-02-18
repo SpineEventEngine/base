@@ -28,6 +28,8 @@ import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
@@ -50,21 +52,49 @@ final class OptionsScanner {
 
         return generatedMethods
                 .stream()
-                .filter(target -> !target.getGeneratorName()
-                                         .isEmpty())
-                .filter(target -> MessageOptions.hasOption(target.getOptionName(), type))
-                .map(target -> generateMethods(target, type))
+                .filter(OptionsScanner::hasNotBlankName)
+                .filter(new HasProtoOption(type))
+                .map(new GenerateMethods(type))
                 .flatMap(List::stream)
                 .collect(toImmutableList());
     }
 
-    private static ImmutableList<CompilerOutput>
-    generateMethods(GeneratedMethod spec, MessageType type) {
-        MethodFactory generator = MethodFactories.newFactoryFor(spec);
-        return generator
-                .newMethodsFor(type)
-                .stream()
-                .map(methodBody -> MessageMethod.from(methodBody, type))
-                .collect(toImmutableList());
+    private static boolean hasNotBlankName(GeneratedMethod spec) {
+        return !spec.getGeneratorName()
+                    .trim()
+                    .isEmpty();
+    }
+
+    private static class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+
+        private final MessageType type;
+
+        private GenerateMethods(MessageType type) {
+            this.type = type;
+        }
+
+        @Override
+        public ImmutableList<CompilerOutput> apply(GeneratedMethod spec) {
+            MethodFactory factory = MethodFactories.newFactoryFor(spec);
+            return factory
+                    .newMethodsFor(type)
+                    .stream()
+                    .map(methodBody -> MessageMethod.from(methodBody, type))
+                    .collect(toImmutableList());
+        }
+    }
+
+    private static class HasProtoOption implements Predicate<GeneratedMethod> {
+
+        private final MessageType type;
+
+        private HasProtoOption(MessageType type) {
+            this.type = type;
+        }
+
+        @Override
+        public boolean test(GeneratedMethod method) {
+            return MessageOptions.hasOption(method.getOptionName(), type);
+        }
     }
 }
