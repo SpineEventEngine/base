@@ -147,8 +147,8 @@ public final class FieldPaths {
                     if (strict) {
                         throw newIllegalArgumentException(
                                 "The field referenced by the name `%s` is not a message, and" +
-                                " it is not possible to obtain a nested field named `%s`. " +
-                                " The full field path is: `%s`.",
+                                        " it is not possible to obtain a nested field named `%s`. " +
+                                        " The full field path is: `%s`.",
                                 fieldName,
                                 iterator.next(),
                                 toString(path)

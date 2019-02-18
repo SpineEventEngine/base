@@ -112,7 +112,7 @@ class KnownTypesTest {
     void findTypeUrlByName() {
         TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
+        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
                                                     .map(Type::url);
         assertTrue(typeUrlActual.isPresent());
         assertEquals(typeUrlExpected, typeUrlActual.get());

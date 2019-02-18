@@ -18,26 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.tools.protoc.insert;
 
-import com.google.protobuf.Message;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
 /**
- * Base interface for message contexts.
- *
- * <p>Implementing classes must have the {@linkplain #typeSuffix() "Context"} suffix.
- *
- * @implNote The naming convention is required for referencing fields of message contexts in design
- * time, when the class information is not yet available. One of the examples is being able to
- * define an enrichment type, which is filled in by fields of messages <em>and</em> their contexts.
+ * An option that applies a common characteristic to every Protobuf message in a
+ * {@code .proto} file.
  */
-@SuppressWarnings("InterfaceNeverImplemented") // implemented by generated code.
-public interface MessageContext extends Message {
+final class EveryIs extends FileOption<IsOption> {
 
-    /**
-     * Obtains the type name suffix required for all message context classes.
-     */
-    static String typeSuffix() {
-        return "Context";
+    /** Creates a new instance of this option. */
+    EveryIs() {
+        super(OptionsProto.everyIs);
     }
 }

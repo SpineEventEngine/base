@@ -25,6 +25,10 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
+import java.util.Optional;
+
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+
 /**
  * Provides references to fields of messages that serve as input for creating a field of
  * an enrichment message.
@@ -32,12 +36,38 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 @Immutable
 final class FieldDef {
 
+    /**
+     * The descriptor of the enrichment type field.
+     */
     private final FieldDescriptor descriptor;
+
+    /**
+     * Field references found in the {@code (by)} option of the field.
+     */
     private final ImmutableList<FieldRef> sources;
 
-    FieldDef(FieldDescriptor descriptor) {
-        this.descriptor = descriptor;
-        this.sources = FieldRef.allFrom(descriptor.toProto());
+    FieldDef(FieldDescriptor field) {
+        this.descriptor = field;
+        ImmutableList<FieldRef> sources = ByOption.allFrom(field);
+        checkDuplicatingContextRef(field, sources);
+        this.sources = sources;
+    }
+
+    /**
+     * Ensures that field references has at most one reference to a message context field.
+     */
+    private static
+    void checkDuplicatingContextRef(FieldDescriptor field, ImmutableList<FieldRef> sources) {
+        long count = sources.stream()
+                            .filter(FieldRef::isContext)
+                            .count();
+        if (count > 1) {
+            throw newIllegalArgumentException(
+                    "There can be only one `context` field reference per enrichment field." +
+                            " The field `%s` has %d references: `%s`.",
+                    field.getFullName(), count, sources
+            );
+        }
     }
 
     boolean matchesType(Descriptor type) {
@@ -46,6 +76,43 @@ final class FieldDef {
         return result;
     }
 
+    /**
+     * Obtains the field descriptor of the source message field.
+     *
+     * @param type the passed type must have a {@linkplain #matchesType(Descriptor) matching} field
+     * @return the source field descriptor
+     */
+    FieldSource find(Descriptor type) {
+        FieldRef contextReference = null;
+        for (FieldRef ref : sources) {
+            Optional<FieldDescriptor> field = ref.find(type);
+            if (field.isPresent()) {
+                return new FieldSource(field.get(), ref);
+            }
+            if (ref.isContext()) {
+                contextReference = ref;
+            }
+        }
+        // None of the field references match the type, but we found context reference.
+        // Let's use it as the source.
+        if (contextReference != null) {
+            return new FieldSource(null, contextReference);
+        }
+        // None of the field references match. We don't have a context reference either.
+        // There is no information on how to construct the enrichment field.
+        throw noneFieldMatches(type);
+    }
+
+    private IllegalArgumentException noneFieldMatches(Descriptor type) {
+        return newIllegalArgumentException(
+                "Unable to obtain any of the referenced fields `%s` in the message type `%s`.",
+                sources, type.getFullName()
+        );
+    }
+
+    /**
+     * Obtains the descriptor of the enrichment field.
+     */
     FieldDescriptor descriptor() {
         return descriptor;
     }

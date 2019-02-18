@@ -61,8 +61,9 @@ public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
      * @return a list with found values, or an empty list if the message does not
      *         have the option defined
      */
-    public ImmutableList<String> parse(DescriptorProto message) {
-        Optional<String> value = valueFrom(message);
+    public static ImmutableList<String> parse(DescriptorProto message) {
+        EnrichmentForOption enrichmentFor = new EnrichmentForOption();
+        Optional<String> value = enrichmentFor.valueFrom(message);
         ImmutableList<String> result =
                 value.map(s -> ImmutableList.copyOf(splitter.split(s)))
                      .orElse(ImmutableList.of());

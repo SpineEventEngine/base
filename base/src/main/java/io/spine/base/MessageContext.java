@@ -18,13 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base;
+
+import com.google.protobuf.Message;
+
 /**
- * This package provides code generation classes for handling enrichments.
+ * Base interface for message contexts.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.enrichment;
+@SuppressWarnings("InterfaceNeverImplemented") // implemented by generated code.
+public interface MessageContext extends Message {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains type name suffix required for all message context classes.
+     */
+    static String typeSuffix() {
+        return "Context";
+    }
+}
