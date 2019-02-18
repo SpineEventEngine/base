@@ -73,14 +73,6 @@ enum BuiltIn implements TypeRef {
             return message.getName()
                           .endsWith(typeSuffix);
         }
-
-        /**
-         * Overrides to make final avoiding overridable call in the {@link #typeSuffix} initialization.
-         */
-        @Override
-        public final String value() {
-            return super.value();
-        }
     };
 
     /** The value of the reference. */
