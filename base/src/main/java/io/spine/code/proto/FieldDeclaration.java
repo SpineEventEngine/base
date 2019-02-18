@@ -114,7 +114,7 @@ public final class FieldDeclaration implements Logging {
         KnownTypes knownTypes = KnownTypes.instance();
         try {
             TypeUrl fieldTypeUrl = typeName.toUrl();
-            ClassName className = knownTypes.classNameOf(fieldTypeUrl);
+            ClassName className = knownTypes.getClassName(fieldTypeUrl);
             return className.value();
         } catch (UnknownTypeException e) {
             List<String> allUrls =
