@@ -63,7 +63,7 @@ class TypeNameTest {
     @DisplayName("return simple type name")
     void return_simple_type_name() {
         assertEquals(StringValue.class.getSimpleName(), TypeName.of(StringValue.class)
-                                                                .simpleName());
+                                                                .getSimpleName());
     }
 
     @Test
@@ -75,7 +75,7 @@ class TypeNameTest {
                                   .toUrl();
 
         String actual = TypeName.from(typeUrl)
-                                .simpleName();
+                                .getSimpleName();
 
         assertEquals(name, actual);
     }
@@ -85,7 +85,7 @@ class TypeNameTest {
     void obtain_instance_for_message() {
         TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
         assertNotNull(typeName);
-        assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
+        assertEquals(StringValue.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
@@ -93,7 +93,7 @@ class TypeNameTest {
     void obtain_instance_for_Java_class() {
         TypeName typeName = TypeName.of(StringValue.class);
         assertNotNull(typeName);
-        assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
+        assertEquals(StringValue.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
@@ -101,14 +101,14 @@ class TypeNameTest {
     void obtain_instance_by_descriptor() {
         TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
         assertNotNull(typeName);
-        assertEquals(UInt64Value.class.getSimpleName(), typeName.simpleName());
+        assertEquals(UInt64Value.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
     @DisplayName("provide proto descriptor")
     void provide_proto_descriptor_by_type_name() {
         TypeName typeName = TypeName.of("spine.test.types.KnownTask");
-        Descriptor typeDescriptor = typeName.messageDescriptor();
+        Descriptor typeDescriptor = typeName.getMessageDescriptor();
         assertNotNull(typeDescriptor);
         assertEquals(typeName.value(), typeDescriptor.getFullName());
     }
@@ -118,6 +118,6 @@ class TypeNameTest {
     void fail_to_find_invalid_type_descriptor() {
         TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
         assertThrows(UnknownTypeException.class,
-                     invalidTypeName::genericDescriptor);
+                     invalidTypeName::getDescriptor);
     }
 }

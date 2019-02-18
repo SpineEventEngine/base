@@ -65,7 +65,7 @@ final class PatternAnnotator extends Annotator {
         ClassName outerClass = ClassName.outerClass(file);
         Stream.Builder<ClassName> result = Stream.builder();
         result.accept(outerClass);
-        typeSet.allTypes()
+        typeSet.types()
                .stream()
                .flatMap(type -> {
                    ClassName typeName = type.javaClassName();

@@ -18,27 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+/**
+ * This package provides code generation classes for handling enrichments.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.enrichment;
 
-package spine.test.code.enrichment;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import "spine/options.proto";
-
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.fieldref";
-option java_outer_classname = "FieldDefTestEventsProto";
-option java_multiple_files = true;
-
-message FdtUserCreated {
-    string user_id = 1;
-}
-
-message FdtAccountSuspended {
-
-    // This field is named this way so that the package reference defined in `FdtUserProfile` (see
-    // the definition `field_def_test_enr.proto`) matches this event message type, while field
-    // reference made in the `(by)` option does not match the field of this type. Because of this
-    // the whole type should not match the field reference.
-    //
-    string suspended_account_id = 1;
-}
+import javax.annotation.ParametersAreNonnullByDefault;

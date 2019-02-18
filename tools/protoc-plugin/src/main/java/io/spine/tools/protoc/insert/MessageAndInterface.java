@@ -36,6 +36,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.option.Options.option;
+import static io.spine.option.OptionsProto.everyIs;
+import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.insert.MessageInterfaceSpec.prepareInterface;
 
 /**
@@ -67,7 +70,7 @@ final class MessageAndInterface {
     private static Optional<IsOption> getEveryIs(MessageType type) {
         Descriptors.FileDescriptor descriptor = type.descriptor()
                                                     .getFile();
-        Optional<IsOption> value = new EveryIs().valueFrom(descriptor);
+        Optional<IsOption> value = option(descriptor, everyIs);
         return value;
     }
 
@@ -83,7 +86,7 @@ final class MessageAndInterface {
     }
 
     private static Optional<IsOption> getIs(MessageType type) {
-        return Is.from(type.descriptor());
+        return option(type.descriptor(), is);
     }
 
     private static MessageAndInterface generateFile(MessageType type,

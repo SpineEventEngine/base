@@ -49,7 +49,7 @@ class LinkerTest {
     @Test
     @DisplayName("resolve files")
     void resolveFiles() {
-        FileSet resolved = linker.resolved();
+        FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
                 FileName.of("google/protobuf/any.proto"),
@@ -61,7 +61,7 @@ class LinkerTest {
     @DisplayName("obtain partially resolved files")
     void obtainPartial() {
         // No such in the given test data.
-        assertTrue(linker.partiallyResolved()
+        assertTrue(linker.getPartiallyResolved()
                          .isEmpty());
     }
 
@@ -69,14 +69,14 @@ class LinkerTest {
     @DisplayName("obtain unresolved files")
     void obtainUnresolved() {
         // No such in the given test data.
-        assertTrue(linker.unresolved()
+        assertTrue(linker.getUnresolved()
                          .isEmpty());
     }
 
     @Test
     @DisplayName("not leave remaining")
     void doNotLeaveRemaining() {
-        assertTrue(linker.remaining()
+        assertTrue(linker.getRemaining()
                          .isEmpty());
     }
 }

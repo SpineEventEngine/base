@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.code.proto.ref.CompositeTypeRef.parse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("CompositeTypeRef should")
@@ -62,14 +63,14 @@ class CompositeTypeRefTest {
 
         void assertRejects(String value) {
             assertThrows(IllegalArgumentException.class,
-                         () -> CompositeTypeRef.doParse(value));
+                         () -> parse(value));
         }
     }
 
     @Test
     @DisplayName("recognize message type")
     void recognizeType() {
-        CompositeTypeRef ref = CompositeTypeRef.doParse(
+        CompositeTypeRef ref = parse(
                 "google.protobuf.*," +
                 "spine.base.FieldFilter"
         );
@@ -83,7 +84,7 @@ class CompositeTypeRefTest {
     @Test
     @DisplayName("filter out non-matching message types")
     void filterOut() {
-        CompositeTypeRef ref = CompositeTypeRef.doParse(
+        CompositeTypeRef ref = parse(
                 "google.protobuf.StringValue," +
                 "google.protobuf.Timestamp," +
                 "spine.base.FieldFilter"
@@ -98,7 +99,7 @@ class CompositeTypeRefTest {
     @Test
     @DisplayName("provide comma-separated value")
     void valueWithCommas() {
-        CompositeTypeRef ref = CompositeTypeRef.doParse("Some,Value,reference.*");
+        CompositeTypeRef ref = parse("Some,Value,reference.*");
         assertThat(ref.value())
                 .contains(",");
     }
@@ -107,7 +108,7 @@ class CompositeTypeRefTest {
     @DisplayName("have toString() with the value enclosed in brackets")
     void stringOut() {
         String expected = "google.protobuf.*,spine.base.*,AndSomethingElse";
-        CompositeTypeRef ref = CompositeTypeRef.doParse(expected);
+        CompositeTypeRef ref = parse(expected);
         StringSubject assertValue = assertThat(ref.toString());
         assertValue.contains(expected);
         assertValue.startsWith("[");
@@ -118,12 +119,10 @@ class CompositeTypeRefTest {
     @DisplayName("support equality by its content")
     void equality() {
         new EqualsTester()
-                .addEqualityGroup(
-                        CompositeTypeRef.doParse("google.protobuf.*,spine.base.FieldFilter"),
-                        CompositeTypeRef.doParse("google.protobuf.*,spine.base.FieldFilter"))
-                .addEqualityGroup(
-                        CompositeTypeRef.doParse("google.protobuf.StringValue,google.protobuf.Timestamp"),
-                        CompositeTypeRef.doParse("google.protobuf.StringValue,google.protobuf.Timestamp"))
+                .addEqualityGroup(parse("google.protobuf.*,spine.base.FieldFilter"),
+                                  parse("google.protobuf.*,spine.base.FieldFilter"))
+                .addEqualityGroup(parse("google.protobuf.StringValue,google.protobuf.Timestamp"),
+                                  parse("google.protobuf.StringValue,google.protobuf.Timestamp"))
                 .testEquals();
     }
 }

@@ -112,8 +112,8 @@ public final class FileSet implements Logging {
                                                  .map(FileName::from)
                                                  .collect(toSet());
         Map<FileName, FileDescriptor> knownFiles = KnownTypes.instance()
-                .asTypeSet()
-                .allTypes()
+                .getAllTypes()
+                .types()
                 .stream()
                 .map(type -> type.descriptor().getFile())
                 .filter(descriptor -> fileNames.contains(FileName.from(descriptor.getFile())))

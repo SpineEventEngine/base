@@ -32,8 +32,6 @@ import io.spine.code.proto.Option;
  *         Boolean}
  * @param <K>
  *         kind of entity that this option is applied to
- * @param <V>
- *         kind of value that constraints produced by this option are applied to
  */
 interface ValidatingOption<T, K extends GenericDescriptor, V> extends Option<T, K> {
 

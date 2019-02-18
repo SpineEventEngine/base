@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.code.proto.ref;
 
-import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -33,8 +32,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.enrichment.BuiltIn.ANY;
-import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.SELF;
 
 @DisplayName("BuiltIn type references should")
 class BuiltInTest {
@@ -44,10 +43,10 @@ class BuiltInTest {
     class AcceptAll {
 
         @Test
-        @DisplayName("reference to a message type")
+        @DisplayName("reference to the same type")
         void self() {
-            assertAccepts(ANY, BoolValue.getDescriptor());
-            assertAccepts(ANY, Empty.getDescriptor());
+            assertAccepts(SELF, BoolValue.getDescriptor());
+            assertAccepts(SELF, Empty.getDescriptor());
         }
 
         void assertAccepts(Predicate<Descriptor> p, Descriptor message) {
@@ -60,20 +59,22 @@ class BuiltInTest {
     @DisplayName("Support \"context\" reference")
     class ContextRef {
 
+        /**
+         * This tests only the negative case since we don't have real {@code EventContext}
+         * message defined in this project.
+         *
+         * <p>The {@code EventContext} message is defined in the {@code core-java} project.
+         */
         @Test
-        @DisplayName("which rejects types other than implementing `MessageContext`")
-        void nonMessageContext() {
+        @DisplayName("which accept only EventContext type")
+        void eventContext() {
             assertRejects(Any.getDescriptor());
             assertRejects(Timestamp.getDescriptor());
         }
 
         void assertRejects(Descriptor message) {
-            assertMatch(message)
+            assertThat(EVENT_CONTEXT.test(message))
                     .isFalse();
-        }
-
-        private BooleanSubject assertMatch(Descriptor message) {
-            return assertThat(CONTEXT.test(message));
         }
     }
 }

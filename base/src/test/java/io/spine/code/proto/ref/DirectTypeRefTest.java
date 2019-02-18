@@ -22,7 +22,6 @@ package io.spine.code.proto.ref;
 
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
@@ -124,76 +123,10 @@ class DirectTypeRefTest {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent" /* We check via Truth8. */)
-    DirectTypeRef ref(String value) {
+    TypeRef ref(String value) {
         Optional<TypeRef> ref = DirectTypeRef.parse(value);
         Truth8.assertThat(ref).isPresent();
-        return (DirectTypeRef) ref.get();
-    }
-
-    @Test
-    @DisplayName("obtain simple file name from a reference")
-    void simpleName() {
-        Descriptor type = Int32Value.getDescriptor();
-        DirectTypeRef ref = ref(type.getFullName());
-        assertThat(ref.simpleTypeName())
-                .isEqualTo(type.getName());
-    }
-
-    @Nested
-    @DisplayName("create a new reference with another package")
-    class NewRef {
-
-        @Test
-        @DisplayName("for a simple name reference without a package")
-        void noPackageNotNestedRef() {
-            String typeName = "Something";
-            DirectTypeRef ref = ref(typeName);
-            assertThat(ref.hasPackage()).isFalse();
-
-            PackageName newPackage = PackageName.of("somewhere.else");
-            DirectTypeRef relocated = ref.withPackage(newPackage);
-
-            Truth8.assertThat(relocated.packageName())
-                    .hasValue(newPackage);
-            assertThat(relocated.nestedTypeName())
-                    .isEqualTo(typeName);
-            assertThat(relocated.simpleTypeName())
-                    .isEqualTo(typeName);
-        }
-
-        @Test
-        @DisplayName("for a nested type without a package")
-        void noPackageNested() {
-            String typeName = "Something.Nested";
-            DirectTypeRef ref = ref(typeName);
-            assertThat(ref.hasPackage()).isFalse();
-
-            PackageName newPackage = PackageName.of("we.moved");
-            DirectTypeRef relocated = ref.withPackage(newPackage);
-
-            Truth8.assertThat(relocated.packageName())
-                  .hasValue(newPackage);
-            assertThat(relocated.nestedTypeName())
-                    .isEqualTo(typeName);
-        }
-
-        @Test
-        @DisplayName("for a nested type with a package")
-        void nestedWithPackage() {
-            String typeName = "long.time.ago.Galaxy.Far.Away";
-            DirectTypeRef ref = ref(typeName);
-            assertThat(ref.hasPackage()).isTrue();
-
-            PackageName newPackage = PackageName.of("come.closer");
-            DirectTypeRef relocated = ref.withPackage(newPackage);
-
-            Truth8.assertThat(relocated.packageName())
-                  .hasValue(newPackage);
-            assertThat(relocated.nestedTypeName())
-                    .isEqualTo("Galaxy.Far.Away");
-            assertThat(relocated.simpleTypeName())
-                    .isEqualTo("Away");
-        }
+        return ref.get();
     }
 
     @Test

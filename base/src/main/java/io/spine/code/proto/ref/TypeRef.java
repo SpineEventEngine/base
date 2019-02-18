@@ -58,11 +58,11 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
      */
     static TypeRef parse(String value) {
         checkNotNull(value);
-        ParsingChain parsing = new ParsingChain(
+        Parsing parsing = new Parsing(
                 value,
+                BuiltIn::parseAll,
                 InPackage::parse,
-                DirectTypeRef::parse,
-                CompositeTypeRef::parse
+                DirectTypeRef::parse
         );
         TypeRef result =
                 parsing.parse()

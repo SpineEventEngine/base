@@ -18,26 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.proto.ref;
 
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * An option that is applied to a Protobuf message.
- *
- * @param <V>
- *         value of the option
- */
-public class MessageOption<V> extends ProtobufOption<V, Descriptor, MessageOptions> {
+import static com.google.common.truth.Truth.assertThat;
 
-    protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
-        super(extension);
+@DisplayName("ByOption should")
+class ByOptionTest extends UtilityClassTest<ByOption> {
+
+    ByOptionTest() {
+        super(ByOption.class);
     }
 
-    @Override
-    protected MessageOptions optionsFrom(Descriptor object) {
-        return object.getOptions();
+    @Test
+    @DisplayName("remove space characters around field references")
+    void parseRaw() {
+        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
+                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
     }
 }

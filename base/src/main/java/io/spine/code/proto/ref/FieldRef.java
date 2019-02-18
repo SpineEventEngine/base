@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.code.proto.ref;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -26,9 +26,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
-import io.spine.base.FieldPaths;
-import io.spine.code.proto.ref.TypeRef;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -37,9 +34,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.FieldPaths.findField;
-import static io.spine.code.proto.enrichment.BuiltIn.ANY;
-import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -51,35 +47,30 @@ public final class FieldRef extends StringTypeValue {
 
     /**
      * A delimiter between a field name and its qualifier, which refers to another message
-     * like {@code "context"}, or between nested field names like {@code "timestamp.seconds"}.
+     * like {@code "context"}.
      */
-    private static final String SEPARATOR = ".";
+    private static final String TYPE_SEPARATOR = ".";
 
     /**
-     * Separates tokens in a field reference.
+     * Separates a type name from a field name.
      */
-    private static final Splitter split = Splitter.on(SEPARATOR).trimResults();
+    private static final Splitter fieldNameSplit = Splitter.on(TYPE_SEPARATOR);
+
+    /**
+     * Reference value parts separated by {@link #fieldNameSplit}.
+     */
+    private final ImmutableList<String> parts;
 
     /**
      * Reference to a containing type.
      */
     private final TypeRef typeRef;
 
-    /**
-     * {@code true} if the referenced field is nested inside another field(s value.
-     */
-    private final FieldPath path;
-
     @VisibleForTesting
     FieldRef(String value) {
         super(checkValue(value));
-        ImmutableList<String> parts = split(value);
-        this.typeRef = CONTEXT.parse(parts.get(0))
-                              .orElse(ANY);
-        // If the first element is context reference, skip it from the path.
-        ImmutableList<String> fieldPath =
-                parts.subList((this.typeRef == CONTEXT ? 1 : 0), parts.size());
-        this.path = FieldPaths.fromElements(fieldPath);
+        this.parts = split(value);
+        this.typeRef = TypeRef.parse(typeRef(value));
     }
 
     /**
@@ -104,7 +95,7 @@ public final class FieldRef extends StringTypeValue {
     }
 
     private static ImmutableList<String> split(String value) {
-        List<String> elements = split.splitToList(value);
+        List<String> elements = fieldNameSplit.splitToList(value);
         return ImmutableList.copyOf(elements);
     }
 
@@ -124,7 +115,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
-        boolean result = typeRef.equals(ANY);
+        boolean result = typeRef.equals(SELF);
         return result;
     }
 
@@ -132,17 +123,35 @@ public final class FieldRef extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = typeRef.equals(CONTEXT);
+        boolean result = typeRef.equals(EVENT_CONTEXT);
         return result;
     }
 
     /**
+     * Obtains type reference part from the field reference string.
+     */
+    private static String typeRef(String value) {
+        int index = value.lastIndexOf(TYPE_SEPARATOR);
+        if (index == -1) {
+            return "";
+        }
+        String result = value.substring(0, index)
+                             .trim();
+        return result;
+    }
+
+    /**
+     * Verifies if the reference contains a type name part.
+     */
+    public boolean hasType() {
+        return parts.size() >= 2;
+    }
+
+    /**
      * Obtains the field name part of the reference.
-     *
-     * <p>If the field reference is nested, the returned value is the name of the innermost field.
      */
     public String fieldName() {
-        return path.getFieldName(path.getFieldNameCount() - 1);
+        return parts.get(parts.size() - 1);
     }
 
     /**
@@ -150,28 +159,24 @@ public final class FieldRef extends StringTypeValue {
      *
      * <p>The method accepts all types if this instance is a wildcard type reference.
      */
-    public boolean matchesType(Descriptor type) {
-        checkNotNull(type);
-        boolean typeMatches = typeRef.test(type);
-        if (!typeMatches) {
-            return false;
-        }
-        FieldDescriptor field = findField(path, type);
-        return field != null;
+    public boolean matchesType(Descriptor message) {
+        checkNotNull(message);
+        boolean typeMatches = typeRef.test(message);
+        boolean containsField = message.findFieldByName(fieldName()) != null;
+        return typeMatches && containsField;
     }
 
     /**
      * Obtains the descriptor of the field with the name {@linkplain #fieldName()} referenced}
      * by this instance in the passed message.
      *
-     * @param type
-     *         the type of the message in which to find the field
+     * @param message the message in which to find the field
      * @return the descriptor of the field, or empty {@code Optional} if there is no a field with
-     *         the {@linkplain #fieldName()} referenced name}
+     * the {@linkplain #fieldName()} referenced name}
      */
-    public Optional<FieldDescriptor> find(Descriptor type) {
-        checkNotNull(type);
-        @Nullable FieldDescriptor result = findField(path, type);
+    public Optional<FieldDescriptor> find(Descriptor message) {
+        checkNotNull(message);
+        @Nullable FieldDescriptor result = message.findFieldByName(fieldName());
         return Optional.ofNullable(result);
     }
 }

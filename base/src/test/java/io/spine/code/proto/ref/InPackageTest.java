@@ -89,13 +89,10 @@ class InPackageTest {
     @Test
     @DisplayName("tell if a message belongs to the referenced package directly")
     void byDescriptor() {
-        TypeRef ref = ref("google.protobuf.*");
+        @SuppressWarnings("OptionalGetWithoutIsPresent") // We're sure it will work.
+        TypeRef ref = InPackage.parse("google.protobuf.*")
+                               .get();
         assertThat(ref.test(Any.getDescriptor()))
                 .isTrue();
-    }
-
-    @SuppressWarnings("OptionalGetWithoutIsPresent") // We're sure it will work.
-    private static InPackage ref(String value) {
-        return (InPackage) InPackage.parse(value).get();
     }
 }

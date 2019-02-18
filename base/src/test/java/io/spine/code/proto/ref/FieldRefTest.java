@@ -18,18 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.code.proto.ref;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.Truth8;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Timestamp;
 import io.spine.test.code.proto.UserInfo;
-import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -151,21 +150,24 @@ class FieldRefTest {
     @DisplayName("obtain field descriptor from a message descriptor")
     class FindFieldDescriptor {
 
-        @Test
-        @DisplayName("via name-only reference")
-        void nameOnlyRef() {
-            assertFound("seconds", Timestamp.getDescriptor());
-        }
+        private final FieldRef nestedRef = new FieldRef("timestamp.seconds");
+
+        private final FieldRef onlyNameRef = new FieldRef("seconds");
 
         @Test
         @DisplayName("via nested reference")
         void typedRef() {
-            assertFound("constraint_violation.msg_format", ValidationError.getDescriptor());
+            assertFound(nestedRef);
         }
 
-        private void assertFound(String ref, Descriptor descriptor) {
-            FieldRef fieldRef = new FieldRef(ref);
-            Optional<FieldDescriptor> fd = fieldRef.find(descriptor);
+        @Test
+        @DisplayName("via name-only reference")
+        void nameOnlyRef() {
+            assertFound(onlyNameRef);
+        }
+
+        private void assertFound(FieldRef ref) {
+            Optional<Descriptors.FieldDescriptor> fd = ref.find(Timestamp.getDescriptor());
             Truth8.assertThat(fd).isPresent();
         }
     }
@@ -188,13 +190,11 @@ class FieldRefTest {
         }
 
         void assertMatches(String ref, Descriptor message) {
-            assertMatch(ref, message)
-                    .isTrue();
+            assertMatch(ref, message).isTrue();
         }
 
         private BooleanSubject assertMatch(String ref, Descriptor message) {
-            FieldRef fieldRef = new FieldRef(ref);
-            return assertThat(fieldRef.matchesType(message));
+            return assertThat(new FieldRef(ref).matchesType(message));
         }
     }
 

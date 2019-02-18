@@ -41,7 +41,7 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
     /**
      * Obtains a type name of the messages of this class.
      */
-    public TypeName typeName() {
+    public TypeName getTypeName() {
         return typeName;
     }
 }

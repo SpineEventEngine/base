@@ -24,13 +24,17 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
+import java.util.Optional;
+
 /**
  * A Protobuf option that is applied to fields in Protobuf messages.
  *
  * @param <F>
  *         value of this option
  */
-public class FieldOption<F> extends ProtobufOption<F, FieldDescriptor, FieldOptions> {
+public class FieldOption<F> implements Option<F, FieldDescriptor> {
+
+    private final GeneratedExtension<FieldOptions, F> extension;
 
     /**
      * Creates an instance with the
@@ -39,11 +43,21 @@ public class FieldOption<F> extends ProtobufOption<F, FieldDescriptor, FieldOpti
      * that corresponds to this option.
      */
     protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
-        super(extension);
+        this.extension = extension;
+    }
+
+    /** Obtains the Protobuf extension associated with the option. */
+    protected GeneratedExtension<FieldOptions, F> extension() {
+        return extension;
     }
 
     @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
-        return object.getOptions();
+    public Optional<F> valueFrom(FieldDescriptor object) {
+        FieldOptions options = object.getOptions();
+        boolean explicitlySet = options.hasExtension(extension);
+        F value = options.getExtension(extension);
+        return explicitlySet
+               ? Optional.of(value)
+               : Optional.empty();
     }
 }

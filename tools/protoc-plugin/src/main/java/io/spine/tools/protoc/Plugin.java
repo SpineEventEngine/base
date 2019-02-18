@@ -24,7 +24,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.option.OptionExtensionRegistry;
+import io.spine.option.Options;
 import io.spine.tools.protoc.insert.MessageInterfaceGenerator;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class Plugin {
     private static CodeGeneratorRequest readRequest() {
         try {
             CodeGeneratorRequest request =
-                    CodeGeneratorRequest.parseFrom(System.in, OptionExtensionRegistry.instance());
+                    CodeGeneratorRequest.parseFrom(System.in, Options.registry());
             return request;
         } catch (IOException e) {
             throw new IllegalStateException(e);

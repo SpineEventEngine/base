@@ -20,11 +20,9 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spine.tools.compiler.enrichment.EnrichmentLookup;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.type.FileDescriptorSuperset;
-import io.spine.tools.type.MergedDescriptorSet;
-import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -38,10 +36,19 @@ import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 
 /**
- * Finds event enrichment Protobuf definitions and verifies their correctness.
+ * Finds event enrichment Protobuf definitions and creates a {@code .properties} file,
+ * which contains entries like:
+ *
+ * <p>{@code ENRICHMENT_TYPE_NAME=EVENT_TO_ENRICH_TYPE_NAME}
+ *
+ * <p>There can be several event types:
+ *
+ * <p>{@code ENRICHMENT_TYPE_NAME=FIRST_EVENT_TYPE_NAME,SECOND_EVENT_TYPE_NAME}
  */
 public class EnrichmentLookupPlugin extends SpinePlugin {
 
@@ -49,7 +56,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
     public void apply(Project project) {
         GradleTask mainTask = findEnrichments(project);
         GradleTask testTask = findTestEnrichments(project);
-        _debug("Enrichment lookup phase initialized with tasks: {}, {}.", mainTask, testTask);
+        _debug("Enrichment lookup phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
     @CanIgnoreReturnValue
@@ -70,31 +77,25 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
                 .applyNowTo(project);
     }
 
-    private Action<Task> mainScopeActionFor(Project project) {
-        _debug("Initializing the enrichment lookup for the \"main\" source code.");
-        return task -> checkEnrichmentTypes(getMainDescriptorSet(project));
-    }
-
     private Action<Task> testScopeActionFor(Project project) {
-        _debug("Initializing the enrichment lookup for the \"test\" source code.");
-        return task -> checkEnrichmentTypes(getTestDescriptorSet(project));
+        _debug("Initializing the enrichment lookup for the \"test\" source code");
+        return task -> findEnrichmentsAndWriteProps(getTestDescriptorSet(project),
+                                                    getTestTargetGenResourcesDir(project));
     }
 
-    private void checkEnrichmentTypes(File descriptorSetFile) {
+    private Action<Task> mainScopeActionFor(Project project) {
+        _debug("Initializing the enrichment lookup for the \"main\" source code");
+        return task -> findEnrichmentsAndWriteProps(getMainDescriptorSet(project),
+                                                    getMainTargetGenResourcesDir(project));
+    }
+
+    private void findEnrichmentsAndWriteProps(File descriptorSetFile, String targetDir) {
         if (!descriptorSetFile.exists()) {
             logMissingDescriptorSetFile(descriptorSetFile);
             return;
         }
 
-        FileDescriptorSuperset superset = new FileDescriptorSuperset();
-        superset.addFromDependency(descriptorSetFile);
-        MergedDescriptorSet merged = superset.merge();
-        merged.loadIntoKnownTypes();
-
-        long count = KnownTypes.instance()
-                               .enrichments()
-                               .size();
-
-        _info("Enrichment types discovered: {}.", count);
+        EnrichmentLookup lookup = new EnrichmentLookup(descriptorSetFile);
+        lookup.collectTo(targetDir);
     }
 }

@@ -43,8 +43,10 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
+ *
+ * @author Alexander Yevsyukov
  */
-final class Linker {
+class Linker {
 
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 
@@ -74,9 +76,9 @@ final class Linker {
             throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
         log.debug("Linking complete. {}", linker);
-        FileSet result = linker.resolved()
-                               .union(linker.partiallyResolved())
-                               .union(linker.unresolved());
+        FileSet result = linker.getResolved()
+                               .union(linker.getPartiallyResolved())
+                               .union(linker.getUnresolved());
         return result;
     }
 
@@ -180,23 +182,22 @@ final class Linker {
     }
 
     @VisibleForTesting
-    List<FileDescriptorProto> remaining() {
+    List<FileDescriptorProto> getRemaining() {
         return ImmutableList.copyOf(remaining);
     }
 
-    FileSet resolved() {
+    FileSet getResolved() {
         return resolved;
     }
 
-    FileSet partiallyResolved() {
+    FileSet getPartiallyResolved() {
         return partiallyResolved;
     }
 
-    FileSet unresolved() {
+    FileSet getUnresolved() {
         return unresolved;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // field names
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
