@@ -57,7 +57,14 @@ message ValidatedMessage {
 }
 
 message WithValidationOf {
-    option (validation_of) = "ValidatedMessage.id";
+    option (validation_of) = "ValidatedMessage";
+
+    string id = 1 [(required) = true ];
+}
+
+message WithMultipleGenerators {
+    option (beta_type) = true;
+    option (validation_of) = "ValidatedMessage";
 
     string id = 1 [(required) = true ];
 }

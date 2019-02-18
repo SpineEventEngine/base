@@ -35,11 +35,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("MessageFactories should")
-class MethodFactoriesTest {
+final class MethodFactoriesTest {
 
     @DisplayName("return NoOpMessageFactory")
     @Nested
-    class ReturnNoOpFactory {
+    final class ReturnNoOpFactory {
 
         @DisplayName("if generator name is")
         @ParameterizedTest(name = "\"{0}\"")
