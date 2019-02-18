@@ -154,7 +154,7 @@ public class KnownTypes implements Serializable {
         ImmutableSet<EnrichmentType> result =
                 typeSet.messageTypes()
                        .stream()
-                       .filter(t -> EnrichmentType.test(t.descriptor()))
+                       .filter(EnrichmentType::test)
                        .map(EnrichmentType::from)
                        .collect(toImmutableSet());
         return result;
@@ -191,8 +191,8 @@ public class KnownTypes implements Serializable {
         ImmutableSet<MessageType> result =
                 asTypeSet().allTypes()
                            .stream()
-                           .filter(t -> t instanceof MessageType)
-                           .map(t -> (MessageType) t)
+                           .filter(MessageType.class::isInstance)
+                           .map(MessageType.class::cast)
                            .filter(m -> typeRef.test(m.descriptor()))
                            .collect(toImmutableSet());
         return result;

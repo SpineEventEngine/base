@@ -80,8 +80,18 @@ public final class EnrichmentType extends MessageType {
      * Verifies if the passed message type is an enrichment type.
      */
     public static boolean test(Descriptor type) {
+        checkNotNull(type);
         List<String> sourceRefs = EnrichmentForOption.parse(type.toProto());
         boolean result = !sourceRefs.isEmpty();
+        return result;
+    }
+
+    /**
+     * Verifies if the passed message type is an enrichment type.
+     */
+    public static boolean test(MessageType type) {
+        checkNotNull(type);
+        boolean result = test(type.descriptor());
         return result;
     }
 

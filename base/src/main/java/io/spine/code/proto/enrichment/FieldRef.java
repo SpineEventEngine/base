@@ -74,11 +74,12 @@ public final class FieldRef extends StringTypeValue {
     FieldRef(String value) {
         super(checkValue(value));
         ImmutableList<String> parts = split(value);
-        this.typeRef = CONTEXT.parse(parts.get(0))
-                              .orElse(ANY);
+        TypeRef typeRef = CONTEXT.parse(parts.get(0))
+                                 .orElse(ANY);
+        this.typeRef = typeRef;
         // If the first element is context reference, skip it from the path.
         ImmutableList<String> fieldPath =
-                parts.subList((this.typeRef == CONTEXT ? 1 : 0), parts.size());
+                parts.subList((typeRef == CONTEXT ? 1 : 0), parts.size());
         this.path = FieldPaths.fromElements(fieldPath);
     }
 
@@ -124,7 +125,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
-        boolean result = typeRef.equals(ANY);
+        boolean result = typeRef == ANY;
         return result;
     }
 
@@ -132,7 +133,7 @@ public final class FieldRef extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = typeRef.equals(CONTEXT);
+        boolean result = typeRef == CONTEXT;
         return result;
     }
 
