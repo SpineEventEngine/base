@@ -18,44 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.Optional;
+import com.google.protobuf.Message;
 
 /**
- * Attempts to parse the passed value by sequentially invoking provider functions.
+ * Base interface for message contexts.
  */
-final class Parsing {
-
-    private final String value;
-    private final ImmutableList<Parser> parsers;
-
-    Parsing(String value, Parser... parser) {
-        this.value = value;
-        this.parsers = ImmutableList.copyOf(parser);
-    }
-
-    Optional<TypeRef> parse() {
-        for (Parser parser : parsers) {
-            Optional<TypeRef> found = parser.parse(value);
-            if (found.isPresent()) {
-                return found;
-            }
-        }
-        return Optional.empty();
-    }
+@SuppressWarnings("InterfaceNeverImplemented") // implemented by generated code.
+public interface MessageContext extends Message {
 
     /**
-     * Provides a type reference <em>if</em> the passed string matches the format
-     * requirements of the provider, otherwise returns an empty {@code Optional}.
-     *
-     * @see CompositeTypeRef#parse(String)
-     * @see TypeRef#parse(String)
+     * Obtains type name suffix required for all message context classes.
      */
-    @FunctionalInterface
-    interface Parser {
-        Optional<TypeRef> parse(String reference);
+    static String typeSuffix() {
+        return "Context";
     }
 }

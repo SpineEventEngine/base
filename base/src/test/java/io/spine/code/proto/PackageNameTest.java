@@ -21,7 +21,9 @@
 package io.spine.code.proto;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.BooleanSubject;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -40,5 +42,40 @@ class PackageNameTest {
         String packageName = "some.pack.age";
         assertThat(PackageName.of(packageName)
                               .value()).isEqualTo(packageName);
+    }
+
+    @Nested
+    @DisplayName("verify if the package is inner to a parent package")
+    class SubPackage {
+
+        @Test
+        @DisplayName("if immediately nested")
+        void nested() {
+            assertIsInner("spine.code.proto", "spine.code");
+        }
+
+        @Test
+        @DisplayName("if nested deeper")
+        void deepNesting() {
+            assertIsInner("spine.code.proto.ref", "spine");
+        }
+
+        @Test
+        @DisplayName("returning `false` if not")
+        void notInner() {
+            assertInner("spine.code.proto", "spine.code.java")
+                    .isFalse();
+        }
+
+        void assertIsInner(String inner, String outer) {
+            BooleanSubject assertInner = assertInner(inner, outer);
+            assertInner.isTrue();
+        }
+
+        private BooleanSubject assertInner(String inner, String outer) {
+            PackageName innerPackage = PackageName.of(inner);
+            PackageName outerPackage = PackageName.of(outer);
+            return assertThat(innerPackage.isInnerOf(outerPackage));
+        }
     }
 }
