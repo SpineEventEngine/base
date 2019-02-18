@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.ref.BuiltIn.SELF;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,10 +52,10 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
-        if (value.contains(InPackage.WILDCARD)) {
-            return Optional.empty();
-        }
-        if (value.equals(SELF.value())) {
+        if (value.trim()
+                 .isEmpty()
+                || value.contains(InPackage.WILDCARD)
+                || value.contains(CompositeTypeRef.SEPARATOR)) {
             return Optional.empty();
         }
         TypeRef result = new DirectTypeRef(value);
@@ -89,6 +88,9 @@ public final class DirectTypeRef extends AbstractTypeRef {
                 parts.stream()
                      .filter(p -> Character.isLowerCase(p.charAt(0)))
                      .collect(toList());
+        if (packages.isEmpty()) {
+            return null;
+        }
         String result =
                 Joiner.on(PackageName.delimiter())
                       .join(packages);
@@ -119,14 +121,14 @@ public final class DirectTypeRef extends AbstractTypeRef {
     /**
      * Verifies if the type reference has a package in the referenced type name.
      */
-    public boolean hasPackage(){
+    public boolean hasPackage() {
         return packageName != null;
     }
 
     /**
      * Creates a new instance reference a type with the same nested name, but in another package.
      */
-    DirectTypeRef withPackage(PackageName anotherPackage) {
+    public DirectTypeRef withPackage(PackageName anotherPackage) {
         checkNotNull(anotherPackage);
         DirectTypeRef result = new DirectTypeRef(
                 anotherPackage.value() + PackageName.delimiter() + this.nestedName
@@ -160,8 +162,11 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     @Override
     public boolean test(Descriptor message) {
-        if (packageName != null && !packageName.equals(PackageName.of(message))) {
-            return false;
+        if (packageName != null) {
+            PackageName packageOfMessage = PackageName.of(message);
+            if (!packageName.equals(packageOfMessage)) {
+                return false;
+            }
         }
         boolean result = value().endsWith(message.getName());
         return result;
