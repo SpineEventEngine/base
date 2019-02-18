@@ -20,9 +20,11 @@
 
 package io.spine.type;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -30,20 +32,26 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Error;
 import io.spine.code.java.ClassName;
+import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
+import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
 import io.spine.test.types.KnownTask;
 import io.spine.test.types.KnownTaskId;
 import io.spine.test.types.KnownTaskName;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -61,7 +69,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("obtain type URLs of known proto types")
     void typeUrls() {
-        Set<TypeUrl> typeUrls = knownTypes.getAllUrls();
+        Set<TypeUrl> typeUrls = knownTypes.allUrls();
 
         assertFalse(typeUrls.isEmpty());
     }
@@ -85,7 +93,7 @@ class KnownTypesTest {
 
     private void assertContainsClass(Class<? extends Message> msgClass) {
         TypeUrl typeUrl = TypeUrl.of(msgClass);
-        ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.classNameOf(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
@@ -94,7 +102,7 @@ class KnownTypesTest {
     @DisplayName("contain nested proto types")
     void containNestedProtoTypes() {
         TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
-        ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.classNameOf(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
@@ -104,7 +112,7 @@ class KnownTypesTest {
     void findTypeUrlByName() {
         TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
+        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
                                                     .map(Type::url);
         assertTrue(typeUrlActual.isPresent());
         assertEquals(typeUrlExpected, typeUrlActual.get());
@@ -119,7 +127,7 @@ class KnownTypesTest {
 
         String packageName = "spine.test.types";
 
-        Set<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
+        Set<TypeUrl> packageTypes = knownTypes.allFromPackage(packageName);
 
         IterableSubject assertTypes = assertThat(packageTypes);
         assertTypes.hasSize(3);
@@ -130,7 +138,7 @@ class KnownTypesTest {
     @DisplayName("return empty set of types for unknown package")
     void emptyTypeSetForUnknownPackage() {
         String packageName = "com.foo.invalid.package";
-        Set<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
+        Set<?> emptyTypesCollection = knownTypes.allFromPackage(packageName);
         assertNotNull(emptyTypesCollection);
         assertTrue(emptyTypesCollection.isEmpty());
     }
@@ -140,7 +148,7 @@ class KnownTypesTest {
     void noTypesByPrefix() {
         String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
 
-        Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(prefix);
+        Collection<TypeUrl> packageTypes = knownTypes.allFromPackage(prefix);
         assertTrue(packageTypes.isEmpty());
     }
 
@@ -150,7 +158,52 @@ class KnownTypesTest {
         TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         assertThrows(
                 UnknownTypeException.class,
-                () -> knownTypes.getClassName(unexpectedUrl)
+                () -> knownTypes.classNameOf(unexpectedUrl)
         );
+    }
+
+    @Nested
+    @DisplayName("obtain message types")
+    class MessageTypes {
+
+        // See `known_types_test.proto`
+        private final ImmutableSet<Descriptor> packageDescriptors = ImmutableSet.of(
+                KnownTaskId.getDescriptor(),
+                KnownTaskName.getDescriptor(),
+                KnownTask.getDescriptor()
+        );
+
+        private final ImmutableSet<MessageType> packageTypes =
+                packageDescriptors.stream()
+                                  .map(MessageType::of)
+                                  .collect(toImmutableSet());
+
+        @Test
+        @DisplayName("via package type reference")
+        void packageRef() {
+            String packageName = KnownTaskId.getDescriptor()
+                                            .getFile()
+                                            .getPackage();
+            TypeRef typeRef = TypeRef.parse(packageName + ".*");
+            assertContainsAll(typeRef);
+        }
+
+        @Test
+        @DisplayName("via direct type references")
+        void typeEnumRef() {
+            List<String> typeNames =
+                    packageDescriptors.stream()
+                                      .map(Descriptor::getFullName)
+                                      .collect(toList());
+            String ref = Joiner.on(',')
+                               .join(typeNames);
+            TypeRef typeRef = TypeRef.parse(ref);
+            assertContainsAll(typeRef);
+        }
+
+        private void assertContainsAll(TypeRef typeRef) {
+            ImmutableSet<MessageType> types = knownTypes.allMatching(typeRef);
+            assertThat(types).containsAllIn(packageTypes);
+        }
     }
 }

@@ -61,7 +61,7 @@ final class ValidationRule {
      */
     ValidationRule(String typeName, Iterable<String> targetPaths) {
         this.descriptor = TypeName.of(typeName)
-                                  .getMessageDescriptor();
+                                  .messageDescriptor();
         this.targets = constructTargets(descriptor, targetPaths);
     }
 
@@ -107,7 +107,7 @@ final class ValidationRule {
         String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
         String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
         Descriptor message = TypeName.of(targetMessageType)
-                                     .getMessageDescriptor();
+                                     .messageDescriptor();
         FieldDescriptor field = message.findFieldByName(fieldName);
         if (field == null) {
             throw newIllegalStateException("The field '%s' is not found in the '%s' message.",

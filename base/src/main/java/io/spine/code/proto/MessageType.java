@@ -24,8 +24,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Message;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
@@ -109,6 +111,12 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return ClassName.from(descriptor());
     }
 
+    @Override
+    @SuppressWarnings("unchecked") // It is safe since we work with a message descriptors
+    public Class<? extends Message> javaClass() {
+        return (Class<? extends Message>) super.javaClass();
+    }
+
     /**
      * Obtains source file with the declaration of this message type.
      */
@@ -186,17 +194,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Tells if the message is not a rejection.
-     */
-    public boolean isNotRejection() {
-        return !isRejection();
-    }
-
-    /**
      * Tells if the message is an enrichment.
      */
     public boolean isEnrichment() {
-        DescriptorProtos.MessageOptions options = descriptor().getOptions();
+        MessageOptions options = descriptor().getOptions();
         boolean result = isTopLevel() && options.hasExtension(enrichmentFor);
         return result;
     }
