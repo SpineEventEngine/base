@@ -25,46 +25,18 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.tools.protoc.method";
-option java_outer_classname = "MessageOptionsProto";
-option java_multiple_files = true;
+option java_outer_classname = "TestServiceProto";
 
-// This file contains message types for the io.spine.tools.protoc.method tests.
+// This file contains test service for GeneratedMethodGeneratorTest.
 
-message EnrichedMessage {
+service TestService {
+    rpc GetById(TestId) returns (TestValue);
+}
+
+message TestId {
     string id = 1;
 }
 
-message WithEnrichmentFor {
-    option (enrichment_for) = "EnrichedMessage";
-
-    string value = 1 [(by) = "id"];
-}
-
-message WithSpiType {
-    option (SPI_type) = true;
-}
-
-message WithExperimentalType {
-    option (experimental_type) = true;
-}
-
-message WithBetaType {
-    option (beta_type) = true;
-}
-
-message ValidatedMessage {
-    string id = 1 [(valid) = true];
-}
-
-message WithValidationOf {
-    option (validation_of) = "ValidatedMessage";
-
-    string id = 1 [(required) = true];
-}
-
-message WithMultipleGenerators {
-    option (beta_type) = true;
-    option (validation_of) = "ValidatedMessage";
-
-    string id = 1 [(required) = true];
+message TestValue {
+    string value = 1;
 }

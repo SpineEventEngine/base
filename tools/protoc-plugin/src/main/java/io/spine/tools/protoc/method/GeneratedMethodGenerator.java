@@ -47,7 +47,7 @@ public class GeneratedMethodGenerator extends SpineProtoGenerator {
     /**
      * Retrieves the single instance of the {@code GeneratedMethodGenerator} type.
      */
-    public static SpineProtoGenerator instance(SpineProtocConfig config) {
+    public static GeneratedMethodGenerator instance(SpineProtocConfig config) {
         return new GeneratedMethodGenerator(config);
     }
 
