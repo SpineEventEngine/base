@@ -32,6 +32,7 @@ import io.spine.logging.Logging;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.format;
@@ -73,10 +74,12 @@ public final class VBuilderGenerator implements Logging {
     public void process(FileSet files) {
         FileSet fileSet = moduleFiles(files);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
+        Predicate<MessageType> notRejection =
+                ((Predicate<MessageType>) MessageType::isRejection).negate();
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
-                            .filter(MessageType::isNotRejection)
+                            .filter(notRejection)
                             .collect(toImmutableList());
         generate(customTypes);
     }

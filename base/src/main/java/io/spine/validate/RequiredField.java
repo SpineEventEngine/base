@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.option.Options;
 
 import java.util.Optional;
 
@@ -50,8 +49,11 @@ final class RequiredField implements ValidatingOption<String, Descriptor, Messag
 
     @Override
     public Optional<String> valueFrom(Descriptor message) {
-        Optional<String> result = Options.option(message, requiredField);
-        return result;
+        String result = message.getOptions()
+                               .getExtension(requiredField);
+        return result == null || result.isEmpty()
+               ? Optional.empty() :
+               Optional.of(result);
     }
 
     @Override

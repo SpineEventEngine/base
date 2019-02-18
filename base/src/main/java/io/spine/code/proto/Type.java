@@ -68,7 +68,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains the {@linkplain TypeName name} of this type.
      */
     public TypeName name() {
-        return url().toName();
+        return url().toTypeName();
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         try {
             return Class.forName(clsName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(descriptor.getName(), e);
+            throw new UnknownTypeException(descriptor.getFullName(), e);
         }
     }
 

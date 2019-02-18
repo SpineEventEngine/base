@@ -29,13 +29,13 @@ import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.Descriptor;
 import static com.google.protobuf.Descriptors.FieldDescriptor;
-import static io.spine.option.Options.option;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -120,7 +120,8 @@ public final class ApiOption {
      * @return {@code true} if the option is present in the declaration, {@code false} otherwise
      */
     boolean isPresentAt(FileDescriptor descriptor) {
-        return option(descriptor, fileOption).orElse(false);
+        FileOptions options = descriptor.getOptions();
+        return optionPresent(options, fileOption);
     }
 
     /**
@@ -131,7 +132,8 @@ public final class ApiOption {
      * @return {@code true} if the option is present in the declaration, {@code false} otherwise
      */
     boolean isPresentAt(Descriptor descriptor) {
-        return option(descriptor, messageOption).orElse(false);
+        MessageOptions options = descriptor.getOptions();
+        return optionPresent(options, messageOption);
     }
 
     /**
@@ -143,8 +145,10 @@ public final class ApiOption {
      */
     boolean isPresentAt(ServiceDescriptor descriptor) {
         checkState(serviceOption != null,
-                   "Option %s does not support services.", messageOption.getDescriptor().getName());
-        return option(descriptor, serviceOption).orElse(false);
+                   "Option %s does not support services.", messageOption.getDescriptor()
+                                                                        .getName());
+        ServiceOptions options = descriptor.getOptions();
+        return optionPresent(options, serviceOption);
     }
 
     /**
@@ -165,8 +169,15 @@ public final class ApiOption {
      */
     boolean isPresentAt(FieldDescriptor descriptor) {
         checkState(fieldOption != null,
-                   "Option %s does not support fields.", messageOption.getDescriptor().getName());
-        return option(descriptor, fieldOption).orElse(false);
+                   "Option %s does not support fields.", messageOption.getDescriptor()
+                                                                      .getName());
+        FieldOptions options = descriptor.getOptions();
+        return optionPresent(options, fieldOption);
+    }
+
+    private static <T extends ExtendableMessage> boolean
+    optionPresent(ExtendableMessage<T> options, GeneratedExtension<T, Boolean> option) {
+        return options.hasExtension(option) && options.getExtension(option);
     }
 
     /**
@@ -180,7 +191,8 @@ public final class ApiOption {
 
     @Override
     public String toString() {
-        return messageOption.getDescriptor().getName();
+        return messageOption.getDescriptor()
+                            .getName();
     }
 
     @Override
@@ -214,7 +226,7 @@ public final class ApiOption {
         INTERNAL(new ApiOption(internalAll, internalType, null, internal));
 
         @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
-            // This private enum should not be serialized.
+        // This private enum should not be serialized.
         private final ApiOption option;
 
         KnownOption(ApiOption option) {

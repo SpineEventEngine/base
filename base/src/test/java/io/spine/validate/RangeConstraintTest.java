@@ -29,6 +29,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -59,6 +60,19 @@ class RangeConstraintTest {
         assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
     }
 
+    @ParameterizedTest
+    @MethodSource("emptyRanges")
+    @DisplayName("throw on empty ranges")
+    void throwOnEmptyRanges(String emptyRange) {
+        assertThrows(IllegalArgumentException.class,
+                     () -> RangeConstraint.rangeFromOption(emptyRange));
+    }
+
+    private static Stream<Arguments> emptyRanges() {
+        return Stream.concat(rangeCombinationsFor(1, 0),
+                             Stream.of(Arguments.of("(0..0)")));
+    }
+
     private static Stream<Arguments> badRanges() {
         return Stream.of(
                 Arguments.of("{3..5]"),
@@ -76,6 +90,15 @@ class RangeConstraintTest {
                 Arguments.of("[3.5..5)"),
                 Arguments.of("[3..5.5)"),
                 Arguments.of("[3...5]")
+        );
+    }
+
+    private static Stream<Arguments> rangeCombinationsFor(Number left, Number right) {
+        return Stream.of(
+                Arguments.of(format("[%s..%s]", left, right)),
+                Arguments.of(format("[%s..%s)", left, right)),
+                Arguments.of(format("(%s..%s]", left, right)),
+                Arguments.of(format("(%s..%s)", left, right))
         );
     }
 }

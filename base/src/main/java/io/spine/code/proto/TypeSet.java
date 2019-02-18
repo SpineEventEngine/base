@@ -39,6 +39,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 
@@ -93,6 +94,9 @@ public final class TypeSet {
         return result;
     }
 
+    /**
+     * Obtains message types declared in the passed file set.
+     */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
         TypeSet result = new TypeSet();
         for (FileDescriptor file : fileSet.files()) {
@@ -102,6 +106,9 @@ public final class TypeSet {
         return result.messageTypes.values();
     }
 
+    /**
+     * Obtains message types declared in the passed file.
+     */
     public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
         TypeSet typeSet = MessageType.allFrom(file);
         return typeSet.messageTypes.values();
@@ -209,7 +216,7 @@ public final class TypeSet {
     /**
      * Obtains all the types contained in this set.
      */
-    public Set<Type<?, ?>> types() {
+    public ImmutableSet<Type<?, ?>> allTypes() {
         ImmutableSet<Type<?, ?>> types = ImmutableSet
                 .<Type<?, ?>>builder()
                 .addAll(messagesAndEnums())
@@ -228,6 +235,27 @@ public final class TypeSet {
                 .addAll(enumTypes.values())
                 .build();
         return types;
+    }
+
+    /**
+     * Obtains message types from this set.
+     */
+    public ImmutableSet<MessageType> messageTypes() {
+        return ImmutableSet.copyOf(messageTypes.values());
+    }
+
+    /**
+     * Obtains enum types from this set.
+     */
+    public ImmutableSet<EnumType> enumTypes() {
+        return ImmutableSet.copyOf(enumTypes.values());
+    }
+
+    /**
+     * Obtains service types from this set.
+     */
+    public ImmutableSet<ServiceType> serviceTypes() {
+        return ImmutableSet.copyOf(serviceTypes.values());
     }
 
     @Override
@@ -307,6 +335,14 @@ public final class TypeSet {
         public Builder add(ServiceType type) {
             TypeName name = type.name();
             serviceTypes.put(name, type);
+            return this;
+        }
+
+        @CanIgnoreReturnValue
+        public Builder addAll(Iterable<MessageType> types) {
+            checkNotNull(types);
+            ImmutableMap<TypeName, MessageType> map = uniqueIndex(types, MessageType::name);
+            messageTypes.putAll(map);
             return this;
         }
 
