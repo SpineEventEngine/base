@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
@@ -114,6 +115,7 @@ class MethodFactoriesTest {
                 .isInstanceOf(StubMethodFactory.class);
     }
 
+    @Immutable
     private static class EmptyMethodFactory implements MethodFactory {
 
         @Override
@@ -122,23 +124,27 @@ class MethodFactoriesTest {
         }
     }
 
+    @Immutable
     public static class StubMethodFactory extends EmptyMethodFactory {
 
         public StubMethodFactory() {
         }
     }
 
+    @Immutable
     @SuppressWarnings("EmptyClass") // for test reasons
     private static class WithoutPublicConstructor extends EmptyMethodFactory {
 
     }
 
+    @Immutable
     public static class WithPrivateConstructor extends EmptyMethodFactory {
 
         private WithPrivateConstructor() {
         }
     }
 
+    @Immutable
     public static class WithExceptionDuringInstantiation extends EmptyMethodFactory {
 
         public WithExceptionDuringInstantiation() {
@@ -146,6 +152,7 @@ class MethodFactoriesTest {
         }
     }
 
+    @Immutable
     // for test reasons
     @SuppressWarnings({"AbstractClassNeverImplemented", "ConstructorNotProtectedInAbstractClass"})
     public abstract static class WithAbstractImplementation extends EmptyMethodFactory {
