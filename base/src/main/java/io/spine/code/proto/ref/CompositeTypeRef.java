@@ -41,25 +41,13 @@ public class CompositeTypeRef implements TypeRef {
     private static final long serialVersionUID = 0L;
 
     /** Separator for two or more type references. */
-    static final String SEPARATOR = ",";
+    private static final char SEPARATOR = ',';
 
     /** A splitter for type references separated by comma. */
     private static final Splitter splitter = Splitter.on(SEPARATOR);
 
     /** Two or more type references. */
     private final ImmutableList<TypeRef> elements;
-
-    /**
-     * Parses the passed value returning composite type reference, if the passed value
-     * is comma-separated. Otherwise returns empty {@code Optional}.
-     */
-    static Optional<TypeRef> parse(String value) {
-        if (!value.contains(SEPARATOR)) {
-            return Optional.empty();
-        }
-        Optional<TypeRef> result = Optional.of(doParse(value));
-        return result;
-    }
 
     /**
      * Parses a value of a composite type references.
@@ -74,7 +62,7 @@ public class CompositeTypeRef implements TypeRef {
      *         if the passed string contains only one type reference, or one of the strings
      *         from the reference is not a valid type reference
      */
-    static CompositeTypeRef doParse(String value) {
+    static CompositeTypeRef parse(String value) {
         checkContainsComma(value);
         Iterable<String> parts = splitter.split(value);
         ImmutableList.Builder<TypeRef> builder = ImmutableList.builder();
@@ -87,7 +75,7 @@ public class CompositeTypeRef implements TypeRef {
     }
 
     private static TypeRef parsePart(String part) {
-        ParsingChain parsing = new ParsingChain(part, InPackage::parse, DirectTypeRef::parse);
+        Parsing parsing = new Parsing(part, InPackage::parse, DirectTypeRef::parse);
         TypeRef result =
                 parsing.parse()
                        .orElseThrow(() -> newIllegalArgumentException(
@@ -99,7 +87,7 @@ public class CompositeTypeRef implements TypeRef {
 
     private static void checkContainsComma(String value) {
         checkArgument(
-                value.contains(SEPARATOR),
+                value.indexOf(SEPARATOR) > -1,
                 "The value (`%s`) is not a composite type reference." +
                 " A composite type reference must contain two or more type references" +
                 " separated with commas."

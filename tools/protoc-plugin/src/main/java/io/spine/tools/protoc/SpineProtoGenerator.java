@@ -147,7 +147,7 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(TypeSet types) {
-        Set<CompilerOutput> rawOutput = types.allTypes()
+        Set<CompilerOutput> rawOutput = types.types()
                                              .stream()
                                              .flatMap(type -> processType(type).stream())
                                              .collect(toSet());

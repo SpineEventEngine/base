@@ -23,6 +23,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -40,6 +41,31 @@ public final class Messages {
 
     /** Prevent instantiation of this utility class. */
     private Messages() {
+    }
+
+    /**
+     * Creates a new instance of a {@code Message} by its class.
+     *
+     * <p>This factory method obtains parameterless constructor {@code Message} via
+     * Reflection and then invokes it.
+     *
+     * @return new instance
+     * @deprecated use {@link #defaultInstance(Class)}
+     */
+    @Deprecated
+    public static <M extends Message> M newInstance(Class<M> messageClass) {
+        checkNotNull(messageClass);
+        try {
+            Constructor<M> constructor = messageClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            M state = constructor.newInstance();
+            return state;
+        } catch (NoSuchMethodException
+                | InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**

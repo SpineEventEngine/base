@@ -20,23 +20,17 @@
 
 package io.spine.tools.compiler;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.logging.Logging;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Custom {@linkplain java.nio.file.FileVisitor FileVisitor} which recursively deletes
@@ -44,57 +38,28 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 @SuppressWarnings("RefusedBequest")
 // As we define a completely different behavior for the visitor methods.
-public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements Logging {
+public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
-    private final ImmutableList<File> dirs;
-
-    private DirectoryCleaner(ImmutableList<File> dirs) {
-        super();
-        this.dirs = dirs;
-    }
-
-    private DirectoryCleaner(Path path) {
-        this(ImmutableList.of(path.toFile()));
-    }
-
-    private DirectoryCleaner(List<String> dirs) {
-        this(dirs.stream()
-                 .map(File::new)
-                 .collect(toImmutableList()));
-    }
-
-    private void run() {
-        for (File dir : dirs) {
-            if (dir.exists()) {
-                if (dir.isDirectory()) {
-                    delete(dir.toPath());
-                } else {
-                    String msg = "Trying to delete '{}' which is not a directory.";
-                    _warn(msg, dir.getAbsolutePath());
-                }
+    public static void deleteDirs(List<String> dirs) {
+        for (String dirPath : dirs) {
+            File file = new File(dirPath);
+            if (file.isDirectory()) {
+                deleteRecursively(file.toPath());
+            } else {
+                String msg = "Trying to delete '{}' which is not a directory";
+                log().warn(msg, file.getAbsolutePath());
             }
         }
     }
 
-    /**
-     * Deletes directories with the passed names.
-     */
-    public static void deleteDirs(List<String> dirs) {
-        checkNotNull(dirs);
-        checkArgument(!dirs.isEmpty(), "The list of directories to remove cannot be empty.");
-        DirectoryCleaner cleaner = new DirectoryCleaner(dirs);
-        cleaner.run();
-    }
-
-    private void delete(Path path) {
+    private static void deleteRecursively(Path path) {
         try {
-            FileVisitor<Path> visitor = new DirectoryCleaner(path);
-            _debug("Starting to delete the files recursively in {}", path.toString());
+            SimpleFileVisitor<Path> visitor = new DirectoryCleaner();
+            log().debug("Starting to delete the files recursively in {}", path.toString());
             Files.walkFileTree(path, visitor);
         } catch (IOException e) {
-            throw newIllegalStateException(
-                    e, "Failed to delete the folder with its contents: %s", path
-            );
+            throw new IllegalStateException(
+                    "Failed to delete the folder with its contents: " + path, e);
         }
     }
 
@@ -106,8 +71,9 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        _error(exc, "Unable to delete `{}`.", file);
+    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+        logDeletionOf(file);
+        Files.delete(file);
         return FileVisitResult.CONTINUE;
     }
 
@@ -122,7 +88,11 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
         }
     }
 
-    private void logDeletionOf(Path file) {
-        _debug("Deleting file `{}`.", file.toString());
+    private static void logDeletionOf(Path file) {
+        log().debug("Deleting file {}", file.toString());
+    }
+
+    private static Logger log() {
+        return Logging.get(DirectoryCleaner.class);
     }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.code.proto.ref;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
@@ -32,8 +32,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.enrichment.BuiltIn.EVENT_CONTEXT;
-import static io.spine.code.proto.enrichment.BuiltIn.SELF;
+import static io.spine.code.proto.ref.BuiltIn.EVENT_CONTEXT;
+import static io.spine.code.proto.ref.BuiltIn.SELF;
 
 @DisplayName("BuiltIn type references should")
 class BuiltInTest {

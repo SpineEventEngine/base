@@ -21,7 +21,6 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -29,10 +28,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
-import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
 import org.slf4j.Logger;
@@ -44,7 +41,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
@@ -101,7 +97,7 @@ public class KnownTypes implements Serializable {
     }
 
     private Set<Type<?, ?>> types() {
-        return typeSet.allTypes();
+        return typeSet.types();
     }
 
     /**
@@ -117,22 +113,22 @@ public class KnownTypes implements Serializable {
      * Retrieves a Java class name generated for the Protobuf type by its type URL
      * to be used to parse {@link Message Message} from {@link Any}.
      *
-     * @param type {@link Any} type url
+     * @param typeUrl {@link Any} type url
      * @return Java class name
      * @throws UnknownTypeException if there is no such type known to the application
      */
-    public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
-        if (!instance().contains(type)) {
-            throw new UnknownTypeException(type.getTypeName());
+    public ClassName getClassName(TypeUrl typeUrl) throws UnknownTypeException {
+        if (!instance().contains(typeUrl)) {
+            throw new UnknownTypeException(typeUrl.getTypeName());
         }
-        ClassName result = instance().get(type);
+        ClassName result = instance().get(typeUrl);
         return result;
     }
 
     /**
      * Retrieves Protobuf type URLs known to the application.
      */
-    public Set<TypeUrl> allUrls() {
+    public Set<TypeUrl> getAllUrls() {
         return types().stream()
                       .map(Type::url)
                       .collect(toSet());
@@ -141,7 +137,7 @@ public class KnownTypes implements Serializable {
     /**
      * Retrieves all Protobuf types known to the application.
      */
-    public TypeSet asTypeSet() {
+    public TypeSet getAllTypes() {
         return typeSet;
     }
 
@@ -161,25 +157,11 @@ public class KnownTypes implements Serializable {
      * @param packageName proto package name
      * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
      */
-    public Set<TypeUrl> allFromPackage(String packageName) {
-        Set<TypeUrl> result = allUrls().stream()
-                                       .filter(url -> url.toName()
-                                                         .belongsTo(packageName))
-                                       .collect(toSet());
-        return result;
-    }
-
-    /**
-     * Obtains all types matching the passed type reference.
-     */
-    public ImmutableSet<MessageType> allMatching(TypeRef typeRef) {
-        ImmutableSet<MessageType> result =
-                asTypeSet().allTypes()
-                           .stream()
-                           .filter(t -> t instanceof MessageType)
-                           .map(t -> (MessageType) t)
-                           .filter(m -> typeRef.test(m.descriptor()))
-                           .collect(toImmutableSet());
+    public Set<TypeUrl> getAllFromPackage(String packageName) {
+        Set<TypeUrl> result = getAllUrls().stream()
+                                          .filter(url -> url.toName()
+                                                            .belongsTo(packageName))
+                                          .collect(toSet());
         return result;
     }
 
@@ -222,7 +204,7 @@ public class KnownTypes implements Serializable {
         StringBuilder result = new StringBuilder(KnownTypes.class.getSimpleName());
         result.append(':')
               .append(lineSeparator());
-        Object[] sortedUrls = allUrls()
+        Object[] sortedUrls = getAllUrls()
                 .stream()
                 .sorted(comparing(TypeUrl::value))
                 .toArray();

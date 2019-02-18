@@ -18,35 +18,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.code.proto.ref;
 
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+
+import java.util.Optional;
 
 /**
- * Provides references to fields of messages that serve as input for creating a field of
- * an enrichment message.
+ * Attempts to parse the passed value by sequentially invoking provider functions.
  */
-@Immutable
-final class FieldDef {
+final class Parsing {
 
-    private final FieldDescriptor descriptor;
-    private final ImmutableList<FieldRef> sources;
+    private final String value;
+    private final ImmutableList<Parser> parsers;
 
-    FieldDef(FieldDescriptor descriptor) {
-        this.descriptor = descriptor;
-        this.sources = FieldRef.allFrom(descriptor.toProto());
+    Parsing(String value, Parser... parser) {
+        this.value = value;
+        this.parsers = ImmutableList.copyOf(parser);
     }
 
-    boolean matchesType(Descriptor type) {
-        boolean result = sources.stream()
-                                .anyMatch(r -> r.matchesType(type));
-        return result;
+    Optional<TypeRef> parse() {
+        for (Parser parser : parsers) {
+            Optional<TypeRef> found = parser.parse(value);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
     }
 
-    FieldDescriptor descriptor() {
-        return descriptor;
+    /**
+     * Provides a type reference <em>if</em> the passed string matches the format
+     * requirements of the provider, otherwise returns an empty {@code Optional}.
+     *
+     * @see CompositeTypeRef#parse(String)
+     * @see TypeRef#parse(String)
+     */
+    @FunctionalInterface
+    interface Parser {
+        Optional<TypeRef> parse(String reference);
     }
 }

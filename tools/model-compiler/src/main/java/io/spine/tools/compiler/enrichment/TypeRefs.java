@@ -23,8 +23,8 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import io.spine.code.proto.enrichment.EnrichmentForOption;
 import io.spine.code.proto.ref.DirectTypeRef;
+import io.spine.code.proto.ref.EnrichmentForOption;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
