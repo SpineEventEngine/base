@@ -20,7 +20,6 @@
 
 package io.spine.testing.logging;
 
-import io.spine.logging.Logging;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -37,6 +36,7 @@ import java.util.Optional;
  * the {@link MuteLogging} annotation.
  *
  * @see MuteLogging
+ * @author Dmytro Dashenkov
  */
 public final class MuteLoggingExtension implements BeforeEachCallback, AfterEachCallback {
 
@@ -51,19 +51,16 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        unmute(context);
+        unMute(context);
     }
 
     private void mute() {
-        Logging.mute();
         temporaryOutput.install();
     }
 
-    private void unmute(ExtensionContext context) throws IOException {
+    private void unMute(ExtensionContext context) throws IOException {
         ProgramOutput standardOutput = ProgramOutput.fromSystem();
         standardOutput.install();
-        Logging.unmute();
-
         Optional<Throwable> exception = context.getExecutionException();
         if (exception.isPresent()) {
             memoizingStream.flushTo(standardOutput.err);

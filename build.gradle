@@ -42,7 +42,6 @@ ext {
     projectsToPublish = [
         'base',
         'testlib',
-        'mute-logging',
         'errorprone-checks',
 
         // Gradle plugins
