@@ -23,7 +23,6 @@ package io.spine.code.proto.ref;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.value.StringTypeValue;
@@ -76,7 +75,7 @@ public final class FieldRef extends StringTypeValue {
     /**
      * Ensures that the passed value is not null, empty or blank.
      */
-    private static String checkValue(String value) {
+    static String checkValue(String value) {
         checkNotEmptyOrBlank(value);
         checkArgument(
                 !value.contains("*"),
@@ -97,18 +96,6 @@ public final class FieldRef extends StringTypeValue {
     private static ImmutableList<String> split(String value) {
         List<String> elements = fieldNameSplit.splitToList(value);
         return ImmutableList.copyOf(elements);
-    }
-
-    /**
-     * Obtains references found in the passed field.
-     */
-    public static ImmutableList<FieldRef> allFrom(FieldDescriptorProto field) {
-        ImmutableList<String> refs = ByOption.allFrom(field);
-        ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
-        for (String ref : refs) {
-            result.add(new FieldRef(ref));
-        }
-        return result.build();
     }
 
     /**
@@ -170,9 +157,10 @@ public final class FieldRef extends StringTypeValue {
      * Obtains the descriptor of the field with the name {@linkplain #fieldName()} referenced}
      * by this instance in the passed message.
      *
-     * @param message the message in which to find the field
+     * @param message
+     *         the message in which to find the field
      * @return the descriptor of the field, or empty {@code Optional} if there is no a field with
-     * the {@linkplain #fieldName()} referenced name}
+     *         the {@linkplain #fieldName()} referenced name}
      */
     public Optional<FieldDescriptor> find(Descriptor message) {
         checkNotNull(message);
