@@ -25,11 +25,13 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.PackageName;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -120,6 +122,16 @@ public class CompositeTypeRef implements TypeRef {
                         .filter(e -> e.test(message))
                         .findFirst();
         return found.isPresent();
+    }
+
+    @Override
+    public TypeRef withPackage(PackageName packageName) {
+        ImmutableList<TypeRef> newElements =
+                elements.stream()
+                        .map(typeRef -> typeRef.withPackage(packageName))
+                        .collect(toImmutableList());
+        TypeRef result = new CompositeTypeRef(newElements);
+        return result;
     }
 
     @Override

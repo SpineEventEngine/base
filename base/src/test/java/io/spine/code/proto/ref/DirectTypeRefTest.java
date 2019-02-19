@@ -176,24 +176,6 @@ class DirectTypeRefTest {
             assertThat(relocated.nestedTypeName())
                     .isEqualTo(typeName);
         }
-
-        @Test
-        @DisplayName("for a nested type with a package")
-        void nestedWithPackage() {
-            String typeName = "long.time.ago.Galaxy.Far.Away";
-            DirectTypeRef ref = ref(typeName);
-            assertThat(ref.hasPackage()).isTrue();
-
-            PackageName newPackage = PackageName.of("come.closer");
-            DirectTypeRef relocated = ref.withPackage(newPackage);
-
-            Truth8.assertThat(relocated.packageName())
-                  .hasValue(newPackage);
-            assertThat(relocated.nestedTypeName())
-                    .isEqualTo("Galaxy.Far.Away");
-            assertThat(relocated.simpleTypeName())
-                    .isEqualTo("Away");
-        }
     }
 
     @Test

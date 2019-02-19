@@ -22,6 +22,7 @@ package io.spine.code.proto.ref;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.PackageName;
 
 import java.io.Serializable;
 import java.util.function.Predicate;
@@ -40,6 +41,15 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
      * Obtains the value of the reference.
      */
     String value();
+
+    /**
+     * Returns this type reference with added package qualifier.
+     *
+     * <p>Descendants that already reference some concrete package are not overridden.
+     */
+    default TypeRef withPackage(PackageName packageName) {
+        return this;
+    }
 
     /**
      * Creates a type reference by parsing the passed string.
