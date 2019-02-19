@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
@@ -35,6 +36,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.code.proto.enrichment.EnrichmentType;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
+import io.spine.option.OptionsProto;
 import io.spine.security.InvocationGuard;
 import org.slf4j.Logger;
 
@@ -82,6 +84,7 @@ public class KnownTypes implements Serializable {
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
 
+    private static final ExtensionRegistry extensions = optionExtensions();
     /**
      * Retrieves the singleton instance of {@code KnownTypes}.
      */
@@ -138,6 +141,11 @@ public class KnownTypes implements Serializable {
         return types().stream()
                       .map(Type::url)
                       .collect(toSet());
+    }
+
+    /** Obtains all extensions, including those declared by Spine in the {@code options.proto}. */
+    public static ExtensionRegistry extensions(){
+        return extensions;
     }
 
     /**
@@ -230,6 +238,16 @@ public class KnownTypes implements Serializable {
         Type type = get(typeUrl.toTypeName());
         ClassName result = type.javaClassName();
         return result;
+    }
+
+    /**
+     * Creates an {@link com.google.protobuf.ExtensionRegistry} with all the {@code
+     * spine/options.proto} extensions.
+     */
+    private static com.google.protobuf.ExtensionRegistry optionExtensions() {
+        com.google.protobuf.ExtensionRegistry registry = com.google.protobuf.ExtensionRegistry.newInstance();
+        OptionsProto.registerAllExtensions(registry);
+        return registry;
     }
 
     @Override
