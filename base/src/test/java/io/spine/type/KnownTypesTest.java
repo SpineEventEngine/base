@@ -175,7 +175,7 @@ class KnownTypesTest {
 
         private final ImmutableSet<MessageType> packageTypes =
                 packageDescriptors.stream()
-                                  .map(MessageType::of)
+                                  .map(MessageType::new)
                                   .collect(toImmutableSet());
 
         @Test

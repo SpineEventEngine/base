@@ -126,7 +126,7 @@ class AppendTypeUrlGetterTest {
         ServiceType serviceType = ServiceType.of(service);
         checkMethodForTypeNotPresent(output, serviceType);
 
-        MessageType messageType = MessageType.of(TaskCount.getDescriptor());
+        MessageType messageType = new MessageType(TaskCount.getDescriptor());
         checkMethodForTypePresent(output, messageType);
     }
 

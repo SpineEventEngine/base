@@ -57,19 +57,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
-    protected MessageType(Descriptor descriptor) {
-        super(descriptor, true);
-    }
-
     /**
-     * Creates a new instance of {@code MessageType} from the given message descriptor.
-     *
-     * @param descriptor
-     *         message descriptor
-     * @return new instance of {@code MessageType}
+     * Creates a new instance by the given message descriptor.
      */
-    public static MessageType of(Descriptor descriptor) {
-        return new MessageType(descriptor);
+    public MessageType(Descriptor descriptor) {
+        super(descriptor, true);
     }
 
     /**
@@ -89,7 +81,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                 .getMapEntry()) {
             return;
         }
-        MessageType messageType = of(type);
+        MessageType messageType = new MessageType(type);
         set.add(messageType);
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
@@ -247,7 +239,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         ImmutableList<MessageType> result =
                 descriptor().getNestedTypes()
                             .stream()
-                            .map(MessageType::of)
+                            .map(MessageType::new)
                             .collect(toImmutableList());
         return result;
     }

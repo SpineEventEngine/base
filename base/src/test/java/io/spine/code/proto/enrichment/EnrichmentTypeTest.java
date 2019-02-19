@@ -112,7 +112,7 @@ class EnrichmentTypeTest {
         class AltFieldNames {
 
             private final EnrichmentType et =
-                    EnrichmentType.from(EttAlternativeFieldNames.getDescriptor());
+                    new EnrichmentType(EttAlternativeFieldNames.getDescriptor());
 
             private final FieldDescriptor targetField =
                     et.descriptor()
@@ -134,7 +134,7 @@ class EnrichmentTypeTest {
             }
 
             private void assertSourceMatch(Class<? extends Message> source, String fieldName) {
-                MessageType srcType = MessageType.of(descriptorOf(source));
+                MessageType srcType = new MessageType(descriptorOf(source));
                 FieldMatch match = et.sourceFieldsOf(srcType);
                 FieldSource fieldSource = match.sourceOf(targetField);
                 assertThat(fieldSource.viaReference())
@@ -149,7 +149,7 @@ class EnrichmentTypeTest {
          * Creates an iterable subject for source types of the passed enrichment class.
          */
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
-            EnrichmentType et = EnrichmentType.from(descriptorOf(cls));
+            EnrichmentType et = new EnrichmentType(descriptorOf(cls));
             ImmutableList<? extends Class<? extends Message>> sourceClasses = et.sourceClasses();
             return assertThat(sourceClasses);
         }
