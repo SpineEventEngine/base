@@ -75,7 +75,7 @@ public final class ByOption extends StringOption<Collection<FieldRef>,
     }
 
     /** Obtains all of the fields referenced in the {@code (by)} option of the specified field. */
-    static ImmutableList<FieldRef> allFrom(FieldDescriptor field) {
+    public static ImmutableList<FieldRef> allFrom(FieldDescriptor field) {
         ByOption option = new ByOption();
         Collection<FieldRef> result = option.parsedValueFrom(field);
         return ImmutableList.copyOf(result);
