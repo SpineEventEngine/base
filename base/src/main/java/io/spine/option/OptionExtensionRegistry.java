@@ -24,6 +24,12 @@ import io.spine.annotation.Internal;
 
 /**
  * A registry that contains all of Protobuf option extensions.
+ *
+ * <p>Calling {@link OptionExtensionRegistry#instance()} obtains a registry with all of the options
+ * defined in Spine.
+ *
+ * @apiNote Use this instead of {@link com.google.protobuf.ExtensionRegistry} when Spine options
+ * are needed.
  */
 @Internal
 public final class OptionExtensionRegistry {

@@ -25,8 +25,10 @@ import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 
 /**
- * An option that applies a common characteristic to every Protobuf message in a
- * {@code .proto} file.
+ * An option that, for a specified file, specified whether marker interfaces should be generated and
+ * the Java type of the message.
+ *
+ * @see io.spine.tools.protoc.insert.Is Is option
  */
 final class EveryIs extends FileOption<IsOption> {
 
