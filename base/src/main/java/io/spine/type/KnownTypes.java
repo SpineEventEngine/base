@@ -84,7 +84,9 @@ public class KnownTypes implements Serializable {
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
 
+    /** A registry of extensions that has Spine options registered. */
     private static final ExtensionRegistry extensions = optionExtensions();
+
     /**
      * Retrieves the singleton instance of {@code KnownTypes}.
      */
