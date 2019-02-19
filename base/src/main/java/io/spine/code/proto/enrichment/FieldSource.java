@@ -18,44 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.code.proto.enrichment;
 
-import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Optional;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Attempts to parse the passed value by sequentially invoking provider functions.
+ * Information on how to obtain a value of an enrichment field.
  */
-final class Parsing {
+@Immutable
+final class FieldSource {
 
-    private final String value;
-    private final ImmutableList<Parser> parsers;
+    private final @Nullable FieldDescriptor descriptor;
+    private final FieldRef reference;
 
-    Parsing(String value, Parser... parser) {
-        this.value = value;
-        this.parsers = ImmutableList.copyOf(parser);
+    FieldSource(@Nullable FieldDescriptor descriptor, FieldRef reference) {
+        checkNotNull(reference);
+        this.descriptor = descriptor;
+        this.reference = reference;
     }
 
-    Optional<TypeRef> parse() {
-        for (Parser parser : parsers) {
-            Optional<TypeRef> found = parser.parse(value);
-            if (found.isPresent()) {
-                return found;
-            }
-        }
-        return Optional.empty();
+    boolean viaReference() {
+        return reference.isContext();
     }
 
-    /**
-     * Provides a type reference <em>if</em> the passed string matches the format
-     * requirements of the provider, otherwise returns an empty {@code Optional}.
-     *
-     * @see CompositeTypeRef#parse(String)
-     * @see TypeRef#parse(String)
-     */
-    @FunctionalInterface
-    interface Parser {
-        Optional<TypeRef> parse(String reference);
+    FieldDescriptor descriptor() {
+        return checkNotNull(descriptor);
+    }
+
+    FieldRef reference() {
+        return reference;
     }
 }

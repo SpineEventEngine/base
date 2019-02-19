@@ -1,0 +1,59 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+syntax = "proto3";
+
+package spine.test.code.enrichment.type.user;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.enrichment.type.user";
+option java_outer_classname = "EttUserEventsProto";
+option java_multiple_files = true;
+
+// On special case for naming types in this file
+// ---------------------------------------------
+// Messages declared in this file are having the `Event` suffix to make it easier to distinguish
+// them from enrichment types of these test environment family types.
+// Normally, we would not use the `Event` suffix, sticking to names used in the Domain Language.
+//
+
+message EttUserLoggedInEvent {
+    string user_uid = 1;
+}
+
+message EttUserMentionedEvent {
+    string user_uid = 1;
+    string title = 2;
+}
+
+message EttUserLoggedOutEvent {
+    string user_uid = 1;
+    string owner_email = 2;
+}
+
+// Unlike other events, this one does not have the common field named `user_uid`.
+// This is to test exclusion of messages that do not match field names specified in
+// the `(by)` field option.
+//
+message EttUserDeletedEvent {
+    string deleted_uid = 1;
+}

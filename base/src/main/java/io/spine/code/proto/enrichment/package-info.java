@@ -19,11 +19,11 @@
  */
 
 /**
- * This package provides code generation classes for handling enrichments.
+ * This package provides classes and interfaces related to definition of enrichment messages.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.enrichment;
+package io.spine.code.proto.enrichment;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
