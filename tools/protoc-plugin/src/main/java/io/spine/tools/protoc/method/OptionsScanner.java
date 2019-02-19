@@ -26,6 +26,7 @@ import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.TypeFilter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -94,7 +95,11 @@ final class OptionsScanner {
 
         @Override
         public boolean test(GeneratedMethod method) {
-            return MessageOptions.hasOption(method.getOptionName(), type);
+            TypeFilter filter = method.getFilter();
+            if (filter.getValueCase() != TypeFilter.ValueCase.OPTION_NAME) {
+                return false;
+            }
+            return MessageOptions.hasOption(filter.getOptionName(), type);
         }
     }
 }

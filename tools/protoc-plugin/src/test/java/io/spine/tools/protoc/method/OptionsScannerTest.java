@@ -28,6 +28,7 @@ import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.TypeFilter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -93,22 +94,28 @@ final class OptionsScannerTest {
     private static GeneratedMethod methodWithEnrichment(String generatorName) {
         return GeneratedMethod.newBuilder()
                               .setGeneratorName(generatorName)
-                              .setOptionName("enrichment_for")
+                              .setFilter(optionFilter("enrichment_for"))
                               .build();
     }
 
     private static GeneratedMethod methodWithBetaType(String generatorName) {
         return GeneratedMethod.newBuilder()
                               .setGeneratorName(generatorName)
-                              .setOptionName("beta_type")
+                              .setFilter(optionFilter("beta_type"))
                               .build();
     }
 
     private static GeneratedMethod methodWithValidationOf(String generatorName) {
         return GeneratedMethod.newBuilder()
                               .setGeneratorName(generatorName)
-                              .setOptionName("validation_of")
+                              .setFilter(optionFilter("validation_of"))
                               .build();
+    }
+
+    private static TypeFilter optionFilter(String optionName) {
+        return TypeFilter.newBuilder()
+                         .setOptionName(optionName)
+                         .build();
     }
 
     @Immutable
