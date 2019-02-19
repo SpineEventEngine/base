@@ -22,30 +22,25 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.code.java.ClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract implementation base for {@link GeneratedInterfaceConfig}.
  */
-abstract class AbstractGeneratedInterfaceConfig implements GeneratedInterfaceConfig {
-
-    private @Nullable ClassName interfaceName;
+abstract class AbstractGeneratedInterfaceConfig extends AbstractTargetClassConfig implements GeneratedInterfaceConfig {
 
     @Override
-    public final void markWith(String interfaceName) {
-        checkNotNull(interfaceName);
-        this.interfaceName = ClassName.of(interfaceName);
-    }
-
-    @Override
-    public final void ignore() {
-        this.interfaceName = null;
+    public final void markWith(@FullyQualifiedName String interfaceName) {
+        setTarget(interfaceName);
     }
 
     final Optional<ClassName> interfaceName() {
-        return Optional.ofNullable(interfaceName);
+        return getTarget();
+    }
+
+    final @Nullable ClassName interfaceClass() {
+        return interfaceName().orElse(null);
     }
 }

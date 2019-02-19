@@ -48,21 +48,21 @@ final class PostfixInterfaceConfig extends PatternInterfaceConfig {
             return false;
         }
         PostfixInterfaceConfig config = (PostfixInterfaceConfig) o;
-        return Objects.equals(postfix, config.postfix) &&
-                Objects.equals(interfaceName().orElse(null), config.interfaceName()
-                                                                   .orElse(null));
+        return Objects.equals(postfix, config.postfix)
+                && Objects.equals(interfaceClass(), config.interfaceClass());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postfix, interfaceName().orElse(null));
+        return Objects.hash(postfix, interfaceClass());
     }
 
     @Override
     public String toString() {
+        //noinspection DuplicateStringLiteralInspection
         return MoreObjects.toStringHelper(this)
                           .add("postfix", postfix)
-                          .add("interfaceName", interfaceName().orElse(null))
+                          .add("interfaceName", interfaceClass())
                           .toString();
     }
 

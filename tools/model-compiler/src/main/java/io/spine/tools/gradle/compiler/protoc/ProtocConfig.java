@@ -20,25 +20,13 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
-
 /**
- * Configuration of a generated interface for a certain target.
- *
- * @see GeneratedInterfaces#filePattern
- * @see GeneratedInterfaces#uuidMessage
- * @see GeneratedInterfaces#enrichmentMessage
+ * A Spine Protoc plugin configuration for a certain target.
  */
-public interface GeneratedInterfaceConfig extends ProtocConfig {
+public interface ProtocConfig {
 
     /**
-     * For the given target, marks the target with the interface with the given fully qualified
-     * name.
-     *
-     * <p>The interface itself is not generated and the user should define it manually.
-     *
-     * @param interfaceName
-     *         the FQN of the interface
+     * For the given target, turns off code generation.
      */
-    void markWith(@FullyQualifiedName String interfaceName);
+    void ignore();
 }

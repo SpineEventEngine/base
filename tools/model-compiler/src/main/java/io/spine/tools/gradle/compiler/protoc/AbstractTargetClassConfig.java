@@ -20,25 +20,36 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Configuration of a generated interface for a certain target.
- *
- * @see GeneratedInterfaces#filePattern
- * @see GeneratedInterfaces#uuidMessage
- * @see GeneratedInterfaces#enrichmentMessage
+ * Abstract implementation base for {@link ProtocConfig protoc configurations} that rely on a
+ * particular target class.
  */
-public interface GeneratedInterfaceConfig extends ProtocConfig {
+abstract class AbstractTargetClassConfig implements ProtocConfig {
+
+    private @Nullable ClassName target;
 
     /**
-     * For the given target, marks the target with the interface with the given fully qualified
-     * name.
-     *
-     * <p>The interface itself is not generated and the user should define it manually.
-     *
-     * @param interfaceName
-     *         the FQN of the interface
+     * Sets current target class to a supplied value.
      */
-    void markWith(@FullyQualifiedName String interfaceName);
+    protected final void setTarget(@FullyQualifiedName String targetName) {
+        checkNotNull(targetName);
+        this.target = ClassName.of(targetName);
+    }
+
+    @Override
+    public void ignore() {
+        this.target = null;
+    }
+
+    protected final Optional<ClassName> getTarget() {
+        return Optional.ofNullable(target);
+    }
 }
