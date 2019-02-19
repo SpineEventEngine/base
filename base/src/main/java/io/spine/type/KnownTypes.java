@@ -241,11 +241,11 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Creates an {@link com.google.protobuf.ExtensionRegistry} with all the {@code
+     * Creates an {@link ExtensionRegistry} with all the {@code
      * spine/options.proto} extensions.
      */
-    private static com.google.protobuf.ExtensionRegistry optionExtensions() {
-        com.google.protobuf.ExtensionRegistry registry = com.google.protobuf.ExtensionRegistry.newInstance();
+    private static ExtensionRegistry optionExtensions() {
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
         OptionsProto.registerAllExtensions(registry);
         return registry;
     }
