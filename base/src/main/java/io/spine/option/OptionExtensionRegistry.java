@@ -34,7 +34,7 @@ import io.spine.annotation.Internal;
  */
 @Internal
 public final class OptionExtensionRegistry {
-    private static final com.google.protobuf.ExtensionRegistry EXTENSIONS = optionExtensions();
+    private static final ExtensionRegistry EXTENSIONS = optionExtensions();
 
     /**
      * Prevents the utility class instantiation.
@@ -43,19 +43,19 @@ public final class OptionExtensionRegistry {
     }
 
     /**
-     * Obtains the {@link com.google.protobuf.ExtensionRegistry} with all the {@code
+     * Obtains the {@link ExtensionRegistry} with all the {@code
      * spine/options.proto} extensions.
      */
-    public static com.google.protobuf.ExtensionRegistry instance() {
+    public static ExtensionRegistry instance() {
         return EXTENSIONS;
     }
 
     /**
-     * Creates an {@link com.google.protobuf.ExtensionRegistry} with all the {@code
+     * Creates an {@link ExtensionRegistry} with all the {@code
      * spine/options.proto} extensions.
      */
-    private static com.google.protobuf.ExtensionRegistry optionExtensions() {
-        com.google.protobuf.ExtensionRegistry registry = com.google.protobuf.ExtensionRegistry.newInstance();
+    private static ExtensionRegistry optionExtensions() {
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
         OptionsProto.registerAllExtensions(registry);
         return registry;
     }
