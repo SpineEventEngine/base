@@ -44,8 +44,8 @@ message EnrichmentInterface {
 //
 message GeneratedMethod {
 
-    // A fully-qualified name of the message generator class.
-    string generator_name = 1;
+    // A fully-qualified name of the message factory class.
+    string factory_name = 1;
 
     // A filter that defines for which message types the method generator should be used.
     TypeFilter filter = 2;

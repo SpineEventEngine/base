@@ -91,23 +91,23 @@ final class OptionsScannerTest {
         return SpineProtocConfig.newBuilder();
     }
 
-    private static GeneratedMethod methodWithEnrichment(String generatorName) {
+    private static GeneratedMethod methodWithEnrichment(String factoryName) {
         return GeneratedMethod.newBuilder()
-                              .setGeneratorName(generatorName)
+                              .setFactoryName(factoryName)
                               .setFilter(optionFilter("enrichment_for"))
                               .build();
     }
 
     private static GeneratedMethod methodWithBetaType(String generatorName) {
         return GeneratedMethod.newBuilder()
-                              .setGeneratorName(generatorName)
+                              .setFactoryName(generatorName)
                               .setFilter(optionFilter("beta_type"))
                               .build();
     }
 
     private static GeneratedMethod methodWithValidationOf(String generatorName) {
         return GeneratedMethod.newBuilder()
-                              .setGeneratorName(generatorName)
+                              .setFactoryName(generatorName)
                               .setFilter(optionFilter("validation_of"))
                               .build();
     }

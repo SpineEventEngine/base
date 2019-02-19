@@ -52,12 +52,12 @@ final class MethodFactories {
      * instantiated a {@link NoOpMethodFactory} instance is returned.
      */
     static MethodFactory newFactoryFor(GeneratedMethod spec) {
-        String generatorName = spec.getGeneratorName();
-        if (generatorName.trim()
-                         .isEmpty()) {
+        String factoryName = spec.getFactoryName();
+        if (factoryName.trim()
+                       .isEmpty()) {
             return NoOpMethodFactory.INSTANCE;
         }
-        MethodFactory result = from(generatorName);
+        MethodFactory result = from(factoryName);
         return result;
     }
 
@@ -71,10 +71,10 @@ final class MethodFactories {
         }
         Logger logger = Logging.get(MethodFactories.class);
         try {
-            MethodFactory generator = factoryClass.get()
-                                                  .getConstructor()
-                                                  .newInstance();
-            return generator;
+            MethodFactory factory = factoryClass.get()
+                                                .getConstructor()
+                                                .newInstance();
+            return factory;
         } catch (InstantiationException e) {
             logger.warn("Unable to instantiate MethodFactory {}.", fqn, e);
         } catch (IllegalAccessException e) {
@@ -89,13 +89,13 @@ final class MethodFactories {
 
     @SuppressWarnings("unchecked") //we do already know that the class represents MethodFactory
     private static Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
-        Optional<Class<?>> generator = factoryClass(fqn);
-        if (!generator.isPresent()) {
+        Optional<Class<?>> factory = factoryClass(fqn);
+        if (!factory.isPresent()) {
             return Optional.empty();
         }
-        Class<?> generatorClass = generator.get();
-        if (MethodFactory.class.isAssignableFrom(generatorClass)) {
-            return Optional.of((Class<MethodFactory>) generatorClass);
+        Class<?> factoryClass = factory.get();
+        if (MethodFactory.class.isAssignableFrom(factoryClass)) {
+            return Optional.of((Class<MethodFactory>) factoryClass);
         }
         Logging.get(MethodFactories.class)
                .warn("Class {} does not implement io.spine.protoc.MethodFactory.", fqn);
@@ -104,8 +104,8 @@ final class MethodFactories {
 
     private static Optional<Class<?>> factoryClass(String fqn) {
         try {
-            Class<?> generator = Class.forName(fqn);
-            return Optional.ofNullable(generator);
+            Class<?> factory = Class.forName(fqn);
+            return Optional.ofNullable(factory);
         } catch (ClassNotFoundException e) {
             Logging.get(MethodFactories.class)
                    .warn("Unable to resolve MethodFactory {}.", fqn, e);
@@ -115,7 +115,7 @@ final class MethodFactories {
 
     /**
      * A no-operation stub implementation of a {@link MethodFactory} that is used if the
-     * method generator is not configured and/or available.
+     * method factory is not configured and/or available.
      */
     @VisibleForTesting
     @Immutable

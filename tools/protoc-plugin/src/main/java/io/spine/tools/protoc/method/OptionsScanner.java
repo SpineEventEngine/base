@@ -61,7 +61,7 @@ final class OptionsScanner {
     }
 
     private static boolean hasNotBlankName(GeneratedMethod spec) {
-        return !spec.getGeneratorName()
+        return !spec.getFactoryName()
                     .trim()
                     .isEmpty();
     }
