@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
 
@@ -51,6 +52,18 @@ enum RangeType {
         this.left = left;
         this.right = right;
         this.function = function;
+    }
+
+    /** Obtains the character value of the left border, either {@code "[" }or {@code "("}.*/
+    @VisibleForTesting
+    public char left() {
+        return left;
+    }
+
+    /** Obtains the character value of the right border, either {@code "]" }or {@code ")"}.*/
+    @VisibleForTesting
+    public char right() {
+        return right;
     }
 
     private static RangeType from(char left, char right) {

@@ -20,30 +20,25 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.DescriptorProtos.FileOptions;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
+ * An option that a {@code .proto} file has.
  *
- * @param <F>
- *         value of this option
+ * @param <V>
+ *         the type of value held by this option
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+public class FileOption<V> extends AbstractOption<V, FileDescriptor, FileOptions> {
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
-     */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
+    /** Creates a new instance of this option, based on the specified extension. */
+    protected FileOption(GeneratedExtension<FileOptions, V> extension) {
         super(extension);
     }
 
     @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
+    protected FileOptions optionsFrom(FileDescriptor object) {
         return object.getOptions();
     }
 }

@@ -18,32 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.tools.protoc.insert;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
+ * An option that, for a specified file, specified whether marker interfaces should be generated and
+ * the Java type of the message.
  *
- * @param <F>
- *         value of this option
+ * @see io.spine.tools.protoc.insert.Is Is option
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+final class EveryIs extends FileOption<IsOption> {
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
-     */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
-        super(extension);
-    }
-
-    @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
-        return object.getOptions();
+    /** Creates a new instance of this option. */
+    EveryIs() {
+        super(OptionsProto.everyIs);
     }
 }

@@ -48,7 +48,7 @@ final class FieldDef {
 
     FieldDef(FieldDescriptor field) {
         this.descriptor = field;
-        ImmutableList<FieldRef> sources = FieldRef.allFrom(field.toProto());
+        ImmutableList<FieldRef> sources = ByOption.allFrom(field);
         checkDuplicatingContextRef(field, sources);
         this.sources = sources;
     }

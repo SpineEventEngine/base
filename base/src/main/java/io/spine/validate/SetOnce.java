@@ -18,32 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
- *
- * @param <F>
- *         value of this option
+ * An option that indicates that a field value cannot be changed.
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+final class SetOnce extends FieldOption<Boolean> {
 
     /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
+     * Specifies the extension that corresponds to this option.
      */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
-        super(extension);
+    private SetOnce() {
+        super(OptionsProto.setOnce);
     }
 
-    @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
-        return object.getOptions();
+    /** Obtains a value of the {@code set_once} option from the given field. */
+    static Optional<Boolean> from(FieldDescriptor field){
+        return new SetOnce().valueFrom(field);
     }
 }

@@ -18,32 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.tools.protoc.insert;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
- *
- * @param <F>
- *         value of this option
+ * For a given message, declares whether the message is of the specified Java type, and whether
+ * the generation of marker interfaces is enabled.
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
-     */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
-        super(extension);
+    Is() {
+        super(OptionsProto.is);
     }
 
-    @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
-        return object.getOptions();
+    static Optional<IsOption> from(Descriptor message) {
+        return new Is().valueFrom(message);
     }
 }
