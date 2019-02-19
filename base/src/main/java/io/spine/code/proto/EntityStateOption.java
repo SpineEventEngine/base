@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Optional;
@@ -30,9 +31,9 @@ import java.util.Optional;
  * there are four: Aggregate, Projection, Process Manager and Entity) and its visibility of the
  * entity to queries.
  */
-public class EntityOption extends MessageOption<io.spine.option.EntityOption> {
+public class EntityStateOption extends MessageOption<EntityOption> {
 
-    protected EntityOption() {
+    protected EntityStateOption() {
         super(OptionsProto.entity);
     }
 
@@ -46,14 +47,14 @@ public class EntityOption extends MessageOption<io.spine.option.EntityOption> {
      * @apiNote This method is just a shorthand for
      *      <pre>
      *      {@code
-     *      EntityOption option = new EntityOption();
+     *      EntityStateOption option = new EntityStateOption();
      *      option.valueFrom(messageDescriptor);
      *      }
      *      </pre>
      * to avoid instantiating an object.
      */
-    public static Optional<io.spine.option.EntityOption> valueOf(Descriptor message) {
-        EntityOption option = new EntityOption();
+    public static Optional<EntityOption> valueOf(Descriptor message) {
+        EntityStateOption option = new EntityStateOption();
         return option.valueFrom(message);
     }
 }
