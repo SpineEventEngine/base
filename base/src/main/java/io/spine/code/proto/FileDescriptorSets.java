@@ -22,12 +22,12 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.spine.option.OptionExtensionRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import static io.spine.type.KnownTypes.extensions;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
@@ -52,7 +52,7 @@ public final class FileDescriptorSets {
      */
     public static FileDescriptorSet parse(byte[] bytes) {
         try {
-            return FileDescriptorSet.parseFrom(bytes, extensions());
+            return FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
         } catch (InvalidProtocolBufferException e) {
             throw illegalArgumentWithCauseOf(e);
         }
@@ -68,7 +68,7 @@ public final class FileDescriptorSets {
      */
     public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
         try {
-            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, extensions());
+            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
             return Optional.of(descriptorSet);
         } catch (InvalidProtocolBufferException e) {
             return Optional.empty();
@@ -86,7 +86,7 @@ public final class FileDescriptorSets {
      */
     public static FileDescriptorSet parse(InputStream stream) {
         try {
-            return FileDescriptorSet.parseFrom(stream, extensions());
+            return FileDescriptorSet.parseFrom(stream, OptionExtensionRegistry.instance());
         } catch (IOException e) {
             throw illegalArgumentWithCauseOf(e);
         }

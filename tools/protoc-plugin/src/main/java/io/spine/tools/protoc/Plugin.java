@@ -24,8 +24,8 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import io.spine.option.OptionExtensionRegistry;
 import io.spine.tools.protoc.insert.MessageInterfaceGenerator;
-import io.spine.type.KnownTypes;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -63,7 +63,7 @@ public class Plugin {
     private static CodeGeneratorRequest readRequest() {
         try {
             CodeGeneratorRequest request =
-                    CodeGeneratorRequest.parseFrom(System.in, KnownTypes.extensions());
+                    CodeGeneratorRequest.parseFrom(System.in, OptionExtensionRegistry.instance());
             return request;
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -85,7 +85,7 @@ public class Plugin {
     private static void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
-                CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
+        CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
         try {
             response.writeTo(stream);
             stream.flush();
