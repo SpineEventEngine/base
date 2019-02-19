@@ -64,7 +64,7 @@ class VBuilderCodeTest {
      */
     @CanIgnoreReturnValue
     private File assertGeneratesFor(Descriptor descriptor) {
-        MessageType type = MessageType.of(descriptor);
+        MessageType type = new MessageType(descriptor);
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
         File file = code.write();
         assertTrue(file.exists());

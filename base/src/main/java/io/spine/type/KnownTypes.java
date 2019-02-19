@@ -155,7 +155,8 @@ public class KnownTypes implements Serializable {
                 typeSet.messageTypes()
                        .stream()
                        .filter(EnrichmentType::test)
-                       .map(EnrichmentType::from)
+                       .map(MessageType::descriptor)
+                       .map(EnrichmentType::new)
                        .collect(toImmutableSet());
         return result;
     }

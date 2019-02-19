@@ -40,7 +40,7 @@ class VBuilderMethodsTest {
         @Test
         @DisplayName("a top level message")
         void topLevelMessage() {
-            MessageType type = MessageType.of(VbtProject.getDescriptor());
+            MessageType type = new MessageType(VbtProject.getDescriptor());
 
             ImmutableList<MethodSpec> specs = VBuilderMethods.methodsOf(type);
             assertThat(specs).isNotEmpty();
