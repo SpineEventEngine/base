@@ -32,24 +32,20 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Map;
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newConcurrentMap;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces {
+public final class GeneratedInterfaces extends GeneratedConfigurations<PatternInterfaceConfig> {
 
-    private final Map<FilePattern, PatternInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
     private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
 
     private GeneratedInterfaces() {
-        this.patternConfigs = newConcurrentMap();
+        super();
     }
 
     /**
@@ -147,20 +143,15 @@ public final class GeneratedInterfaces {
      *         the file pattern
      * @return a configuration object for Proto files matching the pattern
      */
-    public GeneratedInterfaceConfig filePattern(FilePattern pattern) {
-        checkNotNull(pattern);
-        PatternInterfaceConfig config = PatternInterfaceConfig.fromPattern(pattern);
-        patternConfigs.put(pattern, config);
-        return config;
+    @SuppressWarnings("RedundantMethodOverride") // do override to extend javadoc
+    @Override
+    public PatternInterfaceConfig filePattern(FilePattern pattern) {
+        return super.filePattern(pattern);
     }
 
-    /**
-     * Creates a file pattern to match files names of which end with a given postfix.
-     *
-     * @see #filePattern(FilePattern)
-     */
-    public PostfixPattern endsWith(String postfix) {
-        return new PostfixPattern(postfix);
+    @Override
+    PatternInterfaceConfig patternConfiguration(@NonNull FilePattern pattern) {
+        return PatternInterfaceConfig.fromPattern(pattern);
     }
 
     /**
@@ -176,6 +167,7 @@ public final class GeneratedInterfaces {
      *
      * @return a configuration object for Proto messages matching UUID message pattern
      */
+    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
     public GeneratedInterfaceConfig uuidMessage() {
         return uuidInterfaceConfig;
     }
@@ -191,6 +183,7 @@ public final class GeneratedInterfaces {
      *
      * @return a configuration object for Proto messages matching enrichment message pattern
      */
+    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
     public GeneratedInterfaceConfig enrichmentMessage() {
         return enrichmentConfig;
     }
@@ -207,10 +200,10 @@ public final class GeneratedInterfaces {
                 .newBuilder()
                 .setUuidInterface(uuidInterface)
                 .setEnrichmentInterface(enrichmentInterface);
-        patternConfigs.values()
-                      .stream()
-                      .map(PatternInterfaceConfig::generatedInterface)
-                      .forEach(result::addGeneratedInterface);
+        patternConfigurations()
+                .stream()
+                .map(PatternInterfaceConfig::generatedInterface)
+                .forEach(result::addGeneratedInterface);
         return result.build();
     }
 
