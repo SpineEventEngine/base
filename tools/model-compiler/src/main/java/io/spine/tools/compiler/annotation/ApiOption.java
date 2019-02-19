@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
@@ -152,15 +151,6 @@ public final class ApiOption {
     }
 
     /**
-     * Checks if Protobuf services may be defined with this option.
-     *
-     * @return {@code true} if the option supports services, {@code false} otherwise
-     */
-    boolean supportsServices() {
-        return serviceOption != null;
-    }
-
-    /**
      * Checks if the given field is declared with this option.
      *
      * @param descriptor
@@ -174,6 +164,16 @@ public final class ApiOption {
         FieldOptions options = descriptor.getOptions();
         return optionPresent(options, fieldOption);
     }
+
+    /**
+     * Checks if Protobuf services may be defined with this option.
+     *
+     * @return {@code true} if the option supports services, {@code false} otherwise
+     */
+    boolean supportsServices() {
+        return serviceOption != null;
+    }
+
 
     private static <T extends ExtendableMessage> boolean
     optionPresent(ExtendableMessage<T> options, GeneratedExtension<T, Boolean> option) {
@@ -193,26 +193,6 @@ public final class ApiOption {
     public String toString() {
         return messageOption.getDescriptor()
                             .getName();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ApiOption option = (ApiOption) o;
-        return Objects.equal(fileOption, option.fileOption) &&
-                Objects.equal(messageOption, option.messageOption) &&
-                Objects.equal(serviceOption, option.serviceOption) &&
-                Objects.equal(fieldOption, option.fieldOption);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fileOption, messageOption, serviceOption, fieldOption);
     }
 
     /**

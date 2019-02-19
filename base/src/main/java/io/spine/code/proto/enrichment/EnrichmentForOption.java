@@ -102,9 +102,24 @@ public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
         return result;
     }
 
-    static ImmutableList<TypeRef> sourceTypesOf(Descriptor type){
-        Collection<TypeRef> result = new EnrichmentForOption().parsedValueFrom(type);
-        return ImmutableList.copyOf(result);
+    /**
+     * Obtains the {@code enrichment_for} option value from the specified message.
+     *
+     * @param message
+     *         message that bears the {@code enrichment_for} option.
+     * @return parsed type references, contained in the {@code enrichment_for} option value.
+     * @apiNote this method is just a shorthand for
+     *         <pre>
+     *             {@code
+     *             EnrichmentForOption option = new EnrichmentForOption();
+     *             option.parsedValueFrom(messageDescriptor);
+     *             }
+     *         </pre>
+     *         to avoid creating an addition instance.
+     */
+    static Collection<TypeRef> typeRefsFrom(Descriptor message) {
+        EnrichmentForOption option = new EnrichmentForOption();
+        return option.parsedValueFrom(message);
     }
 
     /**
