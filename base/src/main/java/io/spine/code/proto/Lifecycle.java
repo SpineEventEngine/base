@@ -20,7 +20,9 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.LifecycleOption;
 import io.spine.option.OptionsProto;
 
@@ -28,8 +30,18 @@ import java.util.Optional;
 
 public final class Lifecycle extends MessageOption<LifecycleOption> {
 
+    private static final GeneratedExtension<MessageOptions, LifecycleOption> EXTENSION =
+            OptionsProto.lifecycle;
+
+    /** Allows instantiation only inside this class. */
     private Lifecycle() {
-        super(OptionsProto.lifecycle);
+        super(EXTENSION);
+    }
+
+    public static boolean hasOption(MessageType type) {
+        MessageOptions options = type.descriptor().getOptions();
+        boolean result = options.hasExtension(EXTENSION);
+        return result;
     }
 
     public static Optional<LifecycleOption> lifecycleOf(MessageType type) {
