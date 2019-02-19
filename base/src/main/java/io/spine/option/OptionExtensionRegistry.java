@@ -34,7 +34,6 @@ import io.spine.annotation.Internal;
  */
 @Internal
 public final class OptionExtensionRegistry {
-
     private static final com.google.protobuf.ExtensionRegistry EXTENSIONS = optionExtensions();
 
     /**

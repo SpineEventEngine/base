@@ -48,7 +48,7 @@ public abstract class AbstractOption<T, K extends GenericDescriptor, E extends E
     }
 
     /**
-     * Returns a option object of the specified {@code K}.
+     * Returns an option object of the specified {@code K}.
      *
      * <p>Examples of option objects include
      * {@link com.google.protobuf.DescriptorProtos.FieldOptions} for fields,
