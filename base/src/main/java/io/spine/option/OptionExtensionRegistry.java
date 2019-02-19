@@ -20,6 +20,7 @@
 
 package io.spine.option;
 
+import com.google.protobuf.ExtensionRegistry;
 import io.spine.annotation.Internal;
 
 /**
@@ -28,8 +29,8 @@ import io.spine.annotation.Internal;
  * <p>Calling {@link OptionExtensionRegistry#instance()} obtains a registry with all of the options
  * defined in Spine.
  *
- * @apiNote Use this instead of {@link com.google.protobuf.ExtensionRegistry} when Spine options
- * are needed.
+ * @apiNote Use this instead of accessing {@link ExtensionRegistry#newInstance()} directly, since
+ * {@code ExtensionRegistry} doesn't have any of the Spine options by default.
  */
 @Internal
 public final class OptionExtensionRegistry {
