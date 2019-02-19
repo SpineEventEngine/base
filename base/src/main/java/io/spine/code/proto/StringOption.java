@@ -42,7 +42,7 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
  *         Strings} in the user code.
  */
 public abstract class StringOption<V, K extends GenericDescriptor, E extends ExtendableMessage<E>>
-        extends ProtobufOption<String, K, E> {
+        extends AbstractOption<String, K, E> {
 
     protected StringOption(GeneratedExtension<E, String> extension) {
         super(extension);

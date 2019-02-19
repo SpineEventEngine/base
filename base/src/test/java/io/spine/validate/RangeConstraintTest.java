@@ -94,11 +94,13 @@ class RangeConstraintTest {
     }
 
     private static Stream<Arguments> rangeCombinationsFor(Number left, Number right) {
-        return Stream.of(
-                Arguments.of(format("[%s..%s]", left, right)),
-                Arguments.of(format("[%s..%s)", left, right)),
-                Arguments.of(format("(%s..%s]", left, right)),
-                Arguments.of(format("(%s..%s)", left, right))
-        );
+        Stream.Builder<Arguments> result = Stream.builder();
+        for (RangeType value : RangeType.values()) {
+            char leftBoundary = value.left();
+            char rightBoundary = value.right();
+            String range = format("%s%s..%s%s", leftBoundary, left, rightBoundary, right);
+            result.add(Arguments.of(range));
+        }
+        return result.build();
     }
 }

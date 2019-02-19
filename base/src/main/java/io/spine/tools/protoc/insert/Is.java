@@ -28,10 +28,8 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 
 /**
- * Specifies a characteristic that is present if every member of a Protobuf message.
- *
- * <p>Can be used to specify that every member of the field is of a certain Java type,
- * or to toggle code generation.
+ * For a given message, declares whether the message is of the specified Java type, and whether
+ * the generation of marker interfaces is enabled.
  */
 @SuppressWarnings("NewClassNamingConvention")
 final class Is extends MessageOption<IsOption> {
@@ -40,7 +38,7 @@ final class Is extends MessageOption<IsOption> {
         super(OptionsProto.is);
     }
 
-    static Optional<IsOption> from(Descriptor field) {
-        return new Is().valueFrom(field);
+    static Optional<IsOption> from(Descriptor message) {
+        return new Is().valueFrom(message);
     }
 }

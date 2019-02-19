@@ -59,7 +59,7 @@ public final class FileDescriptorSets {
     }
 
     /**
-     * Attempts to parse a descriptor set from the givenbyte array.
+     * Attempts to parse a descriptor set from the given byte array.
      *
      * @param bytes
      *         raw data to parse

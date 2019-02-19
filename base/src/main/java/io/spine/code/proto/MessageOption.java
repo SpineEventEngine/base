@@ -30,7 +30,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @param <V>
  *         type of the option value
  */
-public class MessageOption<V> extends ProtobufOption<V, Descriptor, MessageOptions> {
+public class MessageOption<V> extends AbstractOption<V, Descriptor, MessageOptions> {
 
     /** Creates a new instance of the option based on the specified extension. */
     protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {

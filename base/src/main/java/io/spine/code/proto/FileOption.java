@@ -30,7 +30,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @param <V>
  *         the type of value held by this option
  */
-public class FileOption<V> extends ProtobufOption<V, FileDescriptor, FileOptions> {
+public class FileOption<V> extends AbstractOption<V, FileDescriptor, FileOptions> {
 
     /** Creates a new instance of this option, based on the specified extension. */
     protected FileOption(GeneratedExtension<FileOptions, V> extension) {

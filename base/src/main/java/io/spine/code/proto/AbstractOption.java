@@ -21,7 +21,6 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
@@ -38,17 +37,23 @@ import java.util.Optional;
  * @param <E>
  *         the type of object that holds all options of {@code K}
  */
-public abstract class ProtobufOption<T, K extends GenericDescriptor, E extends ExtendableMessage<E>>
+public abstract class AbstractOption<T, K extends GenericDescriptor, E extends ExtendableMessage<E>>
         implements Option<T, K> {
 
-    private final GeneratedMessage.GeneratedExtension<E, T> extension;
+    private final GeneratedExtension<E, T> extension;
 
     /** Creates a new instance of the option using the specified extension. */
-    ProtobufOption(GeneratedMessage.GeneratedExtension<E, T> extension) {
+    AbstractOption(GeneratedExtension<E, T> extension) {
         this.extension = extension;
     }
 
-    /** Obtains all options held by the given object. */
+    /**
+     * Returns a option object of the specified {@code K}.
+     *
+     * <p>Examples of option objects include
+     * {@link com.google.protobuf.DescriptorProtos.FieldOptions} for fields,
+     * {@link com.google.protobuf.DescriptorProtos.FileOptions} for files, etc.
+     */
     protected abstract E optionsFrom(K object);
 
     /** Returns extension that represents this option. */

@@ -30,7 +30,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @param <F>
  *         value of this option
  */
-public class FieldOption<F> extends ProtobufOption<F, FieldDescriptor, FieldOptions> {
+public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
 
     /**
      * Creates an instance with the
