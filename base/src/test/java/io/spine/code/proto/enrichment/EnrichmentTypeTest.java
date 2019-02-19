@@ -20,7 +20,7 @@
 
 package io.spine.code.proto.enrichment;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -44,7 +44,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("EnrichmentType should")
@@ -151,11 +150,7 @@ class EnrichmentTypeTest {
          */
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
             EnrichmentType et = EnrichmentType.from(descriptorOf(cls));
-            ImmutableSet<MessageType> sources = et.knownSources();
-            ImmutableSet<? extends Class<? extends Message>> sourceClasses =
-                    sources.stream()
-                           .map(MessageType::javaClass)
-                           .collect(toImmutableSet());
+            ImmutableList<? extends Class<? extends Message>> sourceClasses = et.sourceClasses();
             return assertThat(sourceClasses);
         }
     }

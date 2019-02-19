@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.ref.DirectTypeRef;
@@ -56,7 +57,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 public final class EnrichmentType extends MessageType {
 
     private final ImmutableList<TypeRef> sourceTypeRefs;
-    private final ImmutableSet<MessageType> knownSources;
+    private final ImmutableSet<MessageType> sourceTypes;
     private final ImmutableList<FieldDef> fields;
     private final ImmutableMap<MessageType, FieldMatch> fieldMatches;
 
@@ -112,7 +113,7 @@ public final class EnrichmentType extends MessageType {
         super(type);
         this.sourceTypeRefs = parseSourceRefs();
         this.fields = parseFieldDefs();
-        this.knownSources = collectSources();
+        this.sourceTypes = collectSources();
         this.fieldMatches = collectFieldMatches();
     }
 
@@ -196,21 +197,36 @@ public final class EnrichmentType extends MessageType {
      */
     private ImmutableMap<MessageType, FieldMatch> collectFieldMatches() {
         ImmutableMap<MessageType, FieldMatch> result =
-                Maps.toMap(knownSources, t -> new FieldMatch(checkNotNull(t), this, fields));
+                Maps.toMap(sourceTypes, t -> new FieldMatch(checkNotNull(t), this, fields));
         return result;
     }
 
     /**
      * Obtains all known message types for which this type can serve as an enrichment.
+     *
+     * @see #sourceClasses()
      */
-    public ImmutableSet<MessageType> knownSources() {
-        return knownSources;
+    public ImmutableSet<MessageType> sourceTypes() {
+        return sourceTypes;
     }
 
     @VisibleForTesting
     FieldMatch sourceFieldsOf(MessageType source) {
         FieldMatch result = fieldMatches.get(source);
         checkNotNull(result, "Unable to find field match for the source type `%s`", source);
+        return result;
+    }
+
+    /**
+     * Obtains all classes of messages for which this type can serve as an enrichment.
+     *
+     * @see #sourceTypes()
+     */
+    public ImmutableList<? extends Class<? extends Message>> sourceClasses() {
+        ImmutableList<? extends Class<? extends Message>> result =
+                sourceTypes().stream()
+                             .map(MessageType::javaClass)
+                             .collect(toImmutableList());
         return result;
     }
 }
