@@ -220,6 +220,20 @@ public class KnownTypes implements Serializable {
         return type;
     }
 
+    /**
+     * ...
+     *
+     * @apiNote {@code TypeRef}s currently reference only messages, hence the return type.
+     */
+    public ImmutableSet<MessageType> findAll(TypeRef typeRef) {
+        ImmutableSet<MessageType> result =
+                typeSet.messageTypes()
+                       .stream()
+                       .filter(type -> typeRef.test(type.descriptor()))
+                       .collect(toImmutableSet());
+        return result;
+    }
+
     private Type get(TypeName name) throws UnknownTypeException {
         Type result = typeSet.find(name)
                              .orElseThrow(() -> new UnknownTypeException(name.value()));

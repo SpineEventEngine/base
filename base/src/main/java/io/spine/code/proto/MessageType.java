@@ -53,6 +53,7 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 /**
  * A message type as declared in a proto file.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // A lot of use cases of a Protobuf message type.
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
