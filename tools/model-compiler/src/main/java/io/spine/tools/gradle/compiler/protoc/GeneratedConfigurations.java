@@ -21,6 +21,8 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
+import io.spine.tools.protoc.SpineProtocConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Map;
@@ -82,4 +84,10 @@ abstract class GeneratedConfigurations<T extends ProtocConfig> {
     public PostfixPattern endsWith(String postfix) {
         return new PostfixPattern(postfix);
     }
+
+    /**
+     * Converts this config into a {@link SpineProtocConfig}.
+     */
+    @Internal
+    public abstract SpineProtocConfig asProtocConfig();
 }

@@ -188,11 +188,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<PatternIn
         return enrichmentConfig;
     }
 
-    /**
-     * Converts this config into a {@link SpineProtocConfig}.
-     */
     @Internal
-    @VisibleForTesting
+    @Override
     public SpineProtocConfig asProtocConfig() {
         UuidInterface uuidInterface = uuidInterface();
         EnrichmentInterface enrichmentInterface = enrichmentConfig();

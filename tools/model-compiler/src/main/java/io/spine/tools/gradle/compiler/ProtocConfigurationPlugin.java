@@ -33,6 +33,7 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
@@ -56,6 +57,7 @@ import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
 import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
 import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
+import static io.spine.tools.gradle.compiler.Extension.getGeneratedMethods;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
@@ -243,14 +245,19 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                           });
     }
 
-    private void configureProtocTasks(GenerateProtoTaskCollection tasks,
-                                             GradleTask dependency) {
-        tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
+    private void configureProtocTasks(GenerateProtoTaskCollection tasks, GradleTask dependency) {
+        tasks.all()
+             .forEach(task -> configureProtocTask(task, dependency.getTask()));
     }
 
     private static SpineProtocConfig assembleParameter(Project project) {
         GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
-        return interfaces.asProtocConfig();
+        GeneratedMethods methods = getGeneratedMethods(project);
+        SpineProtocConfig result = interfaces.asProtocConfig()
+                                             .toBuilder()
+                                             .mergeFrom(methods.asProtocConfig())
+                                             .build();
+        return result;
     }
 
     private enum ProtocPlugin {

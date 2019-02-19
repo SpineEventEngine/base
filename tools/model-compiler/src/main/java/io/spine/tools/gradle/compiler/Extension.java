@@ -27,6 +27,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -167,6 +168,8 @@ public class Extension extends GradleExtension {
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
     public final GeneratedInterfaces generateInterfaces = GeneratedInterfaces.withDefaults();
+
+    public final GeneratedMethods generateMethods = GeneratedMethods.withDefaults();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -355,6 +358,18 @@ public class Extension extends GradleExtension {
         action.execute(generateInterfaces);
     }
 
+    @SuppressWarnings("unused")
+        // Used by Gradle to configure `generateMethods` with a closure.
+    public void generateMethods(Closure closure){
+        ConfigureUtil.configure(closure, generateMethods);
+    }
+
+    @SuppressWarnings("unused")
+    // Used by Gradle to configure `generateMethods` with a closure.
+    public void generateMethods(Action<? super GeneratedMethods> action){
+        action.execute(generateMethods);
+    }
+
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
@@ -363,6 +378,11 @@ public class Extension extends GradleExtension {
     public static GeneratedInterfaces getGeneratedInterfaces(Project project) {
         GeneratedInterfaces interfaces = extension(project).generateInterfaces;
         return interfaces;
+    }
+
+    public static GeneratedMethods getGeneratedMethods(Project project){
+        GeneratedMethods methods = extension(project).generateMethods;
+        return methods;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
