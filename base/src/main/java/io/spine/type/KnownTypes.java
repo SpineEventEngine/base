@@ -215,7 +215,7 @@ public class KnownTypes implements Serializable {
      *
      * @see TypeSet#find(TypeName)
      */
-    Optional<Type<?, ?>> find(TypeName typeName) {
+    public Optional<Type<?, ?>> find(TypeName typeName) {
         Optional<Type<?, ?>> type = typeSet.find(typeName);
         return type;
     }

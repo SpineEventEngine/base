@@ -517,7 +517,17 @@ extend google.protobuf.MessageOptions {
     //
     string enrichment_for = 73922;
 
-    // Reserved 73923 to 73939 for future options.
+    // Reserved 73923 to 73928 for future options.
+
+    // Entity Options
+    //-------------------
+
+    // Entity lifecycle options.
+    //
+    // Currently applicable only to process managers.
+    LifecycleOption lifecycle = 73929;
+
+    // Reserved 73923 to 73938 for future options.
 
     // Command Options
     //-------------------
@@ -937,4 +947,11 @@ message IsOption {
     // package of the message class.
     //
     string java_type = 2;
+}
+
+message LifecycleOption {
+
+    string archive_upon = 1;
+
+    string delete_upon = 2;
 }
