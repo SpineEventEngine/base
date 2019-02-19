@@ -21,7 +21,6 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
 import io.spine.annotation.Internal;
 import io.spine.base.CommandMessage;
 import io.spine.base.EnrichmentMessage;
@@ -150,7 +149,7 @@ public final class GeneratedInterfaces {
      */
     public GeneratedInterfaceConfig filePattern(FilePattern pattern) {
         checkNotNull(pattern);
-        PatternInterfaceConfig config = pattern.createInterfaceConfig();
+        PatternInterfaceConfig config = PatternInterfaceConfig.fromPattern(pattern);
         patternConfigs.put(pattern, config);
         return config;
     }
@@ -245,48 +244,4 @@ public final class GeneratedInterfaces {
                 .build();
     }
 
-    /**
-     * A file name pattern qualifying an interface configuration.
-     *
-     * @see #filePattern(FilePattern)
-     */
-    public abstract static class FilePattern {
-
-        abstract PatternInterfaceConfig createInterfaceConfig();
-    }
-
-    /**
-     * A file pattern matching file names which end with a certain postfix.
-     */
-    public static final class PostfixPattern extends FilePattern {
-
-        private final String postfix;
-
-        private PostfixPattern(String postfix) {
-            super();
-            this.postfix = postfix;
-        }
-
-        @Override
-        PatternInterfaceConfig createInterfaceConfig() {
-            return new PostfixInterfaceConfig(postfix);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof PostfixPattern)) {
-                return false;
-            }
-            PostfixPattern pattern = (PostfixPattern) o;
-            return Objects.equal(postfix, pattern.postfix);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(postfix);
-        }
-    }
 }

@@ -20,22 +20,13 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedInterface;
-
 /**
- * A {@link GeneratedInterfaceConfig} targeting a certain file pattern.
+ * A file name pattern qualifying a Spine protoc configuration.
  */
-abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+public interface FilePattern {
 
     /**
-     * Converts this config into a {@code GeneratedInterface}.
+     * Returns a pattern regexp associated with the current file pattern.
      */
-    abstract GeneratedInterface generatedInterface();
-
-    static PatternInterfaceConfig fromPattern(FilePattern filePattern) {
-        if (filePattern instanceof PostfixPattern) {
-            return new PostfixInterfaceConfig((PostfixPattern) filePattern);
-        }
-        throw new IllegalArgumentException("FilePattern " + filePattern + " is not supported yet.");
-    }
+    String getPattern();
 }

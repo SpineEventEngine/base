@@ -21,10 +21,10 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedInterface;
-import org.checkerframework.checker.regex.qual.Regex;
+
+import java.util.Objects;
 
 /**
  * A {@link GeneratedInterfaceConfig} which configures message types defined in a Proto file with
@@ -32,9 +32,9 @@ import org.checkerframework.checker.regex.qual.Regex;
  */
 final class PostfixInterfaceConfig extends PatternInterfaceConfig {
 
-    private final String postfix;
+    private final PostfixPattern postfix;
 
-    PostfixInterfaceConfig(@Regex String postfix) {
+    PostfixInterfaceConfig(PostfixPattern postfix) {
         super();
         this.postfix = postfix;
     }
@@ -48,13 +48,14 @@ final class PostfixInterfaceConfig extends PatternInterfaceConfig {
             return false;
         }
         PostfixInterfaceConfig config = (PostfixInterfaceConfig) o;
-        return Objects.equal(postfix, config.postfix)
-                && Objects.equal(interfaceName().orElse(null), interfaceName().orElse(null));
+        return Objects.equals(postfix, config.postfix) &&
+                Objects.equals(interfaceName().orElse(null), config.interfaceName()
+                                                                   .orElse(null));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(postfix, interfaceName().orElse(null));
+        return Objects.hash(postfix, interfaceName().orElse(null));
     }
 
     @Override
@@ -69,7 +70,7 @@ final class PostfixInterfaceConfig extends PatternInterfaceConfig {
     GeneratedInterface generatedInterface() {
         return GeneratedInterface
                 .newBuilder()
-                .setFilePostfix(postfix)
+                .setFilePostfix(postfix.getPattern())
                 .setInterfaceName(interfaceName()
                                           .map(ClassName::value)
                                           .orElse(""))

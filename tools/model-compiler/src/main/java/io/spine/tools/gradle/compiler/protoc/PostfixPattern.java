@@ -20,22 +20,41 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedInterface;
+import com.google.common.base.Objects;
+import org.checkerframework.checker.regex.qual.Regex;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link GeneratedInterfaceConfig} targeting a certain file pattern.
+ * A file pattern matching file names which end with a certain postfix.
  */
-abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+public final class PostfixPattern implements FilePattern {
 
-    /**
-     * Converts this config into a {@code GeneratedInterface}.
-     */
-    abstract GeneratedInterface generatedInterface();
+    private final String postfix;
 
-    static PatternInterfaceConfig fromPattern(FilePattern filePattern) {
-        if (filePattern instanceof PostfixPattern) {
-            return new PostfixInterfaceConfig((PostfixPattern) filePattern);
+    PostfixPattern(@Regex String postfix) {
+        this.postfix = checkNotNull(postfix);
+    }
+
+    @Override
+    public String getPattern() {
+        return postfix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        throw new IllegalArgumentException("FilePattern " + filePattern + " is not supported yet.");
+        if (!(o instanceof PostfixPattern)) {
+            return false;
+        }
+        PostfixPattern pattern = (PostfixPattern) o;
+        return Objects.equal(postfix, pattern.postfix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(postfix);
     }
 }
