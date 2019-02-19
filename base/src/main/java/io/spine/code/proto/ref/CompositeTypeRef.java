@@ -44,7 +44,8 @@ public class CompositeTypeRef implements TypeRef {
     static final String SEPARATOR = ",";
 
     /** A splitter for type references separated by comma. */
-    private static final Splitter splitter = Splitter.on(SEPARATOR);
+    private static final Splitter splitter = Splitter.on(SEPARATOR)
+                                                     .trimResults();
 
     /** Two or more type references. */
     private final ImmutableList<TypeRef> elements;
