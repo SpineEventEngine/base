@@ -38,9 +38,9 @@ class EnrichmentLookupPluginTest {
         ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
                                                              .enrichments();
         assertThat(enrichments).containsExactly(
-                MessageType.of(FqnEnrichment.getDescriptor()),
-                MessageType.of(MixedSyntaxEnrichment.getDescriptor()),
-                MessageType.of(WildcardEnrichment.getDescriptor())
+                new MessageType(FqnEnrichment.getDescriptor()),
+                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
+                new MessageType(WildcardEnrichment.getDescriptor())
         );
     }
 }
