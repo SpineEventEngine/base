@@ -20,30 +20,25 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
+ * An option that is applied to a Protobuf message.
  *
- * @param <F>
- *         value of this option
+ * @param <V>
+ *         type of the option value
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+public class MessageOption<V> extends AbstractOption<V, Descriptor, MessageOptions> {
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
-     */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
+    /** Creates a new instance of the option based on the specified extension. */
+    protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
         super(extension);
     }
 
     @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
+    protected MessageOptions optionsFrom(Descriptor object) {
         return object.getOptions();
     }
 }

@@ -22,20 +22,23 @@ package io.spine.code.proto.enrichment;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.StringOption;
+import io.spine.option.OptionsProto;
 
-import java.util.Optional;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.option.OptionsProto.by;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.regex.Pattern.compile;
 
 /**
  * Obtains source type names from the {@code "by"} field option of a message.
  */
-public final class ByOption {
+public final class ByOption extends StringOption<Collection<FieldRef>,
+                                                 FieldDescriptor,
+                                                 FieldOptions> {
 
     /**
      * Separates two or more alternative references.
@@ -46,53 +49,13 @@ public final class ByOption {
 
     /** Prevents instantiation of this utility class. */
     private ByOption() {
-    }
-
-    /**
-     * Verifies if the {@code (by)} option is set in the passed field.
-     */
-    public static boolean isSetFor(FieldDescriptorProto field) {
-        checkNotNull(field);
-        return valueIn(field).isPresent();
-    }
-
-    /**
-     * Obtains the value of the {@code (by)} option in the passed field.
-     */
-    public static Optional<String> valueIn(FieldDescriptorProto field) {
-        checkNotNull(field);
-        String value = field.getOptions()
-                            .getExtension(by);
-        if (value.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(value);
-    }
-
-    /**
-     * Obtains all source field alternatives for a field annotated with {@code (by)} option.
-     *
-     * <p>If an enrichment field can be computed from more than one source field, those alternatives
-     * are separated with the pipe ({@code "|"}) symbol.
-     *
-     * @param field
-     *         the descriptor of the enrichment field
-     * @return the list of alternative references
-     * @throws IllegalArgumentException
-     *         if the passed field does not have the {@code (by)} option defined
-     */
-    static ImmutableList<String> allFrom(FieldDescriptorProto field) {
-        checkNotNull(field);
-        String byRaw = valueIn(field)
-                .orElseThrow(() -> missingOptionIn(field));
-        ImmutableList<String> result = parse(byRaw);
-        return result;
+        super(OptionsProto.by);
     }
 
     /**
      * Parses the string with the value of the {@code (by)} option.
      *
-     * @see #allFrom(FieldDescriptorProto)
+     * @see #allFrom(FieldDescriptor)
      */
     @VisibleForTesting
     static ImmutableList<String> parse(String rawValue) {
@@ -105,9 +68,29 @@ public final class ByOption {
         return ImmutableList.copyOf(result);
     }
 
-    private static IllegalArgumentException missingOptionIn(FieldDescriptorProto field) {
-        return newIllegalArgumentException(
-                "There is no `by` option in the field `%s`.",
-                field.getName());
+    @Override
+    protected Collection<FieldRef> parsedValueFrom(FieldDescriptor field) {
+        String byOptionExpression = valueFrom(field).orElse("");
+        return parseExpression(byOptionExpression);
+    }
+
+    /** Obtains all of the fields referenced in the {@code (by)} option of the specified field. */
+    public static ImmutableList<FieldRef> allFrom(FieldDescriptor field) {
+        ByOption option = new ByOption();
+        Collection<FieldRef> result = option.parsedValueFrom(field);
+        return ImmutableList.copyOf(result);
+    }
+
+    private static Collection<FieldRef> parseExpression(String byExpression) {
+        String trimmed = byExpression.trim();
+        ImmutableList<String> rawFieldRefs = parse(trimmed);
+        return rawFieldRefs.stream()
+                           .map(FieldRef::new)
+                           .collect(toImmutableList());
+    }
+
+    @Override
+    protected FieldOptions optionsFrom(FieldDescriptor field) {
+        return field.getOptions();
     }
 }

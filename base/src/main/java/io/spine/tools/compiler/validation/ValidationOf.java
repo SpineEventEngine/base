@@ -18,32 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
- * A Protobuf option that is applied to fields in Protobuf messages.
+ * An external validation for a field.
  *
- * @param <F>
- *         value of this option
+ * <p>Contains information about validation of another field, described by the option value.
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+final class ValidationOf extends MessageOption<String> {
 
-    /**
-     * Creates an instance with the
-     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
-     * extension</a>
-     * that corresponds to this option.
-     */
-    protected FieldOption(GeneratedExtension<FieldOptions, F> extension) {
-        super(extension);
+    ValidationOf() {
+        super(OptionsProto.validationOf);
     }
 
-    @Override
-    protected FieldOptions optionsFrom(FieldDescriptor object) {
-        return object.getOptions();
+    /**
+     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
+     */
+    public Optional<String> valueFrom(DescriptorProto message) {
+        MessageOptions options = message.getOptions();
+        return options.hasExtension(extension())
+               ? Optional.of(options.getExtension(extension()))
+               : Optional.empty();
     }
 }

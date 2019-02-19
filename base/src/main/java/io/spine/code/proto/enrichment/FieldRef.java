@@ -23,7 +23,6 @@ package io.spine.code.proto.enrichment;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
@@ -107,18 +106,6 @@ public final class FieldRef extends StringTypeValue {
     private static ImmutableList<String> split(String value) {
         List<String> elements = split.splitToList(value);
         return ImmutableList.copyOf(elements);
-    }
-
-    /**
-     * Obtains references found in the passed field.
-     */
-    public static ImmutableList<FieldRef> allFrom(FieldDescriptorProto field) {
-        ImmutableList<String> refs = ByOption.allFrom(field);
-        ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
-        for (String ref : refs) {
-            result.add(new FieldRef(ref));
-        }
-        return result.build();
     }
 
     /**
