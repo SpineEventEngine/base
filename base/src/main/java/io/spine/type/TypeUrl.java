@@ -34,7 +34,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.PackageName;
-import io.spine.code.proto.Type;
 import io.spine.option.OptionsProto;
 
 import java.io.Serializable;

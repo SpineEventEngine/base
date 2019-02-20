@@ -27,9 +27,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
+import io.spine.type.MessageType;
 
 import java.util.Collection;
 import java.util.List;

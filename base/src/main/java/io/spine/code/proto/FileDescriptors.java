@@ -81,16 +81,6 @@ public final class FileDescriptors {
     }
 
     /**
-     * Obtains the list of files from the passed descriptor set file, skipping files provided
-     * by Google Protobuf or other Google API libraries.
-     *
-     * @see #parse(java.io.File)
-     */
-    public static List<FileDescriptorProto> parseSkipGoogle(File descriptorSetFile) {
-        return parseAndFilter(descriptorSetFile, IsNotGoogleProto.PREDICATE);
-    }
-
-    /**
      * Returns descriptors of `.proto` files described in the descriptor set file
      * which match the filter predicate.
      *
@@ -205,7 +195,7 @@ public final class FileDescriptors {
     /**
      * Tells if two descriptors represent the same file.
      */
-    static boolean sameFiles(FileDescriptor f1, FileDescriptor f2) {
+    public static boolean sameFiles(FileDescriptor f1, FileDescriptor f2) {
         boolean sameName = f2.getFullName()
                              .equals(f1.getFullName());
         boolean samePackage = f2.getPackage()

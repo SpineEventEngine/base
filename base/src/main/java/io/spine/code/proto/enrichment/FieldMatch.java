@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.MessageType;
+import io.spine.type.MessageType;
 
 import java.util.Objects;
 

@@ -21,12 +21,12 @@
 package io.spine.tools.protoc.insert;
 
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
+import io.spine.type.MessageType;
 
 import java.util.List;
 import java.util.Optional;

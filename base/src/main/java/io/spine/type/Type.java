@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.type;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
@@ -28,9 +28,6 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.type.TypeName;
-import io.spine.type.TypeUrl;
-import io.spine.type.UnknownTypeException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
