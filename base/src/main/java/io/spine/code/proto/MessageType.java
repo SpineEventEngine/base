@@ -144,6 +144,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isTopLevel() {
         Descriptor descriptor = descriptor();
+        return isTopLevel(descriptor);
+    }
+
+    /**
+     * Verifies if the message is top-level (rather than nested).
+     */
+    static boolean isTopLevel(Descriptor descriptor) {
         Descriptor parent = descriptor.getContainingType();
         return parent == null;
     }

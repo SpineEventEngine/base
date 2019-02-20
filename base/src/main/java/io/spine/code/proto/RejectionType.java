@@ -28,6 +28,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A code generation metadata on a rejection.
  */
@@ -42,13 +45,31 @@ public final class RejectionType extends MessageType {
     private final SimpleClassName outerJavaClass;
 
     /**
+     * Verifies if the passed message type is a rejection.
+     *
+     * <p>The message must be a top level, and declared in the a file with
+     * {@linkplain FileName#isRejections() corresponding name}.
+     */
+    public static boolean test(Descriptor type) {
+        checkNotNull(type);
+        boolean topLevel = isTopLevel(type);
+        boolean inRejectionsFile = FileName.from(type.getFile())
+                                           .isRejections();
+        return topLevel && inRejectionsFile;
+    }
+
+    /**
      * Creates a new instance.
      *
      * @param message
      *         the declaration of the rejection message
      */
-    RejectionType(Descriptor message) {
+    public RejectionType(Descriptor message) {
         super(message);
+        checkArgument(
+                test(message),
+                "Cannot create rejection type from the type `%s`.", message.getFullName()
+        );
         this.outerJavaClass = SimpleClassName.outerOf(message.getFile());
     }
 

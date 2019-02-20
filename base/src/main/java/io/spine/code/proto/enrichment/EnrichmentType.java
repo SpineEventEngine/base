@@ -60,23 +60,6 @@ public final class EnrichmentType extends MessageType {
     private final ImmutableMap<MessageType, FieldMatch> fieldMatches;
 
     /**
-     * Creates new instance by the passed enrichment type descriptor descriptor.
-     */
-    public EnrichmentType(Descriptor type) {
-        super(type);
-        /*
-          This constructor implementation relies on the order of field initialization.
-          This approach is selected to minimize the number of parameters passed between the methods
-          that are used only in construction. Reordering may break the construction, please note
-          if you plan to refactor or extend the construction of this class.
-        */
-        this.sourceTypeRefs = parseSourceRefs();
-        this.fields = parseFieldDefs();
-        this.sourceTypes = collectSources();
-        this.fieldMatches = collectFieldMatches();
-    }
-
-    /**
      * Verifies if the passed message type has the {@code (enrichment_for)} option, and as such
      * is a candidate for being a valid enrichment type.
      *
@@ -99,6 +82,23 @@ public final class EnrichmentType extends MessageType {
         checkNotNull(type);
         boolean result = test(type.descriptor());
         return result;
+    }
+
+    /**
+     * Creates new instance by the passed enrichment type descriptor descriptor.
+     */
+    public EnrichmentType(Descriptor type) {
+        super(type);
+        /*
+          This constructor implementation relies on the order of field initialization.
+          This approach is selected to minimize the number of parameters passed between the methods
+          that are used only in construction. Reordering may break the construction, please note
+          if you plan to refactor or extend the construction of this class.
+        */
+        this.sourceTypeRefs = parseSourceRefs();
+        this.fields = parseFieldDefs();
+        this.sourceTypes = collectSources();
+        this.fieldMatches = collectFieldMatches();
     }
 
     /**

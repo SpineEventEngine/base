@@ -31,7 +31,7 @@ import io.spine.tools.protoc.UuidInterface;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.base.MessageClassifiers.uuidContainer;
+import static io.spine.base.UuidValue.classifier;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static io.spine.validate.Validate.isNotDefault;
 
@@ -67,7 +67,7 @@ final class PatternScanner {
             return false;
         }
         UuidInterface uuidInterface = patterns.getUuidInterface();
-        return isNotDefault(uuidInterface) && uuidContainer().test(type);
+        return isNotDefault(uuidInterface) && classifier().test(type);
     }
 
     private Optional<CompilerOutput> uuidInterface(MessageType type) {
