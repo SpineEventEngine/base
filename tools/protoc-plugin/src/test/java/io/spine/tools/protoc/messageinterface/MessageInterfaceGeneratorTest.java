@@ -36,6 +36,7 @@ import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,7 +89,11 @@ class MessageInterfaceGeneratorTest {
     @BeforeEach
     void setUp() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        codeGenerator = MessageInterfaceGenerator.instance(interfaces.asProtocConfig());
+        SpineProtocConfig config = SpineProtocConfig
+                .newBuilder()
+                .setGeneratedInterfaces(interfaces.asProtocConfig())
+                .build();
+        codeGenerator = MessageInterfaceGenerator.instance(config);
     }
 
     @Test

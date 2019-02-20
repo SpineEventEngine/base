@@ -74,6 +74,24 @@ message TypeFilter {
     }
 }
 
+// Configuration of the Spine Protoc plugin interfaces generation.
+//
+message GeneratedInterfacesConfig {
+
+    UuidInterface uuid_interface = 1;
+
+    repeated GeneratedInterface generated_interface = 2;
+
+    EnrichmentInterface enrichment_interface = 3;
+}
+
+// Configuration of the Spine Protoc plugin methods generation.
+//
+message GeneratedMethodsConfig {
+
+    repeated GeneratedMethod generated_method = 1;
+}
+
 // Configuration of the Spine Protoc plugin.
 //
 // The configuration is passed to the plugin as the single option. The passed value is serialized
@@ -81,11 +99,7 @@ message TypeFilter {
 //
 message SpineProtocConfig {
 
-    UuidInterface uuid_interface = 1;
+    GeneratedInterfacesConfig generated_interfaces = 1;
 
-    repeated GeneratedInterface generated_interface = 2;
-
-    EnrichmentInterface enrichment_interface = 3;
-
-    repeated GeneratedMethod generated_method = 4;
+    GeneratedMethodsConfig generated_methods = 2;
 }

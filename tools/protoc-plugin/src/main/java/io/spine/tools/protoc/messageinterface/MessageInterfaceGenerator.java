@@ -25,6 +25,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 
@@ -50,7 +51,7 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
     private final PatternScanner patternScanner;
 
     /** Prevents singleton class instantiation. */
-    private MessageInterfaceGenerator(SpineProtocConfig parameter) {
+    private MessageInterfaceGenerator(GeneratedInterfacesConfig parameter) {
         super();
         this.patternScanner = new PatternScanner(parameter);
     }
@@ -60,7 +61,7 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
      */
     public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
         checkNotNull(parameter);
-        return new MessageInterfaceGenerator(parameter);
+        return new MessageInterfaceGenerator(parameter.getGeneratedInterfaces());
     }
 
     /**

@@ -21,8 +21,8 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.tools.protoc.SpineProtocConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Map;
@@ -35,9 +35,11 @@ import static com.google.common.collect.Maps.newConcurrentMap;
  *
  * @param <T>
  *         actual configuration type
+ * @param <K>
+ *         Protobuf configuration type
  * @see GeneratedInterfaces
  */
-abstract class GeneratedConfigurations<T extends ProtocConfig> {
+abstract class GeneratedConfigurations<T extends ProtocConfig, K extends Message> {
 
     private final Map<FilePattern, T> patternConfigs;
 
@@ -71,7 +73,7 @@ abstract class GeneratedConfigurations<T extends ProtocConfig> {
     /**
      * Obtains current pattern configurations.
      */
-    ImmutableList<T> patternConfigurations(){
+    ImmutableList<T> patternConfigurations() {
         return ImmutableList.copyOf(patternConfigs.values());
     }
 
@@ -86,8 +88,8 @@ abstract class GeneratedConfigurations<T extends ProtocConfig> {
     }
 
     /**
-     * Converts this config into a {@link SpineProtocConfig}.
+     * Converts this config into a Protobuf configuration.
      */
     @Internal
-    public abstract SpineProtocConfig asProtocConfig();
+    public abstract K asProtocConfig();
 }

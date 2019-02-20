@@ -25,6 +25,7 @@ import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
+import io.spine.tools.protoc.GeneratedMethodsConfig;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.TypeFilter;
 
@@ -39,9 +40,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  */
 final class OptionsScanner {
 
-    private final SpineProtocConfig config;
+    private final GeneratedMethodsConfig config;
 
-    OptionsScanner(SpineProtocConfig config) {
+    OptionsScanner(GeneratedMethodsConfig config) {
         this.config = config;
     }
 

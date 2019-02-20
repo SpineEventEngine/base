@@ -27,7 +27,7 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedInterface;
-import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -60,30 +60,30 @@ class GeneratedInterfacesTest {
     @DisplayName("CommandMessage")
     @Test
     void command() {
-        SpineProtocConfig defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+        GeneratedInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
+                                                                .asProtocConfig();
         assertHasInterfaceWithNameAndPostfix(CommandMessage.class, COMMANDS.suffix(), defaults);
     }
 
     @DisplayName("EventMessage")
     @Test
     void event() {
-        SpineProtocConfig defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+        GeneratedInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
+                                                                .asProtocConfig();
         assertHasInterfaceWithNameAndPostfix(EventMessage.class, EVENTS.suffix(), defaults);
     }
 
     @DisplayName("RejectionMessage")
     @Test
     void rejection() {
-        SpineProtocConfig defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+        GeneratedInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
+                                                                .asProtocConfig();
         assertHasInterfaceWithNameAndPostfix(RejectionMessage.class, REJECTIONS.suffix(), defaults);
     }
 
     void assertHasInterfaceWithNameAndPostfix(Class<?> interfaceClass,
                                               String postfix,
-                                              SpineProtocConfig config) {
+                                              GeneratedInterfacesConfig config) {
         boolean hasInterface = false;
         String expectedInterface = interfaceClass.getName();
         for (GeneratedInterface generatedInterface : config.getGeneratedInterfaceList()) {

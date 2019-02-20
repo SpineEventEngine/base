@@ -27,7 +27,7 @@ import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.GeneratedMethodsConfig;
 import io.spine.tools.protoc.TypeFilter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,7 +44,7 @@ final class OptionsScannerTest {
     @DisplayName("scan type for any generated methods")
     @Test
     void scanTypeForAnyGeneratedMethods() {
-        SpineProtocConfig config = configBuilder()
+        GeneratedMethodsConfig config = configBuilder()
                 .addGeneratedMethod(methodWithValidationOf(FirstMethodFactory.FQN))
                 .addGeneratedMethod(methodWithBetaType(SecondMethodFactory.FQN))
                 .build();
@@ -61,7 +61,7 @@ final class OptionsScannerTest {
         @DisplayName("blank MessageGenerator options")
         @Test
         void blankGenerators() {
-            SpineProtocConfig config = configBuilder()
+            GeneratedMethodsConfig config = configBuilder()
                     .addGeneratedMethod(methodWithEnrichment(""))
                     .addGeneratedMethod(methodWithEnrichment(" "))
                     .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
@@ -73,22 +73,22 @@ final class OptionsScannerTest {
         @DisplayName("types without specified option")
         @Test
         void typesWithoutSpecifiedOption() {
-            SpineProtocConfig config = configBuilder()
+            GeneratedMethodsConfig config = configBuilder()
                     .addGeneratedMethod(methodWithEnrichment(FirstMethodFactory.FQN))
                     .build();
             MessageType type = MessageType.of(EnrichedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
-        private void noMethodsGeneratedFor(SpineProtocConfig config, MessageType type) {
+        private void noMethodsGeneratedFor(GeneratedMethodsConfig config, MessageType type) {
             OptionsScanner scanner = new OptionsScanner(config);
             ImmutableList<CompilerOutput> result = scanner.scan(type);
             assertTrue(result.isEmpty());
         }
     }
 
-    private static SpineProtocConfig.Builder configBuilder() {
-        return SpineProtocConfig.newBuilder();
+    private static GeneratedMethodsConfig.Builder configBuilder() {
+        return GeneratedMethodsConfig.newBuilder();
     }
 
     private static GeneratedMethod methodWithEnrichment(String factoryName) {

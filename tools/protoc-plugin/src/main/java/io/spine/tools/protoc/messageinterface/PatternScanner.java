@@ -25,6 +25,7 @@ import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
+import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
@@ -40,9 +41,9 @@ import static io.spine.validate.Validate.isNotDefault;
  */
 final class PatternScanner {
 
-    private final SpineProtocConfig patterns;
+    private final GeneratedInterfacesConfig patterns;
 
-    PatternScanner(SpineProtocConfig patterns) {
+    PatternScanner(GeneratedInterfacesConfig patterns) {
         this.patterns = patterns;
     }
 

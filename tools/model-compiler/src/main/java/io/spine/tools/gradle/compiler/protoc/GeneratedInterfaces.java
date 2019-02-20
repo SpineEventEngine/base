@@ -30,7 +30,7 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.EnrichmentInterface;
-import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import io.spine.tools.protoc.UuidInterface;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -39,7 +39,8 @@ import java.util.Optional;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<PatternInterfaceConfig> {
+public final class GeneratedInterfaces
+        extends GeneratedConfigurations<PatternInterfaceConfig, GeneratedInterfacesConfig> {
 
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
     private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
@@ -188,12 +189,12 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<PatternIn
         return enrichmentConfig;
     }
 
-    @Internal
     @Override
-    public SpineProtocConfig asProtocConfig() {
+    @Internal
+    public GeneratedInterfacesConfig asProtocConfig() {
         UuidInterface uuidInterface = uuidInterface();
         EnrichmentInterface enrichmentInterface = enrichmentConfig();
-        SpineProtocConfig.Builder result = SpineProtocConfig
+        GeneratedInterfacesConfig.Builder result = GeneratedInterfacesConfig
                 .newBuilder()
                 .setUuidInterface(uuidInterface)
                 .setEnrichmentInterface(enrichmentInterface);

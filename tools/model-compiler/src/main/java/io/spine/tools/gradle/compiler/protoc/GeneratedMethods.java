@@ -21,13 +21,14 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
-import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.GeneratedMethodsConfig;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class GeneratedMethods extends GeneratedConfigurations<PatternMethodConfig> {
+public final class GeneratedMethods
+        extends GeneratedConfigurations<PatternMethodConfig, GeneratedMethodsConfig> {
 
     private GeneratedMethods() {
         super();
@@ -116,8 +117,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<PatternMetho
 
     @Internal
     @Override
-    public SpineProtocConfig asProtocConfig() {
-        SpineProtocConfig.Builder result = SpineProtocConfig.newBuilder();
+    public GeneratedMethodsConfig asProtocConfig() {
+        GeneratedMethodsConfig.Builder result = GeneratedMethodsConfig.newBuilder();
         patternConfigurations()
                 .stream()
                 .map(PatternMethodConfig::generatedMethod)
