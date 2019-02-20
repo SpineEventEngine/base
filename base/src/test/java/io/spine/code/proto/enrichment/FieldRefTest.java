@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.Truth8;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Timestamp;
@@ -54,10 +53,10 @@ class FieldRefTest {
      */
     @BeforeEach
     void setUp() {
-        FieldDescriptorProto personNameField = UserInfo.getDescriptor()
-                                                       .toProto()
-                                                       .getField(0);
-        references = FieldRef.allFrom(personNameField);
+        FieldDescriptor personNameField = UserInfo.getDescriptor()
+                                                  .getFields()
+                                                  .get(0);
+        references = ByOption.allFrom(personNameField);
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
@@ -166,7 +165,8 @@ class FieldRefTest {
         private void assertFound(String ref, Descriptor descriptor) {
             FieldRef fieldRef = new FieldRef(ref);
             Optional<FieldDescriptor> fd = fieldRef.find(descriptor);
-            Truth8.assertThat(fd).isPresent();
+            Truth8.assertThat(fd)
+                  .isPresent();
         }
     }
 

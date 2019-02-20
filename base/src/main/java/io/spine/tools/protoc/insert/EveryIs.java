@@ -18,29 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.tools.protoc.insert;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * An option that, for a specified file, specified whether marker interfaces should be generated and
+ * the Java type of the message.
+ *
+ * @see io.spine.tools.protoc.insert.Is Is option
+ */
+final class EveryIs extends FileOption<IsOption> {
 
-@DisplayName("EnrichmentLookupPlugin should")
-class EnrichmentLookupPluginTest {
-
-    @DisplayName("generate proper enrichments")
-    @Test
-    void generateProperEnrichments() {
-        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
-                                                             .enrichments();
-        assertThat(enrichments).containsExactly(
-                new MessageType(FqnEnrichment.getDescriptor()),
-                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
-                new MessageType(WildcardEnrichment.getDescriptor())
-        );
+    /** Creates a new instance of this option. */
+    EveryIs() {
+        super(OptionsProto.everyIs);
     }
 }

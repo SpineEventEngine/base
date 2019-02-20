@@ -24,23 +24,21 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
-import java.util.Optional;
+/**
+ * An option that is applied to a Protobuf message.
+ *
+ * @param <V>
+ *         type of the option value
+ */
+public class MessageOption<V> extends AbstractOption<V, Descriptor, MessageOptions> {
 
-public abstract class MessageOption<M> implements Option<M, Descriptor> {
-
-    private final GeneratedExtension<MessageOptions, M> extension;
-
-    protected MessageOption(GeneratedExtension<MessageOptions, M> extension) {
-        this.extension = extension;
+    /** Creates a new instance of the option based on the specified extension. */
+    protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
+        super(extension);
     }
 
     @Override
-    public Optional<M> valueFrom(Descriptor object) {
-        MessageOptions options = object.getOptions();
-        if (options.hasExtension(extension)) {
-            M value = options.getExtension(extension);
-            return Optional.of(value);
-        }
-        return Optional.empty();
+    protected MessageOptions optionsFrom(Descriptor object) {
+        return object.getOptions();
     }
 }

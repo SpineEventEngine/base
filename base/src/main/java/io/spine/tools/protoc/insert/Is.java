@@ -18,29 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.tools.protoc.insert;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.Optional;
 
-@DisplayName("EnrichmentLookupPlugin should")
-class EnrichmentLookupPluginTest {
+/**
+ * For a given message, declares whether the message is of the specified Java type, and whether
+ * the generation of marker interfaces is enabled.
+ */
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-    @DisplayName("generate proper enrichments")
-    @Test
-    void generateProperEnrichments() {
-        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
-                                                             .enrichments();
-        assertThat(enrichments).containsExactly(
-                new MessageType(FqnEnrichment.getDescriptor()),
-                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
-                new MessageType(WildcardEnrichment.getDescriptor())
-        );
+    Is() {
+        super(OptionsProto.is);
+    }
+
+    static Optional<IsOption> from(Descriptor message) {
+        return new Is().valueFrom(message);
     }
 }

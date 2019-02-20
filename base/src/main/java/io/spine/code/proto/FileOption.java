@@ -18,29 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.DescriptorProtos.FileOptions;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * An option that a {@code .proto} file has.
+ *
+ * @param <V>
+ *         the type of value held by this option
+ */
+public class FileOption<V> extends AbstractOption<V, FileDescriptor, FileOptions> {
 
-@DisplayName("EnrichmentLookupPlugin should")
-class EnrichmentLookupPluginTest {
+    /** Creates a new instance of this option, based on the specified extension. */
+    protected FileOption(GeneratedExtension<FileOptions, V> extension) {
+        super(extension);
+    }
 
-    @DisplayName("generate proper enrichments")
-    @Test
-    void generateProperEnrichments() {
-        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
-                                                             .enrichments();
-        assertThat(enrichments).containsExactly(
-                new MessageType(FqnEnrichment.getDescriptor()),
-                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
-                new MessageType(WildcardEnrichment.getDescriptor())
-        );
+    @Override
+    protected FileOptions optionsFrom(FileDescriptor object) {
+        return object.getOptions();
     }
 }
