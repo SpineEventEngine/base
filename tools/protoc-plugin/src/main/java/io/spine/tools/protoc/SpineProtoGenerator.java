@@ -143,7 +143,7 @@ public abstract class SpineProtoGenerator {
     }
 
     /**
-     * Links current proto generator with a next one and returns the next generator.
+     * Links current proto generator with a next one and returns the current one.
      *
      * <p>A linked generator is activate prior to the current in the generation chain.
      *
@@ -154,7 +154,7 @@ public abstract class SpineProtoGenerator {
     public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator){
         checkNotNull(nextGenerator);
         this.linkedGenerator = nextGenerator;
-        return nextGenerator;
+        return this;
     }
 
     private static void checkNotEmpty(CodeGeneratorRequest request)
