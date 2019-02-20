@@ -28,7 +28,6 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
-import io.spine.code.proto.PackageName;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
 
