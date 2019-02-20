@@ -26,6 +26,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.Options;
 import io.spine.tools.protoc.messageinterface.MessageInterfaceGenerator;
+import io.spine.tools.protoc.method.GeneratedMethodGenerator;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -38,7 +39,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link MessageInterfaceGenerator}.
+ * <p>For the description of the plugin behavior see {@link MessageInterfaceGenerator} and
+ * {@link GeneratedMethodGenerator}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
@@ -54,8 +56,10 @@ public class Plugin {
      */
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
-        SpineProtocConfig param = readConfig(request);
-        SpineProtoGenerator generator = MessageInterfaceGenerator.instance(param);
+        SpineProtocConfig config = readConfig(request);
+        SpineProtoGenerator generator = MessageInterfaceGenerator
+                .instance(config)
+                .linkWith(GeneratedMethodGenerator.instance(config));
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }
@@ -85,7 +89,7 @@ public class Plugin {
     private static void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
-        CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
+                CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
         try {
             response.writeTo(stream);
             stream.flush();
