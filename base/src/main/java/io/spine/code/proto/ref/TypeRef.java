@@ -43,9 +43,9 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
     String value();
 
     /**
-     * Returns this type reference with added package qualifier.
+     * Returns this type reference with a given package qualifier.
      *
-     * <p>Descendants that already reference some concrete package are not overridden.
+     * <p>If the type ref already points to a concrete package, it's not changed.
      */
     default TypeRef withPackage(PackageName packageName) {
         return this;
