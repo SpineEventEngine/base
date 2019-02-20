@@ -52,6 +52,14 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
     /**
+     * Obtains a {@code MessageClassifier} for types which define a single string {@code uuid}
+     * field.
+     */
+    static MessageClassifier classifier() {
+        return new UuidValueClassifier();
+    }
+
+    /**
      * Generates a new identifier instance using a random {@code String}.
      */
     default I generate() {
