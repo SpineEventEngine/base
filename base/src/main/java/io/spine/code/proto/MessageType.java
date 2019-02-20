@@ -33,7 +33,6 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
 import io.spine.logging.Logging;
 import io.spine.option.IsOption;
-import io.spine.type.KnownTypes;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 
@@ -42,7 +41,6 @@ import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -53,7 +51,6 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 /**
  * A message type as declared in a proto file.
  */
-@SuppressWarnings("ClassWithTooManyMethods") // A lot of use cases of a Protobuf message type.
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
@@ -70,15 +67,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
 
     public static MessageType of(Class<? extends Message> aClass) {
         TypeName typeName = TypeName.of(aClass);
-        Optional<Type<?, ?>> found = KnownTypes.instance()
-                                               .find(typeName);
-        boolean isMessageType = found.isPresent()
-                && MessageType.class.isAssignableFrom(found.get().getClass());
-        checkArgument(isMessageType,
-                      "Message type %s cannot be found among the known types",
-                      aClass.getCanonicalName());
-        Type<?, ?> type = found.get();
-        return (MessageType) type;
+        Descriptor descriptor = typeName.messageDescriptor();
+        return new MessageType(descriptor);
     }
 
     /**
