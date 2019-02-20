@@ -28,8 +28,8 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.generate.GeneratedBySpine;
 import io.spine.code.java.SourceFile;
-import io.spine.code.proto.Type;
 import io.spine.option.IsOption;
+import io.spine.type.Type;
 
 import javax.annotation.Generated;
 import java.util.Objects;

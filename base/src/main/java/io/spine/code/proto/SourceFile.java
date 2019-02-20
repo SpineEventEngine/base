@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

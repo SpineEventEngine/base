@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;

@@ -37,6 +37,7 @@ import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -21,7 +21,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.MessageType;
+import io.spine.type.MessageType;
 
 import java.util.function.Predicate;
 
