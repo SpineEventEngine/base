@@ -76,7 +76,7 @@ public final class EnrichmentType extends MessageType {
      * Verifies if the passed message type has the {@code (enrichment_for)} option, and as such
      * is a candidate for being a valid enrichment type.
      *
-     * @see EnrichmentType#test(Descriptor)
+     * @see EnrichmentType#test(com.google.protobuf.Descriptors.Descriptor)
      */
     public static boolean test(MessageType type) {
         checkNotNull(type);

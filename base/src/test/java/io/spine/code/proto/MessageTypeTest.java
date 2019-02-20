@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.testing.EqualsTester;
 import com.google.common.truth.IterableSubject;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -217,5 +218,18 @@ class MessageTypeTest {
             assertPath.contains(Uri.getDescriptor()
                                    .getIndex());
         }
+    }
+
+    private static MessageType type(Descriptor descriptor) {
+        return new MessageType(descriptor);
+    }
+
+    @Test
+    @DisplayName("support equality and hashing")
+    void equalityAndHasing() {
+        new EqualsTester()
+                .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
+                .addEqualityGroup(type(Timestamp.getDescriptor()))
+                .testEquals();
     }
 }

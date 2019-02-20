@@ -142,6 +142,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(descriptor);
+        return descriptor.getFullName()
+                         .hashCode();
     }
 }
