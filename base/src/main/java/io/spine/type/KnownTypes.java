@@ -224,7 +224,7 @@ public class KnownTypes implements Serializable {
     /**
      * ...
      *
-     * @apiNote {@code TypeRef}s currently reference only messages, hence the return type.
+     * @apiNote {@code TypeRef} currently references only messages, hence the return type.
      */
     public ImmutableSet<MessageType> findAll(TypeRef typeRef) {
         ImmutableSet<MessageType> result =
