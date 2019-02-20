@@ -31,6 +31,7 @@ import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
@@ -80,6 +82,8 @@ import static java.util.stream.Collectors.toSet;
  * The {@code content} field contains the value to insert into the insertion point is this case.
  */
 public abstract class SpineProtoGenerator {
+
+    private @Nullable SpineProtoGenerator linkedGenerator;
 
     protected SpineProtoGenerator() {
     }
@@ -138,6 +142,21 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
+    /**
+     * Links current proto generator with a next one and returns the next generator.
+     *
+     * <p>A linked generator is activate prior to the current in the generation chain.
+     *
+     * <p>All generated files are than merged into one response.
+     *
+     * @see #process(TypeSet)
+     */
+    public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator){
+        checkNotNull(nextGenerator);
+        this.linkedGenerator = nextGenerator;
+        return nextGenerator;
+    }
+
     private static void checkNotEmpty(CodeGeneratorRequest request)
             throws IllegalArgumentException {
         checkArgument(request.getFileToGenerateCount() > 0, "No files to generate provided.");
@@ -147,17 +166,27 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(TypeSet types) {
-        Set<CompilerOutput> rawOutput = types.allTypes()
-                                             .stream()
-                                             .map(this::processType)
-                                             .flatMap(Collection::stream)
-                                             .collect(toSet());
+        Set<CompilerOutput> rawOutput = processTypes(types);
         Collection<File> mergedFiles = mergeFiles(rawOutput);
         CodeGeneratorResponse response = CodeGeneratorResponse
                 .newBuilder()
                 .addAllFile(mergedFiles)
                 .build();
         return response;
+    }
+
+    private Set<CompilerOutput> processTypes(TypeSet types){
+        Set<CompilerOutput> result = newHashSet();
+        if (linkedGenerator != null){
+            result.addAll(linkedGenerator.processTypes(types));
+        }
+        Set<CompilerOutput> rawOutput = types.allTypes()
+                                             .stream()
+                                             .map(this::processType)
+                                             .flatMap(Collection::stream)
+                                             .collect(toSet());
+        result.addAll(rawOutput);
+        return result;
     }
 
     /**
