@@ -93,8 +93,10 @@ abstract class FieldValidatingOption<T, F>
      *         context of the field
      * @return an {@code Optional} with an option value, if such exists, otherwise an empty
      *         {@code Optional}
-     * @apiNote Use this in favour of {@link FieldOption#valueFrom(FieldDescriptor)} when
-     *         {@code FieldContext} matters, e.g. when handling {@code (validation_for)} options.
+     * @apiNote Use this in favour of {@link
+     *         FieldOption#valueFrom(com.google.protobuf.Descriptors.FieldDescriptor)
+     *         valueFrom(FieldDescriptor)} when {@code FieldContext} matters, e.g. when handling
+     *         {@code (validation_for)} options.
      */
     public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
         Optional<T> value = getOptionValue(context, extension());

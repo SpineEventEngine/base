@@ -49,7 +49,7 @@ final class UuidValueClassifier implements MessageClassifier {
     }
 
     boolean test(Descriptor descriptor) {
-        MessageType type = MessageType.of(descriptor);
+        MessageType type = new MessageType(descriptor);
         return test(type);
     }
 }

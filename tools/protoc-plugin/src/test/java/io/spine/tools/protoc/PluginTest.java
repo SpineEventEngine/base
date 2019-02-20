@@ -27,7 +27,7 @@ import com.google.protobuf.compiler.PluginProtos;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.MessageType;
-import io.spine.option.Options;
+import io.spine.option.OptionExtensionRegistry;
 import io.spine.option.OptionsProto;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
@@ -95,7 +95,8 @@ final class PluginTest {
         ) {
             //noinspection ZeroLengthArrayAllocation
             withSystemStreams(testInput, testOutput, () -> Plugin.main(new String[]{}));
-            return CodeGeneratorResponse.parseFrom(bos.toByteArray(), Options.registry());
+            return CodeGeneratorResponse.parseFrom(bos.toByteArray(),
+                                                   OptionExtensionRegistry.instance());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

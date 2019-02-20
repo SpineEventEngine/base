@@ -18,29 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * An option that is applied to a Protobuf message.
+ *
+ * @param <V>
+ *         type of the option value
+ */
+public class MessageOption<V> extends AbstractOption<V, Descriptor, MessageOptions> {
 
-@DisplayName("EnrichmentLookupPlugin should")
-class EnrichmentLookupPluginTest {
+    /** Creates a new instance of the option based on the specified extension. */
+    protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {
+        super(extension);
+    }
 
-    @DisplayName("generate proper enrichments")
-    @Test
-    void generateProperEnrichments() {
-        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
-                                                             .enrichments();
-        assertThat(enrichments).containsExactly(
-                new MessageType(FqnEnrichment.getDescriptor()),
-                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
-                new MessageType(WildcardEnrichment.getDescriptor())
-        );
+    @Override
+    protected MessageOptions optionsFrom(Descriptor object) {
+        return object.getOptions();
     }
 }

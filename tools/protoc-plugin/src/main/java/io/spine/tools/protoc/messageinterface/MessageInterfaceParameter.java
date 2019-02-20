@@ -38,5 +38,5 @@ interface MessageInterfaceParameter {
      *         the {@code Message} class implementing the interface
      * @return the value of the generic parameter
      */
-    String valueFor(Type<?, ?> type);
+    String valueFor(Type<?, ?> descendant);
 }

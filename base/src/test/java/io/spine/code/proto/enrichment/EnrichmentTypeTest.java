@@ -20,7 +20,7 @@
 
 package io.spine.code.proto.enrichment;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -44,7 +44,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("EnrichmentType should")
@@ -113,7 +112,7 @@ class EnrichmentTypeTest {
         class AltFieldNames {
 
             private final EnrichmentType et =
-                    EnrichmentType.from(EttAlternativeFieldNames.getDescriptor());
+                    new EnrichmentType(EttAlternativeFieldNames.getDescriptor());
 
             private final FieldDescriptor targetField =
                     et.descriptor()
@@ -135,7 +134,7 @@ class EnrichmentTypeTest {
             }
 
             private void assertSourceMatch(Class<? extends Message> source, String fieldName) {
-                MessageType srcType = MessageType.of(descriptorOf(source));
+                MessageType srcType = new MessageType(descriptorOf(source));
                 FieldMatch match = et.sourceFieldsOf(srcType);
                 FieldSource fieldSource = match.sourceOf(targetField);
                 assertThat(fieldSource.viaReference())
@@ -150,12 +149,8 @@ class EnrichmentTypeTest {
          * Creates an iterable subject for source types of the passed enrichment class.
          */
         IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
-            EnrichmentType et = EnrichmentType.from(descriptorOf(cls));
-            ImmutableSet<MessageType> sources = et.knownSources();
-            ImmutableSet<? extends Class<? extends Message>> sourceClasses =
-                    sources.stream()
-                           .map(MessageType::javaClass)
-                           .collect(toImmutableSet());
+            EnrichmentType et = new EnrichmentType(descriptorOf(cls));
+            ImmutableList<? extends Class<? extends Message>> sourceClasses = et.sourceClasses();
             return assertThat(sourceClasses);
         }
     }

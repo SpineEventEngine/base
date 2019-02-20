@@ -18,29 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.OptionsProto;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.Optional;
 
-@DisplayName("EnrichmentLookupPlugin should")
-class EnrichmentLookupPluginTest {
+/**
+ * An option that indicates that a field value cannot be changed.
+ */
+final class SetOnce extends FieldOption<Boolean> {
 
-    @DisplayName("generate proper enrichments")
-    @Test
-    void generateProperEnrichments() {
-        ImmutableSet<EnrichmentType> enrichments = KnownTypes.instance()
-                                                             .enrichments();
-        assertThat(enrichments).containsExactly(
-                new MessageType(FqnEnrichment.getDescriptor()),
-                new MessageType(MixedSyntaxEnrichment.getDescriptor()),
-                new MessageType(WildcardEnrichment.getDescriptor())
-        );
+    /**
+     * Specifies the extension that corresponds to this option.
+     */
+    private SetOnce() {
+        super(OptionsProto.setOnce);
+    }
+
+    /** Obtains a value of the {@code set_once} option from the given field. */
+    static Optional<Boolean> from(FieldDescriptor field){
+        return new SetOnce().valueFrom(field);
     }
 }

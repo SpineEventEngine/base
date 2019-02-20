@@ -67,7 +67,7 @@ class MessageTypeTest {
          * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
          */
         void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-            MessageType type = MessageType.of(descriptor);
+            MessageType type = new MessageType(descriptor);
             boolean result = method.test(type);
             assertTrue(result);
         }
@@ -200,7 +200,7 @@ class MessageTypeTest {
 
         @CanIgnoreReturnValue
         private IterableSubject assertPath(Descriptor descriptor) {
-            MessageType type = MessageType.of(descriptor);
+            MessageType type = new MessageType(descriptor);
             LocationPath path = type.path();
 
             IterableSubject assertPath = assertThat(path.toList());
