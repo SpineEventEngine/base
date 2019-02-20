@@ -86,10 +86,10 @@ public class Plugin {
         }
     }
 
+    @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
     private static void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
-        @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
-                CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
+        CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
         try {
             response.writeTo(stream);
             stream.flush();

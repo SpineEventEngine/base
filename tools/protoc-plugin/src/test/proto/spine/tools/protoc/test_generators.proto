@@ -17,28 +17,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.gradle.compiler.protoc;
+package spine.tools.protoc;
 
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.util.Exceptions;
+import "spine/options.proto";
 
-/**
- * A {@link GeneratedMethodConfig} targeting a certain file pattern.
- */
-public abstract class PatternMethodConfig extends AbstractGeneratedMethodConfig {
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "TestGeneratorsProto";
+option java_multiple_files = true;
 
-    /**
-     * Converts this config into a {@code GeneratedMethod}.
-     */
-    abstract GeneratedMethod generatedMethod();
-
-    static PatternMethodConfig fromPattern(FilePattern filePattern) {
-        if (filePattern instanceof PostfixPattern) {
-            return new PostfixMethodConfig((PostfixPattern) filePattern);
-        }
-        throw Exceptions.newIllegalArgumentException(
-                "File pattern '%s' is not supported yet for GeneratedMethod configuration",
-                filePattern);
-    }
+message TestMessage {
+    string id = 1;
 }

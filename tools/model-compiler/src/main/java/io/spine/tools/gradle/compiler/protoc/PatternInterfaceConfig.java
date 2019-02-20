@@ -25,7 +25,7 @@ import io.spine.tools.protoc.GeneratedInterface;
 /**
  * A {@link GeneratedInterfaceConfig} targeting a certain file pattern.
  */
-abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+public abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
 
     /**
      * Converts this config into a {@code GeneratedInterface}.
