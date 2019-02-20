@@ -26,7 +26,6 @@ import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.GeneratedInterfacesConfig;
-import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
 import java.util.List;
@@ -37,7 +36,7 @@ import static io.spine.tools.protoc.messageinterface.MessageImplements.implement
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link SpineProtocConfig}.
+ * Scans the given type for a match upon patterns defined in {@link GeneratedInterfacesConfig}.
  */
 final class PatternScanner {
 

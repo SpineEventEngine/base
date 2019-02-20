@@ -34,22 +34,22 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.tools.protoc.TypeFilters.optionName;
+import static io.spine.tools.protoc.TypeFilters.filePostfix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("OptionsScanner should")
-final class OptionsScannerTest {
+@DisplayName("PatternScanner should")
+final class PatternScannerTest {
 
     @DisplayName("scan type for any generated methods")
     @Test
     void scanTypeForAnyGeneratedMethods() {
         GeneratedMethodsConfig config = configBuilder()
-                .addGeneratedMethod(methodWithValidationOf(FirstMethodFactory.FQN))
-                .addGeneratedMethod(methodWithBetaType(SecondMethodFactory.FQN))
+                .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "_patterns.proto"))
+                .addGeneratedMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
-        MessageType type = MessageType.of(WithMultipleGenerators.getDescriptor());
-        OptionsScanner scanner = new OptionsScanner(config);
+        MessageType type = MessageType.of(TestMessage.getDescriptor());
+        PatternScanner scanner = new PatternScanner(config);
         ImmutableList<CompilerOutput> result = scanner.scan(type);
         assertEquals(3, result.size());
     }
@@ -62,26 +62,26 @@ final class OptionsScannerTest {
         @Test
         void blankGenerators() {
             GeneratedMethodsConfig config = configBuilder()
-                    .addGeneratedMethod(methodWithEnrichment(""))
-                    .addGeneratedMethod(methodWithEnrichment(" "))
+                    .addGeneratedMethod(generatedMethod("", "*"))
+                    .addGeneratedMethod(generatedMethod(" ", "*"))
                     .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
                     .build();
             MessageType type = MessageType.of(WithEnrichmentFor.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
-        @DisplayName("types without specified option")
+        @DisplayName("types from non-matched patterns")
         @Test
-        void typesWithoutSpecifiedOption() {
+        void typesFromNonMatchedPatterns() {
             GeneratedMethodsConfig config = configBuilder()
-                    .addGeneratedMethod(methodWithEnrichment(FirstMethodFactory.FQN))
+                    .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
                     .build();
             MessageType type = MessageType.of(EnrichedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
         private void noMethodsGeneratedFor(GeneratedMethodsConfig config, MessageType type) {
-            OptionsScanner scanner = new OptionsScanner(config);
+            PatternScanner scanner = new PatternScanner(config);
             ImmutableList<CompilerOutput> result = scanner.scan(type);
             assertTrue(result.isEmpty());
         }
@@ -91,31 +91,17 @@ final class OptionsScannerTest {
         return GeneratedMethodsConfig.newBuilder();
     }
 
-    private static GeneratedMethod methodWithEnrichment(String factoryName) {
+    private static GeneratedMethod generatedMethod(String factoryName, String postfix) {
         return GeneratedMethod.newBuilder()
                               .setFactoryName(factoryName)
-                              .setFilter(optionName("enrichment_for"))
-                              .build();
-    }
-
-    private static GeneratedMethod methodWithBetaType(String generatorName) {
-        return GeneratedMethod.newBuilder()
-                              .setFactoryName(generatorName)
-                              .setFilter(optionName("beta_type"))
-                              .build();
-    }
-
-    private static GeneratedMethod methodWithValidationOf(String generatorName) {
-        return GeneratedMethod.newBuilder()
-                              .setFactoryName(generatorName)
-                              .setFilter(optionName("validation_of"))
+                              .setFilter(filePostfix(postfix))
                               .build();
     }
 
     @Immutable
     public static class FirstMethodFactory implements MethodFactory {
 
-        private static final String FQN = "io.spine.tools.protoc.method.OptionsScannerTest$FirstMethodFactory";
+        private static final String FQN = "io.spine.tools.protoc.method.PatternScannerTest$FirstMethodFactory";
 
         private static final MethodBody TEST_METHOD = MethodBody.of("public void first(){}");
 
@@ -128,7 +114,7 @@ final class OptionsScannerTest {
     @Immutable
     public static class SecondMethodFactory implements MethodFactory {
 
-        private static final String FQN = "io.spine.tools.protoc.method.OptionsScannerTest$SecondMethodFactory";
+        private static final String FQN = "io.spine.tools.protoc.method.PatternScannerTest$SecondMethodFactory";
 
         private static final MethodBody TEST_METHOD_1 = MethodBody.of("public void second1(){}");
         private static final MethodBody TEST_METHOD_2 = MethodBody.of("public void second2(){}");

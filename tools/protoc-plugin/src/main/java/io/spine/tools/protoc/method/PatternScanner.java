@@ -23,40 +23,45 @@ package io.spine.tools.protoc.method;
 import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
-import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.TypeFilter;
 
 import java.util.function.Predicate;
 
-/**
- * Scans the given type for a match upon options defined in {@link SpineProtocConfig}.
- */
-final class OptionsScanner extends TypeScanner {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    OptionsScanner(GeneratedMethodsConfig config) {
+/**
+ * Scans the given type for a match upon patterns defined in {@link GeneratedMethodsConfig}.
+ */
+class PatternScanner extends TypeScanner {
+
+    PatternScanner(GeneratedMethodsConfig config) {
         super(config);
     }
 
     @Override
     Predicate<GeneratedMethod> concreteFilter(MessageType type) {
-        return new HasProtoOption(type);
+        return new MatchesPattern(type);
     }
 
-    private static class HasProtoOption implements Predicate<GeneratedMethod> {
+    private static class MatchesPattern implements Predicate<GeneratedMethod> {
 
-        private final MessageType type;
+        private final String sourceFilePath;
 
-        private HasProtoOption(MessageType type) {
-            this.type = type;
+        private MatchesPattern(MessageType type) {
+            checkNotNull(type);
+            this.sourceFilePath = type.sourceFile()
+                                      .getPath()
+                                      .toString();
         }
 
         @Override
         public boolean test(GeneratedMethod method) {
+            checkNotNull(method);
             TypeFilter filter = method.getFilter();
-            if (filter.getValueCase() != TypeFilter.ValueCase.OPTION_NAME) {
+            if (filter.getValueCase() != TypeFilter.ValueCase.FILE_POSTFIX) {
                 return false;
             }
-            return MessageOptions.hasOption(filter.getOptionName(), type);
+            return sourceFilePath.contains(filter.getFilePostfix());
         }
     }
 }
