@@ -37,9 +37,9 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
  *         of the option might be a raw representation of a group of objects, or a representation of
  *         an alternative, e.g. {@code (enrichment_for)} option, while having a {@code String}
  *         value, represents a collection of messages that are enriched.
- *         Thus, a {@linkplain this#parsedValueFrom(GenericDescriptor) converting method} is defined
- *         to separate the raw value from the intended one, to avoid having to work with {@code
- *         Strings} in the user code.
+ *         Thus, a {@linkplain this#parsedValueFrom(com.google.protobuf.Descriptors.GenericDescriptor)
+ *         converting method} is defined to separate the raw value from the intended one, to avoid
+ *         having to work with the string parsing in the user code.
  */
 public abstract class StringOption<V, K extends GenericDescriptor, E extends ExtendableMessage<E>>
         extends AbstractOption<String, K, E> {
