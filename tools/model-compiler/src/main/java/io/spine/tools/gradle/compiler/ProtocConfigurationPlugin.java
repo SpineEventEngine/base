@@ -43,7 +43,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
@@ -239,9 +238,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                   .create(ProtocPlugin.SPINE.name,
                           options -> {
                               options.setOutputSubDir("java");
-                              Logging.getLogger(ProtocConfigurationPlugin.class).warn("assemging Spine Protoc Config");
                               SpineProtocConfig param = assembleParameter(protocTask.getProject());
-                              Logging.getLogger(ProtocConfigurationPlugin.class).warn("encoding Spine Protoc Config");
                               String option = Base64.getEncoder()
                                                     .encodeToString(param.toByteArray());
                               options.option(option);
@@ -254,12 +251,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private static SpineProtocConfig assembleParameter(Project project) {
-        Logging.getLogger(ProtocConfigurationPlugin.class).warn("retrieving generated interfaces");
         GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
-        Logging.getLogger(ProtocConfigurationPlugin.class).warn("retrieving generated methods");
         GeneratedMethods methods = getGeneratedMethods(project);
-
-        Logging.getLogger(ProtocConfigurationPlugin.class).warn("building Spine Protoc config");
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setGeneratedInterfaces(interfaces.asProtocConfig())
