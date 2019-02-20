@@ -39,10 +39,12 @@ import java.util.Collection;
 public class GeneratedMethodGenerator extends SpineProtoGenerator {
 
     private final OptionsScanner optionsScanner;
+    private final PatternScanner patternScanner;
 
     private GeneratedMethodGenerator(GeneratedMethodsConfig config) {
         super();
         optionsScanner = new OptionsScanner(config);
+        patternScanner = new PatternScanner(config);
     }
 
     /**
@@ -57,8 +59,11 @@ public class GeneratedMethodGenerator extends SpineProtoGenerator {
         if (!(type instanceof MessageType)) {
             return ImmutableList.of();
         }
-        ImmutableList<CompilerOutput> result = optionsScanner.scan((MessageType) type);
-        return result;
+        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
+        MessageType messageType = (MessageType) type;
+        result.addAll(optionsScanner.scan(messageType));
+        result.addAll(patternScanner.scan(messageType));
+        return result.build();
     }
 
 }
