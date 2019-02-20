@@ -134,6 +134,10 @@ public class CompositeTypeRef implements TypeRef {
         return result;
     }
 
+    public int refCount() {
+        return elements.size();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(elements);
