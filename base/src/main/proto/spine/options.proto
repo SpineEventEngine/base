@@ -957,7 +957,7 @@ message IsOption {
 //
 // Currently, this option is applicable only to process managers.
 //
-// Example 22: Specifying "terminal" events for the entity.
+// Example 22: Specifying "terminal" events for an entity.
 //
 //    message SignInProcess {
 //        option (entity).kind = PROCESS_MANAGER;
