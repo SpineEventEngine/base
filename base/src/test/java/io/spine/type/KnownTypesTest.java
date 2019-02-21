@@ -57,6 +57,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests {@link io.spine.type.KnownTypes}.
@@ -204,6 +207,53 @@ class KnownTypesTest {
         private void assertContainsAll(TypeRef typeRef) {
             ImmutableSet<MessageType> types = knownTypes.allMatching(typeRef);
             assertThat(types).containsAllIn(packageTypes);
+        }
+    }
+
+    @Nested
+    @DisplayName("validate type reference")
+    class ValidateTypeRef {
+
+        @Test
+        @DisplayName("which is valid")
+        void valid() {
+            String type = KnownTaskId.getDescriptor()
+                                     .getFullName();
+            TypeRef validRef = TypeRef.parse(type);
+            KnownTypes knownTypesSpy = spy(knownTypes);
+            knownTypesSpy.validate(validRef);
+
+            verify(knownTypesSpy, times(1)).allMatching(validRef);
+        }
+
+        @Test
+        @DisplayName("which references type directly")
+        void direct() {
+            String nonExistingType = "NonExisting";
+            TypeRef directRef = TypeRef.parse(nonExistingType);
+            assertThrows(UnresolvedReferenceException.class, () -> knownTypes.validate(directRef));
+        }
+
+        @Test
+        @DisplayName("which references package")
+        void packageRef() {
+            String nonExistingType = "some.nonexistent.package";
+            TypeRef packageRef = TypeRef.parse(nonExistingType);
+            assertThrows(UnresolvedReferenceException.class,
+                         () -> knownTypes.validate(packageRef));
+        }
+
+        @Test
+        @DisplayName("which is composite")
+        void composite() {
+            String validType = KnownTaskId.getDescriptor()
+                                          .getFullName();
+            String invalidType = "Invalid";
+            String ref = Joiner.on(',')
+                               .join(validType, invalidType);
+            TypeRef compositeRef = TypeRef.parse(ref);
+            assertThrows(UnresolvedReferenceException.class,
+                         () -> knownTypes.validate(compositeRef));
         }
     }
 }
