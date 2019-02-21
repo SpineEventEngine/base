@@ -151,13 +151,11 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     @Override
     public boolean test(Descriptor message) {
-        if (packageName != null) {
-            PackageName packageOfMessage = PackageName.of(message);
-            if (!packageName.equals(packageOfMessage)) {
-                return false;
-            }
-        }
-        boolean result = value().endsWith(message.getName());
+        PackageName packageForComparison =
+                packageName().orElse(PackageName.of(message));
+        String fullName =
+                packageForComparison + PackageName.delimiter() + nestedTypeName();
+        boolean result = fullName.equals(message.getFullName());
         return result;
     }
 
