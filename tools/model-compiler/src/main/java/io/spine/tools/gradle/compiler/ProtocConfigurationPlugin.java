@@ -119,9 +119,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                 .build()
                                 .notation())
         ));
-        protobuf.plugins(closure(
-                (NamedDomainObjectContainer<ExecutableLocator> plugins)
-                        -> configureProtocPlugins(plugins, project)
+        protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins
         ));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
@@ -130,7 +128,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private static void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.GRPC.name,
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
