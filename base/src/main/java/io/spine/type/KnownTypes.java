@@ -48,7 +48,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
@@ -251,8 +250,7 @@ public class KnownTypes implements Serializable {
     private void doValidate(TypeRef typeRef) {
         ImmutableSet<MessageType> resolved = resolve(typeRef);
         if (resolved.isEmpty()) {
-            throw newIllegalArgumentException(
-                    "TypeRef %s references unknown package or type", typeRef);
+            throw new UnresolvedReferenceException(typeRef);
         }
     }
 
