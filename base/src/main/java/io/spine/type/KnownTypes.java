@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
@@ -33,6 +34,7 @@ import io.spine.code.proto.MessageType;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.code.proto.enrichment.EnrichmentType;
+import io.spine.code.proto.ref.CompositeTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
@@ -46,6 +48,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
@@ -233,6 +236,24 @@ public class KnownTypes implements Serializable {
                        .filter(type -> typeRef.test(type.descriptor()))
                        .collect(toImmutableSet());
         return result;
+    }
+
+    public void validate(TypeRef typeRef) {
+        if (typeRef instanceof CompositeTypeRef) {
+            CompositeTypeRef composite = (CompositeTypeRef) typeRef;
+            ImmutableList<TypeRef> elements = composite.elements();
+            elements.forEach(this::doValidate);
+        } else {
+            doValidate(typeRef);
+        }
+    }
+
+    private void doValidate(TypeRef typeRef) {
+        ImmutableSet<MessageType> resolved = resolve(typeRef);
+        if (resolved.isEmpty()) {
+            throw newIllegalArgumentException(
+                    "TypeRef %s references unknown package or type", typeRef);
+        }
     }
 
     private Type get(TypeName name) throws UnknownTypeException {
