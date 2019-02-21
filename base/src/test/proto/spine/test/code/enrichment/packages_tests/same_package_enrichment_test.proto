@@ -20,7 +20,7 @@
 
 syntax = "proto3";
 
-package spine.test.code.user.details;
+package spine.test.code.user;
 
 import "spine/options.proto";
 

@@ -168,14 +168,14 @@ class EnrichmentTypeTest {
 
     @Nested
     @DisplayName("when referencing types directly")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS) /* To allow non-static `@MethodSource`. */
     class DirectReference {
 
         private final Class<UserId> expected = UserId.class;
 
         @Nested
         @DisplayName("by their FQN")
-        class Fqns extends DirectReference {
+        @TestInstance(TestInstance.Lifecycle.PER_CLASS) /* To allow non-static `@MethodSource`. */
+        class Fqns {
 
             @ParameterizedTest
             @MethodSource("fqnsOfEnrichments")
@@ -195,10 +195,11 @@ class EnrichmentTypeTest {
 
         @Nested
         @DisplayName("by just the message name")
-        class MessageName extends DirectReference {
+        @TestInstance(TestInstance.Lifecycle.PER_CLASS) /* To allow non-static `@MethodSource`. */
+        class MessageName {
 
             @Test
-            @DisplayName("allow if referenced from the same package")
+            @DisplayName("allow if referenced  from the same package")
             void allowsShortReferences() {
                 assertSourceClassesOf(SpPlainIdEnrichment.class).containsExactly(expected);
             }
@@ -216,29 +217,29 @@ class EnrichmentTypeTest {
                         arguments(PaPlainIdEnrichment.class)
                 );
             }
-
         }
 
         @Nested
         @DisplayName("by non-full package definition")
-        class ExplicitPackageDifference extends DirectReference {
+        class ExplicitPackageDifference {
 
             @Test
             @DisplayName("allow referencing from child package in the same hierarchy")
-            void allowsFromChildPackage(){
+            void allowsFromChildPackage() {
                 assertSourceClassesOf(PbCommonAncestorEnrichment.class).containsExactly(expected);
             }
 
             @Test
             @DisplayName("allow referencing from parent package in the same hierarchy")
-            void allowsFromParentPackage(){
+            void allowsFromParentPackage() {
                 assertSourceClassesOf(PaCommonAncestorEnrichment.class).containsExactly(expected);
             }
 
             @Test
-            @DisplayName("disallow referencing from an outside package hierarchy")
-            void disallowsFromOutside(){
-                assertSourceClassesOf(OpCommonAncestorEnrichment.class).isEmpty();
+            @DisplayName("allow referencing from an outside package hierarchy")
+            // TODO:2019-02-21:serhii.lekariev: questionable behaviour, up for discussion
+            void allowsFromOutside() {
+                assertSourceClassesOf(OpCommonAncestorEnrichment.class).containsExactly(expected);
             }
         }
     }
