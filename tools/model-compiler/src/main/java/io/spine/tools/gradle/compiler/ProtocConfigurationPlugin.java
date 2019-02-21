@@ -37,7 +37,7 @@ import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
-import io.spine.tools.protoc.GeneratorConfiguration;
+import io.spine.tools.protoc.MethodFactoryConfiguration;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -275,7 +275,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         return result;
     }
 
-    private static GeneratorConfiguration prepareGeneratorConfiguration(Project project) {
+    private static MethodFactoryConfiguration prepareGeneratorConfiguration(Project project) {
         Classpath.Builder classpath = Classpath.newBuilder();
         project.getTasks()
                .withType(JavaCompile.class)
@@ -285,7 +285,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                .flatMap(Set::stream)
                .map(File::getAbsolutePath)
                .forEach(classpath::addJar);
-        return GeneratorConfiguration
+        return MethodFactoryConfiguration
                 .newBuilder()
                 .setClasspath(classpath)
                 .build();

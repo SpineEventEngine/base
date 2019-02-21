@@ -93,9 +93,9 @@ message Classpath {
     repeated string jar = 1;
 }
 
-// Configuration of the Spine Protoc method generator.
+// Configuration of the Spine Protoc method factory.
 //
-message GeneratorConfiguration {
+message MethodFactoryConfiguration {
 
     Classpath classpath = 1;
 }
@@ -106,7 +106,7 @@ message GeneratedMethodsConfig {
 
     repeated GeneratedMethod generated_method = 1;
 
-    GeneratorConfiguration configuration = 2;
+    MethodFactoryConfiguration configuration = 2;
 }
 
 // Configuration of the Spine Protoc plugin.
