@@ -29,6 +29,7 @@ option java_multiple_files = true;
 option java_outer_classname = "LifecycleOptionTestProto";
 
 message PmWithOption {
+
     option (entity).kind = PROCESS_MANAGER;
 
     option (lifecycle).archive_upon = "spine.test.code.proto.PmArchived";
@@ -38,12 +39,14 @@ message PmWithOption {
 }
 
 message PmWithoutOption {
+
     option (entity).kind = PROCESS_MANAGER;
 
     string id = 1;
 }
 
 message PmWithEmptyOptions {
+
     option (entity).kind = PROCESS_MANAGER;
 
     option (lifecycle).archive_upon = "";
@@ -53,6 +56,7 @@ message PmWithEmptyOptions {
 }
 
 message PmWithDirectOptions {
+
     option (entity).kind = PROCESS_MANAGER;
 
     option (lifecycle).archive_upon = "PmArchived";
