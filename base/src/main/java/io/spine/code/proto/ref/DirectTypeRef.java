@@ -163,6 +163,9 @@ public final class DirectTypeRef extends AbstractTypeRef {
     @Override
     public boolean test(Descriptor message) {
         if (packageName != null) {
+            if (inVisibleSubpackage(message)) {
+                return true;
+            }
             PackageName packageOfMessage = PackageName.of(message);
             if (!packageName.equals(packageOfMessage)) {
                 return false;
@@ -170,5 +173,12 @@ public final class DirectTypeRef extends AbstractTypeRef {
         }
         boolean result = value().endsWith(message.getName());
         return result;
+    }
+
+    // TODO:2019-02-21:serhii.lekariev: document referencing one of the tests
+    private boolean inVisibleSubpackage(Descriptor message) {
+        String thisReference = this.value();
+        String checkedMessage = message.getFullName();
+        return checkedMessage.endsWith(thisReference);
     }
 }

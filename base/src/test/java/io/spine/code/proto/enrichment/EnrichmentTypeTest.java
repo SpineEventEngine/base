@@ -21,11 +21,22 @@
 package io.spine.code.proto.enrichment;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.enrichment.packages.OpCommonAncestorEnrichment;
+import io.spine.code.proto.enrichment.packages.PaCommonAncestorEnrichment;
+import io.spine.code.proto.enrichment.packages.PaFqnIdEnrichment;
+import io.spine.code.proto.enrichment.packages.PaPlainIdEnrichment;
+import io.spine.code.proto.enrichment.packages.PbCommonAncestorEnrichment;
+import io.spine.code.proto.enrichment.packages.PbFqnIdEnrichment;
+import io.spine.code.proto.enrichment.packages.PbPlainIdEnrichment;
+import io.spine.code.proto.enrichment.packages.SpFqnIdEnrichment;
+import io.spine.code.proto.enrichment.packages.SpPlainIdEnrichment;
+import io.spine.code.proto.ref.UserId;
 import io.spine.test.code.enrichment.type.EttAlternativeFieldNames;
 import io.spine.test.code.enrichment.type.EttFieldSelection;
 import io.spine.test.code.enrichment.type.EttOnAnotherPackageMessage;
@@ -43,8 +54,15 @@ import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("EnrichmentType should")
 class EnrichmentTypeTest {
@@ -56,8 +74,8 @@ class EnrichmentTypeTest {
         @Test
         @DisplayName("for a message in another package")
         void oneClass() {
-             assertSourceClassesOf(EttOnAnotherPackageMessage.class)
-                     .containsExactly(EttProjectCreated.class);
+            assertSourceClassesOf(EttOnAnotherPackageMessage.class)
+                    .containsExactly(EttProjectCreated.class);
         }
 
         @Test
@@ -74,15 +92,17 @@ class EnrichmentTypeTest {
         /**
          * Tests that <em>all</em> events from a package are present.
          *
-         * @apiNote If this test breaks with {@code unexpected (<number>)} output in console,
-         * which is followed with the enumeration of unexpected types like this:
+         * @apiNote If this test breaks with {@code unexpected (<number>)} output in
+         *         console,
+         *         which is followed with the enumeration of unexpected types like this:
          *
-         * <pre>
-         * unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
-         * </pre>
+         *         <pre>
+         *                                                                                                                 unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
+         *                                                                                                                 </pre>
          *
-         * please make sure these types are added in the verification list in the body of this
-         * method. Do not relax the checking condition.
+         *         please make sure these types are added in the verification list in the body of
+         *         this
+         *         method. Do not relax the checking condition.
          */
         @Test
         @DisplayName("for all messages inside nested packages, matching the field reference")
@@ -144,15 +164,92 @@ class EnrichmentTypeTest {
                                           .findFieldByName(fieldName));
             }
         }
+    }
 
-        /**
-         * Creates an iterable subject for source types of the passed enrichment class.
-         */
-        IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
-            EnrichmentType et = new EnrichmentType(descriptorOf(cls));
-            ImmutableList<? extends Class<? extends Message>> sourceClasses = et.sourceClasses();
-            return assertThat(sourceClasses);
+    @Nested
+    @DisplayName("when referencing types directly")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS) /* To allow non-static `@MethodSource`. */
+    class DirectReference {
+
+        private final Class<UserId> expected = UserId.class;
+
+        @Nested
+        @DisplayName("by their FQN")
+        class Fqns extends DirectReference {
+
+            @ParameterizedTest
+            @MethodSource("fqnsOfEnrichments")
+            @DisplayName("allow to reference any messages")
+            void allowsAlways(Class<? extends Message> enrichmentClass) {
+                assertSourceClassesOf(enrichmentClass).containsExactly(expected);
+            }
+
+            private Set<Arguments> fqnsOfEnrichments() {
+                return ImmutableSet.of(
+                        arguments(PbFqnIdEnrichment.class),
+                        arguments(SpFqnIdEnrichment.class),
+                        arguments(PaFqnIdEnrichment.class)
+                );
+            }
         }
+
+        @Nested
+        @DisplayName("by just the message name")
+        class MessageName extends DirectReference {
+
+            @Test
+            @DisplayName("allow if referenced from the same package")
+            void allowsShortReferences() {
+                assertSourceClassesOf(SpPlainIdEnrichment.class).containsExactly(expected);
+            }
+
+            @ParameterizedTest
+            @MethodSource("messageNamesOfEnrichments")
+            @DisplayName("disallow if referenced from outside")
+            void disallowsForOutsidePackages(Class<? extends Message> enrichmentClass) {
+                assertSourceClassesOf(enrichmentClass).isEmpty();
+            }
+
+            private Set<Arguments> messageNamesOfEnrichments() {
+                return ImmutableSet.of(
+                        arguments(PbPlainIdEnrichment.class),
+                        arguments(PaPlainIdEnrichment.class)
+                );
+            }
+
+        }
+
+        @Nested
+        @DisplayName("by non-full package definition")
+        class ExplicitPackageDifference extends DirectReference {
+
+            @Test
+            @DisplayName("allow referencing from child package in the same hierarchy")
+            void allowsFromChildPackage(){
+                assertSourceClassesOf(PbCommonAncestorEnrichment.class).containsExactly(expected);
+            }
+
+            @Test
+            @DisplayName("allow referencing from parent package in the same hierarchy")
+            void allowsFromParentPackage(){
+                assertSourceClassesOf(PaCommonAncestorEnrichment.class).containsExactly(expected);
+            }
+
+            @Test
+            @DisplayName("disallow referencing from an outside package hierarchy")
+            void disallowsFromOutside(){
+                assertSourceClassesOf(OpCommonAncestorEnrichment.class).isEmpty();
+            }
+        }
+    }
+
+    /**
+     * Creates an iterable subject for source types of the passed enrichment class.
+     */
+    private static IterableSubject assertSourceClassesOf(Class<? extends Message> cls) {
+        EnrichmentType et = new EnrichmentType(descriptorOf(cls));
+        ImmutableList<? extends Class<? extends Message>> sourceClasses = et.sourceClasses();
+        return assertThat(sourceClasses);
     }
 
     private static Descriptor descriptorOf(Class<? extends Message> cls) {
