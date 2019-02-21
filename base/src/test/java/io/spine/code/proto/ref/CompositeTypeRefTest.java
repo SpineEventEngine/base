@@ -120,11 +120,11 @@ class CompositeTypeRefTest {
     void addPackageQualifier() {
         String packageRef = "google.protobuf.*";
         String directRef = "SomeDirectType";
-        String initial = packageRef + ',' + directRef;
+        String initial = packageRef + CompositeTypeRef.SEPARATOR + directRef;
         CompositeTypeRef ref = CompositeTypeRef.doParse(initial);
         String packageName = "io.spine.some.package";
-        String expectedRef = packageName + '.' + directRef;
-        String expected = '[' + packageRef + ',' + expectedRef + ']';
+        String expectedRef = packageName + PackageName.delimiter() + directRef;
+        String expected = '[' + packageRef + CompositeTypeRef.SEPARATOR + expectedRef + ']';
 
         TypeRef newRef = ref.withPackage(PackageName.of(packageName));
         assertThat(newRef.toString())
