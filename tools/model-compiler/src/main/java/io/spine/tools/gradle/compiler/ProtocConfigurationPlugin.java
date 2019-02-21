@@ -35,6 +35,9 @@ import io.spine.tools.gradle.TaskName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
+import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GeneratorConfiguration;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -43,12 +46,15 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
@@ -113,7 +119,10 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                 .build()
                                 .notation())
         ));
-        protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
+        protobuf.plugins(closure(
+                (NamedDomainObjectContainer<ExecutableLocator> plugins)
+                        -> configureProtocPlugins(plugins, project)
+        ));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
                 (GenerateProtoTaskCollection tasks) -> configureProtocTasks(tasks, copyPluginJar)
@@ -121,7 +130,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private static void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
         plugins.create(ProtocPlugin.GRPC.name,
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
@@ -253,12 +262,33 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static SpineProtocConfig assembleParameter(Project project) {
         GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
         GeneratedMethods methods = getGeneratedMethods(project);
+        GeneratedMethodsConfig generatedMethodsConfig = methods
+                .asProtocConfig()
+                .toBuilder()
+                .setConfiguration(prepareGeneratorConfiguration(project))
+                .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setGeneratedInterfaces(interfaces.asProtocConfig())
-                .setGeneratedMethods(methods.asProtocConfig())
+                .setGeneratedMethods(generatedMethodsConfig)
                 .build();
         return result;
+    }
+
+    private static GeneratorConfiguration prepareGeneratorConfiguration(Project project) {
+        Classpath.Builder classpath = Classpath.newBuilder();
+        project.getTasks()
+               .withType(JavaCompile.class)
+               .stream()
+               .map(JavaCompile::getClasspath)
+               .map(FileCollection::getFiles)
+               .flatMap(Set::stream)
+               .map(File::getAbsolutePath)
+               .forEach(classpath::addJar);
+        return GeneratorConfiguration
+                .newBuilder()
+                .setClasspath(classpath)
+                .build();
     }
 
     private enum ProtocPlugin {
