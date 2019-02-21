@@ -192,13 +192,28 @@ public class KnownTypes implements Serializable {
      */
     public ImmutableSet<MessageType> allMatching(TypeRef typeRef) {
         ImmutableSet<MessageType> result =
-                asTypeSet().allTypes()
+                asTypeSet().messageTypes()
                            .stream()
-                           .filter(MessageType.class::isInstance)
-                           .map(MessageType.class::cast)
                            .filter(m -> typeRef.test(m.descriptor()))
                            .collect(toImmutableSet());
         return result;
+    }
+
+    public void validate(TypeRef typeRef) {
+        if (typeRef instanceof CompositeTypeRef) {
+            CompositeTypeRef composite = (CompositeTypeRef) typeRef;
+            ImmutableList<TypeRef> elements = composite.elements();
+            elements.forEach(this::doValidate);
+        } else {
+            doValidate(typeRef);
+        }
+    }
+
+    private void doValidate(TypeRef typeRef) {
+        ImmutableSet<MessageType> resolved = allMatching(typeRef);
+        if (resolved.isEmpty()) {
+            throw new UnresolvedReferenceException(typeRef);
+        }
     }
 
     /**
@@ -221,37 +236,6 @@ public class KnownTypes implements Serializable {
     public Optional<Type<?, ?>> find(TypeName typeName) {
         Optional<Type<?, ?>> type = typeSet.find(typeName);
         return type;
-    }
-
-    /**
-     * ...
-     *
-     * @apiNote {@code TypeRef} currently references only messages, hence the return type.
-     */
-    public ImmutableSet<MessageType> resolve(TypeRef typeRef) {
-        ImmutableSet<MessageType> result =
-                typeSet.messageTypes()
-                       .stream()
-                       .filter(type -> typeRef.test(type.descriptor()))
-                       .collect(toImmutableSet());
-        return result;
-    }
-
-    public void validate(TypeRef typeRef) {
-        if (typeRef instanceof CompositeTypeRef) {
-            CompositeTypeRef composite = (CompositeTypeRef) typeRef;
-            ImmutableList<TypeRef> elements = composite.elements();
-            elements.forEach(this::doValidate);
-        } else {
-            doValidate(typeRef);
-        }
-    }
-
-    private void doValidate(TypeRef typeRef) {
-        ImmutableSet<MessageType> resolved = resolve(typeRef);
-        if (resolved.isEmpty()) {
-            throw new UnresolvedReferenceException(typeRef);
-        }
     }
 
     private Type get(TypeName name) throws UnknownTypeException {
