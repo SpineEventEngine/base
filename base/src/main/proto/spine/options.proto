@@ -949,9 +949,34 @@ message IsOption {
     string java_type = 2;
 }
 
+// Marks "terminal" events and rejections for entity lifecycle.
+//
+// Event and rejection types are stated in a string, separated by commas, as follows:
+// "Event1, Rejection1, Event2". Both fully qualified names and names relative to the current
+// package are accepted.
+//
+// Currently this option is applicable only to process managers.
+//
+// Example 22: Specifying "terminal" events for process manager.
+//
+//    message SignInProcess {
+//        option (entity).kind = PROCESS_MANAGER;
+//
+//        // The process is deleted in case `UserAuthenticationCancelled` is emitted or
+//        // `CannotAuthenticateUser` is thrown.
+//        option (lifecycle).delete_upon = "UserAuthenticationCancelled, CannotAuthenticateUser";
+//
+//        // The process can also be automatically archived in case the use signed in successfully.
+//        option (lifecycle).archive_upon = "UserSignedIn";
+//
+//        // Here goes the process state description.
+//    }
+//
 message LifecycleOption {
 
+    // The events and rejections which will cause the entity to be archived.
     string archive_upon = 1;
 
+    // The events and rejections which will cause the entity to be deleted.
     string delete_upon = 2;
 }
