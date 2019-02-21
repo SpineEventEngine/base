@@ -949,15 +949,15 @@ message IsOption {
     string java_type = 2;
 }
 
-// Marks "terminal" events and rejections for entity lifecycle.
+// Marks "terminal" events and rejections for the entity.
 //
 // Event and rejection types are stated in a string, separated by commas, as follows:
-// "Event1, Rejection1, Event2". Both fully qualified names and names relative to the current
-// package are accepted.
+// "Event1, Rejection1, io.spine.core.Event2". Both fully qualified names and names relative to the
+// current package are accepted.
 //
-// Currently this option is applicable only to process managers.
+// Currently, this option is applicable only to process managers.
 //
-// Example 22: Specifying "terminal" events for process manager.
+// Example 22: Specifying "terminal" events for the entity.
 //
 //    message SignInProcess {
 //        option (entity).kind = PROCESS_MANAGER;
@@ -966,7 +966,8 @@ message IsOption {
 //        // `CannotAuthenticateUser` is thrown.
 //        option (lifecycle).delete_upon = "UserAuthenticationCancelled, CannotAuthenticateUser";
 //
-//        // The process can also be automatically archived in case the use signed in successfully.
+//        // The process can also be automatically archived in case the user signed in
+//        // successfully.
 //        option (lifecycle).archive_upon = "UserSignedIn";
 //
 //        // Here goes the process state description.
