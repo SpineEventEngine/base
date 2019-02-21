@@ -54,7 +54,7 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
         Optional<TypeRef> result =
                 option.map(optionGetter)
                       .flatMap(EntityLifecycleOption::typeRefIfPresent)
-                      .map(typeRef -> ensurePackage(typeRef, type));
+                      .map(typeRef -> ensureSamePackage(typeRef, type));
         return result;
     }
 
@@ -67,7 +67,7 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
         return result;
     }
 
-    private static TypeRef ensurePackage(TypeRef typeRef, MessageType enclosing) {
+    private static TypeRef ensureSamePackage(TypeRef typeRef, MessageType enclosing) {
         PackageName packageName = PackageName.of(enclosing.descriptor());
         TypeRef result = typeRef.withPackage(packageName);
         return result;
