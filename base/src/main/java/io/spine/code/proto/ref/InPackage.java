@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Reference to all message types in a proto package.
  */
-final class InPackage extends AbstractTypeRef {
+public final class InPackage extends AbstractTypeRef {
 
     private static final long serialVersionUID = 0L;
 
@@ -60,7 +60,7 @@ final class InPackage extends AbstractTypeRef {
      * @return a reference to all proto types in a package,
      *         or empty {@code Optional} if the passed value is not a valid package reference
      */
-    static Optional<TypeRef> parse(String value) {
+    public static Optional<TypeRef> parse(String value) {
         checkNotNull(value);
         if (value.endsWith(WILDCARD_SUFFIX) && !WILDCARD_SUFFIX.equals(value)) {
             return Optional.of(new InPackage(value));
@@ -70,9 +70,13 @@ final class InPackage extends AbstractTypeRef {
 
     private InPackage(String value) {
         super(value);
-        int suffixIndex = value.lastIndexOf(WILDCARD_SUFFIX);
-        String packageName = value.substring(0, suffixIndex);
+        String packageName = packageStatement(value);
         this.packageName = PackageName.of(packageName);
+    }
+
+    private static String packageStatement(String value) {
+        int suffixIndex = value.lastIndexOf(WILDCARD_SUFFIX);
+        return value.substring(0, suffixIndex);
     }
 
     /**
@@ -83,5 +87,21 @@ final class InPackage extends AbstractTypeRef {
         PackageName packageOfMessage = PackageName.of(message);
         boolean result = packageOfMessage.isInnerOf(packageName);
         return result;
+    }
+
+    /**
+     * Makes sure that this reference references a fully-qualified package name, as opposed to
+     * only part of it.
+     *
+     * @param name
+     *         name of the package that needs to be prepended
+     * @return reference to a package with its qualified name
+     */
+    public InPackage ensurePackage(PackageName name) {
+        String fullPackageName = name.value();
+        String thisPackage = packageStatement(this.value());
+        return fullPackageName.endsWith(thisPackage)
+               ? new InPackage(fullPackageName + WILDCARD_SUFFIX)
+               : this;
     }
 }

@@ -37,6 +37,11 @@ import io.spine.code.proto.enrichment.packages.PbPlainIdEnrichment;
 import io.spine.code.proto.enrichment.packages.SpFqnIdEnrichment;
 import io.spine.code.proto.enrichment.packages.SpPlainIdEnrichment;
 import io.spine.code.proto.ref.UserId;
+import io.spine.test.code.enrichment.fieldref.CompilationFailed;
+import io.spine.test.code.enrichment.fieldref.OverlySpecificStacktrace;
+import io.spine.test.code.enrichment.fieldref.Stacktrace;
+import io.spine.test.code.enrichment.fieldref.TestFailed;
+import io.spine.test.code.enrichment.fieldref.WildcardStacktrace;
 import io.spine.test.code.enrichment.type.EttAlternativeFieldNames;
 import io.spine.test.code.enrichment.type.EttFieldSelection;
 import io.spine.test.code.enrichment.type.EttOnAnotherPackageMessage;
@@ -62,6 +67,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("EnrichmentType should")
@@ -128,7 +134,8 @@ class EnrichmentTypeTest {
                 does not match the the name referenced in the `(by)` option. */
         }
 
-        @Nested @DisplayName("for message types with alternative field names")
+        @Nested
+        @DisplayName("for message types with alternative field names")
         class AltFieldNames {
 
             private final EnrichmentType et =
@@ -237,10 +244,63 @@ class EnrichmentTypeTest {
 
             @Test
             @DisplayName("allow referencing from an outside package hierarchy")
-            // TODO:2019-02-21:serhii.lekariev: questionable behaviour, up for discussion
+                // TODO:2019-02-21:serhii.lekariev: questionable behaviour, up for discussion
             void allowsFromOutside() {
                 assertSourceClassesOf(OpCommonAncestorEnrichment.class).containsExactly(expected);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("when referencing types by package")
+    class PackageReference {
+
+        @Test
+        @DisplayName("allow to reference all messages in the containing package without FQN")
+        void allowsPackageWideShortReferences() {
+            assertSourceClassesOf(Stacktrace.class).containsExactly(CompilationFailed.class,
+                                                                    TestFailed.class);
+        }
+
+        @Test
+        @DisplayName("allow to reference all messages in the containing package with almost an FQN")
+        void allowsOverlyExplicitPackageReferences() {
+            assertSourceClassesOf(OverlySpecificStacktrace.class)
+                    .containsExactly(CompilationFailed.class,
+                                     TestFailed.class);
+        }
+
+        @Test
+        @DisplayName("throw upon a package reference containing a wildcard only")
+        void throwsOnWildcard() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> assertSourceClassesOf(WildcardStacktrace.class));
+        }
+
+        @Test
+        @DisplayName("disallow to reference outside packages not using its full name")
+        void disallowToShorthandReferenceOutsidePackages() {
+            assertSourceClassesOf(OutOfReachStacktrace.class).isEmpty();
+        }
+
+        @Test
+        @DisplayName("disallow shorthand package references from an outside package, "+
+                     "even if said packages have common ancestors")
+        void disallowShorthandNeighbourPackageReference(){
+            assertSourceClassesOf(ShorthandStacktrace.class).isEmpty();
+        }
+
+        @Test
+        @DisplayName("allow FQN package references from outside packages")
+        void allowFqnPackageReference() {
+            assertSourceClassesOf(FqnStacktrace.class).containsExactly(CompilationFailed.class,
+                                                                       TestFailed.class);
+        }
+
+        @Test
+        @DisplayName("disallow child package shorthand references")
+        void allowShorthandChildReference(){
+            assertSourceClassesOf(ShorthandStacktrace.class).isEmpty();
         }
     }
 
