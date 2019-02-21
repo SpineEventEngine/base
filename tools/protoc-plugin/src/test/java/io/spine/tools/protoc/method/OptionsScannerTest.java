@@ -48,7 +48,7 @@ final class OptionsScannerTest {
                 .addGeneratedMethod(methodWithValidationOf(FirstMethodFactory.FQN))
                 .addGeneratedMethod(methodWithBetaType(SecondMethodFactory.FQN))
                 .build();
-        MessageType type = MessageType.of(WithMultipleGenerators.getDescriptor());
+        MessageType type = new MessageType(WithMultipleGenerators.getDescriptor());
         OptionsScanner scanner = new OptionsScanner(config);
         ImmutableList<CompilerOutput> result = scanner.scan(type);
         assertEquals(3, result.size());
@@ -66,7 +66,7 @@ final class OptionsScannerTest {
                     .addGeneratedMethod(methodWithEnrichment(" "))
                     .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
                     .build();
-            MessageType type = MessageType.of(WithEnrichmentFor.getDescriptor());
+            MessageType type = new MessageType(WithEnrichmentFor.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
@@ -76,7 +76,7 @@ final class OptionsScannerTest {
             GeneratedMethodsConfig config = configBuilder()
                     .addGeneratedMethod(methodWithEnrichment(FirstMethodFactory.FQN))
                     .build();
-            MessageType type = MessageType.of(EnrichedMessage.getDescriptor());
+            MessageType type = new MessageType(EnrichedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 

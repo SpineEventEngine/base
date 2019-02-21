@@ -39,7 +39,7 @@ final class MessageMethodTest {
     void createValidCompilerOutput() {
         String methodBody = "public void test(){}";
         MethodBody body = MethodBody.of(methodBody);
-        MessageType type = MessageType.of(ValidatedMessage.getDescriptor());
+        MessageType type = new MessageType(ValidatedMessage.getDescriptor());
         MessageMethod result = MessageMethod.from(body, type);
         File file = result.asFile();
 

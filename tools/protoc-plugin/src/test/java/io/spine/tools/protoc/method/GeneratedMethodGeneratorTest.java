@@ -50,7 +50,7 @@ final class GeneratedMethodGeneratorTest {
     @DisplayName("try to generate methods for message types")
     @Test
     void generateMethodsForMessageTypes(){
-        MessageType type = MessageType.of(WithSpiType.getDescriptor());
+        MessageType type = new MessageType(WithSpiType.getDescriptor());
         GeneratedMethodGenerator generator =
                 GeneratedMethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
         Collection<CompilerOutput> result = generator.processType(type);

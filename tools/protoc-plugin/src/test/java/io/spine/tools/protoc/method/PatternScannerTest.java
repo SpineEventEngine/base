@@ -48,7 +48,7 @@ final class PatternScannerTest {
                 .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "_patterns.proto"))
                 .addGeneratedMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
-        MessageType type = MessageType.of(TestMessage.getDescriptor());
+        MessageType type = new MessageType(TestMessage.getDescriptor());
         PatternScanner scanner = new PatternScanner(config);
         ImmutableList<CompilerOutput> result = scanner.scan(type);
         assertEquals(3, result.size());
@@ -66,7 +66,7 @@ final class PatternScannerTest {
                     .addGeneratedMethod(generatedMethod(" ", "*"))
                     .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
                     .build();
-            MessageType type = MessageType.of(WithEnrichmentFor.getDescriptor());
+            MessageType type = new MessageType(WithEnrichmentFor.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
@@ -76,7 +76,7 @@ final class PatternScannerTest {
             GeneratedMethodsConfig config = configBuilder()
                     .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
                     .build();
-            MessageType type = MessageType.of(EnrichedMessage.getDescriptor());
+            MessageType type = new MessageType(EnrichedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
