@@ -179,6 +179,25 @@ class DirectTypeRefTest {
     }
 
     @Test
+    @DisplayName("not change its package if already has one")
+    void notChangePackage() {
+        String expected = "spine.test.SomeType";
+        Optional<TypeRef> ref = DirectTypeRef.parse(expected);
+        Truth8.assertThat(ref)
+              .isPresent();
+
+        DirectTypeRef direct = ref.map(r -> (DirectTypeRef) r)
+                                  .get();
+        PackageName newPackageName = PackageName.of("new.package");
+
+        DirectTypeRef newRef = direct.withPackage(newPackageName);
+        assertThat(newRef.value())
+                .isEqualTo(expected);
+        Truth8.assertThat(newRef.packageName())
+              .hasValue(PackageName.of("spine.test"));
+    }
+
+    @Test
     @DisplayName("serialize")
     void serialize() {
         reserializeAndAssert(ref("google.protobuf.Any"));

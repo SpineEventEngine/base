@@ -25,6 +25,7 @@ import com.google.common.truth.StringSubject;
 import com.google.protobuf.Any;
 import io.spine.base.FieldFilter;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.PackageName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -112,6 +113,22 @@ class CompositeTypeRefTest {
         assertValue.contains(expected);
         assertValue.startsWith("[");
         assertValue.endsWith("]");
+    }
+
+    @Test
+    @DisplayName("add package qualifier to its elements")
+    void addPackageQualifier() {
+        String packageRef = "google.protobuf.*";
+        String directRef = "SomeDirectType";
+        String initial = packageRef + ',' + directRef;
+        CompositeTypeRef ref = CompositeTypeRef.doParse(initial);
+        String packageName = "io.spine.some.package";
+        String expectedRef = packageName + '.' + directRef;
+        String expected = '[' + packageRef + ',' + expectedRef + ']';
+
+        TypeRef newRef = ref.withPackage(PackageName.of(packageName));
+        assertThat(newRef.toString())
+                .isEqualTo(expected);
     }
 
     @Test
