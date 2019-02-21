@@ -229,7 +229,7 @@ class KnownTypesTest {
         @Test
         @DisplayName("which references type directly")
         void direct() {
-            String nonExistingType = "NonExisting";
+            String nonExistingType = "NonExistingType";
             TypeRef directRef = TypeRef.parse(nonExistingType);
             assertThrows(UnresolvedReferenceException.class, () -> knownTypes.validate(directRef));
         }
@@ -248,7 +248,7 @@ class KnownTypesTest {
         void composite() {
             String validType = KnownTaskId.getDescriptor()
                                           .getFullName();
-            String invalidType = "Invalid";
+            String invalidType = "InvalidType";
             String ref = Joiner.on(',')
                                .join(validType, invalidType);
             TypeRef compositeRef = TypeRef.parse(ref);
