@@ -42,15 +42,6 @@ final class TypeFiltersTest {
                 TypeFilters.filePostfix(null);
             });
         }
-
-        @DisplayName("optionName filter")
-        @Test
-        void optionName() {
-            Assertions.assertThrows(NullPointerException.class, () -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
-                TypeFilters.optionName(null);
-            });
-        }
     }
 
     @DisplayName("create a valid")
@@ -63,17 +54,6 @@ final class TypeFiltersTest {
             String postfix = "documents.proto";
             TypeFilter filter = TypeFilters.filePostfix(postfix);
             assertEquals(postfix, filter.getFilePostfix());
-            assertEquals("", filter.getOptionName());
-        }
-
-        @DisplayName("option_name filter")
-        @Test
-        void optionName() {
-            String optionName = "enrichment_for";
-            TypeFilter filter = TypeFilters.optionName(optionName);
-            assertEquals("", filter.getFilePostfix());
-            assertEquals(optionName, filter.getOptionName());
         }
     }
-
 }

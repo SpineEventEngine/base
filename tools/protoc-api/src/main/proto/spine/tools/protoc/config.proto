@@ -55,8 +55,6 @@ message GeneratedMethod {
 //
 message TypeFilter {
 
-    option (required_field) = "file_postfix|option_name";
-
     oneof value {
 
         // An ending that a .proto file name should have.
@@ -65,12 +63,6 @@ message TypeFilter {
         // will be applied.
         //
         string file_postfix = 1;
-
-        // A name of a message option that the message should have.
-        //
-        // If a message has a particular option some code generation will be applied to the message.
-        //
-        string option_name = 2;
     }
 }
 

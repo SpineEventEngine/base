@@ -42,14 +42,4 @@ public final class TypeFilters {
                          .setFilePostfix(postfix)
                          .build();
     }
-
-    /**
-     * Creates a new {@link TypeFilter} with a {@code option_name} field filled.
-     */
-    public static TypeFilter optionName(String optionName) {
-        checkNotNull(optionName);
-        return TypeFilter.newBuilder()
-                         .setOptionName(optionName)
-                         .build();
-    }
 }
