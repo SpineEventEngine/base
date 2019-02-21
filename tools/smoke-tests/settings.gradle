@@ -24,6 +24,7 @@ include 'known-types-tests'
 include 'validation-tests'
 include 'model-compiler-tests'
 include 'rejection-tests'
+include 'test-method-factory'
 
 /*
  * Dependency links established with the Gradle included build.
@@ -52,3 +53,4 @@ includeBuild("$rootDir/../../") {
         }
     }
 }
+

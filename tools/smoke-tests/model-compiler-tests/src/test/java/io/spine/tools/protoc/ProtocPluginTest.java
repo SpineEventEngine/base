@@ -27,6 +27,7 @@ import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.proto.MessageType;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;
@@ -196,6 +197,13 @@ class ProtocPluginTest {
     void notMarkInnerEnrichmentWithGeneratedInterface() {
         assertThat(InnerMessageNotEnrichment.getDefaultInstance())
                 .isNotInstanceOf(TestEnrichment.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method using io.spine.tools.protoc.TestMessageFactory")
+    void generateCustomMethod(){
+        MessageType expectedType = new MessageType(WithGeneratedMethod.getDescriptor());
+        assertEquals(expectedType, WithGeneratedMethod.ownType());
     }
 
     @CanIgnoreReturnValue

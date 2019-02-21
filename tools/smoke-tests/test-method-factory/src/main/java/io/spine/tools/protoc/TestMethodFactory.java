@@ -18,22 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    testImplementation project(':test-method-factory')
-    testImplementation deps.test.truth
-}
+package io.spine.tools.protoc;
 
-modelCompiler {
-    
-    generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
-        uuidMessage().ignore()
-        enrichmentMessage().markWith("io.spine.tools.protoc.TestEnrichment")
+import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.code.proto.MessageType;
+import io.spine.protoc.MethodBody;
+import io.spine.protoc.MethodFactory;
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
+import javax.lang.model.element.Modifier;
+import java.util.List;
+
+@Immutable
+public class TestMethodFactory implements MethodFactory {
+
+    public TestMethodFactory() {
     }
 
-    generateMethods {
-        filePattern(endsWith("generation_test.proto"))
-                .withMethodFactory("io.spine.tools.protoc.TestMethodFactory")
+    @Override
+    public List<MethodBody> newMethodsFor(MessageType messageType) {
+        MethodSpec spec = MethodSpec
+                .methodBuilder("ownType")
+                .returns(MessageType.class)
+                .addStatement("return new $T(getDescriptor())", MessageType.class)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .build();
+        return ImmutableList.of(MethodBody.of(spec.toString()));
     }
 }
