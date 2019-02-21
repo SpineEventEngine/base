@@ -134,8 +134,8 @@ public class CompositeTypeRef implements TypeRef {
         return result;
     }
 
-    public int refCount() {
-        return elements.size();
+    public ImmutableList<TypeRef> elements() {
+        return elements;
     }
 
     @Override
