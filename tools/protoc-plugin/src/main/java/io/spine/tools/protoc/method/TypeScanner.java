@@ -42,9 +42,11 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 abstract class TypeScanner {
 
     private final GeneratedMethodsConfig config;
+    private final MethodFactories methodFactories;
 
     TypeScanner(GeneratedMethodsConfig config) {
         this.config = config;
+        this.methodFactories = new MethodFactories(config.getConfiguration());
     }
 
     /**
@@ -73,7 +75,7 @@ abstract class TypeScanner {
                     .isEmpty();
     }
 
-    private static class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+    private class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
 
         private final MessageType type;
 
@@ -83,7 +85,7 @@ abstract class TypeScanner {
 
         @Override
         public ImmutableList<CompilerOutput> apply(GeneratedMethod spec) {
-            MethodFactory factory = MethodFactories.newFactoryFor(spec);
+            MethodFactory factory = methodFactories.newFactoryFor(spec);
             return factory
                     .newMethodsFor(type)
                     .stream()

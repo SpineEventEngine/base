@@ -26,6 +26,8 @@ import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.GeneratedMethod;
+import io.spine.tools.protoc.MethodFactoryConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,13 @@ import static com.google.common.truth.Truth.assertThat;
 @DisplayName("MessageFactories should")
 final class MethodFactoriesTest {
 
+    private MethodFactories methodFactories;
+
+    @BeforeEach
+    void setUp() {
+        methodFactories = new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
+    }
+
     @DisplayName("return NoOpMessageFactory")
     @Nested
     final class ReturnNoOpFactory {
@@ -47,7 +56,7 @@ final class MethodFactoriesTest {
         void forBlankFactoryName(String factoryName) {
             GeneratedMethod spec = specForFactory(factoryName);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -56,7 +65,7 @@ final class MethodFactoriesTest {
         void withoutPublicConstructor() {
             GeneratedMethod spec = specForFactory(WithoutPublicConstructor.class);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -65,7 +74,7 @@ final class MethodFactoriesTest {
         void withPrivateConstructor() {
             GeneratedMethod spec = specForFactory(WithPrivateConstructor.class);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -74,7 +83,7 @@ final class MethodFactoriesTest {
         void exceptionThrownDuringInstantiation() {
             GeneratedMethod spec = specForFactory(WithExceptionDuringInstantiation.class);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -83,7 +92,7 @@ final class MethodFactoriesTest {
         void implementationIsAbstract() {
             GeneratedMethod spec = specForFactory(WithAbstractImplementation.class);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -92,7 +101,7 @@ final class MethodFactoriesTest {
         void classIsNotFound() {
             GeneratedMethod spec = specForFactory("com.example.NonExistingMethodFactory");
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
@@ -101,7 +110,7 @@ final class MethodFactoriesTest {
         void doesNotImplementMethodFactory() {
             GeneratedMethod spec = specForFactory(NotMethodFactory.class);
 
-            assertThat(MethodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(spec))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
     }
@@ -111,7 +120,7 @@ final class MethodFactoriesTest {
     void returnMethodFactoryInstanceByFullyQualifiedName() {
         GeneratedMethod spec = specForFactory(StubMethodFactory.class);
 
-        assertThat(MethodFactories.newFactoryFor(spec))
+        assertThat(methodFactories.newFactoryFor(spec))
                 .isInstanceOf(StubMethodFactory.class);
     }
 

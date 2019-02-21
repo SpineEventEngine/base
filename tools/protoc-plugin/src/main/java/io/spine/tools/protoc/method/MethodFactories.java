@@ -27,12 +27,21 @@ import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedMethod;
+import io.spine.tools.protoc.MethodFactoryConfiguration;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Optional;
+
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * An utility class for instantiating {@link MethodFactory} for a particular
@@ -40,8 +49,10 @@ import java.util.Optional;
  */
 final class MethodFactories {
 
-    /** Prevents instantiation of this utility class. */
-    private MethodFactories() {
+    private final ClassLoader externalClassLoader;
+
+    MethodFactories(MethodFactoryConfiguration configuration) {
+        this.externalClassLoader = externalClassLoader(configuration);
     }
 
     /**
@@ -51,7 +62,7 @@ final class MethodFactories {
      * <p>If specification is invalid or the specified class for some reason could not be
      * instantiated a {@link NoOpMethodFactory} instance is returned.
      */
-    static MethodFactory newFactoryFor(GeneratedMethod spec) {
+    MethodFactory newFactoryFor(GeneratedMethod spec) {
         String factoryName = spec.getFactoryName();
         if (factoryName.trim()
                        .isEmpty()) {
@@ -64,7 +75,7 @@ final class MethodFactories {
     /**
      * Instantiates a new {@link MethodFactory} from the specified fully-qualified class name.
      */
-    private static MethodFactory from(String fqn) {
+    private MethodFactory from(String fqn) {
         Optional<Class<MethodFactory>> factoryClass = methodFactoryClass(fqn);
         if (!factoryClass.isPresent()) {
             return NoOpMethodFactory.INSTANCE;
@@ -88,7 +99,7 @@ final class MethodFactories {
     }
 
     @SuppressWarnings("unchecked") //we do already know that the class represents MethodFactory
-    private static Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
+    private Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
         Optional<Class<?>> factory = factoryClass(fqn);
         if (!factory.isPresent()) {
             return Optional.empty();
@@ -102,15 +113,43 @@ final class MethodFactories {
         return Optional.empty();
     }
 
-    private static Optional<Class<?>> factoryClass(String fqn) {
+    private Optional<Class<?>> factoryClass(String fqn) {
         try {
-            Class<?> factory = Class.forName(fqn);
+            Class<?> factory = externalClassLoader.loadClass(fqn);
             return Optional.ofNullable(factory);
         } catch (ClassNotFoundException e) {
             Logging.get(MethodFactories.class)
                    .warn("Unable to resolve MethodFactory {}.", fqn, e);
         }
         return Optional.empty();
+    }
+
+    private static ClassLoader externalClassLoader(MethodFactoryConfiguration configuration) {
+        ClassLoader currentClassLoader = Thread.currentThread()
+                                               .getContextClassLoader();
+        URL[] classPathUrls = classPathUrls(configuration);
+        URLClassLoader loader = URLClassLoader.newInstance(classPathUrls, currentClassLoader);
+        return loader;
+    }
+
+    private static URL[] classPathUrls(MethodFactoryConfiguration configuration) {
+        Classpath classpath = configuration.getClasspath();
+        return classpath
+                .getJarList()
+                .stream()
+                .map(File::new)
+                .map(File::toURI)
+                .map(MethodFactories::toUrl)
+                .toArray(URL[]::new);
+    }
+
+    private static URL toUrl(URI uri) {
+        try {
+            return uri.toURL();
+        } catch (MalformedURLException e) {
+            throw newIllegalArgumentException("Could not retrieve classpath dependency '%s'.",
+                                              uri, e);
+        }
     }
 
     /**
