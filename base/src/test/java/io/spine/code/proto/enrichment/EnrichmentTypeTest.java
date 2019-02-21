@@ -96,9 +96,10 @@ class EnrichmentTypeTest {
          *         console,
          *         which is followed with the enumeration of unexpected types like this:
          *
-         *         <pre>
-         *                                                                                                                 unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
-         *                                                                                                                 </pre>
+         * <pre>
+         *unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent,
+         * class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
+         *</pre>
          *
          *         please make sure these types are added in the verification list in the body of
          *         this
@@ -127,8 +128,7 @@ class EnrichmentTypeTest {
                 does not match the the name referenced in the `(by)` option. */
         }
 
-        @Nested
-        @DisplayName("for message types with alternative field names")
+        @Nested @DisplayName("for message types with alternative field names")
         class AltFieldNames {
 
             private final EnrichmentType et =
