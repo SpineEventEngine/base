@@ -85,11 +85,28 @@ message GeneratedInterfacesConfig {
     EnrichmentInterface enrichment_interface = 3;
 }
 
+// A container for the java classpath items.
+//
+message Classpath {
+
+    // An absolute OS-dependent path to a particular classpath JAR.
+    repeated string jar = 1;
+}
+
+// Configuration of the Spine Protoc method generator.
+//
+message GeneratorConfiguration {
+
+    Classpath classpath = 1;
+}
+
 // Configuration of the Spine Protoc plugin methods generation.
 //
 message GeneratedMethodsConfig {
 
     repeated GeneratedMethod generated_method = 1;
+
+    GeneratorConfiguration configuration = 2;
 }
 
 // Configuration of the Spine Protoc plugin.
