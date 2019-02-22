@@ -23,74 +23,107 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
-import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.TypeFilter;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.base.MessageClassifiers.uuidContainer;
 
 /**
  * An abstract base for generated methods scanners.
  *
- * @see PatternScanner
+ * @param <G>
+ *         generated code configuration
  */
-public abstract class TypeScanner<C extends Message> {
+public abstract class TypeScanner<G extends Message> {
 
-    private final GeneratedMethodsConfig config;
-    private final MethodFactories methodFactories;
-
-    TypeScanner(GeneratedMethodsConfig config) {
-        this.config = config;
-        this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
+    protected TypeScanner() {
     }
 
     /**
      * Finds methods to be generated for the given type.
      */
     ImmutableList<CompilerOutput> scan(MessageType type) {
-        List<GeneratedMethod> generatedMethods = config.getGeneratedMethodList();
-
-        return generatedMethods
+        if (uuidContainer().test(type)) {
+            return uuidMessage(type);
+        }
+        if (type.isEnrichment()) {
+            return enrichmentMessage(type);
+        }
+        ImmutableList<CompilerOutput> result = filePatterns()
                 .stream()
-                .filter(TypeScanner::hasNotBlankName)
-                .filter(concreteFilter(type))
-                .map(new GenerateMethods(type))
+                .filter(isNotBlank())
+                .filter(matchesPattern(type))
+                .map(filePatternMapper(type))
                 .flatMap(List::stream)
                 .collect(toImmutableList());
+        return result;
     }
+
+    protected abstract ImmutableList<CompilerOutput> enrichmentMessage(MessageType type);
+
+    protected abstract ImmutableList<CompilerOutput> uuidMessage(MessageType type);
+
+    protected abstract List<G> filePatterns();
 
     /**
-     * Creates a concrete filtering predicate for a supplied type.
+     * Creates a file type pattern matcher predicate.
      */
-    abstract Predicate<GeneratedMethod> concreteFilter(MessageType type);
+    protected abstract MatchesPattern matchesPattern(MessageType type);
 
-    private static boolean hasNotBlankName(GeneratedMethod spec) {
-        return !spec.getFactoryName()
-                    .trim()
-                    .isEmpty();
-    }
+    /**
+     * Creates a predicate that ensured that a target code generation field is not empty.
+     */
+    protected abstract IsNotBlank isNotBlank();
 
-    private class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+    /**
+     * Creates a file pattern mapping function.
+     */
+    protected abstract Function<G, ImmutableList<CompilerOutput>>
+    filePatternMapper(MessageType type);
 
-        private final MessageType type;
+    protected class IsNotBlank implements Predicate<G> {
 
-        private GenerateMethods(MessageType type) {
-            this.type = type;
+        private final Function<G, String> targetExtractor;
+
+        protected IsNotBlank(Function<G, String> targetExtractor) {
+            this.targetExtractor = targetExtractor;
         }
 
         @Override
-        public ImmutableList<CompilerOutput> apply(GeneratedMethod spec) {
-            MethodFactory factory = methodFactories.newFactoryFor(spec);
-            return factory
-                    .newMethodsFor(type)
-                    .stream()
-                    .map(methodBody -> MessageMethod.from(methodBody, type))
-                    .collect(toImmutableList());
+        public boolean test(G configuration) {
+            String target = targetExtractor.apply(configuration);
+            return target != null && !target.trim()
+                                            .isEmpty();
+        }
+    }
+
+    protected class MatchesPattern implements Predicate<G> {
+
+        private final String sourceFilePath;
+        private final Function<G, TypeFilter> typeFilterExtractor;
+
+        protected MatchesPattern(MessageType type, Function<G, TypeFilter> typeFilterExtractor) {
+            checkNotNull(type);
+            this.sourceFilePath = type.sourceFile()
+                                      .getPath()
+                                      .toString();
+            this.typeFilterExtractor = typeFilterExtractor;
+        }
+
+        @Override
+        public boolean test(G configuration) {
+            checkNotNull(configuration);
+            TypeFilter filter = typeFilterExtractor.apply(configuration);
+            if (filter.getValueCase() != TypeFilter.ValueCase.FILE_POSTFIX) {
+                return false;
+            }
+            return sourceFilePath.contains(filter.getFilePostfix());
         }
     }
 

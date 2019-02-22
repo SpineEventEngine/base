@@ -41,6 +41,7 @@ import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -62,8 +63,8 @@ final class MethodFactories {
      * <p>If specification is invalid or the specified class for some reason could not be
      * instantiated a {@link NoOpMethodFactory} instance is returned.
      */
-    MethodFactory newFactoryFor(GeneratedMethod spec) {
-        String factoryName = spec.getFactoryName();
+    MethodFactory newFactoryFor(String factoryName) {
+        checkNotNull(factoryName);
         if (factoryName.trim()
                        .isEmpty()) {
             return NoOpMethodFactory.INSTANCE;

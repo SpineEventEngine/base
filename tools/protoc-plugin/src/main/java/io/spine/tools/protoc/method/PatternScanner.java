@@ -20,48 +20,93 @@
 
 package io.spine.tools.protoc.method;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.MessageType;
+import io.spine.protoc.MethodFactory;
+import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.EnrichmentMethod;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
-import io.spine.tools.protoc.TypeFilter;
+import io.spine.tools.protoc.UuidMethod;
 
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.validate.Validate.isDefault;
 
 /**
  * Scans the given type for a match upon patterns defined in {@link GeneratedMethodsConfig}.
  */
-class PatternScanner extends TypeScanner {
+class PatternScanner extends TypeScanner<GeneratedMethod> {
+    private final GeneratedMethodsConfig config;
+    private final MethodFactories methodFactories;
 
     PatternScanner(GeneratedMethodsConfig config) {
-        super(config);
+        super();
+        this.config = config;
+        this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
     }
 
     @Override
-    Predicate<GeneratedMethod> concreteFilter(MessageType type) {
-        return new MatchesPattern(type);
+    protected ImmutableList<CompilerOutput> enrichmentMessage(MessageType type) {
+        EnrichmentMethod enrichmentMethod = config.getEnrichmentMethod();
+        if (isDefault(enrichmentMethod)) {
+            return ImmutableList.of();
+        }
+        return generateMethods(enrichmentMethod.getFactoryName(), type);
     }
 
-    private static class MatchesPattern implements Predicate<GeneratedMethod> {
+    @Override
+    protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
+        UuidMethod uuidMethod = config.getUuidMethod();
+        if (isDefault(uuidMethod)) {
+            return ImmutableList.of();
+        }
+        return generateMethods(uuidMethod.getFactoryName(), type);
+    }
 
-        private final String sourceFilePath;
+    @Override
+    protected List<GeneratedMethod> filePatterns() {
+        return config.getGeneratedMethodList();
+    }
 
-        private MatchesPattern(MessageType type) {
-            checkNotNull(type);
-            this.sourceFilePath = type.sourceFile()
-                                      .getPath()
-                                      .toString();
+    @Override
+    protected MatchesPattern matchesPattern(MessageType type) {
+        return new MatchesPattern(type, GeneratedMethod::getFilter);
+    }
+
+    @Override
+    protected IsNotBlank isNotBlank() {
+        return new IsNotBlank(GeneratedMethod::getFactoryName);
+    }
+
+    @Override
+    protected Function<GeneratedMethod, ImmutableList<CompilerOutput>>
+    filePatternMapper(MessageType type) {
+        return new GenerateMethods(type);
+    }
+
+    private class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+
+        private final MessageType type;
+
+        private GenerateMethods(MessageType type) {
+            this.type = type;
         }
 
         @Override
-        public boolean test(GeneratedMethod method) {
-            checkNotNull(method);
-            TypeFilter filter = method.getFilter();
-            if (filter.getValueCase() != TypeFilter.ValueCase.FILE_POSTFIX) {
-                return false;
-            }
-            return sourceFilePath.contains(filter.getFilePostfix());
+        public ImmutableList<CompilerOutput> apply(GeneratedMethod spec) {
+            return generateMethods(spec.getFactoryName(), type);
         }
+    }
+
+    private ImmutableList<CompilerOutput> generateMethods(String factoryName, MessageType type) {
+        MethodFactory factory = methodFactories.newFactoryFor(factoryName);
+        return factory
+                .newMethodsFor(type)
+                .stream()
+                .map(methodBody -> MessageMethod.from(methodBody, type))
+                .collect(toImmutableList());
     }
 }

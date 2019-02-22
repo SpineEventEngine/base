@@ -25,7 +25,6 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
-import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,63 +53,49 @@ final class MethodFactoriesTest {
         @ParameterizedTest(name = "\"{0}\"")
         @ValueSource(strings = {"", "  "})
         void forBlankFactoryName(String factoryName) {
-            GeneratedMethod spec = specForFactory(factoryName);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor(factoryName))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if implementation does not have a public constructor")
         @Test
         void withoutPublicConstructor() {
-            GeneratedMethod spec = specForFactory(WithoutPublicConstructor.class);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(newFactoryFor(WithoutPublicConstructor.class))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if implementation has private constructor")
         @Test
         void withPrivateConstructor() {
-            GeneratedMethod spec = specForFactory(WithPrivateConstructor.class);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(newFactoryFor(WithPrivateConstructor.class))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if exception is thrown during instantiation")
         @Test
         void exceptionThrownDuringInstantiation() {
-            GeneratedMethod spec = specForFactory(WithExceptionDuringInstantiation.class);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(newFactoryFor(WithExceptionDuringInstantiation.class))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if implementation is abstract")
         @Test
         void implementationIsAbstract() {
-            GeneratedMethod spec = specForFactory(WithAbstractImplementation.class);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(newFactoryFor(WithAbstractImplementation.class))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if implementation is not found or not available")
         @Test
         void classIsNotFound() {
-            GeneratedMethod spec = specForFactory("com.example.NonExistingMethodFactory");
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(methodFactories.newFactoryFor("com.example.NonExistingMethodFactory"))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
 
         @DisplayName("if supplied class does not implement MethodFactory")
         @Test
         void doesNotImplementMethodFactory() {
-            GeneratedMethod spec = specForFactory(NotMethodFactory.class);
-
-            assertThat(methodFactories.newFactoryFor(spec))
+            assertThat(newFactoryFor(NotMethodFactory.class))
                     .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
         }
     }
@@ -118,10 +103,12 @@ final class MethodFactoriesTest {
     @DisplayName("return MethodFactory instance by it's fully-qualified name")
     @Test
     void returnMethodFactoryInstanceByFullyQualifiedName() {
-        GeneratedMethod spec = specForFactory(StubMethodFactory.class);
-
-        assertThat(methodFactories.newFactoryFor(spec))
+        assertThat(newFactoryFor(StubMethodFactory.class))
                 .isInstanceOf(StubMethodFactory.class);
+    }
+
+    private MethodFactory newFactoryFor(Class<?> factory) {
+        return methodFactories.newFactoryFor(factory.getName());
     }
 
     @Immutable
@@ -174,15 +161,5 @@ final class MethodFactoriesTest {
 
         public NotMethodFactory() {
         }
-    }
-
-    private static GeneratedMethod specForFactory(Class<?> generator) {
-        return specForFactory(generator.getName());
-    }
-
-    private static GeneratedMethod specForFactory(String factoryName) {
-        return GeneratedMethod.newBuilder()
-                              .setFactoryName(factoryName)
-                              .build();
     }
 }
