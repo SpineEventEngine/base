@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
@@ -38,7 +39,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *
  * @see PatternScanner
  */
-abstract class TypeScanner {
+public abstract class TypeScanner<C extends Message> {
 
     private final GeneratedMethodsConfig config;
     private final MethodFactories methodFactories;

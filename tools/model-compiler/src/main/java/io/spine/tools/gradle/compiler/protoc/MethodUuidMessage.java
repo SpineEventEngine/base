@@ -20,23 +20,25 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.UuidMethod;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
+/**
+ * A {@link GeneratedMethodConfig method} configuration {@link UuidMessage uuid} message
+ * selector.
+ */
 public class MethodUuidMessage implements UuidMessage<UuidMethod>, GeneratedMethodConfig {
 
     private @Nullable ClassName factoryName;
 
+    /** Prevents direct instantiation. **/
     MethodUuidMessage() {
     }
 
-    /**
-     * Sets current target class to a supplied value.
-     */
     @Override
     public void withMethodFactory(@FullyQualifiedName String factoryName) {
         checkNotNull(factoryName);
@@ -44,20 +46,22 @@ public class MethodUuidMessage implements UuidMessage<UuidMethod>, GeneratedMeth
     }
 
     @Override
+    public void ignore() {
+        this.factoryName = null;
+    }
+
+    @Internal
+    @Override
     public @Nullable ClassName methodFactory() {
         return factoryName;
     }
 
+    @Internal
     @Override
     public UuidMethod toProto() {
         return UuidMethod
                 .newBuilder()
                 .setFactoryName(safeName())
                 .build();
-    }
-
-    @Override
-    public void ignore() {
-        this.factoryName = null;
     }
 }

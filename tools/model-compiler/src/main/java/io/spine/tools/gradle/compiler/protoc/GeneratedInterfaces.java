@@ -138,6 +138,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      * <p>In such case, no additional interface is added to the top-level message classes matching
      * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
      * are generated regardless the configuration.
+     *
+     * @return a file pattern factory to be used to configure patterns
      */
     @SuppressWarnings("RedundantMethodOverride") // do override to extend javadoc
     @Override
@@ -145,35 +147,11 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
         return super.filePattern();
     }
 
-    /**
-     * Configures an interface generation for messages with a single {@code string} field called
-     * {@code uuid}.
-     *
-     * <p>This method functions similarly to the {@link #filePattern()} except for
-     * several differences:
-     * <ul>
-     *     <li>the file in which the message type is defined does not matter;
-     *     <li>nested definitions are affected as well as top-level ones.
-     * </ul>
-     *
-     * @return a configuration object for Proto messages matching UUID message pattern
-     */
     @Override
     public InterfaceUuidMessage uuidMessage() {
         return uuidMessage;
     }
 
-    /**
-     * Configures an interface generation for messages with {@code (enrichment_for)} option.
-     *
-     * <p>This method functions are similar to the {@link #filePattern()} except for
-     * several differences:
-     * <ul>
-     *     <li>the file in which the message type is defined does not matter;
-     * </ul>
-     *
-     * @return a configuration object for Proto messages matching enrichment message pattern
-     */
     @Override
     public InterfaceEnrichmentMessage enrichmentMessage() {
         return enrichmentMessage;

@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.EnrichmentInterface;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,17 +28,19 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An {@link GeneratedInterfaceConfig interface} configuration {@link EnrichmentMessage enrichment}
+ * message selector.
+ */
 public final class InterfaceEnrichmentMessage
         implements EnrichmentMessage<EnrichmentInterface>, GeneratedInterfaceConfig {
 
     private @Nullable ClassName interfaceName;
 
+    /** Prevents direct instantiation. **/
     InterfaceEnrichmentMessage() {
     }
 
-    /**
-     * Sets current target class to a supplied value.
-     */
     @Override
     public void markWith(@FullyQualifiedName String targetName) {
         checkNotNull(targetName);
@@ -45,20 +48,22 @@ public final class InterfaceEnrichmentMessage
     }
 
     @Override
+    public void ignore() {
+        this.interfaceName = null;
+    }
+
+    @Internal
+    @Override
     public @Nullable ClassName interfaceName() {
         return interfaceName;
     }
 
+    @Internal
     @Override
     public EnrichmentInterface toProto() {
         return EnrichmentInterface
                 .newBuilder()
                 .setInterfaceName(safeName())
                 .build();
-    }
-
-    @Override
-    public void ignore() {
-        this.interfaceName = null;
     }
 }

@@ -22,5 +22,8 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.protobuf.Message;
 
+/**
+ * Selects messages with {@code (enrichment_for)} option.
+ */
 interface EnrichmentMessage<T extends Message> extends Selector<T> {
 }

@@ -24,8 +24,13 @@ import io.spine.tools.protoc.GeneratedMethod;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.regex.qual.Regex;
 
+/**
+ * A {@link GeneratedMethodConfig method} configuration file pattern
+ * {@link FilePatternFactory factory}.
+ */
 public final class MethodFilePatternFactory extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern> {
 
+    /** Prevents direct instantiation. **/
     MethodFilePatternFactory() {
         super();
     }

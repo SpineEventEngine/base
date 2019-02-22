@@ -28,23 +28,30 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import static org.gradle.internal.impldep.com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An {@link GeneratedInterfaceConfig interface} configuration {@link PostfixPattern postfix}
+ * pattern selector.
+ */
 public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> implements GeneratedMethodConfig {
 
     private @Nullable ClassName factoryName;
 
+    /** Prevents direct instantiation. **/
     MethodPostfixPattern(@Regex String postfix) {
         super(postfix);
     }
 
-    /**
-     * Sets current target class to a supplied value.
-     */
     @Override
     public void withMethodFactory(@FullyQualifiedName String targetName) {
         checkNotNull(targetName);
         this.factoryName = ClassName.of(targetName);
+    }
+
+    @Override
+    public void ignore() {
+        this.factoryName = null;
     }
 
     @Internal
@@ -53,6 +60,7 @@ public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> 
         return factoryName;
     }
 
+    @Internal
     @Override
     public GeneratedMethod toProto() {
         return GeneratedMethod
@@ -60,10 +68,5 @@ public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> 
                 .setFilter(TypeFilters.filePostfix(getPattern()))
                 .setFactoryName(safeName())
                 .build();
-    }
-
-    @Override
-    public void ignore() {
-        this.factoryName = null;
     }
 }

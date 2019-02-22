@@ -23,8 +23,17 @@ package io.spine.tools.gradle.compiler.protoc;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
+/**
+ * Represents a Protoc Spine plugin configuration selector.
+ *
+ * @param <T>
+ *         Protobuf counterpart
+ */
 public interface Selector<T extends Message> {
 
+    /**
+     * Translates current selector to its Protobuf counterpart.
+     */
     @Internal
     T toProto();
 }

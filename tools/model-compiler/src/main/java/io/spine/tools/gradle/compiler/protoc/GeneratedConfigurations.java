@@ -28,10 +28,17 @@ import io.spine.annotation.Internal;
  * Abstract base for Gradle extension configurations related to Spine Protoc plugin.
  *
  * @param <M>
- *         actual configuration type
+ *         file pattern Protobuf configuration
+ * @param <F>
+ *         file pattern factory
+ * @param <U>
+ *         UUID message selector
+ * @param <E>
+ *         enrichment message selector
  * @param <C>
- *         Protobuf configuration type
+ *         Protobuf configuration
  * @see GeneratedInterfaces
+ * @see GeneratedMethods
  */
 abstract class GeneratedConfigurations<M extends Message,
         F extends FilePatternFactory<M, ?>,
@@ -97,7 +104,7 @@ abstract class GeneratedConfigurations<M extends Message,
     public abstract E enrichmentMessage();
 
     /**
-     * Converts this config into a Protobuf configuration.
+     * Converts current configuration into its Protobuf counterpart.
      */
     @Internal
     public abstract C asProtocConfig();

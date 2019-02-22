@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.UuidInterface;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,10 +28,15 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An {@link GeneratedInterfaceConfig interface} configuration {@link UuidMessage uuid} message
+ * selector.
+ */
 public final class InterfaceUuidMessage implements UuidMessage<UuidInterface>, GeneratedInterfaceConfig {
 
     private @Nullable ClassName interfaceName;
 
+    /** Prevents direct instantiation. **/
     InterfaceUuidMessage() {
     }
 
@@ -44,20 +50,22 @@ public final class InterfaceUuidMessage implements UuidMessage<UuidInterface>, G
     }
 
     @Override
+    public void ignore() {
+        this.interfaceName = null;
+    }
+
+    @Internal
+    @Override
     public @Nullable ClassName interfaceName() {
         return interfaceName;
     }
 
+    @Internal
     @Override
     public UuidInterface toProto() {
         return UuidInterface
                 .newBuilder()
                 .setInterfaceName(safeName())
                 .build();
-    }
-
-    @Override
-    public void ignore() {
-        this.interfaceName = null;
     }
 }

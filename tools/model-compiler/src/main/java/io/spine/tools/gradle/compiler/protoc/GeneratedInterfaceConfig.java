@@ -53,6 +53,9 @@ public interface GeneratedInterfaceConfig extends ProtocConfig {
     @Internal
     @Nullable ClassName interfaceName();
 
+    /**
+     * Returns a non-null interface class name.
+     */
     @Internal
     default String safeName() {
         return Optional.ofNullable(interfaceName())

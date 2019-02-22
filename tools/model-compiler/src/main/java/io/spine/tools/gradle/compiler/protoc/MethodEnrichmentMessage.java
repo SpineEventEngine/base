@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.EnrichmentMethod;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,16 +28,18 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A {@link GeneratedMethodConfig method} configuration {@link EnrichmentMessage enrichment}
+ * message selector.
+ */
 public final class MethodEnrichmentMessage implements EnrichmentMessage<EnrichmentMethod>, GeneratedMethodConfig {
 
     private @Nullable ClassName factoryName;
 
+    /** Prevents direct instantiation. **/
     MethodEnrichmentMessage() {
     }
 
-    /**
-     * Sets current target class to a supplied value.
-     */
     @Override
     public void withMethodFactory(@FullyQualifiedName String factoryName) {
         checkNotNull(factoryName);
@@ -44,20 +47,22 @@ public final class MethodEnrichmentMessage implements EnrichmentMessage<Enrichme
     }
 
     @Override
+    public void ignore() {
+        this.factoryName = null;
+    }
+
+    @Internal
+    @Override
     public @Nullable ClassName methodFactory() {
         return factoryName;
     }
 
+    @Internal
     @Override
     public EnrichmentMethod toProto() {
         return EnrichmentMethod
                 .newBuilder()
                 .setFactoryName(safeName())
                 .build();
-    }
-
-    @Override
-    public void ignore() {
-        this.factoryName = null;
     }
 }

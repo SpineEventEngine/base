@@ -22,5 +22,8 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.protobuf.Message;
 
+/**
+ * Selects messages with a single {@code string} field called{@code uuid}.
+ */
 interface UuidMessage<T extends Message> extends Selector<T> {
 }

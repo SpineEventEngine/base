@@ -52,6 +52,9 @@ public interface GeneratedMethodConfig extends ProtocConfig {
     @Internal
     @Nullable ClassName methodFactory();
 
+    /**
+     * Returns a non-null method factory class name.
+     */
     @Internal
     default String safeName() {
         return Optional.ofNullable(methodFactory())

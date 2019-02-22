@@ -24,8 +24,13 @@ import io.spine.tools.protoc.GeneratedInterface;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.regex.qual.Regex;
 
+/**
+ * An {@link GeneratedInterfaceConfig interface} configuration file pattern
+ * {@link FilePatternFactory factory}.
+ */
 public final class InterfaceFilePatternFactory extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> {
 
+    /** Prevents direct instantiation. **/
     InterfaceFilePatternFactory() {
         super();
     }

@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
@@ -30,6 +29,16 @@ import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * Creates particular {@link FilePattern} selectors.
+ *
+ * @param <T>
+ *         Protobuf configuration counterpart
+ * @param <P>
+ *         postfix pattern selector
+ */
 public abstract class FilePatternFactory<T extends Message, P extends PostfixPattern<T>> {
 
     private final Set<FilePattern<T>> patterns;
@@ -38,18 +47,27 @@ public abstract class FilePatternFactory<T extends Message, P extends PostfixPat
         this.patterns = Sets.newConcurrentHashSet();
     }
 
+    /**
+     * Creates a {@link PostfixPattern} selector out of a supplied {@code postfix}.
+     */
     public P endsWith(@Regex String postfix) {
-        Preconditions.checkNotNull(postfix);
+        checkNotNull(postfix);
         P result = newPostfixPattern(postfix);
         patterns.add(result);
         return result;
     }
 
+    /**
+     * Returns currently configured file patterns.
+     */
     @Internal
     ImmutableList<FilePattern<T>> patterns() {
         return ImmutableList.copyOf(patterns);
     }
 
+    /**
+     * Instantiates a particular {@link PostfixPattern} for the supplied {@code postfix}.
+     */
     @Internal
     abstract P newPostfixPattern(@NonNull @Regex String postfix);
 }
