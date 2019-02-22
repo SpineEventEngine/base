@@ -977,9 +977,9 @@ message IsOption {
 //
 message LifecycleOption {
 
-    // The events and rejections which will cause the entity to be archived.
+    // The events and rejections which will cause the entity to become archived.
     string archive_upon = 1;
 
-    // The events and rejections which will cause the entity to be deleted.
+    // The events and rejections which will cause the entity to become deleted.
     string delete_upon = 2;
 }

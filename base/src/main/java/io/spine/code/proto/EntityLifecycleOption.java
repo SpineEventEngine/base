@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * A parser of the {@link LifecycleOption} values.
+ * Conveniently obtains {@link LifecycleOption} values from the Proto entity declarations.
  */
 public final class EntityLifecycleOption extends MessageOption<LifecycleOption> {
 
@@ -45,7 +45,8 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
     }
 
     /**
-     * Obtains {@link LifecycleOption#getArchiveUpon()} archive_upon} option value.
+     * Obtains {@link LifecycleOption#getArchiveUpon()} archive_upon} option value for the given
+     * type.
      *
      * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
      * package of enclosing {@code MessageType} is assumed.
@@ -59,7 +60,7 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
     }
 
     /**
-     * Obtains {@link LifecycleOption#getDeleteUpon() delete_upon} option value.
+     * Obtains {@link LifecycleOption#getDeleteUpon() delete_upon} option value for the given type.
      *
      * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
      * package of enclosing {@code MessageType} is assumed.

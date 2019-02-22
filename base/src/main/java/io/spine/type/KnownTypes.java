@@ -206,11 +206,11 @@ public class KnownTypes implements Serializable {
      *
      * @apiNote This method is in general less efficient than {@link #allMatching(TypeRef)} as in
      *         case of a {@link CompositeTypeRef} it iterates through the known types multiple
-     *         times to verify each sub-element. It should be used only during compile-time Model
-     *         checks where it's important to know that the type reference is fully resolved.
+     *         times to validate each sub-element. It should be used only during compile-time Model
+     *         checks to verify that all type references are fully resolved.
      *
      * @throws UnresolvedReferenceException
-     *         in case any of {@code TypeRef} elements point to unknown types or packages
+     *         in case any of the {@code TypeRef} elements points to an unknown type or package
      */
     @CanIgnoreReturnValue
     public ImmutableSet<MessageType> resolveAndValidate(TypeRef typeRef) {
@@ -288,7 +288,7 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      *
-     * n@apiNote This class is public for allowing extension of known types by the development tools.
+     * @apiNote This class is public for allowing extension of known types by the development tools.
      */
     @Internal
     public static final class Holder {
