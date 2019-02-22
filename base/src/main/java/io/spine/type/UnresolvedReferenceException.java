@@ -24,6 +24,10 @@ import io.spine.code.proto.ref.TypeRef;
 
 import static java.lang.String.format;
 
+/**
+ * Exception thrown when the {@linkplain TypeRef type reference} points to an unknown type or
+ * package.
+ */
 public final class UnresolvedReferenceException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
@@ -31,6 +35,9 @@ public final class UnresolvedReferenceException extends RuntimeException {
     private static final String MESSAGE_FORMAT =
             "TypeRef (`%s`) references unknown package or type";
 
+    /**
+     * Creates a new instance with a pre-defined message format.
+     */
     public UnresolvedReferenceException(TypeRef typeRef) {
         super(format(MESSAGE_FORMAT, typeRef));
     }
