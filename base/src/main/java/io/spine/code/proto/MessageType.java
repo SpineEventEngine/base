@@ -65,6 +65,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         super(descriptor, true);
     }
 
+    /**
+     * Creates a new instance from the given {@code Message} class.
+     */
     public static MessageType of(Class<? extends Message> aClass) {
         TypeName typeName = TypeName.of(aClass);
         Descriptor descriptor = typeName.messageDescriptor();

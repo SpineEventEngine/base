@@ -200,6 +200,19 @@ public class KnownTypes implements Serializable {
         return result;
     }
 
+    /**
+     * Obtains all types matching the passed type reference.
+     *
+     * <p>Also checks that all {@code TypeRef} elements reference existing types and packages.
+     *
+     * @apiNote This method is in general less efficient than {@link #allMatching(TypeRef)} as in
+     *         case of a {@link CompositeTypeRef} it iterates through the known types multiple
+     *         times to verify each sub-element. It should be used only during compile-time Model
+     *         checks where it's important to know that the type reference is fully resolved.
+     *
+     * @throws UnresolvedReferenceException
+     *         in case any of {@code TypeRef} elements point to unknown types or packages
+     */
     @CanIgnoreReturnValue
     public ImmutableSet<MessageType> resolveAndValidate(TypeRef typeRef) {
         if (typeRef instanceof CompositeTypeRef) {
@@ -209,12 +222,12 @@ public class KnownTypes implements Serializable {
     }
 
     private ImmutableSet<MessageType> resolveComposite(CompositeTypeRef typeRef) {
-        ImmutableList<TypeRef> elements = typeRef.elements();
         ImmutableSet<MessageType> result =
-                elements.stream()
-                        .map(this::doResolve)
-                        .flatMap(ImmutableSet::stream)
-                        .collect(toImmutableSet());
+                typeRef.elements()
+                       .stream()
+                       .map(this::doResolve)
+                       .flatMap(ImmutableSet::stream)
+                       .collect(toImmutableSet());
         return result;
     }
 
@@ -276,7 +289,7 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      *
-     * @apiNote This class is public for allowing extension of known types by the development tools.
+     * n@apiNote This class is public for allowing extension of known types by the development tools.
      */
     @Internal
     public static final class Holder {
