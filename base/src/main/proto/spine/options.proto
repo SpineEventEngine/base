@@ -525,6 +525,8 @@ extend google.protobuf.MessageOptions {
     // Entity lifecycle options.
     //
     // Currently applicable only to process managers.
+    //
+    // See `LifecycleOption` doc for details.
     LifecycleOption lifecycle = 73929;
 
     // Reserved 73930 to 73938 for future options.
@@ -952,8 +954,8 @@ message IsOption {
 // Marks "terminal" events and rejections for the entity.
 //
 // Event and rejection types are stated in a string, separated by commas, as follows:
-// "Event1, Rejection1, io.spine.core.Event2". Both fully qualified names and names relative to the
-// current package are accepted.
+// "Event1, Rejection1, io.spine.user.Event2...". Both fully qualified names and names relative to
+// the current package are accepted.
 //
 // Currently, this option is applicable only to process managers.
 //
