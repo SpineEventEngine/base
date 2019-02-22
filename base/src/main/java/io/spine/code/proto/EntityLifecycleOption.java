@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Conveniently obtains {@link LifecycleOption} values from the Proto entity declarations.
+ * Conveniently obtains {@link LifecycleOption} values from the Proto entity declaration.
  */
 public final class EntityLifecycleOption extends MessageOption<LifecycleOption> {
 
