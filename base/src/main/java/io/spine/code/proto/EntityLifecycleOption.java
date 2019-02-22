@@ -27,22 +27,46 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * A parser of the {@link LifecycleOption} values.
+ */
 public final class EntityLifecycleOption extends MessageOption<LifecycleOption> {
 
     public EntityLifecycleOption() {
         super(OptionsProto.lifecycle);
     }
 
+    /**
+     * Checks if a given message has any of the {@code lifecycle} options specified.
+     */
     public boolean hasLifecycle(MessageType type) {
         Optional<LifecycleOption> option = valueFrom(type.descriptor());
         return option.isPresent();
     }
 
+    /**
+     * Obtains {@link LifecycleOption#getArchiveUpon()} archive_upon} option value.
+     *
+     * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
+     * package of enclosing {@code MessageType} is assumed.
+     *
+     * <p>If the option is set to empty {@code String}, the method returns an empty
+     * {@code Optional}.
+     */
     public Optional<TypeRef> archiveUpon(MessageType type) {
         Optional<TypeRef> result = optionIfPresent(type, LifecycleOption::getArchiveUpon);
         return result;
     }
 
+    /**
+     * Obtains {@link LifecycleOption#getDeleteUpon() delete_upon} option value.
+     *
+     * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
+     * package of enclosing {@code MessageType} is assumed.
+     *
+     * <p>If the option is set to empty {@code String}, the method returns an empty
+     * {@code Optional}.
+     */
     public Optional<TypeRef> deleteUpon(MessageType type) {
         Optional<TypeRef> result = optionIfPresent(type, LifecycleOption::getDeleteUpon);
         return result;
@@ -54,7 +78,7 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
         Optional<TypeRef> result =
                 option.map(optionGetter)
                       .flatMap(EntityLifecycleOption::typeRefIfPresent)
-                      .map(typeRef -> ensureSamePackage(typeRef, type));
+                      .map(typeRef -> provideWithPackage(typeRef, type));
         return result;
     }
 
@@ -67,7 +91,11 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
         return result;
     }
 
-    private static TypeRef ensureSamePackage(TypeRef typeRef, MessageType enclosing) {
+    /**
+     * Provides the given {@code TypeRef} with the {@code enclosing} message package, if it doesn't
+     * have its own.
+     */
+    private static TypeRef provideWithPackage(TypeRef typeRef, MessageType enclosing) {
         PackageName packageName = PackageName.of(enclosing.descriptor());
         TypeRef result = typeRef.withPackage(packageName);
         return result;
