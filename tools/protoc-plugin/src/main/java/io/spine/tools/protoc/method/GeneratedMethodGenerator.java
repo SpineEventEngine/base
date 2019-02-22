@@ -38,11 +38,11 @@ import java.util.Collection;
  */
 public class GeneratedMethodGenerator extends SpineProtoGenerator {
 
-    private final PatternScanner patternScanner;
+    private final GeneratedMethodScanner generatedMethodScanner;
 
     private GeneratedMethodGenerator(GeneratedMethodsConfig config) {
         super();
-        patternScanner = new PatternScanner(config);
+        generatedMethodScanner = new GeneratedMethodScanner(config);
     }
 
     /**
@@ -59,7 +59,7 @@ public class GeneratedMethodGenerator extends SpineProtoGenerator {
         }
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
         MessageType messageType = (MessageType) type;
-        result.addAll(patternScanner.scan(messageType));
+        result.addAll(generatedMethodScanner.scan(messageType));
         return result.build();
     }
 

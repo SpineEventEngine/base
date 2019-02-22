@@ -18,13 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.TypeFilter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -48,7 +46,7 @@ public abstract class TypeScanner<G extends Message> {
     /**
      * Finds methods to be generated for the given type.
      */
-    ImmutableList<CompilerOutput> scan(MessageType type) {
+    public ImmutableList<CompilerOutput> scan(MessageType type) {
         if (uuidContainer().test(type)) {
             return uuidMessage(type);
         }
@@ -91,7 +89,7 @@ public abstract class TypeScanner<G extends Message> {
 
         private final Function<G, String> targetExtractor;
 
-        protected IsNotBlank(Function<G, String> targetExtractor) {
+        public IsNotBlank(Function<G, String> targetExtractor) {
             this.targetExtractor = targetExtractor;
         }
 
@@ -108,7 +106,7 @@ public abstract class TypeScanner<G extends Message> {
         private final String sourceFilePath;
         private final Function<G, TypeFilter> typeFilterExtractor;
 
-        protected MatchesPattern(MessageType type, Function<G, TypeFilter> typeFilterExtractor) {
+        public MatchesPattern(MessageType type, Function<G, TypeFilter> typeFilterExtractor) {
             checkNotNull(type);
             this.sourceFilePath = type.sourceFile()
                                       .getPath()

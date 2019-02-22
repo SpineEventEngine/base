@@ -27,6 +27,7 @@ import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentMethod;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidMethod;
 
 import java.util.List;
@@ -38,11 +39,12 @@ import static io.spine.validate.Validate.isDefault;
 /**
  * Scans the given type for a match upon patterns defined in {@link GeneratedMethodsConfig}.
  */
-class PatternScanner extends TypeScanner<GeneratedMethod> {
+final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
+
     private final GeneratedMethodsConfig config;
     private final MethodFactories methodFactories;
 
-    PatternScanner(GeneratedMethodsConfig config) {
+    GeneratedMethodScanner(GeneratedMethodsConfig config) {
         super();
         this.config = config;
         this.methodFactories = new MethodFactories(config.getFactoryConfiguration());

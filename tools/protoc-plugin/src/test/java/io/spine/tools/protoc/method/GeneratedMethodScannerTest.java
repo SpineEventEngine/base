@@ -38,8 +38,8 @@ import static io.spine.tools.protoc.TypeFilters.filePostfix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PatternScanner should")
-final class PatternScannerTest {
+@DisplayName("GeneratedMethodScanner should")
+final class GeneratedMethodScannerTest {
 
     @DisplayName("scan type for any generated methods")
     @Test
@@ -49,7 +49,7 @@ final class PatternScannerTest {
                 .addGeneratedMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
         MessageType type = new MessageType(TestMessage.getDescriptor());
-        PatternScanner scanner = new PatternScanner(config);
+        GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
         ImmutableList<CompilerOutput> result = scanner.scan(type);
         assertEquals(3, result.size());
     }
@@ -81,7 +81,7 @@ final class PatternScannerTest {
         }
 
         private void noMethodsGeneratedFor(GeneratedMethodsConfig config, MessageType type) {
-            PatternScanner scanner = new PatternScanner(config);
+            GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
             ImmutableList<CompilerOutput> result = scanner.scan(type);
             assertTrue(result.isEmpty());
         }
@@ -101,7 +101,7 @@ final class PatternScannerTest {
     @Immutable
     public static class FirstMethodFactory implements MethodFactory {
 
-        private static final String FQN = "io.spine.tools.protoc.method.PatternScannerTest$FirstMethodFactory";
+        private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$FirstMethodFactory";
 
         private static final MethodBody TEST_METHOD = MethodBody.of("public void first(){}");
 
@@ -114,7 +114,7 @@ final class PatternScannerTest {
     @Immutable
     public static class SecondMethodFactory implements MethodFactory {
 
-        private static final String FQN = "io.spine.tools.protoc.method.PatternScannerTest$SecondMethodFactory";
+        private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$SecondMethodFactory";
 
         private static final MethodBody TEST_METHOD_1 = MethodBody.of("public void second1(){}");
         private static final MethodBody TEST_METHOD_2 = MethodBody.of("public void second2(){}");
