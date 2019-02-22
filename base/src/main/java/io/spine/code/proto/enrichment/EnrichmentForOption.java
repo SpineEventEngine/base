@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.StringOption;
 import io.spine.code.proto.ref.DirectTypeRef;
+import io.spine.code.proto.ref.InPackage;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
@@ -126,7 +127,13 @@ public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
      * Makes sure that if a passed type reference is direct reference to a type,
      * it is a fully-qualified reference, or becomes one as the result of this method.
      */
+    @SuppressWarnings("ChainOfInstanceofChecks") /* TypeRef interface does not provide
+                                                    the means to check the package. */
     private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
+        if (ref instanceof InPackage) {
+            InPackage properlyPackaged = ((InPackage) ref).ensurePackage(packageName);
+            return properlyPackaged;
+        }
         if (!(ref instanceof DirectTypeRef)) {
             return ref;
         }
