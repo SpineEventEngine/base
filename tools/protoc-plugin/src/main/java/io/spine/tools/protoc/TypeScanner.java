@@ -56,6 +56,7 @@ public abstract class TypeScanner<G extends Message> {
         ImmutableList<CompilerOutput> result = filePatterns()
                 .stream()
                 .filter(isNotBlank())
+                .filter(customFilter(type))
                 .filter(matchesPattern(type))
                 .map(filePatternMapper(type))
                 .flatMap(List::stream)
@@ -78,6 +79,10 @@ public abstract class TypeScanner<G extends Message> {
      * Creates a predicate that ensured that a target code generation field is not empty.
      */
     protected abstract IsNotBlank isNotBlank();
+
+    protected Predicate<G> customFilter(MessageType type) {
+        return configuration -> true;
+    }
 
     /**
      * Creates a file pattern mapping function.

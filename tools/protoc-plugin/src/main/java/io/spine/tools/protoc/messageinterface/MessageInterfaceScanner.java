@@ -32,6 +32,7 @@ import io.spine.tools.protoc.UuidInterface;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static io.spine.tools.protoc.messageinterface.MessageImplements.implementInterface;
 import static io.spine.validate.Validate.isDefault;
@@ -87,6 +88,11 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
     protected Function<GeneratedInterface, ImmutableList<CompilerOutput>>
     filePatternMapper(MessageType type) {
         return new GenerateInterfaces(type);
+    }
+
+    @Override
+    protected Predicate<GeneratedInterface> customFilter(MessageType type) {
+        return configuration -> type.isTopLevel();
     }
 
     private static CompilerOutput uuidInterface(MessageType type, UuidInterface uuidInterface) {
