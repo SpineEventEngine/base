@@ -107,7 +107,8 @@ final class PatternScanner {
                 .stream()
                 .filter(target -> !target.getInterfaceName()
                                          .isEmpty())
-                .filter(target -> sourceFilePath.contains(target.getFilePostfix()))
+                .filter(target -> sourceFilePath.contains(target.getFilter()
+                                                                .getFilePostfix()))
                 .map(target -> implementByTargetTarget(type, target))
                 .findFirst();
     }

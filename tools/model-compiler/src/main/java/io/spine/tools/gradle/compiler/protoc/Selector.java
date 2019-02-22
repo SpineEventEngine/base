@@ -20,42 +20,11 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.Objects;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.regex.qual.Regex;
+import io.spine.annotation.Internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+public interface Selector<T extends Message> {
 
-/**
- * A file pattern matching file names which end with a certain postfix.
- */
-abstract class PostfixPattern<T extends Message> implements FilePattern<T> {
-
-    private final String postfix;
-
-    PostfixPattern(@Regex String postfix) {
-        this.postfix = checkNotNull(postfix);
-    }
-
-    @Override
-    public String getPattern() {
-        return postfix;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PostfixPattern)) {
-            return false;
-        }
-        PostfixPattern pattern = (PostfixPattern) o;
-        return Objects.equal(postfix, pattern.postfix);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(postfix);
-    }
+    @Internal
+    T toProto();
 }

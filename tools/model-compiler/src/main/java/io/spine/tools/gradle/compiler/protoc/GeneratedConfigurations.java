@@ -23,28 +23,31 @@ package io.spine.tools.gradle.compiler.protoc;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newConcurrentMap;
 
 /**
  * Abstract base for Gradle extension configurations related to Spine Protoc plugin.
  *
- * @param <T>
+ * @param <M>
  *         actual configuration type
  * @param <K>
  *         Protobuf configuration type
  * @see GeneratedInterfaces
  */
-abstract class GeneratedConfigurations<T extends ProtocConfig, K extends Message> {
+abstract class GeneratedConfigurations<M extends Message,
+        F extends FilePatternFactory<M, ?>,
+        K extends Message> {
 
-    private final Map<FilePattern, T> patternConfigs;
+    private final F filePatternFactory;
 
-    GeneratedConfigurations() {
-        patternConfigs = newConcurrentMap();
+    GeneratedConfigurations(F filePatternFactory) {
+        this.filePatternFactory = filePatternFactory;
+    }
+
+    /**
+     * Obtains current pattern configurations.
+     */
+    ImmutableList<FilePattern<M>> patternConfigurations() {
+        return ImmutableList.copyOf(filePatternFactory.patterns());
     }
 
     /**
@@ -53,38 +56,14 @@ abstract class GeneratedConfigurations<T extends ProtocConfig, K extends Message
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     filePattern(endsWith("events.proto"))
+     *     filePattern().endsWith("events.proto")
      *     }
      * </pre>
      *
-     * @param pattern
-     *         the file pattern
      * @return a configuration object for Proto files matching the pattern
      */
-    public T filePattern(FilePattern pattern) {
-        checkNotNull(pattern);
-        T config = patternConfiguration(pattern);
-        patternConfigs.put(pattern, config);
-        return config;
-    }
-
-    abstract T patternConfiguration(@NonNull FilePattern pattern);
-
-    /**
-     * Obtains current pattern configurations.
-     */
-    ImmutableList<T> patternConfigurations() {
-        return ImmutableList.copyOf(patternConfigs.values());
-    }
-
-    /**
-     * Creates a file pattern to match files names of which end with a given postfix.
-     *
-     * @see #filePattern(FilePattern)
-     */
-    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
-    public PostfixPattern endsWith(String postfix) {
-        return new PostfixPattern(postfix);
+    public F filePattern() {
+        return filePatternFactory;
     }
 
     /**

@@ -56,10 +56,10 @@ final class PluginTest {
     @Test
     void processCodeGenerationRequest() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        interfaces.filePattern(interfaces.endsWith(TEST_PROTO_POSTFIX))
+        interfaces.filePattern().endsWith(TEST_PROTO_POSTFIX)
                   .markWith(TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.filePattern(methods.endsWith(TEST_PROTO_POSTFIX))
+        methods.filePattern().endsWith(TEST_PROTO_POSTFIX)
                .withMethodFactory(TestMethodFactory.class.getName());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()

@@ -30,23 +30,25 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.EnrichmentInterface;
+import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import io.spine.tools.protoc.UuidInterface;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces
-        extends GeneratedConfigurations<PatternInterfaceConfig, GeneratedInterfacesConfig> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<
+        GeneratedInterface,
+        InterfaceFilePatternFactory,
+        GeneratedInterfacesConfig> {
 
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
     private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
 
     private GeneratedInterfaces() {
-        super();
+        super(new InterfaceFilePatternFactory());
     }
 
     /**
@@ -68,11 +70,11 @@ public final class GeneratedInterfaces
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        config.filePattern(config.endsWith(MessageFile.COMMANDS.suffix()))
+        config.filePattern().endsWith(MessageFile.COMMANDS.suffix())
               .markWith(CommandMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.EVENTS.suffix()))
+        config.filePattern().endsWith(MessageFile.EVENTS.suffix())
               .markWith(EventMessage.class.getName());
-        config.filePattern(config.endsWith(MessageFile.REJECTIONS.suffix()))
+        config.filePattern().endsWith(MessageFile.REJECTIONS.suffix())
               .markWith(RejectionMessage.class.getName());
         config.uuidMessage()
               .markWith(UuidValue.class.getName());
@@ -87,7 +89,7 @@ public final class GeneratedInterfaces
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     filePattern(endsWith("events.proto")).markWith("my.custom.EventMessage")
+     *     endsWith("events.proto").markWith("my.custom.EventMessage")
      *     }
      * </pre>
      *
@@ -119,7 +121,7 @@ public final class GeneratedInterfaces
      *
      *     modelCompiler {
      *         generateInterfaces {
-     *             filePattern(endsWith("events.proto")).markWith("my.custom.EventMessage")
+     *             filePattern().endsWith("events.proto").markWith("my.custom.EventMessage")
      *         }
      *     }
      *     }
@@ -132,34 +134,25 @@ public final class GeneratedInterfaces
      * <p>Another option for an interface generation configuration is to turn it off completely:
      * <pre>
      *     {@code
-     *     filePattern(endsWith("events.proto")).ignore()
+     *     endsWith("events.proto").ignore()
      *     }
      * </pre>
      *
      * <p>In such case, no additional interface is added to the top-level message classes matching
      * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
      * are generated regardless the configuration.
-     *
-     * @param pattern
-     *         the file pattern
-     * @return a configuration object for Proto files matching the pattern
      */
     @SuppressWarnings("RedundantMethodOverride") // do override to extend javadoc
     @Override
-    public PatternInterfaceConfig filePattern(FilePattern pattern) {
-        return super.filePattern(pattern);
-    }
-
-    @Override
-    PatternInterfaceConfig patternConfiguration(@NonNull FilePattern pattern) {
-        return PatternInterfaceConfig.fromPattern(pattern);
+    public InterfaceFilePatternFactory filePattern() {
+        return super.filePattern();
     }
 
     /**
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #filePattern(FilePattern)} except for
+     * <p>This method functions similarly to the {@link #endsWith(String)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -176,7 +169,7 @@ public final class GeneratedInterfaces
     /**
      * Configures an interface generation for messages with {@code (enrichment_for)} option.
      *
-     * <p>This method functions are similar to the {@link #filePattern(FilePattern)} except for
+     * <p>This method functions are similar to the {@link #endsWith(String)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -200,7 +193,7 @@ public final class GeneratedInterfaces
                 .setEnrichmentInterface(enrichmentInterface);
         patternConfigurations()
                 .stream()
-                .map(PatternInterfaceConfig::generatedInterface)
+                .map(Selector::toProto)
                 .forEach(result::addGeneratedInterface);
         return result.build();
     }

@@ -21,17 +21,17 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A configuration of methods to be generated for Java message classes.
  */
 public final class GeneratedMethods
-        extends GeneratedConfigurations<PatternMethodConfig, GeneratedMethodsConfig> {
+        extends GeneratedConfigurations<GeneratedMethod, MethodFilePatternFactory, GeneratedMethodsConfig> {
 
     private GeneratedMethods() {
-        super();
+        super(new MethodFilePatternFactory());
     }
 
     /**
@@ -49,7 +49,7 @@ public final class GeneratedMethods
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     filePattern(endsWith("events.proto")).withMethodFactory("io.spine.code.CustomMethodFactory")
+     *     filePattern().endsWith("events.proto").withMethodFactory("io.spine.code.CustomMethodFactory")
      *     }
      * </pre>
      *
@@ -99,20 +99,11 @@ public final class GeneratedMethods
      * </pre>
      *
      * <p>In such case, no additional methods is added to the message classes matching the pattern.
-     *
-     * @param filePattern
-     *         the file pattern
-     * @return a configuration object for Proto files matching the pattern
      */
     @SuppressWarnings("RedundantMethodOverride") // do override to extend javadoc
     @Override
-    public PatternMethodConfig filePattern(FilePattern filePattern) {
-        return super.filePattern(filePattern);
-    }
-
-    @Override
-    PatternMethodConfig patternConfiguration(@NonNull FilePattern pattern) {
-        return PatternMethodConfig.fromPattern(pattern);
+    public MethodFilePatternFactory filePattern() {
+        return super.filePattern();
     }
 
     @Internal
@@ -121,7 +112,7 @@ public final class GeneratedMethods
         GeneratedMethodsConfig.Builder result = GeneratedMethodsConfig.newBuilder();
         patternConfigurations()
                 .stream()
-                .map(PatternMethodConfig::generatedMethod)
+                .map(Selector::toProto)
                 .forEach(result::addGeneratedMethod);
         return result.build();
     }

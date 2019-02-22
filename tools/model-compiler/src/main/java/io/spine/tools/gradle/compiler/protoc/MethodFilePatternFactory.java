@@ -20,27 +20,14 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.code.java.ClassName;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+import io.spine.tools.protoc.GeneratedMethod;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.regex.qual.Regex;
 
-import java.util.Optional;
-
-/**
- * Abstract implementation base for {@link GeneratedMethodConfig}.
- */
-abstract class AbstractGeneratedMethodConfig extends AbstractTargetClassConfig implements GeneratedMethodConfig {
+public class MethodFilePatternFactory extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern> {
 
     @Override
-    public void withMethodFactory(@FullyQualifiedName String methodFactoryName) {
-        setTarget(methodFactoryName);
-    }
-
-    final Optional<ClassName> factoryName() {
-        return getTarget();
-    }
-
-    final @Nullable ClassName factoryClass() {
-        return factoryName().orElse(null);
+    MethodPostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
+        return new MethodPostfixPattern(postfix);
     }
 }

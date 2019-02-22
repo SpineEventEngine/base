@@ -20,10 +20,12 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import com.google.protobuf.Message;
+
 /**
  * A file name pattern qualifying a Spine protoc configuration.
  */
-public interface FilePattern {
+public interface FilePattern<T extends Message> extends Selector<T> {
 
     /**
      * Returns a pattern regexp associated with the current file pattern.

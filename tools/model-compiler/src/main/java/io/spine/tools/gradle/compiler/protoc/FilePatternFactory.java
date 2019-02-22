@@ -20,22 +20,37 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedInterface;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.regex.qual.Regex;
 
-/**
- * A {@link GeneratedInterfaceConfig} targeting a certain file pattern.
- */
-public abstract class PatternInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+import java.util.Set;
 
-    /**
-     * Converts this config into a {@code GeneratedInterface}.
-     */
-    abstract GeneratedInterface generatedInterface();
+abstract class FilePatternFactory<T extends Message, P extends PostfixPattern<T>> {
 
-    static PatternInterfaceConfig fromPattern(FilePattern filePattern) {
-        if (filePattern instanceof PostfixPattern) {
-            return new PostfixInterfaceConfig((PostfixPattern) filePattern);
-        }
-        throw new IllegalArgumentException("FilePattern " + filePattern + " is not supported yet.");
+    private final Set<FilePattern<T>> patterns;
+
+    FilePatternFactory() {
+        this.patterns = Sets.newConcurrentHashSet();
     }
+
+    @SuppressWarnings("WeakerAccess") // Gradle public DSL API
+    public P endsWith(@Regex String postfix) {
+        Preconditions.checkNotNull(postfix);
+        P result = newPostfixPattern(postfix);
+        patterns.add(result);
+        return result;
+    }
+
+    @Internal
+    ImmutableList<FilePattern<T>> patterns() {
+        return ImmutableList.copyOf(patterns);
+    }
+
+    @Internal
+    abstract P newPostfixPattern(@NonNull @Regex String postfix);
 }

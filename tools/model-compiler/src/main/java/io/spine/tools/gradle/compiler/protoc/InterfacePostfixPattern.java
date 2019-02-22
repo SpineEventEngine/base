@@ -20,60 +20,45 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.MoreObjects;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedInterface;
+import io.spine.tools.protoc.TypeFilters;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.regex.qual.Regex;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Objects;
+import java.util.Optional;
 
-/**
- * A {@link GeneratedInterfaceConfig} which configures message types defined in a Proto file with
- * a certain naming.
- */
-final class PostfixInterfaceConfig extends PatternInterfaceConfig {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    private final PostfixPattern postfix;
+public final class InterfacePostfixPattern extends PostfixPattern<GeneratedInterface> {
 
-    PostfixInterfaceConfig(PostfixPattern postfix) {
-        super();
-        this.postfix = postfix;
+    private @Nullable ClassName interfaceName;
+
+    InterfacePostfixPattern(@Regex String postfix) {
+        super(postfix);
+    }
+
+    /**
+     * Sets current target class to a supplied value.
+     */
+    public void markWith(@FullyQualifiedName String targetName) {
+        checkNotNull(targetName);
+        this.interfaceName = ClassName.of(targetName);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PostfixInterfaceConfig)) {
-            return false;
-        }
-        PostfixInterfaceConfig config = (PostfixInterfaceConfig) o;
-        return Objects.equals(postfix, config.postfix)
-                && Objects.equals(interfaceClass(), config.interfaceClass());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(postfix, interfaceClass());
-    }
-
-    @Override
-    public String toString() {
-        //noinspection DuplicateStringLiteralInspection
-        return MoreObjects.toStringHelper(this)
-                          .add("postfix", postfix)
-                          .add("interfaceName", interfaceClass())
-                          .toString();
-    }
-
-    @Override
-    GeneratedInterface generatedInterface() {
+    public GeneratedInterface toProto() {
         return GeneratedInterface
                 .newBuilder()
-                .setFilePostfix(postfix.getPattern())
+                .setFilter(TypeFilters.filePostfix(getPattern()))
                 .setInterfaceName(interfaceName()
                                           .map(ClassName::value)
                                           .orElse(""))
                 .build();
+    }
+
+    private Optional<ClassName> interfaceName() {
+        return Optional.ofNullable(interfaceName);
     }
 }

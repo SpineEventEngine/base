@@ -20,25 +20,14 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.util.Exceptions;
+import io.spine.tools.protoc.GeneratedInterface;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.regex.qual.Regex;
 
-/**
- * A {@link GeneratedMethodConfig} targeting a certain file pattern.
- */
-public abstract class PatternMethodConfig extends AbstractGeneratedMethodConfig {
+public class InterfaceFilePatternFactory extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> {
 
-    /**
-     * Converts this config into a {@code GeneratedMethod}.
-     */
-    abstract GeneratedMethod generatedMethod();
-
-    static PatternMethodConfig fromPattern(FilePattern filePattern) {
-        if (filePattern instanceof PostfixPattern) {
-            return new PostfixMethodConfig((PostfixPattern) filePattern);
-        }
-        throw Exceptions.newIllegalArgumentException(
-                "File pattern '%s' is not supported yet for GeneratedMethod configuration",
-                filePattern);
+    @Override
+    InterfacePostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
+        return new InterfacePostfixPattern(postfix);
     }
 }

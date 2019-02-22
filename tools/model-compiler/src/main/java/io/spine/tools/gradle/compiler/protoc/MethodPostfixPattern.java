@@ -20,59 +20,46 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.MoreObjects;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.TypeFilter;
 import io.spine.tools.protoc.TypeFilters;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.regex.qual.Regex;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Objects;
+import java.util.Optional;
 
-final class PostfixMethodConfig extends PatternMethodConfig {
+import static org.gradle.internal.impldep.com.google.common.base.Preconditions.checkNotNull;
 
-    private final PostfixPattern postfix;
+public class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> {
 
-    PostfixMethodConfig(PostfixPattern postfix) {
-        super();
-        this.postfix = postfix;
+    private @Nullable
+    ClassName factoryName;
+
+    MethodPostfixPattern(@Regex String postfix) {
+        super(postfix);
+    }
+
+    /**
+     * Sets current target class to a supplied value.
+     */
+    public void withMethodFactory(@FullyQualifiedName String targetName) {
+        checkNotNull(targetName);
+        this.factoryName = ClassName.of(targetName);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PostfixMethodConfig)) {
-            return false;
-        }
-        PostfixMethodConfig config = (PostfixMethodConfig) o;
-        return Objects.equals(postfix, config.postfix)
-                && Objects.equals(factoryClass(), config.factoryClass());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(postfix, factoryClass());
-    }
-
-    @Override
-    public String toString() {
-        //noinspection DuplicateStringLiteralInspection
-        return MoreObjects.toStringHelper(this)
-                          .add("postfix", postfix)
-                          .add("factoryName", factoryClass())
-                          .toString();
-    }
-
-    @Override
-    GeneratedMethod generatedMethod() {
-        TypeFilter filter = TypeFilters.filePostfix(postfix.getPattern());
+    public GeneratedMethod toProto() {
         return GeneratedMethod
                 .newBuilder()
-                .setFilter(filter)
+                .setFilter(TypeFilters.filePostfix(getPattern()))
                 .setFactoryName(factoryName()
                                         .map(ClassName::value)
                                         .orElse(""))
                 .build();
+    }
+
+    private Optional<ClassName> factoryName() {
+        return Optional.ofNullable(factoryName);
     }
 }
