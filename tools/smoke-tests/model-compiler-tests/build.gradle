@@ -26,14 +26,14 @@ dependencies {
 modelCompiler {
     
     generateInterfaces {
-        filePattern(endsWith("documents.proto")).markWith("io.spine.tools.protoc.DocumentMessage")
-        filePattern(endsWith("events.proto")).ignore()
+        filePattern().endsWith("documents.proto").markWith("io.spine.tools.protoc.DocumentMessage")
+        filePattern().endsWith("events.proto").ignore()
         uuidMessage().ignore()
         enrichmentMessage().markWith("io.spine.tools.protoc.TestEnrichment")
     }
 
     generateMethods {
-        filePattern(endsWith("generation_test.proto"))
+        filePattern().endsWith("generation_test.proto")
                 .withMethodFactory("io.spine.tools.protoc.TestMethodFactory")
     }
 }
