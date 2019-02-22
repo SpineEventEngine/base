@@ -263,7 +263,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         GeneratedMethodsConfig generatedMethodsConfig = methods
                 .asProtocConfig()
                 .toBuilder()
-                .setConfiguration(prepareGeneratorConfiguration(project))
+                .setFactoryConfiguration(prepareGeneratorConfiguration(project))
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()

@@ -36,7 +36,6 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * An abstract base for generated methods scanners.
  *
- * @see OptionsScanner
  * @see PatternScanner
  */
 abstract class TypeScanner {
@@ -46,7 +45,7 @@ abstract class TypeScanner {
 
     TypeScanner(GeneratedMethodsConfig config) {
         this.config = config;
-        this.methodFactories = new MethodFactories(config.getConfiguration());
+        this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
     }
 
     /**

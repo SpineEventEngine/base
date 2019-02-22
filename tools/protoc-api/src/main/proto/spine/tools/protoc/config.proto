@@ -91,9 +91,9 @@ message TypeFilter {
 //
 message GeneratedInterfacesConfig {
 
-    UuidInterface uuid_interface = 1;
+    repeated GeneratedInterface generated_interface = 1;
 
-    repeated GeneratedInterface generated_interface = 2;
+    UuidInterface uuid_interface = 2;
 
     EnrichmentInterface enrichment_interface = 3;
 }
@@ -119,7 +119,13 @@ message GeneratedMethodsConfig {
 
     repeated GeneratedMethod generated_method = 1;
 
-    MethodFactoryConfiguration configuration = 2;
+    UuidMethod uuid_method = 2;
+
+    EnrichmentMethod enrichment_method = 3;
+
+    reserved 4 to 14;
+
+    MethodFactoryConfiguration factory_configuration = 15;
 }
 
 // Configuration of the Spine Protoc plugin.
