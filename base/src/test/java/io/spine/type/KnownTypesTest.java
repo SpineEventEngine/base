@@ -220,10 +220,9 @@ class KnownTypesTest {
             String type = KnownTaskId.getDescriptor()
                                      .getFullName();
             TypeRef validRef = TypeRef.parse(type);
-            KnownTypes knownTypesSpy = spy(knownTypes);
-            knownTypesSpy.validate(validRef);
-
-            verify(knownTypesSpy, times(1)).allMatching(validRef);
+            ImmutableSet<MessageType> resolved = knownTypes.resolveAndValidate(validRef);
+            assertThat(resolved)
+                    .containsExactly(MessageType.of(KnownTaskId.class));
         }
 
         @Test
@@ -231,7 +230,8 @@ class KnownTypesTest {
         void direct() {
             String nonExistingType = "NonExistingType";
             TypeRef directRef = TypeRef.parse(nonExistingType);
-            assertThrows(UnresolvedReferenceException.class, () -> knownTypes.validate(directRef));
+            assertThrows(UnresolvedReferenceException.class,
+                         () -> knownTypes.resolveAndValidate(directRef));
         }
 
         @Test
@@ -240,7 +240,7 @@ class KnownTypesTest {
             String nonExistingType = "some.nonexistent.package";
             TypeRef packageRef = TypeRef.parse(nonExistingType);
             assertThrows(UnresolvedReferenceException.class,
-                         () -> knownTypes.validate(packageRef));
+                         () -> knownTypes.resolveAndValidate(packageRef));
         }
 
         @Test
@@ -253,7 +253,7 @@ class KnownTypesTest {
                                .join(validType, invalidType);
             TypeRef compositeRef = TypeRef.parse(ref);
             assertThrows(UnresolvedReferenceException.class,
-                         () -> knownTypes.validate(compositeRef));
+                         () -> knownTypes.resolveAndValidate(compositeRef));
         }
     }
 }

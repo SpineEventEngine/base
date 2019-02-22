@@ -23,6 +23,7 @@ package io.spine.type;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -199,21 +200,30 @@ public class KnownTypes implements Serializable {
         return result;
     }
 
-    public void validate(TypeRef typeRef) {
+    @CanIgnoreReturnValue
+    public ImmutableSet<MessageType> resolveAndValidate(TypeRef typeRef) {
         if (typeRef instanceof CompositeTypeRef) {
-            CompositeTypeRef composite = (CompositeTypeRef) typeRef;
-            ImmutableList<TypeRef> elements = composite.elements();
-            elements.forEach(this::doValidate);
-        } else {
-            doValidate(typeRef);
+            return resolveComposite((CompositeTypeRef) typeRef);
         }
+        return doResolve(typeRef);
     }
 
-    private void doValidate(TypeRef typeRef) {
+    private ImmutableSet<MessageType> resolveComposite(CompositeTypeRef typeRef) {
+        ImmutableList<TypeRef> elements = typeRef.elements();
+        ImmutableSet<MessageType> result =
+                elements.stream()
+                        .map(this::doResolve)
+                        .flatMap(ImmutableSet::stream)
+                        .collect(toImmutableSet());
+        return result;
+    }
+
+    private ImmutableSet<MessageType> doResolve(TypeRef typeRef) {
         ImmutableSet<MessageType> resolved = allMatching(typeRef);
         if (resolved.isEmpty()) {
             throw new UnresolvedReferenceException(typeRef);
         }
+        return resolved;
     }
 
     /**
