@@ -48,8 +48,8 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
      * Obtains {@link LifecycleOption#getArchiveUpon()} archive_upon} option value for the given
      * type.
      *
-     * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
-     * package of enclosing {@code MessageType} is assumed.
+     * <p>If the type reference doesn't have a package (i.e. is a raw type name), the package of
+     * enclosing {@code MessageType} is assumed.
      *
      * <p>If the option is set to empty {@code String}, the method returns an empty
      * {@code Optional}.
@@ -62,8 +62,8 @@ public final class EntityLifecycleOption extends MessageOption<LifecycleOption> 
     /**
      * Obtains {@link LifecycleOption#getDeleteUpon() delete_upon} option value for the given type.
      *
-     * <p>If the {@code TypeRef} in option doesn't have package (i.e. is a raw type name), the
-     * package of enclosing {@code MessageType} is assumed.
+     * <p>If the type reference doesn't have a package (i.e. is a raw type name), the package of
+     * enclosing {@code MessageType} is assumed.
      *
      * <p>If the option is set to empty {@code String}, the method returns an empty
      * {@code Optional}.
