@@ -1,0 +1,127 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.tools.protoc.messageinterface;
+
+import com.google.common.collect.ImmutableList;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.MessageType;
+import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.EnrichmentInterface;
+import io.spine.tools.protoc.GeneratedInterface;
+import io.spine.tools.protoc.GeneratedInterfacesConfig;
+import io.spine.tools.protoc.TypeScanner;
+import io.spine.tools.protoc.UuidInterface;
+
+import java.util.List;
+import java.util.function.Function;
+
+import static io.spine.tools.protoc.messageinterface.MessageImplements.implementInterface;
+import static io.spine.validate.Validate.isDefault;
+
+/**
+ * Scans the given type for a match upon patterns defined in {@link GeneratedInterfacesConfig}.
+ */
+final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
+
+    private final GeneratedInterfacesConfig config;
+
+    MessageInterfaceScanner(GeneratedInterfacesConfig config) {
+        super();
+        this.config = config;
+    }
+
+    @Override
+    protected ImmutableList<CompilerOutput> enrichmentMessage(MessageType type) {
+        EnrichmentInterface enrichmentInterface = config.getEnrichmentInterface();
+        if (isDefault(enrichmentInterface)) {
+            return ImmutableList.of();
+        }
+        CompilerOutput result = enrichmentInterface(type, enrichmentInterface);
+        return ImmutableList.of(result);
+    }
+
+    @Override
+    protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
+        UuidInterface uuidInterface = config.getUuidInterface();
+        if (isDefault(uuidInterface)) {
+            return ImmutableList.of();
+        }
+        CompilerOutput result = uuidInterface(type, uuidInterface);
+        return ImmutableList.of(result);
+    }
+
+    @Override
+    protected List<GeneratedInterface> filePatterns() {
+        return config.getGeneratedInterfaceList();
+    }
+
+    @Override
+    protected MatchesPattern matchesPattern(MessageType type) {
+        return new MatchesPattern(type, GeneratedInterface::getFilter);
+    }
+
+    @Override
+    protected IsNotBlank isNotBlank() {
+        return new IsNotBlank(GeneratedInterface::getInterfaceName);
+    }
+
+    @Override
+    protected Function<GeneratedInterface, ImmutableList<CompilerOutput>>
+    filePatternMapper(MessageType type) {
+        return new GenerateInterfaces(type);
+    }
+
+    private static CompilerOutput uuidInterface(MessageType type, UuidInterface uuidInterface) {
+        ClassName interfaceName = ClassName.of(uuidInterface.getInterfaceName());
+        MessageInterfaceParameters parameters =
+                MessageInterfaceParameters.of(new IdentityParameter());
+        MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
+        CompilerOutput insertionPoint = implementInterface(type, messageInterface);
+        return insertionPoint;
+    }
+
+    private static CompilerOutput
+    enrichmentInterface(MessageType type, EnrichmentInterface enrichmentInterface) {
+        MessageInterface messageInterface = new PredefinedInterface(
+                ClassName.of(enrichmentInterface.getInterfaceName()),
+                MessageInterfaceParameters.empty()
+        );
+        return implementInterface(type, messageInterface);
+    }
+
+    private static class GenerateInterfaces implements Function<GeneratedInterface, ImmutableList<CompilerOutput>> {
+        private final MessageType type;
+
+        private GenerateInterfaces(MessageType type) {
+            this.type = type;
+        }
+
+        @Override
+        public ImmutableList<CompilerOutput> apply(GeneratedInterface generatedInterface) {
+            MessageInterface messageInterface = new PredefinedInterface(
+                    ClassName.of(generatedInterface.getInterfaceName()),
+                    MessageInterfaceParameters.empty()
+            );
+            MessageImplements result = implementInterface(type, messageInterface);
+            return ImmutableList.of(result);
+        }
+    }
+}

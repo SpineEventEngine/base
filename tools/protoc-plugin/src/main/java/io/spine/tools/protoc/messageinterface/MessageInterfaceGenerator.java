@@ -30,7 +30,6 @@ import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -48,12 +47,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class MessageInterfaceGenerator extends SpineProtoGenerator {
 
-    private final PatternScanner patternScanner;
+    private final MessageInterfaceScanner messageInterfaceScanner;
 
     /** Prevents singleton class instantiation. */
     private MessageInterfaceGenerator(GeneratedInterfacesConfig parameter) {
         super();
-        this.patternScanner = new PatternScanner(parameter);
+        this.messageInterfaceScanner = new MessageInterfaceScanner(parameter);
     }
 
     /**
@@ -91,8 +90,8 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
     private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Optional<CompilerOutput> matched = patternScanner.scan(type);
-        matched.ifPresent(result::add);
+        ImmutableList<CompilerOutput> matched = messageInterfaceScanner.scan(type);
+        result.addAll(matched);
 
         Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(type);
         result.addAll(fromMsgOption);

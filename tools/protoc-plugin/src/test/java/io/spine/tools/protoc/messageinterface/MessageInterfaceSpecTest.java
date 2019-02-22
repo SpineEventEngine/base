@@ -30,7 +30,7 @@ import javax.annotation.Generated;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MessageInterfaceSpec should")
-class MessageInterfaceSpecTest {
+final class MessageInterfaceSpecTest {
 
     @Test
     @DisplayName("generate interfaces")

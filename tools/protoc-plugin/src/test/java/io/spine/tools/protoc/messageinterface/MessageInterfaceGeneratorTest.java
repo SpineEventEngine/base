@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageInterfaceGenerator should")
-class MessageInterfaceGeneratorTest {
+final class MessageInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.messageinterface.";
 
