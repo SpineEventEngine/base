@@ -29,13 +29,15 @@ import io.spine.annotation.Internal;
  *
  * @param <M>
  *         actual configuration type
- * @param <K>
+ * @param <C>
  *         Protobuf configuration type
  * @see GeneratedInterfaces
  */
 abstract class GeneratedConfigurations<M extends Message,
         F extends FilePatternFactory<M, ?>,
-        K extends Message> {
+        U extends UuidMessage<?>,
+        E extends EnrichmentMessage<?>,
+        C extends Message> {
 
     private final F filePatternFactory;
 
@@ -67,8 +69,36 @@ abstract class GeneratedConfigurations<M extends Message,
     }
 
     /**
+     * Configures code generation for messages with a single {@code string} field called
+     * {@code uuid}.
+     *
+     * <p>This method functions similarly to the {@link #filePattern()} except for
+     * several differences:
+     * <ul>
+     *     <li>the file in which the message type is defined does not matter;
+     *     <li>nested definitions are affected as well as top-level ones.
+     * </ul>
+     *
+     * @return a configuration object for Proto messages matching UUID message pattern
+     */
+    public abstract U uuidMessage();
+
+    /**
+     * Configures code generation for messages with {@code (enrichment_for)} option.
+     *
+     * <p>This method functions are similar to the {@link #filePattern} except for
+     * several differences:
+     * <ul>
+     *     <li>the file in which the message type is defined does not matter;
+     * </ul>
+     *
+     * @return a configuration object for Proto messages matching enrichment message pattern
+     */
+    public abstract E enrichmentMessage();
+
+    /**
      * Converts this config into a Protobuf configuration.
      */
     @Internal
-    public abstract K asProtocConfig();
+    public abstract C asProtocConfig();
 }

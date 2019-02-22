@@ -21,35 +21,44 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.EnrichmentInterface;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Optional;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Abstract implementation base for {@link ProtocConfig protoc configurations} that rely on a
- * particular target class.
- */
-abstract class AbstractTargetClassConfig implements ProtocConfig {
+public final class InterfaceEnrichmentMessage
+        implements EnrichmentMessage<EnrichmentInterface>, GeneratedInterfaceConfig {
 
-    private @Nullable ClassName target;
+    private @Nullable ClassName interfaceName;
+
+    InterfaceEnrichmentMessage() {
+    }
 
     /**
      * Sets current target class to a supplied value.
      */
-    protected final void setTarget(@FullyQualifiedName String targetName) {
+    @Override
+    public void markWith(@FullyQualifiedName String targetName) {
         checkNotNull(targetName);
-        this.target = ClassName.of(targetName);
+        this.interfaceName = ClassName.of(targetName);
+    }
+
+    @Override
+    public @Nullable ClassName interfaceName() {
+        return interfaceName;
+    }
+
+    @Override
+    public EnrichmentInterface toProto() {
+        return EnrichmentInterface
+                .newBuilder()
+                .setInterfaceName(safeName())
+                .build();
     }
 
     @Override
     public void ignore() {
-        this.target = null;
-    }
-
-    protected final Optional<ClassName> getTarget() {
-        return Optional.ofNullable(target);
+        this.interfaceName = null;
     }
 }

@@ -20,9 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-/**
- * A {@link GeneratedInterfaceConfig} which configures messages with a single string field named
- * {@code uuid}.
- */
-final class UuidInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+import com.google.protobuf.Message;
+
+interface UuidMessage<T extends Message> extends Selector<T> {
 }

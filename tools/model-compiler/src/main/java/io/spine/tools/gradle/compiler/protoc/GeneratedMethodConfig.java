@@ -20,10 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import java.util.Optional;
 
 /**
  * Configuration of a generated method for a certain target.
+ *
+ * @see GeneratedMethods#filePattern()
+ * @see GeneratedMethods#uuidMessage()
+ * @see GeneratedMethods#enrichmentMessage()
  */
 public interface GeneratedMethodConfig extends ProtocConfig {
 
@@ -36,4 +45,17 @@ public interface GeneratedMethodConfig extends ProtocConfig {
      *         the FQN of the method factory
      */
     void withMethodFactory(@FullyQualifiedName String methodFactoryName);
+
+    /**
+     * Returns current interface name associated with the configuration.
+     */
+    @Internal
+    @Nullable ClassName methodFactory();
+
+    @Internal
+    default String safeName() {
+        return Optional.ofNullable(methodFactory())
+                       .map(ClassName::value)
+                       .orElse("");
+    }
 }

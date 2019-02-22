@@ -20,9 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-/**
- * A {@link GeneratedInterfaceConfig} which configures messages with {@code (enrichment_for)}
- * option.
- */
-final class EnrichmentInterfaceConfig extends AbstractGeneratedInterfaceConfig {
+import com.google.protobuf.Message;
+
+interface EnrichmentMessage<T extends Message> extends Selector<T> {
 }

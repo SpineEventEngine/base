@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.TypeFilters;
@@ -27,14 +28,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Optional;
-
 import static org.gradle.internal.impldep.com.google.common.base.Preconditions.checkNotNull;
 
-public class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> {
+public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> implements GeneratedMethodConfig {
 
-    private @Nullable
-    ClassName factoryName;
+    private @Nullable ClassName factoryName;
 
     MethodPostfixPattern(@Regex String postfix) {
         super(postfix);
@@ -43,9 +41,16 @@ public class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> {
     /**
      * Sets current target class to a supplied value.
      */
+    @Override
     public void withMethodFactory(@FullyQualifiedName String targetName) {
         checkNotNull(targetName);
         this.factoryName = ClassName.of(targetName);
+    }
+
+    @Internal
+    @Override
+    public @Nullable ClassName methodFactory() {
+        return factoryName;
     }
 
     @Override
@@ -53,13 +58,12 @@ public class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> {
         return GeneratedMethod
                 .newBuilder()
                 .setFilter(TypeFilters.filePostfix(getPattern()))
-                .setFactoryName(factoryName()
-                                        .map(ClassName::value)
-                                        .orElse(""))
+                .setFactoryName(safeName())
                 .build();
     }
 
-    private Optional<ClassName> factoryName() {
-        return Optional.ofNullable(factoryName);
+    @Override
+    public void ignore() {
+        this.factoryName = null;
     }
 }

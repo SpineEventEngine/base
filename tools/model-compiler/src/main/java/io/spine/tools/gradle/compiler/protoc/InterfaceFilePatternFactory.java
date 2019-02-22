@@ -24,7 +24,11 @@ import io.spine.tools.protoc.GeneratedInterface;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.regex.qual.Regex;
 
-public class InterfaceFilePatternFactory extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> {
+public final class InterfaceFilePatternFactory extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> {
+
+    InterfaceFilePatternFactory() {
+        super();
+    }
 
     @Override
     InterfacePostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {

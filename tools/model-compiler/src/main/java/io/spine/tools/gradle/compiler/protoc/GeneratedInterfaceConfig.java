@@ -20,14 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import java.util.Optional;
 
 /**
  * Configuration of a generated interface for a certain target.
  *
- * @see GeneratedInterfaces#filePattern
- * @see GeneratedInterfaces#uuidMessage
- * @see GeneratedInterfaces#enrichmentMessage
+ * @see GeneratedInterfaces#filePattern()
+ * @see GeneratedInterfaces#uuidMessage()
+ * @see GeneratedInterfaces#enrichmentMessage()
  */
 public interface GeneratedInterfaceConfig extends ProtocConfig {
 
@@ -41,4 +46,17 @@ public interface GeneratedInterfaceConfig extends ProtocConfig {
      *         the FQN of the interface
      */
     void markWith(@FullyQualifiedName String interfaceName);
+
+    /**
+     * Returns current interface name associated with the configuration.
+     */
+    @Internal
+    @Nullable ClassName interfaceName();
+
+    @Internal
+    default String safeName() {
+        return Optional.ofNullable(interfaceName())
+                       .map(ClassName::value)
+                       .orElse("");
+    }
 }

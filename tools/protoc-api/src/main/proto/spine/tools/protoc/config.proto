@@ -39,6 +39,26 @@ message EnrichmentInterface {
     string interface_name = 1;
 }
 
+// Method factory that creates additional methods for Enrichment messages.
+//
+// An empty value signifies that the additional methods should not be generated.
+//
+message EnrichmentMethod {
+
+    // A fully-qualified name of the message factory class.
+    string factory_name = 1;
+}
+
+// Method factory that creates additional methods for UUID messages.
+//
+// An empty value signifies that the additional methods should not be generated.
+//
+message UuidMethod {
+
+    // A fully-qualified name of the message factory class.
+    string factory_name = 1;
+}
+
 // Method factory that creates additional methods for a certain message(s).
 //
 // An empty value signifies that the additional methods should not be generated.

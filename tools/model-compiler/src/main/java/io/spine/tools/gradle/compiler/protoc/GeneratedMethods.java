@@ -27,8 +27,15 @@ import io.spine.tools.protoc.GeneratedMethodsConfig;
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class GeneratedMethods
-        extends GeneratedConfigurations<GeneratedMethod, MethodFilePatternFactory, GeneratedMethodsConfig> {
+public final class GeneratedMethods extends GeneratedConfigurations<
+        GeneratedMethod,
+        MethodFilePatternFactory,
+        MethodUuidMessage,
+        MethodEnrichmentMessage,
+        GeneratedMethodsConfig> {
+
+    private final MethodUuidMessage uuidMessage = new MethodUuidMessage();
+    private final MethodEnrichmentMessage enrichmentMessage = new MethodEnrichmentMessage();
 
     private GeneratedMethods() {
         super(new MethodFilePatternFactory());
@@ -36,11 +43,10 @@ public final class GeneratedMethods
 
     /**
      * Creates a new instance of {@code GeneratedMethods} with the default values.
-     *
-     * @return new config
      */
     public static GeneratedMethods withDefaults() {
-        return new GeneratedMethods();
+        GeneratedMethods defaults = new GeneratedMethods();
+        return defaults;
     }
 
     /**
@@ -85,7 +91,7 @@ public final class GeneratedMethods
      *
      *     modelCompiler {
      *         generateMethods {
-     *             filePattern(endsWith("events.proto")).withMethodFactory("io.spine.code.CustomMethodFactory")
+     *             filePattern().endsWith("events.proto").withMethodFactory("io.spine.code.CustomMethodFactory")
      *         }
      *     }
      *     }
@@ -104,6 +110,16 @@ public final class GeneratedMethods
     @Override
     public MethodFilePatternFactory filePattern() {
         return super.filePattern();
+    }
+
+    @Override
+    public MethodUuidMessage uuidMessage() {
+        return uuidMessage;
+    }
+
+    @Override
+    public MethodEnrichmentMessage enrichmentMessage() {
+        return enrichmentMessage;
     }
 
     @Internal

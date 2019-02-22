@@ -27,11 +27,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Optional;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class InterfacePostfixPattern extends PostfixPattern<GeneratedInterface> {
+public final class InterfacePostfixPattern extends PostfixPattern<GeneratedInterface> implements GeneratedInterfaceConfig {
 
     private @Nullable ClassName interfaceName;
 
@@ -42,9 +40,15 @@ public final class InterfacePostfixPattern extends PostfixPattern<GeneratedInter
     /**
      * Sets current target class to a supplied value.
      */
-    public void markWith(@FullyQualifiedName String targetName) {
-        checkNotNull(targetName);
-        this.interfaceName = ClassName.of(targetName);
+    @Override
+    public void markWith(@FullyQualifiedName String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
+    }
+
+    @Override
+    public @Nullable ClassName interfaceName() {
+        return interfaceName;
     }
 
     @Override
@@ -52,13 +56,12 @@ public final class InterfacePostfixPattern extends PostfixPattern<GeneratedInter
         return GeneratedInterface
                 .newBuilder()
                 .setFilter(TypeFilters.filePostfix(getPattern()))
-                .setInterfaceName(interfaceName()
-                                          .map(ClassName::value)
-                                          .orElse(""))
+                .setInterfaceName(safeName())
                 .build();
     }
 
-    private Optional<ClassName> interfaceName() {
-        return Optional.ofNullable(interfaceName);
+    @Override
+    public void ignore() {
+        this.interfaceName = null;
     }
 }

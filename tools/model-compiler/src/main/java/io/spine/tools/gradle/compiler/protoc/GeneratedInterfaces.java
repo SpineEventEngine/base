@@ -28,13 +28,8 @@ import io.spine.base.EventMessage;
 import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.GeneratedInterfacesConfig;
-import io.spine.tools.protoc.UuidInterface;
-
-import java.util.Optional;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
@@ -42,10 +37,12 @@ import java.util.Optional;
 public final class GeneratedInterfaces extends GeneratedConfigurations<
         GeneratedInterface,
         InterfaceFilePatternFactory,
+        InterfaceUuidMessage,
+        InterfaceEnrichmentMessage,
         GeneratedInterfacesConfig> {
 
-    private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
-    private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
+    private final InterfaceUuidMessage uuidMessage = new InterfaceUuidMessage();
+    private final InterfaceEnrichmentMessage enrichmentMessage = new InterfaceEnrichmentMessage();
 
     private GeneratedInterfaces() {
         super(new InterfaceFilePatternFactory());
@@ -152,7 +149,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #endsWith(String)} except for
+     * <p>This method functions similarly to the {@link #filePattern()} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -161,15 +158,15 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      *
      * @return a configuration object for Proto messages matching UUID message pattern
      */
-    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
-    public GeneratedInterfaceConfig uuidMessage() {
-        return uuidInterfaceConfig;
+    @Override
+    public InterfaceUuidMessage uuidMessage() {
+        return uuidMessage;
     }
 
     /**
      * Configures an interface generation for messages with {@code (enrichment_for)} option.
      *
-     * <p>This method functions are similar to the {@link #endsWith(String)} except for
+     * <p>This method functions are similar to the {@link #filePattern()} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -177,55 +174,23 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      *
      * @return a configuration object for Proto messages matching enrichment message pattern
      */
-    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
-    public GeneratedInterfaceConfig enrichmentMessage() {
-        return enrichmentConfig;
+    @Override
+    public InterfaceEnrichmentMessage enrichmentMessage() {
+        return enrichmentMessage;
     }
 
     @Override
     @Internal
     public GeneratedInterfacesConfig asProtocConfig() {
-        UuidInterface uuidInterface = uuidInterface();
-        EnrichmentInterface enrichmentInterface = enrichmentConfig();
         GeneratedInterfacesConfig.Builder result = GeneratedInterfacesConfig
                 .newBuilder()
-                .setUuidInterface(uuidInterface)
-                .setEnrichmentInterface(enrichmentInterface);
+                .setUuidInterface(uuidMessage.toProto())
+                .setEnrichmentInterface(enrichmentMessage.toProto());
         patternConfigurations()
                 .stream()
                 .map(Selector::toProto)
                 .forEach(result::addGeneratedInterface);
         return result.build();
-    }
-
-    private EnrichmentInterface enrichmentConfig() {
-        Optional<ClassName> name = enrichmentConfig.interfaceName();
-        EnrichmentInterface enrichmentInterface = name
-                .map(GeneratedInterfaces::newEnrichmentInterface)
-                .orElse(EnrichmentInterface.getDefaultInstance());
-        return enrichmentInterface;
-    }
-
-    private static EnrichmentInterface newEnrichmentInterface(ClassName className) {
-        return EnrichmentInterface
-                .newBuilder()
-                .setInterfaceName(className.value())
-                .build();
-    }
-
-    private UuidInterface uuidInterface() {
-        Optional<ClassName> name = uuidInterfaceConfig.interfaceName();
-        UuidInterface uuidInterface = name
-                .map(GeneratedInterfaces::newUuidInterface)
-                .orElse(UuidInterface.getDefaultInstance());
-        return uuidInterface;
-    }
-
-    private static UuidInterface newUuidInterface(ClassName className) {
-        return UuidInterface
-                .newBuilder()
-                .setInterfaceName(className.value())
-                .build();
     }
 
 }

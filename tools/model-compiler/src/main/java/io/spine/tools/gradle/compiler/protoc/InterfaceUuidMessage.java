@@ -21,26 +21,43 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.UuidInterface;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Optional;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Abstract implementation base for {@link GeneratedInterfaceConfig}.
- */
-abstract class AbstractGeneratedInterfaceConfig extends AbstractTargetClassConfig implements GeneratedInterfaceConfig {
+public final class InterfaceUuidMessage implements UuidMessage<UuidInterface>, GeneratedInterfaceConfig {
+
+    private @Nullable ClassName interfaceName;
+
+    InterfaceUuidMessage() {
+    }
+
+    /**
+     * Sets current target class to a supplied value.
+     */
+    @Override
+    public void markWith(@FullyQualifiedName String targetName) {
+        checkNotNull(targetName);
+        this.interfaceName = ClassName.of(targetName);
+    }
 
     @Override
-    public final void markWith(@FullyQualifiedName String interfaceName) {
-        setTarget(interfaceName);
+    public @Nullable ClassName interfaceName() {
+        return interfaceName;
     }
 
-    final Optional<ClassName> interfaceName() {
-        return getTarget();
+    @Override
+    public UuidInterface toProto() {
+        return UuidInterface
+                .newBuilder()
+                .setInterfaceName(safeName())
+                .build();
     }
 
-    final @Nullable ClassName interfaceClass() {
-        return interfaceName().orElse(null);
+    @Override
+    public void ignore() {
+        this.interfaceName = null;
     }
 }

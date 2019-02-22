@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
@@ -88,7 +87,8 @@ class GeneratedInterfacesTest {
         String expectedInterface = interfaceClass.getName();
         for (GeneratedInterface generatedInterface : config.getGeneratedInterfaceList()) {
             if (expectedInterface.equals(generatedInterface.getInterfaceName()) &&
-                    postfix.equals(generatedInterface.getFilter().getFilePostfix())) {
+                    postfix.equals(generatedInterface.getFilter()
+                                                     .getFilePostfix())) {
                 hasInterface = true;
                 break;
             }
@@ -97,9 +97,7 @@ class GeneratedInterfacesTest {
     }
 
     void assertHasInterfaceName(Class<?> interfaceClass, GeneratedInterfaceConfig config) {
-        assertThat(config)
-                .isInstanceOf(AbstractGeneratedInterfaceConfig.class);
-        Optional<ClassName> actual = ((AbstractGeneratedInterfaceConfig) config).interfaceName();
+        Optional<ClassName> actual = Optional.ofNullable(config.interfaceName());
         assertTrue(actual.isPresent());
         assertEquals(ClassName.of(interfaceClass), actual.get());
     }

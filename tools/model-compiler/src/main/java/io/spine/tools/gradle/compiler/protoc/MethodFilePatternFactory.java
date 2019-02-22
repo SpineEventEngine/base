@@ -24,7 +24,11 @@ import io.spine.tools.protoc.GeneratedMethod;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.regex.qual.Regex;
 
-public class MethodFilePatternFactory extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern> {
+public final class MethodFilePatternFactory extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern> {
+
+    MethodFilePatternFactory() {
+        super();
+    }
 
     @Override
     MethodPostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {

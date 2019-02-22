@@ -20,36 +20,44 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.regex.qual.Regex;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.UuidMethod;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class FilePatternFactory<T extends Message, P extends PostfixPattern<T>> {
+public class MethodUuidMessage implements UuidMessage<UuidMethod>, GeneratedMethodConfig {
 
-    private final Set<FilePattern<T>> patterns;
+    private @Nullable ClassName factoryName;
 
-    FilePatternFactory() {
-        this.patterns = Sets.newConcurrentHashSet();
+    MethodUuidMessage() {
     }
 
-    public P endsWith(@Regex String postfix) {
-        Preconditions.checkNotNull(postfix);
-        P result = newPostfixPattern(postfix);
-        patterns.add(result);
-        return result;
+    /**
+     * Sets current target class to a supplied value.
+     */
+    @Override
+    public void withMethodFactory(@FullyQualifiedName String factoryName) {
+        checkNotNull(factoryName);
+        this.factoryName = ClassName.of(factoryName);
     }
 
-    @Internal
-    ImmutableList<FilePattern<T>> patterns() {
-        return ImmutableList.copyOf(patterns);
+    @Override
+    public @Nullable ClassName methodFactory() {
+        return factoryName;
     }
 
-    @Internal
-    abstract P newPostfixPattern(@NonNull @Regex String postfix);
+    @Override
+    public UuidMethod toProto() {
+        return UuidMethod
+                .newBuilder()
+                .setFactoryName(safeName())
+                .build();
+    }
+
+    @Override
+    public void ignore() {
+        this.factoryName = null;
+    }
 }
