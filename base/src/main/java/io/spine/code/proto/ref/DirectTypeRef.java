@@ -175,7 +175,17 @@ public final class DirectTypeRef extends AbstractTypeRef {
         return result;
     }
 
-    // TODO:2019-02-21:serhii.lekariev: document referencing one of the tests
+    /**
+     * Checks whether this reference is reachable from the given message.
+     *
+     * <p>Being reachable means having a reference that can be resolved, e.g.
+     * a reference {@code details.UserDetails} is reachable from a message
+     * {@code spine.type.user.UserId}, given that the package {@code details} is under the package
+     * {@code user}.
+     *
+     * <p>Continuing the example above, a reference {@code UserDetails} is not reachable from the
+     * {@code UserId} message.
+     */
     private boolean inVisibleSubpackage(Descriptor message) {
         String thisReference = this.value();
         String checkedMessage = message.getFullName();
