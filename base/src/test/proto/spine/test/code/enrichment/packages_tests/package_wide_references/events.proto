@@ -34,7 +34,7 @@ message TestFailed {
     string test_method= 2;
 }
 
-message CompilationFailed {
+message AssertionFailed {
     string class_name = 1;
 }
 

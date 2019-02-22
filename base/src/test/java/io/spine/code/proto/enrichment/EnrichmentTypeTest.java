@@ -37,7 +37,7 @@ import io.spine.code.proto.enrichment.packages.PbPlainIdEnrichment;
 import io.spine.code.proto.enrichment.packages.SpFqnIdEnrichment;
 import io.spine.code.proto.enrichment.packages.SpPlainIdEnrichment;
 import io.spine.code.proto.ref.UserId;
-import io.spine.test.code.enrichment.fieldref.CompilationFailed;
+import io.spine.test.code.enrichment.fieldref.AssertionFailed;
 import io.spine.test.code.enrichment.fieldref.OverlySpecificStacktrace;
 import io.spine.test.code.enrichment.fieldref.Stacktrace;
 import io.spine.test.code.enrichment.fieldref.TestFailed;
@@ -258,7 +258,7 @@ class EnrichmentTypeTest {
         @Test
         @DisplayName("allow to reference all messages in the containing package without FQN")
         void allowsPackageWideShortReferences() {
-            assertSourceClassesOf(Stacktrace.class).containsExactly(CompilationFailed.class,
+            assertSourceClassesOf(Stacktrace.class).containsExactly(AssertionFailed.class,
                                                                     TestFailed.class);
         }
 
@@ -266,7 +266,7 @@ class EnrichmentTypeTest {
         @DisplayName("allow to reference all messages in the containing package with almost an FQN")
         void allowsOverlyExplicitPackageReferences() {
             assertSourceClassesOf(OverlySpecificStacktrace.class)
-                    .containsExactly(CompilationFailed.class,
+                    .containsExactly(AssertionFailed.class,
                                      TestFailed.class);
         }
 
@@ -293,7 +293,7 @@ class EnrichmentTypeTest {
         @Test
         @DisplayName("allow FQN package references from outside packages")
         void allowFqnPackageReference() {
-            assertSourceClassesOf(FqnStacktrace.class).containsExactly(CompilationFailed.class,
+            assertSourceClassesOf(FqnStacktrace.class).containsExactly(AssertionFailed.class,
                                                                        TestFailed.class);
         }
 

@@ -39,7 +39,7 @@ message Stacktrace {
 }
 
 // Same as above, although the value of the enrichment_for option is overly specific.
-// This should affect resolving, although `enrichment.*` would have sufficed.
+// This should not affect resolving, although `enrichment.*` would have sufficed.
 message OverlySpecificStacktrace {
     option (enrichment_for) = "test.code.enrichment.*";
 
