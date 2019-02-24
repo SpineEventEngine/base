@@ -114,7 +114,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
                 result.add(declaration);
             }
             Collection<MessageType> allNested =
-                    declaration.getAllNested(predicate);
+                    declaration.nestedTypesThat(predicate);
             result.addAll(allNested);
         }
         return result.build();
