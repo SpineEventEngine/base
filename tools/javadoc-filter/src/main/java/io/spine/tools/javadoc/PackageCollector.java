@@ -31,8 +31,6 @@ import java.util.TreeSet;
 
 /**
  * Collects {@linkplain PackageDoc}s that pass {@linkplain AnnotationAnalyst} checks.
- *
- * @author Dmytro Grankin
  */
 class PackageCollector {
 
