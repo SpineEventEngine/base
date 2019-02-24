@@ -221,7 +221,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     /**
      * Obtains all nested declarations that match the passed predicate.
      */
-    public ImmutableList<MessageType> getAllNested(Predicate<DescriptorProto> predicate) {
+    public ImmutableList<MessageType> nestedTypesThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         Iterable<MessageType> nestedDeclarations = getImmediateNested();
         Deque<MessageType> deque = newLinkedList(nestedDeclarations);
