@@ -60,7 +60,7 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
     }
 
     /**
-     * Generates a new identifier instance using a random {@code String}.
+     * Generates a new identifier instance using a generated UUID value.
      */
     default I generate() {
         Class<I> thisClass = (Class<I>) this.getClass();
