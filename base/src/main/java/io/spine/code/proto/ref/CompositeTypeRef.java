@@ -62,6 +62,9 @@ public class CompositeTypeRef implements TypeRef {
         return result;
     }
 
+    /**
+     * Since there might be no common packages in a composite reference, a value is returned as is.
+     */
     @Override
     public TypeRef ensurePackage(PackageName aPackage) {
         return this;

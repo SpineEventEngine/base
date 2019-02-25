@@ -70,14 +70,17 @@ final class InPackage extends AbstractTypeRef {
         return Optional.empty();
     }
 
+    /**
+     *{@inheritDoc}
+     *
+     * Always returns a fully qualified name of the package, or throws an
+     * {@code IllegalArgumentsException}.
+     */
     @Override
     public TypeRef ensurePackage(PackageName aPackage) {
-        // Check whether WE already ARE an FQN.
-        // If it is -> return it;
         if (packageName.isFqn()) {
             return this;
         }
-        // Else find out which one exactly is ours.
         ImmutableList<PackageName> subpackages = aPackage.subpackages();
         for (PackageName subpackage : subpackages) {
             PackageName candidate = subpackage.resolve(packageName);

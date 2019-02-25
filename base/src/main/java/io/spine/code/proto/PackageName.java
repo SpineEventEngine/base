@@ -80,7 +80,7 @@ public final class PackageName extends StringTypeValue {
      * Obtains Protobuf package delimiter.
      */
     public static String delimiter() {
-        return String.valueOf(DELIMITER);
+        return DELIMITER;
     }
 
     /**
@@ -94,16 +94,47 @@ public final class PackageName extends StringTypeValue {
         return result;
     }
 
-    public PackageName resolve(PackageName other){
+    /**
+     * Appends the specified package name as if it is the child of this one.
+     *
+     * <p>For example:
+     *
+     * <pre>
+     *     {@code
+     *     PackageName enrichments = new PackageName("enrichment");
+     *
+     *     return new PackageName("spine.type").resolve(enrichments);
+     *     }
+     * </pre>
+     *
+     * returned value is a new package name, referencing a {@code "spine.type.enrichments"}
+     * Protobuf package.
+     *
+     * @return a new package name, constructed from the specified one being appended to this
+     *         package name
+     */
+    public PackageName resolve(PackageName other) {
         return new PackageName(this.value() + DELIMITER + other.value());
     }
 
+    /**
+     * Tests whether this package has the specified one as a child
+     */
     public boolean contains(PackageName childCandidate) {
         checkNotNull(childCandidate);
         boolean result = value().contains(childCandidate.value());
         return result;
     }
 
+    /**
+     * Tests whether the specified package is reachable from this one.
+     *
+     * <p>Packages are reachable either when they are nested, or if their names explicitly
+     * reflect their difference.
+     *
+     * <p>For example, a package with name {@code "spine.type.user"} can be reached from the package
+     * {@code "spine"} if the specified name is {@code "type.user"}.
+     */
     public boolean canReach(PackageName name) {
         // Packages referenced by their FQN are always reachable.
         if (name.isFqn()) {
@@ -116,17 +147,15 @@ public final class PackageName extends StringTypeValue {
         ImmutableSet<PackageName> allPackages = KnownTypes.instance()
                                                           .packageNames();
         ImmutableList<PackageName> subpackages = subpackages();
-        boolean result = false;
-        for (PackageName thisRef : subpackages) {
-            PackageName resolve = thisRef.resolve(child);
-            if (allPackages.contains(resolve)) {
-                result = true;
-                break;
-            }
-        }
+        boolean result = subpackages.stream()
+                                    .map(thisRef -> thisRef.resolve(child))
+                                    .anyMatch(allPackages::contains);
         return result;
     }
 
+    /**
+     * Tests whether this package name is fully qualified.
+     */
     public boolean isFqn() {
         boolean result = KnownTypes.instance()
                                    .packageNames()
@@ -134,6 +163,16 @@ public final class PackageName extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Obtains all subpackages of this package.
+     *
+     * <p>A subpackage is a package nested in the current one.
+     *
+     * <p>A package is always its own subpackage.
+     *
+     * <p>For example, for a package {@code spine.type.user.customers} subpackages are exactly
+     * {@code [spine, spine.type, spine.type.user, spine.type.user.customers]}.
+     */
     public ImmutableList<PackageName> subpackages() {
         ImmutableList.Builder<PackageName> result = ImmutableList.builder();
         List<String> split = PACKAGE_SPLITTER.splitToList(this.value());

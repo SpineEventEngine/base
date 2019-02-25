@@ -116,6 +116,12 @@ public class KnownTypes implements Serializable {
         return types;
     }
 
+    /**
+     * Obtains all known package names.
+     *
+     * <p>If there is at least one {@code .proto} file that declares a package, this package
+     * is included into the result set.
+     */
     public ImmutableSet<PackageName> packageNames() {
         return packageNames;
     }
@@ -233,6 +239,9 @@ public class KnownTypes implements Serializable {
         return result;
     }
 
+    /**
+     * Gathers package names of all known message types.
+     */
     private static ImmutableSet<PackageName> packageNames(TypeSet typeSet) {
         ImmutableSet<PackageName> result = typeSet.messageTypes()
                                                   .stream()

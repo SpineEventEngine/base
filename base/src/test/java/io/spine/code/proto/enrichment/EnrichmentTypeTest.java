@@ -291,6 +291,13 @@ class EnrichmentTypeTest {
             assertEnriched(ShorthandStacktrace.class);
         }
 
+        @Test
+        @DisplayName("throw on a non-existing package reference")
+        void throwOnNonExisting() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> assertSourceClassesOf(ProjectDetails.class));
+        }
+
         private void assertEnriched(Class<? extends Message> cls){
             assertSourceClassesOf(cls).containsExactly(AssertionFailed.class,
                                                        TestFailed.class);
