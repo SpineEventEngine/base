@@ -22,7 +22,7 @@ package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 import java.util.stream.Collectors;
 

@@ -25,8 +25,8 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
-import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.type.Type;
 import io.spine.type.TypeName;
 import spine.test.js.Fields.FieldContainer;
 

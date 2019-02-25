@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.messageinterface;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 /**
  * The message interface parameter whose value is the target {@code Message} itself.

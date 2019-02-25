@@ -30,6 +30,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.logging.Logging;
 import io.spine.type.KnownTypes;
+import io.spine.type.MessageType;
 import org.slf4j.Logger;
 
 import java.io.File;

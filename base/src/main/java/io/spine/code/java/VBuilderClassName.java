@@ -21,12 +21,12 @@
 package io.spine.code.java;
 
 import io.spine.annotation.Internal;
-import io.spine.code.proto.MessageType;
+import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
-import static io.spine.code.proto.MessageType.VBUILDER_SUFFIX;
+import static io.spine.type.MessageType.VBUILDER_SUFFIX;
 
 /**
  * Obtains a simple class name for a Validating Builder of a message.

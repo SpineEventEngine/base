@@ -24,11 +24,11 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
 import org.slf4j.Logger;
 
 import java.io.File;

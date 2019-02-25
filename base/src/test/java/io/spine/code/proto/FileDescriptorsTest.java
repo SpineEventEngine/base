@@ -20,7 +20,10 @@
 
 package io.spine.code.proto;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,11 @@ class FileDescriptorsTest extends UtilityClassTest<FileDescriptors> {
 
     FileDescriptorsTest() {
         super(FileDescriptors.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        tester.setDefault(FileDescriptor.class, Any.getDescriptor().getFile());
     }
 
     @Test

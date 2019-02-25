@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.type;
 
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.type.TypeUrl;
+import io.spine.code.proto.TypeSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -55,13 +55,13 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         return ClassName.from(descriptor());
     }
 
-    static EnumType create(EnumDescriptor descriptor) {
+    public static EnumType create(EnumDescriptor descriptor) {
         return new EnumType(descriptor);
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")
         // Need to go through top level enums and those nested messages.
-    static TypeSet allFrom(FileDescriptor file) {
+    public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
         TypeSet.Builder result = TypeSet.newBuilder();
 
