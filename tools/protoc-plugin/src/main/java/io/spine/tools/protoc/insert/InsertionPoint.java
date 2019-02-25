@@ -23,9 +23,9 @@ package io.spine.tools.protoc.insert;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.SourceFile;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.tools.protoc.AbstractCompilerOutput;
+import io.spine.type.MessageType;
+import io.spine.type.Type;
 
 import static java.lang.String.format;
 
