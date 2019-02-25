@@ -25,7 +25,6 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
-import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -54,6 +53,8 @@ import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
+import static io.spine.tools.gradle.compiler.ProtocConfigurationPlugin.PROTOBUF_GRADLE_PLUGIN;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A plugin that annotates generated Java sources from {@code .proto} files.
@@ -182,20 +183,39 @@ import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class ProtoAnnotatorPlugin extends SpinePlugin {
+public class ProtoAnnotatorPlugin extends IncrementalPlugin {
 
     @Override
     public void apply(Project project) {
+        createMainTask(project);
+        createTestTask(project);
+    }
+
+    private void createMainTask(Project project) {
         Action<Task> task = newAction(project, false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
+                .withInputFiles(protoSource(project).orElseThrow(
+                        ProtoAnnotatorPlugin::protobufPluginNotApplied
+                ))
+                .withOutputFiles(protoCompiledToJava(project))
                 .applyNowTo(project);
+    }
 
+    private void createTestTask(Project project) {
         Action<Task> testTask = newAction(project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
+                .withInputFiles(protoSource(project).orElseThrow(
+                        ProtoAnnotatorPlugin::protobufPluginNotApplied
+                ))
+                .withInputFiles(testProtoSource(project).orElseThrow(
+                        ProtoAnnotatorPlugin::protobufPluginNotApplied
+                ))
+                .withOutputFiles(protoCompiledToJava(project))
+                .withOutputFiles(testProtoCompiledToJava(project))
                 .applyNowTo(project);
     }
 
@@ -244,5 +264,9 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                 .setInternalMethodNames(internalMethodNames)
                 .setInternalAnnotation(internalClassName)
                 .build();
+    }
+
+    private static IllegalStateException protobufPluginNotApplied() {
+        return newIllegalStateException("Plugin `%s` must be applied.", PROTOBUF_GRADLE_PLUGIN);
     }
 }
