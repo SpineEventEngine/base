@@ -21,10 +21,11 @@
 package io.spine.code.proto;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Message;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
-import io.spine.test.code.proto.PmWithEmptyOptions;
 import io.spine.test.code.proto.PmWithDirectOptions;
+import io.spine.test.code.proto.PmWithEmptyOptions;
 import io.spine.test.code.proto.PmWithOption;
 import io.spine.test.code.proto.PmWithoutOption;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,17 +70,17 @@ class EntityLifecycleOptionTest {
     @Test
     @DisplayName("check if message type has lifecycle option specified")
     void checkIfHasLifecycle() {
-        MessageType pmWithOption = MessageType.of(PmWithOption.class);
+        MessageType pmWithOption = type(PmWithOption.class);
         assertThat(option.hasLifecycle(pmWithOption)).isTrue();
 
-        MessageType pmWithoutOption = MessageType.of(PmWithoutOption.class);
+        MessageType pmWithoutOption = type(PmWithoutOption.class);
         assertThat(option.hasLifecycle(pmWithoutOption)).isFalse();
     }
 
     @Test
     @DisplayName("retrieve type reference from `archive_upon` option")
     void retrieveArchiveUpon() {
-        MessageType pmWithOption = MessageType.of(PmWithOption.class);
+        MessageType pmWithOption = type(PmWithOption.class);
         Optional<TypeRef> ref = option.archiveUpon(pmWithOption);
         assertTrue(ref.isPresent());
         assertThat(ref.get()).isEqualTo(PM_ARCHIVED);
@@ -92,7 +93,7 @@ class EntityLifecycleOptionTest {
         @Test
         @DisplayName("if the option is not specified")
         void ifNotSpecified() {
-            MessageType pmWithEmpty = MessageType.of(PmWithoutOption.class);
+            MessageType pmWithEmpty = type(PmWithoutOption.class);
             Optional<TypeRef> ref = option.archiveUpon(pmWithEmpty);
             assertThat(ref.isPresent()).isFalse();
         }
@@ -100,7 +101,7 @@ class EntityLifecycleOptionTest {
         @Test
         @DisplayName("if the option contains empty string")
         void ifContainsEmptyString() {
-            MessageType pmWithEmpty = MessageType.of(PmWithEmptyOptions.class);
+            MessageType pmWithEmpty = type(PmWithEmptyOptions.class);
             Optional<TypeRef> ref = option.archiveUpon(pmWithEmpty);
             assertThat(ref.isPresent()).isFalse();
         }
@@ -109,7 +110,7 @@ class EntityLifecycleOptionTest {
     @Test
     @DisplayName("retrieve type reference from `delete_upon` option")
     void retrieveDeleteUpon() {
-        MessageType pmWithOption = MessageType.of(PmWithOption.class);
+        MessageType pmWithOption = type(PmWithOption.class);
         Optional<TypeRef> ref = option.deleteUpon(pmWithOption);
         assertTrue(ref.isPresent());
         assertThat(ref.get()).isEqualTo(PM_DELETED);
@@ -122,7 +123,7 @@ class EntityLifecycleOptionTest {
         @Test
         @DisplayName("if the option is not specified")
         void ifNotSpecified() {
-            MessageType pmWithEmpty = MessageType.of(PmWithoutOption.class);
+            MessageType pmWithEmpty = type(PmWithoutOption.class);
             Optional<TypeRef> ref = option.deleteUpon(pmWithEmpty);
             assertThat(ref.isPresent()).isFalse();
         }
@@ -130,7 +131,7 @@ class EntityLifecycleOptionTest {
         @Test
         @DisplayName("if the option contains empty string")
         void ifContainsEmptyString() {
-            MessageType pmWithEmpty = MessageType.of(PmWithEmptyOptions.class);
+            MessageType pmWithEmpty = type(PmWithEmptyOptions.class);
             Optional<TypeRef> ref = option.deleteUpon(pmWithEmpty);
             assertThat(ref.isPresent()).isFalse();
         }
@@ -139,7 +140,7 @@ class EntityLifecycleOptionTest {
     @Test
     @DisplayName("append package name to directly referenced events")
     void appendPackageName() {
-        MessageType pmWithOption = MessageType.of(PmWithDirectOptions.class);
+        MessageType pmWithOption = type(PmWithDirectOptions.class);
         Optional<TypeRef> archiveUpon = option.archiveUpon(pmWithOption);
         assertTrue(archiveUpon.isPresent());
         assertThat(archiveUpon.get()).isEqualTo(PM_ARCHIVED);
@@ -147,5 +148,9 @@ class EntityLifecycleOptionTest {
         Optional<TypeRef> deleteUpon = option.deleteUpon(pmWithOption);
         assertTrue(deleteUpon.isPresent());
         assertThat(deleteUpon.get()).isEqualTo(PM_DELETED);
+    }
+
+    private static MessageType type(Class<? extends Message> messageClass) {
+        return new MessageType(messageClass);
     }
 }
