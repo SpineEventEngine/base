@@ -125,7 +125,10 @@ public final class GeneratedMethods extends GeneratedConfigurations<
     @Internal
     @Override
     public GeneratedMethodsConfig asProtocConfig() {
-        GeneratedMethodsConfig.Builder result = GeneratedMethodsConfig.newBuilder();
+        GeneratedMethodsConfig.Builder result = GeneratedMethodsConfig
+                .newBuilder()
+                .setUuidMethod(uuidMessage.toProto())
+                .setEnrichmentMethod(enrichmentMessage.toProto());
         patternConfigurations()
                 .stream()
                 .map(Selector::toProto)
