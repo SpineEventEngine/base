@@ -24,13 +24,13 @@ import io.spine.code.generate.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
+import io.spine.type.RejectionType;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -156,7 +156,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
         }
 
         private void generateRejections(RejectionsFile source) {
-            List<RejectionType> rejections = source.getRejectionDeclarations();
+            List<RejectionType> rejections = source.rejectionDeclarations();
             if (rejections.isEmpty()) {
                 return;
             }

@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.type;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.type.MessageType;
+import io.spine.code.proto.FileName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
@@ -40,8 +39,7 @@ public final class RejectionType extends MessageType {
     /**
      * The suffix for the outer class name for the generated rejection messages.
      */
-    @VisibleForTesting
-    static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
+    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     private final SimpleClassName outerJavaClass;
 

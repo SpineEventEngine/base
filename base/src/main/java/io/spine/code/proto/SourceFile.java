@@ -29,6 +29,7 @@ import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;
+import io.spine.type.RejectionType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
