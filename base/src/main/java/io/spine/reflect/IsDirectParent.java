@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Verifiers if a package is direct “parent” of the specified.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 final class IsDirectParent implements Predicate<Package> {

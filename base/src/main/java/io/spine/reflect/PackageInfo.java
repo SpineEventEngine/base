@@ -36,8 +36,6 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * Provides additional run-time information about a Java package.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public final class PackageInfo implements Comparable<PackageInfo> {
