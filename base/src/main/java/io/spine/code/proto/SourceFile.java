@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -113,7 +114,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
                 result.add(declaration);
             }
             Collection<MessageType> allNested =
-                    declaration.getAllNested(predicate);
+                    declaration.nestedTypesThat(predicate);
             result.addAll(allNested);
         }
         return result.build();

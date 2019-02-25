@@ -47,8 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Tests {@link io.spine.tools.javadoc.ExcludeInternalDoclet}.
  *
  * <p>The source code used by this test suite is located under {@code resources/testsources}.
- *
- * @author Dmytro Grankin
  */
 @DisplayName("ExcludeInternalDoclet should")
 class ExcludeInternalDocletTest {

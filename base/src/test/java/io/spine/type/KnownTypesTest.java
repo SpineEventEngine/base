@@ -32,8 +32,6 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Error;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;

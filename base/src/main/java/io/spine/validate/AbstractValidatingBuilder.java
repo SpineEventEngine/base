@@ -314,7 +314,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private static <T extends Message> Class<T>
     getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
         @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-                Class<T> result = (Class<T>) GenericParameter.MESSAGE.getArgumentIn(builderClass);
+                Class<T> result = (Class<T>) GenericParameter.MESSAGE.argumentIn(builderClass);
         return result;
     }
 
