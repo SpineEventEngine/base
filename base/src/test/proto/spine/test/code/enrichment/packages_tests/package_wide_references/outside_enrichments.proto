@@ -40,8 +40,6 @@ message OutOfReachStacktrace {
 
 message ShorthandStacktrace {
 
-    // Even though `enrichment` package seems to be visible, because it's in the `code` package,
-    // which is shared with this file, this import should still not work and require and FQN.
     option (enrichment_for) = "enrichment.events.*";
 
     repeated string lines = 1 [(by) = "class_name"];

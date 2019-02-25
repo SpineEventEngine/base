@@ -243,10 +243,9 @@ class EnrichmentTypeTest {
             }
 
             @Test
-            @DisplayName("allow referencing from an outside package hierarchy")
-                // TODO:2019-02-21:serhii.lekariev: questionable behaviour, up for discussion
+            @DisplayName("disallow referencing from an outside package hierarchy")
             void allowsFromOutside() {
-                assertSourceClassesOf(OpCommonAncestorEnrichment.class).containsExactly(expected);
+                assertSourceClassesOf(OpCommonAncestorEnrichment.class).isEmpty();
             }
         }
     }
@@ -256,18 +255,15 @@ class EnrichmentTypeTest {
     class PackageReference {
 
         @Test
-        @DisplayName("allow to reference all messages in the containing package without FQN")
+        @DisplayName("allow to reference all messages in the containing package by short package name")
         void allowsPackageWideShortReferences() {
-            assertSourceClassesOf(Stacktrace.class).containsExactly(AssertionFailed.class,
-                                                                    TestFailed.class);
+            assertEnriched(Stacktrace.class);
         }
 
         @Test
-        @DisplayName("allow to reference all messages in the containing package with almost an FQN")
+        @DisplayName("allow to reference all messages in the containing package with a short name")
         void allowsOverlyExplicitPackageReferences() {
-            assertSourceClassesOf(OverlySpecificStacktrace.class)
-                    .containsExactly(AssertionFailed.class,
-                                     TestFailed.class);
+            assertEnriched(OverlySpecificStacktrace.class);
         }
 
         @Test
@@ -284,23 +280,20 @@ class EnrichmentTypeTest {
         }
 
         @Test
-        @DisplayName("disallow shorthand package references from an outside package, "+
-                     "even if said packages have common ancestors")
-        void disallowShorthandNeighbourPackageReference(){
-            assertSourceClassesOf(ShorthandStacktrace.class).isEmpty();
-        }
-
-        @Test
         @DisplayName("allow FQN package references from outside packages")
         void allowFqnPackageReference() {
-            assertSourceClassesOf(FqnStacktrace.class).containsExactly(AssertionFailed.class,
-                                                                       TestFailed.class);
+            assertEnriched(FqnStacktrace.class);
         }
 
         @Test
-        @DisplayName("disallow child package shorthand references")
+        @DisplayName("allow child package shorthand references")
         void allowShorthandChildReference(){
-            assertSourceClassesOf(ShorthandStacktrace.class).isEmpty();
+            assertEnriched(ShorthandStacktrace.class);
+        }
+
+        private void assertEnriched(Class<? extends Message> cls){
+            assertSourceClassesOf(cls).containsExactly(AssertionFailed.class,
+                                                       TestFailed.class);
         }
     }
 

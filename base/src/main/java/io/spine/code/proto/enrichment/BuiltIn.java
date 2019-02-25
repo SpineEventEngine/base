@@ -23,6 +23,7 @@ package io.spine.code.proto.enrichment;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.base.MessageContext;
+import io.spine.code.proto.PackageName;
 import io.spine.code.proto.ref.TypeRef;
 
 import java.util.Optional;
@@ -36,7 +37,6 @@ import java.util.Optional;
 enum BuiltIn implements TypeRef {
 
     ANY("") {
-
         /**
          * Accepts all message types.
          *
@@ -48,6 +48,11 @@ enum BuiltIn implements TypeRef {
         @Override
         public boolean test(Descriptor message) {
             return true;
+        }
+
+        @Override
+        public Optional<PackageName> packageName() {
+            return Optional.empty();
         }
     },
 
@@ -72,6 +77,11 @@ enum BuiltIn implements TypeRef {
         public boolean test(Descriptor message) {
             return message.getName()
                           .endsWith(typeSuffix);
+        }
+
+        @Override
+        public Optional<PackageName> packageName() {
+            return Optional.empty();
         }
     };
 

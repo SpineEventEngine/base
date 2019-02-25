@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Reference to all message types in a proto package.
  */
-public final class InPackage extends AbstractTypeRef {
+final class InPackage extends AbstractTypeRef {
 
     private static final long serialVersionUID = 0L;
 
@@ -74,6 +74,11 @@ public final class InPackage extends AbstractTypeRef {
         this.packageName = PackageName.of(packageName);
     }
 
+    @Override
+    public Optional<PackageName> packageName() {
+        return Optional.of(packageName);
+    }
+
     private static String packageStatement(String value) {
         int suffixIndex = value.lastIndexOf(WILDCARD_SUFFIX);
         return value.substring(0, suffixIndex);
@@ -85,23 +90,7 @@ public final class InPackage extends AbstractTypeRef {
     @Override
     public boolean test(Descriptor message) {
         PackageName packageOfMessage = PackageName.of(message);
-        boolean result = packageOfMessage.isInnerOf(packageName);
+        boolean result = packageOfMessage.canReach(packageName);
         return result;
-    }
-
-    /**
-     * Makes sure that this reference references a fully-qualified package name, as opposed to
-     * only part of it.
-     *
-     * @param name
-     *         name of the package that needs to be prepended
-     * @return reference to a package with its qualified name
-     */
-    public InPackage ensurePackage(PackageName name) {
-        String fullPackageName = name.value();
-        String thisPackage = packageStatement(this.value());
-        return fullPackageName.endsWith(thisPackage)
-               ? new InPackage(fullPackageName + WILDCARD_SUFFIX)
-               : this;
     }
 }

@@ -25,6 +25,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.PackageName;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -110,6 +111,11 @@ public class CompositeTypeRef implements TypeRef {
         this.elements = ImmutableList.copyOf(elements);
         int size = this.elements.size();
         checkArgument(size > 1, "Composite type reference must have two or more elements.");
+    }
+
+    @Override
+    public Optional<PackageName> packageName() {
+        return Optional.empty();
     }
 
     @Override

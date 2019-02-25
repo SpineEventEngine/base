@@ -20,9 +20,16 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.type.KnownTypes;
 import io.spine.value.StringTypeValue;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,6 +42,8 @@ public final class PackageName extends StringTypeValue {
     private static final long serialVersionUID = 0L;
     private static final String DELIMITER = ".";
 
+    private static final Splitter PACKAGE_SPLITTER = Splitter.on(DELIMITER)
+                                                             .omitEmptyStrings();
     private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
 
     private PackageName(String value) {
@@ -71,7 +80,7 @@ public final class PackageName extends StringTypeValue {
      * Obtains Protobuf package delimiter.
      */
     public static String delimiter() {
-        return DELIMITER;
+        return String.valueOf(DELIMITER);
     }
 
     /**
@@ -83,5 +92,58 @@ public final class PackageName extends StringTypeValue {
         checkNotNull(parentCandidate);
         boolean result = value().startsWith(parentCandidate.value());
         return result;
+    }
+
+    public PackageName resolve(PackageName other){
+        return new PackageName(this.value() + DELIMITER + other.value());
+    }
+
+    public boolean contains(PackageName childCandidate) {
+        checkNotNull(childCandidate);
+        boolean result = value().contains(childCandidate.value());
+        return result;
+    }
+
+    public boolean canReach(PackageName name) {
+        // Packages referenced by their FQN are always reachable.
+        if (name.isFqn()) {
+            return true;
+        }
+        return childExists(name);
+    }
+
+    private boolean childExists(PackageName child) {
+        ImmutableSet<PackageName> allPackages = KnownTypes.instance()
+                                                          .packageNames();
+        ImmutableList<PackageName> subpackages = subpackages();
+        boolean result = false;
+        for (PackageName thisRef : subpackages) {
+            PackageName resolve = thisRef.resolve(child);
+            if (allPackages.contains(resolve)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private boolean isFqn() {
+        boolean result = KnownTypes.instance()
+                                   .packageNames()
+                                   .contains(this);
+        return result;
+    }
+
+    private ImmutableList<PackageName> subpackages() {
+        ImmutableList.Builder<PackageName> result = ImmutableList.builder();
+        List<String> split = PACKAGE_SPLITTER.splitToList(this.value());
+        @SuppressWarnings("ZeroLengthArrayAllocation")
+        String[] subpackages = split.toArray(new String[0]);
+        for (int i = 0; i < subpackages.length; i++) {
+            String[] parentPackage = Arrays.copyOfRange(subpackages, 0, i + 1);
+            String subpackage = String.join(DELIMITER, parentPackage);
+            result.add(of(subpackage));
+        }
+        return result.build();
     }
 }

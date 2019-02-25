@@ -30,6 +30,7 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.PackageName;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.code.proto.enrichment.EnrichmentType;
@@ -82,6 +83,8 @@ public class KnownTypes implements Serializable {
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
 
+    private final ImmutableSet<PackageName> packageNames;
+
     /**
      * Retrieves the singleton instance of {@code KnownTypes}.
      */
@@ -95,6 +98,7 @@ public class KnownTypes implements Serializable {
 
     private KnownTypes(TypeSet types) {
         this.typeSet = checkNotNull(types);
+        this.packageNames = packageNames(typeSet);
     }
 
     private Object readResolve() {
@@ -112,6 +116,10 @@ public class KnownTypes implements Serializable {
         FileSet protoDefinitions = FileSet.load();
         TypeSet types = TypeSet.from(protoDefinitions);
         return types;
+    }
+
+    public ImmutableSet<PackageName> packageNames() {
+        return packageNames;
     }
 
     /**
@@ -224,6 +232,16 @@ public class KnownTypes implements Serializable {
     private Type get(TypeName name) throws UnknownTypeException {
         Type result = typeSet.find(name)
                              .orElseThrow(() -> new UnknownTypeException(name.value()));
+        return result;
+    }
+
+    private static ImmutableSet<PackageName> packageNames(TypeSet typeSet) {
+        ImmutableSet<PackageName> result = typeSet.messageTypes()
+                                                  .stream()
+                                                  .distinct()
+                                                  .map(Type::descriptor)
+                                                  .map(PackageName::of)
+                                                  .collect(toImmutableSet());
         return result;
     }
 

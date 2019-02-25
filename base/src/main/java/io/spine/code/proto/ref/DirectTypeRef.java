@@ -111,9 +111,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
                      .join(types);
     }
 
-    /**
-     * Obtains package name used in the reference.
-     */
+    @Override
     public Optional<PackageName> packageName() {
         return Optional.ofNullable(packageName);
     }

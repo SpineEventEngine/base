@@ -28,11 +28,13 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageType;
+import io.spine.code.proto.PackageName;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.type.KnownTypes;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -107,7 +109,10 @@ public final class EnrichmentType extends MessageType {
     private ImmutableList<TypeRef> parseSourceRefs() {
         Descriptor type = descriptor();
         Collection<TypeRef> parsedReferences = EnrichmentForOption.typeRefsFrom(type);
-        return ImmutableList.copyOf(parsedReferences);
+        ImmutableList<TypeRef> result = parsedReferences.stream()
+                                                         .filter(this::typeRefReachable)
+                                                         .collect(ImmutableList.toImmutableList());
+        return result;
     }
 
     /**
@@ -126,6 +131,9 @@ public final class EnrichmentType extends MessageType {
      * Verifies if the passed type is the source for this enrichment type.
      */
     private boolean isSource(Descriptor message) {
+        if(message.getFullName().contains("Failed")){
+            int x = 5;
+        }
         if (sourceTypeRefs.stream()
                           .noneMatch(r -> r.test(message))) {
             return false;
@@ -133,6 +141,13 @@ public final class EnrichmentType extends MessageType {
         boolean result = fields.stream()
                                .anyMatch(s -> s.matchesType(message));
         return result;
+    }
+
+    private boolean typeRefReachable(TypeRef typeRef) {
+        PackageName thisPackage = PackageName.of(descriptor());
+        Optional<PackageName> ofReferenced = typeRef.packageName();
+        return ofReferenced.map(thisPackage::canReach)
+                           .orElse(false);
     }
 
     /**
