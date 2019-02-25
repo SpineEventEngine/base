@@ -21,20 +21,18 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newLinkedList;
 import static org.gradle.api.tasks.PathSensitivity.RELATIVE;
 
 /**
@@ -89,14 +87,14 @@ public final class GradleTask {
 
         private boolean allowNoDependencies;
 
-        private final Collection<Path> inputs;
-        private final Collection<Path> outputs;
+        private final UnionFileCollection inputs;
+        private final UnionFileCollection outputs;
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
             this.action = action;
-            this.inputs = newLinkedList();
-            this.outputs = newLinkedList();
+            this.inputs = new UnionFileCollection();
+            this.outputs = new UnionFileCollection();
         }
 
         /**
@@ -192,9 +190,9 @@ public final class GradleTask {
          * @param inputs the task input files
          * @return the current instance of {@code Builder}
          */
-        public Builder withInputFiles(Path... inputs) {
+        public Builder withInputFiles(FileCollection inputs) {
             checkNotNull(inputs, "Task inputs");
-            this.inputs.addAll(ImmutableSet.copyOf(inputs));
+            this.inputs.addToUnion(inputs);
             return this;
         }
 
@@ -209,9 +207,9 @@ public final class GradleTask {
          * @param outputs the task output files
          * @return the current instance of {@code Builder}
          */
-        public Builder withOutputFiles(Path... outputs) {
+        public Builder withOutputFiles(FileCollection outputs) {
             checkNotNull(outputs, "Task outputs");
-            this.outputs.addAll(ImmutableSet.copyOf(outputs));
+            this.outputs.addToUnion(outputs);
             return this;
         }
 
@@ -280,14 +278,14 @@ public final class GradleTask {
         private void addTaskIO(Task task) {
             if (!inputs.isEmpty()) {
                 task.getInputs()
-                    .files(inputs.toArray())
+                    .files(inputs)
                     .skipWhenEmpty()
                     .optional()
                     .withPathSensitivity(RELATIVE);
             }
             if (!outputs.isEmpty()) {
                 task.getOutputs()
-                    .file(outputs.toArray())
+                    .file(outputs)
                     .optional();
             }
         }
