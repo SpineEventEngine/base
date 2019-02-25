@@ -111,7 +111,7 @@ public final class EnrichmentType extends MessageType {
         Collection<TypeRef> parsedReferences = EnrichmentForOption.typeRefsFrom(type);
         ImmutableList<TypeRef> result = parsedReferences.stream()
                                                          .filter(this::typeRefReachable)
-                                                         .collect(ImmutableList.toImmutableList());
+                                                         .collect(toImmutableList());
         return result;
     }
 
