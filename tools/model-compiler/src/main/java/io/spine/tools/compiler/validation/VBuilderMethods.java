@@ -104,6 +104,7 @@ final class VBuilderMethods {
         ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
                 .methodBuilder(methodName)
+                .addAnnotation(Override.class)
                 .addAnnotation(CanIgnoreReturnValue.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
