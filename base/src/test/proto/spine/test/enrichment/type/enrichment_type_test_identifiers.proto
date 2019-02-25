@@ -20,28 +20,19 @@
 
 syntax = "proto3";
 
-package spine.test.code.enrichment.type.user.sharing;
+package spine.test.enrichment.type;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.type.user.sharing";
-option java_outer_classname = "EttSharingEventsProto";
+option java_package = "io.spine.test.enrichment.type";
+option java_outer_classname = "EnrichmentTypeTestIdentifiersProto";
 option java_multiple_files = true;
 
-message EttSharingRequestSent {
-    string user_uid = 1;
-    string second_user_uid = 2;
+message EttProjectId {
+    string uuid = 1;
 }
 
-// This message has both fields that are used in the `EttAlternativeFieldNames` enrichment
-// definition field mapping. See `enrichment_type_test.enr.proto`.
-//
-// Only the second field should be matched to this type.
-// See Java test case `EnrichmentTypeTest.AltFieldNames`.
-//
-message EttSharingRequestApproved {
-    string user_uid = 1;
-    string second_user_uid = 2;
-    int64 timestamp = 3;
+message EttTeamId {
+    string uuid = 1;
 }

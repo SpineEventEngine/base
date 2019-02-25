@@ -20,24 +20,28 @@
 
 syntax = "proto3";
 
-package spine.test.code.enrichment;
+package spine.test.enrichment.type.user.sharing;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.fieldref";
-option java_outer_classname = "FieldDefTestEnrichmentProto";
+option java_package = "io.spine.test.enrichment.type.user.sharing";
+option java_outer_classname = "EttSharingEventsProto";
 option java_multiple_files = true;
 
-message FdtUserProfile {
-    option (enrichment_for) = "io.spine.test.code.enrichment.fieldref.*";
-    string given_name = 1 [(by) = "user_id"];
+message EttSharingRequestSent {
+    string user_uid = 1;
+    string second_user_uid = 2;
 }
 
-// This type defines illegal mapping in the `context_info` field.
-message FdtDuplicateContextRef {
-    option (enrichment_for) = "io.spine.test.code.enrichment.fieldref.*";
-    string given_name = 1 [(by) = "user_id"];
-    // ERROR: duplicating `context` usage.
-    string context_info = 2 [(by) = "context.timestamp | user_id | context.actor"];
+// This message has both fields that are used in the `EttAlternativeFieldNames` enrichment
+// definition field mapping. See `enrichment_type_test.enr.proto`.
+//
+// Only the second field should be matched to this type.
+// See Java test case `EnrichmentTypeTest.AltFieldNames`.
+//
+message EttSharingRequestApproved {
+    string user_uid = 1;
+    string second_user_uid = 2;
+    int64 timestamp = 3;
 }

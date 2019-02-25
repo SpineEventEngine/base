@@ -24,8 +24,6 @@ package spine.test.code.proto;
 
 import "spine/options.proto";
 
-import "google/protobuf/any.proto";
-
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.test.code.proto";
 option java_outer_classname = "FieldReferenceTestProto";

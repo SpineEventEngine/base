@@ -20,40 +20,24 @@
 
 syntax = "proto3";
 
-package spine.test.code.enrichment.type.user;
+package spine.test.enrichment;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.enrichment.type.user";
-option java_outer_classname = "EttUserEventsProto";
+option java_package = "io.spine.test.enrichment.fieldref";
+option java_outer_classname = "FieldDefTestEnrichmentProto";
 option java_multiple_files = true;
 
-// On special case for naming types in this file
-// ---------------------------------------------
-// Messages declared in this file are having the `Event` suffix to make it easier to distinguish
-// them from enrichment types of these test environment family types.
-// Normally, we would not use the `Event` suffix, sticking to names used in the Domain Language.
-//
-
-message EttUserLoggedInEvent {
-    string user_uid = 1;
+message FdtUserProfile {
+    option (enrichment_for) = "io.spine.test.enrichment.fieldref.*";
+    string given_name = 1 [(by) = "user_id"];
 }
 
-message EttUserMentionedEvent {
-    string user_uid = 1;
-    string title = 2;
-}
-
-message EttUserLoggedOutEvent {
-    string user_uid = 1;
-    string owner_email = 2;
-}
-
-// Unlike other events, this one does not have the common field named `user_uid`.
-// This is to test exclusion of messages that do not match field names specified in
-// the `(by)` field option.
-//
-message EttUserDeletedEvent {
-    string deleted_uid = 1;
+// This type defines illegal mapping in the `context_info` field.
+message FdtDuplicateContextRef {
+    option (enrichment_for) = "io.spine.test.enrichment.fieldref.*";
+    string given_name = 1 [(by) = "user_id"];
+    // ERROR: duplicating `context` usage.
+    string context_info = 2 [(by) = "context.timestamp | user_id | context.actor"];
 }

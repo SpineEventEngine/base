@@ -25,19 +25,19 @@ import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import io.spine.test.code.enrichment.type.EttAlternativeFieldNames;
-import io.spine.test.code.enrichment.type.EttFieldSelection;
-import io.spine.test.code.enrichment.type.EttOnAnotherPackageMessage;
-import io.spine.test.code.enrichment.type.EttOnDeepPackage;
-import io.spine.test.code.enrichment.type.event.EttProjectCreated;
-import io.spine.test.code.enrichment.type.user.EttUserDeletedEvent;
-import io.spine.test.code.enrichment.type.user.EttUserLoggedInEvent;
-import io.spine.test.code.enrichment.type.user.EttUserLoggedOutEvent;
-import io.spine.test.code.enrichment.type.user.EttUserMentionedEvent;
-import io.spine.test.code.enrichment.type.user.permission.EttPermissionGrantedEvent;
-import io.spine.test.code.enrichment.type.user.permission.EttPermissionRevokedEvent;
-import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved;
-import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent;
+import io.spine.test.enrichment.type.EttAlternativeFieldNames;
+import io.spine.test.enrichment.type.EttFieldSelection;
+import io.spine.test.enrichment.type.EttOnAnotherPackageMessage;
+import io.spine.test.enrichment.type.EttOnDeepPackage;
+import io.spine.test.enrichment.type.event.EttProjectCreated;
+import io.spine.test.enrichment.type.user.EttUserDeletedEvent;
+import io.spine.test.enrichment.type.user.EttUserLoggedInEvent;
+import io.spine.test.enrichment.type.user.EttUserLoggedOutEvent;
+import io.spine.test.enrichment.type.user.EttUserMentionedEvent;
+import io.spine.test.enrichment.type.user.permission.EttPermissionGrantedEvent;
+import io.spine.test.enrichment.type.user.permission.EttPermissionRevokedEvent;
+import io.spine.test.enrichment.type.user.sharing.EttSharingRequestApproved;
+import io.spine.test.enrichment.type.user.sharing.EttSharingRequestSent;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
@@ -78,7 +78,7 @@ class EnrichmentTypeTest {
          * which is followed with the enumeration of unexpected types like this:
          *
          * <pre>
-         * unexpected (2): class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved
+         * unexpected (2): class io.spine.test.enrichment.type.user.sharing.EttSharingRequestSent, class io.spine.test.enrichment.type.user.sharing.EttSharingRequestApproved
          * </pre>
          *
          * please make sure these types are added in the verification list in the body of this
