@@ -44,27 +44,6 @@ message WithSpiType {
     option (SPI_type) = true;
 }
 
-message WithExperimentalType {
-    option (experimental_type) = true;
-}
-
-message WithBetaType {
-    option (beta_type) = true;
-}
-
 message ValidatedMessage {
     string id = 1 [(valid) = true];
-}
-
-message WithValidationOf {
-    option (validation_of) = "ValidatedMessage";
-
-    string id = 1 [(required) = true];
-}
-
-message WithMultipleGenerators {
-    option (beta_type) = true;
-    option (validation_of) = "ValidatedMessage";
-
-    string id = 1 [(required) = true];
 }
