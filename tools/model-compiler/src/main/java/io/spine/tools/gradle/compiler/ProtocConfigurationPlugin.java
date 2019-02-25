@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
@@ -42,6 +43,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.TaskCollection;
 
 import java.io.File;
 import java.io.IOException;
@@ -243,8 +245,20 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private void configureProtocTasks(GenerateProtoTaskCollection tasks,
-                                             GradleTask dependency) {
-        tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
+                                      GradleTask dependency) {
+        // This is a `live` view of the current Gradle tasks.
+        TaskCollection<GenerateProtoTask> tasksProxy = tasks.all();
+
+        /*
+         *  Creating a hard-copy of `live` view of matching Gradle tasks.
+         *
+         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
+         *  insert a task into the Gradle task list.
+         */
+        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
+        for (GenerateProtoTask task : allTasks) {
+            configureProtocTask(task, dependency.getTask());
+        }
     }
 
     private static SpineProtocConfig assembleParameter(Project project) {
