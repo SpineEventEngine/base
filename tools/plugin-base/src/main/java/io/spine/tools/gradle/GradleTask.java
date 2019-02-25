@@ -26,7 +26,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskContainer;
 
 import java.nio.file.Path;
@@ -36,6 +35,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
+import static org.gradle.api.tasks.PathSensitivity.RELATIVE;
 
 /**
  * Utility wrapper around the Gradle tasks created.
@@ -90,11 +90,13 @@ public final class GradleTask {
         private boolean allowNoDependencies;
 
         private final Collection<Path> inputs;
+        private final Collection<Path> outputs;
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
             this.action = action;
             this.inputs = newLinkedList();
+            this.outputs = newLinkedList();
         }
 
         /**
@@ -103,15 +105,15 @@ public final class GradleTask {
          * <p> Once built, the new instance of {@link GradleTask} will be inserted
          * before the anchor.
          *
-         * <p> NOTE: invocation of either this method or {@link #insertAfterTask(TaskName)}
-         * is mandatory, as the newly created instance of {@link GradleTask} must be put to
+         * <p> NOTE: invocation of either this method or {@link #insertAfterTask} is mandatory,
+         * as the newly created instance of {@link GradleTask} must be put to
          * a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "before" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertBeforeTask(TaskName target) {
-            checkNotNull(target, "task after the new one");
+            checkNotNull(target, "Task after the new one");
             checkState(dependenciesRequired());
             this.followingTask = target;
             return this;
@@ -123,15 +125,15 @@ public final class GradleTask {
          * <p> Once built, the new instance of {@link GradleTask} will be inserted
          * after the anchor.
          *
-         * <p> NOTE: invocation of either this method or {@link #insertBeforeTask(TaskName)}
-         * is mandatory, as the newly created instance of {@link GradleTask} must be put
+         * <p> NOTE: invocation of either this method or {@link #insertBeforeTask} is mandatory,
+         * as the newly created instance of {@link GradleTask} must be put
          * to a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "after" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertAfterTask(TaskName target) {
-            checkNotNull(target, "task before the new one");
+            checkNotNull(target, "Task before the new one");
             checkState(dependenciesRequired());
             this.previousTask = target;
             return this;
@@ -151,16 +153,15 @@ public final class GradleTask {
          * Gradle build.
          *
          * <p>Invocation of this method may substitute the invocation of
-         * {@link #insertAfterTask(TaskName)} or {@link #insertBeforeTask(TaskName)} if it's
-         * guaranteed that at least one task with such name exists. Though the fallback is
-         * never handled and there is no guarantee that the task will get into
-         * the Gradle task graph.
+         * {@link #insertAfterTask} or {@link #insertBeforeTask} if it's guaranteed that at least
+         * one task with such name exists. Though the fallback is never handled and there is
+         * no guarantee that the task will get into the Gradle task graph.
          *
          * @param target the name of the tasks, serving as "after" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertAfterAllTasks(TaskName target) {
-            checkNotNull(target, "tasks before the new one");
+            checkNotNull(target, "Tasks before the new one");
             checkState(dependenciesRequired());
             this.previousTaskOfAllProjects = target;
             return this;
@@ -181,7 +182,7 @@ public final class GradleTask {
         }
 
         /**
-         * Adds the files and/or directories to the input dataset for the task being built.
+         * Adds the files and/or directories to the input file set for the task being built.
          *
          * <p>If none of the specified file system elements are present before the task
          * execution, the task will be marked as {@code NO-SOURCE} and skipped.
@@ -192,8 +193,25 @@ public final class GradleTask {
          * @return the current instance of {@code Builder}
          */
         public Builder withInputFiles(Path... inputs) {
-            checkNotNull(inputs, "task inputs");
+            checkNotNull(inputs, "Task inputs");
             this.inputs.addAll(ImmutableSet.copyOf(inputs));
+            return this;
+        }
+
+        /**
+         * Adds the files and/or directories to the output file set for the task being built.
+         *
+         * <p>If all the files listed as output do not change since the previous run of the task,
+         * the task will be marked as {@code UP-TO-DATE} and skipped.
+         *
+         * <p>Note that a task is not skipped if its {@link #withInputFiles inputs} are changes.
+         *
+         * @param outputs the task output files
+         * @return the current instance of {@code Builder}
+         */
+        public Builder withOutputFiles(Path... outputs) {
+            checkNotNull(outputs, "Task outputs");
+            this.outputs.addAll(ImmutableSet.copyOf(outputs));
             return this;
         }
 
@@ -265,7 +283,12 @@ public final class GradleTask {
                     .files(inputs.toArray())
                     .skipWhenEmpty()
                     .optional()
-                    .withPathSensitivity(PathSensitivity.RELATIVE);
+                    .withPathSensitivity(RELATIVE);
+            }
+            if (!outputs.isEmpty()) {
+                task.getOutputs()
+                    .file(outputs.toArray())
+                    .optional();
             }
         }
     }
