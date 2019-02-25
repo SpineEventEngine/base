@@ -26,7 +26,6 @@ import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.enrichment.packages.OpCommonAncestorEnrichment;
 import io.spine.code.proto.enrichment.packages.PaCommonAncestorEnrichment;
 import io.spine.code.proto.enrichment.packages.PaFqnIdEnrichment;
@@ -55,6 +54,7 @@ import io.spine.test.code.enrichment.type.user.permission.EttPermissionGrantedEv
 import io.spine.test.code.enrichment.type.user.permission.EttPermissionRevokedEvent;
 import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestApproved;
 import io.spine.test.code.enrichment.type.user.sharing.EttSharingRequestSent;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
