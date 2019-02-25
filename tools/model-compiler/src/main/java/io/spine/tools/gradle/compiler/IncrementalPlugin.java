@@ -36,6 +36,12 @@ import static io.spine.tools.gradle.SourceSetName.TEST;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
+/**
+ * A {@link SpinePlugin} which performs its tasks in the incremental manner.
+ *
+ * <p>When running a task configured for incremental build, it may be skipped if its outcome is
+ * already achieved, e.g. the files are written.
+ */
 public abstract class IncrementalPlugin extends SpinePlugin {
 
     private static final String PROTO_SOURCE_SET = "proto";
