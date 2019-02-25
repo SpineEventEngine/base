@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -53,10 +53,10 @@ abstract class GeneratedConfigurations<M extends Message,
     }
 
     /**
-     * Obtains current pattern configurations.
+     * Obtains current unique pattern configurations.
      */
-    ImmutableList<FilePattern<M>> patternConfigurations() {
-        return ImmutableList.copyOf(filePatternFactory.patterns());
+    ImmutableSet<FilePattern<M>> patternConfigurations() {
+        return filePatternFactory.patterns();
     }
 
     /**
@@ -82,8 +82,8 @@ abstract class GeneratedConfigurations<M extends Message,
      * <p>This method functions similarly to the {@link #filePattern()} except for
      * several differences:
      * <ul>
-     *     <li>the file in which the message type is defined does not matter;
-     *     <li>nested definitions are affected as well as top-level ones.
+     * <li>the file in which the message type is defined does not matter;
+     * <li>nested definitions are affected as well as top-level ones.
      * </ul>
      *
      * @return a configuration object for Proto messages matching UUID message pattern
@@ -96,7 +96,7 @@ abstract class GeneratedConfigurations<M extends Message,
      * <p>This method functions are similar to the {@link #filePattern} except for
      * several differences:
      * <ul>
-     *     <li>the file in which the message type is defined does not matter;
+     * <li>the file in which the message type is defined does not matter;
      * </ul>
      *
      * @return a configuration object for Proto messages matching enrichment message pattern

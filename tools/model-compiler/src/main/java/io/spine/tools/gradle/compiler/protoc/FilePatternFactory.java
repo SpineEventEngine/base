@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -53,7 +53,10 @@ public abstract class FilePatternFactory<T extends Message, P extends PostfixPat
     public P endsWith(@Regex String postfix) {
         checkNotNull(postfix);
         P result = newPostfixPattern(postfix);
-        patterns.add(result);
+        if (!patterns.add(result)){
+            patterns.remove(result);
+            patterns.add(result);
+        }
         return result;
     }
 
@@ -61,8 +64,8 @@ public abstract class FilePatternFactory<T extends Message, P extends PostfixPat
      * Returns currently configured file patterns.
      */
     @Internal
-    ImmutableList<FilePattern<T>> patterns() {
-        return ImmutableList.copyOf(patterns);
+    ImmutableSet<FilePattern<T>> patterns() {
+        return ImmutableSet.copyOf(patterns);
     }
 
     /**
