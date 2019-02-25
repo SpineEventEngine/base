@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.type.enrichment;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -27,7 +27,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
 import io.spine.base.FieldPaths;
-import io.spine.code.proto.ref.TypeRef;
+import io.spine.type.ref.TypeRef;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -37,8 +37,6 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.FieldPaths.findField;
-import static io.spine.code.proto.enrichment.BuiltIn.ANY;
-import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -73,12 +71,12 @@ public final class FieldRef extends StringTypeValue {
     FieldRef(String value) {
         super(checkValue(value));
         ImmutableList<String> parts = split(value);
-        TypeRef typeRef = CONTEXT.parse(parts.get(0))
-                                 .orElse(ANY);
+        TypeRef typeRef = BuiltIn.CONTEXT.parse(parts.get(0))
+                                         .orElse(BuiltIn.ANY);
         this.typeRef = typeRef;
         // If the first element is context reference, skip it from the path.
         ImmutableList<String> fieldPath =
-                parts.subList((typeRef == CONTEXT ? 1 : 0), parts.size());
+                parts.subList((typeRef == BuiltIn.CONTEXT ? 1 : 0), parts.size());
         this.path = FieldPaths.fromElements(fieldPath);
     }
 
@@ -112,7 +110,7 @@ public final class FieldRef extends StringTypeValue {
      * Verifies if the reference is to a field from the same type.
      */
     public boolean isInner() {
-        boolean result = typeRef == ANY;
+        boolean result = typeRef == BuiltIn.ANY;
         return result;
     }
 
@@ -120,7 +118,7 @@ public final class FieldRef extends StringTypeValue {
      * Tells if the reference is for a message context field.
      */
     public boolean isContext() {
-        boolean result = typeRef == CONTEXT;
+        boolean result = typeRef == BuiltIn.CONTEXT;
         return result;
     }
 

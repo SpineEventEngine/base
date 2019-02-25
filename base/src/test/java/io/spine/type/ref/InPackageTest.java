@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.type.ref;
 
 import com.google.common.truth.OptionalSubject;
 import com.google.common.truth.Truth8;
@@ -77,7 +77,7 @@ class InPackageTest {
             String reference = typeRef.get()
                                       .value();
             assertThat(reference)
-                    .isEqualTo(value);
+                 .isEqualTo(value);
         }
 
         void assertNotParses(String value) {

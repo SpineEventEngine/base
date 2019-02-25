@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.type.ref;
 
 import com.google.common.testing.EqualsTester;
 import com.google.common.truth.StringSubject;
@@ -62,7 +62,7 @@ class CompositeTypeRefTest {
 
         void assertRejects(String value) {
             assertThrows(IllegalArgumentException.class,
-                         () -> CompositeTypeRef.doParse(value));
+                                    () -> CompositeTypeRef.doParse(value));
         }
     }
 
@@ -75,9 +75,9 @@ class CompositeTypeRefTest {
         );
 
         assertThat(ref.test(Any.getDescriptor()))
-                .isTrue();
+             .isTrue();
         assertThat(ref.test(FieldFilter.getDescriptor()))
-                .isTrue();
+             .isTrue();
     }
 
     @Test
@@ -90,9 +90,9 @@ class CompositeTypeRefTest {
         );
 
         assertThat(ref.test(Any.getDescriptor()))
-                .isFalse();
+             .isFalse();
         assertThat(ref.test(FieldPath.getDescriptor()))
-                .isFalse();
+             .isFalse();
     }
 
     @Test
@@ -100,7 +100,7 @@ class CompositeTypeRefTest {
     void valueWithCommas() {
         CompositeTypeRef ref = CompositeTypeRef.doParse("Some,Value,reference.*");
         assertThat(ref.value())
-                .contains(",");
+             .contains(",");
     }
 
     @Test

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.type.enrichment;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -27,9 +27,9 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.StringOption;
-import io.spine.code.proto.ref.DirectTypeRef;
-import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
+import io.spine.type.ref.DirectTypeRef;
+import io.spine.type.ref.TypeRef;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,15 +43,14 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * <p>The option may have one or more reference to a type separated with commas.
  */
-public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
-        Descriptor, MessageOptions> {
+public final class EnrichmentForOption
+        extends StringOption<Collection<TypeRef>, Descriptor, MessageOptions> {
 
     /** Splits type references separated with commas. */
     private static final Splitter splitter = Splitter.on(',')
                                                      .trimResults();
 
-    /** Prevents instantiation of this utility class. */
-    public EnrichmentForOption() {
+    private EnrichmentForOption() {
         super(OptionsProto.enrichmentFor);
     }
 

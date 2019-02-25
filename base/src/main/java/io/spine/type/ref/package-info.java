@@ -19,12 +19,14 @@
  */
 
 /**
- * This package provides classes and interfaces related to definition of enrichment messages.
+ * This package provides classes referencing domain model elements from a proto code options.
  */
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.proto.enrichment;
+package io.spine.type.ref;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

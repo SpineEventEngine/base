@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.type.ref;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;

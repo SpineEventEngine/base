@@ -30,10 +30,10 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
+import io.spine.type.enrichment.EnrichmentType;
+import io.spine.type.ref.TypeRef;
 import org.slf4j.Logger;
 
 import java.io.Serializable;

@@ -18,38 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.type.enrichment;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Information on how to obtain a value of an enrichment field.
- */
-@Immutable
-final class FieldSource {
+@DisplayName("ByOption should")
+class ByOptionTest extends UtilityClassTest<ByOption> {
 
-    private final @Nullable FieldDescriptor descriptor;
-    private final FieldRef reference;
-
-    FieldSource(@Nullable FieldDescriptor descriptor, FieldRef reference) {
-        checkNotNull(reference);
-        this.descriptor = descriptor;
-        this.reference = reference;
+    ByOptionTest() {
+        super(ByOption.class);
     }
 
-    boolean viaReference() {
-        return reference.isContext();
-    }
-
-    FieldDescriptor descriptor() {
-        return checkNotNull(descriptor);
-    }
-
-    FieldRef reference() {
-        return reference;
+    @Test
+    @DisplayName("remove space characters around field references")
+    void parseRaw() {
+        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
+                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
     }
 }

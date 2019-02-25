@@ -18,15 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.type.enrichment;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * This package provides classes referencing domain model elements from a proto code options.
+ * Information on how to obtain a value of an enrichment field.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.proto.ref;
+@Immutable
+final class FieldSource {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
+    private final @Nullable FieldDescriptor descriptor;
+    private final FieldRef reference;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    FieldSource(@Nullable FieldDescriptor descriptor, FieldRef reference) {
+        checkNotNull(reference);
+        this.descriptor = descriptor;
+        this.reference = reference;
+    }
+
+    boolean viaReference() {
+        return reference.isContext();
+    }
+
+    FieldDescriptor descriptor() {
+        return checkNotNull(descriptor);
+    }
+
+    FieldRef reference() {
+        return reference;
+    }
+}

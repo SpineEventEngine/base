@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.type.enrichment;
 
 import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.code.proto.enrichment.BuiltIn.ANY;
-import static io.spine.code.proto.enrichment.BuiltIn.CONTEXT;
+import static io.spine.type.enrichment.BuiltIn.ANY;
+import static io.spine.type.enrichment.BuiltIn.CONTEXT;
 
 @DisplayName("BuiltIn type references should")
 class BuiltInTest {

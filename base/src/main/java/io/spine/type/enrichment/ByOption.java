@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.enrichment;
+package io.spine.type.enrichment;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -36,18 +36,14 @@ import static java.util.regex.Pattern.compile;
 /**
  * Obtains source type names from the {@code "by"} field option of a message.
  */
-public final class ByOption extends StringOption<Collection<FieldRef>,
-                                                 FieldDescriptor,
-                                                 FieldOptions> {
+public final class ByOption
+        extends StringOption<Collection<FieldRef>, FieldDescriptor, FieldOptions> {
 
-    /**
-     * Separates two or more alternative references.
-     */
+    /** Separates two or more alternative references. */
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
     private static final Pattern SPACE = compile(" ", Pattern.LITERAL);
 
-    /** Prevents instantiation of this utility class. */
     private ByOption() {
         super(OptionsProto.by);
     }

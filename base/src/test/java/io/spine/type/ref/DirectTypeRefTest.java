@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.type.ref;
 
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
@@ -80,7 +80,7 @@ class DirectTypeRefTest {
         DirectTypeRef direct = ref.map(r -> (DirectTypeRef) r)
                                   .get();
         assertThat(direct.value())
-                .isEqualTo(expected);
+             .isEqualTo(expected);
         Truth8.assertThat(direct.packageName())
               .hasValue(PackageName.of("spine.test"));
     }
@@ -94,7 +94,7 @@ class DirectTypeRefTest {
         void packageRef() {
             TypeRef ref = ref("google.protobuf.Any");
             assertThat(ref.test(Any.getDescriptor()))
-                    .isTrue();
+                 .isTrue();
         }
 
         @Test
@@ -102,7 +102,7 @@ class DirectTypeRefTest {
         void simpleRef() {
             TypeRef ref = ref("Timestamp");
             assertThat(ref.test(Timestamp.getDescriptor()))
-                    .isTrue();
+                 .isTrue();
         }
 
         @Test
@@ -111,7 +111,7 @@ class DirectTypeRefTest {
             TypeRef ref = ref(Int32Value.getDescriptor()
                                         .getFullName());
             assertThat(ref.test(UInt32Value.getDescriptor()))
-                    .isFalse();
+                 .isFalse();
         }
 
         @Test
@@ -119,7 +119,7 @@ class DirectTypeRefTest {
         void anotherPackage() {
             TypeRef ref = ref("spine.test.FloatValue");
             assertThat(ref.test(FloatValue.getDescriptor()))
-                    .isFalse();
+                 .isFalse();
         }
     }
 
@@ -136,7 +136,7 @@ class DirectTypeRefTest {
         Descriptor type = Int32Value.getDescriptor();
         DirectTypeRef ref = ref(type.getFullName());
         assertThat(ref.simpleTypeName())
-                .isEqualTo(type.getName());
+             .isEqualTo(type.getName());
     }
 
     @Nested
@@ -156,9 +156,9 @@ class DirectTypeRefTest {
             Truth8.assertThat(relocated.packageName())
                     .hasValue(newPackage);
             assertThat(relocated.nestedTypeName())
-                    .isEqualTo(typeName);
+                 .isEqualTo(typeName);
             assertThat(relocated.simpleTypeName())
-                    .isEqualTo(typeName);
+                 .isEqualTo(typeName);
         }
 
         @Test
@@ -174,7 +174,7 @@ class DirectTypeRefTest {
             Truth8.assertThat(relocated.packageName())
                   .hasValue(newPackage);
             assertThat(relocated.nestedTypeName())
-                    .isEqualTo(typeName);
+                 .isEqualTo(typeName);
         }
 
         @Test
@@ -190,9 +190,9 @@ class DirectTypeRefTest {
             Truth8.assertThat(relocated.packageName())
                   .hasValue(newPackage);
             assertThat(relocated.nestedTypeName())
-                    .isEqualTo("Galaxy.Far.Away");
+                 .isEqualTo("Galaxy.Far.Away");
             assertThat(relocated.simpleTypeName())
-                    .isEqualTo("Away");
+                 .isEqualTo("Away");
         }
     }
 

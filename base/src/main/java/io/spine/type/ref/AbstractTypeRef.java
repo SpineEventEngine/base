@@ -18,44 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto.ref;
+package io.spine.type.ref;
 
-import com.google.common.collect.ImmutableList;
+import io.spine.value.StringTypeValue;
 
-import java.util.Optional;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Attempts to parse the passed value by sequentially invoking provider functions.
+ * Abstract base for string-based type references.
  */
-final class ParsingChain {
+abstract class AbstractTypeRef extends StringTypeValue implements TypeRef {
 
-    private final String value;
-    private final ImmutableList<Parser> parsers;
-
-    ParsingChain(String value, Parser... parser) {
-        this.value = value;
-        this.parsers = ImmutableList.copyOf(parser);
-    }
-
-    Optional<TypeRef> parse() {
-        for (Parser parser : parsers) {
-            Optional<TypeRef> found = parser.parse(value);
-            if (found.isPresent()) {
-                return found;
-            }
-        }
-        return Optional.empty();
-    }
+    private static final long serialVersionUID = 0L;
 
     /**
-     * Provides a type reference <em>if</em> the passed string matches the format
-     * requirements of the provider, otherwise returns an empty {@code Optional}.
-     *
-     * @see CompositeTypeRef#doParse(String)
-     * @see TypeRef#parse(String)
+     * Creates a new instance with a value which is not null, empty, or blank.
      */
-    @FunctionalInterface
-    interface Parser {
-        Optional<TypeRef> parse(String reference);
+    AbstractTypeRef(String value) {
+        super(checkNotEmptyOrBlank(value));
     }
 }
