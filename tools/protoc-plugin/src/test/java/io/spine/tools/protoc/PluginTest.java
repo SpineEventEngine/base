@@ -33,6 +33,7 @@ import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.protoc.messageinterface.TestEventsProto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -56,10 +57,12 @@ final class PluginTest {
     @Test
     void processCodeGenerationRequest() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        interfaces.filePattern().endsWith(TEST_PROTO_POSTFIX)
+        interfaces.filePattern()
+                  .endsWith(TEST_PROTO_POSTFIX)
                   .markWith(TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.filePattern().endsWith(TEST_PROTO_POSTFIX)
+        methods.filePattern()
+               .endsWith(TEST_PROTO_POSTFIX)
                .withMethodFactory(TestMethodFactory.class.getName());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -75,6 +78,28 @@ final class PluginTest {
         CodeGeneratorResponse.File messageMethod = response.getFile(1);
         assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
         assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
+    }
+
+    @DisplayName("skip generation of standard interfaces if they are `ignored`")
+    @Test
+    void skipStandardInterfacesIfIgnored() {
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        interfaces.filePattern()
+                  .endsWith("events.proto")
+                  .ignore();
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestEventsProto.getDescriptor()
+                                             .toProto())
+                .addFileToGenerate("spine/tools/protoc/messageinterface/test_events.proto")
+                .setParameter(encodedProtocConfig(interfaces))
+                .build();
+        CodeGeneratorResponse response = runPlugin(request);
+
+        assertEquals(0, response.getFileCount());
+    }
+
+    private static String encodedProtocConfig(GeneratedInterfaces interfaces) {
+        return encodedProtocConfig(interfaces, GeneratedMethods.withDefaults());
     }
 
     private static String encodedProtocConfig(GeneratedInterfaces interfaces,
