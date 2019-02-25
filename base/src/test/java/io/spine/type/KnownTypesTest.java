@@ -222,7 +222,7 @@ class KnownTypesTest {
             TypeRef validRef = TypeRef.parse(type);
             ImmutableSet<MessageType> resolved = knownTypes.resolveAndValidate(validRef);
             assertThat(resolved)
-                    .containsExactly(MessageType.of(KnownTaskId.class));
+                    .containsExactly(new MessageType(KnownTaskId.class));
         }
 
         @Test
