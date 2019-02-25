@@ -210,7 +210,7 @@ public class KnownTypes implements Serializable {
      *         checks to verify that all type references are fully resolved.
      *
      * @throws UnresolvedReferenceException
-     *         in case any of the {@code TypeRef} elements points to an unknown type or package
+     *         in case any of the {@code TypeRef} elements point to an unknown type or package
      */
     @CanIgnoreReturnValue
     public ImmutableSet<MessageType> resolveAndValidate(TypeRef typeRef) {
