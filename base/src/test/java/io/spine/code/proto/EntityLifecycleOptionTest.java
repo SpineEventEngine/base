@@ -138,7 +138,7 @@ class EntityLifecycleOptionTest {
     }
 
     @Test
-    @DisplayName("append package name to directly referenced events")
+    @DisplayName("append package name to directly referenced types")
     void appendPackageName() {
         MessageType pmWithOption = typeOf(PmWithDirectOptions.class);
         Optional<TypeRef> archiveUpon = option.archiveUpon(pmWithOption);
