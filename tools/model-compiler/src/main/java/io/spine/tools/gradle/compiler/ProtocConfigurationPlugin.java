@@ -43,12 +43,12 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.TaskCollection;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
@@ -247,7 +247,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private void configureProtocTasks(GenerateProtoTaskCollection tasks,
                                       GradleTask dependency) {
         // This is a `live` view of the current Gradle tasks.
-        TaskCollection<GenerateProtoTask> tasksProxy = tasks.all();
+        Collection<GenerateProtoTask> tasksProxy = tasks.all();
 
         /*
          *  Creating a hard-copy of `live` view of matching Gradle tasks.
