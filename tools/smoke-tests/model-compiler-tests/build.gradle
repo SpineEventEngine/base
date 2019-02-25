@@ -36,5 +36,6 @@ modelCompiler {
         filePattern().endsWith("generation_test.proto")
                 .withMethodFactory("io.spine.tools.protoc.TestMethodFactory")
         uuidMessage().withMethodFactory("io.spine.tools.protoc.UuidMethodFactory")
+        enrichmentMessage().ignore()
     }
 }
