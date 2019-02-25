@@ -21,11 +21,11 @@
 package io.spine.tools.protoc.method;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.type.MessageType;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated

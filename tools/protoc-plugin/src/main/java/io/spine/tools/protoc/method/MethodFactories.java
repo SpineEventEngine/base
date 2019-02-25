@@ -23,13 +23,13 @@ package io.spine.tools.protoc.method;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
+import io.spine.type.MessageType;
 import org.slf4j.Logger;
 
 import java.io.File;

@@ -27,7 +27,6 @@ import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.code.proto.MessageType;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;
@@ -38,6 +37,7 @@ import io.spine.test.tools.protoc.WeatherForecast;
 import io.spine.tools.protoc.SomeMessage.InnerMessageNotEnrichment;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

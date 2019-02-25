@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.code.proto.MessageType;
 import io.spine.option.OptionExtensionRegistry;
 import io.spine.option.OptionsProto;
 import io.spine.protoc.MethodBody;
@@ -35,6 +34,7 @@ import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.messageinterface.TestEventsProto;
 import io.spine.tools.protoc.method.TestMethodProtos;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

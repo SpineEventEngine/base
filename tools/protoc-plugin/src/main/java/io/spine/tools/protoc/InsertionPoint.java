@@ -20,7 +20,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 import static java.lang.String.format;
 
@@ -96,7 +96,7 @@ public enum InsertionPoint {
      */
     OUTER_CLASS_SCOPE("outer_class_scope") {
         @Override
-        public String forType(Type ignored) {
+        public String forType(Type<?, ?> ignored) {
             return getDefinition();
         }
     };
@@ -117,7 +117,7 @@ public enum InsertionPoint {
     /**
      * Creates Protoc insertion point for the supplied type.
      */
-    public String forType(Type protobufType) {
+    public String forType(Type<?, ?> protobufType) {
         String result = format("%s:%s", definition, protobufType.name());
         return result;
     }

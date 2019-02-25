@@ -22,7 +22,8 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
-import io.spine.code.proto.MessageType;
+import io.spine.base.UuidValue;
+import io.spine.type.MessageType;
 
 import java.util.List;
 import java.util.function.Function;
@@ -30,7 +31,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.base.MessageClassifiers.uuidContainer;
 
 /**
  * An abstract base for generated methods scanners.
@@ -47,7 +47,8 @@ public abstract class TypeScanner<G extends Message> {
      * Finds methods to be generated for the given type.
      */
     public ImmutableList<CompilerOutput> scan(MessageType type) {
-        if (uuidContainer().test(type)) {
+        if (UuidValue.classifier()
+                     .test(type)) {
             return uuidMessage(type);
         }
         if (type.isEnrichment()) {

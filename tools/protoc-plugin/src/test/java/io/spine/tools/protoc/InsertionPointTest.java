@@ -21,7 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.truth.StringSubject;
-import io.spine.code.proto.MessageType;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -21,7 +21,6 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentMethod;
@@ -29,6 +28,7 @@ import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
 import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidMethod;
+import io.spine.type.MessageType;
 
 import java.util.List;
 import java.util.function.Function;

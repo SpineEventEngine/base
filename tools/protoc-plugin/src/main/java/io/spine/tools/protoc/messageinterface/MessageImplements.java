@@ -22,11 +22,11 @@ package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.type.MessageType;
+import io.spine.type.Type;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated

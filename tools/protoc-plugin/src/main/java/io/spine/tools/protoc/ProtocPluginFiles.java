@@ -21,7 +21,7 @@
 package io.spine.tools.protoc;
 
 import io.spine.code.java.SourceFile;
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 

@@ -21,10 +21,10 @@
 package io.spine.tools.protoc.method;
 
 import com.google.protobuf.Descriptors;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.ServiceType;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.type.MessageType;
+import io.spine.type.ServiceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +49,7 @@ final class GeneratedMethodGeneratorTest {
 
     @DisplayName("try to generate methods for message types")
     @Test
-    void generateMethodsForMessageTypes(){
+    void generateMethodsForMessageTypes() {
         MessageType type = new MessageType(WithSpiType.getDescriptor());
         GeneratedMethodGenerator generator =
                 GeneratedMethodGenerator.instance(SpineProtocConfig.getDefaultInstance());

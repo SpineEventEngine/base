@@ -21,12 +21,12 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.type.MessageType;
+import io.spine.type.Type;
 
 import java.util.Collection;
 

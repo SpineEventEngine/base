@@ -22,12 +22,12 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

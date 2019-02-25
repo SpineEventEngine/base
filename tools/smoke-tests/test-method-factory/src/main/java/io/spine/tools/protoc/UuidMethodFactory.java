@@ -26,9 +26,9 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.base.Identifier;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
+import io.spine.type.MessageType;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import javax.lang.model.element.Modifier;
