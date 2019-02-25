@@ -21,7 +21,11 @@
 package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.base.Identifier;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.MessageType;
 import io.spine.protoc.MethodBody;
 import io.spine.protoc.MethodFactory;
@@ -31,20 +35,23 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 
 @Immutable
-public class TestMethodFactory implements MethodFactory {
+public class UuidMethodFactory implements MethodFactory {
 
-    public TestMethodFactory() {
+    public UuidMethodFactory() {
     }
 
     @Override
     public List<MethodBody> newMethodsFor(MessageType messageType) {
+        PackageName packageName = messageType.javaPackage();
+        SimpleClassName simpleClassName = messageType.simpleJavaClassName();
+        ClassName className = ClassName.get(packageName.value(), simpleClassName.value());
         MethodSpec spec = MethodSpec
-                .methodBuilder("ownType")
-                .returns(MessageType.class)
-                .addStatement("return new $T(getDescriptor())", MessageType.class)
+                .methodBuilder("random")
+                .returns(className)
+                .addStatement("return newBuilder().setUuid($T.newUuid()).build()", Identifier.class)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
-                            MessageType.class)
+                .addJavadoc("Creates a new instance of the current identifier " +
+                                    "with a random UUID value.\n")
                 .build();
         return ImmutableList.of(MethodBody.of(spec.toString()));
     }
