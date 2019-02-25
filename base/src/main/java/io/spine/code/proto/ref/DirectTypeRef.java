@@ -62,6 +62,26 @@ public final class DirectTypeRef extends AbstractTypeRef {
         return Optional.of(result);
     }
 
+    @Override
+    public TypeRef ensurePackage(PackageName aPackage) {
+        return hasPackage()
+               ? this
+               : this.withPackage(aPackage);
+    }
+
+
+    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
+        if (!(ref instanceof DirectTypeRef)) {
+            return ref;
+        }
+        DirectTypeRef directRef = (DirectTypeRef) ref;
+        if (directRef.hasPackage()) {
+            return ref;
+        }
+        DirectTypeRef result = directRef.withPackage(packageName);
+        return result;
+    }
+
     private DirectTypeRef(String value) {
         super(value);
         String delimiter = PackageName.delimiter();

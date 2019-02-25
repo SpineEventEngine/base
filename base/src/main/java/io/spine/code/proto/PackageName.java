@@ -127,14 +127,14 @@ public final class PackageName extends StringTypeValue {
         return result;
     }
 
-    private boolean isFqn() {
+    public boolean isFqn() {
         boolean result = KnownTypes.instance()
                                    .packageNames()
                                    .contains(this);
         return result;
     }
 
-    private ImmutableList<PackageName> subpackages() {
+    public ImmutableList<PackageName> subpackages() {
         ImmutableList.Builder<PackageName> result = ImmutableList.builder();
         List<String> split = PACKAGE_SPLITTER.splitToList(this.value());
         @SuppressWarnings("ZeroLengthArrayAllocation")

@@ -62,6 +62,11 @@ public class CompositeTypeRef implements TypeRef {
         return result;
     }
 
+    @Override
+    public TypeRef ensurePackage(PackageName aPackage) {
+        return this;
+    }
+
     /**
      * Parses a value of a composite type references.
      *

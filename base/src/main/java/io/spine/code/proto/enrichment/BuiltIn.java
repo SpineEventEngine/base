@@ -54,6 +54,11 @@ enum BuiltIn implements TypeRef {
         public Optional<PackageName> packageName() {
             return Optional.empty();
         }
+
+        @Override
+        public TypeRef ensurePackage(PackageName aPackage) {
+            return this;
+        }
     },
 
     /**
@@ -82,6 +87,11 @@ enum BuiltIn implements TypeRef {
         @Override
         public Optional<PackageName> packageName() {
             return Optional.empty();
+        }
+
+        @Override
+        public TypeRef ensurePackage(PackageName aPackage) {
+            return this;
         }
     };
 

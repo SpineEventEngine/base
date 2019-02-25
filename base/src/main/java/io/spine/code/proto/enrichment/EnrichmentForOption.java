@@ -27,7 +27,6 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.StringOption;
-import io.spine.code.proto.ref.DirectTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.OptionsProto;
 
@@ -97,7 +96,7 @@ public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
         PackageName thisPackage = PackageName.of(type);
         ImmutableList<TypeRef> result = rawTypeRefs.stream()
                                                    .map(TypeRef::parse)
-                                                   .map(ref -> ensurePackage(thisPackage, ref))
+                                                   .map(ref -> ref.ensurePackage(thisPackage))
                                                    .collect(toImmutableList());
         return result;
     }
@@ -120,21 +119,5 @@ public final class EnrichmentForOption extends StringOption<Collection<TypeRef>,
     static Collection<TypeRef> typeRefsFrom(Descriptor message) {
         EnrichmentForOption option = new EnrichmentForOption();
         return option.parsedValueFrom(message);
-    }
-
-    /**
-     * Makes sure that if a passed type reference is direct reference to a type,
-     * it is a fully-qualified reference, or becomes one as the result of this method.
-     */
-    private static TypeRef ensurePackage(PackageName packageName, TypeRef ref) {
-        if (!(ref instanceof DirectTypeRef)) {
-            return ref;
-        }
-        DirectTypeRef directRef = (DirectTypeRef) ref;
-        if (directRef.hasPackage()) {
-            return ref;
-        }
-        DirectTypeRef result = directRef.withPackage(packageName);
-        return result;
     }
 }

@@ -131,9 +131,6 @@ public final class EnrichmentType extends MessageType {
      * Verifies if the passed type is the source for this enrichment type.
      */
     private boolean isSource(Descriptor message) {
-        if(message.getFullName().contains("Failed")){
-            int x = 5;
-        }
         if (sourceTypeRefs.stream()
                           .noneMatch(r -> r.test(message))) {
             return false;

@@ -78,4 +78,10 @@ public interface TypeRef extends Predicate<Descriptor>, Serializable {
                        ));
         return result;
     }
+
+    /**
+     * Makes sure that if a passed type reference is direct reference to a type,
+     * it is a fully-qualified reference, or becomes one as the result of this method.
+     */
+    TypeRef ensurePackage(PackageName aPackage);
 }

@@ -20,12 +20,14 @@
 
 package io.spine.code.proto.ref;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.PackageName;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Reference to all message types in a proto package.
@@ -68,10 +70,33 @@ final class InPackage extends AbstractTypeRef {
         return Optional.empty();
     }
 
+    @Override
+    public TypeRef ensurePackage(PackageName aPackage) {
+        // Check whether WE already ARE an FQN.
+        // If it is -> return it;
+        if (packageName.isFqn()) {
+            return this;
+        }
+        // Else find out which one exactly is ours.
+        ImmutableList<PackageName> subpackages = aPackage.subpackages();
+        for (PackageName subpackage : subpackages) {
+            PackageName candidate = subpackage.resolve(packageName);
+            if (candidate.isFqn()) {
+                return new InPackage(candidate);
+            }
+        }
+        throw newIllegalArgumentException("Could not find a package with name %s.", packageName);
+    }
+
     private InPackage(String value) {
         super(value);
         String packageName = packageStatement(value);
         this.packageName = PackageName.of(packageName);
+    }
+
+    private InPackage(PackageName packageName){
+        super(packageName.value());
+        this.packageName = packageName;
     }
 
     @Override
@@ -90,7 +115,7 @@ final class InPackage extends AbstractTypeRef {
     @Override
     public boolean test(Descriptor message) {
         PackageName packageOfMessage = PackageName.of(message);
-        boolean result = packageOfMessage.canReach(packageName);
+        boolean result = packageOfMessage.isInnerOf(packageName);
         return result;
     }
 }
