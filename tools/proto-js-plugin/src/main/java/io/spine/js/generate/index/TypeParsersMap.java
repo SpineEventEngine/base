@@ -24,11 +24,11 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.MessageType;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.MapExportSnippet;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
+import io.spine.type.MessageType;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;

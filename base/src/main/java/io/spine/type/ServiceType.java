@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.type;
 
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
-import io.spine.type.TypeUrl;
+import io.spine.code.proto.TypeSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,7 +52,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
     /**
      * Collects all service types declared in the passed file.
      */
-    static TypeSet allFrom(FileDescriptor file) {
+    public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
         TypeSet.Builder result = TypeSet.newBuilder();
         for (ServiceDescriptor type : file.getServices()) {

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.type;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
@@ -31,11 +31,15 @@ import com.google.protobuf.Message;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FileDescriptors;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.LocationPath;
+import io.spine.code.proto.SourceFile;
+import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.option.IsOption;
-import io.spine.type.TypeUrl;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -67,7 +71,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     /**
      * Collects all message types, including nested, declared in the passed file.
      */
-    static TypeSet allFrom(FileDescriptor file) {
+    public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
         TypeSet.Builder result = TypeSet.newBuilder();
         for (Descriptor messageType : file.getMessageTypes()) {
@@ -144,6 +148,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isTopLevel() {
         Descriptor descriptor = descriptor();
+        return isTopLevel(descriptor);
+    }
+
+    /**
+     * Verifies if the message is top-level (rather than nested).
+     */
+    public static boolean isTopLevel(Descriptor descriptor) {
         Descriptor parent = descriptor.getContainingType();
         return parent == null;
     }
@@ -210,7 +221,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     /**
      * Obtains all nested declarations that match the passed predicate.
      */
-    ImmutableList<MessageType> getAllNested(Predicate<DescriptorProto> predicate) {
+    public ImmutableList<MessageType> nestedTypesThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         Iterable<MessageType> nestedDeclarations = getImmediateNested();
         Deque<MessageType> deque = newLinkedList(nestedDeclarations);
@@ -261,21 +272,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      *
      * @return the message location path
      */
-    LocationPath path() {
-        LocationPath path = new LocationPath();
-        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
-        Descriptor descriptor = descriptor();
-        if (isNested()) {
-            Deque<Integer> parentPath = new ArrayDeque<>();
-            Descriptor containingType = descriptor.getContainingType();
-            while (containingType != null) {
-                parentPath.addFirst(containingType.getIndex());
-                containingType = containingType.getContainingType();
-            }
-            path.addAll(parentPath);
-        }
-        path.add(descriptor.getIndex());
-        return path;
+    public LocationPath path() {
+        LocationPath result = LocationPath.fromMessage(descriptor());
+        return result;
     }
 
     /**
@@ -310,7 +309,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return the leading comments or empty {@code Optional} if there are no such comments or
      *         a descriptor was generated without source code information
      */
-    Optional<String> leadingComments(LocationPath locationPath) {
+    public Optional<String> leadingComments(LocationPath locationPath) {
         FileDescriptorProto file = descriptor()
                 .getFile()
                 .toProto();

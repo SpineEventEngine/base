@@ -26,7 +26,6 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
@@ -34,6 +33,7 @@ import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.Method;
 import io.spine.js.generate.output.snippet.Return;
+import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.output.CodeLine.emptyLine;

@@ -55,7 +55,6 @@ import static io.spine.reflect.Types.getArgument;
  * }
  * </pre>
  * @param <C> the type for which class the generic index is declared
- * @author Alexander Yevsyukov
  */
 public interface GenericTypeIndex<C> {
 
@@ -70,7 +69,7 @@ public interface GenericTypeIndex<C> {
      * @param cls the class to inspect
      * @return the argument class
      */
-    default Class<?> getArgumentIn(Class<? extends C> cls) {
+    default Class<?> argumentIn(Class<? extends C> cls) {
         checkNotNull(cls);
         Class<? extends GenericTypeIndex> indexClass = getClass();
         // Obtain the super class of the passed one by inspecting the class which implements

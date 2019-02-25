@@ -22,11 +22,11 @@ package io.spine.tools.protoc.insert;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.proto.MessageType;
-import io.spine.code.proto.Type;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.type.MessageType;
+import io.spine.type.Type;
 
 import java.util.Collection;
 import java.util.Optional;

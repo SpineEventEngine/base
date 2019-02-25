@@ -28,13 +28,13 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.output.snippet.Comment;
 import io.spine.js.generate.output.snippet.Import;
+import io.spine.type.MessageType;
 
 import java.util.Collection;
 

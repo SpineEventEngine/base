@@ -30,8 +30,8 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.FileName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
 import io.spine.validate.AbstractValidatingBuilder;
 
 import javax.lang.model.element.Modifier;
