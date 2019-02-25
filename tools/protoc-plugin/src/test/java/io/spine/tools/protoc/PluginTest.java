@@ -34,6 +34,7 @@ import io.spine.protoc.MethodFactory;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.messageinterface.TestEventsProto;
+import io.spine.tools.protoc.method.TestMethodProtos;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,6 +45,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -96,6 +98,40 @@ final class PluginTest {
         CodeGeneratorResponse response = runPlugin(request);
 
         assertEquals(0, response.getFileCount());
+    }
+
+    @DisplayName("generate UUID message")
+    @Test
+    void generateUuidMethod() {
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        methods.uuidMessage()
+               .withMethodFactory(UuidMethodFactory.class.getName());
+
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestMethodProtos.getDescriptor()
+                                              .toProto())
+                .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
+                .setParameter(encodedProtocConfig(methods))
+                .build();
+        CodeGeneratorResponse response = runPlugin(request);
+
+        List<CodeGeneratorResponse.File> messageMethods =
+                filterMethods(response, InsertionPoint.CLASS_SCOPE);
+        assertEquals(1, messageMethods.size());
+    }
+
+    private static List<CodeGeneratorResponse.File> filterMethods(CodeGeneratorResponse response,
+                                                                  InsertionPoint insertionPoint) {
+        return response
+                .getFileList()
+                .stream()
+                .filter(file -> file.getInsertionPoint()
+                                    .contains(insertionPoint.getDefinition()))
+                .collect(Collectors.toList());
+    }
+
+    private static String encodedProtocConfig(GeneratedMethods methods) {
+        return encodedProtocConfig(GeneratedInterfaces.withDefaults(), methods);
     }
 
     private static String encodedProtocConfig(GeneratedInterfaces interfaces) {
@@ -177,6 +213,18 @@ final class PluginTest {
     public static class TestMethodFactory implements MethodFactory {
 
         private static final MethodBody TEST_METHOD = MethodBody.of("public void test(){}");
+
+        @Override
+        public List<MethodBody> newMethodsFor(MessageType messageType) {
+            return ImmutableList.of(TEST_METHOD);
+        }
+    }
+
+    @Immutable
+    public static class UuidMethodFactory implements MethodFactory {
+
+        private static final MethodBody TEST_METHOD =
+                MethodBody.of("public static boolean isUuid(){return true;}");
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType messageType) {

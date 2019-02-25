@@ -25,7 +25,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.tools.protoc.method";
-option java_outer_classname = "MessageOptionsProto";
+option java_outer_classname = "TestMethodProtos";
 option java_multiple_files = true;
 
 // This file contains message types for the io.spine.tools.protoc.method tests.
@@ -46,4 +46,8 @@ message WithSpiType {
 
 message ValidatedMessage {
     string id = 1 [(valid) = true];
+}
+
+message TestUuidValue {
+    string uuid = 1;
 }
