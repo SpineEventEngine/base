@@ -69,9 +69,7 @@ import static org.gradle.internal.os.OperatingSystem.current;
 public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static final String PROTOBUF_GROUP = "com.google.protobuf";
-
-    public static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
-
+    private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
     private static final String PROTOC = "protoc";
 
     private static final String GRPC_GROUP = "io.grpc";

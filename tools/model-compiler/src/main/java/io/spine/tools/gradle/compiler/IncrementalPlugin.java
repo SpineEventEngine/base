@@ -24,6 +24,7 @@ import io.spine.tools.gradle.SourceSetName;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.file.collections.ImmutableFileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 
@@ -39,19 +40,19 @@ public abstract class IncrementalPlugin extends SpinePlugin {
 
     private static final String PROTO_SOURCE_SET = "proto";
 
-    protected Optional<FileCollection> protoSource(Project project) {
+    protected FileCollection protoSource(Project project) {
         return protoSource(project, MAIN);
     }
 
-    protected Optional<FileCollection> testProtoSource(Project project) {
+    protected FileCollection testProtoSource(Project project) {
         return protoSource(project, TEST);
     }
 
-    private static Optional<FileCollection> protoSource(Project project,
+    private static FileCollection protoSource(Project project,
                                                         SourceSetName sourceSetName) {
         SourceSet sourceSet = sourceSet(project, sourceSetName);
         Optional<FileCollection> files = protoSource(sourceSet);
-        return files;
+        return files.orElse(ImmutableFileCollection.of());
     }
 
     private static Optional<FileCollection> protoSource(SourceSet sourceSet) {
