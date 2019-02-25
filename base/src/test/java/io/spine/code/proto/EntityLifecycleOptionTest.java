@@ -28,6 +28,7 @@ import io.spine.test.code.proto.PmWithDirectOptions;
 import io.spine.test.code.proto.PmWithEmptyOptions;
 import io.spine.test.code.proto.PmWithOption;
 import io.spine.test.code.proto.PmWithoutOption;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

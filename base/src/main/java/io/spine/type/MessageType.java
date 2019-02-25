@@ -39,8 +39,6 @@ import io.spine.code.proto.SourceFile;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.option.IsOption;
-import io.spine.type.TypeName;
-import io.spine.type.TypeUrl;
 
 import java.util.Deque;
 import java.util.Optional;

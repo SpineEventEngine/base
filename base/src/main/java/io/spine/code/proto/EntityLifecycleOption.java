@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.option.LifecycleOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
 
 import java.util.Optional;
 import java.util.function.Function;
