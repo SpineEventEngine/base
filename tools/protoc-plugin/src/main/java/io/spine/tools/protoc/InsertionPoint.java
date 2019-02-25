@@ -85,7 +85,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(enum_scope:TYPENAME)}.
      */
-    ENUM_SCOPE("enum_scope:"),
+    ENUM_SCOPE("enum_scope"),
 
     /**
      * Member declarations that belong in the file's outer class.
