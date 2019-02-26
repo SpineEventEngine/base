@@ -204,14 +204,14 @@ class ProtocPluginTest {
     @DisplayName("generate a custom method for an .endsWith() pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnchantedWithPostfixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnchantedWithPostfixGenerations.ownType());
+                new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
     }
 
     @Test
     @DisplayName("mark a message with interface using .endsWith() pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
-        assertThat(MessageEnchantedWithPostfixGenerations.getDefaultInstance())
+        assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
                 .isInstanceOf(PostfixedMessage.class);
     }
 
@@ -224,7 +224,7 @@ class ProtocPluginTest {
     @Test
     @DisplayName("mark a message with interface using .startsWith() pattern")
     void markMessageWithInterfaceUsingStartsWithPattern() {
-        assertThat(MessageEnchantedWithPrefixGenerations.getDefaultInstance())
+        assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
                 .isInstanceOf(PrefixedMessage.class);
     }
 
@@ -232,8 +232,8 @@ class ProtocPluginTest {
     @DisplayName("generate a custom method for a .startsWith() pattern")
     void generateCustomPrefixBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnchantedWithPrefixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnchantedWithPrefixGenerations.ownType());
+                new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
     }
 
     @CanIgnoreReturnValue

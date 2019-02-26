@@ -28,6 +28,6 @@ option java_multiple_files = true;
 option java_outer_classname = "PrefixGenerationTestProto";
 option java_package = "io.spine.tools.protoc";
 
-message MessageEnchantedWithPrefixGenerations {
+message MessageEnhancedWithPrefixGenerations {
     string value = 1;
 }
