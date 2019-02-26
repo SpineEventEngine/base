@@ -36,14 +36,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @param <T>
  *         Protobuf configuration counterpart
- * @param <Postfix>
+ * @param <S>
  *         postfix pattern selector
- * @param <Prefix>
+ * @param <U>
  *         prefix pattern selector
  */
-public abstract class FilePatternFactory<T extends Message,
-        Postfix extends PostfixPattern<T>,
-        Prefix extends PrefixPattern<T>> {
+public abstract class FilePatternFactory<
+        T extends Message,
+        S extends PostfixPattern<T>,
+        U extends PrefixPattern<T>> {
 
     private final Set<FilePattern<T>> patterns;
 
@@ -54,18 +55,18 @@ public abstract class FilePatternFactory<T extends Message,
     /**
      * Creates a {@link PostfixPattern} selector out of a supplied {@code postfix}.
      */
-    public Postfix endsWith(@Regex String postfix) {
+    public S endsWith(@Regex String postfix) {
         checkNotNull(postfix);
-        Postfix result = newPostfixPattern(postfix);
+        S result = newPostfixPattern(postfix);
         addPattern(result);
         return result;
     }
     /**
      * Creates a {@link PrefixPattern} selector out of a supplied {@code prefix}.
      */
-    public Prefix startsWith(@Regex String prefix){
+    public U startsWith(@Regex String prefix){
         checkNotNull(prefix);
-        Prefix result = newPrefixPattern(prefix);
+        U result = newPrefixPattern(prefix);
         addPattern(result);
         return result;
     }
@@ -89,11 +90,11 @@ public abstract class FilePatternFactory<T extends Message,
      * Instantiates a particular {@link PostfixPattern} for the supplied {@code postfix}.
      */
     @Internal
-    abstract Postfix newPostfixPattern(@NonNull @Regex String postfix);
+    abstract S newPostfixPattern(@NonNull @Regex String postfix);
 
     /**
      * Instantiates a particular {@link PrefixPattern} for the supplied {@code prefix}.
      */
     @Internal
-    abstract Prefix newPrefixPattern(@NonNull @Regex String prefix);
+    abstract U newPrefixPattern(@NonNull @Regex String prefix);
 }
