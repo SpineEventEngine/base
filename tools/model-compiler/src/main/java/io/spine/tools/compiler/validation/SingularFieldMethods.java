@@ -110,7 +110,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                         .addParameter(parameter)
                         .addException(ValidationException.class)
                         .addStatement(descriptorDeclaration)
-                        .addStatement(validateSetOnce())
+                        .addStatement(validateSetOnce(javaFieldName.value()))
                         .addStatement(validateStatement)
                         .addStatement(setStatement)
                         .addStatement(returnThis())
@@ -139,7 +139,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addStatement(descriptorDeclaration())
-                        .addStatement(validateSetOnce())
+                        .addStatement(validateSetOnce(fieldDefaultValueExpression()))
                         .addStatement(methodBody)
                         .addStatement(returnThis())
                         .build();
@@ -169,6 +169,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addException(ConversionException.class)
                           .addStatement(descriptorDeclaration())
                           .addStatement(convertStatement.value())
+                          .addStatement(validateSetOnce(convertedVariableName))
                           .addStatement(validateStatement(convertedVariableName, javaFieldName))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
@@ -185,6 +186,14 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ParameterSpec result = ParameterSpec.builder(methodParamType, paramName)
                                             .build();
         return result;
+    }
+
+    private String fieldDefaultValueExpression() {
+        return defaultInstanceExpression() + ".get" + javaFieldName.capitalize() + "()";
+    }
+
+    private String defaultInstanceExpression() {
+        return io.spine.code.java.ClassName.from(field.getContainingType()).toDotted().value() + ".getDefaultInstance()";
     }
 
     /**

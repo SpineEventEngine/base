@@ -170,6 +170,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(addValueStatement)
                 .addStatement(returnThis())
@@ -199,6 +200,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
@@ -220,6 +222,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                               listElementClassName,
                               listElementClassName)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
@@ -236,6 +239,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
@@ -258,7 +262,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration)
-                .addStatement(validateSetOnce())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addValue)
                 .addStatement(returnThis())
@@ -279,6 +283,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         String addValue = format("%s.%s(%s)", getMessageBuilder(), methodName, INDEX);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
+                .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(addValue)
                 .addStatement(returnThis())
                 .build();
@@ -293,6 +299,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
@@ -304,6 +311,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         String methodName = clearer().format(javaFieldName);
         String clearField = format("%s.%s()", getMessageBuilder(), clearer().format(javaFieldName));
         MethodSpec result = newBuilderSetter(methodName)
+                .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(clearField)
                 .addStatement(returnThis())
                 .build();

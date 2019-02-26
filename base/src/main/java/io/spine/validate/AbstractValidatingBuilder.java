@@ -33,6 +33,7 @@ import io.spine.logging.Logging;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
+import io.spine.type.TypeName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;
@@ -299,6 +300,15 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         return setOnceValue || requiredByDefault;
     }
 
+    protected void checkNotSetOnce(FieldDescriptor descriptor) {
+        boolean setOnce = SetOnce.from(descriptor)
+                                 .orElse(false);
+        if (setOnce) {
+            FieldDeclaration declaration = new FieldDeclaration(descriptor);
+            onSetOnceMisuse(declaration);
+        }
+    }
+
     private void onSetOnceMisuse(FieldDeclaration field) {
         FieldName fieldName = field.name();
         _error("Error found in `%s`. " +
@@ -306,12 +316,14 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                fieldName);
     }
 
-    private static ValidationException violatedSetOnce(FieldDeclaration descriptor) {
-        FieldName fieldName = descriptor.name();
+    private static ValidationException violatedSetOnce(FieldDeclaration declaration) {
+        TypeName declaringTypeName = declaration.declaringType().name();
+        FieldName fieldName = declaration.name();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("Attempted to change the value of the field `%s` which has " +
+                .setMsgFormat("Attempted to change the value of the field `%s.%s` which has " +
                                       "`(set_once) = true` and is already set.")
+                .addParam(declaringTypeName.value())
                 .addParam(fieldName.value())
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));

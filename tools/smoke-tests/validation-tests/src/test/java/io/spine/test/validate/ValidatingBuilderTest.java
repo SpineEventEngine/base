@@ -29,18 +29,16 @@ import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
-import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherButInWholeNumberVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
-import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
-import io.spine.test.validate.msg.builder.Menu;
 import io.spine.test.validate.msg.builder.MenuVBuilder;
+import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.RequiredBooleanFieldVBuilder;
 import io.spine.test.validate.msg.builder.SafeBet;
 import io.spine.test.validate.msg.builder.SafeBetVBuilder;
-import io.spine.test.validate.msg.builder.RequiredBooleanFieldVBuilder;
 import io.spine.test.validate.msg.builder.Snowflake;
 import io.spine.test.validate.msg.builder.SpacedOutBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Task;
@@ -57,7 +55,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
 import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
@@ -76,7 +73,6 @@ import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
 import static io.spine.test.validate.msg.builder.TaskLabel.IMPORTANT;
 import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -242,7 +238,8 @@ class ValidatingBuilderTest {
     private static void testSetOnce(Function<TaskVBuilder, TaskVBuilder> setup,
                                     Stream<Function<TaskVBuilder, ?>> mutateOperations) {
         mutateOperations.forEach(
-                operation -> testOption(TaskVBuilder.newBuilder(), setup, operation));
+                operation -> testOption(TaskVBuilder.newBuilder(), setup, operation)
+        );
     }
 
     /**
@@ -348,12 +345,13 @@ class ValidatingBuilderTest {
 
         @DisplayName("not produce warnings if it is not `required`")
         @Test
+        @SuppressWarnings("CheckReturnValue") // Builder used for the side effect.
         void testNoWarningOnBoolField() {
             int sizeBefore = loggedMessages.size();
             MenuVBuilder builder = MenuVBuilder.newBuilder();
-            Menu menu = builder.setName("Non-vegetarian menu.")
-                               .setMeatDish("Non-vegetarian dish.")
-                               .build();
+            builder.setName("Non-vegetarian menu.")
+                   .setMeatDish("Non-vegetarian dish.")
+                   .build();
             assertEquals(sizeBefore, loggedMessages.size());
         }
 
@@ -363,7 +361,7 @@ class ValidatingBuilderTest {
             int sizeBefore = loggedMessages.size();
             RequiredBooleanFieldVBuilder builder = RequiredBooleanFieldVBuilder.newBuilder();
             builder.setValue(true);
-           assertEquals(sizeBefore + 1, loggedMessages.size());
+            assertEquals(sizeBefore + 1, loggedMessages.size());
         }
     }
 
