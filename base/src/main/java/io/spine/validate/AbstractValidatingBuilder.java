@@ -260,29 +260,31 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      *         if the value of the  field that is {@code (set_once) = true} is being changed
      */
     @SuppressWarnings("unused") // Called by all actual validating builder subclasses.
-    protected final void validateSetOnce(FieldValue<?> newValue) throws ValidationException {
-        FieldDeclaration field = newValue.declaration();
-        boolean shouldValidate = setOnce(field);
+    protected final void validateSetOnce(FieldDescriptor field, Object newValue)
+            throws ValidationException {
+        checkNotNull(field);
+        checkNotNull(newValue);
+
+        FieldDeclaration declaration = new FieldDeclaration(field);
+        boolean shouldValidate = setOnce(declaration);
         if (shouldValidate) {
-            boolean setOnceInapplicable = field.isCollection();
+            boolean setOnceInapplicable = declaration.isCollection();
             if (setOnceInapplicable) {
-                onSetOnceMisuse(field);
+                onSetOnceMisuse(declaration);
             } else {
-                checkNotOverriding(newValue);
+                checkNotOverriding(declaration, newValue);
             }
         }
     }
 
-    private void checkNotOverriding(FieldValue<?> newValue) throws ValidationException {
-        FieldDeclaration field = newValue.declaration();
-
+    private void checkNotOverriding(FieldDeclaration field, Object newValue)
+            throws ValidationException {
         FieldDescriptor descriptor = field.descriptor();
         B builder = getMessageBuilder();
         boolean valueIsSet = !builder.hasField(descriptor);
         if (valueIsSet) {
-            Object actualNewValue = newValue.singleValue();
             Object currentValue = builder.getField(descriptor);
-            boolean anotherValueSet = !currentValue.equals(actualNewValue);
+            boolean anotherValueSet = !currentValue.equals(newValue);
             if (anotherValueSet) {
                 throw violatedSetOnce(field);
             }
