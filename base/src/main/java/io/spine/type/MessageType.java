@@ -69,20 +69,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Creates a new instance by resolving the given type name.
-     */
-    public MessageType(TypeName typeName) {
-        this(typeName.messageDescriptor());
-    }
-
-    /**
-     * Creates a new instance from the given {@code Message} class.
-     */
-    public MessageType(Class<? extends Message> aClass) {
-        this(TypeName.of(aClass));
-    }
-
-    /**
      * Collects all message types, including nested, declared in the passed file.
      */
     public static TypeSet allFrom(FileDescriptor file) {

@@ -517,39 +517,9 @@ extend google.protobuf.MessageOptions {
     //
     string enrichment_for = 73922;
 
-    // Reserved 73923 to 73928 for future API annotations.
+    // Reserved 73923 to 73938 for future options.
 
-    // Entity Options
-    //-------------------
-
-    // Entity lifecycle options.
-    //
-    // Currently applicable only to process managers.
-    //
-    // See `LifecycleOption` doc for details.
-    LifecycleOption lifecycle = 73929;
-
-    // Reserved 73930 to 73938 for future options.
-
-    // Command Options
-    //-------------------
-
-    // Specifies Protobuf type names of the events that are produced after a command is handled.
-    //
-    // The type names should be separated with commas. Space characters are allowed.
-    // If the events are of the same aggregate with the command, non-qualified names can be used.
-    // Otherwise, please use fully qualified names.
-    //
-    string events = 73939;
-
-    // Specifies Protobuf type names of the rejections that can be returned to the attempt to handle
-    // a command if business conditions do not allow the command execution.
-    //
-    // The type names should be separated with commas. Space characters are allowed.
-    // If rejections are of the same aggregate with the command, non-qualified names can be used.
-    // Otherwise, please use fully qualified names.
-    //
-    string rejections = 73940;
+    // Reserved 73939 and 73940 for the deleted options `events` and `rejections`.
 }
 
 extend google.protobuf.FileOptions {
@@ -951,35 +921,3 @@ message IsOption {
     string java_type = 2;
 }
 
-// Marks "terminal" events and rejections for the entity.
-//
-// Event and rejection types are stated in a string, separated by commas, as follows:
-// "Event1, Rejection1, io.spine.user.Event2...". Both fully qualified names and names relative to
-// the current package are accepted.
-//
-// Currently, this option is applicable only to process managers.
-//
-// Example 22: Specifying "terminal" events for an entity.
-//
-//    message SignInProcess {
-//        option (entity).kind = PROCESS_MANAGER;
-//
-//        // The process is deleted in case `UserAuthenticationCancelled` is emitted or
-//        // `CannotAuthenticateUser` is thrown.
-//        option (lifecycle).delete_upon = "UserAuthenticationCancelled, CannotAuthenticateUser";
-//
-//        // The process can also be automatically archived in case the user signed in
-//        // successfully.
-//        option (lifecycle).archive_upon = "UserSignedIn";
-//
-//        // Here goes the process state description.
-//    }
-//
-message LifecycleOption {
-
-    // The events and rejections which will cause the entity to become archived.
-    string archive_upon = 1;
-
-    // The events and rejections which will cause the entity to become deleted.
-    string delete_upon = 2;
-}

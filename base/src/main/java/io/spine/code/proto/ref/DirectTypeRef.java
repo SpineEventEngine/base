@@ -126,6 +126,17 @@ public final class DirectTypeRef extends AbstractTypeRef {
     }
 
     /**
+     * Creates a new instance reference a type with the same nested name, but in another package.
+     */
+    public DirectTypeRef withPackage(PackageName anotherPackage) {
+        checkNotNull(anotherPackage);
+        DirectTypeRef result = new DirectTypeRef(
+                anotherPackage.value() + PackageName.delimiter() + this.nestedName
+        );
+        return result;
+    }
+
+    /**
      * Obtains simple type name of the direct type reference.
      *
      * <p>If a reference is for a nested type, returned value contains the most nested name.
@@ -151,23 +162,13 @@ public final class DirectTypeRef extends AbstractTypeRef {
      */
     @Override
     public boolean test(Descriptor message) {
-        PackageName packageForComparison =
-                packageName().orElse(PackageName.of(message));
-        String fullName =
-                packageForComparison + PackageName.delimiter() + nestedTypeName();
-        boolean result = fullName.equals(message.getFullName());
-        return result;
-    }
-
-    @Override
-    public DirectTypeRef withPackage(PackageName packageName) {
-        checkNotNull(packageName);
-        if (hasPackage()) {
-            return this;
+        if (packageName != null) {
+            PackageName packageOfMessage = PackageName.of(message);
+            if (!packageName.equals(packageOfMessage)) {
+                return false;
+            }
         }
-        DirectTypeRef result = new DirectTypeRef(
-                packageName.value() + PackageName.delimiter() + this.nestedName
-        );
+        boolean result = value().endsWith(message.getName());
         return result;
     }
 }

@@ -154,7 +154,7 @@ class DirectTypeRefTest {
             DirectTypeRef relocated = ref.withPackage(newPackage);
 
             Truth8.assertThat(relocated.packageName())
-                    .hasValue(newPackage);
+                  .hasValue(newPackage);
             assertThat(relocated.nestedTypeName())
                     .isEqualTo(typeName);
             assertThat(relocated.simpleTypeName())
@@ -176,25 +176,24 @@ class DirectTypeRefTest {
             assertThat(relocated.nestedTypeName())
                     .isEqualTo(typeName);
         }
-    }
 
-    @Test
-    @DisplayName("not change its package if already has one")
-    void notChangePackage() {
-        String expected = "spine.test.SomeType";
-        Optional<TypeRef> ref = DirectTypeRef.parse(expected);
-        Truth8.assertThat(ref)
-              .isPresent();
+        @Test
+        @DisplayName("for a nested type with a package")
+        void nestedWithPackage() {
+            String typeName = "long.time.ago.Galaxy.Far.Away";
+            DirectTypeRef ref = ref(typeName);
+            assertThat(ref.hasPackage()).isTrue();
 
-        DirectTypeRef direct = ref.map(r -> (DirectTypeRef) r)
-                                  .get();
-        PackageName newPackageName = PackageName.of("new.package");
+            PackageName newPackage = PackageName.of("come.closer");
+            DirectTypeRef relocated = ref.withPackage(newPackage);
 
-        DirectTypeRef newRef = direct.withPackage(newPackageName);
-        assertThat(newRef.value())
-                .isEqualTo(expected);
-        Truth8.assertThat(newRef.packageName())
-              .hasValue(PackageName.of("spine.test"));
+            Truth8.assertThat(relocated.packageName())
+                  .hasValue(newPackage);
+            assertThat(relocated.nestedTypeName())
+                    .isEqualTo("Galaxy.Far.Away");
+            assertThat(relocated.simpleTypeName())
+                    .isEqualTo("Away");
+        }
     }
 
     @Test

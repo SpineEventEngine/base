@@ -22,7 +22,6 @@ package io.spine.type;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -32,7 +31,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.code.proto.enrichment.EnrichmentType;
-import io.spine.code.proto.ref.CompositeTypeRef;
 import io.spine.code.proto.ref.TypeRef;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
@@ -195,45 +193,6 @@ public class KnownTypes implements Serializable {
                            .filter(m -> typeRef.test(m.descriptor()))
                            .collect(toImmutableSet());
         return result;
-    }
-
-    /**
-     * Obtains all types matching the passed type reference.
-     *
-     * <p>Also checks that all {@code TypeRef} elements reference existing types and packages.
-     *
-     * @apiNote This method is in general less efficient than {@link #allMatching(TypeRef)} as in
-     *         case of a {@link CompositeTypeRef} it iterates through the known types multiple
-     *         times to validate each sub-element. It should be used only during compile-time Model
-     *         checks to verify that all type references are fully resolved.
-     *
-     * @throws UnresolvedReferenceException
-     *         in case any of the {@code TypeRef} elements point to an unknown type or package
-     */
-    @CanIgnoreReturnValue
-    public ImmutableSet<MessageType> resolveAndValidate(TypeRef typeRef) {
-        if (typeRef instanceof CompositeTypeRef) {
-            return resolveComposite((CompositeTypeRef) typeRef);
-        }
-        return doResolve(typeRef);
-    }
-
-    private ImmutableSet<MessageType> resolveComposite(CompositeTypeRef typeRef) {
-        ImmutableSet<MessageType> result =
-                typeRef.elements()
-                       .stream()
-                       .map(this::doResolve)
-                       .flatMap(ImmutableSet::stream)
-                       .collect(toImmutableSet());
-        return result;
-    }
-
-    private ImmutableSet<MessageType> doResolve(TypeRef typeRef) {
-        ImmutableSet<MessageType> resolved = allMatching(typeRef);
-        if (resolved.isEmpty()) {
-            throw new UnresolvedReferenceException(typeRef);
-        }
-        return resolved;
     }
 
     /**
