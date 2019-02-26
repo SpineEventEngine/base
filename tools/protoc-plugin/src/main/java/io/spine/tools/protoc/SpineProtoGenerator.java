@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -103,10 +104,11 @@ public abstract class SpineProtoGenerator {
      *         the Protobuf type to process
      * @return optionally a {@link Collection} of {@linkplain CompilerOutput CompilerOutputs}
      *         to write or an empty {@code Collection}
-     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e. equal in
-     *         terms of {@link Object#equals(Object) equals()} method), but should not produce
-     *         non-equal instances with the same value of {@code CodeGeneratorResponse.File.name}.
-     *         Such entries cause {@code protoc} to fail and should be filtered on an early stage.
+     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e.
+     *         equal in terms of {@link Object#equals(Object) equals()} method), but should
+     *         not produce non-equal instances with the same value of
+     *         {@code CodeGeneratorResponse.File.name}. Such entries cause {@code protoc}
+     *         to fail and should be filtered on an early stage.
      */
     protected abstract Collection<CompilerOutput> processType(Type<?, ?> type);
 
@@ -123,7 +125,8 @@ public abstract class SpineProtoGenerator {
      *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
      * </ul>
      *
-     * @param request the compiler request
+     * @param request
+     *         the compiler request
      * @return the response to the compiler
      * @see #processType Javadoc for processType(...) for more detailed description
      */
@@ -151,7 +154,7 @@ public abstract class SpineProtoGenerator {
      *
      * @see #process(TypeSet)
      */
-    public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator){
+    public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator) {
         checkNotNull(nextGenerator);
         this.linkedGenerator = nextGenerator;
         return this;
@@ -175,9 +178,9 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-    private Set<CompilerOutput> processTypes(TypeSet types){
+    private Set<CompilerOutput> processTypes(TypeSet types) {
         Set<CompilerOutput> result = newHashSet();
-        if (linkedGenerator != null){
+        if (linkedGenerator != null) {
             result.addAll(linkedGenerator.processTypes(types));
         }
         Set<CompilerOutput> rawOutput = types.allTypes()
@@ -231,5 +234,10 @@ public abstract class SpineProtoGenerator {
         return left.toBuilder()
                    .setContent(left.getContent() + right.getContent())
                    .build();
+    }
+
+    @VisibleForTesting
+    @Nullable SpineProtoGenerator linkedGenerator() {
+        return linkedGenerator;
     }
 }
