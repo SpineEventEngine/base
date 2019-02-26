@@ -22,27 +22,68 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.protoc.GeneratedMethod;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("MethodFilePatternFactory should")
 final class MethodFilePatternFactoryTest {
 
-    @DisplayName("not allow duplicate patterns")
+    @DisplayName("not allow duplicate")
+    @Nested
+    class DoNotAllowDuplicate {
+
+        @DisplayName("postfix pattern")
+        @Test
+        void postfixPattern() {
+            String postfix = "test.proto";
+            MethodFilePatternFactory patternFactory = factory();
+            MethodPostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
+            firstAddedPattern.withMethodFactory("io.spine.text.TestFactory");
+            MethodPostfixPattern secondAddedPattern = patternFactory.endsWith(postfix);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedMethod>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedMethod> actualPattern = patterns.iterator()
+                                                                 .next();
+            assertNull(((GeneratedMethodConfig) actualPattern).methodFactory());
+        }
+
+        @DisplayName("prefix pattern")
+        @Test
+        void prefixPattern() {
+            String prefix = "test";
+            MethodFilePatternFactory patternFactory = factory();
+            MethodPrefixPattern firstAddedPattern = patternFactory.startsWith(prefix);
+            firstAddedPattern.withMethodFactory("io.spine.text.TestFactory");
+            MethodPrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedMethod>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedMethod> actualPattern = patterns.iterator()
+                                                                 .next();
+            assertNull(((GeneratedMethodConfig) actualPattern).methodFactory());
+        }
+    }
+
+    @DisplayName("allow same prefix and postfix patterns")
     @Test
-    void notAllowHavingDuplicatePatterns() {
+    void allowSamePrefixAndPostfixPatterns() {
         String postfix = "test.proto";
+        String prefix = "test";
         MethodFilePatternFactory patternFactory = factory();
         MethodPostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
-        firstAddedPattern.withMethodFactory("io.spine.text.TestMethodFactory");
-        MethodPostfixPattern secondAddedPattern = patternFactory.endsWith(postfix);
+        firstAddedPattern.withMethodFactory("io.spine.text.TestFactory");
+        MethodPrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
         secondAddedPattern.ignore();
+
         ImmutableSet<FilePattern<GeneratedMethod>> patterns = patternFactory.patterns();
-        Assertions.assertEquals(1, patterns.size());
-        FilePattern<GeneratedMethod> actualPattern = patterns.iterator()
-                                                             .next();
-        Assertions.assertNull(((GeneratedMethodConfig) actualPattern).methodFactory());
+        assertEquals(2, patterns.size());
     }
 
     MethodFilePatternFactory factory() {

@@ -41,7 +41,7 @@ import io.spine.annotation.Internal;
  * @see GeneratedMethods
  */
 abstract class GeneratedConfigurations<M extends Message,
-        F extends FilePatternFactory<M, ?>,
+        F extends FilePatternFactory<M, ?, ?>,
         U extends UuidMessage<?>,
         E extends EnrichmentMessage<?>,
         C extends Message> {

@@ -21,31 +21,55 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.GeneratedInterface;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An {@link GeneratedInterfaceConfig interface} configuration file pattern
- * {@link FilePatternFactory factory}.
+ * An {@link GeneratedInterfaceConfig interface} configuration {@link PrefixPattern prefix}
+ * pattern selector.
  */
-public final class InterfaceFilePatternFactory
-        extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern, InterfacePrefixPattern> {
+public class InterfacePrefixPattern extends PrefixPattern<GeneratedInterface> implements GeneratedInterfaceConfig {
+
+    private @Nullable ClassName interfaceName;
 
     /** Prevents direct instantiation. **/
-    InterfaceFilePatternFactory() {
-        super();
+    InterfacePrefixPattern(@Regex String prefix) {
+        super(prefix);
+    }
+
+    /**
+     * Sets current target class to a supplied value.
+     */
+    @Override
+    public void markWith(@FullyQualifiedName String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
+    }
+
+    @Override
+    public void ignore() {
+        this.interfaceName = null;
     }
 
     @Internal
     @Override
-    InterfacePostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
-        return new InterfacePostfixPattern(postfix);
+    public @Nullable ClassName interfaceName() {
+        return interfaceName;
     }
 
     @Internal
     @Override
-    InterfacePrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
-        return new InterfacePrefixPattern(prefix);
+    public GeneratedInterface toProto() {
+        return GeneratedInterface
+                .newBuilder()
+                .setPattern(FilePatterns.filePrefix(getPattern()))
+                .setInterfaceName(safeName())
+                .build();
     }
 }

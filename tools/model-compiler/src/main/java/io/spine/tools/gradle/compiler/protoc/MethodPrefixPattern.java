@@ -21,31 +21,52 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.GeneratedMethod;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link GeneratedMethodConfig method} configuration file pattern
- * {@link FilePatternFactory factory}.
+ * An {@link GeneratedInterfaceConfig interface} configuration {@link PrefixPattern prefix}
+ * pattern selector.
  */
-public final class MethodFilePatternFactory
-        extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern, MethodPrefixPattern> {
+public final class MethodPrefixPattern extends PrefixPattern<GeneratedMethod> implements GeneratedMethodConfig {
+
+    private @Nullable ClassName factoryName;
 
     /** Prevents direct instantiation. **/
-    MethodFilePatternFactory() {
-        super();
+    MethodPrefixPattern(@Regex String prefix) {
+        super(prefix);
+    }
+
+    @Override
+    public void withMethodFactory(@FullyQualifiedName String targetName) {
+        checkNotNull(targetName);
+        this.factoryName = ClassName.of(targetName);
+    }
+
+    @Override
+    public void ignore() {
+        this.factoryName = null;
     }
 
     @Internal
     @Override
-    MethodPostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
-        return new MethodPostfixPattern(postfix);
+    public @Nullable ClassName methodFactory() {
+        return factoryName;
     }
 
     @Internal
     @Override
-    MethodPrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
-        return new MethodPrefixPattern(prefix);
+    public GeneratedMethod toProto() {
+        return GeneratedMethod
+                .newBuilder()
+                .setPattern(FilePatterns.filePrefix(getPattern()))
+                .setFactoryName(safeName())
+                .build();
     }
 }

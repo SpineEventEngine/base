@@ -36,10 +36,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @param <T>
  *         Protobuf configuration counterpart
- * @param <P>
+ * @param <Postfix>
  *         postfix pattern selector
+ * @param <Prefix>
+ *         prefix pattern selector
  */
-public abstract class FilePatternFactory<T extends Message, P extends PostfixPattern<T>> {
+public abstract class FilePatternFactory<T extends Message,
+        Postfix extends PostfixPattern<T>,
+        Prefix extends PrefixPattern<T>> {
 
     private final Set<FilePattern<T>> patterns;
 
@@ -50,14 +54,27 @@ public abstract class FilePatternFactory<T extends Message, P extends PostfixPat
     /**
      * Creates a {@link PostfixPattern} selector out of a supplied {@code postfix}.
      */
-    public P endsWith(@Regex String postfix) {
+    public Postfix endsWith(@Regex String postfix) {
         checkNotNull(postfix);
-        P result = newPostfixPattern(postfix);
-        if (!patterns.add(result)){
-            patterns.remove(result);
-            patterns.add(result);
-        }
+        Postfix result = newPostfixPattern(postfix);
+        addPattern(result);
         return result;
+    }
+    /**
+     * Creates a {@link PrefixPattern} selector out of a supplied {@code prefix}.
+     */
+    public Prefix startsWith(@Regex String prefix){
+        checkNotNull(prefix);
+        Prefix result = newPrefixPattern(prefix);
+        addPattern(result);
+        return result;
+    }
+
+    private void addPattern(FilePattern<T> pattern){
+        if (!patterns.add(pattern)) {
+            patterns.remove(pattern);
+            patterns.add(pattern);
+        }
     }
 
     /**
@@ -72,5 +89,11 @@ public abstract class FilePatternFactory<T extends Message, P extends PostfixPat
      * Instantiates a particular {@link PostfixPattern} for the supplied {@code postfix}.
      */
     @Internal
-    abstract P newPostfixPattern(@NonNull @Regex String postfix);
+    abstract Postfix newPostfixPattern(@NonNull @Regex String postfix);
+
+    /**
+     * Instantiates a particular {@link PrefixPattern} for the supplied {@code prefix}.
+     */
+    @Internal
+    abstract Prefix newPrefixPattern(@NonNull @Regex String prefix);
 }

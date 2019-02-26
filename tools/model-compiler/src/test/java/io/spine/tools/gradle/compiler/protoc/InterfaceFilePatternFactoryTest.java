@@ -22,30 +22,71 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.protoc.GeneratedInterface;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("InterfaceFilePatternFactory should")
 final class InterfaceFilePatternFactoryTest {
 
-    @DisplayName("not allow duplicate patterns")
-    @Test
-    void notAllowHavingDuplicatePatterns() {
-        String postfix = "test.proto";
-        FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> patternFactory = factory();
-        InterfacePostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
-        firstAddedPattern.markWith("io.spine.text.TestInterface");
-        InterfacePostfixPattern secondAddedPattern = patternFactory.endsWith(postfix);
-        secondAddedPattern.ignore();
-        ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
-        Assertions.assertEquals(1, patterns.size());
-        FilePattern<GeneratedInterface> actualPattern = patterns.iterator()
-                                                                .next();
-        Assertions.assertNull(((GeneratedInterfaceConfig) actualPattern).interfaceName());
+    @DisplayName("not allow duplicate")
+    @Nested
+    class DoNotAllowDuplicate {
+
+        @DisplayName("postfix pattern")
+        @Test
+        void postfixPattern() {
+            String postfix = "test.proto";
+            InterfaceFilePatternFactory patternFactory = factory();
+            InterfacePostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
+            firstAddedPattern.markWith("io.spine.text.TestInterface");
+            InterfacePostfixPattern secondAddedPattern = patternFactory.endsWith(postfix);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedInterface> actualPattern = patterns.iterator()
+                                                                    .next();
+            assertNull(((GeneratedInterfaceConfig) actualPattern).interfaceName());
+        }
+
+        @DisplayName("prefix pattern")
+        @Test
+        void prefixPattern() {
+            String prefix = "test";
+            InterfaceFilePatternFactory patternFactory = factory();
+            InterfacePrefixPattern firstAddedPattern = patternFactory.startsWith(prefix);
+            firstAddedPattern.markWith("io.spine.text.TestInterface");
+            InterfacePrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedInterface> actualPattern = patterns.iterator()
+                                                                    .next();
+            assertNull(((GeneratedInterfaceConfig) actualPattern).interfaceName());
+        }
     }
 
-    FilePatternFactory<GeneratedInterface, InterfacePostfixPattern> factory() {
+    @DisplayName("allow same prefix and postfix patterns")
+    @Test
+    void allowSamePrefixAndPostfixPatterns() {
+        String postfix = "test.proto";
+        String prefix = "test";
+        InterfaceFilePatternFactory patternFactory = factory();
+        InterfacePostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
+        firstAddedPattern.markWith("io.spine.text.TestInterface");
+        InterfacePrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
+        secondAddedPattern.ignore();
+
+        ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
+        assertEquals(2, patterns.size());
+    }
+
+    InterfaceFilePatternFactory factory() {
         return new InterfaceFilePatternFactory();
     }
 }

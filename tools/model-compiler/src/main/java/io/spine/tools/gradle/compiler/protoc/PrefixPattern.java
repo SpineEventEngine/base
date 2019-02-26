@@ -20,32 +20,42 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.annotation.Internal;
-import io.spine.tools.protoc.GeneratedMethod;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.google.common.base.Objects;
+import com.google.protobuf.Message;
 import org.checkerframework.checker.regex.qual.Regex;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * A {@link GeneratedMethodConfig method} configuration file pattern
- * {@link FilePatternFactory factory}.
+ * A file pattern matching file names which start with a certain prefix.
  */
-public final class MethodFilePatternFactory
-        extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern, MethodPrefixPattern> {
+abstract class PrefixPattern<T extends Message> implements FilePattern<T> {
 
-    /** Prevents direct instantiation. **/
-    MethodFilePatternFactory() {
-        super();
+    private final String prefix;
+
+    PrefixPattern(@Regex String postfix) {
+        this.prefix = checkNotNull(postfix);
     }
 
-    @Internal
     @Override
-    MethodPostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
-        return new MethodPostfixPattern(postfix);
+    public String getPattern() {
+        return prefix;
     }
 
-    @Internal
     @Override
-    MethodPrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
-        return new MethodPrefixPattern(prefix);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PrefixPattern)) {
+            return false;
+        }
+        PrefixPattern pattern = (PrefixPattern) o;
+        return Objects.equal(prefix, pattern.prefix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(prefix);
     }
 }
