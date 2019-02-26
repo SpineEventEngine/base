@@ -28,7 +28,6 @@ import io.spine.type.MessageType;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -125,14 +124,10 @@ final class FieldDef {
      */
     ImmutableList<FieldRef> findUnresolved(Set<MessageType> types) {
         ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
-        Stream<MessageType> stream = types.stream();
-        for (FieldRef ref : sources) {
-            if (ref.isContext()) {
-                continue;
-            }
-            if (stream.noneMatch(t -> ref.matchesType(t.descriptor()))) {
-                result.add(ref);
-            }
+        for (MessageType type : types) {
+            sources.stream()
+                   .filter(r -> !r.matchesType(type.descriptor()))
+                   .forEach(result::add);
         }
         return result.build();
     }

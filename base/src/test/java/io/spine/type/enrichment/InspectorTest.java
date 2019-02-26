@@ -21,6 +21,7 @@
 package io.spine.type.enrichment;
 
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.test.enrichment.type.EttWrongAltFieldRef;
 import io.spine.test.enrichment.type.EttWrongDirectTypeRef;
 import io.spine.test.enrichment.type.EttWrongFieldRef;
 import io.spine.test.enrichment.type.EttWrongPackageRef;
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("EnrichmentType validation should")
-class EnrichmentTypeValidationTest {
+class InspectorTest {
 
     @Nested
     @DisplayName("throw NoMatchingTypeException if")
@@ -60,9 +61,19 @@ class EnrichmentTypeValidationTest {
     class UnsatisfiedFieldRef {
         
         @Test
-        @DisplayName("there is no referenced field in the referenced type")
+        @DisplayName("if there is no referenced field in the referenced type")
         void invalidFieldRef() {
-            EnrichmentType et = new EnrichmentType(EttWrongFieldRef.getDescriptor());
+            assertInvalidFieldRef(EttWrongFieldRef.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("for a field reference which is not found in any of the type")
+        void invalidAltFieldRef() {
+            assertInvalidFieldRef(EttWrongAltFieldRef.getDescriptor());
+        }
+
+        void assertInvalidFieldRef(Descriptor descriptor) {
+            EnrichmentType et = new EnrichmentType(descriptor);
             assertThrows(UnsatisfiedFieldReferenceException.class, et::validate);
         }
     }
