@@ -148,6 +148,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                 .addParameter(keyTypeName, KEY)
                 .addParameter(valueTypeName, VALUE)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
                 .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
