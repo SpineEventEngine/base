@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.tools.protoc.TypeFilters.filePostfix;
+import static io.spine.tools.protoc.FilePatterns.filePostfix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -92,7 +92,7 @@ final class GeneratedMethodScannerTest {
     private static GeneratedMethod generatedMethod(String factoryName, String postfix) {
         return GeneratedMethod.newBuilder()
                               .setFactoryName(factoryName)
-                              .setFilter(filePostfix(postfix))
+                              .setPattern(filePostfix(postfix))
                               .build();
     }
 

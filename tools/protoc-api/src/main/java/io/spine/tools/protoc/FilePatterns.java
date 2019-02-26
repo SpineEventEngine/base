@@ -25,21 +25,31 @@ import org.checkerframework.checker.regex.qual.Regex;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An utility for working with {@link TypeFilter}.
+ * An utility for working with {@link FilePattern}.
  */
-public final class TypeFilters {
+public final class FilePatterns {
 
     /** Prevents instantiation of this utility class. */
-    private TypeFilters() {
+    private FilePatterns() {
     }
 
     /**
-     * Creates a new {@link TypeFilter} with a {@code file_postfix} field filled.
+     * Creates a new {@link FilePattern} with a {@code file_postfix} field filled.
      */
-    public static TypeFilter filePostfix(@Regex String postfix) {
+    public static FilePattern filePostfix(@Regex String postfix) {
         checkNotNull(postfix);
-        return TypeFilter.newBuilder()
-                         .setFilePostfix(postfix)
-                         .build();
+        return FilePattern.newBuilder()
+                          .setFilePostfix(postfix)
+                          .build();
+    }
+
+    /**
+     * Creates a new {@link FilePattern} with a {@code file_prefix} field filled.
+     */
+    public static FilePattern filePrefix(@Regex String prefix) {
+        checkNotNull(prefix);
+        return FilePattern.newBuilder()
+                          .setFilePrefix(prefix)
+                          .build();
     }
 }

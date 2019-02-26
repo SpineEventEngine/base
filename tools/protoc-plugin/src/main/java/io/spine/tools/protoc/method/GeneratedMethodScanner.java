@@ -74,7 +74,7 @@ final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
 
     @Override
     protected MatchesPattern matchesPattern(MessageType type) {
-        return new MatchesPattern(type, GeneratedMethod::getFilter);
+        return new MatchesPattern(type, GeneratedMethod::getPattern);
     }
 
     @Override

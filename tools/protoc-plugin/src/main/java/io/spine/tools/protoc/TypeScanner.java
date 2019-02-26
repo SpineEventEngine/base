@@ -110,9 +110,9 @@ public abstract class TypeScanner<G extends Message> {
     protected class MatchesPattern implements Predicate<G> {
 
         private final String sourceFilePath;
-        private final Function<G, TypeFilter> typeFilterExtractor;
+        private final Function<G, FilePattern> typeFilterExtractor;
 
-        public MatchesPattern(MessageType type, Function<G, TypeFilter> typeFilterExtractor) {
+        public MatchesPattern(MessageType type, Function<G, FilePattern> typeFilterExtractor) {
             checkNotNull(type);
             this.sourceFilePath = type.sourceFile()
                                       .getPath()
@@ -123,11 +123,11 @@ public abstract class TypeScanner<G extends Message> {
         @Override
         public boolean test(G configuration) {
             checkNotNull(configuration);
-            TypeFilter filter = typeFilterExtractor.apply(configuration);
-            if (filter.getValueCase() != TypeFilter.ValueCase.FILE_POSTFIX) {
+            FilePattern pattern = typeFilterExtractor.apply(configuration);
+            if (pattern.getValueCase() != FilePattern.ValueCase.FILE_POSTFIX) {
                 return false;
             }
-            return sourceFilePath.contains(filter.getFilePostfix());
+            return sourceFilePath.contains(pattern.getFilePostfix());
         }
     }
 

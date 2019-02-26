@@ -22,8 +22,8 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.TypeFilters;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -65,7 +65,7 @@ public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> 
     public GeneratedMethod toProto() {
         return GeneratedMethod
                 .newBuilder()
-                .setFilter(TypeFilters.filePostfix(getPattern()))
+                .setPattern(FilePatterns.filePostfix(getPattern()))
                 .setFactoryName(safeName())
                 .build();
     }

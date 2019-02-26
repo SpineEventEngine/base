@@ -76,7 +76,7 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
 
     @Override
     protected MatchesPattern matchesPattern(MessageType type) {
-        return new MatchesPattern(type, GeneratedInterface::getFilter);
+        return new MatchesPattern(type, GeneratedInterface::getPattern);
     }
 
     @Override

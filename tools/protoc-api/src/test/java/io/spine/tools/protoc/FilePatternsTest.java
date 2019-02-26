@@ -27,19 +27,28 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("TypeFilters should")
-final class TypeFiltersTest {
+@DisplayName("FilePatterns should")
+final class FilePatternsTest {
 
     @DisplayName("not allow null values for")
     @Nested
     final class NotAllowNulls {
 
-        @DisplayName("filePostfix filter")
+        @DisplayName("filePostfix pattern")
         @Test
         void filePostfix() {
             Assertions.assertThrows(NullPointerException.class, () -> {
                 //noinspection ConstantConditions,ResultOfMethodCallIgnored
-                TypeFilters.filePostfix(null);
+                FilePatterns.filePostfix(null);
+            });
+        }
+
+        @DisplayName("filePrefix pattern")
+        @Test
+        void filePrefix() {
+            Assertions.assertThrows(NullPointerException.class, () -> {
+                //noinspection ConstantConditions,ResultOfMethodCallIgnored
+                FilePatterns.filePrefix(null);
             });
         }
     }
@@ -48,12 +57,20 @@ final class TypeFiltersTest {
     @Nested
     final class CreateValid {
 
-        @DisplayName("file_postfix filter")
+        @DisplayName("file_postfix pattern")
         @Test
         void filePostfix() {
             String postfix = "documents.proto";
-            TypeFilter filter = TypeFilters.filePostfix(postfix);
+            FilePattern filter = FilePatterns.filePostfix(postfix);
             assertEquals(postfix, filter.getFilePostfix());
+        }
+
+        @DisplayName("file_prefix pattern")
+        @Test
+        void filePrefix() {
+            String prefix = "documents_";
+            FilePattern pattern = FilePatterns.filePrefix(prefix);
+            assertEquals(prefix, pattern.getFilePrefix());
         }
     }
 }

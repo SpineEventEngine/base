@@ -87,7 +87,7 @@ class GeneratedInterfacesTest {
         String expectedInterface = interfaceClass.getName();
         for (GeneratedInterface generatedInterface : config.getGeneratedInterfaceList()) {
             if (expectedInterface.equals(generatedInterface.getInterfaceName()) &&
-                    postfix.equals(generatedInterface.getFilter()
+                    postfix.equals(generatedInterface.getPattern()
                                                      .getFilePostfix())) {
                 hasInterface = true;
                 break;
