@@ -27,37 +27,37 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MethodPostfixPattern should")
-final class MethodPostfixPatternTest {
+@DisplayName("MethodPrefixPattern should")
+final class MethodPrefixPatternTest {
 
-    @DisplayName("set MessageFactory for messages that ends with a postfix")
+    @DisplayName("set MessageFactory for messages that starts with a prefix")
     @Test
     void markMessagesWithPostfixWithInterface() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        String postfix = "test.proto";
-        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
+        String prefix = "test";
+        MethodPrefixPattern selector = new MethodPrefixPattern(prefix);
         selector.withMethodFactory(factoryName);
 
         GeneratedMethod generatedMethod = selector.toProto();
 
         assertEquals(factoryName, generatedMethod.getFactoryName());
-        assertEquals(postfix, generatedMethod.getPattern()
-                                             .getFilePostfix());
+        assertEquals(prefix, generatedMethod.getPattern()
+                                            .getFilePrefix());
     }
 
-    @DisplayName("ignore MessageFactory for messages that ends with a postfix")
+    @DisplayName("ignore MessageFactory for messages that starts with a prefix")
     @Test
     void ignoreInterface() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        String postfix = "test.proto";
-        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
+        String prefix = "test";
+        MethodPrefixPattern selector = new MethodPrefixPattern(prefix);
         selector.withMethodFactory(factoryName);
         selector.ignore();
 
         GeneratedMethod generatedMethod = selector.toProto();
 
         assertThat(generatedMethod.getFactoryName()).isEmpty();
-        assertEquals(postfix, generatedMethod.getPattern()
-                                             .getFilePostfix());
+        assertEquals(prefix, generatedMethod.getPattern()
+                                            .getFilePrefix());
     }
 }

@@ -20,44 +20,44 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedMethod;
+import io.spine.tools.protoc.GeneratedInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MethodPostfixPattern should")
-final class MethodPostfixPatternTest {
+@DisplayName("InterfacePrefixPattern should")
+final class InterfacePrefixPatternTest {
 
-    @DisplayName("set MessageFactory for messages that ends with a postfix")
+    @DisplayName("mark messages that starts with a prefix with an interface")
     @Test
     void markMessagesWithPostfixWithInterface() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        String postfix = "test.proto";
-        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
-        selector.withMethodFactory(factoryName);
+        String interfaceName = "io.spine.tools.protoc.TestInterface";
+        String prefix = "test";
+        InterfacePrefixPattern selector = new InterfacePrefixPattern(prefix);
+        selector.markWith(interfaceName);
 
-        GeneratedMethod generatedMethod = selector.toProto();
+        GeneratedInterface generatedInterface = selector.toProto();
 
-        assertEquals(factoryName, generatedMethod.getFactoryName());
-        assertEquals(postfix, generatedMethod.getPattern()
-                                             .getFilePostfix());
+        assertEquals(interfaceName, generatedInterface.getInterfaceName());
+        assertEquals(prefix, generatedInterface.getPattern()
+                                               .getFilePrefix());
     }
 
-    @DisplayName("ignore MessageFactory for messages that ends with a postfix")
+    @DisplayName("ignore interface of messages that starts with a prefix")
     @Test
     void ignoreInterface() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        String postfix = "test.proto";
-        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
-        selector.withMethodFactory(factoryName);
+        String interfaceName = "io.spine.tools.protoc.TestInterface";
+        String prefix = "test";
+        InterfacePrefixPattern selector = new InterfacePrefixPattern(prefix);
+        selector.markWith(interfaceName);
         selector.ignore();
 
-        GeneratedMethod generatedMethod = selector.toProto();
+        GeneratedInterface generatedInterface = selector.toProto();
 
-        assertThat(generatedMethod.getFactoryName()).isEmpty();
-        assertEquals(postfix, generatedMethod.getPattern()
-                                             .getFilePostfix());
+        assertThat(generatedInterface.getInterfaceName()).isEmpty();
+        assertEquals(prefix, generatedInterface.getPattern()
+                                               .getFilePrefix());
     }
 }
