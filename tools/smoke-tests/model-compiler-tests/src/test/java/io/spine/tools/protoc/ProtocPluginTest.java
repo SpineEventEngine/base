@@ -236,6 +236,21 @@ class ProtocPluginTest {
         assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
     }
 
+    @Test
+    @DisplayName("mark a message with interface using .regex() pattern")
+    void markMessageWithInterfaceUsingRegexPattern() {
+        assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
+                .isInstanceOf(RegexedMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method for a .regex() pattern")
+    void generateCustomRegexBasedMethod() {
+        MessageType expectedType =
+                new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+    }
+
     @CanIgnoreReturnValue
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         Class<?> cls = Class.forName(fqn);
