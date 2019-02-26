@@ -50,6 +50,7 @@ final class PluginTest {
 
     private static final String TEST_PROTO_POSTFIX = "_generators.proto";
     private static final String TEST_PROTO_PREFIX = "test_";
+    private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
     @DisplayName("process postfix patterns")
@@ -127,6 +128,33 @@ final class PluginTest {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.filePattern()
                .startsWith(TEST_PROTO_PREFIX)
+               .withMethodFactory(TestMethodFactory.class.getName());
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor()
+                                                 .toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(encodedProtocConfig(interfaces, methods))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+
+        assertEquals(2, response.getFileCount());
+        CodeGeneratorResponse.File messageInterface = response.getFile(0);
+        CodeGeneratorResponse.File messageMethod = response.getFile(1);
+        assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
+        assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
+    }
+
+    @Test
+    @DisplayName("process regex patterns")
+    void processRegexPatterns() {
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        interfaces.filePattern()
+                  .regex(TEST_PROTO_REGEX)
+                  .markWith(TestInterface.class.getName());
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        methods.filePattern()
+               .regex(TEST_PROTO_REGEX)
                .withMethodFactory(TestMethodFactory.class.getName());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()

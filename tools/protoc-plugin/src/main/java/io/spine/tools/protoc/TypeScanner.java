@@ -23,6 +23,7 @@ package io.spine.tools.protoc;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
+import io.spine.code.proto.FileName;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -109,13 +110,12 @@ public abstract class TypeScanner<G extends Message> {
 
     protected class MatchesPattern implements Predicate<G> {
 
-        private final String protoFileName;
+        private final FileName protoFileName;
         private final Function<G, FilePattern> typeFilterExtractor;
 
         public MatchesPattern(MessageType type, Function<G, FilePattern> typeFilterExtractor) {
             checkNotNull(type);
-            this.protoFileName = type.declaringFileName()
-                                     .nameWithExtension();
+            this.protoFileName = type.declaringFileName();
             this.typeFilterExtractor = typeFilterExtractor;
         }
 
@@ -123,11 +123,15 @@ public abstract class TypeScanner<G extends Message> {
         public boolean test(G configuration) {
             checkNotNull(configuration);
             FilePattern pattern = typeFilterExtractor.apply(configuration);
+            String nameWithExtension = protoFileName.nameWithExtension();
             switch (pattern.getValueCase()) {
                 case FILE_POSTFIX:
-                    return protoFileName.endsWith(pattern.getFilePostfix());
+                    return nameWithExtension.endsWith(pattern.getFilePostfix());
                 case FILE_PREFIX:
-                    return protoFileName.startsWith(pattern.getFilePrefix());
+                    return nameWithExtension.startsWith(pattern.getFilePrefix());
+                case REGEX:
+                    String fullFilePath = protoFileName.value();
+                    return fullFilePath.matches(pattern.getRegex());
                 case VALUE_NOT_SET:
                     return false;
             }
