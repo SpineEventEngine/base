@@ -31,8 +31,8 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An {@link GeneratedInterfaceConfig interface} configuration {@link PostfixPattern postfix}
- * pattern selector.
+ * A {@link GeneratedMethodConfig method} configuration {@link PostfixPattern postfix} pattern
+ * selector.
  */
 public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> implements GeneratedMethodConfig {
 
@@ -44,9 +44,9 @@ public final class MethodPostfixPattern extends PostfixPattern<GeneratedMethod> 
     }
 
     @Override
-    public void withMethodFactory(@FullyQualifiedName String targetName) {
-        checkNotNull(targetName);
-        this.factoryName = ClassName.of(targetName);
+    public void withMethodFactory(@FullyQualifiedName String factoryName) {
+        checkNotNull(factoryName);
+        this.factoryName = ClassName.of(factoryName);
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A {@link GeneratedMethodConfig method} configuration {@link UuidMessage uuid} message
  * selector.
