@@ -22,6 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -33,6 +34,7 @@ import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
+import io.spine.value.StringTypeValue;
 
 import java.util.Collection;
 
@@ -188,12 +190,26 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         return result;
     }
 
+    /**
+     * Constructs an expression which obtains the default value of the field.
+     *
+     * <p>Example: {@code org.example.CompiledMessage.getDefaultInstance().getMyField()}.
+     */
     private String fieldDefaultValueExpression() {
-        return defaultInstanceExpression() + ".get" + javaFieldName.capitalize() + "()";
+        return format("%s.get%s()", defaultInstanceExpression(), javaFieldName.capitalize());
     }
 
+    /**
+     * Constructs an expression which obtains the default value of the built type.
+     *
+     * <p>Example: {@code org.example.CompiledMessage.getDefaultInstance()}.
+     */
     private String defaultInstanceExpression() {
-        return io.spine.code.java.ClassName.from(field.getContainingType()).toDotted().value() + ".getDefaultInstance()";
+        Descriptor containingType = field.getContainingType();
+        StringTypeValue messageClassName =
+                io.spine.code.java.ClassName.from(containingType)
+                                            .toDotted();
+        return messageClassName.value() + ".getDefaultInstance()";
     }
 
     /**
