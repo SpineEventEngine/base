@@ -24,8 +24,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.type.MessageType;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -77,7 +80,7 @@ final class FieldDef {
     }
 
     /**
-     * Obtains the field descriptor of the source message field.
+     * Obtains the source for an enrichment field.
      *
      * @param type the passed type must have a {@linkplain #matchesType(Descriptor) matching} field
      * @return the source field descriptor
@@ -115,5 +118,22 @@ final class FieldDef {
      */
     FieldDescriptor descriptor() {
         return descriptor;
+    }
+
+    /**
+     * Obtains a list of field references that do not match any of the fields in the passed types.
+     */
+    ImmutableList<FieldRef> findUnresolved(Set<MessageType> types) {
+        ImmutableList.Builder<FieldRef> result = ImmutableList.builder();
+        Stream<MessageType> stream = types.stream();
+        for (FieldRef ref : sources) {
+            if (ref.isContext()) {
+                continue;
+            }
+            if (stream.noneMatch(t -> ref.matchesType(t.descriptor()))) {
+                result.add(ref);
+            }
+        }
+        return result.build();
     }
 }

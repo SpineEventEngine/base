@@ -69,11 +69,22 @@ public final class EnrichmentForOption
         return result;
     }
 
-    private Optional<String> valueFrom(DescriptorProto object) {
-        MessageOptions options = object.getOptions();
+    private Optional<String> valueFrom(DescriptorProto type) {
+        MessageOptions options = type.getOptions();
         return options.hasExtension(extension())
                ? Optional.of(options.getExtension(extension()))
                : Optional.empty();
+    }
+
+    /**
+     * Obtains the value of the option.
+     *
+     * @return the value of the option, or empty string if there is no option defined
+     */
+    static String value(Descriptor type) {
+        EnrichmentForOption enrichmentFor = new EnrichmentForOption();
+        Optional<String> value = enrichmentFor.valueFrom(type.toProto());
+        return value.orElse("");
     }
 
     @Override

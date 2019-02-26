@@ -33,6 +33,7 @@ import io.spine.type.ref.TypeRef;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -126,12 +127,22 @@ public final class EnrichmentType extends MessageType {
      * Verifies if the passed type is the source for this enrichment type.
      */
     private boolean isSource(Descriptor message) {
-        if (sourceTypeRefs.stream()
-                          .noneMatch(r -> r.test(message))) {
+        if (!matchesSourceRef(message)) {
             return false;
         }
+        boolean result = matchesFieldRef(message);
+        return result;
+    }
+
+    private boolean matchesSourceRef(Descriptor message) {
+        boolean result = sourceTypeRefs.stream()
+                                       .anyMatch(r -> r.test(message));
+        return result;
+    }
+
+    private boolean matchesFieldRef(Descriptor message) {
         boolean result = fields.stream()
-                               .anyMatch(s -> s.matchesType(message));
+                               .anyMatch(f -> f.matchesType(message));
         return result;
     }
 
@@ -185,5 +196,78 @@ public final class EnrichmentType extends MessageType {
                              .map(MessageType::javaClass)
                              .collect(toImmutableList());
         return result;
+    }
+
+    public void validate() {
+        Inspector inspector = new Inspector(this);
+        inspector.check();
+    }
+
+    /**
+     * Validates an enrichment type providing diagnostics on errors in declarations if
+     * the type is invalid.
+     */
+    private static final class Inspector {
+
+        private final EnrichmentType type;
+
+        private Inspector(EnrichmentType type) {
+            this.type = type;
+        }
+
+        /**
+         * Verifies the declaration of the enrichment type.
+         *
+         * @throws NoMatchingTypeException
+         *          if there are no types matching the type reference found in
+         *          the {@code (enrichment_for)} of the enrichment type declaration
+         */
+        void check() {
+            if (!type.sourceTypes().isEmpty()) {
+                // There is at least one type which matches the referenced type.
+                //TODO:2019-02-26:alexander.yevsyukov: There may be other errors like double field
+                // reference for a single type.
+                return;
+            }
+
+            Set<MessageType> resolvedTypes = checkSourceTypeRef();
+            checkFieldReferences(resolvedTypes);
+        }
+
+        /**
+         * None of the types matches either the type reference <em>or</em> the field references,
+         * as checked by {@link #isSource(Descriptor)}, which filters the types by the combination.
+         *
+         * <p>In order to report correct diagnostics this method verifies matching types. If there
+         * is at least one matching type, it is returned as the result of this method.
+         * Otherwise, {@link IllegalStateException} is thrown with corresponding error message.
+         */
+        private Set<MessageType> checkSourceTypeRef() {
+            Set<MessageType> matchingTypes =
+                    KnownTypes.instance()
+                              .asTypeSet()
+                              .messageTypes()
+                              .stream()
+                              .filter(m -> type.matchesSourceRef(m.descriptor()))
+                              .collect(toImmutableSet());
+
+            if (matchingTypes.isEmpty()) {
+                throw new NoMatchingTypeException(typeRef());
+            }
+            return matchingTypes;
+        }
+
+        private void checkFieldReferences(Set<MessageType> types) {
+            for (FieldDef field : type.fields) {
+                ImmutableList<FieldRef> unresolved = field.findUnresolved(types);
+                if (!unresolved.isEmpty()) {
+                    throw new UnsatisfiedFieldReferenceException(type, unresolved, typeRef(), types);
+                }
+            }
+        }
+
+        private String typeRef() {
+            return EnrichmentForOption.value(type.descriptor());
+        }
     }
 }
