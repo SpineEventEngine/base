@@ -21,10 +21,12 @@
 package io.spine.string;
 
 import com.google.common.base.Joiner;
+import io.spine.annotation.Internal;
 
 /**
  * Utilities for debug and error diagnostics.
  */
+@Internal
 public final class Diags {
 
     private static final char BACKTICK = '`';
