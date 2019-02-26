@@ -29,6 +29,7 @@ import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
+import io.spine.test.validate.msg.builder.EssayVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherButInWholeNumberVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
@@ -73,7 +74,9 @@ import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
 import static io.spine.test.validate.msg.builder.TaskLabel.IMPORTANT;
 import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.slf4j.event.Level.ERROR;
 
 /**
  * A test suite covering the {@link ValidatingBuilder} behavior.
@@ -281,18 +284,20 @@ class ValidatingBuilderTest {
         @DisplayName("a repeated field")
         void testSetOnceRepeatedFieldsError() {
             essay.addLine("First line of the task");
-            assertFalse(loggedMessages.isEmpty());
-            assertEquals(loggedMessages.peek()
-                                       .getLevel(), Level.ERROR);
+            assertLoggedError();
         }
 
         @Test
         @DisplayName("a map field")
         void testSetOnceMapFieldError() {
             essay.putTableOfContents("Synopsis", 0);
+            assertLoggedError();
+        }
+
+        private void assertLoggedError() {
             assertFalse(loggedMessages.isEmpty());
-            assertEquals(loggedMessages.peek()
-                                       .getLevel(), Level.ERROR);
+            SubstituteLoggingEvent lastEvent = loggedMessages.peek();
+            assertEquals(lastEvent.getLevel(), ERROR);
         }
     }
 
