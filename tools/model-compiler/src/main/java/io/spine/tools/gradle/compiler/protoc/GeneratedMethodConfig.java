@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
@@ -37,7 +38,7 @@ import java.util.Optional;
 public interface GeneratedMethodConfig extends ProtocConfig {
 
     /**
-     * For the given target sets a {@link io.spine.protoc.MethodFactory MethodFactory}.
+     * For the given target sets a {@link MethodFactory MethodFactory}.
      *
      * <p>The method factory should be accessible at the classpath.
      *

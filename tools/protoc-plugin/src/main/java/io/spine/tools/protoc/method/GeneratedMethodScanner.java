@@ -21,7 +21,6 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EnrichmentMethod;
 import io.spine.tools.protoc.GeneratedMethod;

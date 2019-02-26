@@ -18,13 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc.method;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.value.StringTypeValue;
+
 /**
- * This package provides extension point for the Protoc plugins.
+ * A Java method body source code.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.protoc;
+@Immutable
+public final class MethodBody extends StringTypeValue {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private static final long serialVersionUID = 0L;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Creates a new instance of the method body value holder.
+     */
+    public MethodBody(String value) {
+        super(value);
+    }
+}

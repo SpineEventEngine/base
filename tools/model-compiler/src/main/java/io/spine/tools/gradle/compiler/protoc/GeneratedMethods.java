@@ -23,6 +23,7 @@ package io.spine.tools.gradle.compiler.protoc;
 import io.spine.annotation.Internal;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.method.MethodFactory;
 
 /**
  * A configuration of methods to be generated for Java message classes.
@@ -62,7 +63,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<
      * <p>The statement in the example above configures all message types declared in a file which
      * name ends with {@code events.proto} to use {@code io.spine.code.CustomMethodFactory} as
      * a custom method factory. It is expected that {@code io.spine.code.CustomMethodFactory} is
-     * an implementation of the {@link io.spine.protoc.MethodFactory} interface.
+     * an implementation of the {@link MethodFactory} interface.
      *
      * <p>Caution. In order for the framework components to function properly, the implementation
      * of the {@code MethodFactory} should always be public and has a no-argument public
@@ -74,7 +75,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<
      *     {@code
      *     package io.spine.code;
      *
-     *     public CustomMethodFactory implements io.spine.protoc.MethodFactory {
+     *     public CustomMethodFactory implements io.spine.tools.protoc.method.MethodFactory {
      *
      *         public CustomMethodFactory(){
      *         }

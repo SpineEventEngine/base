@@ -22,8 +22,8 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.protoc.MethodBody;
-import io.spine.protoc.MethodFactory;
+import io.spine.tools.protoc.method.MethodBody;
+import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 

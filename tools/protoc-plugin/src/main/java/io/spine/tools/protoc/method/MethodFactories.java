@@ -24,8 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
-import io.spine.protoc.MethodBody;
-import io.spine.protoc.MethodFactory;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
@@ -110,7 +108,7 @@ final class MethodFactories {
             return Optional.of((Class<MethodFactory>) factoryClass);
         }
         Logging.get(MethodFactories.class)
-               .warn("Class {} does not implement io.spine.protoc.MethodFactory.", fqn);
+               .warn("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
         return Optional.empty();
     }
 
