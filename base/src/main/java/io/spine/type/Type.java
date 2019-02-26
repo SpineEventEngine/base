@@ -28,6 +28,7 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FileName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -115,6 +116,13 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public final boolean supportsBuilders() {
         return supportsBuilders;
+    }
+
+    /**
+     * Obtains {@code FileName} of a declaring Protobuf file.
+     */
+    public FileName declaringFileName() {
+        return FileName.from(descriptor().getFile());
     }
 
     /**

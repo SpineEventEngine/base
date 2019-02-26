@@ -33,7 +33,6 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
-import io.spine.code.proto.FileName;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.SourceFile;
 import io.spine.code.proto.TypeSet;
@@ -190,10 +189,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     public boolean isEvent() {
         boolean result = isTopLevel() && declaringFileName().isEvents();
         return result;
-    }
-
-    private FileName declaringFileName() {
-        return FileName.from(descriptor().getFile());
     }
 
     /**
