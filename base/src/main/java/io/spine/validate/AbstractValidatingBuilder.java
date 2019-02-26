@@ -28,6 +28,7 @@ import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
@@ -219,7 +220,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
-                B result = (B) defaultInstance(messageClass).newBuilderForType();
+        B result = (B) defaultInstance(messageClass).newBuilderForType();
         return result;
     }
 
@@ -253,50 +254,63 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * To avoid this, the declaration of the field should be
      * {@code string id = 1[(set_once) = false];}.
      *
-     * @param field
-     *         a field that is being validated
+     * @param newValue
+     *         the new value of the field
      * @throws ValidationException
      *         if the value of the  field that is {@code (set_once) = true} is being changed
      */
     @SuppressWarnings("unused") // Called by all actual validating builder subclasses.
-    protected final void validateSetOnce(FieldDescriptor field) throws ValidationException {
-        boolean shouldValidate = isSetOnce(field);
+    protected final void validateSetOnce(FieldValue<?> newValue) throws ValidationException {
+        FieldDeclaration field = newValue.declaration();
+        boolean shouldValidate = setOnce(field);
         if (shouldValidate) {
-            boolean setOnceInapplicable = field.isRepeated() || field.isMapField();
+            boolean setOnceInapplicable = field.isCollection();
             if (setOnceInapplicable) {
-                logError(field);
+                onSetOnceMisuse(field);
             } else {
-                boolean valueAlreadySet = getMessageBuilder().hasField(field);
-                if (valueAlreadySet) {
-                    throw violatedSetOnce(field);
-                }
+                checkNotOverriding(newValue);
             }
         }
     }
 
-    private static boolean isSetOnce(FieldDescriptor field) {
-        Optional<Boolean> setOnceDeclaration = SetOnce.from(field);
-        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
+    private void checkNotOverriding(FieldValue<?> newValue) throws ValidationException {
+        FieldDeclaration field = newValue.declaration();
+
+        FieldDescriptor descriptor = field.descriptor();
+        B builder = getMessageBuilder();
+        boolean valueIsSet = !builder.hasField(descriptor);
+        if (valueIsSet) {
+            Object actualNewValue = newValue.singleValue();
+            Object currentValue = builder.getField(descriptor);
+            boolean anotherValueSet = !currentValue.equals(actualNewValue);
+            if (anotherValueSet) {
+                throw violatedSetOnce(field);
+            }
+        }
+    }
+
+    private static boolean setOnce(FieldDeclaration declaration) {
+        Optional<Boolean> setOnceDeclaration = SetOnce.from(declaration.descriptor());
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault =
-                fieldDeclaration.isEntityId() && !setOnceDeclaration.isPresent();
+        boolean requiredByDefault = declaration.isEntityId()
+                                 && !setOnceDeclaration.isPresent();
         return setOnceValue || requiredByDefault;
     }
 
-    private void logError(FieldDescriptor field) {
-        String fieldName = field.getFullName();
+    private void onSetOnceMisuse(FieldDeclaration field) {
+        FieldName fieldName = field.name();
         _error("Error found in `%s`. " +
                        "Repeated and map fields cannot be marked as `(set_once) = true`.",
                fieldName);
     }
 
-    private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
-        String fieldName = descriptor.getFullName();
+    private static ValidationException violatedSetOnce(FieldDeclaration descriptor) {
+        FieldName fieldName = descriptor.name();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Attempted to change the value of the field `%s` which has " +
                                       "`(set_once) = true` and is already set.")
-                .addParam(fieldName)
+                .addParam(fieldName.value())
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
     }
@@ -314,7 +328,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private static <T extends Message> Class<T>
     getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
         @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-                Class<T> result = (Class<T>) GenericParameter.MESSAGE.argumentIn(builderClass);
+        Class<T> result = (Class<T>) GenericParameter.MESSAGE.argumentIn(builderClass);
         return result;
     }
 
