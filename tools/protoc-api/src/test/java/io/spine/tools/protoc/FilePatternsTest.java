@@ -51,6 +51,15 @@ final class FilePatternsTest {
                 FilePatterns.filePrefix(null);
             });
         }
+
+        @DisplayName("regex pattern")
+        @Test
+        void regex() {
+            Assertions.assertThrows(NullPointerException.class, () -> {
+                //noinspection ConstantConditions,ResultOfMethodCallIgnored
+                FilePatterns.fileRegex(null);
+            });
+        }
     }
 
     @DisplayName("create a valid")
@@ -71,6 +80,14 @@ final class FilePatternsTest {
             String prefix = "documents_";
             FilePattern pattern = FilePatterns.filePrefix(prefix);
             assertEquals(prefix, pattern.getFilePrefix());
+        }
+
+        @DisplayName("regex pattern")
+        @Test
+        void regex() {
+            String regex = ".*documents.*";
+            FilePattern pattern = FilePatterns.fileRegex(regex);
+            assertEquals(regex, pattern.getRegex());
         }
     }
 }

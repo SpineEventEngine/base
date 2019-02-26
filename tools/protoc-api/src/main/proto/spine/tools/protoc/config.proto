@@ -94,6 +94,12 @@ message FilePattern {
         // will be applied.
         //
         string file_prefix = 2;
+
+        // A regex a .proto file's full name should match.
+        //
+        // If a .proto file matches the regex, to all its messages some code generation will
+        // be applied.
+        string regex = 3;
     }
 }
 

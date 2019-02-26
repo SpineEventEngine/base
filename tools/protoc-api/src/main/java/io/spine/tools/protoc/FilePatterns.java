@@ -52,4 +52,14 @@ public final class FilePatterns {
                           .setFilePrefix(prefix)
                           .build();
     }
+
+    /**
+     * Creates a new {@link FilePattern} with a {@code regex} field filled.
+     */
+    public static FilePattern fileRegex(@Regex String regex) {
+        checkNotNull(regex);
+        return FilePattern.newBuilder()
+                          .setRegex(regex)
+                          .build();
+    }
 }
