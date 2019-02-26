@@ -53,11 +53,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class PluginTest {
 
     private static final String TEST_PROTO_POSTFIX = "_generators.proto";
+    private static final String TEST_PROTO_PREFIX = "test_";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
-    @DisplayName("process code generation request")
+    @DisplayName("process postfix patterns")
     @Test
-    void processCodeGenerationRequest() {
+    void processPostfixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         interfaces.filePattern()
                   .endsWith(TEST_PROTO_POSTFIX)
@@ -118,6 +119,33 @@ final class PluginTest {
         List<CodeGeneratorResponse.File> messageMethods =
                 filterMethods(response, InsertionPoint.CLASS_SCOPE);
         assertEquals(1, messageMethods.size());
+    }
+
+    @Test
+    @DisplayName("process prefix patterns")
+    void processPrefixPatterns(){
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        interfaces.filePattern()
+                  .startsWith(TEST_PROTO_PREFIX)
+                  .markWith(TestInterface.class.getName());
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        methods.filePattern()
+               .startsWith(TEST_PROTO_PREFIX)
+               .withMethodFactory(TestMethodFactory.class.getName());
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor()
+                                                 .toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(encodedProtocConfig(interfaces, methods))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+
+        assertEquals(2, response.getFileCount());
+        CodeGeneratorResponse.File messageInterface = response.getFile(0);
+        CodeGeneratorResponse.File messageMethod = response.getFile(1);
+        assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
+        assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
     }
 
     private static List<CodeGeneratorResponse.File> filterMethods(CodeGeneratorResponse response,
