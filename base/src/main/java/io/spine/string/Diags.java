@@ -23,6 +23,10 @@ package io.spine.string;
 import com.google.common.base.Joiner;
 import io.spine.annotation.Internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Utilities for debug and error diagnostics.
  */
@@ -48,5 +52,15 @@ public final class Diags {
      */
     public static String join(Iterable<?> items) {
         return COMMA_JOINER.join(items);
+    }
+
+    /**
+     * Lists the passed elements separating with comma followed by a space character.
+     */
+    @SafeVarargs
+    public static <E> String join(E... elements) {
+        List<E> list = new ArrayList<>(elements.length);
+        Collections.addAll(list, elements);
+        return join(list);
     }
 }
