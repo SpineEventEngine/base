@@ -212,7 +212,7 @@ final class PluginTest {
     @Immutable
     public static class TestMethodFactory implements MethodFactory {
 
-        private static final MethodBody TEST_METHOD = MethodBody.of("public void test(){}");
+        private static final MethodBody TEST_METHOD = new MethodBody("public void test(){}");
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType messageType) {
@@ -224,7 +224,7 @@ final class PluginTest {
     public static class UuidMethodFactory implements MethodFactory {
 
         private static final MethodBody TEST_METHOD =
-                MethodBody.of("public static boolean isUuid(){return true;}");
+                new MethodBody("public static boolean isUuid(){return true;}");
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType messageType) {

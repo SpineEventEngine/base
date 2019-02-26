@@ -46,6 +46,6 @@ public class TestMethodFactory implements MethodFactory {
                 .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
                             MessageType.class)
                 .build();
-        return ImmutableList.of(MethodBody.of(spec.toString()));
+        return ImmutableList.of(new MethodBody(spec.toString()));
     }
 }

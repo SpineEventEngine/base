@@ -53,6 +53,6 @@ public class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("Creates a new instance of the current identifier " +
                                     "with a random UUID value.\n")
                 .build();
-        return ImmutableList.of(MethodBody.of(spec.toString()));
+        return ImmutableList.of(new MethodBody(spec.toString()));
     }
 }

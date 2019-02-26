@@ -103,7 +103,7 @@ final class GeneratedMethodScannerTest {
 
         private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$FirstMethodFactory";
 
-        private static final MethodBody TEST_METHOD = MethodBody.of("public void first(){}");
+        private static final MethodBody TEST_METHOD = new MethodBody("public void first(){}");
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType ignored) {
@@ -116,8 +116,8 @@ final class GeneratedMethodScannerTest {
 
         private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$SecondMethodFactory";
 
-        private static final MethodBody TEST_METHOD_1 = MethodBody.of("public void second1(){}");
-        private static final MethodBody TEST_METHOD_2 = MethodBody.of("public void second2(){}");
+        private static final MethodBody TEST_METHOD_1 = new MethodBody("public void second1(){}");
+        private static final MethodBody TEST_METHOD_2 = new MethodBody("public void second2(){}");
 
         @Override
         public List<MethodBody> newMethodsFor(MessageType ignored) {

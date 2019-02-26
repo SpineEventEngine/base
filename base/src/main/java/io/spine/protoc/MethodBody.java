@@ -24,22 +24,17 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.value.StringTypeValue;
 
 /**
- * A Java method body source.
+ * A Java method body source code.
  */
 @Immutable
 public final class MethodBody extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    private MethodBody(String value) {
+    /**
+     * Creates a new instance of the method body value holder.
+     */
+    public MethodBody(String value) {
         super(value);
     }
-
-    /**
-     * Instantiates a new message body out of the passed value.
-     */
-    public static MethodBody of(String value) {
-        return new MethodBody(value);
-    }
-
 }
