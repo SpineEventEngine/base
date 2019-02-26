@@ -188,10 +188,8 @@ public class KnownTypes implements Serializable {
      */
     public ImmutableSet<MessageType> allMatching(TypeRef typeRef) {
         ImmutableSet<MessageType> result =
-                asTypeSet().allTypes()
+                asTypeSet().messageTypes()
                            .stream()
-                           .filter(MessageType.class::isInstance)
-                           .map(MessageType.class::cast)
                            .filter(m -> typeRef.test(m.descriptor()))
                            .collect(toImmutableSet());
         return result;
