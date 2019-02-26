@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.EnrichmentMethod;
+import io.spine.tools.protoc.UuidMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,29 +30,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("MethodUuidMessage should")
 final class MethodUuidMessageTest {
 
-
     @DisplayName("set MethodFactory for UUID message")
     @Test
     void setMethodFactoryForUuid() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+        MethodUuidMessage selector = new MethodUuidMessage();
         selector.withMethodFactory(factoryName);
 
-        EnrichmentMethod enrichmentMethod = selector.toProto();
+        UuidMethod uuidMethod = selector.toProto();
 
-        assertEquals(factoryName, enrichmentMethod.getFactoryName());
+        assertEquals(factoryName, uuidMethod.getFactoryName());
     }
 
     @DisplayName("ignore UUID MethodFactory")
     @Test
     void ignoreUuidMethodFactory() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+        MethodUuidMessage selector = new MethodUuidMessage();
         selector.withMethodFactory(factoryName);
         selector.ignore();
 
-        EnrichmentMethod enrichmentMethod = selector.toProto();
+        UuidMethod uuidMethod = selector.toProto();
 
-        assertThat(enrichmentMethod.getFactoryName()).isEmpty();
+        assertThat(uuidMethod.getFactoryName()).isEmpty();
     }
 }
