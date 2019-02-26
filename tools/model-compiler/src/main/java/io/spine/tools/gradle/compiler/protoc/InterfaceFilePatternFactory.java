@@ -29,8 +29,8 @@ import org.checkerframework.checker.regex.qual.Regex;
  * An {@link GeneratedInterfaceConfig interface} configuration file pattern
  * {@link FilePatternFactory factory}.
  */
-public final class InterfaceFilePatternFactory
-        extends FilePatternFactory<GeneratedInterface, InterfacePostfixPattern, InterfacePrefixPattern> {
+public final class InterfaceFilePatternFactory extends FilePatternFactory<
+        GeneratedInterface, InterfacePostfixPattern, InterfacePrefixPattern, InterfaceRegexPattern> {
 
     /** Prevents direct instantiation. **/
     InterfaceFilePatternFactory() {
@@ -47,5 +47,11 @@ public final class InterfaceFilePatternFactory
     @Override
     InterfacePrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
         return new InterfacePrefixPattern(prefix);
+    }
+
+    @Internal
+    @Override
+    InterfaceRegexPattern newRegexPattern(@NonNull @Regex String regex) {
+        return new InterfaceRegexPattern(regex);
     }
 }

@@ -29,8 +29,8 @@ import org.checkerframework.checker.regex.qual.Regex;
  * A {@link GeneratedMethodConfig method} configuration file pattern
  * {@link FilePatternFactory factory}.
  */
-public final class MethodFilePatternFactory
-        extends FilePatternFactory<GeneratedMethod, MethodPostfixPattern, MethodPrefixPattern> {
+public final class MethodFilePatternFactory extends FilePatternFactory<
+        GeneratedMethod, MethodPostfixPattern, MethodPrefixPattern, MethodRegexPattern> {
 
     /** Prevents direct instantiation. **/
     MethodFilePatternFactory() {
@@ -47,5 +47,11 @@ public final class MethodFilePatternFactory
     @Override
     MethodPrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
         return new MethodPrefixPattern(prefix);
+    }
+
+    @Internal
+    @Override
+    MethodRegexPattern newRegexPattern(@NonNull @Regex String regex) {
+        return new MethodRegexPattern(regex);
     }
 }

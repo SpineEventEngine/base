@@ -69,21 +69,41 @@ final class InterfaceFilePatternFactoryTest {
                                                                     .next();
             assertNull(((GeneratedInterfaceConfig) actualPattern).interfaceName());
         }
+
+        @DisplayName("regex pattern")
+        @Test
+        void regexPattern() {
+            String regex = ".*test.*";
+            InterfaceFilePatternFactory patternFactory = factory();
+            InterfaceRegexPattern firstAddedPattern = patternFactory.regex(regex);
+            firstAddedPattern.markWith("io.spine.text.TestInterface");
+            InterfaceRegexPattern secondAddedPattern = patternFactory.regex(regex);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedInterface> actualPattern = patterns.iterator()
+                                                                    .next();
+            assertNull(((GeneratedInterfaceConfig) actualPattern).interfaceName());
+        }
     }
 
-    @DisplayName("allow same prefix and postfix patterns")
+    @DisplayName("allow same prefix, postfix and regex patterns")
     @Test
     void allowSamePrefixAndPostfixPatterns() {
-        String postfix = "test.proto";
+        String postfix = "test";
         String prefix = "test";
+        String regex = "test";
+        String interfaceName = "io.spine.text.TestInterface";
         InterfaceFilePatternFactory patternFactory = factory();
-        InterfacePostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
-        firstAddedPattern.markWith("io.spine.text.TestInterface");
-        InterfacePrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
-        secondAddedPattern.ignore();
-
+        InterfacePostfixPattern postfixPattern = patternFactory.endsWith(postfix);
+        postfixPattern.markWith(interfaceName);
+        InterfacePrefixPattern prefixPattern = patternFactory.startsWith(prefix);
+        prefixPattern.markWith(interfaceName);
+        InterfaceRegexPattern regexPattern = patternFactory.regex(regex);
+        regexPattern.markWith(interfaceName);
         ImmutableSet<FilePattern<GeneratedInterface>> patterns = patternFactory.patterns();
-        assertEquals(2, patterns.size());
+        assertEquals(3, patterns.size());
     }
 
     InterfaceFilePatternFactory factory() {

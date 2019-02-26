@@ -44,7 +44,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class FilePatternFactory<
         T extends Message,
         S extends PostfixPattern<T>,
-        U extends PrefixPattern<T>> {
+        U extends PrefixPattern<T>,
+        V extends RegexPattern<T>> {
 
     private final Set<FilePattern<T>> patterns;
 
@@ -61,17 +62,28 @@ public abstract class FilePatternFactory<
         addPattern(result);
         return result;
     }
+
     /**
      * Creates a {@link PrefixPattern} selector out of a supplied {@code prefix}.
      */
-    public U startsWith(@Regex String prefix){
+    public U startsWith(@Regex String prefix) {
         checkNotNull(prefix);
         U result = newPrefixPattern(prefix);
         addPattern(result);
         return result;
     }
 
-    private void addPattern(FilePattern<T> pattern){
+    /**
+     * Creates a {@link RegexPattern} selector out of a supplied {@code regex}.
+     */
+    public V regex(@Regex String regex) {
+        checkNotNull(regex);
+        V result = newRegexPattern(regex);
+        addPattern(result);
+        return result;
+    }
+
+    private void addPattern(FilePattern<T> pattern) {
         if (!patterns.add(pattern)) {
             patterns.remove(pattern);
             patterns.add(pattern);
@@ -97,4 +109,10 @@ public abstract class FilePatternFactory<
      */
     @Internal
     abstract U newPrefixPattern(@NonNull @Regex String prefix);
+
+    /**
+     * Instantiates a particular {@link RegexPattern} for the supplied {@code regex}.
+     */
+    @Internal
+    abstract V newRegexPattern(@NonNull @Regex String regex);
 }

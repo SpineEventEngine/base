@@ -69,21 +69,42 @@ final class MethodFilePatternFactoryTest {
                                                                  .next();
             assertNull(((GeneratedMethodConfig) actualPattern).methodFactory());
         }
+
+        @DisplayName("regex pattern")
+        @Test
+        void regexPattern() {
+            String regex = ".*test.*";
+            MethodFilePatternFactory patternFactory = factory();
+            MethodRegexPattern firstAddedPattern = patternFactory.regex(regex);
+            firstAddedPattern.withMethodFactory("io.spine.text.TestFactory");
+            MethodRegexPattern secondAddedPattern = patternFactory.regex(regex);
+            secondAddedPattern.ignore();
+
+            ImmutableSet<FilePattern<GeneratedMethod>> patterns = patternFactory.patterns();
+            assertEquals(1, patterns.size());
+            FilePattern<GeneratedMethod> actualPattern = patterns.iterator()
+                                                                 .next();
+            assertNull(((GeneratedMethodConfig) actualPattern).methodFactory());
+        }
     }
 
     @DisplayName("allow same prefix and postfix patterns")
     @Test
     void allowSamePrefixAndPostfixPatterns() {
-        String postfix = "test.proto";
+        String postfix = "test";
         String prefix = "test";
+        String regex = "test";
+        String methodFactory = "io.spine.text.TestFactory";
         MethodFilePatternFactory patternFactory = factory();
-        MethodPostfixPattern firstAddedPattern = patternFactory.endsWith(postfix);
-        firstAddedPattern.withMethodFactory("io.spine.text.TestFactory");
-        MethodPrefixPattern secondAddedPattern = patternFactory.startsWith(prefix);
-        secondAddedPattern.ignore();
+        MethodPostfixPattern postfixPattern = patternFactory.endsWith(postfix);
+        postfixPattern.withMethodFactory(methodFactory);
+        MethodPrefixPattern prefixPattern = patternFactory.startsWith(prefix);
+        prefixPattern.withMethodFactory(methodFactory);
+        MethodRegexPattern regexPattern = patternFactory.regex(regex);
+        regexPattern.withMethodFactory(methodFactory);
 
         ImmutableSet<FilePattern<GeneratedMethod>> patterns = patternFactory.patterns();
-        assertEquals(2, patterns.size());
+        assertEquals(3, patterns.size());
     }
 
     MethodFilePatternFactory factory() {
