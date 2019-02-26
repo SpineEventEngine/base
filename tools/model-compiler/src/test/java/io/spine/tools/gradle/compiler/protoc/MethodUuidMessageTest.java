@@ -35,10 +35,10 @@ final class MethodUuidMessageTest {
     @Test
     void setMethodFactoryForUuid() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage message = new MethodEnrichmentMessage();
-        message.withMethodFactory(factoryName);
+        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+        selector.withMethodFactory(factoryName);
 
-        EnrichmentMethod enrichmentMethod = message.toProto();
+        EnrichmentMethod enrichmentMethod = selector.toProto();
 
         assertEquals(factoryName, enrichmentMethod.getFactoryName());
     }
@@ -47,11 +47,11 @@ final class MethodUuidMessageTest {
     @Test
     void ignoreUuidMethodFactory() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage message = new MethodEnrichmentMessage();
-        message.withMethodFactory(factoryName);
-        message.ignore();
+        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+        selector.withMethodFactory(factoryName);
+        selector.ignore();
 
-        EnrichmentMethod enrichmentMethod = message.toProto();
+        EnrichmentMethod enrichmentMethod = selector.toProto();
 
         assertThat(enrichmentMethod.getFactoryName()).isEmpty();
     }

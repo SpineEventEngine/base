@@ -34,10 +34,10 @@ final class InterfaceEnrichmentMessageTest {
     @Test
     void markEnrichmentWithInterface() {
         String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceEnrichmentMessage message = new InterfaceEnrichmentMessage();
-        message.markWith(interfaceName);
+        InterfaceEnrichmentMessage selector = new InterfaceEnrichmentMessage();
+        selector.markWith(interfaceName);
 
-        EnrichmentInterface enrichmentInterface = message.toProto();
+        EnrichmentInterface enrichmentInterface = selector.toProto();
 
         assertEquals(interfaceName, enrichmentInterface.getInterfaceName());
     }
@@ -46,11 +46,11 @@ final class InterfaceEnrichmentMessageTest {
     @Test
     void ignoreEnrichmentInterface() {
         String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceEnrichmentMessage message = new InterfaceEnrichmentMessage();
-        message.markWith(interfaceName);
-        message.ignore();
+        InterfaceEnrichmentMessage selector = new InterfaceEnrichmentMessage();
+        selector.markWith(interfaceName);
+        selector.ignore();
 
-        EnrichmentInterface enrichmentInterface = message.toProto();
+        EnrichmentInterface enrichmentInterface = selector.toProto();
 
         assertThat(enrichmentInterface.getInterfaceName()).isEmpty();
     }

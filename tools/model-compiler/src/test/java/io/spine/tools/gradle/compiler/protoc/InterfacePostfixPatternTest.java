@@ -20,39 +20,44 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.UuidInterface;
+import io.spine.tools.protoc.GeneratedInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("InterfaceUuidMessage should")
-final class InterfaceUuidMessageTest {
+@DisplayName("InterfacePostfixPattern should")
+final class InterfacePostfixPatternTest {
 
-    @DisplayName("mark enrichment with interface")
+    @DisplayName("mark messages that ends with a postfix with an interface")
     @Test
-    void markEnrichmentWithInterface() {
+    void markMessagesWithPostfixWithInterface() {
         String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceUuidMessage selector = new InterfaceUuidMessage();
+        String postfix = "test.proto";
+        InterfacePostfixPattern selector = new InterfacePostfixPattern(postfix);
         selector.markWith(interfaceName);
 
-        UuidInterface uuidInterface = selector.toProto();
+        GeneratedInterface generatedInterface = selector.toProto();
 
-        assertEquals(interfaceName, uuidInterface.getInterfaceName());
+        assertEquals(interfaceName, generatedInterface.getInterfaceName());
+        assertEquals(postfix, generatedInterface.getPattern()
+                                                .getFilePostfix());
     }
 
-    @DisplayName("ignore enrichment interface")
+    @DisplayName("ignore interface of messages that ends with a postfix")
     @Test
-    void ignoreEnrichmentInterface() {
+    void ignoreInterface() {
         String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceUuidMessage selector = new InterfaceUuidMessage();
+        String postfix = "test.proto";
+        InterfacePostfixPattern selector = new InterfacePostfixPattern(postfix);
         selector.markWith(interfaceName);
         selector.ignore();
 
-        UuidInterface uuidInterface = selector.toProto();
+        GeneratedInterface generatedInterface = selector.toProto();
 
-        assertThat(uuidInterface.getInterfaceName()).isEmpty();
+        assertThat(generatedInterface.getInterfaceName()).isEmpty();
+        assertEquals(postfix, generatedInterface.getPattern()
+                                                .getFilePostfix());
     }
-
 }

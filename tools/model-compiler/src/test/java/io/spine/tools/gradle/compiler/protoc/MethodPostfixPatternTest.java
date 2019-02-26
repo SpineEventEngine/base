@@ -20,38 +20,44 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.EnrichmentMethod;
+import io.spine.tools.protoc.GeneratedMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MethodEnrichmentMessage should")
-final class MethodEnrichmentMessageTest {
+@DisplayName("MethodPostfixPattern should")
+final class MethodPostfixPatternTest {
 
-    @DisplayName("set MethodFactory for enrichment")
+    @DisplayName("set MessageFactory for messages that ends with a postfix")
     @Test
-    void setMethodFactoryForEnrichment() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+    void markMessagesWithPostfixWithInterface() {
+        String factoryName = "io.spine.tools.protoc.TestInterface";
+        String postfix = "test.proto";
+        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
         selector.withMethodFactory(factoryName);
 
-        EnrichmentMethod enrichmentMethod = selector.toProto();
+        GeneratedMethod generatedMethod = selector.toProto();
 
-        assertEquals(factoryName, enrichmentMethod.getFactoryName());
+        assertEquals(factoryName, generatedMethod.getFactoryName());
+        assertEquals(postfix, generatedMethod.getPattern()
+                                             .getFilePostfix());
     }
 
-    @DisplayName("ignore enrichment MethodFactory")
+    @DisplayName("ignore MessageFactory for messages that ends with a postfix")
     @Test
-    void ignoreEnrichmentMethodFactory() {
+    void ignoreInterface() {
         String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
+        String postfix = "test.proto";
+        MethodPostfixPattern selector = new MethodPostfixPattern(postfix);
         selector.withMethodFactory(factoryName);
         selector.ignore();
 
-        EnrichmentMethod enrichmentMethod = selector.toProto();
+        GeneratedMethod generatedMethod = selector.toProto();
 
-        assertThat(enrichmentMethod.getFactoryName()).isEmpty();
+        assertThat(generatedMethod.getFactoryName()).isEmpty();
+        assertEquals(postfix, generatedMethod.getPattern()
+                                             .getFilePostfix());
     }
 }
