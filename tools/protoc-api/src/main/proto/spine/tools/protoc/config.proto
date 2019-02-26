@@ -26,8 +26,8 @@ message GeneratedInterface {
 
     string interface_name = 1;
 
-    // A filter that defines which message types should implement the interface.
-    TypeFilter filter = 2;
+    // A file pattern that defines which message types should implement the interface.
+    FilePattern pattern = 2;
 }
 
 // Interface to mark Enrichment messages.
@@ -68,13 +68,13 @@ message GeneratedMethod {
     // A fully-qualified name of the message factory class.
     string factory_name = 1;
 
-    // A filter that defines for which message types the message factory should be called.
-    TypeFilter filter = 2;
+    // A file pattern that defines for which message types the message factory should be called.
+    FilePattern pattern = 2;
 }
 
-// Types filter applied to generated code configurations.
+// File pattern which is used to filter messages.
 //
-message TypeFilter {
+message FilePattern {
 
     oneof value {
 
