@@ -42,9 +42,9 @@ public final class InterfaceEnrichmentMessage
     }
 
     @Override
-    public void markWith(@FullyQualifiedName String targetName) {
-        checkNotNull(targetName);
-        this.interfaceName = ClassName.of(targetName);
+    public void markWith(@FullyQualifiedName String interfaceName) {
+        checkNotNull(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
     }
 
     @Override
