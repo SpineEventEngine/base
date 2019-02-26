@@ -20,21 +20,16 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.compiler.PluginProtos;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
-import io.spine.option.OptionsProto;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.protoc.given.TestInterface;
+import io.spine.tools.protoc.given.TestMethodFactory;
+import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.tools.protoc.messageinterface.TestEventsProto;
-import io.spine.tools.protoc.method.MethodBody;
-import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.tools.protoc.method.TestMethodProtos;
-import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,10 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.encodedProtocConfig;
+import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Plugin should")
@@ -123,7 +119,7 @@ final class PluginTest {
 
     @Test
     @DisplayName("process prefix patterns")
-    void processPrefixPatterns(){
+    void processPrefixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         interfaces.filePattern()
                   .startsWith(TEST_PROTO_PREFIX)
@@ -158,25 +154,6 @@ final class PluginTest {
                 .collect(Collectors.toList());
     }
 
-    private static String encodedProtocConfig(GeneratedMethods methods) {
-        return encodedProtocConfig(GeneratedInterfaces.withDefaults(), methods);
-    }
-
-    private static String encodedProtocConfig(GeneratedInterfaces interfaces) {
-        return encodedProtocConfig(interfaces, GeneratedMethods.withDefaults());
-    }
-
-    private static String encodedProtocConfig(GeneratedInterfaces interfaces,
-                                              GeneratedMethods methods) {
-        SpineProtocConfig protocConfig = SpineProtocConfig
-                .newBuilder()
-                .setGeneratedInterfaces(interfaces.asProtocConfig())
-                .setGeneratedMethods(methods.asProtocConfig())
-                .build();
-        return Base64.getEncoder()
-                     .encodeToString(protocConfig.toByteArray());
-    }
-
     private static CodeGeneratorResponse runPlugin(CodeGeneratorRequest request) {
         try (InputStream testInput = new ByteArrayInputStream(request.toByteArray());
              ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -205,58 +182,4 @@ final class PluginTest {
         }
     }
 
-    private static CodeGeneratorRequest.Builder requestBuilder() {
-        return CodeGeneratorRequest
-                .newBuilder()
-                .addProtoFile(descriptorProto())
-                .addProtoFile(spineOptionsProto())
-                .setCompilerVersion(compilerVersion());
-    }
-
-    private static PluginProtos.Version compilerVersion() {
-        return PluginProtos.Version.newBuilder()
-                                   .setMajor(3)
-                                   .setMajor(6)
-                                   .setPatch(1)
-                                   .setSuffix("")
-                                   .build();
-    }
-
-    private static DescriptorProtos.FileDescriptorProto spineOptionsProto() {
-        return OptionsProto.getDescriptor()
-                           .toProto();
-    }
-
-    private static DescriptorProtos.FileDescriptorProto descriptorProto() {
-        return DescriptorProtos.getDescriptor()
-                               .toProto();
-    }
-
-    @SuppressWarnings("InterfaceNeverImplemented")
-    public interface TestInterface {
-
-    }
-
-    @Immutable
-    public static class TestMethodFactory implements MethodFactory {
-
-        private static final MethodBody TEST_METHOD = new MethodBody("public void test(){}");
-
-        @Override
-        public List<MethodBody> newMethodsFor(MessageType messageType) {
-            return ImmutableList.of(TEST_METHOD);
-        }
-    }
-
-    @Immutable
-    public static class UuidMethodFactory implements MethodFactory {
-
-        private static final MethodBody TEST_METHOD =
-                new MethodBody("public static boolean isUuid(){return true;}");
-
-        @Override
-        public List<MethodBody> newMethodsFor(MessageType messageType) {
-            return ImmutableList.of(TEST_METHOD);
-        }
-    }
 }
