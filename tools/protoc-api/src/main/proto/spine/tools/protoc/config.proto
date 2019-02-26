@@ -17,6 +17,7 @@ option (internal_all) = true;
 //
 message UuidInterface {
 
+    // A fully-qualified name of the message interface class.
     string interface_name = 1;
 }
 
@@ -24,6 +25,7 @@ message UuidInterface {
 //
 message GeneratedInterface {
 
+    // A fully-qualified name of the message interface class.
     string interface_name = 1;
 
     // A file pattern that defines which message types should implement the interface.
@@ -36,6 +38,7 @@ message GeneratedInterface {
 //
 message EnrichmentInterface {
 
+    // A fully-qualified name of the message interface class.
     string interface_name = 1;
 }
 
