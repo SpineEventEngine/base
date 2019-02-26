@@ -273,6 +273,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         return result;
     }
 
+    // Classpath.Builder causes issue cause we use `forEach`.
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static MethodFactoryConfiguration prepareGeneratorConfiguration(Project project) {
         Classpath.Builder classpath = Classpath.newBuilder();
         project.getTasks()

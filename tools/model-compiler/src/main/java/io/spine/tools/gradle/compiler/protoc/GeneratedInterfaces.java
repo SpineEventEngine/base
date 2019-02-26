@@ -67,11 +67,14 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        config.filePattern().endsWith(MessageFile.COMMANDS.suffix())
+        config.filePattern()
+              .endsWith(MessageFile.COMMANDS.suffix())
               .markWith(CommandMessage.class.getName());
-        config.filePattern().endsWith(MessageFile.EVENTS.suffix())
+        config.filePattern()
+              .endsWith(MessageFile.EVENTS.suffix())
               .markWith(EventMessage.class.getName());
-        config.filePattern().endsWith(MessageFile.REJECTIONS.suffix())
+        config.filePattern()
+              .endsWith(MessageFile.REJECTIONS.suffix())
               .markWith(RejectionMessage.class.getName());
         config.uuidMessage()
               .markWith(UuidValue.class.getName());
@@ -157,6 +160,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
         return enrichmentMessage;
     }
 
+    // GeneratedInterfacesConfig.Builder causes issue cause we use `forEach`.
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     @Internal
     public GeneratedInterfacesConfig asProtocConfig() {

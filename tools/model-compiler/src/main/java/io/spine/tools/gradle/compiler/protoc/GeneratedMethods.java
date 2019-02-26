@@ -123,6 +123,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<
         return enrichmentMessage;
     }
 
+    // GeneratedMethodsConfig.Builder causes issue cause we use `forEach`
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Internal
     @Override
     public GeneratedMethodsConfig asProtocConfig() {
