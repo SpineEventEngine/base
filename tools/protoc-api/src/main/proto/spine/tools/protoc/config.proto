@@ -84,6 +84,13 @@ message TypeFilter {
         // will be applied.
         //
         string file_postfix = 1;
+
+        // A prefix that a .proto file name should have.
+        //
+        // If a .proto file matches current prefix, to all its messages some code generation
+        // will be applied.
+        //
+        string file_prefix = 2;
     }
 }
 
