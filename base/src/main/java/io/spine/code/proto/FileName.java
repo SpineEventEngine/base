@@ -95,6 +95,16 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     }
 
     /**
+     * Returns the file name with extension (but without path).
+     */
+    public String nameWithExtension() {
+        String fullName = value();
+        int lastBackslashIndex = fullName.lastIndexOf(PATH_SEPARATOR);
+        String result = fullName.substring(lastBackslashIndex + 1);
+        return result;
+    }
+
+    /**
      * Returns the file name without path and extension in the {@code CamelCase}.
      */
     public String nameOnlyCamelCase() {
