@@ -139,6 +139,38 @@ final class SpineProtoGeneratorTest {
         fileContent.contains(secondMethod);
     }
 
+    @DisplayName("drop duplicates in generated code for the same insertion point")
+    @Test
+    void dropCodeDuplicates() {
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        methods.uuidMessage()
+               .withMethodFactory(UuidMethodFactory.class.getName());
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor()
+                                                 .toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(encodedProtocConfig(methods))
+                .build();
+        MessageType type = new MessageType(TestMessage.getDescriptor());
+        String method = "public void test1(){}";
+        File generated = File
+                .newBuilder()
+                .setName("file.proto")
+                .setContent(method)
+                .setInsertionPoint(InsertionPoint.CLASS_SCOPE.forType(type))
+                .build();
+        ImmutableList<CompilerOutput> compilerOutputs = ImmutableList.of(
+                new TestCompilerOutput(generated), new TestCompilerOutput(generated)
+        );
+        TestGenerator generator = new TestGenerator(compilerOutputs);
+
+        CodeGeneratorResponse result = generator.process(request);
+        assertEquals(1, result.getFileCount());
+        File file = result.getFile(0);
+        StringSubject fileContent = Truth.assertThat(file.getContent());
+        fileContent.isEqualTo(method);
+    }
+
     @DisplayName("not process invalid CodeGeneratorRequest")
     @Test
     void notProcessInvalidRequests() {
