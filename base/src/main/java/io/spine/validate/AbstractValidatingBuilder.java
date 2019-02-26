@@ -281,7 +281,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         FieldDescriptor descriptor = field.descriptor();
         B builder = getMessageBuilder();
-        boolean valueIsSet = !builder.hasField(descriptor);
+        boolean valueIsSet = builder.hasField(descriptor);
         if (valueIsSet) {
             Object currentValue = builder.getField(descriptor);
             boolean anotherValueSet = !currentValue.equals(newValue);
