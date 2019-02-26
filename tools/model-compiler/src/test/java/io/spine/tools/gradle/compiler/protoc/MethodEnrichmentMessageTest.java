@@ -33,25 +33,25 @@ final class MethodEnrichmentMessageTest {
     @DisplayName("set MethodFactory for enrichment")
     @Test
     void setMethodFactoryForEnrichment() {
-        String methodFactory = "io.spine.tools.protoc.TestMethodFactory";
+        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
         MethodEnrichmentMessage message = new MethodEnrichmentMessage();
-        message.withMethodFactory(methodFactory);
+        message.withMethodFactory(factoryName);
 
-        EnrichmentMethod enrichmentInterface = message.toProto();
+        EnrichmentMethod enrichmentMethod = message.toProto();
 
-        assertEquals(methodFactory, enrichmentInterface.getFactoryName());
+        assertEquals(factoryName, enrichmentMethod.getFactoryName());
     }
 
-    @DisplayName("ignore enrichment interface")
+    @DisplayName("ignore enrichment MethodFactory")
     @Test
-    void ignoreEnrichmentInterface() {
-        String interfaceName = "io.spine.tools.protoc.TestInterface";
+    void ignoreEnrichmentMethodFactory() {
+        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
         MethodEnrichmentMessage message = new MethodEnrichmentMessage();
-        message.withMethodFactory(interfaceName);
+        message.withMethodFactory(factoryName);
         message.ignore();
 
-        EnrichmentMethod enrichmentInterface = message.toProto();
+        EnrichmentMethod enrichmentMethod = message.toProto();
 
-        assertThat(enrichmentInterface.getFactoryName()).isEmpty();
+        assertThat(enrichmentMethod.getFactoryName()).isEmpty();
     }
 }
