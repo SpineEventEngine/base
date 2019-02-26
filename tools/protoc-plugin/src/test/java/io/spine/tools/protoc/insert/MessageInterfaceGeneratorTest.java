@@ -37,7 +37,6 @@ import io.spine.code.java.SourceFile;
 import io.spine.tools.gradle.compiler.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +58,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageInterfaceGenerator should")
-@Disabled
 class MessageInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.insert.";
