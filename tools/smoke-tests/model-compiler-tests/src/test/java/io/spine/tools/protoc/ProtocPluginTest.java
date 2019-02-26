@@ -201,16 +201,39 @@ class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("generate a custom method using io.spine.tools.protoc.TestMessageFactory")
+    @DisplayName("generate a custom method for an .endsWith() pattern")
     void generateCustomPatternBasedMethod() {
-        MessageType expectedType = new MessageType(WithGeneratedMethod.getDescriptor());
-        assertEquals(expectedType, WithGeneratedMethod.ownType());
+        MessageType expectedType =
+                new MessageType(MessageEnchantedWithPostfixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnchantedWithPostfixGenerations.ownType());
+    }
+
+    @Test
+    @DisplayName("mark a message with interface using .endsWith() pattern")
+    void markMessageWithInterfaceUsingEndsWithPattern() {
+        assertThat(MessageEnchantedWithPostfixGenerations.getDefaultInstance())
+                .isInstanceOf(PostfixedMessage.class);
     }
 
     @Test
     @DisplayName("generate a custom UUID message method using io.spine.tools.protoc.UuidMethodFactory")
     void generateCustomUuidMethod() {
         assertNotEquals(TypicalIdentifier.random(), TypicalIdentifier.random());
+    }
+
+    @Test
+    @DisplayName("mark a message with interface using .startsWith() pattern")
+    void markMessageWithInterfaceUsingStartsWithPattern() {
+        assertThat(MessageEnchantedWithPrefixGenerations.getDefaultInstance())
+                .isInstanceOf(PrefixedMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method for a .startsWith() pattern")
+    void generateCustomPrefixBasedMethod() {
+        MessageType expectedType =
+                new MessageType(MessageEnchantedWithPrefixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnchantedWithPrefixGenerations.ownType());
     }
 
     @CanIgnoreReturnValue

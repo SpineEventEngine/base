@@ -24,16 +24,21 @@ dependencies {
 }
 
 modelCompiler {
-    
+
     generateInterfaces {
         filePattern().endsWith("documents.proto").markWith("io.spine.tools.protoc.DocumentMessage")
         filePattern().endsWith("events.proto").ignore()
+        filePattern().startsWith("prefix_generation").markWith("io.spine.tools.protoc.PrefixedMessage")
+        filePattern().endsWith("postfix_generation_test.proto")
+                .markWith("io.spine.tools.protoc.PostfixedMessage")
         uuidMessage().ignore()
         enrichmentMessage().markWith("io.spine.tools.protoc.TestEnrichment")
     }
 
     generateMethods {
-        filePattern().endsWith("generation_test.proto")
+        filePattern().endsWith("postfix_generation_test.proto")
+                .withMethodFactory("io.spine.tools.protoc.TestMethodFactory")
+        filePattern().startsWith("prefix_generation")
                 .withMethodFactory("io.spine.tools.protoc.TestMethodFactory")
         uuidMessage().withMethodFactory("io.spine.tools.protoc.UuidMethodFactory")
         enrichmentMessage().ignore()
