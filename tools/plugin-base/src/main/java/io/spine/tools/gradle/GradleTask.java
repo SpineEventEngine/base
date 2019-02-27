@@ -285,7 +285,7 @@ public final class GradleTask {
             }
             if (!outputs.isEmpty()) {
                 task.getOutputs()
-                    .file(outputs)
+                    .files(outputs)
                     .optional();
             }
         }
