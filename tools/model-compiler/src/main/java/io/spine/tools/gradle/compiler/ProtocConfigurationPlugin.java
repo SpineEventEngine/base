@@ -289,14 +289,15 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     @SuppressWarnings("ResultOfMethodCallIgnored") // Classpath.Builder usage in `forEach`
     private static MethodFactoryConfiguration prepareGeneratorConfiguration(Project project) {
         Classpath.Builder classpath = Classpath.newBuilder();
-        project.getTasks()
-               .withType(JavaCompile.class)
-               .stream()
-               .map(JavaCompile::getClasspath)
-               .map(FileCollection::getFiles)
-               .flatMap(Set::stream)
-               .map(File::getAbsolutePath)
-               .forEach(classpath::addJar);
+        Collection<JavaCompile> javaCompileViews = project.getTasks()
+                                                          .withType(JavaCompile.class);
+        ImmutableList.copyOf(javaCompileViews)
+                     .stream()
+                     .map(JavaCompile::getClasspath)
+                     .map(FileCollection::getFiles)
+                     .flatMap(Set::stream)
+                     .map(File::getAbsolutePath)
+                     .forEach(classpath::addJar);
         return MethodFactoryConfiguration
                 .newBuilder()
                 .setClasspath(classpath)
