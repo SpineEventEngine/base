@@ -69,7 +69,6 @@ sourceSets {
         resources.srcDirs += "$buildDir/descriptors/test"
         proto.srcDirs = ["$projectDir/src/test/proto"]
     }
-
 }
 
 jar {

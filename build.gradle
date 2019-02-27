@@ -35,7 +35,6 @@ buildscript { final scriptHandler ->
 }
 
 apply from: 'version.gradle'
-apply from: deps.scripts.runBuild
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
@@ -240,8 +239,9 @@ idea {
 
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
+apply from: deps.scripts.runBuild
 
-task smokeTests {
+task smokeTests  {
     doLast {
         runBuild("$rootDir/tools/smoke-tests")
     }
