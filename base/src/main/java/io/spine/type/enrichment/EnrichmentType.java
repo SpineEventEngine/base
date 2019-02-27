@@ -197,6 +197,11 @@ public final class EnrichmentType extends MessageType {
         return result;
     }
 
+    /**
+     * Verifies that references in the enrichment type are correctly defined.
+     *
+     * @throws IllegalStateException if type of field references are not correct
+     */
     public void validate() {
         Inspector inspector = new Inspector(this);
         inspector.check();
