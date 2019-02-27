@@ -23,12 +23,12 @@ package io.spine.tools.gradle.compiler.protoc;
 import com.google.protobuf.Message;
 
 /**
- * Selects messages matching supplied pattern.
+ * Selects messages by a pattern.
  */
 public interface FilePattern<T extends Message> extends Selector<T> {
 
     /**
-     * Returns a pattern regexp associated with the current file pattern.
+     * Returns current file pattern.
      */
     String getPattern();
 }
