@@ -31,11 +31,12 @@ import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.EnumType;
 import io.spine.type.KnownTypes;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +54,7 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
-    /** If known the message which declares the field. */
-    private final @MonotonicNonNull MessageType message;
-
+    private final MessageType declaringMessage;
     private final FieldDescriptor field;
 
     /**
@@ -66,7 +65,7 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDeclaration(FieldDescriptor field) {
         this.field = checkNotNull(field);
-        this.message = null;
+        this.declaringMessage = new MessageType(field.getContainingType());
     }
 
     /**
@@ -74,7 +73,7 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDeclaration(FieldDescriptor field, MessageType message) {
         this.field = checkNotNull(field);
-        this.message = message;
+        this.declaringMessage = message;
     }
 
     /**
@@ -89,6 +88,13 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDescriptor descriptor() {
         return field;
+    }
+
+    /**
+     * Obtains the declaring message type if known.
+     */
+    public MessageType declaringType() {
+        return declaringMessage;
     }
 
     /**
@@ -285,7 +291,7 @@ public final class FieldDeclaration implements Logging {
      */
     public Optional<String> leadingComments() {
         LocationPath fieldPath = fieldPath();
-        return message.leadingComments(fieldPath);
+        return declaringMessage.leadingComments(fieldPath);
     }
 
     /**
@@ -297,7 +303,7 @@ public final class FieldDeclaration implements Logging {
      */
     private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
-        locationPath.addAll(message.path());
+        locationPath.addAll(declaringMessage.path());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
         int fieldIndex = fieldIndex();
         locationPath.add(fieldIndex);
@@ -306,9 +312,9 @@ public final class FieldDeclaration implements Logging {
 
     private int fieldIndex() {
         FieldDescriptorProto fproto = this.field.toProto();
-        return message.descriptor()
-                      .toProto()
-                      .getFieldList()
-                      .indexOf(fproto);
+        return declaringMessage.descriptor()
+                               .toProto()
+                               .getFieldList()
+                               .indexOf(fproto);
     }
 }

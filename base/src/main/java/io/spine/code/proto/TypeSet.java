@@ -30,6 +30,10 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.annotation.Internal;
+import io.spine.type.EnumType;
+import io.spine.type.MessageType;
+import io.spine.type.ServiceType;
+import io.spine.type.Type;
 import io.spine.type.TypeName;
 
 import java.util.Map;

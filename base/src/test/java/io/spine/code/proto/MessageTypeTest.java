@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.testing.EqualsTester;
 import com.google.common.truth.IterableSubject;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -36,6 +37,7 @@ import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -217,5 +219,18 @@ class MessageTypeTest {
             assertPath.contains(Uri.getDescriptor()
                                    .getIndex());
         }
+    }
+
+    private static MessageType type(Descriptor descriptor) {
+        return new MessageType(descriptor);
+    }
+
+    @Test
+    @DisplayName("support equality and hashing")
+    void equalityAndHasing() {
+        new EqualsTester()
+                .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
+                .addEqualityGroup(type(Timestamp.getDescriptor()))
+                .testEquals();
     }
 }

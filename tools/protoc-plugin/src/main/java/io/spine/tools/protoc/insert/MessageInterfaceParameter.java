@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.insert;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 /**
  * The generic parameter of the {@link MessageInterface}.

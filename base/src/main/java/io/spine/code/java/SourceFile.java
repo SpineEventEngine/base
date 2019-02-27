@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractSourceFile;
-import io.spine.code.proto.Type;
+import io.spine.type.Type;
 
 import java.nio.file.Path;
 import java.util.function.Function;

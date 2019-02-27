@@ -25,8 +25,6 @@ import com.sun.javadoc.ProgramElementDoc;
 /**
  * Serves as a decision maker on whether to exclude the
  * {@linkplain ProgramElementDoc} from the generated Javadoc.
- *
- * @author Dmytro Grankin
  */
 interface ExcludePrinciple {
 

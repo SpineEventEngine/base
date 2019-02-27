@@ -29,8 +29,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.type.Type;
 
 import java.util.Collection;
 import java.util.List;
