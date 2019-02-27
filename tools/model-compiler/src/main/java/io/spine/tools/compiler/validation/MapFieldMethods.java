@@ -148,7 +148,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                 .addParameter(keyTypeName, KEY)
                 .addParameter(valueTypeName, VALUE)
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateSetOnce())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
                 .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
@@ -175,6 +175,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                 .addStatement(ConvertStatement.of(VALUE, valueTypeName)
                                               .value())
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
                 .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
@@ -195,6 +196,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(MAP_PARAM_NAME, javaFieldName))
                 .addStatement(putAllStatement)
                 .addStatement(returnThis())
@@ -212,6 +214,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
                 .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(createGetConvertedMapValue(),
                               Map.class, keyTypeName, valueTypeName,
                               keyTypeName, valueTypeName)
@@ -228,6 +231,8 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                                       getMessageBuilder(), methodName, KEY);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(keyTypeName, KEY)
+                .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(removeFromMap)
                 .addStatement(returnThis())
                 .build();
@@ -238,6 +243,8 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = clearer().format(javaFieldName);
         String clearMap = format("%s.%s()", getMessageBuilder(), methodName);
         MethodSpec result = newBuilderSetter(methodName)
+                .addStatement(descriptorDeclaration())
+                .addStatement(ensureNotSetOnce())
                 .addStatement(clearMap)
                 .addStatement(returnThis())
                 .build();

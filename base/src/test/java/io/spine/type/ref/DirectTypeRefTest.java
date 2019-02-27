@@ -154,7 +154,7 @@ class DirectTypeRefTest {
             DirectTypeRef relocated = ref.withPackage(newPackage);
 
             Truth8.assertThat(relocated.packageName())
-                    .hasValue(newPackage);
+                  .hasValue(newPackage);
             assertThat(relocated.nestedTypeName())
                  .isEqualTo(typeName);
             assertThat(relocated.simpleTypeName())
