@@ -30,8 +30,8 @@ import io.spine.base.ThrowableMessage;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.RejectionType;
 import io.spine.logging.Logging;
+import io.spine.type.RejectionType;
 
 import java.io.File;
 import java.io.IOException;

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.type.RejectionType;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public final class RejectionsFile extends SourceFile {
     /**
      * Obtains rejection messages declared in the file.
      */
-    public List<RejectionType> getRejectionDeclarations() {
+    public List<RejectionType> rejectionDeclarations() {
         ImmutableList.Builder<RejectionType> result = ImmutableList.builder();
         FileDescriptor file = getDescriptor();
         for (Descriptor type : file.getMessageTypes()) {

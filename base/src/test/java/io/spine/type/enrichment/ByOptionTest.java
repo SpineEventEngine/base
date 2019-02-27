@@ -18,18 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.type.enrichment;
 
-final def SPINE_VERSION = '1.0.0-pre6'
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import static com.google.common.truth.Truth.assertThat;
 
-    versionToPublish = SPINE_VERSION
+@DisplayName("ByOption should")
+class ByOptionTest extends UtilityClassTest<ByOption> {
+
+    ByOptionTest() {
+        super(ByOption.class);
+    }
+
+    @Test
+    @DisplayName("remove space characters around field references")
+    void parseRaw() {
+        assertThat(ByOption.parse("Uno | Dos| Tres |  Cuatro   |"))
+                .containsExactly("Uno", "Dos", "Tres", "Cuatro");
+    }
 }

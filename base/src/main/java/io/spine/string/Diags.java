@@ -18,18 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.string;
+
+import com.google.common.base.Joiner;
+import io.spine.annotation.Internal;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Utilities for debug and error diagnostics.
  */
+@Internal
+public final class Diags {
 
-final def SPINE_VERSION = '1.0.0-pre6'
+    private static final char BACKTICK = '`';
+    private static final Joiner COMMA_JOINER = Joiner.on(", ");
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    /** Prevents instantiation of this utility class. */
+    private Diags() {
+    }
 
-    versionToPublish = SPINE_VERSION
+    /**
+     * Wraps the string representation of the passed object into backticks.
+     */
+    public static String backtick(Object object) {
+        return BACKTICK + object.toString() + BACKTICK;
+    }
+
+    /**
+     * Lists the passed items separating with comma followed by a space character.
+     */
+    public static String join(Iterable<?> items) {
+        return COMMA_JOINER.join(items);
+    }
+
+    /**
+     * Lists the passed elements separating with comma followed by a space character.
+     */
+    @SafeVarargs
+    public static <E> String join(E... elements) {
+        return COMMA_JOINER.join(elements);
+    }
 }
