@@ -133,9 +133,9 @@ public abstract class TypeScanner<G extends Message> {
                     String fullFilePath = protoFileName.value();
                     return fullFilePath.matches(pattern.getRegex());
                 case VALUE_NOT_SET:
+                default:
                     return false;
             }
-            return false;
         }
     }
 
