@@ -334,39 +334,33 @@ public class Extension extends GradleExtension {
         return result;
     }
 
-    @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateAnnotations` with a closure.
+    @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
     public void generateAnnotations(Closure closure) {
         ConfigureUtil.configure(closure, generateAnnotations);
     }
 
-    @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateAnnotations` with a closure.
+    @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
     public void generateAnnotations(Action<? super CodeGenAnnotations> action) {
         action.execute(generateAnnotations);
     }
 
-    @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateInterfaces` with a closure.
+    @SuppressWarnings("unused") // Configures `generateInterfaces` closure.
     public void generateInterfaces(Closure closure) {
         ConfigureUtil.configure(closure, generateInterfaces);
     }
 
-    @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateInterfaces` with a closure.
+    @SuppressWarnings("unused") // Configures `generateInterfaces` closure.
     public void generateInterfaces(Action<? super GeneratedInterfaces> action) {
         action.execute(generateInterfaces);
     }
 
-    @SuppressWarnings("unused")
-        // Used by Gradle to configure `generateMethods` with a closure.
-    public void generateMethods(Closure closure){
+    @SuppressWarnings("unused") // Configures `generateMethods` closure.
+    public void generateMethods(Closure closure) {
         ConfigureUtil.configure(closure, generateMethods);
     }
 
-    @SuppressWarnings("unused")
-    // Used by Gradle to configure `generateMethods` with a closure.
-    public void generateMethods(Action<? super GeneratedMethods> action){
+    @SuppressWarnings("unused") // Configures `generateMethods` closure.
+    public void generateMethods(Action<? super GeneratedMethods> action) {
         action.execute(generateMethods);
     }
 
@@ -380,7 +374,7 @@ public class Extension extends GradleExtension {
         return interfaces;
     }
 
-    public static GeneratedMethods getGeneratedMethods(Project project){
+    public static GeneratedMethods getGeneratedMethods(Project project) {
         GeneratedMethods methods = extension(project).generateMethods;
         return methods;
     }
