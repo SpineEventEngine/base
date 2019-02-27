@@ -35,6 +35,7 @@ buildscript { final scriptHandler ->
 }
 
 apply from: 'version.gradle'
+apply from: deps.scripts.runBuild
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
@@ -215,7 +216,7 @@ subprojects {
     task cleanGenerated(type: Delete) {
         delete = "$projectDir/generated"
     }
-
+    
     clean.dependsOn cleanGenerated
 
     apply from: deps.scripts.pmd
@@ -239,3 +240,13 @@ idea {
 
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
+
+task smokeTests {
+    doLast {
+        runBuild("$rootDir/tools/smoke-tests")
+    }
+}
+
+task buildAll {
+    dependsOn build, smokeTests
+}

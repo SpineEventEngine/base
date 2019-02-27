@@ -30,6 +30,7 @@ apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 
 apply from: deps.scripts.testArtifacts
+apply from: deps.scripts.runBuild
 
 dependencies {
     // Re-generate standard Proto types, so they are included in `known_types.desc`.
@@ -77,37 +78,5 @@ jar {
 }
 
 build.doLast {
-    final boolean shouldClean = gradle.getTaskGraph().hasTask('clean')
-    final def directory = "$rootDir/base-validating-builders"
-    final def command = []
-    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-    final def script = runsOnWindows ? "gradlew.bat" : "gradlew"
-    command.add("$directory/../$script".toString())
-    if (shouldClean) {
-        command.add('clean')
-    }
-    command.add('build')
-    command.add('--console=plain')
-    command.add('--debug')
-    command.add('--stacktrace')
-
-    // Ensure build error output log.
-    // Since we're executing this task in another process, we redirect error output to
-    // the file under the `build` directory.
-    final File buildDir = new File(directory, "build")
-    if (!buildDir.exists()) {
-        buildDir.mkdir()
-    }
-    final File errorOut = new File(buildDir, 'error-out.txt')
-    final File debugOut = new File(buildDir, 'debug-out.txt')
-
-    final def process = new ProcessBuilder()
-            .command(command)
-            .directory(file(directory))
-            .redirectError(errorOut)
-            .redirectOutput(debugOut)
-            .start()
-    if (process.waitFor() != 0) {
-        throw new GradleException("Unable to build validating builders. See $errorOut for details.")
-    }
+    runBuild("$rootDir/base-validating-builders")
 }
