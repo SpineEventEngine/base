@@ -239,7 +239,7 @@ class ProtocPluginTest {
     @Test
     @DisplayName("mark a message with interface using .regex() pattern")
     void markMessageWithInterfaceUsingRegexPattern() {
-        assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
+        assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
                 .isInstanceOf(RegexedMessage.class);
     }
 
@@ -247,8 +247,8 @@ class ProtocPluginTest {
     @DisplayName("generate a custom method for a .regex() pattern")
     void generateCustomRegexBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+                new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
     }
 
     @CanIgnoreReturnValue
