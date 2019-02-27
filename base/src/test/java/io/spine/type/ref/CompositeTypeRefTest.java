@@ -62,7 +62,7 @@ class CompositeTypeRefTest {
 
         void assertRejects(String value) {
             assertThrows(IllegalArgumentException.class,
-                                    () -> CompositeTypeRef.doParse(value));
+                         () -> CompositeTypeRef.doParse(value));
         }
     }
 
