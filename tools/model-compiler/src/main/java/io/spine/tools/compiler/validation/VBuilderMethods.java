@@ -108,7 +108,7 @@ final class VBuilderMethods {
                 .addAnnotation(CanIgnoreReturnValue.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
-                .addCode(checkAllFields())
+                .addCode(checkSetOnceOnAllFields())
                 .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
                 .addStatement(returnThis())
                 .returns(className)
@@ -125,14 +125,14 @@ final class VBuilderMethods {
      *          {@code
      *              Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
      *              for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
-     *                      validateSetOnce(entry.getKey());
+     *                      validateSetOnce(entry.getKey(), entry.getValue());
      *              }
      *          }
      *          </pre>
      *
      * @return a statement that checks whether all fields are present during a {@code mergeFrom()}
      */
-    private static CodeBlock checkAllFields() {
+    private static CodeBlock checkSetOnceOnAllFields() {
         String fieldsMap = "fieldsMap";
         String loopLocalVariable = "entry";
         CodeBlock codeBlock = CodeBlock
@@ -151,7 +151,8 @@ final class VBuilderMethods {
                         ClassName.get(Object.class),
                         loopLocalVariable,
                         fieldsMap)
-                .addStatement("validateSetOnce($N.getKey())", loopLocalVariable)
+                .addStatement("validateSetOnce($N.getKey(), $N.getValue())",
+                              loopLocalVariable, loopLocalVariable)
                 .endControlFlow()
                 .build();
         return codeBlock;

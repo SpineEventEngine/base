@@ -39,6 +39,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.option.IsOption;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -53,6 +54,7 @@ import static io.spine.option.OptionsProto.enrichmentFor;
 /**
  * A message type as declared in a proto file.
  */
+@SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
@@ -218,7 +220,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public ImmutableList<MessageType> nestedTypesThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        Iterable<MessageType> nestedDeclarations = getImmediateNested();
+        Iterable<MessageType> nestedDeclarations = immediateNested();
         Deque<MessageType> deque = newLinkedList(nestedDeclarations);
 
         while (!deque.isEmpty()) {
@@ -232,7 +234,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                 result.add(nestedDeclaration);
             }
 
-            deque.addAll(nestedDeclaration.getImmediateNested());
+            deque.addAll(nestedDeclaration.immediateNested());
         }
         return result.build();
     }
@@ -241,7 +243,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Obtains immediate declarations of nested types of this declaration, or
      * empty list if no nested types are declared.
      */
-    private ImmutableList<MessageType> getImmediateNested() {
+    private ImmutableList<MessageType> immediateNested() {
         ImmutableList<MessageType> result =
                 descriptor().getNestedTypes()
                             .stream()
@@ -319,5 +321,16 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
+    }
+
+    /**
+     * Obtains a lexicographical comparator of full type names.
+     */
+    public static Comparator<MessageType> fullNameComparator() {
+        return (o1, o2) -> {
+            String name1 = o1.descriptor().getFullName();
+            String name2 = o2.descriptor().getFullName();
+            return name1.compareTo(name2);
+        };
     }
 }

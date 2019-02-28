@@ -22,7 +22,7 @@ package io.spine.gradle.compiler.lookup.enrichments;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.type.MessageType;
-import io.spine.code.proto.enrichment.EnrichmentType;
+import io.spine.type.enrichment.EnrichmentType;
 import io.spine.type.KnownTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

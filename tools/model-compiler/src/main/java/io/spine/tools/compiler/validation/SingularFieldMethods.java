@@ -22,6 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -33,6 +34,7 @@ import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
+import io.spine.value.StringTypeValue;
 
 import java.util.Collection;
 
@@ -110,7 +112,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                         .addParameter(parameter)
                         .addException(ValidationException.class)
                         .addStatement(descriptorDeclaration)
-                        .addStatement(validateSetOnce())
+                        .addStatement(validateSetOnce(javaFieldName.value()))
                         .addStatement(validateStatement)
                         .addStatement(setStatement)
                         .addStatement(returnThis())
@@ -139,7 +141,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addStatement(descriptorDeclaration())
-                        .addStatement(validateSetOnce())
+                        .addStatement(validateSetOnce(fieldDefaultValueExpression()))
                         .addStatement(methodBody)
                         .addStatement(returnThis())
                         .build();
@@ -169,6 +171,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addException(ConversionException.class)
                           .addStatement(descriptorDeclaration())
                           .addStatement(convertStatement.value())
+                          .addStatement(validateSetOnce(convertedVariableName))
                           .addStatement(validateStatement(convertedVariableName, javaFieldName))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
@@ -185,6 +188,28 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ParameterSpec result = ParameterSpec.builder(methodParamType, paramName)
                                             .build();
         return result;
+    }
+
+    /**
+     * Constructs an expression which obtains the default value of the field.
+     *
+     * <p>Example: {@code org.example.CompiledMessage.getDefaultInstance().getMyField()}.
+     */
+    private String fieldDefaultValueExpression() {
+        return format("%s.get%s()", defaultInstanceExpression(), javaFieldName.capitalize());
+    }
+
+    /**
+     * Constructs an expression which obtains the default value of the built type.
+     *
+     * <p>Example: {@code org.example.CompiledMessage.getDefaultInstance()}.
+     */
+    private String defaultInstanceExpression() {
+        Descriptor containingType = field.getContainingType();
+        StringTypeValue messageClassName =
+                io.spine.code.java.ClassName.from(containingType)
+                                            .toDotted();
+        return messageClassName.value() + ".getDefaultInstance()";
     }
 
     /**
