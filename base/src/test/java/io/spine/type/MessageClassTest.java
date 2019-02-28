@@ -23,10 +23,12 @@ package io.spine.type;
 import com.google.common.testing.EqualsTester;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import io.spine.test.types.MtDummy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("MessageClass should")
 class MessageClassTest {
@@ -50,13 +52,26 @@ class MessageClassTest {
     }
 
     /**
+     * Cursory test obtaining interfaces extending {@code Message}.
+     *
+     * @implNote Since we don't have code generation capabilities that would generate interfaces
+     * extending {@code Message} in this module, this test is limited, and simply makes use
+     * of the method.
+     */
+    @Test
+    @DisplayName("obtain super interfaces of a class")
+    void interfaces() {
+        assertThat(MessageClass.interfacesOf(MtDummy.class))
+                .isEmpty();
+    }
+
+    /**
      * Test environment class.
      */
     private static class TestMessageClass extends MessageClass<Message> {
 
         private static final long serialVersionUID = 0L;
 
-        @SuppressWarnings("unchecked") // OK for tests.
         private TestMessageClass(Class<? extends Message> value) {
             super(value);
         }

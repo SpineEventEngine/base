@@ -128,7 +128,6 @@ class KnownTypesTest {
         Set<TypeUrl> packageTypes = knownTypes.allFromPackage(packageName);
 
         IterableSubject assertTypes = assertThat(packageTypes);
-        assertTypes.hasSize(3);
         assertTypes.containsAllIn(ImmutableSet.of(taskId, taskName, task));
     }
 
