@@ -23,7 +23,6 @@ package io.spine.tools.protoc.messageinterface;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.GeneratedInterfacesConfig;
 import io.spine.tools.protoc.TypeScanner;
@@ -47,16 +46,6 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
     MessageInterfaceScanner(GeneratedInterfacesConfig config) {
         super();
         this.config = config;
-    }
-
-    @Override
-    protected ImmutableList<CompilerOutput> enrichmentMessage(MessageType type) {
-        EnrichmentInterface enrichmentInterface = config.getEnrichmentInterface();
-        if (isDefault(enrichmentInterface)) {
-            return ImmutableList.of();
-        }
-        CompilerOutput result = enrichmentInterface(type, enrichmentInterface);
-        return ImmutableList.of(result);
     }
 
     @Override
@@ -104,16 +93,9 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
         return insertionPoint;
     }
 
-    private static CompilerOutput
-    enrichmentInterface(MessageType type, EnrichmentInterface enrichmentInterface) {
-        MessageInterface messageInterface = new PredefinedInterface(
-                ClassName.of(enrichmentInterface.getInterfaceName()),
-                MessageInterfaceParameters.empty()
-        );
-        return implementInterface(type, messageInterface);
-    }
+    private static class GenerateInterfaces
+            implements Function<GeneratedInterface, ImmutableList<CompilerOutput>> {
 
-    private static class GenerateInterfaces implements Function<GeneratedInterface, ImmutableList<CompilerOutput>> {
         private final MessageType type;
 
         private GenerateInterfaces(MessageType type) {

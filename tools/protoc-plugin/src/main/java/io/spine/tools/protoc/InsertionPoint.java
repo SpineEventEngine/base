@@ -29,7 +29,8 @@ import static java.lang.String.format;
  * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#plugins">
  * insertion points</a> available for the Java Protobuf code generation plugins.
  *
- * @see <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">plugin.pb.h</a>
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
+ *         plugin.pb.h</a>
  */
 public enum InsertionPoint {
 

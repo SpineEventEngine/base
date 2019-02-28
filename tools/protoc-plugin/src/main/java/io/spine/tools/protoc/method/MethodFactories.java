@@ -28,7 +28,6 @@ import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
 import io.spine.type.MessageType;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +45,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * An utility class for instantiating {@link MethodFactory} for a particular
  * {@link GeneratedMethod} specification.
  */
-final class MethodFactories {
+final class MethodFactories implements Logging {
 
     private final ClassLoader externalClassLoader;
 
@@ -79,20 +78,19 @@ final class MethodFactories {
         if (!factoryClass.isPresent()) {
             return NoOpMethodFactory.INSTANCE;
         }
-        Logger logger = Logging.get(MethodFactories.class);
         try {
             MethodFactory factory = factoryClass.get()
                                                 .getConstructor()
                                                 .newInstance();
             return factory;
         } catch (InstantiationException e) {
-            logger.warn("Unable to instantiate MethodFactory {}.", fqn, e);
+            _warn("Unable to instantiate MethodFactory {}.", fqn, e);
         } catch (IllegalAccessException e) {
-            logger.warn("Unable to access MethodFactory {}.", fqn, e);
+            _warn("Unable to access MethodFactory {}.", fqn, e);
         } catch (NoSuchMethodException e) {
-            logger.warn("Unable to get constructor for MethodFactory {}.", fqn, e);
+            _warn("Unable to get constructor for MethodFactory {}.", fqn, e);
         } catch (InvocationTargetException e) {
-            logger.warn("Unable to invoke public constructor for MethodFactory {}.", fqn, e);
+            _warn("Unable to invoke public constructor for MethodFactory {}.", fqn, e);
         }
         return NoOpMethodFactory.INSTANCE;
     }
@@ -107,8 +105,7 @@ final class MethodFactories {
         if (MethodFactory.class.isAssignableFrom(factoryClass)) {
             return Optional.of((Class<MethodFactory>) factoryClass);
         }
-        Logging.get(MethodFactories.class)
-               .warn("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
+        _warn("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
         return Optional.empty();
     }
 
@@ -117,8 +114,7 @@ final class MethodFactories {
             Class<?> factory = externalClassLoader.loadClass(fqn);
             return Optional.ofNullable(factory);
         } catch (ClassNotFoundException e) {
-            Logging.get(MethodFactories.class)
-                   .warn("Unable to resolve MethodFactory {}.", fqn, e);
+            _warn("Unable to resolve MethodFactory {}.", fqn, e);
         }
         return Optional.empty();
     }

@@ -44,11 +44,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  */
 final class MessageInterfaceSpec {
 
-    private static final AnnotationSpec BY_MODEL_COMPILER =
-            AnnotationSpec.builder(Generated.class)
-                          .addMember(GeneratedBySpine.instance().getFieldName(),
-                                     CodeBlock.of(GeneratedBySpine.instance().getCodeBlock()))
-                          .build();
+    private static final AnnotationSpec BY_MODEL_COMPILER = byModelCompilerSpec();
 
     private final String packageName;
     private final String name;
@@ -132,5 +128,13 @@ final class MessageInterfaceSpec {
         MessageInterfaceSpec other = (MessageInterfaceSpec) obj;
         return Objects.equals(this.packageName, other.packageName)
                 && Objects.equals(this.name, other.name);
+    }
+
+    private static AnnotationSpec byModelCompilerSpec() {
+        GeneratedBySpine bySpine = GeneratedBySpine.instance();
+        return AnnotationSpec
+                .builder(Generated.class)
+                .addMember(bySpine.getFieldName(), CodeBlock.of(bySpine.getCodeBlock()))
+                .build();
     }
 }

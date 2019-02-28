@@ -13,7 +13,7 @@ option (internal_all) = true;
 
 // Interface to mark UUID messages.
 //
-// An empty value signifies that the messages should not be marked.
+// An interface name signifies that the additional methods should not be generated.
 //
 message UuidInterface {
 
@@ -21,7 +21,9 @@ message UuidInterface {
     string interface_name = 1;
 }
 
-// Interface to mark messages defined in a file with a certain name postfix.
+// Interface to mark messages defined in a file with a certain pattern.
+//
+// An interface name signifies that the additional methods should not be generated.
 //
 message GeneratedInterface {
 
@@ -30,26 +32,6 @@ message GeneratedInterface {
 
     // A file pattern that defines which message types should implement the interface.
     FilePattern pattern = 2;
-}
-
-// Interface to mark Enrichment messages.
-//
-// An empty value signifies that the messages should not be marked.
-//
-message EnrichmentInterface {
-
-    // A fully-qualified name of the message interface class.
-    string interface_name = 1;
-}
-
-// Method factory that creates additional methods for Enrichment messages.
-//
-// An empty value signifies that the additional methods should not be generated.
-//
-message EnrichmentMethod {
-
-    // A fully-qualified name of the message factory class.
-    string factory_name = 1;
 }
 
 // Method factory that creates additional methods for UUID messages.
@@ -64,7 +46,7 @@ message UuidMethod {
 
 // Method factory that creates additional methods for a certain message(s).
 //
-// An empty value signifies that the additional methods should not be generated.
+// An empty factory name signifies that the additional methods should not be generated.
 //
 message GeneratedMethod {
 
@@ -81,16 +63,16 @@ message FilePattern {
 
     oneof value {
 
-        // An ending that a .proto file name should have.
+        // An ending that a .proto file's full name end with.
         //
-        // If a .proto file matches current ending, to all its messages some code generation
+        // If a .proto file matches the postfix, to all its messages some code generation
         // will be applied.
         //
         string file_postfix = 1;
 
-        // A prefix that a .proto file name should have.
+        // A prefix that a .proto file's full name start with.
         //
-        // If a .proto file matches current prefix, to all its messages some code generation
+        // If a .proto file matches the prefix, to all its messages some code generation
         // will be applied.
         //
         string file_prefix = 2;
@@ -99,6 +81,7 @@ message FilePattern {
         //
         // If a .proto file matches the regex, to all its messages some code generation will
         // be applied.
+        //
         string regex = 3;
     }
 }
@@ -111,7 +94,8 @@ message GeneratedInterfacesConfig {
 
     UuidInterface uuid_interface = 2;
 
-    EnrichmentInterface enrichment_interface = 3;
+    // Reserved for future configurations.
+    reserved 4 to 15;
 }
 
 // A container for the java classpath items.
@@ -126,6 +110,7 @@ message Classpath {
 //
 message MethodFactoryConfiguration {
 
+    // Java classpath of a project for which code generation is performed
     Classpath classpath = 1;
 }
 
@@ -137,10 +122,11 @@ message GeneratedMethodsConfig {
 
     UuidMethod uuid_method = 2;
 
-    EnrichmentMethod enrichment_method = 3;
-
+    // Reserved for future configurations.
     reserved 4 to 14;
 
+    // Method Factory configuration.
+    //
     MethodFactoryConfiguration factory_configuration = 15;
 }
 
@@ -151,7 +137,11 @@ message GeneratedMethodsConfig {
 //
 message SpineProtocConfig {
 
+    // Interfaces configuration.
+    //
     GeneratedInterfacesConfig generated_interfaces = 1;
 
+    // Methods configuration.
+    //
     GeneratedMethodsConfig generated_methods = 2;
 }

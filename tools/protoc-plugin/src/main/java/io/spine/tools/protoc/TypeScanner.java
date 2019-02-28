@@ -52,9 +52,6 @@ public abstract class TypeScanner<G extends Message> {
                      .test(type)) {
             return uuidMessage(type);
         }
-        if (type.isEnrichment()) {
-            return enrichmentMessage(type);
-        }
         ImmutableList<CompilerOutput> result = filePatterns()
                 .stream()
                 .filter(isNotBlank())
@@ -65,8 +62,6 @@ public abstract class TypeScanner<G extends Message> {
                 .collect(toImmutableList());
         return result;
     }
-
-    protected abstract ImmutableList<CompilerOutput> enrichmentMessage(MessageType type);
 
     protected abstract ImmutableList<CompilerOutput> uuidMessage(MessageType type);
 

@@ -22,7 +22,6 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EnrichmentMethod;
 import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
 import io.spine.tools.protoc.TypeScanner;
@@ -47,15 +46,6 @@ final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
         super();
         this.config = config;
         this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
-    }
-
-    @Override
-    protected ImmutableList<CompilerOutput> enrichmentMessage(MessageType type) {
-        EnrichmentMethod enrichmentMethod = config.getEnrichmentMethod();
-        if (isDefault(enrichmentMethod)) {
-            return ImmutableList.of();
-        }
-        return generateMethods(enrichmentMethod.getFactoryName(), type);
     }
 
     @Override
@@ -88,7 +78,8 @@ final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
         return new GenerateMethods(type);
     }
 
-    private class GenerateMethods implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+    private class GenerateMethods
+            implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
 
         private final MessageType type;
 

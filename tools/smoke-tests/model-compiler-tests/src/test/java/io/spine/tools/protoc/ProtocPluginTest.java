@@ -34,7 +34,6 @@ import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
 import io.spine.test.tools.protoc.WeatherForecast;
-import io.spine.tools.protoc.SomeMessage.InnerMessageNotEnrichment;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import io.spine.type.MessageType;
@@ -179,25 +178,6 @@ class ProtocPluginTest {
         assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
         assertThat(WeatherForecast.Temperature.getDefaultInstance())
                 .isNotInstanceOf(DocumentMessage.class);
-    }
-
-    @Test
-    @DisplayName("mark message with (enrichment_for) option with a generated enrichment interface")
-    void markEnrichmentWithGeneratedInterface() {
-        assertThat(UserNicknameEnrichment.class).isAssignableTo(TestEnrichment.class);
-    }
-
-    @Test
-    @DisplayName("not mark message without (enrichment_for) option with a generated enrichment interface")
-    void notMarkEnrichmentWithGeneratedInterface() {
-        assertThat(NotEnrichment.getDefaultInstance()).isNotInstanceOf(TestEnrichment.class);
-    }
-
-    @Test
-    @DisplayName("not mark inner message with (enrichment_for) option with a generated enrichment interface")
-    void notMarkInnerEnrichmentWithGeneratedInterface() {
-        assertThat(InnerMessageNotEnrichment.getDefaultInstance())
-                .isNotInstanceOf(TestEnrichment.class);
     }
 
     @Test

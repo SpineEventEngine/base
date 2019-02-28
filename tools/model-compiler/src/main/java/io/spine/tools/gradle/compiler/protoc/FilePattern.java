@@ -55,6 +55,7 @@ public abstract class FilePattern implements Selector {
                           .toString();
     }
 
+    @SuppressWarnings("EqualsGetClass") // we do want to distinguish different file patterns here
     @Override
     public boolean equals(Object o) {
         if (this == o) {
