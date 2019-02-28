@@ -133,5 +133,4 @@ public abstract class TypeScanner<G extends Message> {
             }
         }
     }
-
 }

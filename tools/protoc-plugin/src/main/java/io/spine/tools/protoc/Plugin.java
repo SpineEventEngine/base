@@ -45,7 +45,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
  */
-public class Plugin {
+public final class Plugin {
 
     /** Prevents instantiation from outside. */
     private Plugin() {

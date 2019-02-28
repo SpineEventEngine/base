@@ -30,22 +30,12 @@ option java_multiple_files = true;
 
 // This file contains message types for the io.spine.tools.protoc.method tests.
 
-message EnrichedMessage {
-    string id = 1;
+message NonEnhancedMessage {
+    string value = 1;
 }
 
-message WithEnrichmentFor {
-    option (enrichment_for) = "EnrichedMessage";
-
-    string value = 1 [(by) = "id"];
-}
-
-message WithSpiType {
-    option (SPI_type) = true;
-}
-
-message ValidatedMessage {
-    string id = 1 [(valid) = true];
+message EnhancedMessage {
+    string value = 1;
 }
 
 message TestUuidValue {

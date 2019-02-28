@@ -24,13 +24,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.tools.gradle.compiler.protoc.FilePatternFactory.INSTANCE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FilePatternFactory should")
 final class FilePatternFactoryTest {
-
-    private final FilePatternFactory factory = new FilePatternFactory();
 
     @DisplayName("create")
     @Nested
@@ -39,19 +38,19 @@ final class FilePatternFactoryTest {
         @DisplayName("prefix pattern")
         @Test
         void prefix() {
-            assertNotNull(factory.startsWith("io/spine/test_"));
+            assertNotNull(INSTANCE.startsWith("io/spine/test_"));
         }
 
         @DisplayName("postfix pattern")
         @Test
         void postfix() {
-            assertNotNull(factory.endsWith("test.proto"));
+            assertNotNull(INSTANCE.endsWith("test.proto"));
         }
 
         @DisplayName("regex pattern")
         @Test
         void regex() {
-            assertNotNull(factory.regex(".*/spine/.*"));
+            assertNotNull(INSTANCE.regex(".*/spine/.*"));
         }
     }
 
@@ -62,19 +61,19 @@ final class FilePatternFactoryTest {
         @DisplayName("prefix pattern")
         @Test
         void prefix() {
-            assertThrows(NullPointerException.class, () -> factory.startsWith(null));
+            assertThrows(NullPointerException.class, () -> INSTANCE.startsWith(null));
         }
 
         @DisplayName("postfix pattern")
         @Test
         void postfix() {
-            assertThrows(NullPointerException.class, () -> factory.endsWith(null));
+            assertThrows(NullPointerException.class, () -> INSTANCE.endsWith(null));
         }
 
         @DisplayName("regex pattern")
         @Test
         void regex() {
-            assertThrows(NullPointerException.class, () -> factory.regex(null));
+            assertThrows(NullPointerException.class, () -> INSTANCE.regex(null));
         }
     }
 }

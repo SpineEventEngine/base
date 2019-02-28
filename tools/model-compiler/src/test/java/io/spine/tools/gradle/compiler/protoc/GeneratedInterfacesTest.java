@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedInterfaces should")
-class GeneratedInterfacesTest {
+final class GeneratedInterfacesTest {
 
     @DisplayName("prepare default GeneratedInterfaceConfig for")
     @Nested

@@ -36,5 +36,4 @@ public final class PostfixPattern extends FilePattern {
     io.spine.tools.protoc.FilePattern toProto() {
         return FilePatterns.filePostfix(getPattern());
     }
-
 }

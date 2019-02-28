@@ -200,5 +200,4 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
                 .setInterfaceName(className.value())
                 .build();
     }
-
 }

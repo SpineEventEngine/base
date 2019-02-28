@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ProtocPlugin should")
-class ProtocPluginTest {
+final class ProtocPluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
             "io.spine.tools.protoc.PICustomerEvent";

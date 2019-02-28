@@ -64,7 +64,7 @@ final class GeneratedMethodScannerTest {
                     .addGeneratedMethod(generatedMethod(" ", "*"))
                     .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
                     .build();
-            MessageType type = new MessageType(WithEnrichmentFor.getDescriptor());
+            MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
@@ -74,7 +74,7 @@ final class GeneratedMethodScannerTest {
             GeneratedMethodsConfig config = configBuilder()
                     .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
                     .build();
-            MessageType type = new MessageType(EnrichedMessage.getDescriptor());
+            MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 

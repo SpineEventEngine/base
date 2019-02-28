@@ -204,5 +204,4 @@ final class PluginTest {
             System.setOut(oldOut);
         }
     }
-
 }

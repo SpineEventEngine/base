@@ -36,5 +36,4 @@ public final class RegexPattern extends FilePattern {
     io.spine.tools.protoc.FilePattern toProto() {
         return FilePatterns.fileRegex(getPattern());
     }
-
 }
