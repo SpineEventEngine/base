@@ -57,7 +57,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     useFactory("io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
+     *     useFactory "io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
      *     }
      * </pre>
      *
@@ -93,7 +93,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
      *
      *     modelCompiler {
      *         generateMethods {
-     *             useFactory("io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
+     *             useFactory "io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
      *         }
      *     }
      *     }
@@ -102,14 +102,13 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
      * <p>Another option for an method generation configuration is to turn it off completely:
      * <pre>
      *     {@code
-     *     ignore(filePattern().endsWith("events.proto"))
+     *     ignore filePattern().endsWith("events.proto")
      *     }
      * </pre>
      *
      * <p>In such case, no additional methods are added to the message classes matching the
      * pattern.
      */
-    @SuppressWarnings("WeakerAccess") // Gradle DSL public API
     public final void useFactory(@FullyQualifiedName String factoryName, FilePattern filePattern) {
         checkNotNull(factoryName);
         checkNotNull(filePattern);
@@ -122,6 +121,13 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
      *
      * <p>This method functions similarly to the {@link #useFactory(String, FilePattern)} except
      * the file in which the message type is defined does not matter.
+     *
+     * <p>Sample usage is:
+     * <pre>
+     *      {@code
+     *      useFactory "io.spine.code.CustomMethodFactory", uuidMessage()
+     *      }
+     * </pre>
      */
     public final void useFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
         checkNotNull(factoryName);

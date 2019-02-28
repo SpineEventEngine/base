@@ -78,10 +78,10 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
     /**
      * Configures an interface generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usages are:
+     * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     mark(filePattern().endsWith("events.proto"), "my.custom.EventMessage")
+     *     mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
      *     }
      * </pre>
      *
@@ -113,7 +113,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
      *
      *     modelCompiler {
      *         generateInterfaces {
-     *             mark(filePattern().endsWith("events.proto"), "my.custom.EventMessage")
+     *             mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
      *         }
      *     }
      *     }
@@ -126,7 +126,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
      * <p>Another option for an interface generation configuration is to turn it off completely:
      * <pre>
      *     {@code
-     *     ignore(filePattern().endsWith("events.proto"))
+     *     ignore filePattern().endsWith("events.proto")
      *     }
      * </pre>
      *
@@ -150,6 +150,13 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
      *     <li>the file in which the message type is defined does not matter;
      *     <li>nested definitions are affected as well as top-level ones.
      * </ul>
+     *
+     * <p>Sample usage is:
+     * <pre>
+     *      {@code
+     *      mark uuidMessage(), "my.custom.Identifier"
+     *      }
+     * </pre>
      */
     public final void mark(UuidMessage uuidMessage, @FullyQualifiedName String interfaceName) {
         checkNotNull(uuidMessage);
