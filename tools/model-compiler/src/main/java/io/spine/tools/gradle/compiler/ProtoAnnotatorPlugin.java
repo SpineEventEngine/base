@@ -190,7 +190,7 @@ public class ProtoAnnotatorPlugin extends IncrementalPlugin {
     }
 
     private void createMainTask(Project project) {
-        Action<Task> task = newAction(project, false);
+        Action<Task> task = new Annotate(false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
@@ -200,7 +200,7 @@ public class ProtoAnnotatorPlugin extends IncrementalPlugin {
     }
 
     private void createTestTask(Project project) {
-        Action<Task> testTask = newAction(project, true);
+        Action<Task> testTask = new Annotate(true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
@@ -211,11 +211,20 @@ public class ProtoAnnotatorPlugin extends IncrementalPlugin {
                 .applyNowTo(project);
     }
 
-    private Action<Task> newAction(Project project, boolean isTestTask) {
-        return task -> {
+    private class Annotate implements Action<Task> {
+
+        private final boolean isTestTask;
+
+        private Annotate(boolean testTask) {
+            isTestTask = testTask;
+        }
+
+        @Override
+        public void execute(Task task) {
+            Project project = task.getProject();
             File descriptorSetFile = isTestTask
-                                       ? getTestDescriptorSet(project)
-                                       : getMainDescriptorSet(project);
+                                     ? getTestDescriptorSet(project)
+                                     : getMainDescriptorSet(project);
             String generatedProtoDir = isTestTask
                                        ? getTestGenProtoDir(project)
                                        : getMainGenProtoDir(project);
@@ -224,37 +233,38 @@ public class ProtoAnnotatorPlugin extends IncrementalPlugin {
                                       : getMainGenGrpcDir(project);
             if (!descriptorSetFile.exists()) {
                 logMissingDescriptorSetFile(descriptorSetFile);
-                return;
+            } else {
+                ModuleAnnotator moduleAnnotator = createAnnotator(project,
+                                                                  descriptorSetFile,
+                                                                  generatedProtoDir,
+                                                                  generatedGrpcDir);
+                moduleAnnotator.annotate();
             }
-            ModuleAnnotator moduleAnnotator = createAnnotator(project,
-                                                              descriptorSetFile,
-                                                              generatedProtoDir,
-                                                              generatedGrpcDir);
-            moduleAnnotator.annotate();
-        };
-    }
+        }
 
-    private static ModuleAnnotator createAnnotator(Project project, File descriptorSetFile,
-                                                   String generatedProtoDir,
-                                                   String generatedGrpcDir) {
-        Path generatedProtoPath = Paths.get(generatedProtoDir);
-        Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-        CodeGenAnnotations annotations = getCodeGenAnnotations(project);
-        ClassName internalClassName = annotations.internalClassName();
-        ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
-        ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-        return ModuleAnnotator
-                .newBuilder()
-                .setAnnotatorFactory(annotatorFactory)
-                .add(translate(spi()).as(annotations.spiClassName()))
-                .add(translate(beta()).as(annotations.betaClassName()))
-                .add(translate(experimental()).as(annotations.experimentalClassName()))
-                .add(translate(internal()).as(internalClassName))
-                .setInternalPatterns(internalClassPatterns)
-                .setInternalMethodNames(internalMethodNames)
-                .setInternalAnnotation(internalClassName)
-                .build();
+        private ModuleAnnotator createAnnotator(Project project, File descriptorSetFile,
+                                                String generatedProtoDir,
+                                                String generatedGrpcDir) {
+            Path generatedProtoPath = Paths.get(generatedProtoDir);
+            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
+            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
+            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+            ClassName internalClassName = annotations.internalClassName();
+            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
+            ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
+            return ModuleAnnotator
+                    .newBuilder()
+                    .setAnnotatorFactory(annotatorFactory)
+                    .add(translate(spi()).as(annotations.spiClassName()))
+                    .add(translate(beta()).as(annotations.betaClassName()))
+                    .add(translate(experimental()).as(annotations.experimentalClassName()))
+                    .add(translate(internal()).as(internalClassName))
+                    .setInternalPatterns(internalClassPatterns)
+                    .setInternalMethodNames(internalMethodNames)
+                    .setInternalAnnotation(internalClassName)
+                    .build();
+        }
     }
 }
+
