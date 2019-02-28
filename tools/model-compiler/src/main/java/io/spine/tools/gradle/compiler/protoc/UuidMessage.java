@@ -25,7 +25,7 @@ package io.spine.tools.gradle.compiler.protoc;
  */
 public final class UuidMessage implements Selector {
 
-    public static final UuidMessage INSTANCE = new UuidMessage();
+    static final UuidMessage INSTANCE = new UuidMessage();
 
     /** Prevents direct instantiation. **/
     private UuidMessage(){

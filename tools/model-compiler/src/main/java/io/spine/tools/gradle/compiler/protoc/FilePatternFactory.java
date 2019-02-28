@@ -29,7 +29,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  **/
 public final class FilePatternFactory {
 
-    FilePatternFactory() {
+    static final FilePatternFactory INSTANCE = new FilePatternFactory();
+
+    /** Prevents direct instantiation. **/
+    private FilePatternFactory() {
     }
 
     /**

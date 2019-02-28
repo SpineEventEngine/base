@@ -40,42 +40,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
-    private final FilePatternFactory filePatternFactory;
     private final Map<FilePattern, ClassName> patterns;
 
     GeneratedConfigurations() {
-        this.filePatternFactory = new FilePatternFactory();
         this.patterns = Maps.newConcurrentMap();
     }
 
     /**
-     * Configures code generation for messages declared in files matching a given pattern.
-     *
-     * <p>Sample usage is:
-     * <pre>
-     *     {@code
-     *     filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     *
-     * @return a configuration object for Proto files matching the pattern
+     * Returns {@link FilePatternFactory}.
      */
     public FilePatternFactory filePattern() {
-        return filePatternFactory;
+        return FilePatternFactory.INSTANCE;
     }
 
     /**
-     * Configures code generation for messages with a single {@code string} field called
-     * {@code uuid}.
-     *
-     * <p>This method functions similarly to the {@link #filePattern()} except for
-     * several differences:
-     * <ul>
-     * <li>the file in which the message type is defined does not matter;
-     * <li>nested definitions are affected as well as top-level ones.
-     * </ul>
-     *
-     * @return a configuration object for Proto messages matching UUID message pattern
+     * Returns {@link UuidMessage} selector.
      */
     public UuidMessage uuidMessage() {
         return UuidMessage.INSTANCE;
