@@ -18,18 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.type.enrichment;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Information on how to obtain a value of an enrichment field.
  */
+@Immutable
+final class FieldSource {
 
-final def SPINE_VERSION = '1.0.0-pre6'
+    private final @Nullable FieldDescriptor descriptor;
+    private final FieldRef reference;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    FieldSource(@Nullable FieldDescriptor descriptor, FieldRef reference) {
+        checkNotNull(reference);
+        this.descriptor = descriptor;
+        this.reference = reference;
+    }
 
-    versionToPublish = SPINE_VERSION
+    boolean viaReference() {
+        return reference.isContext();
+    }
+
+    FieldDescriptor descriptor() {
+        return checkNotNull(descriptor);
+    }
+
+    FieldRef reference() {
+        return reference;
+    }
 }

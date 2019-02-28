@@ -215,7 +215,7 @@ subprojects {
     task cleanGenerated(type: Delete) {
         delete = "$projectDir/generated"
     }
-
+    
     clean.dependsOn cleanGenerated
 
     apply from: deps.scripts.pmd
@@ -239,3 +239,14 @@ idea {
 
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
+apply from: deps.scripts.runBuild
+
+task smokeTests  {
+    doLast {
+        runBuild("$rootDir/tools/smoke-tests")
+    }
+}
+
+task buildAll {
+    dependsOn build, smokeTests
+}

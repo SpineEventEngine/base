@@ -37,6 +37,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("FileName should")
 class FileNameTest {
 
+    /** Concatenation is used for avoiding duplicated string warning. */
+    private static final String REJECTIONS_FILE_SUFFIX = "Rejection" + 's';
+
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void nullCheck() {
@@ -62,9 +65,8 @@ class FileNameTest {
     @Test
     @DisplayName("calculate outer class name")
     void calculateOuterClassName() {
-        String expected = RejectionType.OUTER_CLASS_NAME_SUFFIX;
-        assertEquals(expected, FileName.of("rejections.proto")
-                                           .nameOnlyCamelCase());
+        assertEquals(REJECTIONS_FILE_SUFFIX, FileName.of("rejections.proto")
+                                                     .nameOnlyCamelCase());
         assertEquals("ManyRejections", FileName.of("many_rejections.proto")
                                                .nameOnlyCamelCase());
         assertEquals("ManyMoreRejections", FileName.of("many_more_rejections.proto")
@@ -78,7 +80,7 @@ class FileNameTest {
         @Test
         @DisplayName("one word name")
         void oneWord() {
-            assertConversion(RejectionType.OUTER_CLASS_NAME_SUFFIX, "rejections.proto");
+            assertConversion(REJECTIONS_FILE_SUFFIX, "rejections.proto");
         }
 
         @Test

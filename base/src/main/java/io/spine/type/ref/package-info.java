@@ -19,17 +19,14 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package provides classes referencing domain model elements from a proto code options.
  */
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.type.ref;
 
-final def SPINE_VERSION = '1.0.0-pre6'
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -20,40 +20,25 @@
 
 syntax = "proto3";
 
-package spine.test.code.proto;
+package spine.test.enrichment;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.proto";
-option java_outer_classname = "FieldReferenceTestProto";
+option java_package = "io.spine.test.enrichment.fieldref";
+option java_outer_classname = "FieldDefTestEventsProto";
 option java_multiple_files = true;
 
-// Declaration for use in `FieldReferenceTest` only.
-
-// A name of a human user.
-message PersonName {
-    string given_name = 1 [(required) = true];
-    string family_name = 3;
+message FdtUserCreated {
+    string user_id = 1;
 }
 
-// An enrichment for all events that reference users.
-//
-// See `field_reference_test_events.proto`.
-//
-message UserInfo {
+message FdtAccountSuspended {
 
-    option (enrichment_for) = "spine.test.code.proto.*";
-
-    // Provides person name by alternative field references.
+    // This field is named this way so that the package reference defined in `FdtUserProfile` (see
+    // the definition `field_def_test_enr.proto`) matches this event message type, while field
+    // reference made in the `(by)` option does not match the field of this type. Because of this
+    // the whole type should not match the field reference.
     //
-    // The first reference is to all messages containing the `user_id` field.
-    //
-    // The second alternative is to the `editor_id` field of the `DocumentUpdated`. The event is
-    // in the same package with this message.
-    //
-    // The third alternative is to the field `actor` field of the `CommandContext` type, which
-    // is referenced by the `command_context` field of the `EventContext` type.
-    //
-    PersonName person_name = 1 [(by) = "user_id|editor_id|context.command_context.actor"];
+    string suspended_account_id = 1;
 }

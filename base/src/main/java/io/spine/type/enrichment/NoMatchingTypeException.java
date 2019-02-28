@@ -18,18 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.type.enrichment;
+
+import static java.lang.String.format;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Thrown to indicate that an enrichment type is declared with a type reference which does not
+ * match any of the known types.
  */
+final class NoMatchingTypeException extends IllegalStateException {
 
-final def SPINE_VERSION = '1.0.0-pre6'
+    private static final long serialVersionUID = 0L;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
+    NoMatchingTypeException(String typeReference) {
+        super(format("There is no type matching the reference `%s`.", typeReference));
+    }
 }

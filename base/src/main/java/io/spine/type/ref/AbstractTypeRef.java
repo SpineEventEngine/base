@@ -18,18 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.type.ref;
+
+import io.spine.value.StringTypeValue;
+
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Abstract base for string-based type references.
  */
+abstract class AbstractTypeRef extends StringTypeValue implements TypeRef {
 
-final def SPINE_VERSION = '1.0.0-pre6'
+    private static final long serialVersionUID = 0L;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
+    /**
+     * Creates a new instance with a value which is not null, empty, or blank.
+     */
+    AbstractTypeRef(String value) {
+        super(checkNotEmptyOrBlank(value));
+    }
 }
