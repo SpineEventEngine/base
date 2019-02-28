@@ -27,6 +27,7 @@ import io.spine.value.StringTypeValue;
  * A Java method body source code.
  */
 @Immutable
+//TODO:2019-02-28:yuri.sergiichuk: think of a better name. Try to take a look at CodeLines, maybe we'd like to use smth like that
 public final class MethodBody extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
