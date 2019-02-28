@@ -20,15 +20,55 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.protobuf.Message;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Selects messages by a pattern.
  */
-public interface FilePattern<T extends Message> extends Selector<T> {
+public abstract class FilePattern implements Selector {
+
+    private final String pattern;
+
+    FilePattern(String pattern) {
+        this.pattern = checkNotNull(pattern);
+    }
 
     /**
      * Returns current file pattern.
      */
-    String getPattern();
+    String getPattern() {
+        return pattern;
+    }
+
+    /**
+     * Converts current selector to its Protobuf configuration counterpart.
+     */
+    abstract io.spine.tools.protoc.FilePattern toProto();
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("pattern", pattern)
+                          .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FilePattern pattern1 = (FilePattern) o;
+        return Objects.equal(getPattern(), pattern1.getPattern());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getPattern());
+    }
 }

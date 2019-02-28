@@ -23,29 +23,31 @@ package io.spine.tools.gradle.compiler.protoc;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.annotation.Internal;
 import io.spine.base.CommandMessage;
-import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.GeneratedInterfacesConfig;
+import io.spine.tools.protoc.UuidInterface;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.base.MessageFile.COMMANDS;
+import static io.spine.base.MessageFile.EVENTS;
+import static io.spine.base.MessageFile.REJECTIONS;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<
-        GeneratedInterface,
-        InterfaceFilePatternFactory,
-        InterfaceUuidMessage,
-        InterfaceEnrichmentMessage,
-        GeneratedInterfacesConfig> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<GeneratedInterfacesConfig> {
 
-    private final InterfaceUuidMessage uuidMessage = new InterfaceUuidMessage();
-    private final InterfaceEnrichmentMessage enrichmentMessage = new InterfaceEnrichmentMessage();
+    private UuidInterface uuidInterface = UuidInterface.getDefaultInstance();
 
     private GeneratedInterfaces() {
-        super(new InterfaceFilePatternFactory());
+        super();
     }
 
     /**
@@ -57,9 +59,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      *     <li>{@link EventMessage} interface for Proto files ending with {@code events.proto};
      *     <li>{@link RejectionMessage} interface for Proto files ending with
      *         {@code rejections.proto};
-     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages};
-     *     <li>{@link EnrichmentMessage} interface
-     *         {@linkplain #enrichmentMessage() enrichment messages}.
+     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages}.
      * </ul>
      *
      * @return new config
@@ -67,29 +67,21 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        config.filePattern()
-              .endsWith(MessageFile.COMMANDS.suffix())
-              .markWith(CommandMessage.class.getName());
-        config.filePattern()
-              .endsWith(MessageFile.EVENTS.suffix())
-              .markWith(EventMessage.class.getName());
-        config.filePattern()
-              .endsWith(MessageFile.REJECTIONS.suffix())
-              .markWith(RejectionMessage.class.getName());
-        config.uuidMessage()
-              .markWith(UuidValue.class.getName());
-        config.enrichmentMessage()
-              .markWith(EnrichmentMessage.class.getName());
+        FilePatternFactory filePattern = config.filePattern();
+        config.mark(filePattern.endsWith(COMMANDS.suffix()), CommandMessage.class.getName());
+        config.mark(filePattern.endsWith(EVENTS.suffix()), EventMessage.class.getName());
+        config.mark(filePattern.endsWith(REJECTIONS.suffix()), RejectionMessage.class.getName());
+        config.mark(config.uuidMessage(), UuidValue.class.getName());
         return config;
     }
 
     /**
      * Configures an interface generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Sample usages are:
      * <pre>
      *     {@code
-     *     endsWith("events.proto").markWith("my.custom.EventMessage")
+     *     mark(filePattern().endsWith("events.proto"), "my.custom.EventMessage")
      *     }
      * </pre>
      *
@@ -121,7 +113,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      *
      *     modelCompiler {
      *         generateInterfaces {
-     *             filePattern().endsWith("events.proto").markWith("my.custom.EventMessage")
+     *             mark(filePattern().endsWith("events.proto"), "my.custom.EventMessage")
      *         }
      *     }
      *     }
@@ -134,46 +126,72 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<
      * <p>Another option for an interface generation configuration is to turn it off completely:
      * <pre>
      *     {@code
-     *     endsWith("events.proto").ignore()
+     *     ignore(filePattern().endsWith("events.proto"))
      *     }
      * </pre>
      *
      * <p>In such case, no additional interface is added to the top-level message classes matching
      * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
      * are generated regardless the configuration.
-     *
-     * @return a file pattern factory to be used to configure patterns
      */
-    @SuppressWarnings("RedundantMethodOverride") // do override to extend javadoc
-    @Override
-    public InterfaceFilePatternFactory filePattern() {
-        return super.filePattern();
+    public final void mark(FilePattern filePattern, @FullyQualifiedName String interfaceName) {
+        checkNotNull(filePattern);
+        checkNotNull(interfaceName);
+        addPattern(filePattern, ClassName.of(interfaceName));
+    }
+
+    /**
+     * Configures an interface generation for messages with a single {@code string} field called
+     * {@code uuid}.
+     *
+     * <p>This method functions similarly to the {@link #mark(FilePattern, String)} except for
+     * several differences:
+     * <ul>
+     *     <li>the file in which the message type is defined does not matter;
+     *     <li>nested definitions are affected as well as top-level ones.
+     * </ul>
+     */
+    public final void mark(UuidMessage uuidMessage, @FullyQualifiedName String interfaceName) {
+        checkNotNull(uuidMessage);
+        checkNotNull(interfaceName);
+        uuidInterface = uuidInterface(interfaceName);
     }
 
     @Override
-    public InterfaceUuidMessage uuidMessage() {
-        return uuidMessage;
+    public final void ignore(UuidMessage uuidMessage) {
+        checkNotNull(uuidMessage);
+        uuidInterface = UuidInterface.getDefaultInstance();
     }
 
-    @Override
-    public InterfaceEnrichmentMessage enrichmentMessage() {
-        return enrichmentMessage;
-    }
-
-    // GeneratedInterfacesConfig.Builder causes issue cause we use `forEach`.
+    // GeneratedInterfacesConfig.Builder usage in `forEach`.
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     @Internal
     public GeneratedInterfacesConfig asProtocConfig() {
         GeneratedInterfacesConfig.Builder result = GeneratedInterfacesConfig
                 .newBuilder()
-                .setUuidInterface(uuidMessage.toProto())
-                .setEnrichmentInterface(enrichmentMessage.toProto());
+                .setUuidInterface(uuidInterface);
         patternConfigurations()
                 .stream()
-                .map(Selector::toProto)
+                .map(GeneratedInterfaces::toGeneratedInterface)
                 .forEach(result::addGeneratedInterface);
         return result.build();
+    }
+
+    private static UuidInterface uuidInterface(@FullyQualifiedName String interfaceName) {
+        return UuidInterface.newBuilder()
+                            .setInterfaceName(interfaceName)
+                            .build();
+    }
+
+    private static GeneratedInterface toGeneratedInterface(Map.Entry<FilePattern, ClassName> e) {
+        FilePattern filePattern = e.getKey();
+        ClassName className = e.getValue();
+        return GeneratedInterface
+                .newBuilder()
+                .setPattern(filePattern.toProto())
+                .setInterfaceName(className.value())
+                .build();
     }
 
 }

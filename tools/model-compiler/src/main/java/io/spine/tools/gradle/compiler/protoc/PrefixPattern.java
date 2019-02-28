@@ -20,42 +20,20 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.base.Objects;
-import com.google.protobuf.Message;
+import io.spine.tools.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A file pattern matching file names which start with a certain prefix.
  */
-abstract class PrefixPattern<T extends Message> implements FilePattern<T> {
+public final class PrefixPattern extends FilePattern {
 
-    private final String prefix;
-
-    PrefixPattern(@Regex String postfix) {
-        this.prefix = checkNotNull(postfix);
+    PrefixPattern(@Regex String prefix) {
+        super(prefix);
     }
 
     @Override
-    public String getPattern() {
-        return prefix;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PrefixPattern)) {
-            return false;
-        }
-        PrefixPattern pattern = (PrefixPattern) o;
-        return Objects.equal(prefix, pattern.prefix);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(prefix);
+    io.spine.tools.protoc.FilePattern toProto() {
+        return FilePatterns.filePrefix(getPattern());
     }
 }

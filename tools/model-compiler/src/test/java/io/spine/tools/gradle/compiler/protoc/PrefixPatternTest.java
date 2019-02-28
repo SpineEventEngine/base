@@ -20,39 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.UuidInterface;
+import io.spine.tools.protoc.FilePattern;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+@DisplayName("PrefixPattern should")
+final class PrefixPatternTest {
 
-@DisplayName("InterfaceUuidMessage should")
-final class InterfaceUuidMessageTest {
-
-    @DisplayName("mark enrichment with interface")
+    @DisplayName("translate itself to Protobuf counter part")
     @Test
-    void markEnrichmentWithInterface() {
-        String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceUuidMessage selector = new InterfaceUuidMessage();
-        selector.markWith(interfaceName);
-
-        UuidInterface uuidInterface = selector.toProto();
-
-        assertEquals(interfaceName, uuidInterface.getInterfaceName());
+    void convertToProtobufCounterpart() {
+        String prefix = "io/spine/test_";
+        FilePattern pattern = new PrefixPattern(prefix).toProto();
+        Assertions.assertEquals(prefix, pattern.getFilePrefix());
     }
-
-    @DisplayName("ignore enrichment interface")
-    @Test
-    void ignoreEnrichmentInterface() {
-        String interfaceName = "io.spine.tools.protoc.TestInterface";
-        InterfaceUuidMessage selector = new InterfaceUuidMessage();
-        selector.markWith(interfaceName);
-        selector.ignore();
-
-        UuidInterface uuidInterface = selector.toProto();
-
-        assertThat(uuidInterface.getInterfaceName()).isEmpty();
-    }
-
 }

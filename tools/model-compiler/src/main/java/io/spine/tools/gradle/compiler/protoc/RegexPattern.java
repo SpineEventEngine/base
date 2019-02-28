@@ -20,43 +20,21 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.protobuf.Message;
+import io.spine.tools.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
-
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A file pattern matching file names that qualifies supplied regex.
  */
-abstract class RegexPattern<T extends Message> implements FilePattern<T> {
+public final class RegexPattern extends FilePattern {
 
-    private final String regex;
-
-    protected RegexPattern(@Regex String regex) {
-        this.regex = checkNotNull(regex);
+    RegexPattern(@Regex String regex) {
+        super(regex);
     }
 
     @Override
-    public String getPattern() {
-        return regex;
+    io.spine.tools.protoc.FilePattern toProto() {
+        return FilePatterns.fileRegex(getPattern());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof RegexPattern)) {
-            return false;
-        }
-        RegexPattern<?> pattern = (RegexPattern<?>) o;
-        return Objects.equals(regex, pattern.regex);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(regex);
-    }
 }

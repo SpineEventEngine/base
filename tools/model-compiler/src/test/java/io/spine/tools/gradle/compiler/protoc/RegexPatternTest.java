@@ -20,38 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.EnrichmentMethod;
+import io.spine.tools.protoc.FilePattern;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+@DisplayName("RegexPattern should")
+final class RegexPatternTest {
 
-@DisplayName("MethodEnrichmentMessage should")
-final class MethodEnrichmentMessageTest {
-
-    @DisplayName("set MethodFactory for enrichment")
+    @DisplayName("translate itself to Protobuf counter part")
     @Test
-    void setMethodFactoryForEnrichment() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
-        selector.withMethodFactory(factoryName);
-
-        EnrichmentMethod enrichmentMethod = selector.toProto();
-
-        assertEquals(factoryName, enrichmentMethod.getFactoryName());
-    }
-
-    @DisplayName("ignore enrichment MethodFactory")
-    @Test
-    void ignoreEnrichmentMethodFactory() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodEnrichmentMessage selector = new MethodEnrichmentMessage();
-        selector.withMethodFactory(factoryName);
-        selector.ignore();
-
-        EnrichmentMethod enrichmentMethod = selector.toProto();
-
-        assertThat(enrichmentMethod.getFactoryName()).isEmpty();
+    void convertToProtobufCounterpart() {
+        String regex = ".*/spine/.*";
+        FilePattern pattern = new RegexPattern(regex).toProto();
+        Assertions.assertEquals(regex, pattern.getRegex());
     }
 }

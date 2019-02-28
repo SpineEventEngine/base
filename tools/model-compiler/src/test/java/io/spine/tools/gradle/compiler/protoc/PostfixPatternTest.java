@@ -20,38 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.annotation.Internal;
-import io.spine.tools.protoc.GeneratedMethod;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.regex.qual.Regex;
+import io.spine.tools.protoc.FilePattern;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A {@link GeneratedMethodConfig method} configuration file pattern
- * {@link FilePatternFactory factory}.
- */
-public final class MethodFilePatternFactory extends FilePatternFactory<
-        GeneratedMethod, MethodPostfixPattern, MethodPrefixPattern, MethodRegexPattern> {
+@DisplayName("PostfixPattern should")
+final class PostfixPatternTest {
 
-    /** Prevents direct instantiation. **/
-    MethodFilePatternFactory() {
-        super();
-    }
-
-    @Internal
-    @Override
-    MethodPostfixPattern newPostfixPattern(@NonNull @Regex String postfix) {
-        return new MethodPostfixPattern(postfix);
-    }
-
-    @Internal
-    @Override
-    MethodPrefixPattern newPrefixPattern(@NonNull @Regex String prefix) {
-        return new MethodPrefixPattern(prefix);
-    }
-
-    @Internal
-    @Override
-    MethodRegexPattern newRegexPattern(@NonNull @Regex String regex) {
-        return new MethodRegexPattern(regex);
+    @DisplayName("translate itself to Protobuf counter part")
+    @Test
+    void convertToProtobufCounterpart() {
+        String postfix = "test.proto";
+        FilePattern pattern = new PostfixPattern(postfix).toProto();
+        Assertions.assertEquals(postfix, pattern.getFilePostfix());
     }
 }

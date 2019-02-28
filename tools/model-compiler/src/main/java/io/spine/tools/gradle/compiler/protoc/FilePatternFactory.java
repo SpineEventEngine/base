@@ -20,99 +20,42 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.regex.qual.Regex;
-
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Creates particular {@link FilePattern} selectors.
- *
- * @param <T>
- *         Protobuf configuration counterpart
- * @param <S>
- *         postfix pattern selector
- * @param <U>
- *         prefix pattern selector
- */
-public abstract class FilePatternFactory<
-        T extends Message,
-        S extends PostfixPattern<T>,
-        U extends PrefixPattern<T>,
-        V extends RegexPattern<T>> {
-
-    private final Set<FilePattern<T>> patterns;
+ * Creates {@link FilePattern} selectors.
+ **/
+public final class FilePatternFactory {
 
     FilePatternFactory() {
-        this.patterns = Sets.newConcurrentHashSet();
     }
 
     /**
      * Creates a {@link PostfixPattern} selector out of a supplied {@code postfix}.
      */
-    public S endsWith(@Regex String postfix) {
+    public PostfixPattern endsWith(@Regex String postfix) {
         checkNotNull(postfix);
-        S result = newPostfixPattern(postfix);
-        addPattern(result);
+        PostfixPattern result = new PostfixPattern(postfix);
         return result;
     }
 
     /**
      * Creates a {@link PrefixPattern} selector out of a supplied {@code prefix}.
      */
-    public U startsWith(@Regex String prefix) {
+    public PrefixPattern startsWith(@Regex String prefix) {
         checkNotNull(prefix);
-        U result = newPrefixPattern(prefix);
-        addPattern(result);
+        PrefixPattern result = new PrefixPattern(prefix);
         return result;
     }
 
     /**
      * Creates a {@link RegexPattern} selector out of a supplied {@code regex}.
      */
-    public V regex(@Regex String regex) {
+    public RegexPattern regex(@Regex String regex) {
         checkNotNull(regex);
-        V result = newRegexPattern(regex);
-        addPattern(result);
+        RegexPattern result = new RegexPattern(regex);
         return result;
     }
-
-    private void addPattern(FilePattern<T> pattern) {
-        if (!patterns.add(pattern)) {
-            patterns.remove(pattern);
-            patterns.add(pattern);
-        }
-    }
-
-    /**
-     * Returns currently configured file patterns.
-     */
-    @Internal
-    ImmutableSet<FilePattern<T>> patterns() {
-        return ImmutableSet.copyOf(patterns);
-    }
-
-    /**
-     * Instantiates a particular {@link PostfixPattern} for the supplied {@code postfix}.
-     */
-    @Internal
-    abstract S newPostfixPattern(@NonNull @Regex String postfix);
-
-    /**
-     * Instantiates a particular {@link PrefixPattern} for the supplied {@code prefix}.
-     */
-    @Internal
-    abstract U newPrefixPattern(@NonNull @Regex String prefix);
-
-    /**
-     * Instantiates a particular {@link RegexPattern} for the supplied {@code regex}.
-     */
-    @Internal
-    abstract V newRegexPattern(@NonNull @Regex String regex);
 }

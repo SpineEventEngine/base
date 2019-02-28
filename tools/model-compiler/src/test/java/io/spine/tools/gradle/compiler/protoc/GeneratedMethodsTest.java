@@ -20,11 +20,15 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.UuidMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
 final class GeneratedMethodsTest {
@@ -34,20 +38,78 @@ final class GeneratedMethodsTest {
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.uuidMessage()
-               .withMethodFactory(testMethodFactory);
-        methods.enrichmentMessage()
-               .withMethodFactory(testMethodFactory);
-        methods.filePattern()
-               .endsWith("_test.proto")
-               .withMethodFactory(testMethodFactory);
+        methods.useFactory(testMethodFactory, methods.uuidMessage());
+        methods.useFactory(testMethodFactory, methods.filePattern()
+                                                     .endsWith("_test.proto"));
         GeneratedMethodsConfig config = methods.asProtocConfig();
 
         assertEquals(testMethodFactory, config.getUuidMethod()
                                               .getFactoryName());
-        assertEquals(testMethodFactory, config.getEnrichmentMethod()
-                                              .getFactoryName());
         assertEquals(testMethodFactory, config.getGeneratedMethod(0)
                                               .getFactoryName());
+    }
+
+    @DisplayName("add multiple file patterns")
+    @Test
+    void addMultipleFilePatterns() {
+        String pattern = "testPattern";
+        String interfaceName = "io.spine.test.TestInterface";
+
+        GeneratedMethods defaults = GeneratedMethods.withDefaults();
+        FilePatternFactory filePattern = defaults.filePattern();
+        defaults.useFactory(interfaceName, filePattern.endsWith(pattern));
+        defaults.useFactory(interfaceName, filePattern.startsWith(pattern));
+        defaults.useFactory(interfaceName, filePattern.regex(pattern));
+
+        assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
+    }
+
+    @DisplayName("be able to ignore UUID message configuration")
+    @Test
+    void ignoreUuidMessageConfig() {
+        String testMethodFactory = "io.spine.test.MethodFactory";
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        methods.useFactory(testMethodFactory, methods.uuidMessage());
+        methods.ignore(methods.uuidMessage());
+        assertSame(UuidMethod.getDefaultInstance(), methods.asProtocConfig()
+                                                           .getUuidMethod());
+    }
+
+    private static boolean
+    hasPostfixConfig(String postfix, String interfaceName, GeneratedMethodsConfig config) {
+        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+            if (postfix.equals(generatedInterface.getPattern()
+                                                 .getFilePostfix()) &&
+                    interfaceName.equals(generatedInterface.getFactoryName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean
+    hasPrefixConfig(String prefix, String interfaceName, GeneratedMethodsConfig config) {
+        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+            if (prefix.equals(generatedInterface.getPattern()
+                                                .getFilePrefix()) &&
+                    interfaceName.equals(generatedInterface.getFactoryName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean
+    hasRegexConfig(String regex, String interfaceName, GeneratedMethodsConfig config) {
+        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+            if (regex.equals(generatedInterface.getPattern()
+                                               .getRegex()) &&
+                    interfaceName.equals(generatedInterface.getFactoryName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

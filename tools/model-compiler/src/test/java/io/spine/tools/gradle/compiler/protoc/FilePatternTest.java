@@ -20,38 +20,31 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.UuidMethod;
+import com.google.common.truth.DefaultSubject;
+import com.google.common.truth.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MethodUuidMessage should")
-final class MethodUuidMessageTest {
+@DisplayName("FilePattern should")
+final class FilePatternTest {
 
-    @DisplayName("set MethodFactory for UUID message")
+    @DisplayName("ensure that implementations differ")
     @Test
-    void setMethodFactoryForUuid() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodUuidMessage selector = new MethodUuidMessage();
-        selector.withMethodFactory(factoryName);
+    void implementationsDiffer() {
+        String pattern = "testPattern";
 
-        UuidMethod uuidMethod = selector.toProto();
+        Subject<DefaultSubject, Object> prefix = assertThat(new PrefixPattern(pattern));
+        prefix.isNotEqualTo(new PostfixPattern(pattern));
+        prefix.isNotEqualTo(new RegexPattern(pattern));
 
-        assertEquals(factoryName, uuidMethod.getFactoryName());
-    }
+        Subject<DefaultSubject, Object> postfix = assertThat(new PostfixPattern(pattern));
+        postfix.isNotEqualTo(new PrefixPattern(pattern));
+        postfix.isNotEqualTo(new RegexPattern(pattern));
 
-    @DisplayName("ignore UUID MethodFactory")
-    @Test
-    void ignoreUuidMethodFactory() {
-        String factoryName = "io.spine.tools.protoc.TestMethodFactory";
-        MethodUuidMessage selector = new MethodUuidMessage();
-        selector.withMethodFactory(factoryName);
-        selector.ignore();
-
-        UuidMethod uuidMethod = selector.toProto();
-
-        assertThat(uuidMethod.getFactoryName()).isEmpty();
+        Subject<DefaultSubject, Object> regex = assertThat(new RegexPattern(pattern));
+        regex.isNotEqualTo(new PostfixPattern(pattern));
+        regex.isNotEqualTo(new PrefixPattern(pattern));
     }
 }

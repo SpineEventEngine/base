@@ -65,11 +65,9 @@ final class SpineProtoGeneratorTest {
     @Test
     void processValidRequest() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        interfaces.enrichmentMessage()
-                  .markWith(TestInterface.class.getName());
+        interfaces.mark(interfaces.uuidMessage(), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.uuidMessage()
-               .withMethodFactory(UuidMethodFactory.class.getName());
+        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
@@ -105,8 +103,7 @@ final class SpineProtoGeneratorTest {
     @Test
     void concatenateGeneratedCode() {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.uuidMessage()
-               .withMethodFactory(UuidMethodFactory.class.getName());
+        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
@@ -143,8 +140,7 @@ final class SpineProtoGeneratorTest {
     @Test
     void dropCodeDuplicates() {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.uuidMessage()
-               .withMethodFactory(UuidMethodFactory.class.getName());
+        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())

@@ -21,42 +21,31 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for Gradle extension configurations related to Spine Protoc plugin.
  *
- * @param <M>
- *         file pattern Protobuf configuration
- * @param <F>
- *         file pattern factory
- * @param <U>
- *         UUID message selector
- * @param <E>
- *         enrichment message selector
  * @param <C>
  *         Protobuf configuration
  * @see GeneratedInterfaces
  * @see GeneratedMethods
  */
-abstract class GeneratedConfigurations<M extends Message,
-        F extends FilePatternFactory<M, ?, ?, ?>,
-        U extends UuidMessage<?>,
-        E extends EnrichmentMessage<?>,
-        C extends Message> {
+abstract class GeneratedConfigurations<C extends Message> {
 
-    private final F filePatternFactory;
+    private final FilePatternFactory filePatternFactory;
+    private final Map<FilePattern, ClassName> patterns;
 
-    GeneratedConfigurations(F filePatternFactory) {
-        this.filePatternFactory = filePatternFactory;
-    }
-
-    /**
-     * Obtains current unique pattern configurations.
-     */
-    ImmutableSet<FilePattern<M>> patternConfigurations() {
-        return filePatternFactory.patterns();
+    GeneratedConfigurations() {
+        this.filePatternFactory = new FilePatternFactory();
+        this.patterns = Maps.newConcurrentMap();
     }
 
     /**
@@ -71,7 +60,7 @@ abstract class GeneratedConfigurations<M extends Message,
      *
      * @return a configuration object for Proto files matching the pattern
      */
-    public F filePattern() {
+    public FilePatternFactory filePattern() {
         return filePatternFactory;
     }
 
@@ -88,24 +77,43 @@ abstract class GeneratedConfigurations<M extends Message,
      *
      * @return a configuration object for Proto messages matching UUID message pattern
      */
-    public abstract U uuidMessage();
+    public UuidMessage uuidMessage() {
+        return UuidMessage.INSTANCE;
+    }
 
     /**
-     * Configures code generation for messages with {@code (enrichment_for)} option.
-     *
-     * <p>This method functions are similar to the {@link #filePattern} except for
-     * several differences:
-     * <ul>
-     * <li>the file in which the message type is defined does not matter;
-     * </ul>
-     *
-     * @return a configuration object for Proto messages matching enrichment message pattern
+     * Ignores code generation for Protobuf files that matches supplied {@code pattern}.
      */
-    public abstract E enrichmentMessage();
+    public final void ignore(FilePattern pattern) {
+        checkNotNull(pattern);
+        patterns.remove(pattern);
+    }
+
+    /**
+     * Ignores code generation for UUID messages.
+     */
+    public abstract void ignore(UuidMessage uuidMessage);
 
     /**
      * Converts current configuration into its Protobuf counterpart.
      */
     @Internal
     public abstract C asProtocConfig();
+
+    /**
+     * Adds a new {@link FilePattern} configuration with a supplied {@link ClassName}.
+     *
+     * <p>The {@code className} can represent a fully-qualified name of an interface of a
+     * method factory.
+     */
+    void addPattern(FilePattern pattern, ClassName className) {
+        patterns.put(pattern, className);
+    }
+
+    /**
+     * Obtains current unique pattern configurations.
+     */
+    ImmutableSet<Map.Entry<FilePattern, ClassName>> patternConfigurations() {
+        return ImmutableSet.copyOf(patterns.entrySet());
+    }
 }
