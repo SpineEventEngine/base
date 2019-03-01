@@ -211,6 +211,9 @@ public class ProtoAnnotatorPlugin extends IncrementalPlugin {
                 .applyNowTo(project);
     }
 
+    /**
+     * A task action which performs generated code annotation.
+     */
     private class Annotate implements Action<Task> {
 
         private final boolean isTestTask;

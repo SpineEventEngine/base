@@ -33,7 +33,6 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static org.gradle.api.tasks.PathSensitivity.RELATIVE;
 
 /**
  * Utility wrapper around the Gradle tasks created.
@@ -280,8 +279,7 @@ public final class GradleTask {
                 task.getInputs()
                     .files(inputs)
                     .skipWhenEmpty()
-                    .optional()
-                    .withPathSensitivity(RELATIVE);
+                    .optional();
             }
             if (!outputs.isEmpty()) {
                 task.getOutputs()

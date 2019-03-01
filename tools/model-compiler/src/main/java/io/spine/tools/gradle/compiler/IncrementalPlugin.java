@@ -54,8 +54,7 @@ public abstract class IncrementalPlugin extends SpinePlugin {
         return protoSource(project, TEST);
     }
 
-    private static FileCollection protoSource(Project project,
-                                                        SourceSetName sourceSetName) {
+    private static FileCollection protoSource(Project project, SourceSetName sourceSetName) {
         SourceSet sourceSet = sourceSet(project, sourceSetName);
         Optional<FileCollection> files = protoSource(sourceSet);
         return files.orElse(ImmutableFileCollection.of());
