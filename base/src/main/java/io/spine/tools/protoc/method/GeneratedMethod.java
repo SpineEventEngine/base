@@ -24,18 +24,23 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.value.StringTypeValue;
 
 /**
- * A Java method body source code.
+ * A generated Java method source code.
+ *
+ * <p>Developers are responsible for checking that the content of the method is properly formatted
+ * and contains all the required modifiers, comments, javadocs.
+ *
+ * <p>The actual compilation of the generated method is performed as a part of the compilation
+ * of other Protobuf-generated sources.
  */
 @Immutable
-//TODO:2019-02-28:yuri.sergiichuk: think of a better name. Try to take a look at CodeLines, maybe we'd like to use smth like that
-public final class MethodBody extends StringTypeValue {
+public final class GeneratedMethod extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
     /**
-     * Creates a new instance of the method body value holder.
+     * Creates a new instance of the method value holder.
      */
-    public MethodBody(String value) {
+    public GeneratedMethod(String value) {
         super(value);
     }
 }

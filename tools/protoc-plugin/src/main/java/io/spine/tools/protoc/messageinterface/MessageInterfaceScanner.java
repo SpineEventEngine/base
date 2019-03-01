@@ -23,8 +23,8 @@ package io.spine.tools.protoc.messageinterface;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedInterface;
-import io.spine.tools.protoc.GeneratedInterfacesConfig;
+import io.spine.tools.protoc.GenerateInterface;
+import io.spine.tools.protoc.GenerateInterfacesConfig;
 import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidInterface;
 import io.spine.type.MessageType;
@@ -37,13 +37,13 @@ import static io.spine.tools.protoc.messageinterface.MessageImplements.implement
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link GeneratedInterfacesConfig}.
+ * Scans the given type for a match upon patterns defined in {@link GenerateInterfacesConfig}.
  */
-final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
+final class MessageInterfaceScanner extends TypeScanner<GenerateInterface> {
 
-    private final GeneratedInterfacesConfig config;
+    private final GenerateInterfacesConfig config;
 
-    MessageInterfaceScanner(GeneratedInterfacesConfig config) {
+    MessageInterfaceScanner(GenerateInterfacesConfig config) {
         super();
         this.config = config;
     }
@@ -59,28 +59,28 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
     }
 
     @Override
-    protected List<GeneratedInterface> filePatterns() {
-        return config.getGeneratedInterfaceList();
+    protected List<GenerateInterface> filePatterns() {
+        return config.getGenerateInterfaceList();
     }
 
     @Override
     protected MatchesPattern matchesPattern(MessageType type) {
-        return new MatchesPattern(type, GeneratedInterface::getPattern);
+        return new MatchesPattern(type, GenerateInterface::getPattern);
     }
 
     @Override
     protected IsNotBlank isNotBlank() {
-        return new IsNotBlank(GeneratedInterface::getInterfaceName);
+        return new IsNotBlank(GenerateInterface::getInterfaceName);
     }
 
     @Override
-    protected Function<GeneratedInterface, ImmutableList<CompilerOutput>>
+    protected Function<GenerateInterface, ImmutableList<CompilerOutput>>
     filePatternMapper(MessageType type) {
         return new GenerateInterfaces(type);
     }
 
     @Override
-    protected Predicate<GeneratedInterface> customFilter(MessageType type) {
+    protected Predicate<GenerateInterface> customFilter(MessageType type) {
         return configuration -> type.isTopLevel();
     }
 
@@ -94,7 +94,7 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
     }
 
     private static class GenerateInterfaces
-            implements Function<GeneratedInterface, ImmutableList<CompilerOutput>> {
+            implements Function<GenerateInterface, ImmutableList<CompilerOutput>> {
 
         private final MessageType type;
 
@@ -103,7 +103,7 @@ final class MessageInterfaceScanner extends TypeScanner<GeneratedInterface> {
         }
 
         @Override
-        public ImmutableList<CompilerOutput> apply(GeneratedInterface generatedInterface) {
+        public ImmutableList<CompilerOutput> apply(GenerateInterface generatedInterface) {
             MessageInterface messageInterface = new PredefinedInterface(
                     ClassName.of(generatedInterface.getInterfaceName()),
                     MessageInterfaceParameters.empty()

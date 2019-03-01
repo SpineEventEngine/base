@@ -22,8 +22,8 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethod;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.UuidMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMethodsConfig> {
+public final class GeneratedMethods extends GeneratedConfigurations<GenerateMethodsConfig> {
 
     private UuidMethod uuidMethod = UuidMethod.getDefaultInstance();
 
@@ -145,14 +145,14 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Internal
     @Override
-    public GeneratedMethodsConfig asProtocConfig() {
-        GeneratedMethodsConfig.Builder result = GeneratedMethodsConfig
+    public GenerateMethodsConfig asProtocConfig() {
+        GenerateMethodsConfig.Builder result = GenerateMethodsConfig
                 .newBuilder()
                 .setUuidMethod(uuidMethod);
         patternConfigurations()
                 .stream()
                 .map(GeneratedMethods::toGeneratedMethod)
-                .forEach(result::addGeneratedMethod);
+                .forEach(result::addGenerateMethod);
         return result.build();
     }
 
@@ -162,10 +162,10 @@ public final class GeneratedMethods extends GeneratedConfigurations<GeneratedMet
                          .build();
     }
 
-    private static GeneratedMethod toGeneratedMethod(Map.Entry<FilePattern, ClassName> e) {
+    private static GenerateMethod toGeneratedMethod(Map.Entry<FilePattern, ClassName> e) {
         FilePattern filePattern = e.getKey();
         ClassName className = e.getValue();
-        return GeneratedMethod
+        return GenerateMethod
                 .newBuilder()
                 .setPattern(filePattern.toProto())
                 .setFactoryName(className.value())

@@ -20,8 +20,8 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethod;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.UuidMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,11 +41,11 @@ final class GeneratedMethodsTest {
         methods.useFactory(testMethodFactory, methods.uuidMessage());
         methods.useFactory(testMethodFactory, methods.filePattern()
                                                      .endsWith("_test.proto"));
-        GeneratedMethodsConfig config = methods.asProtocConfig();
+        GenerateMethodsConfig config = methods.asProtocConfig();
 
         assertEquals(testMethodFactory, config.getUuidMethod()
                                               .getFactoryName());
-        assertEquals(testMethodFactory, config.getGeneratedMethod(0)
+        assertEquals(testMethodFactory, config.getGenerateMethod(0)
                                               .getFactoryName());
     }
 
@@ -78,8 +78,8 @@ final class GeneratedMethodsTest {
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String interfaceName, GeneratedMethodsConfig config) {
-        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+    hasPostfixConfig(String postfix, String interfaceName, GenerateMethodsConfig config) {
+        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
             if (postfix.equals(generatedInterface.getPattern()
                                                  .getFilePostfix()) &&
                     interfaceName.equals(generatedInterface.getFactoryName())) {
@@ -90,8 +90,8 @@ final class GeneratedMethodsTest {
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String interfaceName, GeneratedMethodsConfig config) {
-        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+    hasPrefixConfig(String prefix, String interfaceName, GenerateMethodsConfig config) {
+        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
             if (prefix.equals(generatedInterface.getPattern()
                                                 .getFilePrefix()) &&
                     interfaceName.equals(generatedInterface.getFactoryName())) {
@@ -102,8 +102,8 @@ final class GeneratedMethodsTest {
     }
 
     private static boolean
-    hasRegexConfig(String regex, String interfaceName, GeneratedMethodsConfig config) {
-        for (GeneratedMethod generatedInterface : config.getGeneratedMethodList()) {
+    hasRegexConfig(String regex, String interfaceName, GenerateMethodsConfig config) {
+        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
             if (regex.equals(generatedInterface.getPattern()
                                                .getRegex()) &&
                     interfaceName.equals(generatedInterface.getFactoryName())) {

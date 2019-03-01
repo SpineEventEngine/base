@@ -22,7 +22,7 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.tools.protoc.method.MethodBody;
+import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 import jdk.nashorn.internal.ir.annotations.Immutable;
@@ -37,7 +37,7 @@ public class TestMethodFactory implements MethodFactory {
     }
 
     @Override
-    public List<MethodBody> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("ownType")
                 .returns(MessageType.class)
@@ -46,6 +46,6 @@ public class TestMethodFactory implements MethodFactory {
                 .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
                             MessageType.class)
                 .build();
-        return ImmutableList.of(new MethodBody(spec.toString()));
+        return ImmutableList.of(new GeneratedMethod(spec.toString()));
     }
 }

@@ -37,7 +37,7 @@ import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
@@ -273,15 +273,15 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static SpineProtocConfig assembleParameter(Project project) {
         GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
         GeneratedMethods methods = getGeneratedMethods(project);
-        GeneratedMethodsConfig generatedMethodsConfig = methods
+        GenerateMethodsConfig generatedMethodsConfig = methods
                 .asProtocConfig()
                 .toBuilder()
                 .setFactoryConfiguration(prepareGeneratorConfiguration(project))
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
-                .setGeneratedInterfaces(interfaces.asProtocConfig())
-                .setGeneratedMethods(generatedMethodsConfig)
+                .setGenerateInterfaces(interfaces.asProtocConfig())
+                .setGenerateMethods(generatedMethodsConfig)
                 .build();
         return result;
     }

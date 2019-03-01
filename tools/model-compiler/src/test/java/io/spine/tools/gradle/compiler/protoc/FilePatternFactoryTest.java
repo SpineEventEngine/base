@@ -24,12 +24,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.gradle.compiler.protoc.FilePatternFactory.INSTANCE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FilePatternFactory should")
 final class FilePatternFactoryTest {
+
+    FilePatternFactory factory = FilePatternFactory.INSTANCE;
 
     @DisplayName("create")
     @Nested
@@ -38,19 +39,19 @@ final class FilePatternFactoryTest {
         @DisplayName("prefix pattern")
         @Test
         void prefix() {
-            assertNotNull(INSTANCE.startsWith("io/spine/test_"));
+            assertNotNull(factory.startsWith("io/spine/test_"));
         }
 
         @DisplayName("postfix pattern")
         @Test
         void postfix() {
-            assertNotNull(INSTANCE.endsWith("test.proto"));
+            assertNotNull(factory.endsWith("test.proto"));
         }
 
         @DisplayName("regex pattern")
         @Test
         void regex() {
-            assertNotNull(INSTANCE.regex(".*/spine/.*"));
+            assertNotNull(factory.regex(".*/spine/.*"));
         }
     }
 
@@ -61,19 +62,19 @@ final class FilePatternFactoryTest {
         @DisplayName("prefix pattern")
         @Test
         void prefix() {
-            assertThrows(NullPointerException.class, () -> INSTANCE.startsWith(null));
+            assertThrows(NullPointerException.class, () -> factory.startsWith(null));
         }
 
         @DisplayName("postfix pattern")
         @Test
         void postfix() {
-            assertThrows(NullPointerException.class, () -> INSTANCE.endsWith(null));
+            assertThrows(NullPointerException.class, () -> factory.endsWith(null));
         }
 
         @DisplayName("regex pattern")
         @Test
         void regex() {
-            assertThrows(NullPointerException.class, () -> INSTANCE.regex(null));
+            assertThrows(NullPointerException.class, () -> factory.regex(null));
         }
     }
 }

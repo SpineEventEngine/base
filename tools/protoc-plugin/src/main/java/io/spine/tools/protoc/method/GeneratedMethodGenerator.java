@@ -22,7 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -40,7 +40,7 @@ public final class GeneratedMethodGenerator extends SpineProtoGenerator {
 
     private final GeneratedMethodScanner generatedMethodScanner;
 
-    private GeneratedMethodGenerator(GeneratedMethodsConfig config) {
+    private GeneratedMethodGenerator(GenerateMethodsConfig config) {
         super();
         generatedMethodScanner = new GeneratedMethodScanner(config);
     }
@@ -49,7 +49,7 @@ public final class GeneratedMethodGenerator extends SpineProtoGenerator {
      * Retrieves the single instance of the {@code GeneratedMethodGenerator} type.
      */
     public static GeneratedMethodGenerator instance(SpineProtocConfig config) {
-        return new GeneratedMethodGenerator(config.getGeneratedMethods());
+        return new GeneratedMethodGenerator(config.getGenerateMethods());
     }
 
     @Override

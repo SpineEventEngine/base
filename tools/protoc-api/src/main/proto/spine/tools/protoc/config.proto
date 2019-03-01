@@ -25,7 +25,7 @@ message UuidInterface {
 //
 // An interface name signifies that the additional methods should not be generated.
 //
-message GeneratedInterface {
+message GenerateInterface {
 
     // A fully-qualified name of the message interface class.
     string interface_name = 1;
@@ -48,7 +48,7 @@ message UuidMethod {
 //
 // An empty factory name signifies that the additional methods should not be generated.
 //
-message GeneratedMethod {
+message GenerateMethod {
 
     // A fully-qualified name of the message factory class.
     string factory_name = 1;
@@ -88,9 +88,9 @@ message FilePattern {
 
 // Configuration of the Spine Protoc plugin interfaces generation.
 //
-message GeneratedInterfacesConfig {
+message GenerateInterfacesConfig {
 
-    repeated GeneratedInterface generated_interface = 1;
+    repeated GenerateInterface generate_interface = 1;
 
     UuidInterface uuid_interface = 2;
 
@@ -116,9 +116,9 @@ message MethodFactoryConfiguration {
 
 // Configuration of the Spine Protoc plugin methods generation.
 //
-message GeneratedMethodsConfig {
+message GenerateMethodsConfig {
 
-    repeated GeneratedMethod generated_method = 1;
+    repeated GenerateMethod generate_method = 1;
 
     UuidMethod uuid_method = 2;
 
@@ -139,9 +139,9 @@ message SpineProtocConfig {
 
     // Interfaces configuration.
     //
-    GeneratedInterfacesConfig generated_interfaces = 1;
+    GenerateInterfacesConfig generate_interfaces = 1;
 
     // Methods configuration.
     //
-    GeneratedMethodsConfig generated_methods = 2;
+    GenerateMethodsConfig generate_methods = 2;
 }

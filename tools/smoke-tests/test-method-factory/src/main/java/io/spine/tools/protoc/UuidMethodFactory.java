@@ -26,7 +26,7 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.base.Identifier;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.tools.protoc.method.MethodBody;
+import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 import jdk.nashorn.internal.ir.annotations.Immutable;
@@ -41,7 +41,7 @@ public class UuidMethodFactory implements MethodFactory {
     }
 
     @Override
-    public List<MethodBody> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
         PackageName packageName = messageType.javaPackage();
         SimpleClassName simpleClassName = messageType.simpleJavaClassName();
         ClassName className = ClassName.get(packageName.value(), simpleClassName.value());
@@ -53,6 +53,6 @@ public class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("Creates a new instance of the current identifier " +
                                     "with a random UUID value.\n")
                 .build();
-        return ImmutableList.of(new MethodBody(spec.toString()));
+        return ImmutableList.of(new GeneratedMethod(spec.toString()));
     }
 }

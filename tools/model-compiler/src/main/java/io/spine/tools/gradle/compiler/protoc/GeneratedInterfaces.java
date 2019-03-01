@@ -27,8 +27,8 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GeneratedInterface;
-import io.spine.tools.protoc.GeneratedInterfacesConfig;
+import io.spine.tools.protoc.GenerateInterface;
+import io.spine.tools.protoc.GenerateInterfacesConfig;
 import io.spine.tools.protoc.UuidInterface;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
@@ -42,7 +42,7 @@ import static io.spine.base.MessageFile.REJECTIONS;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<GeneratedInterfacesConfig> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateInterfacesConfig> {
 
     private UuidInterface uuidInterface = UuidInterface.getDefaultInstance();
 
@@ -174,14 +174,14 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     @Internal
-    public GeneratedInterfacesConfig asProtocConfig() {
-        GeneratedInterfacesConfig.Builder result = GeneratedInterfacesConfig
+    public GenerateInterfacesConfig asProtocConfig() {
+        GenerateInterfacesConfig.Builder result = GenerateInterfacesConfig
                 .newBuilder()
                 .setUuidInterface(uuidInterface);
         patternConfigurations()
                 .stream()
                 .map(GeneratedInterfaces::toGeneratedInterface)
-                .forEach(result::addGeneratedInterface);
+                .forEach(result::addGenerateInterface);
         return result.build();
     }
 
@@ -191,10 +191,10 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Generated
                             .build();
     }
 
-    private static GeneratedInterface toGeneratedInterface(Map.Entry<FilePattern, ClassName> e) {
+    private static GenerateInterface toGeneratedInterface(Map.Entry<FilePattern, ClassName> e) {
         FilePattern filePattern = e.getKey();
         ClassName className = e.getValue();
-        return GeneratedInterface
+        return GenerateInterface
                 .newBuilder()
                 .setPattern(filePattern.toProto())
                 .setInterfaceName(className.value())

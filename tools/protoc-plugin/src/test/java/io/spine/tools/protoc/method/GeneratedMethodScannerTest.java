@@ -23,8 +23,8 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethod;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,9 +42,9 @@ final class GeneratedMethodScannerTest {
     @DisplayName("scan type for any generated methods")
     @Test
     void scanTypeForAnyGeneratedMethods() {
-        GeneratedMethodsConfig config = configBuilder()
-                .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "_patterns.proto"))
-                .addGeneratedMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
+        GenerateMethodsConfig config = configBuilder()
+                .addGenerateMethod(generatedMethod(FirstMethodFactory.FQN, "_patterns.proto"))
+                .addGenerateMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
         MessageType type = new MessageType(TestMessage.getDescriptor());
         GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
@@ -59,10 +59,10 @@ final class GeneratedMethodScannerTest {
         @DisplayName("blank MessageGenerator options")
         @Test
         void blankGenerators() {
-            GeneratedMethodsConfig config = configBuilder()
-                    .addGeneratedMethod(generatedMethod("", "*"))
-                    .addGeneratedMethod(generatedMethod(" ", "*"))
-                    .addGeneratedMethod(GeneratedMethod.getDefaultInstance())
+            GenerateMethodsConfig config = configBuilder()
+                    .addGenerateMethod(generatedMethod("", "*"))
+                    .addGenerateMethod(generatedMethod(" ", "*"))
+                    .addGenerateMethod(GenerateMethod.getDefaultInstance())
                     .build();
             MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
@@ -71,29 +71,29 @@ final class GeneratedMethodScannerTest {
         @DisplayName("types from non-matched patterns")
         @Test
         void typesFromNonMatchedPatterns() {
-            GeneratedMethodsConfig config = configBuilder()
-                    .addGeneratedMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
+            GenerateMethodsConfig config = configBuilder()
+                    .addGenerateMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
                     .build();
             MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
-        private void noMethodsGeneratedFor(GeneratedMethodsConfig config, MessageType type) {
+        private void noMethodsGeneratedFor(GenerateMethodsConfig config, MessageType type) {
             GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
             ImmutableList<CompilerOutput> result = scanner.scan(type);
             assertTrue(result.isEmpty());
         }
     }
 
-    private static GeneratedMethodsConfig.Builder configBuilder() {
-        return GeneratedMethodsConfig.newBuilder();
+    private static GenerateMethodsConfig.Builder configBuilder() {
+        return GenerateMethodsConfig.newBuilder();
     }
 
-    private static GeneratedMethod generatedMethod(String factoryName, String postfix) {
-        return GeneratedMethod.newBuilder()
-                              .setFactoryName(factoryName)
-                              .setPattern(filePostfix(postfix))
-                              .build();
+    private static GenerateMethod generatedMethod(String factoryName, String postfix) {
+        return GenerateMethod.newBuilder()
+                             .setFactoryName(factoryName)
+                             .setPattern(filePostfix(postfix))
+                             .build();
     }
 
     @Immutable
@@ -101,10 +101,11 @@ final class GeneratedMethodScannerTest {
 
         private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$FirstMethodFactory";
 
-        private static final MethodBody TEST_METHOD = new MethodBody("public void first(){}");
+        private static final GeneratedMethod TEST_METHOD = new GeneratedMethod(
+                "public void first(){}");
 
         @Override
-        public List<MethodBody> newMethodsFor(MessageType ignored) {
+        public List<GeneratedMethod> newMethodsFor(MessageType ignored) {
             return ImmutableList.of(TEST_METHOD);
         }
     }
@@ -114,11 +115,13 @@ final class GeneratedMethodScannerTest {
 
         private static final String FQN = "io.spine.tools.protoc.method.GeneratedMethodScannerTest$SecondMethodFactory";
 
-        private static final MethodBody TEST_METHOD_1 = new MethodBody("public void second1(){}");
-        private static final MethodBody TEST_METHOD_2 = new MethodBody("public void second2(){}");
+        private static final GeneratedMethod TEST_METHOD_1 =
+                new GeneratedMethod("public void second1(){}");
+        private static final GeneratedMethod TEST_METHOD_2 =
+                new GeneratedMethod("public void second2(){}");
 
         @Override
-        public List<MethodBody> newMethodsFor(MessageType ignored) {
+        public List<GeneratedMethod> newMethodsFor(MessageType ignored) {
             return ImmutableList.of(TEST_METHOD_1, TEST_METHOD_2);
         }
     }

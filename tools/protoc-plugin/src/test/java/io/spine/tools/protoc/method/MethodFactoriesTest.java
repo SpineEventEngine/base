@@ -113,7 +113,7 @@ final class MethodFactoriesTest {
     private static class EmptyMethodFactory implements MethodFactory {
 
         @Override
-        public ImmutableList<MethodBody> newMethodsFor(MessageType messageType) {
+        public ImmutableList<GeneratedMethod> newMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

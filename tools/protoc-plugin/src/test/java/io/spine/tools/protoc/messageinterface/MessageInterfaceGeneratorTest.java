@@ -90,7 +90,7 @@ final class MessageInterfaceGeneratorTest {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
-                .setGeneratedInterfaces(interfaces.asProtocConfig())
+                .setGenerateInterfaces(interfaces.asProtocConfig())
                 .build();
         codeGenerator = MessageInterfaceGenerator.instance(config);
     }

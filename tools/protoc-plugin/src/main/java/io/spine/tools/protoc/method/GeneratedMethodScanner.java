@@ -22,8 +22,8 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedMethod;
-import io.spine.tools.protoc.GeneratedMethodsConfig;
+import io.spine.tools.protoc.GenerateMethod;
+import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidMethod;
 import io.spine.type.MessageType;
@@ -35,14 +35,14 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link GeneratedMethodsConfig}.
+ * Scans the given type for a match upon patterns defined in {@link GenerateMethodsConfig}.
  */
-final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
+final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
 
-    private final GeneratedMethodsConfig config;
+    private final GenerateMethodsConfig config;
     private final MethodFactories methodFactories;
 
-    GeneratedMethodScanner(GeneratedMethodsConfig config) {
+    GeneratedMethodScanner(GenerateMethodsConfig config) {
         super();
         this.config = config;
         this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
@@ -58,28 +58,28 @@ final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
     }
 
     @Override
-    protected List<GeneratedMethod> filePatterns() {
-        return config.getGeneratedMethodList();
+    protected List<GenerateMethod> filePatterns() {
+        return config.getGenerateMethodList();
     }
 
     @Override
     protected MatchesPattern matchesPattern(MessageType type) {
-        return new MatchesPattern(type, GeneratedMethod::getPattern);
+        return new MatchesPattern(type, GenerateMethod::getPattern);
     }
 
     @Override
     protected IsNotBlank isNotBlank() {
-        return new IsNotBlank(GeneratedMethod::getFactoryName);
+        return new IsNotBlank(GenerateMethod::getFactoryName);
     }
 
     @Override
-    protected Function<GeneratedMethod, ImmutableList<CompilerOutput>>
+    protected Function<GenerateMethod, ImmutableList<CompilerOutput>>
     filePatternMapper(MessageType type) {
         return new GenerateMethods(type);
     }
 
     private class GenerateMethods
-            implements Function<GeneratedMethod, ImmutableList<CompilerOutput>> {
+            implements Function<GenerateMethod, ImmutableList<CompilerOutput>> {
 
         private final MessageType type;
 
@@ -88,7 +88,7 @@ final class GeneratedMethodScanner extends TypeScanner<GeneratedMethod> {
         }
 
         @Override
-        public ImmutableList<CompilerOutput> apply(GeneratedMethod spec) {
+        public ImmutableList<CompilerOutput> apply(GenerateMethod spec) {
             return generateMethods(spec.getFactoryName(), type);
         }
     }

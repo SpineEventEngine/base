@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.GeneratedMethod;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
 import io.spine.type.MessageType;
 
@@ -43,7 +42,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * An utility class for instantiating {@link MethodFactory} for a particular
- * {@link GeneratedMethod} specification.
+ * {@link io.spine.tools.protoc.GeneratedMethod} specification.
  */
 final class MethodFactories implements Logging {
 
@@ -55,7 +54,7 @@ final class MethodFactories implements Logging {
 
     /**
      * Creates an instance of a {@link MethodFactory} out of the supplied
-     * {@link GeneratedMethod specification}.
+     * {@link io.spine.tools.protoc.GeneratedMethod specification}.
      *
      * <p>If specification is invalid or the specified class for some reason could not be
      * instantiated a {@link NoOpMethodFactory} instance is returned.
@@ -159,7 +158,7 @@ final class MethodFactories implements Logging {
         static final MethodFactory INSTANCE = new NoOpMethodFactory();
 
         @Override
-        public List<MethodBody> newMethodsFor(MessageType ignored) {
+        public List<GeneratedMethod> newMethodsFor(MessageType ignored) {
             return ImmutableList.of();
         }
     }

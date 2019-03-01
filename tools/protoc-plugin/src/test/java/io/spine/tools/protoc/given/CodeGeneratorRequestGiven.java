@@ -92,8 +92,8 @@ public final class CodeGeneratorRequestGiven {
                                              GeneratedMethods methods) {
         SpineProtocConfig protocConfig = SpineProtocConfig
                 .newBuilder()
-                .setGeneratedInterfaces(interfaces.asProtocConfig())
-                .setGeneratedMethods(methods.asProtocConfig())
+                .setGenerateInterfaces(interfaces.asProtocConfig())
+                .setGenerateMethods(methods.asProtocConfig())
                 .build();
         return Base64.getEncoder()
                      .encodeToString(protocConfig.toByteArray());

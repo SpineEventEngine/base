@@ -27,7 +27,7 @@ import io.spine.type.MessageType;
 import java.util.List;
 
 /**
- * Creates methods that would be inserted into the Protoc-compiled Java code.
+ * Creates methods that are inserted into the Protoc-compiled Java code.
  */
 @SPI
 @Immutable
@@ -44,7 +44,7 @@ public interface MethodFactory {
      *
      * @param messageType
      *         message to generate new methods for
-     * @return created methods
+     * @return generated methods
      */
-    List<MethodBody> newMethodsFor(MessageType messageType);
+    List<GeneratedMethod> newMethodsFor(MessageType messageType);
 }
