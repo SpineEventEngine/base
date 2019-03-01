@@ -25,6 +25,7 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -181,34 +182,35 @@ import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class ProtoAnnotatorPlugin extends IncrementalPlugin {
+public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        createMainTask(project);
-        createTestTask(project);
+        Module module = new Module(project);
+        createMainTask(module);
+        createTestTask(module);
     }
 
-    private void createMainTask(Project project) {
+    private void createMainTask(Module module) {
         Action<Task> task = new Annotate(false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                .withInputFiles(protoSource(project))
-                .withOutputFiles(protoCompiledToJava(project))
-                .applyNowTo(project);
+                .withInputFiles(module.protoSource())
+                .withOutputFiles(module.protoCompiledToJava())
+                .applyNowTo(module.gradleProject());
     }
 
-    private void createTestTask(Project project) {
+    private void createTestTask(Module module) {
         Action<Task> testTask = new Annotate(true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                .withInputFiles(protoSource(project))
-                .withInputFiles(testProtoSource(project))
-                .withOutputFiles(protoCompiledToJava(project))
-                .withOutputFiles(testProtoCompiledToJava(project))
-                .applyNowTo(project);
+                .withInputFiles(module.protoSource())
+                .withInputFiles(module.testProtoSource())
+                .withOutputFiles(module.protoCompiledToJava())
+                .withOutputFiles(module.testProtoCompiledToJava())
+                .applyNowTo(module.gradleProject());
     }
 
     /**

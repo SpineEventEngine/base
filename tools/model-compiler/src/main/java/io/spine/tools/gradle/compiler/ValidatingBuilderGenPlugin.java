@@ -87,11 +87,13 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                              mainProtoFiles(project),
                              () -> getTargetGenValidatorsRootDir(project),
                              () -> getMainProtoSrcDir(project));
-
+        Module module = new Module(project);
         GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
                         .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
+                        .withInputFiles(module.protoSource())
+                        .withOutputFiles(module.validatingBuilders())
                         .applyNowTo(project);
         _debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
@@ -104,6 +106,10 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                 newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
                         .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
+                        .withInputFiles(module.protoSource())
+                        .withInputFiles(module.testProtoSource())
+                        .withOutputFiles(module.validatingBuilders())
+                        .withOutputFiles(module.testValidatingBuilders())
                         .applyNowTo(project);
         _debug("Validating builders generation phase initialized with tasks: {}, {}.",
                generateValidator, generateTestValidator);

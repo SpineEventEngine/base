@@ -21,7 +21,6 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.gradle.SourceSetName;
-import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.collections.ImmutableFileCollection;
@@ -34,28 +33,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceSetName.MAIN;
 import static io.spine.tools.gradle.SourceSetName.TEST;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
-/**
- * A {@link SpinePlugin} which performs its tasks in the incremental manner.
- *
- * <p>When running a task configured for incremental build, it may be skipped if its outcome is
- * already achieved, e.g. the files are written.
- */
-public abstract class IncrementalPlugin extends SpinePlugin {
+final class Module {
 
     private static final String PROTO_SOURCE_SET = "proto";
 
-    protected FileCollection protoSource(Project project) {
-        return protoSource(project, MAIN);
+    private final Project project;
+
+    Module(Project project) {
+        this.project = checkNotNull(project);
     }
 
-    protected FileCollection testProtoSource(Project project) {
-        return protoSource(project, TEST);
+    FileCollection protoSource() {
+        return protoSource(MAIN);
     }
 
-    private static FileCollection protoSource(Project project, SourceSetName sourceSetName) {
-        SourceSet sourceSet = sourceSet(project, sourceSetName);
+    FileCollection testProtoSource() {
+        return protoSource(TEST);
+    }
+
+    private FileCollection protoSource(SourceSetName sourceSetName) {
+        SourceSet sourceSet = sourceSet(sourceSetName);
         Optional<FileCollection> files = protoSource(sourceSet);
         return files.orElse(ImmutableFileCollection.of());
     }
@@ -71,7 +72,7 @@ public abstract class IncrementalPlugin extends SpinePlugin {
         }
     }
 
-    private static SourceSet sourceSet(Project project, SourceSetName sourceSetName) {
+    private SourceSet sourceSet(SourceSetName sourceSetName) {
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         SourceSet sourceSet = javaConvention.getSourceSets()
@@ -80,15 +81,31 @@ public abstract class IncrementalPlugin extends SpinePlugin {
         return sourceSet;
     }
 
-    protected FileCollection protoCompiledToJava(Project project) {
+    FileCollection protoCompiledToJava() {
         String generationDir = getMainGenProtoDir(project);
         FileCollection files = project.fileTree(generationDir);
         return files;
     }
 
-    protected FileCollection testProtoCompiledToJava(Project project) {
+    FileCollection testProtoCompiledToJava() {
         String generationDir = getTestProtoSrcDir(project);
         FileCollection files = project.fileTree(generationDir);
         return files;
+    }
+
+    FileCollection validatingBuilders() {
+        String vBuilderGenTarget = getTargetGenValidatorsRootDir(project);
+        FileCollection files = project.fileTree(vBuilderGenTarget);
+        return files;
+    }
+
+    FileCollection testValidatingBuilders() {
+        String vBuilderGenTarget = getTargetTestGenValidatorsRootDir(project);
+        FileCollection files = project.fileTree(vBuilderGenTarget);
+        return files;
+    }
+
+    Project gradleProject() {
+        return project;
     }
 }
