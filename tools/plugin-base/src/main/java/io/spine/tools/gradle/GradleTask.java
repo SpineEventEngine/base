@@ -22,6 +22,7 @@ package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -86,14 +87,12 @@ public final class GradleTask {
 
         private boolean allowNoDependencies;
 
-        private final UnionFileCollection inputs;
-        private final UnionFileCollection outputs;
+        private @MonotonicNonNull UnionFileCollection inputs;
+        private @MonotonicNonNull UnionFileCollection outputs;
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
             this.action = action;
-            this.inputs = new UnionFileCollection();
-            this.outputs = new UnionFileCollection();
         }
 
         /**
@@ -191,6 +190,9 @@ public final class GradleTask {
          */
         public Builder withInputFiles(FileCollection inputs) {
             checkNotNull(inputs, "Task inputs");
+            if (this.inputs == null) {
+                this.inputs = new UnionFileCollection();
+            }
             this.inputs.addToUnion(inputs);
             return this;
         }
@@ -208,6 +210,9 @@ public final class GradleTask {
          */
         public Builder withOutputFiles(FileCollection outputs) {
             checkNotNull(outputs, "Task outputs");
+            if (this.outputs == null) {
+                this.outputs = new UnionFileCollection();
+            }
             this.outputs.addToUnion(outputs);
             return this;
         }
@@ -275,13 +280,13 @@ public final class GradleTask {
         }
 
         private void addTaskIO(Task task) {
-            if (!inputs.isEmpty()) {
+            if (inputs != null) {
                 task.getInputs()
                     .files(inputs)
                     .skipWhenEmpty()
                     .optional();
             }
-            if (!outputs.isEmpty()) {
+            if (outputs != null) {
                 task.getOutputs()
                     .files(outputs)
                     .optional();
