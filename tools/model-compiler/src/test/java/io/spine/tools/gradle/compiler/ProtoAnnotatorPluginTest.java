@@ -38,8 +38,6 @@ import io.spine.tools.compiler.annotation.check.NestedTypeFieldsAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.SourceCheck;
 import io.spine.tools.gradle.GradleProject;
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.TaskOutcome;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -58,7 +56,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.code.java.SourceFile.forMessage;
 import static io.spine.code.java.SourceFile.forOuterClassOf;
 import static io.spine.code.java.SourceFile.forService;
@@ -75,7 +72,6 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
 
 @DisplayName("ProtoAnnotatorPlugin should")
 @ExtendWith(TempDirectory.class)
@@ -193,21 +189,6 @@ class ProtoAnnotatorPluginTest {
     void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
-
-    @Test
-    @DisplayName("skip task if inputs and outputs stay the same")
-    void incremental() {
-        GradleProject project = newProjectWithFile(INTERNAL_ALL);
-
-        BuildResult firstRun = project.executeTask(ANNOTATE_PROTO);
-        TaskOutcome firstOutcome = firstRun.task(ANNOTATE_PROTO.path()).getOutcome();
-        assertThat(firstOutcome).isEqualTo(SUCCESS);
-
-        BuildResult secondRun = project.executeTask(ANNOTATE_PROTO);
-        TaskOutcome secondOutcome = secondRun.task(ANNOTATE_PROTO.path()).getOutcome();
-        assertThat(secondOutcome).isNotEqualTo(SUCCESS);
-    }
-
 
     private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {

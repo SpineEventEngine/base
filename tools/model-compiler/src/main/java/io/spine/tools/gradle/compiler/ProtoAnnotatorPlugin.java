@@ -186,31 +186,24 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Module module = new Module(project);
-        createMainTask(module);
-        createTestTask(module);
+        createMainTask(project);
+        createTestTask(project);
     }
 
-    private void createMainTask(Module module) {
+    private void createMainTask(Project project) {
         Action<Task> task = new Annotate(false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                .withInputFiles(module.protoSource())
-                .withOutputFiles(module.protoCompiledToJava())
-                .applyNowTo(module.gradleProject());
+                .applyNowTo(project);
     }
 
-    private void createTestTask(Module module) {
+    private void createTestTask(Project project) {
         Action<Task> testTask = new Annotate(true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                .withInputFiles(module.protoSource())
-                .withInputFiles(module.testProtoSource())
-                .withOutputFiles(module.protoCompiledToJava())
-                .withOutputFiles(module.testProtoCompiledToJava())
-                .applyNowTo(module.gradleProject());
+                .applyNowTo(project);
     }
 
     /**
