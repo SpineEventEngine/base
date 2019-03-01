@@ -57,7 +57,6 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
      */
     public static File resolve(Supplier<String> path) {
         String pathname = path.get();
-        //_debug("Resolving path: {}", pathname);
         Path normalized = new File(pathname).toPath()
                                             .normalize();
         File result = normalized.toAbsolutePath()
