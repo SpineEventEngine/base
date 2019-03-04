@@ -269,6 +269,9 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         }
     }
 
+    /**
+     * Downloads and lays out the {@code protoc} plugin executable JAR.
+     */
     private static final class CopyPluginJar implements Action<Task> {
 
         private final Project project;

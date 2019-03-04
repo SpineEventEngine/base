@@ -207,6 +207,13 @@ public enum TaskName {
         return value;
     }
 
+    /**
+     * Obtains this task name as a path.
+     *
+     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
+     *
+     * @return the name with a colon symbol ({@code :}) at the beginning
+     */
     public String path() {
         return ':' + value;
     }

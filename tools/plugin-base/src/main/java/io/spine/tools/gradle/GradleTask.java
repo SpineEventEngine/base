@@ -31,6 +31,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
@@ -201,7 +202,22 @@ public final class GradleTask {
             return this;
         }
 
-        public Builder withInputProperty(String propertyName, @Nullable Object value) {
+        /**
+         * Adds a task input property.
+         *
+         * <p>An input property is treated in a similar way as
+         * an {@linkplain #withInputFiles input file}.
+         *
+         * <p>Multiple invocations of this method append new properties. If there already is
+         * a property with is such a name, the value is overridden.
+         *
+         * @param propertyName
+         *         the name of the property
+         * @param value
+         *         the value of the property
+         * @return the current instance of {@code Builder}
+         */
+        public Builder withInputProperty(String propertyName, @Nullable Serializable value) {
             checkNotNull(propertyName);
             if (inputProperties == null) {
                 inputProperties = newHashMap();

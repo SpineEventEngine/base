@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.SourceSetName;
+import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.collections.ImmutableFileCollection;
@@ -30,8 +30,8 @@ import org.gradle.api.tasks.SourceSet;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.SourceSetName.MAIN;
-import static io.spine.tools.gradle.SourceSetName.TEST;
+import static io.spine.tools.gradle.SourceScope.MAIN;
+import static io.spine.tools.gradle.SourceScope.TEST;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
@@ -84,8 +84,8 @@ final class Module {
         return protoSource(TEST);
     }
 
-    private FileCollection protoSource(SourceSetName sourceSetName) {
-        SourceSet sourceSet = sourceSet(sourceSetName);
+    private FileCollection protoSource(SourceScope sourceScope) {
+        SourceSet sourceSet = sourceSet(sourceScope);
         Optional<FileCollection> files = protoSource(sourceSet);
         return files.orElse(ImmutableFileCollection.of());
     }
@@ -101,11 +101,11 @@ final class Module {
         }
     }
 
-    private SourceSet sourceSet(SourceSetName sourceSetName) {
+    private SourceSet sourceSet(SourceScope sourceScope) {
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         SourceSet sourceSet = javaConvention.getSourceSets()
-                                            .findByName(sourceSetName.value());
+                                            .findByName(sourceScope.value());
         checkNotNull(sourceSet);
         return sourceSet;
     }

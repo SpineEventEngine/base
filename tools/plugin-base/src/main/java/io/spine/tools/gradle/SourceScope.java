@@ -20,14 +20,17 @@
 
 package io.spine.tools.gradle;
 
-public enum SourceSetName {
+/**
+ * A name of a source set scope.
+ */
+public enum SourceScope {
 
     MAIN("main"),
     TEST("test");
 
     private final String value;
 
-    SourceSetName(String value) {
+    SourceScope(String value) {
         this.value = value;
     }
 
