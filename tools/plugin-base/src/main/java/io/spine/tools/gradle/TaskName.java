@@ -126,20 +126,6 @@ public enum TaskName {
     FIND_TEST_VALIDATION_RULES("findTestValidationRules"),
 
     /**
-     * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code main} classes and resources scope.
-     */
-    MAP_PROTO_TO_JAVA("mapProtoToJava"),
-
-    /**
-     * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code test} classes and resources scope.
-     */
-    MAP_TEST_PROTO_TO_JAVA("mapTestProtoToJava"),
-
-    /**
      * The name of the class path scan task added to the Gradle lifecycle.
      */
     SCAN_CLASS_PATH("scanClassPath"),
