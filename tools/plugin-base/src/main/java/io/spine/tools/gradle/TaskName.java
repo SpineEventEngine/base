@@ -224,7 +224,7 @@ public enum TaskName {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("val", value)
+                          .add("value", value)
                           .toString();
     }
 }
