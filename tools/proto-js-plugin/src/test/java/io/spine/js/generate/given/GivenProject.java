@@ -31,7 +31,7 @@ import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.build;
 import static java.util.Collections.singletonList;
 
 public final class GivenProject {
@@ -72,6 +72,6 @@ public final class GivenProject {
                 .setProjectFolder(projectDir)
                 .addProtoFiles(PROTO_FILES)
                 .build();
-        gradleProject.executeTask(BUILD);
+        gradleProject.executeTask(build);
     }
 }

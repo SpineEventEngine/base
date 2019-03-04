@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.findValidationRules;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(TempDirectory.class)
@@ -77,7 +77,7 @@ class ValidationRulesLookupPluginTest {
     void findNestedValidationRules() {
         String file = "nested_validation_rule.proto";
         GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
-        project.executeTask(FIND_VALIDATION_RULES);
+        project.executeTask(findValidationRules);
 
         String expectedKey = PROTO_FILE_PACKAGE + DOT +
                 OUTER_MESSAGE_TYPE + DOT +

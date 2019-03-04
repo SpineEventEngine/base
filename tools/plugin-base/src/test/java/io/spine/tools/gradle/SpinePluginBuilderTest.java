@@ -33,15 +33,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.tools.gradle.TaskName.CLASSES;
-import static io.spine.tools.gradle.TaskName.CLEAN;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
-import static io.spine.tools.gradle.TaskName.VERIFY_MODEL;
+import static io.spine.tools.gradle.TaskName.annotateProto;
+import static io.spine.tools.gradle.TaskName.classes;
+import static io.spine.tools.gradle.TaskName.clean;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.findValidationRules;
+import static io.spine.tools.gradle.TaskName.generateProto;
+import static io.spine.tools.gradle.TaskName.generateTestProto;
+import static io.spine.tools.gradle.TaskName.preClean;
+import static io.spine.tools.gradle.TaskName.verifyModel;
 import static io.spine.tools.gradle.testing.GradleProject.javaPlugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -71,30 +71,30 @@ class SpinePluginBuilderTest {
         subProject.getPluginManager()
                   .apply(javaPlugin());
         SpinePlugin plugin = TestPlugin.INSTANCE;
-        GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.action())
-                                .insertAfterAllTasks(COMPILE_JAVA)
+        GradleTask task = plugin.newTask(annotateProto, NoOp.action())
+                                .insertAfterAllTasks(compileJava)
                                 .applyNowTo(subProject);
         TaskContainer subProjectTasks = subProject.getTasks();
         Task newTask = subProjectTasks.findByName(task.getName()
                                                       .value());
         assertNotNull(newTask);
         Collection<?> dependencies = newTask.getDependsOn();
-        assertTrue(dependencies.contains(subProjectTasks.findByName(COMPILE_JAVA.value())));
+        assertTrue(dependencies.contains(subProjectTasks.findByName(compileJava.value())));
         assertTrue(dependencies.contains(project.getTasks()
-                                                .findByName(COMPILE_JAVA.value())));
+                                                .findByName(compileJava.value())));
     }
 
     @Test
     @DisplayName("create task and insert before other")
     void create_task_and_insert_before_other() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, NoOp.action())
-              .insertBeforeTask(CLASSES)
+        plugin.newTask(verifyModel, NoOp.action())
+              .insertBeforeTask(classes)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task classes = tasks.findByName(CLASSES.value());
+        Task classes = tasks.findByName(TaskName.classes.value());
         assertNotNull(classes);
-        Task verifyModel = tasks.findByName(VERIFY_MODEL.value());
+        Task verifyModel = tasks.findByName(TaskName.verifyModel.value());
         assertTrue(classes.getDependsOn()
                           .contains(verifyModel));
     }
@@ -103,13 +103,13 @@ class SpinePluginBuilderTest {
     @DisplayName("create task and insert after other")
     void create_task_and_insert_after_other() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, NoOp.action())
-              .insertAfterTask(COMPILE_JAVA)
+        plugin.newTask(verifyModel, NoOp.action())
+              .insertAfterTask(compileJava)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task compileJava = tasks.findByName(COMPILE_JAVA.value());
+        Task compileJava = tasks.findByName(TaskName.compileJava.value());
         assertNotNull(compileJava);
-        Task verifyModel = tasks.findByName(VERIFY_MODEL.value());
+        Task verifyModel = tasks.findByName(TaskName.verifyModel.value());
         assertNotNull(verifyModel);
         assertTrue(verifyModel.getDependsOn()
                               .contains(compileJava.getName()));
@@ -119,20 +119,20 @@ class SpinePluginBuilderTest {
     @DisplayName("ignore task dependency if no such task found")
     void ignore_task_dependency_if_no_such_task_found() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(GENERATE_TEST_PROTO, NoOp.action())
-              .insertAfterAllTasks(GENERATE_PROTO)
+        plugin.newTask(generateTestProto, NoOp.action())
+              .insertAfterAllTasks(generateProto)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task generateProto = tasks.findByName(GENERATE_PROTO.value());
+        Task generateProto = tasks.findByName(TaskName.generateProto.value());
         assertNull(generateProto);
-        Task generateTestProto = tasks.findByName(GENERATE_TEST_PROTO.value());
+        Task generateTestProto = tasks.findByName(TaskName.generateTestProto.value());
         assertNotNull(generateTestProto);
     }
 
     @Test
     @DisplayName("not allow tasks without any connection to task graph")
     void not_allow_tasks_without_any_connection_to_task_graph() {
-        GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(FIND_VALIDATION_RULES,
+        GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(findValidationRules,
                                                                  NoOp.action());
         assertThrows(IllegalStateException.class,
                      () -> builder.applyNowTo(project));
@@ -142,10 +142,10 @@ class SpinePluginBuilderTest {
     @DisplayName("return build task description")
     void return_build_task_description() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
-        GradleTask desc = plugin.newTask(PRE_CLEAN, NoOp.action())
-                                .insertBeforeTask(CLEAN)
+        GradleTask desc = plugin.newTask(preClean, NoOp.action())
+                                .insertBeforeTask(clean)
                                 .applyNowTo(project);
-        assertEquals(PRE_CLEAN, desc.getName());
+        assertEquals(preClean, desc.getName());
         assertEquals(project, desc.getProject());
     }
 
@@ -154,12 +154,12 @@ class SpinePluginBuilderTest {
     void create_task_with_given_inputs() throws IOException {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         File input = new File(".").getAbsoluteFile();
-        plugin.newTask(PRE_CLEAN, NoOp.action())
-              .insertBeforeTask(CLEAN)
+        plugin.newTask(preClean, NoOp.action())
+              .insertBeforeTask(clean)
               .withInputFiles(input.toPath())
               .applyNowTo(project);
         Task task = project.getTasks()
-                           .findByPath(PRE_CLEAN.value());
+                           .findByPath(preClean.value());
         assertNotNull(task);
         File singleInput = task.getInputs()
                                .getFiles()

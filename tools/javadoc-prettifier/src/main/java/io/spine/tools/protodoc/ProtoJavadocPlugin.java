@@ -29,12 +29,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
-import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.formatProtoDoc;
+import static io.spine.tools.gradle.TaskName.formatTestProtoDoc;
+import static io.spine.tools.gradle.TaskName.generateProto;
+import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;
@@ -71,15 +71,15 @@ public class ProtoJavadocPlugin extends SpinePlugin {
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
         Action<Task> mainAction = createAction(project, TaskType.MAIN);
-        newTask(FORMAT_PROTO_DOC, mainAction)
-                .insertBeforeTask(COMPILE_JAVA)
-                .insertAfterTask(GENERATE_PROTO)
+        newTask(formatProtoDoc, mainAction)
+                .insertBeforeTask(compileJava)
+                .insertAfterTask(generateProto)
                 .applyNowTo(project);
 
         Action<Task> testAction = createAction(project, TaskType.TEST);
-        newTask(FORMAT_TEST_PROTO_DOC, testAction)
-                .insertBeforeTask(COMPILE_TEST_JAVA)
-                .insertAfterTask(GENERATE_TEST_PROTO)
+        newTask(formatTestProtoDoc, testAction)
+                .insertBeforeTask(compileTestJava)
+                .insertAfterTask(generateTestProto)
                 .applyNowTo(project);
     }
 

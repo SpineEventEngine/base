@@ -33,12 +33,12 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.generateTestValidatingBuilders;
+import static io.spine.tools.gradle.TaskName.generateValidatingBuilders;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
@@ -89,9 +89,9 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                              () -> getMainProtoSrcDir(project));
 
         GradleTask generateValidator =
-                newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
-                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                        .insertBeforeTask(COMPILE_JAVA)
+                newTask(generateValidatingBuilders, mainScopeAction)
+                        .insertAfterTask(mergeDescriptorSet)
+                        .insertBeforeTask(compileJava)
                         .applyNowTo(project);
         _debug("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
@@ -101,9 +101,9 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                              () -> getTestProtoSrcDir(project));
 
         GradleTask generateTestValidator =
-                newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
-                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                        .insertBeforeTask(COMPILE_TEST_JAVA)
+                newTask(generateTestValidatingBuilders, testScopeAction)
+                        .insertAfterTask(mergeTestDescriptorSet)
+                        .insertBeforeTask(compileTestJava)
                         .applyNowTo(project);
         _debug("Validating builders generation phase initialized with tasks: {}, {}.",
                generateValidator, generateTestValidator);

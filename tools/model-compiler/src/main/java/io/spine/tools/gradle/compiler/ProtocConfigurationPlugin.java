@@ -53,9 +53,8 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
-import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
-import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
-import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
+import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
+import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
@@ -158,7 +157,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
         Action<Task> action = task -> copyPluginExecutables(project, protocPluginDependency, fetch);
-        GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
+        GradleTask copyPluginJar = newTask(TaskName.copyPluginJar, action)
                 .allowNoDependencies()
                 .applyNowTo(project);
         return copyPluginJar;
@@ -202,10 +201,10 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         TaskName writeRefName;
         if (tests) {
             descriptor = getTestDescriptorSet(project);
-            writeRefName = WRITE_TEST_DESCRIPTOR_REFERENCE;
+            writeRefName = writeTestDescriptorReference;
         } else {
             descriptor = getMainDescriptorSet(project);
-            writeRefName = WRITE_DESCRIPTOR_REFERENCE;
+            writeRefName = writeDescriptorReference;
         }
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
         options.setPath(GStrings.fromPlain(descriptor.getPath()));

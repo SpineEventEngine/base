@@ -40,9 +40,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static io.spine.tools.gradle.TaskName.CLASSES;
-import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
+import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.TaskName.classes;
+import static io.spine.tools.gradle.TaskName.scanClassPath;
 import static io.spine.tools.reflections.Extension.REFLECTIONS_PLUGIN_EXTENSION;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -55,8 +55,6 @@ import static java.io.File.separatorChar;
  * serialized config is required for Reflections framework to run.
  *
  * <p>Corresponding Maven plugin does just the same.
- *
- * @author Alex Tymchenko
  */
 public class ReflectionsPlugin extends SpinePlugin {
 
@@ -73,9 +71,9 @@ public class ReflectionsPlugin extends SpinePlugin {
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
         Action<Task> scanClassPathAction = task -> scanClassPath(project);
-        GradleTask task = newTask(SCAN_CLASS_PATH, scanClassPathAction)
-                .insertAfterTask(CLASSES)
-                .insertBeforeTask(BUILD)
+        GradleTask task = newTask(scanClassPath, scanClassPathAction)
+                .insertAfterTask(classes)
+                .insertBeforeTask(build)
                 .applyNowTo(project);
 
         log.debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);

@@ -29,22 +29,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.CLEAN;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
-import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.TaskName.annotateProto;
+import static io.spine.tools.gradle.TaskName.annotateTestProto;
+import static io.spine.tools.gradle.TaskName.clean;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.findTestValidationRules;
+import static io.spine.tools.gradle.TaskName.findValidationRules;
+import static io.spine.tools.gradle.TaskName.generateRejections;
+import static io.spine.tools.gradle.TaskName.generateTestRejections;
+import static io.spine.tools.gradle.TaskName.generateTestValidatingBuilders;
+import static io.spine.tools.gradle.TaskName.generateValidatingBuilders;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
+import static io.spine.tools.gradle.TaskName.preClean;
+import static io.spine.tools.gradle.TaskName.processResources;
+import static io.spine.tools.gradle.TaskName.processTestResources;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
@@ -76,62 +76,62 @@ class ModelCompilerPluginTest {
 
         @Test
         void preClean() {
-            assertThat(task(CLEAN)).dependsOn(task(PRE_CLEAN)).isTrue();
+            assertThat(task(clean)).dependsOn(task(preClean)).isTrue();
         }
 
         @Test
         void generateRejections() {
             assertDependencies(
-                    GENERATE_REJECTIONS, MERGE_DESCRIPTOR_SET, COMPILE_JAVA
+                    generateRejections, mergeDescriptorSet, compileJava
             );
         }
 
         @Test
         void generateTestRejections() {
             assertDependencies(
-                    GENERATE_TEST_REJECTIONS, MERGE_TEST_DESCRIPTOR_SET, COMPILE_TEST_JAVA
+                    generateTestRejections, mergeTestDescriptorSet, compileTestJava
             );
         }
 
         @Test
         void findValidationRules() {
             assertDependencies(
-                    FIND_VALIDATION_RULES, MERGE_DESCRIPTOR_SET, PROCESS_RESOURCES
+                    findValidationRules, mergeDescriptorSet, processResources
             );
         }
 
         @Test
         void findTestValidationRules() {
             assertDependencies(
-                    FIND_TEST_VALIDATION_RULES, MERGE_TEST_DESCRIPTOR_SET, PROCESS_TEST_RESOURCES
+                    findTestValidationRules, mergeTestDescriptorSet, processTestResources
             );
         }
 
         @Test
         void generateValidatingBuilders() {
             assertDependencies(
-                    GENERATE_VALIDATING_BUILDERS, MERGE_DESCRIPTOR_SET, COMPILE_JAVA
+                    generateValidatingBuilders, mergeDescriptorSet, compileJava
             );
         }
 
         @Test
         void generateTestValidatingBuilders() {
             assertDependencies(
-                    GENERATE_TEST_VALIDATING_BUILDERS, MERGE_TEST_DESCRIPTOR_SET, COMPILE_TEST_JAVA
+                    generateTestValidatingBuilders, mergeTestDescriptorSet, compileTestJava
             );
         }
 
         @Test
         void annotateProto() {
             assertDependencies(
-                    ANNOTATE_PROTO, MERGE_DESCRIPTOR_SET, COMPILE_JAVA
+                    annotateProto, mergeDescriptorSet, compileJava
             );
         }
 
         @Test
         void annotateTestProto() {
             assertDependencies(
-                    ANNOTATE_TEST_PROTO, MERGE_TEST_DESCRIPTOR_SET, COMPILE_TEST_JAVA
+                    annotateTestProto, mergeTestDescriptorSet, compileTestJava
             );
         }
 

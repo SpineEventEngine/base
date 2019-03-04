@@ -32,7 +32,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.compileJava;
 import static org.gradle.testkit.runner.TaskOutcome.FAILED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,9 +92,9 @@ class GradleProjectTest {
                                              .setProjectFolder(temporaryFolder)
                                              .addJavaFiles("Faulty.java")
                                              .build();
-        BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);
+        BuildResult buildResult = project.executeAndFail(compileJava);
         assertNotNull(buildResult);
-        BuildTask compileTask = buildResult.task(':' + COMPILE_JAVA.value());
+        BuildTask compileTask = buildResult.task(':' + compileJava.value());
         assertNotNull(compileTask);
         assertEquals(FAILED, compileTask.getOutcome());
     }

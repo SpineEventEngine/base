@@ -29,8 +29,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
+import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.TaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ProtoJsPlugin should")
@@ -43,7 +43,7 @@ class ProtoJsPluginTest {
         project = ProjectBuilder.builder()
                                 .withProjectDir(Files.createTempDir())
                                 .build();
-        project.task(BUILD.value());
+        project.task(build.value());
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProtoJsPluginTest {
         project.getPluginManager()
                .apply(ProtoJsPlugin.class);
         TaskContainer tasks = project.getTasks();
-        Task task = tasks.findByName(GENERATE_JSON_PARSERS.value());
+        Task task = tasks.findByName(generateJsonParsers.value());
         assertNotNull(task);
     }
 }

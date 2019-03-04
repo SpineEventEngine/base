@@ -30,19 +30,19 @@ public enum TaskName {
      * Gradle-own and 3rd-party task names
      **************************************/
 
-    CLEAN("clean"),
+    clean(),
 
-    BUILD("build"),
+    build(),
 
-    COMPILE_JAVA("compileJava"),
-    COMPILE_TEST_JAVA("compileTestJava"),
-    CLASSES("classes"),
+    compileJava(),
+    compileTestJava(),
+    classes(),
 
-    GENERATE_PROTO("generateProto"),
-    GENERATE_TEST_PROTO("generateTestProto"),
+    generateProto(),
+    generateTestProto(),
 
-    PROCESS_RESOURCES("processResources"),
-    PROCESS_TEST_RESOURCES("processTestResources"),
+    processResources(),
+    processTestResources(),
 
     /*
      * Spine custom task names
@@ -51,96 +51,96 @@ public enum TaskName {
     /**
      * The name of the additional cleanup task added to the Gradle lifecycle.
      */
-    PRE_CLEAN("preClean"),
+    preClean(),
 
     /**
      * The name of the task that checks for wrong FQN naming in javadocs.
      *
      * <p>Relates only to {@code main} classes and resources scope.
      */
-    CHECK_FQN("checkJavadocLink"),
+    checkJavadocLink(),
 
     /**
      * The name of the task that checks for allowed line length.
      *
      * <p>Relates only to {@code main} classes and resources scope.
      */
-    CHECK_RIGHT_MARGIN_WRAPPING("checkRightMarginWrapping"),
+    checkRightMarginWrapping(),
 
     /**
      * The name of the rejection generation task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    GENERATE_REJECTIONS("generateRejections"),
+    generateRejections(),
 
     /**
      * The name of the rejection generation task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    GENERATE_TEST_REJECTIONS("generateTestRejections"),
+    generateTestRejections(),
 
     /**
      * The name of the validating builder generation task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    GENERATE_VALIDATING_BUILDERS("generateValidatingBuilders"),
+    generateValidatingBuilders(),
 
     /**
      * The name of the validating builder generation task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    GENERATE_TEST_VALIDATING_BUILDERS("generateTestValidatingBuilders"),
+    generateTestValidatingBuilders(),
 
     /**
      * The name of the enrichment lookup task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    FIND_ENRICHMENTS("findEnrichments"),
+    findEnrichments(),
 
     /**
      * The name of the enrichment lookup task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    FIND_TEST_ENRICHMENTS("findTestEnrichments"),
+    findTestEnrichments(),
 
     /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
      * <p>Relates to {@code main} classes and resources scope.
      */
-    FIND_VALIDATION_RULES("findValidationRules"),
+    findValidationRules(),
 
     /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
      * <p>Relates to {@code test} classes and resources scope.
      */
-    FIND_TEST_VALIDATION_RULES("findTestValidationRules"),
+    findTestValidationRules(),
 
     /**
      * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    MAP_PROTO_TO_JAVA("mapProtoToJava"),
+    mapProtoToJava(),
 
     /**
      * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    MAP_TEST_PROTO_TO_JAVA("mapTestProtoToJava"),
+    mapTestProtoToJava(),
 
     /**
      * The name of the class path scan task added to the Gradle lifecycle.
      */
-    SCAN_CLASS_PATH("scanClassPath"),
+    scanClassPath(),
 
     /**
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
@@ -148,7 +148,7 @@ public enum TaskName {
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    ANNOTATE_PROTO("annotateProto"),
+    annotateProto(),
 
     /**
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
@@ -156,7 +156,7 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    ANNOTATE_TEST_PROTO("annotateTestProto"),
+    annotateTestProto(),
 
     /**
      * The name of the task, that formats Javadocs in sources generated from {@code .proto}
@@ -164,7 +164,7 @@ public enum TaskName {
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    FORMAT_PROTO_DOC("formatProtoDoc"),
+    formatProtoDoc(),
 
     /**
      * The name of the task, that formats Javadocs in sources generated from {@code .proto}
@@ -172,28 +172,28 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    FORMAT_TEST_PROTO_DOC("formatTestProtoDoc"),
+    formatTestProtoDoc(),
 
     /**
      * The name of the task, that checks if the defined model matches the rules of Spine.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    VERIFY_MODEL("verifyModel"),
+    verifyModel(),
 
     /**
      * The name of the task, that merges all the module known type descriptors into one.
      *
      * <p>Handles the {@code main} classes and resources scope.
      */
-    MERGE_DESCRIPTOR_SET("mergeDescriptorSet"),
+    mergeDescriptorSet(),
 
     /**
      * The name of the task, that merges all the module known type descriptors into one.
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet"),
+    mergeTestDescriptorSet(),
 
     /**
      * The name of the task, that generates JSON-parsing code for the JavaScript messages compiled
@@ -201,26 +201,15 @@ public enum TaskName {
      *
      * <p>Handles both {@code main} and {@code test} classes and resources scope.
      */
-    GENERATE_JSON_PARSERS("generateJsonParsers"),
+    generateJsonParsers(),
 
-    COPY_PLUGIN_JAR("copyPluginJar"),
+    copyPluginJar(),
 
-    WRITE_DESCRIPTOR_REFERENCE("writeDescriptorReference"),
+    writeDescriptorReference(),
 
-    WRITE_TEST_DESCRIPTOR_REFERENCE("writeTestDescriptorReference");
-
-    private final String value;
-
-    TaskName(String value) {
-        this.value = value;
-    }
+    writeTestDescriptorReference();
 
     public String value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return value();
+        return name();
     }
 }

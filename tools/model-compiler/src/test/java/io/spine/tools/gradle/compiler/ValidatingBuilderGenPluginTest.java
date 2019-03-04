@@ -31,7 +31,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.compileJava;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("ValidatingBuilderGenPlugin should")
@@ -68,6 +68,6 @@ class ValidatingBuilderGenPluginTest {
                              .setProjectFolder(testProjectDir)
                              .addProtoFiles(PROTO_FILES)
                              .build();
-        project.executeTask(COMPILE_JAVA);
+        project.executeTask(compileJava);
     }
 }

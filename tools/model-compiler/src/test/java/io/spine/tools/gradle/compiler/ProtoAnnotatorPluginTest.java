@@ -70,8 +70,8 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNA
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
-import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.annotateProto;
+import static io.spine.tools.gradle.TaskName.compileJava;
 
 @DisplayName("ProtoAnnotatorPlugin should")
 @ExtendWith(TempDirectory.class)
@@ -187,7 +187,7 @@ class ProtoAnnotatorPluginTest {
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
     void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
-        newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
+        newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(compileJava);
     }
 
     private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
@@ -290,7 +290,7 @@ class ProtoAnnotatorPluginTest {
 
     private FileDescriptor compileAndAnnotate(FileName testFile) {
         GradleProject gradleProject = newProjectWithFile(testFile);
-        gradleProject.executeTask(ANNOTATE_PROTO);
+        gradleProject.executeTask(annotateProto);
         FileDescriptor result = getDescriptor(testFile);
         return result;
     }
