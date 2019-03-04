@@ -56,54 +56,36 @@ message PersonName {
 
 // This is an enrichment for an event defined in another package.
 message EttOnAnotherPackageMessage {
-    option (enrichment_for) = "spine.test.enrichment.type.event.EttProjectCreated";
-
-    string project_name = 1 [(by) = "project_id"];
+    string project_name = 1;
 }
 
 // The enrichment for all the event declared in "user.permission" package and
 // referencing user who is able to grant permissions.
 message EttFieldSelection {
-    option (enrichment_for) = "spine.test.enrichment.type.user.permission.*";
-
-    PersonName granter_name = 1 [(by) = "granter_uid"];
+    PersonName granter_name = 1;
 }
 
 // The enrichment for all the events declared in the `spine.test.enrichment.type.user.*`
 // package, including nested sub-packages.
 //
 message EttOnDeepPackage {
-    option (enrichment_for) = "spine.test.enrichment.type.user.*";
-
-    string time_zone = 1 [(by) = "user_uid"];
+    string time_zone = 1;
 }
 
 // The enrichment for all the events declared under the
 // `spine.test.enrichment.type.user.permission` package, and one event under the `user`
 // package.
 message EttSelectiveComposite {
-    option (enrichment_for) =
-           "spine.test.enrichment.type.user.permission.*,"
-           "spine.test.enrichment.type.user.EttUserLoggedInEvent";
-
     // A non-zero security warning code on an event, or zero if everything is OK.
-    int32 security_warn = 1 [(by) = "user_uid"];
+    int32 security_warn = 1;
 }
 
 // The enrichment referring events from multiple sub-packages.
 message EttMultiPackageComposite {
-    option (enrichment_for) =
-           "spine.test.enrichment.type.user.permission.*,"
-           "spine.test.enrichment.type.user.sharing.*";
-
-    int32 sharing_type = 1 [(by) = "user_uid"];
+    int32 sharing_type = 1;
 }
 
 // The enrichment for two types with different field names serving as the input.
 message EttAlternativeFieldNames {
-    option (enrichment_for) =
-           "spine.test.enrichment.type.user.sharing.EttSharingRequestApproved,"
-           "spine.test.enrichment.type.user.permission.EttPermissionGrantedEvent";
-
-    string user_google_uid = 1 [(by) = "second_user_uid | user_uid"];
+    string user_google_uid = 1;
 }

@@ -50,10 +50,6 @@ message EttUserLoggedOutEvent {
     string owner_email = 2;
 }
 
-// Unlike other events, this one does not have the common field named `user_uid`.
-// This is to test exclusion of messages that do not match field names specified in
-// the `(by)` field option.
-//
 message EttUserDeletedEvent {
     string deleted_uid = 1;
 }

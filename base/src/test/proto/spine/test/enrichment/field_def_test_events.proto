@@ -34,11 +34,5 @@ message FdtUserCreated {
 }
 
 message FdtAccountSuspended {
-
-    // This field is named this way so that the package reference defined in `FdtUserProfile` (see
-    // the definition `field_def_test_enr.proto`) matches this event message type, while field
-    // reference made in the `(by)` option does not match the field of this type. Because of this
-    // the whole type should not match the field reference.
-    //
     string suspended_account_id = 1;
 }

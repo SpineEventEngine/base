@@ -31,13 +31,11 @@ option java_multiple_files = true;
 
 // This enrichment declaration is invalid because there is no type it references.
 message EttWrongDirectTypeRef {
-    option (enrichment_for) = "there.is.no.SuchType";
-    string value = 1 [(by) = "id"];
+    string value = 1;
 }
 
 message EttWrongPackageRef {
-    option (enrichment_for) = "nowhere.pack.*";
-    string value = 1 [(by) = "id"];
+    string value = 1;
 }
 
 message EttEnrichmentSource {
@@ -48,13 +46,11 @@ message EttEnrichmentSource {
 // This is wrongly declared enrichment type because it reference a field which is not declared
 // in the referenced type.
 message EttWrongFieldRef {
-    option (enrichment_for) = "EttEnrichmentSource";
-    string value = 1 [(by) = "description"];
+    string value = 1;
 }
 
 message EttDoubledFieldRef {
-    option (enrichment_for) = "EttEnrichmentSource";
-    string value = 1 [(by) = "id | name"];
+    string value = 1;
 }
 
 message EttAnotherSource {
@@ -63,7 +59,6 @@ message EttAnotherSource {
 
 // This is invalid declaration because none of the field references match the second source type.
 message EttWrongAltFieldRef {
-    option (enrichment_for) = "EttEnrichmentSource, EttAnotherSource";
-    string name = 1  [(by) = "context.actor"];
-    string description = 2 [(by) = "name | id"];
+    string name = 1;
+    string description = 2;
 }

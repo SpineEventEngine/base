@@ -33,9 +33,7 @@ option java_outer_classname = "MttEnrichmentsProto";
 
 // A sample enrichment to verify detecting that a message is an enrichment from `MessageType`.
 message MttStartProjectEnrichment {
-    option (enrichment_for) = "spine.test.code.proto.events.MttProjectStarted";
-
-    string id = 1 [(by) = "details"];
+    string id = 1;
 }
 
 message MttNotEnrichment {
@@ -46,8 +44,6 @@ message MttSomeMessage {
     int32 id = 1;
 
     message MttInnerMessageIsNotEnrichment {
-        option (enrichment_for) = "spine.test.code.proto.events.MttProjectStarted";
-
-        string id = 1 [(by) = "details"];
+        string id = 1;
     }
 }

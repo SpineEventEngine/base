@@ -14,27 +14,17 @@ import "google/protobuf/descriptor.proto";
 // Declarations for use in `EnrichmentMapBuilderTest` only.
 
 message SectionIdListEnrichment {
-    option (enrichment_for) = "spine.tools.compiler.enrichment.mapbuilder.OrderUpdated,"
-                              "spine.tools.compiler.enrichment.mapbuilder.OrderCreated";
-
-    repeated string section_ids = 1 [(by) = "id"];
+    repeated string section_ids = 1;
 }
 
 message ImageIdListEnrichment {
-    option (enrichment_for) = "spine.tools.compiler.enrichment.mapbuilder.*";
-
-    repeated string image_ids = 1 [(by) = "id"];
+    repeated string image_ids = 1;
 }
 
 message OwnerIdEnrichment {
-    option (enrichment_for) = "spine.tools.compiler.enrichment.mapbuilder.OrderUpdated,"
-                              "spine.tools.compiler.enrichment.mapbuilder.SectionUpdated";
-
-    string owner_id = 1 [(by) = "id | order_id"];
+    string owner_id = 1;
 }
 
 message ManagerIdEnrichment {
-    option (enrichment_for) = "spine.tools.compiler.enrichment.mapbuilder.inner.*, spine.tools.compiler.enrichment.mapbuilder.SectionUpdated";
-
-    string manager_id = 1 [(by) = "id | order_id"];
+    string manager_id = 1;
 }
