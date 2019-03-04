@@ -20,6 +20,8 @@
 
 package io.spine.base;
 
+import com.google.protobuf.Message;
+
 import java.util.Optional;
 
 /**
@@ -33,5 +35,5 @@ public interface EnrichmentContainer {
      * @return the instance of the enrichment, or empty {@code Optional} if there is no enrichment
      *         of such class in the container
      */
-    <E extends EnrichmentMessage> Optional<E> find(Class<E> cls);
+    <E extends Message> Optional<E> find(Class<E> cls);
 }

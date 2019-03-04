@@ -190,7 +190,7 @@ class EnrichmentContainerTest {
 
         private final EnrichmentMessage enrichmentMessage = new EmStub();
         @Override
-        public <E extends EnrichmentMessage> Optional<E> find(Class<E> cls) {
+        public <E extends Message> Optional<E> find(Class<E> cls) {
             if (cls.equals(EmStub.class)) {
                 @SuppressWarnings("unchecked") // Safe, as checked above.
                 E enr = (E) enrichmentMessage;
