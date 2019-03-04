@@ -20,13 +20,11 @@
 
 package io.spine.base;
 
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
-import com.google.protobuf.Timestamp;
 import com.google.protobuf.UnknownFieldSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,43 +33,28 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * This test fixes the contract defined by the {@link EnrichmentContainer} interface.
- *
- * <p>The implementations of this interface are expected in the {@code core-java} sub-project.
- */
-@DisplayName("EnrichmentContainer should")
-class EnrichmentContainerTest {
-
-    private final EnrichmentContainer container = new EcStub();
+@DisplayName("MessageContext interface should")
+class MessageContextTest {
 
     @Test
-    @DisplayName("obtain enrichment by its class")
-    void positive() {
-        assertThat(container.find(EmStub.class))
-                .isPresent();
-    }
-
-    @Test
-    @DisplayName("return empty Optional if no enrichment with such class found")
-    void negative() {
-        assertThat(container.find(Timestamp.class))
-                .isEmpty();
+    @DisplayName("extend Message")
+    void contextSuffix() {
+        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
+                .isTrue();
     }
 
     /**
-     * Stub implementation of an enrichment message.
+     * Stub implementation of {@link MessageContext}.
      */
     @SuppressWarnings("ReturnOfNull")
-    @Immutable
-    private static class EmStub implements Message {
+    private static class StubMessageContext implements MessageContext {
 
         @Override
         public void writeTo(CodedOutputStream output) throws IOException {
+
         }
 
         @Override
@@ -102,6 +85,7 @@ class EnrichmentContainerTest {
 
         @Override
         public void writeDelimitedTo(OutputStream output) {
+
         }
 
         @Override
@@ -178,24 +162,6 @@ class EnrichmentContainerTest {
         @Override
         public UnknownFieldSet getUnknownFields() {
             return null;
-        }
-    }
-
-    /**
-     * A stub implementation of {@link EnrichmentContainer} which returns {@link EmStub}
-     * instance when asked.
-     */
-    private static class EcStub implements EnrichmentContainer {
-
-        private final Message enrichmentMessage = new EmStub();
-        @Override
-        public <E extends Message> Optional<E> find(Class<E> cls) {
-            if (cls.equals(EmStub.class)) {
-                @SuppressWarnings("unchecked") // Safe, as checked above.
-                E enr = (E) enrichmentMessage;
-                return Optional.of(enr);
-            }
-            return Optional.empty();
         }
     }
 }
