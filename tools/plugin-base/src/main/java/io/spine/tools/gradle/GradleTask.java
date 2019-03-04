@@ -23,6 +23,7 @@ package io.spine.tools.gradle;
 import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -30,10 +31,12 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Utility wrapper around the Gradle tasks created.
@@ -88,6 +91,7 @@ public final class GradleTask {
         private boolean allowNoDependencies;
 
         private @MonotonicNonNull UnionFileCollection inputs;
+        private Map<String, @Nullable Object> inputProperties;
         private @MonotonicNonNull UnionFileCollection outputs;
 
         Builder(TaskName name, Action<Task> action) {
@@ -197,6 +201,15 @@ public final class GradleTask {
             return this;
         }
 
+        public Builder withInputProperty(String propertyName, @Nullable Object value) {
+            checkNotNull(propertyName);
+            if (inputProperties == null) {
+                inputProperties = newHashMap();
+            }
+            inputProperties.put(propertyName, value);
+            return this;
+        }
+
         /**
          * Adds the files and/or directories to the output file set for the task being built.
          *
@@ -285,6 +298,10 @@ public final class GradleTask {
                     .files(inputs)
                     .skipWhenEmpty()
                     .optional();
+            }
+            if (inputProperties != null) {
+                task.getInputs()
+                    .properties(inputProperties);
             }
             if (outputs != null) {
                 task.getOutputs()

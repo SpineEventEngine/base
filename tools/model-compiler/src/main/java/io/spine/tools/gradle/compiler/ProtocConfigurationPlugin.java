@@ -70,6 +70,8 @@ import static org.gradle.internal.os.OperatingSystem.current;
  */
 public class ProtocConfigurationPlugin extends SpinePlugin {
 
+    private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
+
     private static final String PROTOBUF_GROUP = "com.google.protobuf";
     private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
     private static final String PROTOC = "protoc";
@@ -160,6 +162,9 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         Action<Task> action = task -> copyPluginExecutables(project, protocPluginDependency, fetch);
         GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
                 .allowNoDependencies()
+                .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                .withOutputFiles(project.fileTree(spineDirectory(project)))
+                .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
                 .applyNowTo(project);
         return copyPluginJar;
     }
@@ -169,10 +174,18 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                                               Configuration fetchConfiguration) {
         File executableJar = fetchConfiguration.fileCollection(protobufDependency)
                                                .getSingleFile();
-        File spineDir = at(project.getProjectDir()).tempArtifacts();
-        File rootSpineDir = at(project.getRootDir()).tempArtifacts();
+        File spineDir = spineDirectory(project);
+        File rootSpineDir = rootSpineDirectory(project);
         copy(executableJar, spineDir);
         copy(executableJar, rootSpineDir);
+    }
+
+    private static File spineDirectory(Project project) {
+        return at(project.getProjectDir()).tempArtifacts();
+    }
+
+    private static File rootSpineDirectory(Project project) {
+        return at(project.getRootDir()).tempArtifacts();
     }
 
     private static void copy(File file, File destinationDir) {
