@@ -62,8 +62,8 @@ public class ModelCompilerTestEnv {
                                         .build();
         project.getPluginManager()
                .apply("java");
-        project.task(GENERATE_PROTO.getValue());
-        project.task(GENERATE_TEST_PROTO.getValue());
+        project.task(GENERATE_PROTO.value());
+        project.task(GENERATE_TEST_PROTO.value());
         return project;
     }
 

@@ -76,12 +76,12 @@ class SpinePluginBuilderTest {
                                 .applyNowTo(subProject);
         TaskContainer subProjectTasks = subProject.getTasks();
         Task newTask = subProjectTasks.findByName(task.getName()
-                                                      .getValue());
+                                                      .value());
         assertNotNull(newTask);
         Collection<?> dependencies = newTask.getDependsOn();
-        assertTrue(dependencies.contains(subProjectTasks.findByName(COMPILE_JAVA.getValue())));
+        assertTrue(dependencies.contains(subProjectTasks.findByName(COMPILE_JAVA.value())));
         assertTrue(dependencies.contains(project.getTasks()
-                                                .findByName(COMPILE_JAVA.getValue())));
+                                                .findByName(COMPILE_JAVA.value())));
     }
 
     @Test
@@ -92,9 +92,9 @@ class SpinePluginBuilderTest {
               .insertBeforeTask(CLASSES)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task classes = tasks.findByName(CLASSES.getValue());
+        Task classes = tasks.findByName(CLASSES.value());
         assertNotNull(classes);
-        Task verifyModel = tasks.findByName(VERIFY_MODEL.getValue());
+        Task verifyModel = tasks.findByName(VERIFY_MODEL.value());
         assertTrue(classes.getDependsOn()
                           .contains(verifyModel));
     }
@@ -107,9 +107,9 @@ class SpinePluginBuilderTest {
               .insertAfterTask(COMPILE_JAVA)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task compileJava = tasks.findByName(COMPILE_JAVA.getValue());
+        Task compileJava = tasks.findByName(COMPILE_JAVA.value());
         assertNotNull(compileJava);
-        Task verifyModel = tasks.findByName(VERIFY_MODEL.getValue());
+        Task verifyModel = tasks.findByName(VERIFY_MODEL.value());
         assertNotNull(verifyModel);
         assertTrue(verifyModel.getDependsOn()
                               .contains(compileJava.getName()));
@@ -123,9 +123,9 @@ class SpinePluginBuilderTest {
               .insertAfterAllTasks(GENERATE_PROTO)
               .applyNowTo(project);
         TaskContainer tasks = project.getTasks();
-        Task generateProto = tasks.findByName(GENERATE_PROTO.getValue());
+        Task generateProto = tasks.findByName(GENERATE_PROTO.value());
         assertNull(generateProto);
-        Task generateTestProto = tasks.findByName(GENERATE_TEST_PROTO.getValue());
+        Task generateTestProto = tasks.findByName(GENERATE_TEST_PROTO.value());
         assertNotNull(generateTestProto);
     }
 
@@ -159,7 +159,7 @@ class SpinePluginBuilderTest {
               .withInputFiles(input.toPath())
               .applyNowTo(project);
         Task task = project.getTasks()
-                           .findByPath(PRE_CLEAN.getValue());
+                           .findByPath(PRE_CLEAN.value());
         assertNotNull(task);
         File singleInput = task.getInputs()
                                .getFiles()

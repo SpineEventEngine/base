@@ -215,7 +215,7 @@ public final class GradleTask {
                 throw new IllegalStateException(exceptionMsg);
             }
 
-            Task newTask = project.task(name.getValue())
+            Task newTask = project.task(name.value())
                                   .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
@@ -235,11 +235,11 @@ public final class GradleTask {
 
         private void dependTask(Task task, Project project) {
             if (previousTask != null) {
-                task.dependsOn(previousTask.getValue());
+                task.dependsOn(previousTask.value());
             }
             if (followingTask != null) {
                 TaskContainer existingTasks = project.getTasks();
-                existingTasks.getByPath(followingTask.getValue())
+                existingTasks.getByPath(followingTask.value())
                              .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {
@@ -249,7 +249,7 @@ public final class GradleTask {
         }
 
         private void dependTaskOnAllProjects(Task task, Project rootProject) {
-            String prevTaskName = previousTaskOfAllProjects.getValue();
+            String prevTaskName = previousTaskOfAllProjects.value();
             ProjectHierarchy.applyToAll(rootProject, project -> {
                 Task existingTask = project.getTasks()
                                            .findByName(prevTaskName);

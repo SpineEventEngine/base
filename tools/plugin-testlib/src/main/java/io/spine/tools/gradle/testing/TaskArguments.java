@@ -51,7 +51,7 @@ final class TaskArguments {
     }
 
     String[] of(TaskName taskName) {
-        String task = taskName.getValue();
+        String task = taskName.value();
         List<String> result = Lists.newArrayList(task, STACKTRACE_CLI_OPTION);
         if (debug) {
             result.add(DEBUG_CLI_OPTION);

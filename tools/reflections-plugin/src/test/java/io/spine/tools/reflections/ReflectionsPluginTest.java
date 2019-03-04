@@ -53,8 +53,8 @@ class ReflectionsPluginTest {
                .apply(REFLECTIONS_PLUGIN_ID);
 
         TaskContainer tasks = project.getTasks();
-        Task scanClassPathTask = tasks.getByName(SCAN_CLASS_PATH.getValue());
-        Task buildTask = tasks.getByName(BUILD.getValue());
+        Task scanClassPathTask = tasks.getByName(SCAN_CLASS_PATH.value());
+        Task buildTask = tasks.getByName(BUILD.value());
 
         assertNotNull(scanClassPathTask);
         assertTrue(dependsOn(scanClassPathTask, CLASSES));

@@ -19,8 +19,6 @@
  */
 package io.spine.tools.gradle;
 
-import com.google.common.base.MoreObjects;
-
 /**
  * Task names in Gradle build lifecycle.
  *
@@ -217,14 +215,12 @@ public enum TaskName {
         this.value = value;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("value", value)
-                          .toString();
+        return value();
     }
 }

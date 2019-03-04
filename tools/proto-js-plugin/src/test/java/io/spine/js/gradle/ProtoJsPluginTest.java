@@ -43,7 +43,7 @@ class ProtoJsPluginTest {
         project = ProjectBuilder.builder()
                                 .withProjectDir(Files.createTempDir())
                                 .build();
-        project.task(BUILD.getValue());
+        project.task(BUILD.value());
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProtoJsPluginTest {
         project.getPluginManager()
                .apply(ProtoJsPlugin.class);
         TaskContainer tasks = project.getTasks();
-        Task task = tasks.findByName(GENERATE_JSON_PARSERS.getValue());
+        Task task = tasks.findByName(GENERATE_JSON_PARSERS.value());
         assertNotNull(task);
     }
 }

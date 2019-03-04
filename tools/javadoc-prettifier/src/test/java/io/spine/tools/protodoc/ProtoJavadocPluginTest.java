@@ -148,16 +148,16 @@ class ProtoJavadocPluginTest {
 
     private Task task(TaskName taskName) {
         return project.getTasks()
-                      .getByName(taskName.getValue());
+                      .getByName(taskName.value());
     }
 
     private static Project newProject() {
         Project project = ProjectBuilder.builder()
                                         .build();
-        project.task(COMPILE_JAVA.getValue());
-        project.task(COMPILE_TEST_JAVA.getValue());
-        project.task(GENERATE_PROTO.getValue());
-        project.task(GENERATE_TEST_PROTO.getValue());
+        project.task(COMPILE_JAVA.value());
+        project.task(COMPILE_TEST_JAVA.value());
+        project.task(GENERATE_PROTO.value());
+        project.task(GENERATE_TEST_PROTO.value());
         return project;
     }
 }

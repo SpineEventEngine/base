@@ -36,8 +36,8 @@ class Given {
     public static Project newProject() {
         Project project = ProjectBuilder.builder()
                                         .build();
-        project.task(CLASSES.getValue());
-        project.task(BUILD.getValue());
+        project.task(CLASSES.value());
+        project.task(BUILD.value());
         return project;
     }
 }

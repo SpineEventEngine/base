@@ -155,7 +155,7 @@ class ModelCompilerPluginTest {
         }
 
         private Task task(TaskName taskName) {
-            Task task = tasks.getByName(taskName.getValue());
+            Task task = tasks.getByName(taskName.value());
             assertThat(task).isNotNull();
             return task;
         }

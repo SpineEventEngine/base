@@ -94,7 +94,7 @@ class GradleProjectTest {
                                              .build();
         BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);
         assertNotNull(buildResult);
-        BuildTask compileTask = buildResult.task(':' + COMPILE_JAVA.getValue());
+        BuildTask compileTask = buildResult.task(':' + COMPILE_JAVA.value());
         assertNotNull(compileTask);
         assertEquals(FAILED, compileTask.getOutcome());
     }
