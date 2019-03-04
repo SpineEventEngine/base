@@ -33,8 +33,6 @@ import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.CLEAN;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
-import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
@@ -95,24 +93,6 @@ class ModelCompilerPluginTest {
         assertNotNull(genTestRejections);
         assertTrue(dependsOn(genTestRejections, MERGE_TEST_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
-    }
-
-    @Test
-    @DisplayName("add findEnrichments task")
-    void add_task_findEnrichments() {
-        Task find = task(FIND_ENRICHMENTS);
-        assertNotNull(find);
-        assertTrue(dependsOn(find, COMPILE_JAVA));
-        assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
-    }
-
-    @Test
-    @DisplayName("add findTestEnrichments task")
-    void add_task_findTestEnrichments() {
-        Task find = task(FIND_TEST_ENRICHMENTS);
-        assertNotNull(find);
-        assertTrue(dependsOn(find, COMPILE_TEST_JAVA));
-        assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
     }
 
     @Test

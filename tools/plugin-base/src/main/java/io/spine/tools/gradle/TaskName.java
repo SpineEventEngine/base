@@ -98,20 +98,6 @@ public enum TaskName {
     GENERATE_TEST_VALIDATING_BUILDERS("generateTestValidatingBuilders"),
 
     /**
-     * The name of the enrichment lookup task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code main} classes and resources scope.
-     */
-    FIND_ENRICHMENTS("findEnrichments"),
-
-    /**
-     * The name of the enrichment lookup task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code test} classes and resources scope.
-     */
-    FIND_TEST_ENRICHMENTS("findTestEnrichments"),
-
-    /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
      * <p>Relates to {@code main} classes and resources scope.
