@@ -33,7 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceSetName.MAIN;
 import static io.spine.tools.gradle.SourceSetName.TEST;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
@@ -102,6 +104,18 @@ final class Module {
     FileCollection testValidatingBuilders() {
         String vBuilderGenTarget = getTargetTestGenValidatorsRootDir(project);
         FileCollection files = project.fileTree(vBuilderGenTarget);
+        return files;
+    }
+
+    FileCollection compiledRejections() {
+        String targetDir = getTargetGenRejectionsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
+        return files;
+    }
+
+    FileCollection testCompiledRejections() {
+        String targetDir = getTargetTestGenRejectionsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
         return files;
     }
 

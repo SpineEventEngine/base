@@ -81,13 +81,14 @@ public class RejectionGenPlugin extends ProtoPlugin {
                              mainProtoFiles(project),
                              () -> getTargetGenRejectionsRootDir(project),
                              () -> getMainProtoSrcDir(project));
-
+        Module module = new Module(project);
         GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
                         .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
+                        .withInputFiles(module.protoSource())
+                        .withOutputFiles(module.compiledRejections())
                         .applyNowTo(project);
-
         Action<Task> testScopeAction =
                 createAction(project,
                              testProtoFiles(project),
@@ -98,6 +99,10 @@ public class RejectionGenPlugin extends ProtoPlugin {
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
                         .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
+                        .withInputFiles(module.protoSource())
+                        .withInputFiles(module.testProtoSource())
+                        .withOutputFiles(module.compiledRejections())
+                        .withOutputFiles(module.testCompiledRejections())
                         .applyNowTo(project);
 
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
@@ -107,7 +112,6 @@ public class RejectionGenPlugin extends ProtoPlugin {
                                              Supplier<FileSet> files,
                                              Supplier<String> targetDirPath,
                                              Supplier<String> protoSrcDir) {
-
         return new GenAction(project, files, targetDirPath, protoSrcDir);
     }
 
