@@ -32,27 +32,54 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceSetName.MAIN;
 import static io.spine.tools.gradle.SourceSetName.TEST;
-import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
+/**
+ * A source code module.
+ *
+ * <p>A module is a set of source code, generated artifacts and temporary files aligned in a certain
+ * layout. In terms of Gradle, a module is all the contents of a Gradle project.
+ *
+ * <p>It is assumed that the model compiler plugin is applied to the Gradle project represented by
+ * this module.
+ */
 final class Module {
 
+    /**
+     * The name of the source set which defines where the Protobuf sources are located in a module.
+     */
     private static final String PROTO_SOURCE_SET = "proto";
 
     private final Project project;
 
+    /**
+     * Creates a new instance atop of the given Gradle project.
+     */
     Module(Project project) {
         this.project = checkNotNull(project);
     }
 
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the production
+     * Protobuf sources defined in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the source directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection protoSource() {
         return protoSource(MAIN);
     }
 
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the test Protobuf
+     * sources defined in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the source directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection testProtoSource() {
         return protoSource(TEST);
     }
@@ -83,43 +110,55 @@ final class Module {
         return sourceSet;
     }
 
-    FileCollection protoCompiledToJava() {
-        String generationDir = getMainGenProtoDir(project);
-        FileCollection files = project.fileTree(generationDir);
-        return files;
-    }
-
-    FileCollection testProtoCompiledToJava() {
-        String generationDir = getTestProtoSrcDir(project);
-        FileCollection files = project.fileTree(generationDir);
-        return files;
-    }
-
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the production
+     * {@link io.spine.validate.ValidatingBuilder}s generated in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection validatingBuilders() {
         String vBuilderGenTarget = getTargetGenValidatorsRootDir(project);
         FileCollection files = project.fileTree(vBuilderGenTarget);
         return files;
     }
 
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the test
+     * {@link io.spine.validate.ValidatingBuilder}s generated in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection testValidatingBuilders() {
         String vBuilderGenTarget = getTargetTestGenValidatorsRootDir(project);
         FileCollection files = project.fileTree(vBuilderGenTarget);
         return files;
     }
 
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the production
+     * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection compiledRejections() {
         String targetDir = getTargetGenRejectionsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
 
+    /**
+     * Obtains a {@linkplain FileCollection collection of files} containing all the test
+     * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
+     *
+     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
+     * changing, the contents of the collection are mutated.
+     */
     FileCollection testCompiledRejections() {
         String targetDir = getTargetTestGenRejectionsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
-    }
-
-    Project gradleProject() {
-        return project;
     }
 }
