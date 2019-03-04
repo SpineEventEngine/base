@@ -25,7 +25,7 @@ import com.google.protobuf.Message;
 import java.util.Optional;
 
 /**
- * Contains one or more {@link EnrichmentMessage}s.
+ * Contains enrichments of a message holding one instance per enrichment type.
  */
 public interface EnrichmentContainer {
 

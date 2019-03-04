@@ -84,8 +84,7 @@ convention:
    a name ending with `commands.proto`;
  - `io.spine.base.RejectionMessage` is applied to all top-level messages declared in a file which
    has a name ending with `rejections.proto`;
- - `io.spine.base.UuidValue` is applied to all messages with a single string field called `uuid`;
- - `io.spine.base.EnrichmentMessage` is applied to all message with an `(enrichment_for)` option.
+ - `io.spine.base.UuidValue` is applied to all messages with a single string field called `uuid`.
 
 ## Usage
 

@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

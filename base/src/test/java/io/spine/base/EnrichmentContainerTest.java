@@ -26,6 +26,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.UnknownFieldSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,18 +59,16 @@ class EnrichmentContainerTest {
     @Test
     @DisplayName("return empty Optional if no enrichment with such class found")
     void negative() {
-        assertThat(container.find(EnrichmentMessage.class))
+        assertThat(container.find(Timestamp.class))
                 .isEmpty();
     }
 
     /**
-     * Stub implementation of {@link EnrichmentMessage}.
+     * Stub implementation of an enrichment message.
      */
     @SuppressWarnings("ReturnOfNull")
     @Immutable
-    private static class EmStub implements EnrichmentMessage {
-
-        private static final long serialVersionUID = 0L;
+    private static class EmStub implements Message {
 
         @Override
         public void writeTo(CodedOutputStream output) throws IOException {
@@ -188,7 +187,7 @@ class EnrichmentContainerTest {
      */
     private static class EcStub implements EnrichmentContainer {
 
-        private final EnrichmentMessage enrichmentMessage = new EmStub();
+        private final Message enrichmentMessage = new EmStub();
         @Override
         public <E extends Message> Optional<E> find(Class<E> cls) {
             if (cls.equals(EmStub.class)) {

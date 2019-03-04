@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+package io.spine.tools.gradle.testing;
 
 import com.google.common.base.Charsets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 
@@ -49,6 +50,7 @@ public final class GradleProject {
 
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
+    private static final String JAVA_PLUGIN_NAME = "java";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -65,7 +67,7 @@ public final class GradleProject {
      * Obtains the name of the Java Gradle plugin.
      */
     public static String javaPlugin() {
-        return "java";
+        return JAVA_PLUGIN_NAME;
     }
 
     private GradleProject(Builder builder) throws IOException {

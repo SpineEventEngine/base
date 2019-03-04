@@ -18,21 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+/**
+ * Provides classes for testing classes working with Gradle project model.
+ */
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.gradle.testing;
 
-import static com.google.common.truth.Truth.assertThat;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("ProjectRoot utility should")
-class ProjectRootTest {
-
-    @Test
-    @DisplayName("locate the project root")
-    void find() {
-        assertThat(ProjectRoot.instance()
-                              .toFile()
-                              .exists()).isTrue();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

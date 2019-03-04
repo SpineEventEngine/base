@@ -22,6 +22,7 @@ package io.spine.tools.gradle;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
+import io.spine.tools.gradle.testing.NoOp;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.DisplayName;

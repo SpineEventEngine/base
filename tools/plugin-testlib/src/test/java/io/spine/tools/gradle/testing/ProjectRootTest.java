@@ -18,16 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.tools.gradle.testing;
 
-import com.google.errorprone.annotations.Immutable;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A common interface for enrichment messages.
- *
- * <p>The messages which are top-level message and to which {@code (enrichment_for)} option
- * is applied are spotted by the Spine Model Compiler and marked with this interface automatically.
- */
-@Immutable
-public interface EnrichmentMessage extends SerializableMessage {
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("ProjectRoot utility should")
+class ProjectRootTest {
+
+    @Test
+    @DisplayName("locate the project root")
+    void find() {
+        assertThat(ProjectRoot.instance()
+                              .toFile()
+                              .exists()).isTrue();
+    }
 }

@@ -23,13 +23,14 @@ import org.gradle.api.Task;
 
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utilities for Gradle task dependencies management.
- *
- * @author Alex Tymchenko
  */
-public class TaskDependencies {
+public final class TaskDependencies {
 
+    /** Prevents instantiation of this utility class. */
     private TaskDependencies() {
     }
 
@@ -37,6 +38,8 @@ public class TaskDependencies {
      * Checks whether a given Gradle task depends on another Gradle task.
      */
     public static boolean dependsOn(Task task, Task ontoTask) {
+        checkNotNull(task);
+        checkNotNull(ontoTask);
         return dependsOn(task, ontoTask.getName());
     }
 
@@ -44,6 +47,8 @@ public class TaskDependencies {
      * Checks whether a given Gradle task depends on another Gradle task with the specified name.
      */
     public static boolean dependsOn(Task task, TaskName ontoTaskWithName) {
+        checkNotNull(task);
+        checkNotNull(ontoTaskWithName);
         String taskName = ontoTaskWithName.getValue();
         return dependsOn(task, taskName);
     }

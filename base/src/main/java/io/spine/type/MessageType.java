@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
@@ -50,12 +49,10 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
-import static io.spine.option.OptionsProto.enrichmentFor;
 
 /**
  * A message type as declared in a proto file.
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
@@ -196,15 +193,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
 
     private FileName declaringFileName() {
         return FileName.from(descriptor().getFile());
-    }
-
-    /**
-     * Tells if the message is an enrichment.
-     */
-    public boolean isEnrichment() {
-        MessageOptions options = descriptor().getOptions();
-        boolean result = isTopLevel() && options.hasExtension(enrichmentFor);
-        return result;
     }
 
     /**

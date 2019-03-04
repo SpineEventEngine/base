@@ -23,7 +23,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaDocCapableSource;

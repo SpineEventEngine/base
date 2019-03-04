@@ -23,7 +23,7 @@ package io.spine.js.generate.given;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;

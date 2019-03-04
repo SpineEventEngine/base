@@ -22,7 +22,7 @@ package io.spine.tools.protodoc;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.io.IOException;

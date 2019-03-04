@@ -42,7 +42,6 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         return EXTENSION_NAME;
     }
 
-    @SuppressWarnings("OverlyCoupledMethod") // OK as we need to launch all sub-plugins.
     @Override
     public void apply(Project project) {
         _debug("Adding the extension to the project.");
@@ -55,7 +54,6 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
         Stream.of(new CleaningPlugin(),
                   new DescriptorSetMergerPlugin(),
-                  new EnrichmentLookupPlugin(),
                   new RejectionGenPlugin(),
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),

@@ -22,7 +22,6 @@ package io.spine.tools.protoc.insert;
 
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
@@ -53,9 +52,6 @@ final class PatternScanner {
         if (isUuidMessage(type)) {
             return uuidInterface(type);
         }
-        if (type.isEnrichment()) {
-            return enrichmentInterface(type);
-        }
         if (type.isTopLevel()) {
             return postfixBasedInterface(type);
         }
@@ -82,20 +78,6 @@ final class PatternScanner {
         MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
         CompilerOutput insertionPoint = implementInterface(type, messageInterface);
         return insertionPoint;
-    }
-
-    private Optional<CompilerOutput> enrichmentInterface(MessageType type) {
-        EnrichmentInterface enrichmentInterface = patterns.getEnrichmentInterface();
-        return Optional.of(enrichmentInterface(type, enrichmentInterface));
-    }
-
-    private static CompilerOutput
-    enrichmentInterface(MessageType type, EnrichmentInterface enrichmentInterface) {
-        MessageInterface messageInterface = new PredefinedInterface(
-                ClassName.of(enrichmentInterface.getInterfaceName()),
-                MessageInterfaceParameters.empty()
-        );
-        return implementInterface(type, messageInterface);
     }
 
     private Optional<CompilerOutput> postfixBasedInterface(MessageType type) {

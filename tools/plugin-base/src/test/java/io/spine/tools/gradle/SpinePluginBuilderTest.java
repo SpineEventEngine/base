@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle;
 
+import io.spine.tools.gradle.testing.NoOp;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -32,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import static io.spine.tools.gradle.GradleProject.javaPlugin;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.CLASSES;
 import static io.spine.tools.gradle.TaskName.CLEAN;
@@ -42,6 +42,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
 import static io.spine.tools.gradle.TaskName.VERIFY_MODEL;
+import static io.spine.tools.gradle.testing.GradleProject.javaPlugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;

@@ -37,7 +37,7 @@ import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypeFieldsAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.SourceCheck;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;

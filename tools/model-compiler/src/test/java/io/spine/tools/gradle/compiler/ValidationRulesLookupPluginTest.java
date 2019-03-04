@@ -22,7 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.properties.PropertyFile;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import io.spine.validate.rule.ValidationRules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

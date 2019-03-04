@@ -24,7 +24,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;
