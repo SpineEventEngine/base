@@ -29,8 +29,6 @@ import java.util.function.BiConsumer;
 /**
  * Utilities internal to this package that are used by {@link Logging} interface default methods
  * and should not be exposed in the public API.
- *
- * @author Alexander Yevsyukov
  */
 final class LogMessages {
 
