@@ -93,7 +93,7 @@ extend google.protobuf.FieldOptions {
     // layer. Even if a message content violates the requirement set by the option, it would still
     // be a valid message for the Protobuf library.
     //
-    // Example 1: Using `(required)` field validation constraint.
+    // Example: Using `(required)` field validation constraint.
     //
     //     message MyOuterMessage {
     //         MyMessage field = 1 [(required) = true];
@@ -147,7 +147,7 @@ extend google.protobuf.FieldOptions {
     // A typical use-case would include a value of an ID, which doesn't change over the course of
     // the life of an entity.
     //
-    // Example 2: Using `(set_once)` field validation constraint.
+    // Example: Using `(set_once)` field validation constraint.
     //
     //     message User {
     //         UserId id = 1 [(set_once) = true];
@@ -159,7 +159,7 @@ extend google.protobuf.FieldOptions {
 
     // The option to mark a `repeated` field as a collection of unique elements.
     //
-    // Example 3: Using `(distinct)` constraint for a repeated field.
+    // Example: Using `(distinct)` constraint for a repeated field.
     //
     //    message Blizzard {
     //
@@ -180,7 +180,7 @@ extend google.protobuf.FieldOptions {
     // each side. Open endpoints are indicated using a parenthesis (`(`, `)`). Closed endpoints are
     // indicated using a square bracket (`[`, `]`).
     //
-    // Example 4: Defining ranges of numeric values.
+    // Example: Defining ranges of numeric values.
     //
     //     message NumRanges {
     //         int32 hour = 1 [(range) = "[0..24)"];
@@ -236,82 +236,7 @@ extend google.protobuf.FieldOptions {
 
     // Reserved 73854 to 73899 for future options.
 
-    // Reference Option `by` for Enrichments
-    // ---------------------------------------
-    //
-    // An instruction to associate an enrichment message field with the field from an event message
-    // to enrich (or event context field).
-    //
-    // The value of the option is the name of the target event message/context field
-    // which is used to set the corresponding enrichment's field.
-    //
-    // Example 5: Referencing enrichment source fields via `(by)` field option.
-    //
-    //     message MyEvent {
-    //         spine.base.UserId user_id = 1;
-    //     }
-    //
-    //     message MyEventEnrichment {
-    //        option (enrichment_for) = "MyEvent";
-    //
-    //        string username = 1 [(by) = "user_id"];
-    //     }
-    //
-    // The value of the `(by)` option may contain more than one field reference,
-    // separated with the pipe character.
-    //
-    // Example 6: Referencing multiple enrichment source fields.
-    //
-    //     message FirstEvent {
-    //         spine.base.UserId user_id = 1;
-    //     }
-    //
-    //     message SecondEvent {
-    //         string id = 1;
-    //         spine.base.UserId admin_id = 1;
-    //     }
-    //
-    //     message EnrichmentForSeveralEvents {
-    //         option (enrichment_for) = "FirstEvent, SecondEvent";
-    //
-    //         string username = 1 [(by) = "user_id | admin_id"];
-    //     }
-    //
-    // Resolution of multiple field references
-    // ---------------------------------------
-    //
-    // If the source message type contains more than one field referenced in the `(by)` option,
-    // the one which comes first in the list of alternatives will be used as the source for
-    // creating the enrichment.
-    //
-    // Referencing message context fields
-    // ----------------------------------
-    //
-    // An field of an enrichment can be created taking a field of an event context as its source
-    // via the "context" string.
-    //
-    // Example 7: Referencing event context fields.
-    //
-    //     message SomethingHappened {
-    //         string target_id = 1;
-    //     }
-    //
-    //     message InfoOnSomething {
-    //         option (enrichment_for) = "SomethingHappened";
-    //
-    //         string target_name = 1 [(by) = "target_id"];
-    //         string local_date_time = 2 [(by) = "context.timestamp"];
-    //     }
-    //
-    // Please see the definition of the `spine.core.EventContext` message for names of the fields
-    // that can be used with the `context` reference.
-    //
-    // Limitations
-    // -----------
-    // The `(by)` option cannot be used with map fields. If you need a map in an enrichment type,
-    // please wrap it into a message type, providing corresponding field mapping function.
-    //
-    string by = 73900;
+    // Reserved 73900 for removed `by` option.
 }
 
 extend google.protobuf.MessageOptions {
@@ -335,7 +260,7 @@ extend google.protobuf.MessageOptions {
     // Field names are separated using the pipe (`|`) symbol. The combination of fields is defined
     // using the ampersand (`&`) symbol.
     //
-    // Example 7: Pipe syntax for defining alternative required fields.
+    // Example: Pipe syntax for defining alternative required fields.
     //
     //     message PersonName {
     //        option (required_field) = "given_name|honorific_prefix & family_name";
@@ -361,7 +286,7 @@ extend google.protobuf.MessageOptions {
     // A target field of an external constraint should be specified using a fully-qualified
     // field name (e.g. `mypackage.MessageName.field_name`).
     //
-    // Example 8: Defining external validation constraint.
+    // Example: Defining external validation constraint.
     //
     //     package io.spine.example;
     //
@@ -417,7 +342,7 @@ extend google.protobuf.MessageOptions {
     // External validation constraints can be applied to fields of several types.
     // To do so, separate fully-qualified references to these fields with with comma.
     //
-    // Example 9: External validation constraints for multiple fields.
+    // Example: External validation constraints for multiple fields.
     //
     //     // External validation constraint for requiring a new value in renaming commands.
     //     message RequireNewName {
@@ -455,7 +380,7 @@ extend google.protobuf.MessageOptions {
 
     // Specifies a characteristic inherent in the the given message type.
     //
-    // Example 10: Using `(is)` message option.
+    // Example: Using `(is)` message option.
     //
     //     message CreateProject {
     //         option (is).java_type = "ProjectCommand";
@@ -475,47 +400,7 @@ extend google.protobuf.MessageOptions {
 
     // Reserved 73916 to 73921 for future API annotation options.
 
-    // Enrichment Options
-    //--------------------
-    // An instruction to associate an enrichment message with event message(s) to enrich.
-    //
-    // If the event message to enrich is in another package, the event type name(s) should be
-    // qualified according to Protobuf conventions.
-    // If the enrichment is for multiple events, their type names should be separated with comma.
-    //
-    // Example 11: Using `(enrichment_for)` message option.
-    //
-    //     message MyEventEnrichment {
-    //         option (enrichment_for) = "example.events.MyEvent";
-    //         ...
-    //     }
-    //
-    //     message EventEnrichmentForSeveralEvents {
-    //         option (enrichment_for) = "example.events.FirstEvent,"
-    //                                   "example.events.SecondEvent";
-    //         ...
-    //     }
-    //
-    // The enrichment can qualify for all messages within a package using suffix wildcard (*)
-    // pattern. Infix and prefix wildcards are not supported.
-    //
-    // Example 12: Using package reference in the `(enrichment_for)` option.
-    //
-    //     message MyEnrichment {
-    //         option (enrichment_for) = "example.events.*";
-    //         ...
-    //     }
-    //
-    // It is also possible to mix different declarations as follows:
-    //
-    //     message MyEnrichment {
-    //         option (enrichment_for) = "example.events.*,"
-    //                                   "secondExample.FirstEvent,"
-    //                                   "thirdExample.*";
-    //         ...
-    //     }
-    //
-    string enrichment_for = 73922;
+    // Reserved 73922 for removed `enrichment_for` option.
 
     // Reserved 73923 to 73938 for future options.
 
@@ -547,7 +432,7 @@ extend google.protobuf.FileOptions {
 
     // Specifies a characteristic common for all the message types in the given file.
     //
-    // Example 13: Marking all the messages using the `(every_is)` file option.
+    // Example: Marking all the messages using the `(every_is)` file option.
     // ```
     //     option (every_is).java_type = "ProjectCommand";
     //
@@ -595,7 +480,7 @@ extend google.protobuf.ServiceOptions {
 // Applies only to the fields marked as `required`.
 // Validation error message is composed according to the rules defined by this option.
 //
-// Example 14: Using the `(if_missing)` option.
+// Example: Using the `(if_missing)` option.
 //
 //    message Holder {
 //        MyMessage field = 1 [(required) = true,
@@ -616,7 +501,7 @@ message IfMissingOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example 15: Defining lower boundary for a numeric field.
+// Example: Defining lower boundary for a numeric field.
 //
 //     message KelvinTemperature {
 //         double value = 1 [(min).value = "0.0"];
@@ -650,7 +535,7 @@ message MinOption {
 // Is applicable only to numbers.
 // Repeated fields are supported.
 //
-// Example 16: Defining upper boundary for a numeric field.
+// Example: Defining upper boundary for a numeric field.
 //
 //     message Elevation {
 //         double value = 1 [(max).value = "8848.00"];
@@ -686,7 +571,7 @@ message MaxOption {
 // This option is considered as not set if either `integer_max` or `fraction_max` parameter is not
 // set (is zero).
 //
-// Example 17: Using the `(digits) constraint.
+// Example: Using the `(digits) constraint.
 //
 //     message Measurement {
 //         double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
@@ -723,7 +608,7 @@ message DigitsOption {
 // Is applicable only to `Timestamp`s.
 // Repeated fields are supported.
 //
-// Example 18: Using `(when)` option.
+// Example: Using `(when)` option.
 //
 //     message ScheduleMeeting {
 //         google.protobuf.Timestamp start = 1 [(when).in = FUTURE];
@@ -761,7 +646,7 @@ enum Time {
 // Is applicable only to strings.
 // Repeated fields are supported.
 //
-// Example 19: Using the `(pattern)` option.
+// Example: Using the `(pattern)` option.
 //
 //     message CreateAccount {
 //         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
@@ -789,7 +674,7 @@ message PatternOption {
 // Is applicable only to messages.
 // Repeated fields are supported.
 //
-// Example 20: Using the `(if_invalid)` option.
+// Example: Using the `(if_invalid)` option.
 //
 //     message Holder {
 //         MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
@@ -810,7 +695,7 @@ message IfInvalidOption {
 // when it is needed to say that an optional field makes sense only when another optional field is
 // present.
 //
-// Example 21: Requiring mutual presence of optional fields.
+// Example: Requiring mutual presence of optional fields.
 //
 //    message ScheduledItem {
 //        ...

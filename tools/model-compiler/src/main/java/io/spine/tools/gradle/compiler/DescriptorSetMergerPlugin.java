@@ -35,10 +35,10 @@ import java.io.File;
 
 import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.generateProto;
+import static io.spine.tools.gradle.TaskName.generateTestProto;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 
@@ -94,14 +94,14 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private static TaskName taskName(boolean tests) {
         return tests
-               ? MERGE_TEST_DESCRIPTOR_SET
-               : MERGE_DESCRIPTOR_SET;
+               ? mergeTestDescriptorSet
+               : mergeDescriptorSet;
     }
 
     private static TaskName generateProtoTaskName(boolean tests) {
         return tests
-               ? GENERATE_TEST_PROTO
-               : GENERATE_PROTO;
+               ? generateTestProto
+               : generateProto;
     }
 
     private static File descriptorSet(Project project, boolean tests) {

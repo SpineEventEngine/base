@@ -48,6 +48,4 @@ message SpineProtocConfig {
     UuidInterface uuid_interface = 1;
 
     repeated GeneratedInterface generated_interface = 2;
-
-    EnrichmentInterface enrichment_interface = 3;
 }

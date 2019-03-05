@@ -31,10 +31,7 @@ import io.spine.net.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
-import io.spine.test.code.proto.command.MttNotEnrichment;
-import io.spine.test.code.proto.command.MttSomeMessage;
 import io.spine.test.code.proto.command.MttStartProject;
-import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
 import io.spine.type.MessageType;
@@ -112,14 +109,6 @@ class MessageTypeTest {
             );
         }
 
-        @DisplayName("an enrichment")
-        @Test
-        void enrichment() {
-            assertQuality(MessageType::isEnrichment,
-                          MttStartProjectEnrichment.getDescriptor()
-            );
-        }
-
         @Nested
         @DisplayName("not")
         class NotA {
@@ -145,17 +134,6 @@ class MessageTypeTest {
             void event() {
                 assertQuality(not(MessageType::isEvent),
                               MttProjectStarted.Details.getDescriptor()
-                );
-            }
-
-            @DisplayName("an enrichment")
-            @Test
-            void enrichment() {
-                assertQuality(not(MessageType::isEnrichment),
-                              MttNotEnrichment.getDescriptor()
-                );
-                assertQuality(not(MessageType::isEnrichment),
-                              MttSomeMessage.MttInnerMessageIsNotEnrichment.getDescriptor()
                 );
             }
         }

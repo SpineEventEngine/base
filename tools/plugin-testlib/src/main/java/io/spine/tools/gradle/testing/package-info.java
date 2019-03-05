@@ -17,30 +17,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.types;
+/**
+ * Provides classes for testing classes working with Gradle project model.
+ */
 
-import "spine/options.proto";
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.gradle.testing;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.types";
-option java_multiple_files = true;
-option java_outer_classname = "KnownTypesTestProto";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
-//
-// See `KnownTypesTest` for the unit test code.
-//
-message KnownTaskId {
-    string value = 1;
-}
-
-message KnownTaskName {
-    string value = 1;
-}
-
-message KnownTask {
-    KnownTaskId id = 1;
-    KnownTaskName name = 2;
-}
+import javax.annotation.ParametersAreNonnullByDefault;

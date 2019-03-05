@@ -19,7 +19,6 @@
  */
 
 include 'annotator-tests'
-include 'enrichment-tests'
 include 'known-types-tests'
 include 'validation-tests'
 include 'model-compiler-tests'

@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
@@ -39,12 +38,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A message annotator.
- *
- * <p>Annotates generated top-level messages from a {@code .proto} file,
- * if a specified {@linkplain MessageOptions message option} value is {@code true}.
+ * Annotates generated top-level messages, if a specified {@linkplain ApiOption message option}
+ * value is {@code true} in a {@code .proto} file declaring these types.
  */
-class MessageAnnotator extends OptionAnnotator<Descriptor> {
+final class MessageAnnotator extends OptionAnnotator<Descriptor> {
 
     MessageAnnotator(ClassName annotation,
                      ApiOption option,

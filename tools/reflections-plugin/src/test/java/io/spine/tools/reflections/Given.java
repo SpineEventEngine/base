@@ -22,8 +22,8 @@ package io.spine.tools.reflections;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static io.spine.tools.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.TaskName.classes;
 
 class Given {
 
@@ -36,8 +36,8 @@ class Given {
     public static Project newProject() {
         Project project = ProjectBuilder.builder()
                                         .build();
-        project.task(CLASSES.getValue());
-        project.task(BUILD.getValue());
+        project.task(classes.value());
+        project.task(build.value());
         return project;
     }
 }

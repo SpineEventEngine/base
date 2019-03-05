@@ -37,7 +37,7 @@ import static io.spine.code.java.SourceFile.forService;
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
  */
-class ServiceAnnotator extends OptionAnnotator<ServiceDescriptor> {
+final class ServiceAnnotator extends OptionAnnotator<ServiceDescriptor> {
 
     ServiceAnnotator(ClassName annotation,
                      ApiOption option,

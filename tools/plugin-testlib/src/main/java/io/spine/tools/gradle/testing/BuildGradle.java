@@ -17,30 +17,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.types;
+package io.spine.tools.gradle.testing;
 
-import "spine/options.proto";
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.types";
-option java_multiple_files = true;
-option java_outer_classname = "KnownTypesTestProto";
+import static com.google.common.base.Preconditions.checkNotNull;
 
-// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
-//
-// See `KnownTypesTest` for the unit test code.
-//
-message KnownTaskId {
-    string value = 1;
-}
+/**
+ * Creates {@link #FILE_NAME} file in the root of the test project, copying it from resources.
+ */
+final class BuildGradle {
 
-message KnownTaskName {
-    string value = 1;
-}
+    private static final String FILE_NAME = "build.gradle";
 
-message KnownTask {
-    KnownTaskId id = 1;
-    KnownTaskName name = 2;
+    private final Path testProjectRoot;
+
+    BuildGradle(Path root) {
+        testProjectRoot = root;
+    }
+
+    void createFile() throws IOException {
+        Path resultingPath = testProjectRoot.resolve(FILE_NAME);
+
+        InputStream fileContent = getClass().getClassLoader()
+                                            .getResourceAsStream(FILE_NAME);
+        Files.createDirectories(resultingPath.getParent());
+        checkNotNull(fileContent);
+        Files.copy(fileContent, resultingPath);
+    }
 }

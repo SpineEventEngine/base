@@ -24,20 +24,6 @@ import com.google.protobuf.Message;
 
 /**
  * Base interface for message contexts.
- *
- * <p>Implementing classes must have the {@linkplain #typeSuffix() "Context"} suffix.
- *
- * @implNote The naming convention is required for referencing fields of message contexts in design
- * time, when the class information is not yet available. One of the examples is being able to
- * define an enrichment type, which is filled in by fields of messages <em>and</em> their contexts.
  */
-@SuppressWarnings("InterfaceNeverImplemented") // implemented by generated code.
 public interface MessageContext extends Message {
-
-    /**
-     * Obtains the type name suffix required for all message context classes.
-     */
-    static String typeSuffix() {
-        return "Context";
-    }
 }

@@ -20,8 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.truth.OptionalSubject;
+import com.google.common.truth.Truth8;
 import io.spine.base.CommandMessage;
-import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
@@ -37,18 +38,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedInterfaces should prepare default GeneratedInterfaceConfig for")
 class GeneratedInterfacesTest {
-
-    @DisplayName("EnrichmentMessage")
-    @Test
-    void enrichment() {
-        GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-        assertHasInterfaceName(EnrichmentMessage.class, defaults.enrichmentMessage());
-    }
 
     @DisplayName("UuidValue")
     @Test
@@ -85,22 +78,26 @@ class GeneratedInterfacesTest {
                                               String postfix,
                                               SpineProtocConfig config) {
         boolean hasInterface = false;
+        boolean hasPostfix = false;
         String expectedInterface = interfaceClass.getName();
         for (GeneratedInterface generatedInterface : config.getGeneratedInterfaceList()) {
-            if (expectedInterface.equals(generatedInterface.getInterfaceName()) &&
-                    postfix.equals(generatedInterface.getFilePostfix())) {
+            if (expectedInterface.equals(generatedInterface.getInterfaceName())) {
                 hasInterface = true;
-                break;
+            }
+            if (postfix.equals(generatedInterface.getFilePostfix())) {
+                hasPostfix = true;
             }
         }
         assertTrue(hasInterface);
+        assertTrue(hasPostfix);
     }
 
     void assertHasInterfaceName(Class<?> interfaceClass, GeneratedInterfaceConfig config) {
         assertThat(config)
                 .isInstanceOf(AbstractGeneratedInterfaceConfig.class);
         Optional<ClassName> actual = ((AbstractGeneratedInterfaceConfig) config).interfaceName();
-        assertTrue(actual.isPresent());
-        assertEquals(ClassName.of(interfaceClass), actual.get());
+        OptionalSubject assertThat = Truth8.assertThat(actual);
+        assertThat.isPresent();
+        assertThat.hasValue(ClassName.of(interfaceClass));
     }
 }

@@ -12,9 +12,7 @@ option java_multiple_files = true;
 // This file contains test enrichment types.
 
 message ProjectNameEnrichment {
-    option (enrichment_for) = "spine.tools.protoc.insert.ProjectCreated";
-
-    string name = 1 [(by) = "id"];
+    string name = 1;
 }
 
 message NonEnrichmentMessage {
@@ -27,8 +25,6 @@ message SomeMessage {
     string id = 1;
 
     message InnerEnrichmentNotSupported {
-        option (enrichment_for) = "spine.tools.protoc.insert.ProjectCreated";
-
-        string name = 1 [(by) = "id"];
+        string name = 1;
     }
 }

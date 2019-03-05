@@ -31,6 +31,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.groovy.GStrings;
@@ -53,9 +54,8 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
-import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
-import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
-import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
+import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
+import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
@@ -160,7 +160,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
         Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
-        GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
+        GradleTask copyPluginJar = newTask(TaskName.copyPluginJar, action)
                 .allowNoDependencies()
                 .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
                 .withOutputFiles(project.fileTree(spineDirectory(project)))
@@ -186,16 +186,16 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protocTask.setGenerateDescriptorSet(true);
         boolean tests = protocTask.getSourceSet()
                                   .getName()
-                                  .contains("test");
+                                  .contains(SourceScope.test.name());
         Project project = protocTask.getProject();
         File descriptor;
         TaskName writeRefName;
         if (tests) {
             descriptor = getTestDescriptorSet(project);
-            writeRefName = WRITE_TEST_DESCRIPTOR_REFERENCE;
+            writeRefName = writeTestDescriptorReference;
         } else {
             descriptor = getMainDescriptorSet(project);
-            writeRefName = WRITE_DESCRIPTOR_REFERENCE;
+            writeRefName = writeDescriptorReference;
         }
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
         options.setPath(GStrings.fromPlain(descriptor.getPath()));
@@ -204,11 +204,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
-        String sourceSetName = tests ? "test" : "main";
+        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
         Path resourceDirectory = descriptor.toPath()
                                            .getParent();
         javaConvention.getSourceSets()
-                      .getByName(sourceSetName)
+                      .getByName(sourceScope.name())
                       .getResources()
                       .srcDir(resourceDirectory);
         GradleTask writeRef = newTask(writeRefName, task -> {

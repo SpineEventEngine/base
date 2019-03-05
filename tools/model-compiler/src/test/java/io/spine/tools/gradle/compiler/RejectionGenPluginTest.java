@@ -23,7 +23,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaDocCapableSource;
@@ -41,7 +41,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
@@ -73,14 +73,14 @@ class RejectionGenPluginTest {
                                              .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
                                              .build();
-        project.executeTask(COMPILE_JAVA);
+        project.executeTask(compileJava);
     }
 
     @Test
     @DisplayName("generate rejection Javadoc")
     void generateRejectionJavadoc() throws FileNotFoundException {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
-        project.executeTask(COMPILE_JAVA);
+        project.executeTask(compileJava);
         String projectAbsolutePath = testProjectDir.getAbsolutePath();
         File generatedFile = new File(projectAbsolutePath + rejectionsJavadocThrowableSource());
         JavaClassSource generatedSource = Roaster.parse(JavaClassSource.class, generatedFile);

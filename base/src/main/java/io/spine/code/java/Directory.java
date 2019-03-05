@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A folder with Java source files.
- *
- * @author Alexander Yevsyukov
  */
 public final class Directory extends SourceCodeDirectory {
 

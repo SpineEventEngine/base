@@ -29,13 +29,10 @@ import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.Queue;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
 import static io.spine.logging.LogMessages.logThrowable;
 import static java.lang.String.format;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Utility interface for objects that require logging output.
@@ -56,8 +53,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @apiNote The underscore-based convention is selected for making logging calls more visible and
  *          distinguishable from the real code.
- *
- * @author Alexander Yevsyukov
  */
 @SuppressWarnings({
         "ClassWithTooManyMethods"
@@ -68,16 +63,6 @@ import static org.slf4j.LoggerFactory.getLogger;
            are for logging, and to make them more visible in the real code. */
 })
 public interface Logging {
-
-    /**
-     * @deprecated use {@link Logging#get(Class)} if you need a {@code Logger} in static context.
-     */
-    @Deprecated
-    static Supplier<Logger> supplyFor(Class<?> cls) {
-        checkNotNull(cls);
-        Supplier<Logger> supplier = memoize(() -> getLogger(cls));
-        return supplier;
-    }
 
     /**
      * Obtains Logger instance for the passed class.

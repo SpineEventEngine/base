@@ -179,25 +179,6 @@ class ProtocPluginTest {
                 .isNotInstanceOf(DocumentMessage.class);
     }
 
-    @Test
-    @DisplayName("mark message with (enrichment_for) option with a generated enrichment interface")
-    void markEnrichmentWithGeneratedInterface() {
-        assertThat(UserNicknameEnrichment.class).isAssignableTo(TestEnrichment.class);
-    }
-
-    @Test
-    @DisplayName("not mark message without (enrichment_for) option with a generated enrichment interface")
-    void notMarkEnrichmentWithGeneratedInterface() {
-        assertThat(NotEnrichment.getDefaultInstance()).isNotInstanceOf(TestEnrichment.class);
-    }
-
-    @Test
-    @DisplayName("not mark inner message with (enrichment_for) option with a generated enrichment interface")
-    void notMarkInnerEnrichmentWithGeneratedInterface() {
-        assertThat(InnerMessageNotEnrichment.getDefaultInstance())
-                .isNotInstanceOf(TestEnrichment.class);
-    }
-
     @CanIgnoreReturnValue
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         Class<?> cls = Class.forName(fqn);

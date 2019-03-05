@@ -17,30 +17,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.types;
+package io.spine.tools.gradle.testing;
 
-import "spine/options.proto";
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.types";
-option java_multiple_files = true;
-option java_outer_classname = "KnownTypesTestProto";
+import static com.google.common.truth.Truth.assertThat;
 
-// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
-//
-// See `KnownTypesTest` for the unit test code.
-//
-message KnownTaskId {
-    string value = 1;
-}
+@DisplayName("ProjectRoot utility should")
+class ProjectRootTest {
 
-message KnownTaskName {
-    string value = 1;
-}
-
-message KnownTask {
-    KnownTaskId id = 1;
-    KnownTaskName name = 2;
+    @Test
+    @DisplayName("locate the project root")
+    void find() {
+        assertThat(ProjectRoot.instance()
+                              .toFile()
+                              .exists()).isTrue();
+    }
 }
