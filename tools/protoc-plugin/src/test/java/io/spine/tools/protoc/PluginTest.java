@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class PluginTest {
 
     private static final String TEST_PROTO_POSTFIX = "_generators.proto";
-    private static final String TEST_PROTO_PREFIX = "test_";
+    private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
