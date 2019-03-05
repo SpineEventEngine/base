@@ -87,7 +87,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                              mainProtoFiles(project),
                              () -> getTargetGenValidatorsRootDir(project),
                              () -> getMainProtoSrcDir(project));
-        Module module = new Module(project);
+        ProtoModule module = new ProtoModule(project);
         GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
                         .insertAfterTask(MERGE_DESCRIPTOR_SET)

@@ -81,7 +81,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
                              mainProtoFiles(project),
                              () -> getTargetGenRejectionsRootDir(project),
                              () -> getMainProtoSrcDir(project));
-        Module module = new Module(project);
+        ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
                         .insertAfterTask(MERGE_DESCRIPTOR_SET)

@@ -38,7 +38,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejection
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 
 /**
- * A source code module.
+ * A source code module with Protobuf.
  *
  * <p>A module is a set of source code, generated artifacts and temporary files aligned in a certain
  * layout. In terms of Gradle, a module is all the contents of a Gradle project.
@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidator
  * <p>It is assumed that the model compiler plugin is applied to the Gradle project represented by
  * this module.
  */
-final class Module {
+final class ProtoModule {
 
     /**
      * The name of the source set which defines where the Protobuf sources are located in a module.
@@ -58,7 +58,7 @@ final class Module {
     /**
      * Creates a new instance atop of the given Gradle project.
      */
-    Module(Project project) {
+    ProtoModule(Project project) {
         this.project = checkNotNull(project);
     }
 
