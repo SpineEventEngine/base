@@ -59,7 +59,7 @@ final class GeneratedMethodsTest {
         FilePatternFactory filePattern = defaults.filePattern();
         defaults.useFactory(interfaceName, filePattern.endsWith(pattern));
         defaults.useFactory(interfaceName, filePattern.startsWith(pattern));
-        defaults.useFactory(interfaceName, filePattern.regex(pattern));
+        defaults.useFactory(interfaceName, filePattern.matches(pattern));
 
         assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));

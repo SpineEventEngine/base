@@ -56,7 +56,7 @@ public final class FilePatternFactory {
     /**
      * Creates a {@link RegexPattern} selector out of a supplied {@code regex}.
      */
-    public RegexPattern regex(@Regex String regex) {
+    public RegexPattern matches(@Regex String regex) {
         checkNotNull(regex);
         RegexPattern result = new RegexPattern(regex);
         return result;

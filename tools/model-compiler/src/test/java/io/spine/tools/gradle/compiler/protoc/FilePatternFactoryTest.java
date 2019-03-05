@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("FilePatternFactory should")
 final class FilePatternFactoryTest {
 
-    FilePatternFactory factory = FilePatternFactory.INSTANCE;
+    private final FilePatternFactory factory = FilePatternFactory.INSTANCE;
 
     @DisplayName("create")
     @Nested
@@ -48,10 +48,10 @@ final class FilePatternFactoryTest {
             assertNotNull(factory.endsWith("test.proto"));
         }
 
-        @DisplayName("regex pattern")
+        @DisplayName("matches pattern")
         @Test
         void regex() {
-            assertNotNull(factory.regex(".*/spine/.*"));
+            assertNotNull(factory.matches(".*/spine/.*"));
         }
     }
 
@@ -71,10 +71,10 @@ final class FilePatternFactoryTest {
             assertThrows(NullPointerException.class, () -> factory.endsWith(null));
         }
 
-        @DisplayName("regex pattern")
+        @DisplayName("matches pattern")
         @Test
         void regex() {
-            assertThrows(NullPointerException.class, () -> factory.regex(null));
+            assertThrows(NullPointerException.class, () -> factory.matches(null));
         }
     }
 }

@@ -143,14 +143,14 @@ final class PluginTest {
     }
 
     @Test
-    @DisplayName("process regex patterns")
+    @DisplayName("process matches patterns")
     void processRegexPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         FilePatternFactory filePattern = interfaces.filePattern();
-        interfaces.mark(filePattern.regex(TEST_PROTO_REGEX), TestInterface.class.getName());
+        interfaces.mark(filePattern.matches(TEST_PROTO_REGEX), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
-                           filePattern.regex(TEST_PROTO_REGEX));
+                           filePattern.matches(TEST_PROTO_REGEX));
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())

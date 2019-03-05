@@ -152,7 +152,7 @@ final class GeneratedInterfacesTest {
         FilePatternFactory filePattern = defaults.filePattern();
         defaults.mark(filePattern.endsWith(pattern), interfaceName);
         defaults.mark(filePattern.startsWith(pattern), interfaceName);
-        defaults.mark(filePattern.regex(pattern), interfaceName);
+        defaults.mark(filePattern.matches(pattern), interfaceName);
 
         assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));

@@ -27,17 +27,17 @@ modelCompiler {
 
     generateInterfaces {
         mark filePattern().endsWith("documents.proto"), "io.spine.tools.protoc.DocumentMessage"
-        mark filePattern().startsWith("prefix_generation"), "io.spine.tools.protoc.PrefixedMessage"
+        mark filePattern().startsWith("spine/tools/protoc/prefix_generation"), "io.spine.tools.protoc.PrefixedMessage"
         mark filePattern().endsWith("postfix_generation_test.proto"), "io.spine.tools.protoc.PostfixedMessage"
-        mark filePattern().regex(".*regex.*test.*"), "io.spine.tools.protoc.RegexedMessage"
+        mark filePattern().matches(".*regex.*test.*"), "io.spine.tools.protoc.RegexedMessage"
         ignore uuidMessage()
         ignore filePattern().endsWith("events.proto")
     }
 
     generateMethods {
         useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().endsWith("postfix_generation_test.proto")
-        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().startsWith("prefix_generation")
-        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().regex(".*regex.*test.*")
+        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().startsWith("spine/tools/protoc/prefix_generation")
+        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().matches(".*regex.*test.*")
         useFactory "io.spine.tools.protoc.UuidMethodFactory", uuidMessage()
     }
 }
