@@ -54,7 +54,6 @@ class MessageContextTest {
 
         @Override
         public void writeTo(CodedOutputStream output) throws IOException {
-
         }
 
         @Override
@@ -80,12 +79,10 @@ class MessageContextTest {
 
         @Override
         public void writeTo(OutputStream output) throws IOException {
-
         }
 
         @Override
         public void writeDelimitedTo(OutputStream output) {
-
         }
 
         @Override
