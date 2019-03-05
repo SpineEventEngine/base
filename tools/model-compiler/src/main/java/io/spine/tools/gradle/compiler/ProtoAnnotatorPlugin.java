@@ -211,10 +211,10 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
      */
     private class Annotate implements Action<Task> {
 
-        private final boolean isTestTask;
+        private final boolean productionTask;
 
-        private Annotate(boolean testTask) {
-            isTestTask = testTask;
+        private Annotate(boolean productionTask) {
+            this.productionTask = productionTask;
         }
 
         @Override
@@ -223,18 +223,19 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             File descriptorSetFile = descriptorSet(project);
             String generatedProtoDir = generatedProtoDir(project);
             String generatedGrpcDir = generatedGrpcDir(project);
-            if (!descriptorSetFile.exists()) {
-                logMissingDescriptorSetFile(descriptorSetFile);
-            } else {
+            if (descriptorSetFile.exists()) {
                 ModuleAnnotator moduleAnnotator = createAnnotator(project,
                                                                   descriptorSetFile,
                                                                   generatedProtoDir,
                                                                   generatedGrpcDir);
                 moduleAnnotator.annotate();
+            } else {
+                logMissingDescriptorSetFile(descriptorSetFile);
             }
         }
 
-        private ModuleAnnotator createAnnotator(Project project, File descriptorSetFile,
+        private ModuleAnnotator createAnnotator(Project project,
+                                                File descriptorSetFile,
                                                 String generatedProtoDir,
                                                 String generatedGrpcDir) {
             Path generatedProtoPath = Paths.get(generatedProtoDir);
@@ -259,21 +260,21 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
         }
 
         private File descriptorSet(Project project) {
-            return isTestTask
-                   ? getTestDescriptorSet(project)
-                   : getMainDescriptorSet(project);
+            return productionTask
+                   ? getMainDescriptorSet(project)
+                   : getTestDescriptorSet(project);
         }
 
         private String generatedGrpcDir(Project project) {
-            return isTestTask
-                   ? getTestGenGrpcDir(project)
-                   : getMainGenGrpcDir(project);
+            return productionTask
+                   ? getMainGenGrpcDir(project)
+                   : getTestGenGrpcDir(project);
         }
 
         private String generatedProtoDir(Project project) {
-            return isTestTask
-                   ? getTestGenProtoDir(project)
-                   : getMainGenProtoDir(project);
+            return productionTask
+                   ? getMainGenProtoDir(project)
+                   : getTestGenProtoDir(project);
         }
     }
 }
