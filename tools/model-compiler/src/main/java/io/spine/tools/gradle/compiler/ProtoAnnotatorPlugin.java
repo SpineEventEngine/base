@@ -220,15 +220,9 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
         @Override
         public void execute(Task task) {
             Project project = task.getProject();
-            File descriptorSetFile = isTestTask
-                                     ? getTestDescriptorSet(project)
-                                     : getMainDescriptorSet(project);
-            String generatedProtoDir = isTestTask
-                                       ? getTestGenProtoDir(project)
-                                       : getMainGenProtoDir(project);
-            String generatedGrpcDir = isTestTask
-                                      ? getTestGenGrpcDir(project)
-                                      : getMainGenGrpcDir(project);
+            File descriptorSetFile = descriptorSet(project);
+            String generatedProtoDir = generatedProtoDir(project);
+            String generatedGrpcDir = generatedGrpcDir(project);
             if (!descriptorSetFile.exists()) {
                 logMissingDescriptorSetFile(descriptorSetFile);
             } else {
@@ -262,6 +256,24 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
                     .setInternalMethodNames(internalMethodNames)
                     .setInternalAnnotation(internalClassName)
                     .build();
+        }
+
+        private File descriptorSet(Project project) {
+            return isTestTask
+                   ? getTestDescriptorSet(project)
+                   : getMainDescriptorSet(project);
+        }
+
+        private String generatedGrpcDir(Project project) {
+            return isTestTask
+                   ? getTestGenGrpcDir(project)
+                   : getMainGenGrpcDir(project);
+        }
+
+        private String generatedProtoDir(Project project) {
+            return isTestTask
+                   ? getTestGenProtoDir(project)
+                   : getMainGenProtoDir(project);
         }
     }
 }
