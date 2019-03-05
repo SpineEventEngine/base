@@ -98,20 +98,6 @@ public enum TaskName {
     GENERATE_TEST_VALIDATING_BUILDERS("generateTestValidatingBuilders"),
 
     /**
-     * The name of the enrichment lookup task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code main} classes and resources scope.
-     */
-    FIND_ENRICHMENTS("findEnrichments"),
-
-    /**
-     * The name of the enrichment lookup task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code test} classes and resources scope.
-     */
-    FIND_TEST_ENRICHMENTS("findTestEnrichments"),
-
-    /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
      * <p>Relates to {@code main} classes and resources scope.
@@ -124,20 +110,6 @@ public enum TaskName {
      * <p>Relates to {@code test} classes and resources scope.
      */
     FIND_TEST_VALIDATION_RULES("findTestValidationRules"),
-
-    /**
-     * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code main} classes and resources scope.
-     */
-    MAP_PROTO_TO_JAVA("mapProtoToJava"),
-
-    /**
-     * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
-     *
-     * <p>Handles the {@code test} classes and resources scope.
-     */
-    MAP_TEST_PROTO_TO_JAVA("mapTestProtoToJava"),
 
     /**
      * The name of the class path scan task added to the Gradle lifecycle.
@@ -219,6 +191,17 @@ public enum TaskName {
 
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Obtains this task name as a path.
+     *
+     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
+     *
+     * @return the name with a colon symbol ({@code :}) at the beginning
+     */
+    public String path() {
+        return ':' + value;
     }
 
     @Override

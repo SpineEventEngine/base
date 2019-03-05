@@ -18,18 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.gradle;
+
+import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
+import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * A name of a source set scope.
  */
+public enum SourceScope {
 
-final def SPINE_VERSION = '1.0.0-SNAPSHOT'
+    MAIN(MAIN_SOURCE_SET_NAME),
+    TEST(TEST_SOURCE_SET_NAME);
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    private final String value;
 
-    versionToPublish = SPINE_VERSION
+    SourceScope(String value) {
+        this.value = value;
+    }
+
+    public String value() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
