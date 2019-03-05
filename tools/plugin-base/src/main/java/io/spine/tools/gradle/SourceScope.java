@@ -20,29 +20,10 @@
 
 package io.spine.tools.gradle;
 
-import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
-import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
-
 /**
  * A name of a source set scope.
  */
 public enum SourceScope {
-
-    MAIN(MAIN_SOURCE_SET_NAME),
-    TEST(TEST_SOURCE_SET_NAME);
-
-    private final String value;
-
-    SourceScope(String value) {
-        this.value = value;
-    }
-
-    public String value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return value;
-    }
+    main,
+    test
 }

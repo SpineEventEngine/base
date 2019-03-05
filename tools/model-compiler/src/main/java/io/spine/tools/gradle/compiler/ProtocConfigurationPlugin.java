@@ -31,6 +31,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.groovy.GStrings;
@@ -185,7 +186,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protocTask.setGenerateDescriptorSet(true);
         boolean tests = protocTask.getSourceSet()
                                   .getName()
-                                  .contains("test");
+                                  .contains(SourceScope.test.name());
         Project project = protocTask.getProject();
         File descriptor;
         TaskName writeRefName;
@@ -203,11 +204,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
-        String sourceSetName = tests ? "test" : "main";
+        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
         Path resourceDirectory = descriptor.toPath()
                                            .getParent();
         javaConvention.getSourceSets()
-                      .getByName(sourceSetName)
+                      .getByName(sourceScope.name())
                       .getResources()
                       .srcDir(resourceDirectory);
         GradleTask writeRef = newTask(writeRefName, task -> {

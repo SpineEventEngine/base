@@ -30,8 +30,8 @@ import org.gradle.api.tasks.SourceSet;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.SourceScope.MAIN;
-import static io.spine.tools.gradle.SourceScope.TEST;
+import static io.spine.tools.gradle.SourceScope.main;
+import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
@@ -51,6 +51,7 @@ final class ProtoModule {
     /**
      * The name of the source set which defines where the Protobuf sources are located in a module.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // local semantics
     private static final String PROTO_SOURCE_SET = "proto";
 
     private final Project project;
@@ -70,7 +71,7 @@ final class ProtoModule {
      * changing, the contents of the collection are mutated.
      */
     FileCollection protoSource() {
-        return protoSource(MAIN);
+        return protoSource(main);
     }
 
     /**
@@ -81,7 +82,7 @@ final class ProtoModule {
      * changing, the contents of the collection are mutated.
      */
     FileCollection testProtoSource() {
-        return protoSource(TEST);
+        return protoSource(test);
     }
 
     private FileCollection protoSource(SourceScope sourceScope) {
@@ -105,7 +106,7 @@ final class ProtoModule {
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         SourceSet sourceSet = javaConvention.getSourceSets()
-                                            .findByName(sourceScope.value());
+                                            .findByName(sourceScope.name());
         checkNotNull(sourceSet);
         return sourceSet;
     }
