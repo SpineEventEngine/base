@@ -79,6 +79,8 @@ import static org.gradle.internal.os.OperatingSystem.current;
  */
 public class ProtocConfigurationPlugin extends SpinePlugin {
 
+    private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
+
     private static final String PROTOBUF_GROUP = "com.google.protobuf";
     private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
     private static final String PROTOC = "protoc";
@@ -166,34 +168,22 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                 .add(fetch.getName(), protocPluginArtifact.notation());
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
-        Action<Task> action = task -> copyPluginExecutables(project, protocPluginDependency, fetch);
+        Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
         GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
                 .allowNoDependencies()
+                .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                .withOutputFiles(project.fileTree(spineDirectory(project)))
+                .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
                 .applyNowTo(project);
         return copyPluginJar;
     }
 
-    private static void copyPluginExecutables(Project project,
-                                              Dependency protobufDependency,
-                                              Configuration fetchConfiguration) {
-        File executableJar = fetchConfiguration.fileCollection(protobufDependency)
-                                               .getSingleFile();
-        File spineDir = at(project.getProjectDir()).tempArtifacts();
-        File rootSpineDir = at(project.getRootDir()).tempArtifacts();
-        copy(executableJar, spineDir);
-        copy(executableJar, rootSpineDir);
+    private static File spineDirectory(Project project) {
+        return at(project.getProjectDir()).tempArtifacts();
     }
 
-    private static void copy(File file, File destinationDir) {
-        try {
-            destinationDir.mkdirs();
-            File destination = destinationDir.toPath()
-                                             .resolve(file.getName())
-                                             .toFile();
-            Files.copy(file, destination);
-        } catch (IOException e) {
-            throw new GradleException("Failed to copy Spine Protoc executable JAR.", e);
-        }
+    private static File rootSpineDirectory(Project project) {
+        return at(project.getRootDir()).tempArtifacts();
     }
 
     private void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
@@ -314,6 +304,46 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
         ProtocPlugin(String name) {
             this.name = name;
+        }
+    }
+
+    /**
+     * Downloads and lays out the {@code protoc} plugin executable JAR.
+     */
+    private static final class CopyPluginJar implements Action<Task> {
+
+        private final Project project;
+        private final Dependency protocPluginDependency;
+        private final Configuration fetch;
+
+        private CopyPluginJar(Project project,
+                              Dependency protocPlugin,
+                              Configuration fetch) {
+            this.project = project;
+            this.protocPluginDependency = protocPlugin;
+            this.fetch = fetch;
+        }
+
+        @Override
+        public void execute(Task task) {
+            File executableJar = fetch.fileCollection(protocPluginDependency)
+                                      .getSingleFile();
+            File spineDir = spineDirectory(project);
+            File rootSpineDir = rootSpineDirectory(project);
+            copy(executableJar, spineDir);
+            copy(executableJar, rootSpineDir);
+        }
+
+        private static void copy(File file, File destinationDir) {
+            try {
+                destinationDir.mkdirs();
+                File destination = destinationDir.toPath()
+                                                 .resolve(file.getName())
+                                                 .toFile();
+                Files.copy(file, destination);
+            } catch (IOException e) {
+                throw new GradleException("Failed to copy Spine Protoc executable JAR.", e);
+            }
         }
     }
 }
