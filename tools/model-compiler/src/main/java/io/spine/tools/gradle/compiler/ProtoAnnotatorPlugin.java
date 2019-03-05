@@ -191,7 +191,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private void createMainTask(Project project) {
-        Action<Task> task = new Annotate(false);
+        Action<Task> task = new Annotate(true);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(MERGE_DESCRIPTOR_SET)
@@ -199,7 +199,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private void createTestTask(Project project) {
-        Action<Task> testTask = new Annotate(true);
+        Action<Task> testTask = new Annotate(false);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
