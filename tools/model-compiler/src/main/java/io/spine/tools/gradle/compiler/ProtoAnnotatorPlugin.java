@@ -39,12 +39,12 @@ import static io.spine.tools.compiler.annotation.ApiOption.experimental;
 import static io.spine.tools.compiler.annotation.ApiOption.internal;
 import static io.spine.tools.compiler.annotation.ApiOption.spi;
 import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
-import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.annotateProto;
+import static io.spine.tools.gradle.TaskName.annotateTestProto;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getCodeGenAnnotations;
 import static io.spine.tools.gradle.compiler.Extension.getInternalClassPatterns;
 import static io.spine.tools.gradle.compiler.Extension.getInternalMethodNames;
@@ -192,17 +192,17 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     private void createMainTask(Project project) {
         Action<Task> task = new Annotate(true);
-        newTask(ANNOTATE_PROTO, task)
-                .insertBeforeTask(COMPILE_JAVA)
-                .insertAfterTask(MERGE_DESCRIPTOR_SET)
+        newTask(annotateProto, task)
+                .insertBeforeTask(compileJava)
+                .insertAfterTask(mergeDescriptorSet)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
         Action<Task> testTask = new Annotate(false);
-        newTask(ANNOTATE_TEST_PROTO, testTask)
-                .insertBeforeTask(COMPILE_TEST_JAVA)
-                .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
+        newTask(annotateTestProto, testTask)
+                .insertBeforeTask(compileTestJava)
+                .insertAfterTask(mergeTestDescriptorSet)
                 .applyNowTo(project);
     }
 

@@ -52,7 +52,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * if a specified {@linkplain FieldOptions field option} value is {@code true}
  * for the field definition.
  */
-class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
+final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
 
     FieldAnnotator(ClassName annotation,
                    ApiOption option,

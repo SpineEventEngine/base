@@ -21,8 +21,8 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +35,8 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.generateValidatingBuilders;
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE;
 
@@ -70,7 +70,7 @@ class ValidatingBuilderGenPluginTest {
     @DisplayName("compile generated validators")
     void compileGeneratedValidators() {
         GradleProject project = newProject();
-        project.executeTask(COMPILE_JAVA);
+        project.executeTask(compileJava);
     }
 
     @Test
@@ -78,7 +78,7 @@ class ValidatingBuilderGenPluginTest {
     void incremental() {
         GradleProject project = newProject();
 
-        TaskName taskName = GENERATE_VALIDATING_BUILDERS;
+        TaskName taskName = generateValidatingBuilders;
         BuildResult firstRun = project.executeTask(taskName);
         TaskOutcome firstOutcome = firstRun.task(taskName.path()).getOutcome();
         assertThat(firstOutcome).isEqualTo(SUCCESS);

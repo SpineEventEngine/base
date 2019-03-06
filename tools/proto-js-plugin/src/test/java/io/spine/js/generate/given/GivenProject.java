@@ -23,7 +23,7 @@ package io.spine.js.generate.given;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.build;
 import static java.util.Collections.singletonList;
 
 public final class GivenProject {
@@ -72,6 +72,6 @@ public final class GivenProject {
                 .setProjectFolder(projectDir)
                 .addProtoFiles(PROTO_FILES)
                 .build();
-        gradleProject.executeTask(BUILD);
+        gradleProject.executeTask(build);
     }
 }

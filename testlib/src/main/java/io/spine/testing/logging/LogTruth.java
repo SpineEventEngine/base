@@ -35,8 +35,6 @@ import static com.google.common.truth.Truth.assert_;
 
 /**
  * A set of static methods to begin a Truth assertion chain for logging types.
- *
- * @author Alexander Yevsyukov
  */
 public final class LogTruth {
 

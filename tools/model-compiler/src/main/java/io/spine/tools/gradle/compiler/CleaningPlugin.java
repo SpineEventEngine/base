@@ -27,16 +27,13 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
-import static io.spine.tools.gradle.TaskName.CLEAN;
-import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
+import static io.spine.tools.gradle.TaskName.clean;
+import static io.spine.tools.gradle.TaskName.preClean;
 
 /**
  * Plugin which performs additional cleanup of the Spine-generated folders.
  *
  * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
- *
- * @author Mikhail Mikhaylov
- * @author Alex Tymchenko
  */
 public class CleaningPlugin extends SpinePlugin {
 
@@ -48,8 +45,8 @@ public class CleaningPlugin extends SpinePlugin {
             DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
         };
         GradleTask preCleanTask =
-                newTask(PRE_CLEAN, preCleanAction)
-                        .insertBeforeTask(CLEAN)
+                newTask(preClean, preCleanAction)
+                        .insertBeforeTask(clean)
                         .applyNowTo(project);
         log.debug("Pre-clean phase initialized: {}", preCleanTask);
     }

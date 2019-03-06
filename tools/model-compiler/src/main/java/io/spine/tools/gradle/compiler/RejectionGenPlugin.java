@@ -42,12 +42,12 @@ import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.spine.code.proto.RejectionsFile.findAll;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.generateRejections;
+import static io.spine.tools.gradle.TaskName.generateTestRejections;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
@@ -83,9 +83,9 @@ public class RejectionGenPlugin extends ProtoPlugin {
                              () -> getMainProtoSrcDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
-                newTask(GENERATE_REJECTIONS, mainScopeAction)
-                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                        .insertBeforeTask(COMPILE_JAVA)
+                newTask(generateRejections, mainScopeAction)
+                        .insertAfterTask(mergeDescriptorSet)
+                        .insertBeforeTask(compileJava)
                         .withInputFiles(module.protoSource())
                         .withOutputFiles(module.compiledRejections())
                         .applyNowTo(project);
@@ -96,9 +96,9 @@ public class RejectionGenPlugin extends ProtoPlugin {
                              () -> getTestProtoSrcDir(project));
 
         GradleTask testTask =
-                newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
-                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                        .insertBeforeTask(COMPILE_TEST_JAVA)
+                newTask(generateTestRejections, testScopeAction)
+                        .insertAfterTask(mergeTestDescriptorSet)
+                        .insertBeforeTask(compileTestJava)
                         .withInputFiles(module.protoSource())
                         .withInputFiles(module.testProtoSource())
                         .withOutputFiles(module.compiledRejections())

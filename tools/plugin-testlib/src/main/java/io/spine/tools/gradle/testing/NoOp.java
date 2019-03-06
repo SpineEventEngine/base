@@ -18,38 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'known-types-tests'
-include 'validation-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
-include 'test-method-factory'
+package io.spine.tools.gradle.testing;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import org.gradle.api.Action;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
+/**
+ * An empty project action.
  */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+public enum NoOp implements Action<Object> {
+
+    ACTION;
+
+    @Override
+    public void execute(Object ignored) {
+        // NoOp
+    }
+
+    @SuppressWarnings("unchecked") // No matter, as the action is NoOp.
+    public static <T> Action<T> action() {
+        return ((Action<T>) ACTION);
     }
 }
-

@@ -32,7 +32,6 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
-import io.spine.type.enrichment.EnrichmentType;
 import io.spine.type.ref.TypeRef;
 import org.slf4j.Logger;
 
@@ -143,20 +142,6 @@ public class KnownTypes implements Serializable {
      */
     public TypeSet asTypeSet() {
         return typeSet;
-    }
-
-    /**
-     * Obtains known enrichment types.
-     */
-    public ImmutableSet<EnrichmentType> enrichments() {
-        ImmutableSet<EnrichmentType> result =
-                typeSet.messageTypes()
-                       .stream()
-                       .filter(EnrichmentType::test)
-                       .map(MessageType::descriptor)
-                       .map(EnrichmentType::new)
-                       .collect(toImmutableSet());
-        return result;
     }
 
     /**

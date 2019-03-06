@@ -18,92 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
-import com.google.common.testing.EqualsTester;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
-import com.google.protobuf.StringValue;
 import com.google.protobuf.UnknownFieldSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("MessageClass should")
-class MessageClassTest {
-
-    private static final Class<StringValue> MSG_CLASS = StringValue.class;
-
-    @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
-    @Test
-    @DisplayName("provide equality within the class")
-    void beEqualWithingClass() {
-        new EqualsTester()
-                .addEqualityGroup(new TestMessageClass(MSG_CLASS), new TestMessageClass(MSG_CLASS))
-                .addEqualityGroup(new MessageClass<StringValue>(MSG_CLASS) {
-                    private static final long serialVersionUID = 0L;
-                });
-    }
+@DisplayName("MessageContext interface should")
+class MessageContextTest {
 
     @Test
-    void serialize() {
-        reserializeAndAssert(new TestMessageClass(MSG_CLASS));
+    @DisplayName("extend Message")
+    void contextSuffix() {
+        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
+                .isTrue();
     }
 
     /**
-     * Cursory test obtaining interfaces extending {@code Message}.
-     *
-     * @implNote Since we don't have code generation capabilities that would generate interfaces
-     * extending {@code Message} in this module, this test is limited, and simply makes use
-     * of the method.
+     * Stub implementation of {@link MessageContext}.
      */
-    @Test
-    @DisplayName("obtain super interfaces of a class")
-    void interfaces() {
-        assertThat(MessageClass.interfacesOf(StubMessage.class))
-                .containsExactly(SubSubMessage.class, SubMessage.class, SuperMessage.class);
-    }
-
-    /**
-     * Test environment class extending the abstract base.
-     */
-    private static class TestMessageClass extends MessageClass<Message> {
-
-        private static final long serialVersionUID = 0L;
-
-        private TestMessageClass(Class<? extends Message> value) {
-            super(value);
-        }
-    }
-
-    /**
-     * Base test environment interface for {@link MessageClassTest#interfaces()}.
-     */
-    private interface SuperMessage extends Message {
-    }
-
-    private interface SubMessage extends SuperMessage {
-    }
-
-    private interface SubSubMessage extends SubMessage {
-    }
-
-    /**
-     * Stub implementation for {@link MessageClassTest#interfaces()}.
-     */
-    private static final class StubMessage implements SubSubMessage {
+    @SuppressWarnings("ReturnOfNull")
+    private static class StubMessageContext implements MessageContext {
 
         @Override
-        public void writeTo(CodedOutputStream output) {
+        public void writeTo(CodedOutputStream output) throws IOException {
         }
 
         @Override
@@ -128,7 +78,7 @@ class MessageClassTest {
         }
 
         @Override
-        public void writeTo(OutputStream output) {
+        public void writeTo(OutputStream output) throws IOException {
         }
 
         @Override

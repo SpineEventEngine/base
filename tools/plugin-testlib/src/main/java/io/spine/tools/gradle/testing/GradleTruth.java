@@ -18,38 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'known-types-tests'
-include 'validation-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
-include 'test-method-factory'
+package io.spine.tools.gradle.testing;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.gradle.api.Task;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
+import static com.google.common.truth.Truth.assertAbout;
+
+/**
+ * Assertions for Gradle Subjects.
  */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+public class GradleTruth {
+
+    /**
+     * Prevents instantiation of this utility class.
+     */
+    private GradleTruth() {
+    }
+
+    /**
+     * Creates a subject for the passed task.
+     */
+    public static TaskSubject assertThat(@Nullable Task task) {
+        return assertAbout(TaskSubject.tasks()).that(task);
     }
 }
-

@@ -32,8 +32,6 @@ import org.slf4j.event.SubstituteLoggingEvent;
 
 /**
  * Propositions for {@link SubstituteLoggingEvent} subjects.
- *
- * @author Alexander Yevsyukov
  */
 public class LogEventSubject extends Subject<LogEventSubject, SubstituteLoggingEvent> {
 
