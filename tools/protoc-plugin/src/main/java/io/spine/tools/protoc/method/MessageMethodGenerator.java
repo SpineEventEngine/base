@@ -21,45 +21,46 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.AbstractCodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
-import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidGenerateMethod;
 import io.spine.type.MessageType;
-
-import java.util.List;
-import java.util.function.Function;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link MethodsGeneration}.
+ * Generates new methods for types based on {@link GenerateMethod} tasks defined in
+ * {@link MethodsGeneration configuration}.
  */
-final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
+final class MessageMethodGenerator extends AbstractCodeGenerator<GenerateMethod> {
 
-    private final MethodsGeneration config;
     private final MethodFactories methodFactories;
+    private final UuidGenerateMethod uuidGenerateMethod;
+    private final boolean generateUuidMethod;
+    private final ImmutableList<GenerateMethod> generateMethods;
 
-    GeneratedMethodScanner(MethodsGeneration config) {
+    MessageMethodGenerator(MethodsGeneration config) {
         super();
-        this.config = config;
+        this.uuidGenerateMethod = config.getUuidMethod();
+        this.generateUuidMethod = !isDefault(uuidGenerateMethod);
+        this.generateMethods = ImmutableList.copyOf(config.getGenerateMethodList());
         this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
     }
 
     @Override
-    protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
-        UuidGenerateMethod uuidMethod = config.getUuidMethod();
-        if (isDefault(uuidMethod)) {
-            return ImmutableList.of();
+    protected ImmutableList<CompilerOutput> generateForUuidMessage(MessageType type) {
+        if (generateUuidMethod) {
+            return generateMethods(uuidGenerateMethod.getFactoryName(), type);
         }
-        return generateMethods(uuidMethod.getFactoryName(), type);
+        return ImmutableList.of();
     }
 
     @Override
-    protected List<GenerateMethod> filePatterns() {
-        return config.getGenerateMethodList();
+    protected ImmutableList<GenerateMethod> codeGenerationTasks() {
+        return generateMethods;
     }
 
     @Override
@@ -73,13 +74,11 @@ final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
     }
 
     @Override
-    protected Function<GenerateMethod, ImmutableList<CompilerOutput>>
-    filePatternMapper(MessageType type) {
+    protected GenerateMethods generateCode(MessageType type) {
         return new GenerateMethods(type);
     }
 
-    private class GenerateMethods
-            implements Function<GenerateMethod, ImmutableList<CompilerOutput>> {
+    private class GenerateMethods implements GenerateCode<GenerateMethod> {
 
         private final MessageType type;
 
@@ -88,8 +87,8 @@ final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
         }
 
         @Override
-        public ImmutableList<CompilerOutput> apply(GenerateMethod spec) {
-            return generateMethods(spec.getFactoryName(), type);
+        public ImmutableList<CompilerOutput> apply(GenerateMethod task) {
+            return generateMethods(task.getFactoryName(), type);
         }
     }
 

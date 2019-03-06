@@ -36,10 +36,10 @@ import static io.spine.tools.protoc.FilePatterns.filePostfix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GeneratedMethodScanner should")
-final class GeneratedMethodScannerTest {
+@DisplayName("MessageMethodGenerator should")
+final class MessageMethodGeneratorTest {
 
-    @DisplayName("scan type for any generated methods")
+    @DisplayName("generate type for any generated methods")
     @Test
     void scanTypeForAnyGeneratedMethods() {
         MethodsGeneration config = configBuilder()
@@ -47,8 +47,8 @@ final class GeneratedMethodScannerTest {
                 .addGenerateMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
         MessageType type = new MessageType(TestMessage.getDescriptor());
-        GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
-        ImmutableList<CompilerOutput> result = scanner.scan(type);
+        MessageMethodGenerator generator = new MessageMethodGenerator(config);
+        ImmutableList<CompilerOutput> result = generator.generate(type);
         assertEquals(3, result.size());
     }
 
@@ -79,8 +79,8 @@ final class GeneratedMethodScannerTest {
         }
 
         private void noMethodsGeneratedFor(MethodsGeneration config, MessageType type) {
-            GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
-            ImmutableList<CompilerOutput> result = scanner.scan(type);
+            MessageMethodGenerator generator = new MessageMethodGenerator(config);
+            ImmutableList<CompilerOutput> result = generator.generate(type);
             assertTrue(result.isEmpty());
         }
     }

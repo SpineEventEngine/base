@@ -22,7 +22,9 @@ package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.tools.protoc.AbstractCodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ImplementInterface;
 import io.spine.tools.protoc.InterfacesGeneration;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -47,12 +49,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class InterfaceGenerator extends SpineProtoGenerator {
 
-    private final MessageInterfaceScanner messageInterfaceScanner;
+    private final AbstractCodeGenerator<ImplementInterface> messageInterfaceGenerator;
 
     /** Prevents singleton class instantiation. */
-    private InterfaceGenerator(InterfacesGeneration config) {
+    private InterfaceGenerator(InterfacesGeneration interfacesGeneration) {
         super();
-        this.messageInterfaceScanner = new MessageInterfaceScanner(config);
+        this.messageInterfaceGenerator = new MessageInterfaceGenerator(interfacesGeneration);
     }
 
     /**
@@ -90,7 +92,7 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
     private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        ImmutableList<CompilerOutput> matched = messageInterfaceScanner.scan(type);
+        ImmutableList<CompilerOutput> matched = messageInterfaceGenerator.generate(type);
         result.addAll(matched);
 
         Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(type);

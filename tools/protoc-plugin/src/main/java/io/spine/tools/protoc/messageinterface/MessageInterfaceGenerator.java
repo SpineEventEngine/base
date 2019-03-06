@@ -22,34 +22,33 @@ package io.spine.tools.protoc.messageinterface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.AbstractCodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ImplementInterface;
 import io.spine.tools.protoc.InterfacesGeneration;
-import io.spine.tools.protoc.TypeScanner;
 import io.spine.tools.protoc.UuidImplementInterface;
 import io.spine.type.MessageType;
 
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static io.spine.tools.protoc.messageinterface.MessageImplements.implementInterface;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link InterfacesGeneration}.
+ * Makes types implement interfaces configured in {@link ImplementInterface} tasks within the
+ * {@link InterfacesGeneration configuration}.
  */
-final class MessageInterfaceScanner extends TypeScanner<ImplementInterface> {
+final class MessageInterfaceGenerator extends AbstractCodeGenerator<ImplementInterface> {
 
     private final InterfacesGeneration config;
 
-    MessageInterfaceScanner(InterfacesGeneration config) {
+    MessageInterfaceGenerator(InterfacesGeneration config) {
         super();
         this.config = config;
     }
 
     @Override
-    protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
+    protected ImmutableList<CompilerOutput> generateForUuidMessage(MessageType type) {
         UuidImplementInterface uuidInterface = config.getUuidInterface();
         if (isDefault(uuidInterface)) {
             return ImmutableList.of();
@@ -59,8 +58,8 @@ final class MessageInterfaceScanner extends TypeScanner<ImplementInterface> {
     }
 
     @Override
-    protected List<ImplementInterface> filePatterns() {
-        return config.getImplementInterfaceList();
+    protected ImmutableList<ImplementInterface> codeGenerationTasks() {
+        return ImmutableList.copyOf(config.getImplementInterfaceList());
     }
 
     @Override
@@ -74,9 +73,8 @@ final class MessageInterfaceScanner extends TypeScanner<ImplementInterface> {
     }
 
     @Override
-    protected Function<ImplementInterface, ImmutableList<CompilerOutput>>
-    filePatternMapper(MessageType type) {
-        return new GenerateInterfaces(type);
+    protected ImplementInterfaces generateCode(MessageType type) {
+        return new ImplementInterfaces(type);
     }
 
     @Override
@@ -84,22 +82,21 @@ final class MessageInterfaceScanner extends TypeScanner<ImplementInterface> {
         return configuration -> type.isTopLevel();
     }
 
-    private static CompilerOutput uuidInterface(MessageType type,
-                                                UuidImplementInterface uuidInterface) {
+    private static CompilerOutput
+    uuidInterface(MessageType uuidMessage, UuidImplementInterface uuidInterface) {
         ClassName interfaceName = ClassName.of(uuidInterface.getInterfaceName());
         MessageInterfaceParameters parameters =
                 MessageInterfaceParameters.of(new IdentityParameter());
         MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
-        CompilerOutput insertionPoint = implementInterface(type, messageInterface);
+        CompilerOutput insertionPoint = implementInterface(uuidMessage, messageInterface);
         return insertionPoint;
     }
 
-    private static class GenerateInterfaces
-            implements Function<ImplementInterface, ImmutableList<CompilerOutput>> {
+    private static class ImplementInterfaces implements GenerateCode<ImplementInterface> {
 
         private final MessageType type;
 
-        private GenerateInterfaces(MessageType type) {
+        private ImplementInterfaces(MessageType type) {
             this.type = type;
         }
 

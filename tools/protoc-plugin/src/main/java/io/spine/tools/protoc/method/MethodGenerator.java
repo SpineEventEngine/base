@@ -21,7 +21,9 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.AbstractCodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -38,11 +40,11 @@ import java.util.Collection;
  */
 public final class MethodGenerator extends SpineProtoGenerator {
 
-    private final GeneratedMethodScanner generatedMethodScanner;
+    private final AbstractCodeGenerator<GenerateMethod> messageMethodGenerator;
 
-    private MethodGenerator(MethodsGeneration config) {
+    private MethodGenerator(MethodsGeneration methodsGeneration) {
         super();
-        generatedMethodScanner = new GeneratedMethodScanner(config);
+        messageMethodGenerator = new MessageMethodGenerator(methodsGeneration);
     }
 
     /**
@@ -57,9 +59,8 @@ public final class MethodGenerator extends SpineProtoGenerator {
         if (!(type instanceof MessageType)) {
             return ImmutableList.of();
         }
-        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
         MessageType messageType = (MessageType) type;
-        result.addAll(generatedMethodScanner.scan(messageType));
-        return result.build();
+        ImmutableList<CompilerOutput> result = messageMethodGenerator.generate(messageType);
+        return result;
     }
 }
