@@ -30,6 +30,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.logging.Logging;
 import io.spine.type.KnownTypes;
+import io.spine.type.MessageType;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -112,8 +113,8 @@ public final class FileSet implements Logging {
                                                  .map(FileName::from)
                                                  .collect(toSet());
         Map<FileName, FileDescriptor> knownFiles = KnownTypes.instance()
-                .getAllTypes()
-                .types()
+                .asTypeSet()
+                .allTypes()
                 .stream()
                 .map(type -> type.descriptor().getFile())
                 .filter(descriptor -> fileNames.contains(FileName.from(descriptor.getFile())))

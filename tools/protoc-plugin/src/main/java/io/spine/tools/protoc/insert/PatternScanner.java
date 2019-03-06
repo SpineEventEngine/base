@@ -21,17 +21,16 @@
 package io.spine.tools.protoc.insert;
 
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.MessageType;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.GeneratedInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
+import io.spine.type.MessageType;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.base.MessageClassifiers.uuidContainer;
+import static io.spine.base.UuidValue.classifier;
 import static io.spine.tools.protoc.insert.InsertionPoint.implementInterface;
 import static io.spine.validate.Validate.isNotDefault;
 
@@ -53,9 +52,6 @@ final class PatternScanner {
         if (isUuidMessage(type)) {
             return uuidInterface(type);
         }
-        if (type.isEnrichment()) {
-            return enrichmentInterface(type);
-        }
         if (type.isTopLevel()) {
             return postfixBasedInterface(type);
         }
@@ -67,7 +63,7 @@ final class PatternScanner {
             return false;
         }
         UuidInterface uuidInterface = patterns.getUuidInterface();
-        return isNotDefault(uuidInterface) && uuidContainer().test(type);
+        return isNotDefault(uuidInterface) && classifier().test(type);
     }
 
     private Optional<CompilerOutput> uuidInterface(MessageType type) {
@@ -82,20 +78,6 @@ final class PatternScanner {
         MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
         CompilerOutput insertionPoint = implementInterface(type, messageInterface);
         return insertionPoint;
-    }
-
-    private Optional<CompilerOutput> enrichmentInterface(MessageType type) {
-        EnrichmentInterface enrichmentInterface = patterns.getEnrichmentInterface();
-        return Optional.of(enrichmentInterface(type, enrichmentInterface));
-    }
-
-    private static CompilerOutput
-    enrichmentInterface(MessageType type, EnrichmentInterface enrichmentInterface) {
-        MessageInterface messageInterface = new PredefinedInterface(
-                ClassName.of(enrichmentInterface.getInterfaceName()),
-                MessageInterfaceParameters.empty()
-        );
-        return implementInterface(type, messageInterface);
     }
 
     private Optional<CompilerOutput> postfixBasedInterface(MessageType type) {

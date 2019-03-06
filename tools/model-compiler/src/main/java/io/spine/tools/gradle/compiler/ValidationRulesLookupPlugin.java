@@ -30,12 +30,12 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
-import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.TaskName.findTestValidationRules;
+import static io.spine.tools.gradle.TaskName.findValidationRules;
+import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
+import static io.spine.tools.gradle.TaskName.processResources;
+import static io.spine.tools.gradle.TaskName.processTestResources;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
@@ -61,18 +61,18 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     @CanIgnoreReturnValue
     private GradleTask findRules(Project project) {
         Action<Task> mainScopeAction = mainScopeActionFor(project);
-        return newTask(FIND_VALIDATION_RULES, mainScopeAction)
-                .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                .insertBeforeTask(PROCESS_RESOURCES)
+        return newTask(findValidationRules, mainScopeAction)
+                .insertAfterTask(mergeDescriptorSet)
+                .insertBeforeTask(processResources)
                 .applyNowTo(project);
     }
 
     @CanIgnoreReturnValue
     private GradleTask findTestRules(Project project) {
         Action<Task> testScopeAction = testScopeActionFor(project);
-        return newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
-                .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                .insertBeforeTask(PROCESS_TEST_RESOURCES)
+        return newTask(findTestValidationRules, testScopeAction)
+                .insertAfterTask(mergeTestDescriptorSet)
+                .insertBeforeTask(processTestResources)
                 .applyNowTo(project);
     }
 

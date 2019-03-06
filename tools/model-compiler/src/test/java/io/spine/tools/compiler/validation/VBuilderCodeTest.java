@@ -24,12 +24,12 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.FileName;
-import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.TheOuterProto;
 import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;
 import io.spine.test.tools.validation.builder.VbtTree;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,7 +40,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.code.proto.MessageType.VBUILDER_SUFFIX;
+import static io.spine.type.MessageType.VBUILDER_SUFFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -64,7 +64,7 @@ class VBuilderCodeTest {
      */
     @CanIgnoreReturnValue
     private File assertGeneratesFor(Descriptor descriptor) {
-        MessageType type = MessageType.of(descriptor);
+        MessageType type = new MessageType(descriptor);
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
         File file = code.write();
         assertTrue(file.exists());

@@ -26,9 +26,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static io.spine.tools.gradle.TaskName.CLASSES;
-import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
+import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.TaskName.classes;
+import static io.spine.tools.gradle.TaskName.scanClassPath;
 import static io.spine.tools.reflections.Given.REFLECTIONS_PLUGIN_ID;
 import static io.spine.tools.reflections.Given.newProject;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -53,11 +53,11 @@ class ReflectionsPluginTest {
                .apply(REFLECTIONS_PLUGIN_ID);
 
         TaskContainer tasks = project.getTasks();
-        Task scanClassPathTask = tasks.getByName(SCAN_CLASS_PATH.getValue());
-        Task buildTask = tasks.getByName(BUILD.getValue());
+        Task scanClassPathTask = tasks.getByName(scanClassPath.value());
+        Task buildTask = tasks.getByName(build.value());
 
         assertNotNull(scanClassPathTask);
-        assertTrue(dependsOn(scanClassPathTask, CLASSES));
+        assertTrue(dependsOn(scanClassPathTask, classes));
         assertTrue(dependsOn(buildTask, scanClassPathTask));
     }
 }

@@ -29,8 +29,6 @@ import java.lang.annotation.Annotation;
  * {@code AnnotationAnalyst} provides methods to check accessory to the specified annotation.
  *
  * @param <C> the type of an annotation to analyze
- *
- * @author Dmytro Grankin
  */
 public class AnnotationAnalyst<C extends Class<? extends Annotation>> {
 

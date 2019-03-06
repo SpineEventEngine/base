@@ -37,12 +37,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
-import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.TaskName.compileTestJava;
+import static io.spine.tools.gradle.TaskName.generateProto;
+import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
@@ -86,19 +84,19 @@ class ProtoJavadocPluginTest {
     @Test
     @DisplayName("add formatProtoDoc task")
     void add_task_formatProtoDoc() {
-        Task formatProtoDoc = task(FORMAT_PROTO_DOC);
+        Task formatProtoDoc = task(TaskName.formatProtoDoc);
         assertNotNull(formatProtoDoc);
-        assertTrue(dependsOn(formatProtoDoc, GENERATE_PROTO));
-        assertTrue(dependsOn(task(COMPILE_JAVA), formatProtoDoc));
+        assertTrue(dependsOn(formatProtoDoc, generateProto));
+        assertTrue(dependsOn(task(compileJava), formatProtoDoc));
     }
 
     @Test
     @DisplayName("add formatTestProtoDoc task")
     void add_task_formatTestProtoDoc() {
-        Task formatTestProtoDoc = task(FORMAT_TEST_PROTO_DOC);
+        Task formatTestProtoDoc = task(TaskName.formatTestProtoDoc);
         assertNotNull(formatTestProtoDoc);
-        assertTrue(dependsOn(formatTestProtoDoc, GENERATE_TEST_PROTO));
-        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), formatTestProtoDoc));
+        assertTrue(dependsOn(formatTestProtoDoc, generateTestProto));
+        assertTrue(dependsOn(task(compileTestJava), formatTestProtoDoc));
     }
 
     @Test
@@ -148,16 +146,16 @@ class ProtoJavadocPluginTest {
 
     private Task task(TaskName taskName) {
         return project.getTasks()
-                      .getByName(taskName.getValue());
+                      .getByName(taskName.value());
     }
 
     private static Project newProject() {
         Project project = ProjectBuilder.builder()
                                         .build();
-        project.task(COMPILE_JAVA.getValue());
-        project.task(COMPILE_TEST_JAVA.getValue());
-        project.task(GENERATE_PROTO.getValue());
-        project.task(GENERATE_TEST_PROTO.getValue());
+        project.task(compileJava.value());
+        project.task(compileTestJava.value());
+        project.task(generateProto.value());
+        project.task(generateTestProto.value());
         return project;
     }
 }

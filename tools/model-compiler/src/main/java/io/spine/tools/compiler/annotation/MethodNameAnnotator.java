@@ -22,9 +22,10 @@ package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
+import io.spine.type.Type;
 import org.jboss.forge.roaster.model.Method;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -47,7 +48,7 @@ final class MethodNameAnnotator extends Annotator {
 
     MethodNameAnnotator(ClassName annotation,
                         ImmutableSet<MethodPattern> patterns,
-                        ImmutableList<Descriptors.FileDescriptor> descriptors,
+                        ImmutableList<FileDescriptor> descriptors,
                         Path genProtoDir) {
         super(annotation, descriptors, genProtoDir);
         this.patterns = patterns;
@@ -59,8 +60,10 @@ final class MethodNameAnnotator extends Annotator {
             SourceVisitor<?> visitor = new AnnotateMethods();
             descriptors().stream()
                          .map(TypeSet::from)
-                         .flatMap(typeSet -> typeSet.types().stream())
-                         .map(type -> type.javaClassName().resolveFile())
+                         .map(TypeSet::allTypes)
+                         .flatMap(ImmutableSet::stream)
+                         .map(Type::javaClassName)
+                         .map(ClassName::resolveFile)
                          .forEach(file -> rewriteSource(file, visitor));
         }
     }

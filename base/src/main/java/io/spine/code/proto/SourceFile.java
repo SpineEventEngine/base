@@ -28,6 +28,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
+import io.spine.type.RejectionType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,13 +109,13 @@ public class SourceFile extends AbstractSourceFile implements Logging {
     public List<MessageType> allThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         for (Descriptor messageType : descriptor.getMessageTypes()) {
-            MessageType declaration = MessageType.of(messageType);
+            MessageType declaration = new MessageType(messageType);
             _debug("Testing {} to match {}", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);
             }
             Collection<MessageType> allNested =
-                    declaration.getAllNested(predicate);
+                    declaration.nestedTypesThat(predicate);
             result.addAll(allNested);
         }
         return result.build();

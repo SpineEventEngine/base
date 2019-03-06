@@ -27,7 +27,6 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
-import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
@@ -244,22 +243,6 @@ class MessageInterfaceGeneratorTest {
         assertEquals(1, files.size());
         for (File file : files) {
             assertGeneratedInterface(RejectionMessage.class, file);
-        }
-    }
-
-    @Test
-    @DisplayName("generate EnrichmentMessage insertion points")
-    void generateEnrichmentMessageInsertionPoints() {
-        String filePath = "spine/tools/protoc/insert/test_enrichments.proto";
-
-        FileDescriptorProto descriptor = TestEnrichmentsProto.getDescriptor()
-                                                             .toProto();
-        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
-        assertNotNull(response);
-        List<File> files = response.getFileList();
-        assertEquals(1, files.size());
-        for (File file : files) {
-            assertGeneratedInterface(EnrichmentMessage.class, file);
         }
     }
 

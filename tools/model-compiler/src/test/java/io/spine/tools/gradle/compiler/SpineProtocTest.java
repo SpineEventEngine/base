@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.code.java.DefaultJavaProject;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.build;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -64,7 +64,7 @@ class SpineProtocTest {
     @Test
     @DisplayName("create spine directory")
     void create_spine_directory() {
-        project.executeTask(BUILD);
+        project.executeTask(build);
         File spineDirPath = DefaultJavaProject.at(projectDir)
                                               .tempArtifacts();
         assertTrue(spineDirPath.exists());

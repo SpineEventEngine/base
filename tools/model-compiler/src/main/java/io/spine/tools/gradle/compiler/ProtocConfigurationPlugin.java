@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
@@ -30,6 +31,7 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.groovy.GStrings;
@@ -47,13 +49,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
-import static io.spine.tools.gradle.TaskName.COPY_PLUGIN_JAR;
-import static io.spine.tools.gradle.TaskName.WRITE_DESCRIPTOR_REFERENCE;
-import static io.spine.tools.gradle.TaskName.WRITE_TEST_DESCRIPTOR_REFERENCE;
+import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
+import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
@@ -67,6 +69,8 @@ import static org.gradle.internal.os.OperatingSystem.current;
  * performs no action.
  */
 public class ProtocConfigurationPlugin extends SpinePlugin {
+
+    private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
 
     private static final String PROTOBUF_GROUP = "com.google.protobuf";
     private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
@@ -155,34 +159,22 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                 .add(fetch.getName(), protocPluginArtifact.notation());
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
-        Action<Task> action = task -> copyPluginExecutables(project, protocPluginDependency, fetch);
-        GradleTask copyPluginJar = newTask(COPY_PLUGIN_JAR, action)
+        Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
+        GradleTask copyPluginJar = newTask(TaskName.copyPluginJar, action)
                 .allowNoDependencies()
+                .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                .withOutputFiles(project.fileTree(spineDirectory(project)))
+                .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
                 .applyNowTo(project);
         return copyPluginJar;
     }
 
-    private static void copyPluginExecutables(Project project,
-                                              Dependency protobufDependency,
-                                              Configuration fetchConfiguration) {
-        File executableJar = fetchConfiguration.fileCollection(protobufDependency)
-                                               .getSingleFile();
-        File spineDir = at(project.getProjectDir()).tempArtifacts();
-        File rootSpineDir = at(project.getRootDir()).tempArtifacts();
-        copy(executableJar, spineDir);
-        copy(executableJar, rootSpineDir);
+    private static File spineDirectory(Project project) {
+        return at(project.getProjectDir()).tempArtifacts();
     }
 
-    private static void copy(File file, File destinationDir) {
-        try {
-            destinationDir.mkdirs();
-            File destination = destinationDir.toPath()
-                                             .resolve(file.getName())
-                                             .toFile();
-            Files.copy(file, destination);
-        } catch (IOException e) {
-            throw new GradleException("Failed to copy Spine Protoc executable JAR.", e);
-        }
+    private static File rootSpineDirectory(Project project) {
+        return at(project.getRootDir()).tempArtifacts();
     }
 
     private void configureProtocTask(GenerateProtoTask protocTask, Task dependency) {
@@ -194,16 +186,16 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protocTask.setGenerateDescriptorSet(true);
         boolean tests = protocTask.getSourceSet()
                                   .getName()
-                                  .contains("test");
+                                  .contains(SourceScope.test.name());
         Project project = protocTask.getProject();
         File descriptor;
         TaskName writeRefName;
         if (tests) {
             descriptor = getTestDescriptorSet(project);
-            writeRefName = WRITE_TEST_DESCRIPTOR_REFERENCE;
+            writeRefName = writeTestDescriptorReference;
         } else {
             descriptor = getMainDescriptorSet(project);
-            writeRefName = WRITE_DESCRIPTOR_REFERENCE;
+            writeRefName = writeDescriptorReference;
         }
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
         options.setPath(GStrings.fromPlain(descriptor.getPath()));
@@ -212,11 +204,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
-        String sourceSetName = tests ? "test" : "main";
+        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
         Path resourceDirectory = descriptor.toPath()
                                            .getParent();
         javaConvention.getSourceSets()
-                      .getByName(sourceSetName)
+                      .getByName(sourceScope.name())
                       .getResources()
                       .srcDir(resourceDirectory);
         GradleTask writeRef = newTask(writeRefName, task -> {
@@ -243,8 +235,20 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private void configureProtocTasks(GenerateProtoTaskCollection tasks,
-                                             GradleTask dependency) {
-        tasks.all().forEach(task -> configureProtocTask(task, dependency.getTask()));
+                                      GradleTask dependency) {
+        // This is a "live" view of the current Gradle tasks.
+        Collection<GenerateProtoTask> tasksProxy = tasks.all();
+
+        /*
+         *  Creating a hard-copy of "live" view of matching Gradle tasks.
+         *
+         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
+         *  insert a task into the Gradle lifecycle.
+         */
+        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
+        for (GenerateProtoTask task : allTasks) {
+            configureProtocTask(task, dependency.getTask());
+        }
     }
 
     private static SpineProtocConfig assembleParameter(Project project) {
@@ -262,6 +266,46 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
         ProtocPlugin(String name) {
             this.name = name;
+        }
+    }
+
+    /**
+     * Downloads and lays out the {@code protoc} plugin executable JAR.
+     */
+    private static final class CopyPluginJar implements Action<Task> {
+
+        private final Project project;
+        private final Dependency protocPluginDependency;
+        private final Configuration fetch;
+
+        private CopyPluginJar(Project project,
+                              Dependency protocPlugin,
+                              Configuration fetch) {
+            this.project = project;
+            this.protocPluginDependency = protocPlugin;
+            this.fetch = fetch;
+        }
+
+        @Override
+        public void execute(Task task) {
+            File executableJar = fetch.fileCollection(protocPluginDependency)
+                                      .getSingleFile();
+            File spineDir = spineDirectory(project);
+            File rootSpineDir = rootSpineDirectory(project);
+            copy(executableJar, spineDir);
+            copy(executableJar, rootSpineDir);
+        }
+
+        private static void copy(File file, File destinationDir) {
+            try {
+                destinationDir.mkdirs();
+                File destination = destinationDir.toPath()
+                                                 .resolve(file.getName())
+                                                 .toFile();
+                Files.copy(file, destination);
+            } catch (IOException e) {
+                throw new GradleException("Failed to copy Spine Protoc executable JAR.", e);
+            }
         }
     }
 }

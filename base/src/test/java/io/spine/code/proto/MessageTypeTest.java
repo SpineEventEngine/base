@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.testing.EqualsTester;
 import com.google.common.truth.IterableSubject;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -30,12 +31,10 @@ import io.spine.net.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
-import io.spine.test.code.proto.command.MttNotEnrichment;
-import io.spine.test.code.proto.command.MttSomeMessage;
 import io.spine.test.code.proto.command.MttStartProject;
-import io.spine.test.code.proto.command.MttStartProjectEnrichment;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ class MessageTypeTest {
          * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
          */
         void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-            MessageType type = MessageType.of(descriptor);
+            MessageType type = new MessageType(descriptor);
             boolean result = method.test(type);
             assertTrue(result);
         }
@@ -110,14 +109,6 @@ class MessageTypeTest {
             );
         }
 
-        @DisplayName("an enrichment")
-        @Test
-        void enrichment() {
-            assertQuality(MessageType::isEnrichment,
-                          MttStartProjectEnrichment.getDescriptor()
-            );
-        }
-
         @Nested
         @DisplayName("not")
         class NotA {
@@ -143,17 +134,6 @@ class MessageTypeTest {
             void event() {
                 assertQuality(not(MessageType::isEvent),
                               MttProjectStarted.Details.getDescriptor()
-                );
-            }
-
-            @DisplayName("an enrichment")
-            @Test
-            void enrichment() {
-                assertQuality(not(MessageType::isEnrichment),
-                              MttNotEnrichment.getDescriptor()
-                );
-                assertQuality(not(MessageType::isEnrichment),
-                              MttSomeMessage.MttInnerMessageIsNotEnrichment.getDescriptor()
                 );
             }
         }
@@ -200,7 +180,7 @@ class MessageTypeTest {
 
         @CanIgnoreReturnValue
         private IterableSubject assertPath(Descriptor descriptor) {
-            MessageType type = MessageType.of(descriptor);
+            MessageType type = new MessageType(descriptor);
             LocationPath path = type.path();
 
             IterableSubject assertPath = assertThat(path.toList());
@@ -217,5 +197,18 @@ class MessageTypeTest {
             assertPath.contains(Uri.getDescriptor()
                                    .getIndex());
         }
+    }
+
+    private static MessageType type(Descriptor descriptor) {
+        return new MessageType(descriptor);
+    }
+
+    @Test
+    @DisplayName("support equality and hashing")
+    void equalityAndHasing() {
+        new EqualsTester()
+                .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
+                .addEqualityGroup(type(Timestamp.getDescriptor()))
+                .testEquals();
     }
 }

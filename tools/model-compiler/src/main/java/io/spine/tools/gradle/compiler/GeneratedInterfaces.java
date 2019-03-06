@@ -24,13 +24,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import io.spine.annotation.Internal;
 import io.spine.base.CommandMessage;
-import io.spine.base.EnrichmentMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.EnrichmentInterface;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.UuidInterface;
 
@@ -47,7 +45,6 @@ public final class GeneratedInterfaces {
 
     private final Map<FilePattern, PatternInterfaceConfig> patternConfigs;
     private final UuidInterfaceConfig uuidInterfaceConfig = new UuidInterfaceConfig();
-    private final EnrichmentInterfaceConfig enrichmentConfig = new EnrichmentInterfaceConfig();
 
     private GeneratedInterfaces() {
         this.patternConfigs = newConcurrentMap();
@@ -62,9 +59,7 @@ public final class GeneratedInterfaces {
      *     <li>{@link EventMessage} interface for Proto files ending with {@code events.proto};
      *     <li>{@link RejectionMessage} interface for Proto files ending with
      *         {@code rejections.proto};
-     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages};
-     *     <li>{@link EnrichmentMessage} interface
-     *         {@linkplain #enrichmentMessage() enrichment messages}.
+     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages}.
      * </ul>
      *
      * @return new config
@@ -80,8 +75,6 @@ public final class GeneratedInterfaces {
               .markWith(RejectionMessage.class.getName());
         config.uuidMessage()
               .markWith(UuidValue.class.getName());
-        config.enrichmentMessage()
-              .markWith(EnrichmentMessage.class.getName());
         return config;
     }
 
@@ -182,52 +175,20 @@ public final class GeneratedInterfaces {
     }
 
     /**
-     * Configures an interface generation for messages with {@code (enrichment_for)} option.
-     *
-     * <p>This method functions are similar to the {@link #filePattern(FilePattern)} except for
-     * several differences:
-     * <ul>
-     *     <li>the file in which the message type is defined does not matter;
-     * </ul>
-     *
-     * @return a configuration object for Proto messages matching enrichment message pattern
-     */
-    public GeneratedInterfaceConfig enrichmentMessage() {
-        return enrichmentConfig;
-    }
-
-    /**
      * Converts this config into a {@link SpineProtocConfig}.
      */
     @Internal
     @VisibleForTesting
     public SpineProtocConfig asProtocConfig() {
         UuidInterface uuidInterface = uuidInterface();
-        EnrichmentInterface enrichmentInterface = enrichmentConfig();
         SpineProtocConfig.Builder result = SpineProtocConfig
                 .newBuilder()
-                .setUuidInterface(uuidInterface)
-                .setEnrichmentInterface(enrichmentInterface);
+                .setUuidInterface(uuidInterface);
         patternConfigs.values()
                       .stream()
                       .map(PatternInterfaceConfig::generatedInterface)
                       .forEach(result::addGeneratedInterface);
         return result.build();
-    }
-
-    private EnrichmentInterface enrichmentConfig() {
-        Optional<ClassName> name = enrichmentConfig.interfaceName();
-        EnrichmentInterface enrichmentInterface = name
-                .map(GeneratedInterfaces::newEnrichmentInterface)
-                .orElse(EnrichmentInterface.getDefaultInstance());
-        return enrichmentInterface;
-    }
-
-    private static EnrichmentInterface newEnrichmentInterface(ClassName className) {
-        return EnrichmentInterface
-                .newBuilder()
-                .setInterfaceName(className.value())
-                .build();
     }
 
     private UuidInterface uuidInterface() {

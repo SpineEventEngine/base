@@ -23,11 +23,11 @@ package io.spine.js.generate.index;
 import com.google.common.collect.Maps;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.snippet.MapExportSnippet;
+import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
 import java.util.List;
@@ -75,7 +75,7 @@ final class KnownTypesMap implements Snippet {
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
         Set<Type<?, ?>> types = TypeSet.from(fileSet)
-                                       .types();
+                                       .allTypes();
         List<Map.Entry<String, TypeName>> entries = types.stream()
                                                          .map(KnownTypesMap::mapEntry)
                                                          .collect(toList());

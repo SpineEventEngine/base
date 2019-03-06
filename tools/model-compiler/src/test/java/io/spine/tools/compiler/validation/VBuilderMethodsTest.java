@@ -22,8 +22,8 @@ package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.VbtProject;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class VBuilderMethodsTest {
         @Test
         @DisplayName("a top level message")
         void topLevelMessage() {
-            MessageType type = MessageType.of(VbtProject.getDescriptor());
+            MessageType type = new MessageType(VbtProject.getDescriptor());
 
             ImmutableList<MethodSpec> specs = VBuilderMethods.methodsOf(type);
             assertThat(specs).isNotEmpty();

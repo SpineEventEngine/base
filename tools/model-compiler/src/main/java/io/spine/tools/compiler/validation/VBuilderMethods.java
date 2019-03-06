@@ -28,9 +28,9 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.MessageType;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
@@ -104,10 +104,11 @@ final class VBuilderMethods {
         ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
                 .methodBuilder(methodName)
+                .addAnnotation(Override.class)
                 .addAnnotation(CanIgnoreReturnValue.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
-                .addCode(checkAllFields())
+                .addCode(checkSetOnceOnAllFields())
                 .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
                 .addStatement(returnThis())
                 .returns(className)
@@ -124,14 +125,14 @@ final class VBuilderMethods {
      *          {@code
      *              Map<FieldDescriptor, Object> fieldsMap = message.getAllFields();
      *              for (Map.Entry<FieldDescriptor, Object> entry : message.entrySet() {
-     *                      validateSetOnce(entry.getKey());
+     *                      validateSetOnce(entry.getKey(), entry.getValue());
      *              }
      *          }
      *          </pre>
      *
      * @return a statement that checks whether all fields are present during a {@code mergeFrom()}
      */
-    private static CodeBlock checkAllFields() {
+    private static CodeBlock checkSetOnceOnAllFields() {
         String fieldsMap = "fieldsMap";
         String loopLocalVariable = "entry";
         CodeBlock codeBlock = CodeBlock
@@ -150,7 +151,8 @@ final class VBuilderMethods {
                         ClassName.get(Object.class),
                         loopLocalVariable,
                         fieldsMap)
-                .addStatement("validateSetOnce($N.getKey())", loopLocalVariable)
+                .addStatement("validateSetOnce($N.getKey(), $N.getValue())",
+                              loopLocalVariable, loopLocalVariable)
                 .endControlFlow()
                 .build();
         return codeBlock;

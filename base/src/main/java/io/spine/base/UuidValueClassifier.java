@@ -25,7 +25,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.MessageType;
+import io.spine.type.MessageType;
 
 /**
  * Checks if the given message definition is a {@link UuidValue}.
@@ -49,7 +49,7 @@ final class UuidValueClassifier implements MessageClassifier {
     }
 
     boolean test(Descriptor descriptor) {
-        MessageType type = MessageType.of(descriptor);
+        MessageType type = new MessageType(descriptor);
         return test(type);
     }
 }

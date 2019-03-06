@@ -42,20 +42,18 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         return EXTENSION_NAME;
     }
 
-    @SuppressWarnings("OverlyCoupledMethod") // OK as we need to launch all sub-plugins.
     @Override
     public void apply(Project project) {
         _debug("Adding the extension to the project.");
         project.getExtensions()
                .create(extensionName(), Extension.class);
 
-        // Plugins that deal with Protobuf types must depend on `MERGE_DESCRIPTOR_SET` and
-        // `MERGE_TEST_DESCRIPTOR_SET` tasks to be able to access every declared type
+        // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
+        // `mergeTestDescriptorSet` tasks to be able to access every declared type
         // in the project classpath.
 
         Stream.of(new CleaningPlugin(),
                   new DescriptorSetMergerPlugin(),
-                  new EnrichmentLookupPlugin(),
                   new RejectionGenPlugin(),
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),

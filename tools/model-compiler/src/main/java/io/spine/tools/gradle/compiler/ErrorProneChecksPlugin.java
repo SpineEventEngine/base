@@ -63,7 +63,6 @@ import org.gradle.api.artifacts.Configuration;
  *
  * <p>The latter overrides the former.
  *
- * @author Dmytro Kuzmin
  * @see io.spine.validate.ValidatingBuilder
  */
 public class ErrorProneChecksPlugin extends SpinePlugin {

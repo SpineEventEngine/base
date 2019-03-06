@@ -54,7 +54,8 @@ abstract class FieldValidatingOption<T, F>
      * Returns an value of the option.
      *
      * @apiNote Should only be called by subclasses in circumstances that assume presence of
-     *         the option. For all other cases refer to {@link this#valueFrom(FieldDescriptor)}.
+     *         the option. For all other cases please refer to
+     *         {@link #valueFrom(com.google.protobuf.Descriptors.FieldDescriptor, FieldContext)}.
      */
     T optionValue(FieldValue<F> value) throws IllegalStateException {
         FieldDescriptor field = value.declaration()
@@ -93,8 +94,10 @@ abstract class FieldValidatingOption<T, F>
      *         context of the field
      * @return an {@code Optional} with an option value, if such exists, otherwise an empty
      *         {@code Optional}
-     * @apiNote Use this in favour of {@link #valueFrom(FieldDescriptor)} when
-     *         {@code FieldContext} matters, e.g. when handling {@code validation_for} options.
+     * @apiNote Use this in favour of {@link
+     *         FieldOption#optionsFrom(com.google.protobuf.Descriptors.FieldDescriptor)
+     *         optionsFrom(FieldDescriptor)} when {@code FieldContext} matters, e.g. when handling
+     *         {@code (validation_for)} options.
      */
     public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
         Optional<T> value = getOptionValue(context, extension());

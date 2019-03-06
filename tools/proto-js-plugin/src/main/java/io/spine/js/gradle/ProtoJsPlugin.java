@@ -40,8 +40,8 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
+import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.TaskName.generateJsonParsers;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -62,7 +62,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  *
  * <p>The main plugin action may be retrieved and configured as necessary via the
  * {@linkplain Extension "protoJs" extension}. By default, the action is a dependency of the
- * {@linkplain io.spine.tools.gradle.TaskName#BUILD build} task.
+ * {@linkplain io.spine.tools.gradle.TaskName#build build} task.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
  * set to the required values in a project willing to use the plugin. These settings are:
@@ -84,8 +84,8 @@ public class ProtoJsPlugin extends ProtoPlugin {
                                      .create(EXTENSION_NAME, Extension.class);
 
         Action<Task> action = newAction(project);
-        GradleTask newTask = newTask(GENERATE_JSON_PARSERS, action)
-                .insertBeforeTask(BUILD)
+        GradleTask newTask = newTask(generateJsonParsers, action)
+                .insertBeforeTask(build)
                 .applyNowTo(project);
 
         Task task = newTask.getTask();

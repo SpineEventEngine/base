@@ -37,8 +37,6 @@ import static java.util.regex.Matcher.quoteReplacement;
  * `some multi
  * lined text`
  * }</pre>
- *
- * @author Alexander Aleksandrov
  */
 class BacktickFormatting extends LineFormatting {
 

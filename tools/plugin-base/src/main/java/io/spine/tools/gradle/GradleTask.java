@@ -21,21 +21,23 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 
-import java.nio.file.Path;
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Utility wrapper around the Gradle tasks created.
@@ -89,12 +91,13 @@ public final class GradleTask {
 
         private boolean allowNoDependencies;
 
-        private final Collection<Path> inputs;
+        private @MonotonicNonNull UnionFileCollection inputs;
+        private Map<String, @Nullable Object> inputProperties;
+        private @MonotonicNonNull UnionFileCollection outputs;
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
             this.action = action;
-            this.inputs = newLinkedList();
         }
 
         /**
@@ -103,15 +106,15 @@ public final class GradleTask {
          * <p> Once built, the new instance of {@link GradleTask} will be inserted
          * before the anchor.
          *
-         * <p> NOTE: invocation of either this method or {@link #insertAfterTask(TaskName)}
-         * is mandatory, as the newly created instance of {@link GradleTask} must be put to
+         * <p> NOTE: invocation of either this method or {@link #insertAfterTask} is mandatory,
+         * as the newly created instance of {@link GradleTask} must be put to
          * a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "before" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertBeforeTask(TaskName target) {
-            checkNotNull(target, "task after the new one");
+            checkNotNull(target, "Task after the new one");
             checkState(dependenciesRequired());
             this.followingTask = target;
             return this;
@@ -123,15 +126,15 @@ public final class GradleTask {
          * <p> Once built, the new instance of {@link GradleTask} will be inserted
          * after the anchor.
          *
-         * <p> NOTE: invocation of either this method or {@link #insertBeforeTask(TaskName)}
-         * is mandatory, as the newly created instance of {@link GradleTask} must be put
+         * <p> NOTE: invocation of either this method or {@link #insertBeforeTask} is mandatory,
+         * as the newly created instance of {@link GradleTask} must be put
          * to a certain place in the Gradle build lifecycle.
          *
          * @param target the name of the task, serving as "after" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertAfterTask(TaskName target) {
-            checkNotNull(target, "task before the new one");
+            checkNotNull(target, "Task before the new one");
             checkState(dependenciesRequired());
             this.previousTask = target;
             return this;
@@ -151,16 +154,15 @@ public final class GradleTask {
          * Gradle build.
          *
          * <p>Invocation of this method may substitute the invocation of
-         * {@link #insertAfterTask(TaskName)} or {@link #insertBeforeTask(TaskName)} if it's
-         * guaranteed that at least one task with such name exists. Though the fallback is
-         * never handled and there is no guarantee that the task will get into
-         * the Gradle task graph.
+         * {@link #insertAfterTask} or {@link #insertBeforeTask} if it's guaranteed that at least
+         * one task with such name exists. Though the fallback is never handled and there is
+         * no guarantee that the task will get into the Gradle task graph.
          *
          * @param target the name of the tasks, serving as "after" anchor
          * @return the current instance of {@code Builder}
          */
         public Builder insertAfterAllTasks(TaskName target) {
-            checkNotNull(target, "tasks before the new one");
+            checkNotNull(target, "Tasks before the new one");
             checkState(dependenciesRequired());
             this.previousTaskOfAllProjects = target;
             return this;
@@ -181,7 +183,7 @@ public final class GradleTask {
         }
 
         /**
-         * Adds the files and/or directories to the input dataset for the task being built.
+         * Adds the files and/or directories to the input file set for the task being built.
          *
          * <p>If none of the specified file system elements are present before the task
          * execution, the task will be marked as {@code NO-SOURCE} and skipped.
@@ -191,9 +193,56 @@ public final class GradleTask {
          * @param inputs the task input files
          * @return the current instance of {@code Builder}
          */
-        public Builder withInputFiles(Path... inputs) {
-            checkNotNull(inputs, "task inputs");
-            this.inputs.addAll(ImmutableSet.copyOf(inputs));
+        public Builder withInputFiles(FileCollection inputs) {
+            checkNotNull(inputs, "Task inputs");
+            if (this.inputs == null) {
+                this.inputs = new UnionFileCollection();
+            }
+            this.inputs.addToUnion(inputs);
+            return this;
+        }
+
+        /**
+         * Adds a task input property.
+         *
+         * <p>An input property is treated in a similar way as
+         * an {@linkplain #withInputFiles input file}.
+         *
+         * <p>Multiple invocations of this method append new properties. If there already is
+         * a property with is such a name, the value is overridden.
+         *
+         * @param propertyName
+         *         the name of the property
+         * @param value
+         *         the value of the property
+         * @return the current instance of {@code Builder}
+         */
+        public Builder withInputProperty(String propertyName, @Nullable Serializable value) {
+            checkNotNull(propertyName);
+            if (inputProperties == null) {
+                inputProperties = newHashMap();
+            }
+            inputProperties.put(propertyName, value);
+            return this;
+        }
+
+        /**
+         * Adds the files and/or directories to the output file set for the task being built.
+         *
+         * <p>If all the files listed as output do not change since the previous run of the task,
+         * the task will be marked as {@code UP-TO-DATE} and skipped.
+         *
+         * <p>Note that a task is not skipped if its {@link #withInputFiles inputs} are changes.
+         *
+         * @param outputs the task output files
+         * @return the current instance of {@code Builder}
+         */
+        public Builder withOutputFiles(FileCollection outputs) {
+            checkNotNull(outputs, "Task outputs");
+            if (this.outputs == null) {
+                this.outputs = new UnionFileCollection();
+            }
+            this.outputs.addToUnion(outputs);
             return this;
         }
 
@@ -215,7 +264,7 @@ public final class GradleTask {
                 throw new IllegalStateException(exceptionMsg);
             }
 
-            Task newTask = project.task(name.getValue())
+            Task newTask = project.task(name.value())
                                   .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
@@ -235,11 +284,11 @@ public final class GradleTask {
 
         private void dependTask(Task task, Project project) {
             if (previousTask != null) {
-                task.dependsOn(previousTask.getValue());
+                task.dependsOn(previousTask.value());
             }
             if (followingTask != null) {
                 TaskContainer existingTasks = project.getTasks();
-                existingTasks.getByPath(followingTask.getValue())
+                existingTasks.getByPath(followingTask.value())
                              .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {
@@ -249,7 +298,7 @@ public final class GradleTask {
         }
 
         private void dependTaskOnAllProjects(Task task, Project rootProject) {
-            String prevTaskName = previousTaskOfAllProjects.getValue();
+            String prevTaskName = previousTaskOfAllProjects.value();
             ProjectHierarchy.applyToAll(rootProject, project -> {
                 Task existingTask = project.getTasks()
                                            .findByName(prevTaskName);
@@ -260,12 +309,20 @@ public final class GradleTask {
         }
 
         private void addTaskIO(Task task) {
-            if (!inputs.isEmpty()) {
+            if (inputs != null) {
                 task.getInputs()
-                    .files(inputs.toArray())
+                    .files(inputs)
                     .skipWhenEmpty()
-                    .optional()
-                    .withPathSensitivity(PathSensitivity.RELATIVE);
+                    .optional();
+            }
+            if (inputProperties != null) {
+                task.getInputs()
+                    .properties(inputProperties);
+            }
+            if (outputs != null) {
+                task.getOutputs()
+                    .files(outputs)
+                    .optional();
             }
         }
     }

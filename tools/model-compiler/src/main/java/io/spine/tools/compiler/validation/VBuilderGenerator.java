@@ -24,15 +24,16 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.MessageType;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
+import io.spine.type.MessageType;
 import org.slf4j.Logger;
 
 import java.io.File;
 
+import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.format;
 
@@ -73,10 +74,11 @@ public final class VBuilderGenerator implements Logging {
     public void process(FileSet files) {
         FileSet fileSet = moduleFiles(files);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
+        @SuppressWarnings("Guava") // it's more neat Guava way here.
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
-                            .filter(MessageType::isNotRejection)
+                            .filter(not(MessageType::isRejection))
                             .collect(toImmutableList());
         generate(customTypes);
     }

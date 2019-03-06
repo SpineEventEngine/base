@@ -22,7 +22,7 @@ package io.spine.tools.protodoc;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,6 +77,6 @@ final class TestHelper {
                 .setProjectFolder(folder)
                 .createFile(filePath, ImmutableList.of(fileContent))
                 .build();
-        project.executeTask(FORMAT_PROTO_DOC);
+        project.executeTask(formatProtoDoc);
     }
 }

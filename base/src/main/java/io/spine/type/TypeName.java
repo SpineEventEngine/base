@@ -25,7 +25,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
-import io.spine.code.proto.Type;
 import io.spine.value.StringTypeValue;
 
 import java.util.List;
@@ -79,7 +78,7 @@ public final class TypeName extends StringTypeValue {
      */
     public static TypeName from(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
-        return create(typeUrl.getTypeName());
+        return typeUrl.toTypeName();
     }
 
     /**
@@ -109,7 +108,7 @@ public final class TypeName extends StringTypeValue {
     /**
      * Returns the unqualified name of the Protobuf type, for example: {@code StringValue}.
      */
-    public String getSimpleName() {
+    public String simpleName() {
         String typeName = value();
         List<String> tokens = packageSplitter.splitToList(typeName);
         String result = tokens.get(tokens.size() - 1);
@@ -131,7 +130,7 @@ public final class TypeName extends StringTypeValue {
      * @throws UnknownTypeException wrapping {@link ClassNotFoundException} if
      *         there is no corresponding Java class
      */
-    public Class<?> getJavaClass() throws UnknownTypeException {
+    public Class<?> toJavaClass() throws UnknownTypeException {
         return type().javaClass();
     }
 
@@ -144,8 +143,8 @@ public final class TypeName extends StringTypeValue {
      *
      * @throws IllegalStateException if the type URL represents an enum
      */
-    public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        Class<?> cls = getJavaClass();
+    public <T extends Message> Class<T> toMessageClass() throws UnknownTypeException {
+        Class<?> cls = toJavaClass();
         checkState(Message.class.isAssignableFrom(cls));
         @SuppressWarnings("unchecked")
         Class<T> result = (Class<T>) cls;
@@ -155,7 +154,7 @@ public final class TypeName extends StringTypeValue {
     /**
      * Obtains the descriptor for the type.
      */
-    public GenericDescriptor getDescriptor() {
+    public GenericDescriptor genericDescriptor() {
         return type().descriptor();
     }
 
@@ -163,8 +162,8 @@ public final class TypeName extends StringTypeValue {
      * Obtains the message descriptor for the type or throws an exception if this type is name
      * represents an enum.
      */
-    public Descriptor getMessageDescriptor() {
-        Descriptor result = (Descriptor) getDescriptor();
+    public Descriptor messageDescriptor() {
+        Descriptor result = (Descriptor) genericDescriptor();
         return result;
     }
 
@@ -179,7 +178,7 @@ public final class TypeName extends StringTypeValue {
         return inPackage;
     }
 
-    private Type<?, ?> type() {
+    Type<?, ?> type() {
         Type<?, ?> result = KnownTypes.instance()
                                       .find(this)
                                       .orElseThrow(() -> new UnknownTypeException(value()));
