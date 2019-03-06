@@ -57,13 +57,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageInterfaceGenerator should")
-final class MessageInterfaceGeneratorTest {
+@DisplayName("InterfaceGenerator should")
+final class InterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.messageinterface.";
 
     private static final PackageName PACKAGE_NAME =
-            PackageName.of(MessageInterfaceGeneratorTest.class);
+            PackageName.of(InterfaceGeneratorTest.class);
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.messageinterface\\.ProtocCustomerEvent\\s*,\\s*$");
     private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
@@ -92,7 +92,7 @@ final class MessageInterfaceGeneratorTest {
                 .newBuilder()
                 .setInterfacesGeneration(interfaces.asProtocConfig())
                 .build();
-        codeGenerator = MessageInterfaceGenerator.instance(config);
+        codeGenerator = InterfaceGenerator.instance(config);
     }
 
     @Test
@@ -100,7 +100,7 @@ final class MessageInterfaceGeneratorTest {
     void notAcceptNulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
-                .testAllPublicStaticMethods(MessageInterfaceGenerator.class);
+                .testAllPublicStaticMethods(InterfaceGenerator.class);
     }
 
     @Test

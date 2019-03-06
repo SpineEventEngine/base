@@ -45,12 +45,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
  */
-public final class MessageInterfaceGenerator extends SpineProtoGenerator {
+public final class InterfaceGenerator extends SpineProtoGenerator {
 
     private final MessageInterfaceScanner messageInterfaceScanner;
 
     /** Prevents singleton class instantiation. */
-    private MessageInterfaceGenerator(InterfacesGeneration config) {
+    private InterfaceGenerator(InterfacesGeneration config) {
         super();
         this.messageInterfaceScanner = new MessageInterfaceScanner(config);
     }
@@ -60,7 +60,7 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
      */
     public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
         checkNotNull(parameter);
-        return new MessageInterfaceGenerator(parameter.getInterfacesGeneration());
+        return new InterfaceGenerator(parameter.getInterfacesGeneration());
     }
 
     /**

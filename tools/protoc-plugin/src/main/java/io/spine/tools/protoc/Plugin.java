@@ -25,8 +25,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
-import io.spine.tools.protoc.messageinterface.MessageInterfaceGenerator;
-import io.spine.tools.protoc.method.GeneratedMethodGenerator;
+import io.spine.tools.protoc.messageinterface.InterfaceGenerator;
+import io.spine.tools.protoc.method.MethodGenerator;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -39,8 +39,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link MessageInterfaceGenerator} and
- * {@link GeneratedMethodGenerator}.
+ * <p>For the description of the plugin behavior see {@link InterfaceGenerator} and
+ * {@link MethodGenerator}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
@@ -57,9 +57,9 @@ public final class Plugin {
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
         SpineProtocConfig config = readConfig(request);
-        SpineProtoGenerator generator = MessageInterfaceGenerator
+        SpineProtoGenerator generator = InterfaceGenerator
                 .instance(config)
-                .linkWith(GeneratedMethodGenerator.instance(config));
+                .linkWith(MethodGenerator.instance(config));
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

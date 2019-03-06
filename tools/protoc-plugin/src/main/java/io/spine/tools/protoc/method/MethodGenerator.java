@@ -36,11 +36,11 @@ import java.util.Collection;
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
  * {@link io.spine.tools.protoc.InsertionPoint#CLASS_SCOPE class scope} insertion point.
  */
-public final class GeneratedMethodGenerator extends SpineProtoGenerator {
+public final class MethodGenerator extends SpineProtoGenerator {
 
     private final GeneratedMethodScanner generatedMethodScanner;
 
-    private GeneratedMethodGenerator(MethodsGeneration config) {
+    private MethodGenerator(MethodsGeneration config) {
         super();
         generatedMethodScanner = new GeneratedMethodScanner(config);
     }
@@ -48,8 +48,8 @@ public final class GeneratedMethodGenerator extends SpineProtoGenerator {
     /**
      * Retrieves the single instance of the {@code GeneratedMethodGenerator} type.
      */
-    public static GeneratedMethodGenerator instance(SpineProtocConfig config) {
-        return new GeneratedMethodGenerator(config.getMethodsGeneration());
+    public static MethodGenerator instance(SpineProtocConfig config) {
+        return new MethodGenerator(config.getMethodsGeneration());
     }
 
     @Override

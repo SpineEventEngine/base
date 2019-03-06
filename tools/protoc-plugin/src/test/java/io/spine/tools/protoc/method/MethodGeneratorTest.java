@@ -32,14 +32,14 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GenratedMethodGenerator should")
-final class GeneratedMethodGeneratorTest {
+@DisplayName("MethodGenerator should")
+final class MethodGeneratorTest {
 
     @DisplayName("ignore non-message types")
     @Test
     void ignoreNonMessageTypes() {
-        GeneratedMethodGenerator generator =
-                GeneratedMethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
+        MethodGenerator generator =
+                MethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
         Descriptors.ServiceDescriptor service = TestServiceProto.getDescriptor()
                                                                 .findServiceByName("TestService");
         ServiceType type = ServiceType.of(service);
@@ -51,8 +51,8 @@ final class GeneratedMethodGeneratorTest {
     @Test
     void generateMethodsForMessageTypes() {
         MessageType type = new MessageType(EnhancedMessage.getDescriptor());
-        GeneratedMethodGenerator generator =
-                GeneratedMethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
+        MethodGenerator generator =
+                MethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
         Collection<CompilerOutput> result = generator.processType(type);
         assertTrue(result.isEmpty());
     }
