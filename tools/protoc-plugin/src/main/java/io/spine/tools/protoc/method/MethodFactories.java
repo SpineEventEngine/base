@@ -35,14 +35,12 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * An utility class for instantiating {@link MethodFactory} for a particular
- * {@link io.spine.tools.protoc.GeneratedMethod} specification.
+ * An utility class for instantiating {@link MethodFactory}.
  */
 final class MethodFactories implements Logging {
 
@@ -53,16 +51,11 @@ final class MethodFactories implements Logging {
     }
 
     /**
-     * Creates an instance of a {@link MethodFactory} out of the supplied
-     * {@link io.spine.tools.protoc.GeneratedMethod specification}.
-     *
-     * <p>If specification is invalid or the specified class for some reason could not be
-     * instantiated a {@link NoOpMethodFactory} instance is returned.
+     * Instantiates a {@link MethodFactory} with the specified {@code factoryName}.
      */
-    MethodFactory newFactoryFor(String factoryName) {
+    MethodFactory newFactory(String factoryName) {
         checkNotNull(factoryName);
-        if (factoryName.trim()
-                       .isEmpty()) {
+        if (factoryName.isEmpty()) {
             return NoOpMethodFactory.INSTANCE;
         }
         MethodFactory result = from(factoryName);
@@ -73,49 +66,44 @@ final class MethodFactories implements Logging {
      * Instantiates a new {@link MethodFactory} from the specified fully-qualified class name.
      */
     private MethodFactory from(String fqn) {
-        Optional<Class<MethodFactory>> factoryClass = methodFactoryClass(fqn);
-        if (!factoryClass.isPresent()) {
-            return NoOpMethodFactory.INSTANCE;
-        }
+        Class<MethodFactory> factoryClass = methodFactoryClass(fqn);
         try {
-            MethodFactory factory = factoryClass.get()
-                                                .getConstructor()
+            MethodFactory factory = factoryClass.getConstructor()
                                                 .newInstance();
             return factory;
         } catch (InstantiationException e) {
-            _warn("Unable to instantiate MethodFactory {}.", fqn, e);
+            _error("Unable to instantiate MethodFactory {}.", fqn);
+            throw new MethodFactoryInstantiationException(fqn, e);
         } catch (IllegalAccessException e) {
-            _warn("Unable to access MethodFactory {}.", fqn, e);
+            _error("Unable to access MethodFactory {}.", fqn);
+            throw new MethodFactoryInstantiationException(fqn, e);
         } catch (NoSuchMethodException e) {
-            _warn("Unable to get constructor for MethodFactory {}.", fqn, e);
+            _error("Unable to get constructor for MethodFactory {}.", fqn);
+            throw new MethodFactoryInstantiationException(fqn, e);
         } catch (InvocationTargetException e) {
-            _warn("Unable to invoke public constructor for MethodFactory {}.", fqn, e);
+            _error("Unable to invoke public constructor for MethodFactory {}.", fqn);
+            throw new MethodFactoryInstantiationException(fqn, e);
         }
-        return NoOpMethodFactory.INSTANCE;
     }
 
     @SuppressWarnings("unchecked") //we do already know that the class represents MethodFactory
-    private Optional<Class<MethodFactory>> methodFactoryClass(String fqn) {
-        Optional<Class<?>> factory = factoryClass(fqn);
-        if (!factory.isPresent()) {
-            return Optional.empty();
+    private Class<MethodFactory> methodFactoryClass(String fqn) {
+        Class<?> factory = factoryClass(fqn);
+        if (MethodFactory.class.isAssignableFrom(factory)) {
+            return (Class<MethodFactory>) factory;
         }
-        Class<?> factoryClass = factory.get();
-        if (MethodFactory.class.isAssignableFrom(factoryClass)) {
-            return Optional.of((Class<MethodFactory>) factoryClass);
-        }
-        _warn("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
-        return Optional.empty();
+        _error("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
+        throw new MethodFactoryInstantiationException(fqn);
     }
 
-    private Optional<Class<?>> factoryClass(String fqn) {
+    private Class<?> factoryClass(String fqn) {
         try {
             Class<?> factory = externalClassLoader.loadClass(fqn);
-            return Optional.ofNullable(factory);
+            return factory;
         } catch (ClassNotFoundException e) {
-            _warn("Unable to resolve MethodFactory {}.", fqn, e);
+            _error("Unable to resolve MethodFactory {}.", fqn);
+            throw new MethodFactoryInstantiationException(fqn, e);
         }
-        return Optional.empty();
     }
 
     private static ClassLoader externalClassLoader(MethodFactoryConfiguration configuration) {
@@ -148,7 +136,7 @@ final class MethodFactories implements Logging {
 
     /**
      * A no-operation stub implementation of a {@link MethodFactory} that is used if the
-     * method factory is not configured and/or available.
+     * method factory is not configured.
      */
     @VisibleForTesting
     @Immutable

@@ -94,7 +94,7 @@ final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
     }
 
     private ImmutableList<CompilerOutput> generateMethods(String factoryName, MessageType type) {
-        MethodFactory factory = methodFactories.newFactoryFor(factoryName);
+        MethodFactory factory = methodFactories.newFactory(factoryName);
         return factory
                 .newMethodsFor(type)
                 .stream()

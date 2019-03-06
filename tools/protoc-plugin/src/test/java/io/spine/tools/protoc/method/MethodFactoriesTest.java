@@ -28,10 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("MessageFactories should")
 final class MethodFactoriesTest {
@@ -43,58 +42,65 @@ final class MethodFactoriesTest {
         methodFactories = new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
     }
 
-    @DisplayName("return NoOpMessageFactory")
-    @Nested
-    final class ReturnNoOpFactory {
+    @DisplayName("return NoOpMessageFactory if generator name is empty")
+    @Test
+    void returnNoOpFactoryForEmptyFactoryName() {
+        assertThat(methodFactories.newFactory(""))
+                .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+    }
 
-        @DisplayName("if generator name is")
-        @ParameterizedTest(name = "\"{0}\"")
-        @ValueSource(strings = {"", "  "})
-        void forBlankFactoryName(String factoryName) {
-            assertThat(methodFactories.newFactoryFor(factoryName))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+    @SuppressWarnings("NonExceptionNameEndsWithException")
+    @DisplayName("throw MethodFactoryInstantiationException")
+    @Nested
+    final class ThrowInstantiationException {
+
+        @DisplayName("if supplied factory name is blank")
+        @Test
+        void forBlankFactoryName() {
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> methodFactories.newFactory("   "));
         }
 
         @DisplayName("if implementation does not have a public constructor")
         @Test
         void withoutPublicConstructor() {
-            assertThat(newFactoryFor(WithoutPublicConstructor.class))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> newFactoryFor(WithoutPublicConstructor.class));
         }
 
         @DisplayName("if implementation has private constructor")
         @Test
         void withPrivateConstructor() {
-            assertThat(newFactoryFor(WithPrivateConstructor.class))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> newFactoryFor(WithPrivateConstructor.class));
         }
 
         @DisplayName("if exception is thrown during instantiation")
         @Test
         void exceptionThrownDuringInstantiation() {
-            assertThat(newFactoryFor(WithExceptionDuringInstantiation.class))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> newFactoryFor(WithExceptionDuringInstantiation.class));
         }
 
         @DisplayName("if implementation is abstract")
         @Test
         void implementationIsAbstract() {
-            assertThat(newFactoryFor(WithAbstractImplementation.class))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> newFactoryFor(WithAbstractImplementation.class));
         }
 
         @DisplayName("if implementation is not found or not available")
         @Test
         void classIsNotFound() {
-            assertThat(methodFactories.newFactoryFor("com.example.NonExistingMethodFactory"))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> methodFactories.newFactory("com.example.NonExistingMethodFactory"));
         }
 
         @DisplayName("if supplied class does not implement MethodFactory")
         @Test
         void doesNotImplementMethodFactory() {
-            assertThat(newFactoryFor(NotMethodFactory.class))
-                    .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+            assertThrows(MethodFactoryInstantiationException.class,
+                         () -> newFactoryFor(NotMethodFactory.class));
         }
     }
 
@@ -106,7 +112,7 @@ final class MethodFactoriesTest {
     }
 
     private MethodFactory newFactoryFor(Class<?> factory) {
-        return methodFactories.newFactoryFor(factory.getName());
+        return methodFactories.newFactory(factory.getName());
     }
 
     @Immutable
