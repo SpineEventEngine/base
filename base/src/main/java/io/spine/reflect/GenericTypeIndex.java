@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <pre>
  * {@code
  * public abstract class Tuple<K, V> {
- *      ...
+ *     ...
  *     public enum GenericParameter extends GenericTypeIndex<Tuple> {
  *
  *         // <K> param has index 0
@@ -43,12 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         GenericParameter(int index) { this.index = index; }
  *
  *         {@literal @}Override
- *         public int getIndex() { return index; }
- *
- *         {@literal @}Override
- *         public Class<?> getArgumentIn(Class<? extends Tuple> derivedClass) {
- *             return Default.getArgument(this, derivedClass);
- *         }
+ *         public int index() { return index; }
  *     }
  * }
  * }
@@ -60,23 +55,25 @@ public interface GenericTypeIndex<C> {
     /**
      * Obtains a zero-based index of a generic parameter of a type.
      */
-    int getIndex();
+    int index();
 
     /**
      * Obtains the class of the generic type argument.
      *
-     * @param cls the class to inspect
+     * @param cls
+     *         the class to inspect
      * @return the argument class
+     * @implNote Obtain the super class of the passed one by inspecting the class which
+     *         implements {@code GenericTypeIndex}.
      */
     default Class<?> argumentIn(Class<? extends C> cls) {
         checkNotNull(cls);
         Class<? extends GenericTypeIndex> indexClass = getClass();
-        // Obtain the super class of the passed one by inspecting the class which implements
-        // `GenericTypeIndex`.
-        // The type cast is ensured by the declaration of the `GenericTypeIndex` interface.
-        @SuppressWarnings("unchecked") Class<C> superclassOfPassed =
-                (Class<C>) Types.argumentIn(indexClass, GenericTypeIndex.class, 0);
-        Class<?> result = Types.argumentIn(cls, superclassOfPassed, getIndex());
+        @SuppressWarnings("unchecked") /* The type cast is ensured by the declaration of
+            the `GenericTypeIndex` interface. */
+        Class<C> superclassOfPassed = (Class<C>)
+                Types.argumentIn(indexClass, GenericTypeIndex.class, 0);
+        Class<?> result = Types.argumentIn(cls, superclassOfPassed, index());
         return result;
     }
 }
