@@ -90,29 +90,6 @@ public abstract class SpineProtoGenerator {
     }
 
     /**
-     * Processes a single type and generates from zero to many {@link CompilerOutput} instances in
-     * response to the type.
-     *
-     * <p>The output {@linkplain File Files} may:
-     * <ul>
-     *     <li>contain the {@linkplain File#getInsertionPoint() insertion points};
-     *     <li>be empty;
-     *     <li>contain extra types to generate for the given message declaration.
-     * </ul>
-     *
-     * @param type
-     *         the Protobuf type to process
-     * @return optionally a {@link Collection} of {@linkplain CompilerOutput CompilerOutputs}
-     *         to write or an empty {@code Collection}
-     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e.
-     *         equal in terms of {@link Object#equals(Object) equals()} method), but should
-     *         not produce non-equal instances with the same value of
-     *         {@code CodeGeneratorResponse.File.name}. Such entries cause {@code protoc}
-     *         to fail and should be filtered on an early stage.
-     */
-    protected abstract Collection<CompilerOutput> processType(Type<?, ?> type);
-
-    /**
      * Processes the given compiler request and generates the response to the compiler.
      *
      * <p>Each {@linkplain FileDescriptorProto .proto file} may cause none, one or many
@@ -128,7 +105,7 @@ public abstract class SpineProtoGenerator {
      * @param request
      *         the compiler request
      * @return the response to the compiler
-     * @see #processType Javadoc for processType(...) for more detailed description
+     * @see #generate Javadoc for generate(...) for more detailed description
      */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
@@ -160,6 +137,29 @@ public abstract class SpineProtoGenerator {
         return this;
     }
 
+    /**
+     * Processes a single type and generates from zero to many {@link CompilerOutput} instances in
+     * response to the type.
+     *
+     * <p>The output {@linkplain File Files} may:
+     * <ul>
+     *     <li>contain the {@linkplain File#getInsertionPoint() insertion points};
+     *     <li>be empty;
+     *     <li>contain extra types to generate for the given message declaration.
+     * </ul>
+     *
+     * @param type
+     *         the Protobuf type to process
+     * @return optionally a {@link Collection} of {@linkplain CompilerOutput CompilerOutputs}
+     *         to write or an empty {@code Collection}
+     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e.
+     *         equal in terms of {@link Object#equals(Object) equals()} method), but should
+     *         not produce non-equal instances with the same value of
+     *         {@code CodeGeneratorResponse.File.name}. Such entries cause {@code protoc}
+     *         to fail and should be filtered on an early stage.
+     */
+    protected abstract Collection<CompilerOutput> generate(Type<?, ?> type);
+
     private static void checkNotEmpty(CodeGeneratorRequest request)
             throws IllegalArgumentException {
         checkArgument(request.getFileToGenerateCount() > 0, "No files to generate provided.");
@@ -169,7 +169,7 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(TypeSet types) {
-        Set<CompilerOutput> rawOutput = processTypes(types);
+        Set<CompilerOutput> rawOutput = generate(types);
         Collection<File> mergedFiles = mergeFiles(rawOutput);
         CodeGeneratorResponse response = CodeGeneratorResponse
                 .newBuilder()
@@ -178,14 +178,17 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-    private Set<CompilerOutput> processTypes(TypeSet types) {
+    /**
+     * Generates code for the supplied types.
+     */
+    private Set<CompilerOutput> generate(TypeSet types) {
         Set<CompilerOutput> result = newHashSet();
         if (linkedGenerator != null) {
-            result.addAll(linkedGenerator.processTypes(types));
+            result.addAll(linkedGenerator.generate(types));
         }
         Set<CompilerOutput> rawOutput = types.allTypes()
                                              .stream()
-                                             .map(this::processType)
+                                             .map(this::generate)
                                              .flatMap(Collection::stream)
                                              .collect(toSet());
         result.addAll(rawOutput);

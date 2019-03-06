@@ -43,7 +43,7 @@ final class MethodGeneratorTest {
         Descriptors.ServiceDescriptor service = TestServiceProto.getDescriptor()
                                                                 .findServiceByName("TestService");
         ServiceType type = ServiceType.of(service);
-        Collection<CompilerOutput> result = generator.processType(type);
+        Collection<CompilerOutput> result = generator.generate(type);
         assertTrue(result.isEmpty());
     }
 
@@ -53,7 +53,7 @@ final class MethodGeneratorTest {
         MessageType type = new MessageType(EnhancedMessage.getDescriptor());
         MethodGenerator generator =
                 MethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
-        Collection<CompilerOutput> result = generator.processType(type);
+        Collection<CompilerOutput> result = generator.generate(type);
         assertTrue(result.isEmpty());
     }
 }

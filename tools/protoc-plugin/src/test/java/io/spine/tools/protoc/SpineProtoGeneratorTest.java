@@ -78,7 +78,7 @@ final class SpineProtoGeneratorTest {
         File firstFile = File
                 .newBuilder()
                 .setName("file.proto")
-                .setContent(TestInterface.class.getName() + ",")
+                .setContent(TestInterface.class.getName() + ',')
                 .setInsertionPoint(InsertionPoint.MESSAGE_IMPLEMENTS.forType(type))
                 .build();
         File secondFile = File
@@ -199,7 +199,7 @@ final class SpineProtoGeneratorTest {
         }
 
         @Override
-        protected Collection<CompilerOutput> processType(Type<?, ?> type) {
+        protected Collection<CompilerOutput> generate(Type<?, ?> type) {
             return compilerOutputs;
         }
     }

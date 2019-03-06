@@ -53,7 +53,7 @@ public final class MethodGenerator extends SpineProtoGenerator {
     }
 
     @Override
-    protected Collection<CompilerOutput> processType(Type<?, ?> type) {
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         if (!(type instanceof MessageType)) {
             return ImmutableList.of();
         }

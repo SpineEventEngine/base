@@ -81,7 +81,7 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
      * </ol>
      */
     @Override
-    protected Collection<CompilerOutput> processType(Type<?, ?> type) {
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         return type instanceof MessageType
                ? processMessageType((MessageType) type)
                : ImmutableList.of();
