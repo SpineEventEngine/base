@@ -52,8 +52,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
     /**
-     * Obtains a {@code MessageClassifier} for types which define a single string {@code uuid}
-     * field.
+     * Obtains a {@code MessageClassifier} for types which define a single
+     * string field named {@code uuid}.
      */
     static MessageClassifier classifier() {
         return new UuidValueClassifier();
