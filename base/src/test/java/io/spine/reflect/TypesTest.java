@@ -36,14 +36,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.reflect.Types.getArgument;
+import static io.spine.reflect.Types.argumentIn;
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
 import static io.spine.reflect.Types.resolveArguments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
-        "SerializableInnerClassWithNonSerializableOuterClass"}) // It is OK for test methods.
+        "SerializableInnerClassWithNonSerializableOuterClass"}) // OK when using TypeToken.
 @DisplayName("Types utility class should")
 class TypesTest extends UtilityClassTest<Types> {
 
@@ -86,7 +86,7 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("obtain type argument value from the inheritance chain")
     void getTypeArgument() {
-        Class<?> argument = getArgument(ListOfMessages.class, Iterable.class, 0);
+        Class<?> argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
         assertEquals(argument, Message.class);
     }
 
@@ -96,6 +96,9 @@ class TypesTest extends UtilityClassTest<Types> {
         tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
     }
 
+    /**
+     * Stub class for testing obtaining generic argument.
+     */
     @SuppressWarnings({"serial", "ClassExtendsConcreteCollection"})
     private static class ListOfMessages extends ArrayList<Message> {
     }

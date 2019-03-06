@@ -21,7 +21,6 @@
 package io.spine.reflect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.reflect.Types.getArgument;
 
 /**
  * Base interface for enumerations on generic parameters of types.
@@ -76,8 +75,8 @@ public interface GenericTypeIndex<C> {
         // `GenericTypeIndex`.
         // The type cast is ensured by the declaration of the `GenericTypeIndex` interface.
         @SuppressWarnings("unchecked") Class<C> superclassOfPassed =
-                (Class<C>) getArgument(indexClass, GenericTypeIndex.class, 0);
-        Class<?> result = getArgument(cls, superclassOfPassed, getIndex());
+                (Class<C>) Types.argumentIn(indexClass, GenericTypeIndex.class, 0);
+        Class<?> result = Types.argumentIn(cls, superclassOfPassed, getIndex());
         return result;
     }
 }
