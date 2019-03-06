@@ -24,16 +24,16 @@ import io.spine.tools.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A file pattern matching file names that qualifies supplied regex.
+ * A file pattern matching file names which end with a certain postfix.
  */
-public final class RegexPattern extends FileSelector {
+public final class PostfixSelector extends FileSelector {
 
-    RegexPattern(@Regex String regex) {
-        super(regex);
+    PostfixSelector(@Regex String postfix) {
+        super(postfix);
     }
 
     @Override
     io.spine.tools.protoc.FilePattern toProto() {
-        return FilePatterns.fileRegex(getPattern());
+        return FilePatterns.filePostfix(getPattern());
     }
 }

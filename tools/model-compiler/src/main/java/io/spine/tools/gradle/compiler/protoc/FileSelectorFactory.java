@@ -36,29 +36,29 @@ public final class FileSelectorFactory {
     }
 
     /**
-     * Creates a {@link PostfixPattern} selector out of a supplied {@code postfix}.
+     * Creates a {@link PostfixSelector} selector out of a supplied {@code postfix}.
      */
-    public PostfixPattern endsWith(@Regex String postfix) {
+    public PostfixSelector endsWith(@Regex String postfix) {
         checkNotNull(postfix);
-        PostfixPattern result = new PostfixPattern(postfix);
+        PostfixSelector result = new PostfixSelector(postfix);
         return result;
     }
 
     /**
-     * Creates a {@link PrefixPattern} selector out of a supplied {@code prefix}.
+     * Creates a {@link PrefixSelector} selector out of a supplied {@code prefix}.
      */
-    public PrefixPattern startsWith(@Regex String prefix) {
+    public PrefixSelector startsWith(@Regex String prefix) {
         checkNotNull(prefix);
-        PrefixPattern result = new PrefixPattern(prefix);
+        PrefixSelector result = new PrefixSelector(prefix);
         return result;
     }
 
     /**
-     * Creates a {@link RegexPattern} selector out of a supplied {@code regex}.
+     * Creates a {@link RegexSelector} selector out of a supplied {@code regex}.
      */
-    public RegexPattern matches(@Regex String regex) {
+    public RegexSelector matches(@Regex String regex) {
         checkNotNull(regex);
-        RegexPattern result = new RegexPattern(regex);
+        RegexSelector result = new RegexSelector(regex);
         return result;
     }
 }

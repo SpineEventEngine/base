@@ -32,7 +32,7 @@ final class RegexPatternTest {
     @Test
     void convertToProtobufCounterpart() {
         String regex = ".*/spine/.*";
-        FilePattern pattern = new RegexPattern(regex).toProto();
+        FilePattern pattern = new RegexSelector(regex).toProto();
         Assertions.assertEquals(regex, pattern.getRegex());
     }
 }

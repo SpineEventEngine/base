@@ -32,7 +32,7 @@ final class PrefixPatternTest {
     @Test
     void convertToProtobufCounterpart() {
         String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixPattern(prefix).toProto();
+        FilePattern pattern = new PrefixSelector(prefix).toProto();
         Assertions.assertEquals(prefix, pattern.getFilePrefix());
     }
 }

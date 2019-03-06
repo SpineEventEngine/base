@@ -32,7 +32,7 @@ final class PostfixPatternTest {
     @Test
     void convertToProtobufCounterpart() {
         String postfix = "test.proto";
-        FilePattern pattern = new PostfixPattern(postfix).toProto();
+        FilePattern pattern = new PostfixSelector(postfix).toProto();
         Assertions.assertEquals(postfix, pattern.getFilePostfix());
     }
 }

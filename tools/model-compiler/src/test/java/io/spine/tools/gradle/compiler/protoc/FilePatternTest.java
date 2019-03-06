@@ -35,16 +35,16 @@ final class FilePatternTest {
     void implementationsDiffer() {
         String pattern = "testPattern";
 
-        Subject<DefaultSubject, Object> prefix = assertThat(new PrefixPattern(pattern));
-        prefix.isNotEqualTo(new PostfixPattern(pattern));
-        prefix.isNotEqualTo(new RegexPattern(pattern));
+        Subject<DefaultSubject, Object> prefix = assertThat(new PrefixSelector(pattern));
+        prefix.isNotEqualTo(new PostfixSelector(pattern));
+        prefix.isNotEqualTo(new RegexSelector(pattern));
 
-        Subject<DefaultSubject, Object> postfix = assertThat(new PostfixPattern(pattern));
-        postfix.isNotEqualTo(new PrefixPattern(pattern));
-        postfix.isNotEqualTo(new RegexPattern(pattern));
+        Subject<DefaultSubject, Object> postfix = assertThat(new PostfixSelector(pattern));
+        postfix.isNotEqualTo(new PrefixSelector(pattern));
+        postfix.isNotEqualTo(new RegexSelector(pattern));
 
-        Subject<DefaultSubject, Object> regex = assertThat(new RegexPattern(pattern));
-        regex.isNotEqualTo(new PostfixPattern(pattern));
-        regex.isNotEqualTo(new PrefixPattern(pattern));
+        Subject<DefaultSubject, Object> regex = assertThat(new RegexSelector(pattern));
+        regex.isNotEqualTo(new PostfixSelector(pattern));
+        regex.isNotEqualTo(new PrefixSelector(pattern));
     }
 }

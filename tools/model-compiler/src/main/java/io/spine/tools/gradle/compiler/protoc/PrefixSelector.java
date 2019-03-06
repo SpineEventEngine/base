@@ -26,9 +26,9 @@ import org.checkerframework.checker.regex.qual.Regex;
 /**
  * A file pattern matching file names which start with a certain prefix.
  */
-public final class PrefixPattern extends FileSelector {
+public final class PrefixSelector extends FileSelector {
 
-    PrefixPattern(@Regex String prefix) {
+    PrefixSelector(@Regex String prefix) {
         super(prefix);
     }
 
