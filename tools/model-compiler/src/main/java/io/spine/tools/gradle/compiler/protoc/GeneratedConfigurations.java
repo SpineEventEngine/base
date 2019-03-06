@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
-    private final Map<FilePattern, ClassName> patterns;
+    private final Map<FileSelector, ClassName> patterns;
 
     GeneratedConfigurations() {
         this.patterns = Maps.newConcurrentMap();
@@ -70,7 +70,7 @@ abstract class GeneratedConfigurations<C extends Message> {
      *     }
      * </pre>
      */
-    public final void ignore(FilePattern pattern) {
+    public final void ignore(FileSelector pattern) {
         checkNotNull(pattern);
         patterns.remove(pattern);
     }
@@ -94,19 +94,19 @@ abstract class GeneratedConfigurations<C extends Message> {
     public abstract C asProtocConfig();
 
     /**
-     * Adds a new {@link FilePattern} configuration with a supplied {@link ClassName}.
+     * Adds a new {@link FileSelector} configuration with a supplied {@link ClassName}.
      *
      * <p>The {@code className} can represent a fully-qualified name of an interface of a
      * method factory.
      */
-    void addPattern(FilePattern pattern, ClassName className) {
+    void addPattern(FileSelector pattern, ClassName className) {
         patterns.put(pattern, className);
     }
 
     /**
      * Obtains current unique pattern configurations.
      */
-    ImmutableSet<Map.Entry<FilePattern, ClassName>> patternConfigurations() {
+    ImmutableSet<Map.Entry<FileSelector, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
     }
 }

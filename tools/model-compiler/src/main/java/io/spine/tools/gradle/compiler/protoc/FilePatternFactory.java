@@ -25,7 +25,7 @@ import org.checkerframework.checker.regex.qual.Regex;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Creates {@link FilePattern} selectors.
+ * Creates {@link FileSelector} selectors.
  **/
 public final class FilePatternFactory {
 

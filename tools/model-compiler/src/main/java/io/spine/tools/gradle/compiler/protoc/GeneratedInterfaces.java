@@ -134,17 +134,17 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateI
      * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
      * are generated regardless the configuration.
      */
-    public final void mark(FilePattern filePattern, @FullyQualifiedName String interfaceName) {
-        checkNotNull(filePattern);
+    public final void mark(FileSelector fileSelector, @FullyQualifiedName String interfaceName) {
+        checkNotNull(fileSelector);
         checkNotNull(interfaceName);
-        addPattern(filePattern, ClassName.of(interfaceName));
+        addPattern(fileSelector, ClassName.of(interfaceName));
     }
 
     /**
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(FilePattern, String)} except for
+     * <p>This method functions similarly to the {@link #mark(FileSelector, String)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -191,12 +191,12 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateI
                             .build();
     }
 
-    private static GenerateInterface toGeneratedInterface(Map.Entry<FilePattern, ClassName> e) {
-        FilePattern filePattern = e.getKey();
+    private static GenerateInterface toGeneratedInterface(Map.Entry<FileSelector, ClassName> e) {
+        FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
         return GenerateInterface
                 .newBuilder()
-                .setPattern(filePattern.toProto())
+                .setPattern(fileSelector.toProto())
                 .setInterfaceName(className.value())
                 .build();
     }

@@ -28,11 +28,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Selects messages by a pattern.
  */
-public abstract class FilePattern implements Selector {
+public abstract class FileSelector implements Selector {
 
     private final String pattern;
 
-    FilePattern(String pattern) {
+    FileSelector(String pattern) {
         this.pattern = checkNotNull(pattern);
     }
 
@@ -64,7 +64,7 @@ public abstract class FilePattern implements Selector {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FilePattern pattern1 = (FilePattern) o;
+        FileSelector pattern1 = (FileSelector) o;
         return Objects.equal(getPattern(), pattern1.getPattern());
     }
 

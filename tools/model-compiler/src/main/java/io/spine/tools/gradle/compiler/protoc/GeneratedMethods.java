@@ -109,17 +109,17 @@ public final class GeneratedMethods extends GeneratedConfigurations<GenerateMeth
      * <p>In such case, no additional methods are added to the message classes matching the
      * pattern.
      */
-    public final void useFactory(@FullyQualifiedName String factoryName, FilePattern filePattern) {
+    public final void useFactory(@FullyQualifiedName String factoryName, FileSelector fileSelector) {
         checkNotNull(factoryName);
-        checkNotNull(filePattern);
-        addPattern(filePattern, ClassName.of(factoryName));
+        checkNotNull(fileSelector);
+        addPattern(fileSelector, ClassName.of(factoryName));
     }
 
     /**
      * Configures method generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #useFactory(String, FilePattern)} except
+     * <p>This method functions similarly to the {@link #useFactory(String, FileSelector)} except
      * the file in which the message type is defined does not matter.
      *
      * <p>Sample usage is:
@@ -162,12 +162,12 @@ public final class GeneratedMethods extends GeneratedConfigurations<GenerateMeth
                          .build();
     }
 
-    private static GenerateMethod toGeneratedMethod(Map.Entry<FilePattern, ClassName> e) {
-        FilePattern filePattern = e.getKey();
+    private static GenerateMethod toGeneratedMethod(Map.Entry<FileSelector, ClassName> e) {
+        FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
         return GenerateMethod
                 .newBuilder()
-                .setPattern(filePattern.toProto())
+                .setPattern(fileSelector.toProto())
                 .setFactoryName(className.value())
                 .build();
     }
