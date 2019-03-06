@@ -21,7 +21,7 @@
 buildscript {
 
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$rootDir/testEnv.gradle"
+    apply from: "$rootDir/test-env.gradle"
     
     apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
     apply from: "$enclosingRootDir/version.gradle"
