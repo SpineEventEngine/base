@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("PrefixPattern should")
 final class PrefixPatternTest {
 
-    @DisplayName("translate itself to Protobuf counter part")
+    @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
         String prefix = "io/spine/test_";

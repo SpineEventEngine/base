@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("PostfixPattern should")
 final class PostfixPatternTest {
 
-    @DisplayName("translate itself to Protobuf counter part")
+    @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
         String postfix = "test.proto";

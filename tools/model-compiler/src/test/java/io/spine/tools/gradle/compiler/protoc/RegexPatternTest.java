@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("RegexPattern should")
 final class RegexPatternTest {
 
-    @DisplayName("translate itself to Protobuf counter part")
+    @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
         String regex = ".*/spine/.*";
