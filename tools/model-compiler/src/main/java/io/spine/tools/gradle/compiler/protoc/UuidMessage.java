@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 /**
- * Selects messages with a single {@code string} field called{@code uuid}.
+ * Selects messages with a single {@code string} field named {@code uuid}.
  */
 public final class UuidMessage implements Selector {
 
