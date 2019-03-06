@@ -38,7 +38,7 @@ import static java.lang.String.format;
 final class TestEnvGradle {
 
     private static final String VAR_NAME = "enclosingRootDir";
-    private static final String FILE_NAME = "testEnv.gradle";
+    private static final String FILE_NAME = "test-env.gradle";
 
     private final Path projectRoot;
     private final Path testProjectRoot;
