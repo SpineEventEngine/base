@@ -48,6 +48,12 @@ final class TestEnvGradle {
         this.testProjectRoot = testProjectRoot;
     }
 
+    void createFile() throws IOException {
+        Path testEnvFile = testProjectRoot.resolve(FILE_NAME);
+        List<String> lines = content();
+        Files.write(testEnvFile, lines);
+    }
+
     private List<String> content() {
         String unixLikeRootPath = projectRoot.toString()
                                              .replace('\\', '/');
@@ -57,11 +63,5 @@ final class TestEnvGradle {
                 "}"
         );
         return lines;
-    }
-
-    void createFile() throws IOException {
-        Path testEnvFile = testProjectRoot.resolve(FILE_NAME);
-        List<String> lines = content();
-        Files.write(testEnvFile, lines);
     }
 }
