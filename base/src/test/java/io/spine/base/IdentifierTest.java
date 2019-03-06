@@ -21,10 +21,12 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier.Type;
 import io.spine.protobuf.AnyPacker;
@@ -32,6 +34,7 @@ import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
 import io.spine.test.identifiers.TimestampFieldId;
 import io.spine.test.identifiers.UuidMessage;
+import io.spine.testing.TestValues;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -146,28 +149,28 @@ class IdentifierTest {
         @Test
         @DisplayName("Integer")
         void ofInteger() {
-            assertEquals(0, Identifier.getDefaultValue(Integer.class)
+            assertEquals(0, Identifier.defaultValue(Integer.class)
                                       .intValue());
         }
 
         @Test
         @DisplayName("Long")
         void ofLong() {
-            assertEquals(0L, Identifier.getDefaultValue(Long.class)
+            assertEquals(0L, Identifier.defaultValue(Long.class)
                                        .longValue());
         }
 
         @Test
         @DisplayName("String")
         void ofString() {
-            assertEquals("", Identifier.getDefaultValue(String.class));
+            assertEquals("", Identifier.defaultValue(String.class));
         }
 
         @Test
         @DisplayName("Message")
         void ofMessage() {
             assertEquals(Timestamp.getDefaultInstance(),
-                         Identifier.getDefaultValue(Timestamp.class));
+                         Identifier.defaultValue(Timestamp.class));
         }
     }
 
@@ -183,14 +186,65 @@ class IdentifierTest {
 
         @Test
         @DisplayName("a Message with the default value")
-        void return_EMPTY_ID_if_convert_empty_message_to_string() {
+        void defaultInstance() {
             assertEquals(EMPTY_ID, Identifier.toString(StringValue.getDefaultInstance()));
         }
 
         @Test
         @DisplayName("a Message with a field of Message type, which has the default value")
-        void defaultMessage() {
+        void defaultNestedMessage() {
             assertEquals(EMPTY_ID, Identifier.toString(TimestampFieldId.getDefaultInstance()));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("verify if ID is empty")
+    class VerifyEmptyId {
+
+        @Nested
+        @DisplayName("returning always `false` for")
+        class AlwaysNonEmpty {
+
+            @Test
+            @DisplayName("Integer")
+            void intValue() {
+                assertNotEmpty(0);
+                assertNotEmpty(TestValues.random(Integer.MIN_VALUE, Integer.MAX_VALUE));
+            }
+
+            @Test
+            @DisplayName("Long")
+            void longValue() {
+                assertNotEmpty(0L);
+                assertNotEmpty(TestValues.longRandom(Long.MIN_VALUE, Long.MAX_VALUE));
+            }
+        }
+
+        @Test
+        @DisplayName("taking string value")
+        void emptyString() {
+            assertEmpty("");
+            assertNotEmpty(TestValues.randomString());
+        }
+
+        @Test
+        @DisplayName("taking message fields")
+        void messageId() {
+            assertEmpty(Struct.getDefaultInstance());
+            assertNotEmpty(Time.currentTime());
+        }
+
+        <I> void assertNotEmpty(I value) {
+            assertThatEmpty(value).isFalse();
+        }
+
+        <I> void assertEmpty(I value) {
+            assertThatEmpty(value).isTrue();
+        }
+
+        private <I> BooleanSubject assertThatEmpty(I value) {
+            return assertThat(Identifier.isEmpty(value));
         }
     }
 
@@ -320,23 +374,61 @@ class IdentifierTest {
                 .testAllPublicStaticMethods(Identifier.class);
     }
 
-    @Test
-    void create_values_depending_on_wrapper_message_type() {
-        assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
-        assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
+    @Nested
+    @DisplayName("create values depend on the wrapper message type")
+    class CreateValues {
 
-        String value = getClass().getSimpleName();
-        assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
+        @Test
+        @DisplayName("for integer")
+        void intValue() {
+            assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
+        }
+
+        @Test
+        @DisplayName("for long")
+        void longValue() {
+            assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
+        }
+
+        @Test
+        @DisplayName("for string")
+        void stringValue() {
+            String value = getClass().getSimpleName();
+            assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
+        }
     }
 
-    @Test
-    @DisplayName("check that a class of identifiers is supported")
-    void checkSupported() {
-        assertDoesNotThrow(() -> Identifier.checkSupported(String.class));
-        assertDoesNotThrow(() -> Identifier.checkSupported(Integer.class));
-        assertDoesNotThrow(() -> Identifier.checkSupported(Long.class));
-        assertDoesNotThrow(() -> Identifier.checkSupported(StringValue.class));
+    @Nested
+    @DisplayName("check that a class of identifiers is supported for")
+    class CheckSupported {
 
+        @Test
+        @DisplayName("String")
+        void stringValue() {
+            assertDoesNotThrow(() -> Identifier.checkSupported(String.class));
+        }
+
+        @Test
+        @DisplayName("Integer")
+        void integerValue() {
+            assertDoesNotThrow(() -> Identifier.checkSupported(Integer.class));
+        }
+
+        @Test
+        @DisplayName("Long")
+        void longValue() {
+            assertDoesNotThrow(() -> Identifier.checkSupported(Long.class));
+        }
+
+        @Test
+        @DisplayName("a Message class")
+        void messageValue() {
+            assertDoesNotThrow(() -> Identifier.checkSupported(StringValue.class));
+        }
+    }
+    @Test
+    @DisplayName("throw IllegalArgumentException for unsupported class")
+    void checkNotSupported() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Identifier.checkSupported(Boolean.class)
@@ -362,7 +454,7 @@ class IdentifierTest {
         void clazz() {
             assertThrows(
                     IllegalArgumentException.class,
-                    () -> Identifier.getType(Float.class)
+                    () -> Identifier.toType(Float.class)
             );
         }
     }

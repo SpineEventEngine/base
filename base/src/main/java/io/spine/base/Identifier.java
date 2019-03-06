@@ -51,7 +51,7 @@ public final class Identifier<I> {
     public static final String NULL_ID = "NULL";
 
     /** An empty ID string representation. */
-    public static final String EMPTY_ID = "EMPTY";
+    static final String EMPTY_ID = "EMPTY";
 
     private final Type type;
     private final I value;
@@ -81,17 +81,17 @@ public final class Identifier<I> {
     /**
      * Obtains a default value for an identifier of the passed class.
      */
-    public static <I> I getDefaultValue(Class<I> idClass) {
+    public static <I> I defaultValue(Class<I> idClass) {
         checkNotNull(idClass);
-        Type type = getType(idClass);
-        I result = type.getDefaultValue(idClass);
+        Type type = toType(idClass);
+        I result = type.defaultValue(idClass);
         return result;
     }
 
     /**
-     * Obtains the type of identifiers of the passed class.
+     * Converts the class of identifiers to {@code Identifier.Type}.
      */
-    public static <I> Type getType(Class<I> idClass) {
+    public static <I> Type toType(Class<I> idClass) {
         for (Type type : Type.values()) {
             if (type.matchClass(idClass)) {
                 return type;
@@ -100,12 +100,42 @@ public final class Identifier<I> {
         throw unsupportedClass(idClass);
     }
 
+    /**
+     * Verifies if the passed value of the identifier is empty.
+     *
+     * <p>Always returns {@code false} for long and integer values.
+     *
+     * <p>For string and message identifiers, the method verifies the values.
+     *
+     * <p>A string identifier is empty, if it contains an empty string.
+     *
+     * <p>A message identifier is empty if
+     *
+     * @param value
+     *         the value to check
+     * @param <I>
+     *         the type of the identifier
+     * @return {@code true} if the identifier is empty;
+     *         {@code false} otherwise
+     */
+    public static <I> boolean isEmpty(I value) {
+        checkNotNull(value);
+        Identifier<I> id = from(value);
+        if (id.type == Type.INTEGER || id.type == Type.LONG) {
+            return false;
+        }
+
+        String str = id.toString();
+        boolean result = str.equals(EMPTY_ID);
+        return result;
+    }
+
     private static <I> IllegalArgumentException unsupported(I id) {
-        return newIllegalArgumentException("ID of unsupported type encountered: %s", id);
+        return newIllegalArgumentException("ID of unsupported type encountered: %s.", id);
     }
 
     private static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
-        return newIllegalArgumentException("Unsupported ID class encountered: %s",
+        return newIllegalArgumentException("Unsupported ID class encountered: `%s`.",
                                            idClass.getName());
     }
 
@@ -142,7 +172,7 @@ public final class Identifier<I> {
         checkNotNull(idClass);
         // Even through `getType()` can never return null, we use its return value here
         // instead of allowing ignoring just because of this one usage.
-        checkNotNull(getType(idClass));
+        checkNotNull(toType(idClass));
     }
 
     /**
@@ -365,7 +395,7 @@ public final class Identifier<I> {
             }
 
             @Override
-            <I> I getDefaultValue(Class<I> idClass) {
+            <I> I defaultValue(Class<I> idClass) {
                 return (I) "";
             }
         },
@@ -392,7 +422,7 @@ public final class Identifier<I> {
             }
 
             @Override
-            <I> I getDefaultValue(Class<I> idClass) {
+            <I> I defaultValue(Class<I> idClass) {
                 return (I) Integer.valueOf(0);
             }
         },
@@ -419,7 +449,7 @@ public final class Identifier<I> {
             }
 
             @Override
-            <I> I getDefaultValue(Class<I> idClass) {
+            <I> I defaultValue(Class<I> idClass) {
                 return (I) Long.valueOf(0);
             }
         },
@@ -460,7 +490,7 @@ public final class Identifier<I> {
             }
 
             @Override
-            <I> I getDefaultValue(Class<I> idClass) {
+            <I> I defaultValue(Class<I> idClass) {
                 Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
                 Message result = defaultInstance(msgClass);
                 return (I) result;
@@ -489,7 +519,7 @@ public final class Identifier<I> {
 
         abstract Object fromMessage(Message message);
 
-        abstract <I> I getDefaultValue(Class<I> idClass);
+        abstract <I> I defaultValue(Class<I> idClass);
 
         <I> Any pack(I id) {
             Message msg = toMessage(id);
