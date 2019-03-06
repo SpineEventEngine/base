@@ -28,7 +28,6 @@ import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -50,7 +49,7 @@ final class MessageValue {
         this.context = checkNotNull(context);
     }
 
-    final Descriptor descriptor(){
+    Descriptor descriptor(){
         return descriptor;
     }
 
@@ -121,13 +120,6 @@ final class MessageValue {
         checkArgument(oneofDescriptors().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
-    }
-
-    /** Returns options of the message. */
-    Map<FieldDescriptor, Object> options() {
-        Map<FieldDescriptor, Object> options = descriptor.getOptions()
-                                                         .getAllFields();
-        return options;
     }
 
     /** Returns descriptors of {@code Oneof} declarations in the message. */
