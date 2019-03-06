@@ -92,7 +92,7 @@ final class MessageInterfaceGenerator extends AbstractCodeGenerator<ImplementInt
         return insertionPoint;
     }
 
-    private static class ImplementInterfaces implements GenerateCode<ImplementInterface> {
+    private static class ImplementInterfaces implements CodeGenerationFn<ImplementInterface> {
 
         private final MessageType type;
 

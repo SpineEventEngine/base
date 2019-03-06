@@ -111,7 +111,7 @@ public abstract class AbstractCodeGenerator<T extends Message> {
     /**
      * Creates a file pattern mapping function.
      */
-    protected abstract GenerateCode<T> generateCode(MessageType type);
+    protected abstract CodeGenerationFn<T> generateCode(MessageType type);
 
     /**
      * Ensures that a code generation task has a specific {@code target} field filled.
@@ -139,9 +139,9 @@ public abstract class AbstractCodeGenerator<T extends Message> {
     protected class MatchesPattern implements Predicate<T> {
 
         private final String protoFileName;
-        private final FilePatternExtractor<T> filePatternExtractor;
+        private final FilePatternExtractorFn<T> filePatternExtractor;
 
-        public MatchesPattern(MessageType type, FilePatternExtractor<T> filePatternExtractor) {
+        public MatchesPattern(MessageType type, FilePatternExtractorFn<T> filePatternExtractor) {
             checkNotNull(type);
             checkNotNull(filePatternExtractor);
             this.protoFileName = type.declaringFileName()
@@ -152,7 +152,7 @@ public abstract class AbstractCodeGenerator<T extends Message> {
         @Override
         public boolean test(T codeGenerationTask) {
             checkNotNull(codeGenerationTask);
-            FilePattern pattern = filePatternExtractor.extractFrom(codeGenerationTask);
+            FilePattern pattern = filePatternExtractor.apply(codeGenerationTask);
             switch (pattern.getValueCase()) {
                 case FILE_POSTFIX:
                     return protoFileName.endsWith(pattern.getFilePostfix());
@@ -174,7 +174,7 @@ public abstract class AbstractCodeGenerator<T extends Message> {
      *         type of the code generation task
      */
     @FunctionalInterface
-    protected interface GenerateCode<T> extends Function<T, ImmutableList<CompilerOutput>> {
+    protected interface CodeGenerationFn<T> extends Function<T, ImmutableList<CompilerOutput>> {
     }
 
     /**
@@ -184,11 +184,6 @@ public abstract class AbstractCodeGenerator<T extends Message> {
      *         type of the code generation task
      */
     @FunctionalInterface
-    protected interface FilePatternExtractor<T> {
-
-        /**
-         * Extracts {@link FilePattern} from the supplied {@code codeGenerationTask}.
-         */
-        FilePattern extractFrom(T codeGenerationTask);
+    protected interface FilePatternExtractorFn<T> extends Function<T, FilePattern>{
     }
 }

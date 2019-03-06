@@ -78,7 +78,7 @@ final class MessageMethodGenerator extends AbstractCodeGenerator<GenerateMethod>
         return new GenerateMethods(type);
     }
 
-    private class GenerateMethods implements GenerateCode<GenerateMethod> {
+    private class GenerateMethods implements CodeGenerationFn<GenerateMethod> {
 
         private final MessageType type;
 
