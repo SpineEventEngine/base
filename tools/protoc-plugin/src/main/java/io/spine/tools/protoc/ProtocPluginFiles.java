@@ -23,6 +23,7 @@ package io.spine.tools.protoc;
 import io.spine.code.java.SourceFile;
 import io.spine.type.Type;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
@@ -43,6 +44,7 @@ public final class ProtocPluginFiles {
      * @return file builder
      */
     public static File.Builder prepareFile(Type<?, ?> type) {
+        checkNotNull(type);
         String fileName = SourceFile.forType(type)
                                     .toString();
         // Protoc consumes only `/` path separators.

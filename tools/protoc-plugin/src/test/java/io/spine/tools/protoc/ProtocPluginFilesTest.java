@@ -21,6 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.testing.UtilityClassTest;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ProtocPluginFiles should")
-final class ProtocPluginFilesTest {
+final class ProtocPluginFilesTest extends UtilityClassTest<ProtocPluginFiles> {
+
+    ProtocPluginFilesTest() {
+        super(ProtocPluginFiles.class);
+    }
 
     @DisplayName("prepare File builder for supplied Type")
     @Test
