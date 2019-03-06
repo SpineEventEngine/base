@@ -74,24 +74,24 @@ message FilePattern {
 
     oneof value {
 
-        // An ending that a .proto file's full name end with.
+        // An ending that a .proto file's full name should end with.
         //
-        // If a .proto file matches the postfix, to all its messages some code generation
-        // will be applied.
+        // If a .proto file matches the postfix, some code generation will be applied to all its
+        // messages.
         //
         string file_postfix = 1;
 
-        // A prefix that a .proto file's full name start with.
+        // A prefix that a .proto file's full name should start with.
         //
-        // If a .proto file matches the prefix, to all its messages some code generation
-        // will be applied.
+        // If a .proto file matches the prefix, some code generation will be applied to all its
+        // messages.
         //
         string file_prefix = 2;
 
         // A regex a .proto file's full name should match.
         //
-        // If a .proto file matches the regex, to all its messages some code generation will
-        // be applied.
+        // If a .proto file matches the regex, some code generation will be applied to all its
+        // messages.
         //
         string regex = 3;
     }
