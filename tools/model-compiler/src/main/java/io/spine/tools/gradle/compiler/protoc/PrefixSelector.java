@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
 
@@ -33,7 +34,7 @@ public final class PrefixSelector extends FileSelector {
     }
 
     @Override
-    io.spine.tools.protoc.FilePattern toProto() {
+    FilePattern toProto() {
         return FilePatterns.filePrefix(getPattern());
     }
 }

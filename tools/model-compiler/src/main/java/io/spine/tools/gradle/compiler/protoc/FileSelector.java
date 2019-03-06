@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import io.spine.tools.protoc.FilePattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,7 +47,7 @@ public abstract class FileSelector implements Selector {
     /**
      * Converts current selector to its Protobuf configuration counterpart.
      */
-    abstract io.spine.tools.protoc.FilePattern toProto();
+    abstract FilePattern toProto();
 
     @Override
     public String toString() {
