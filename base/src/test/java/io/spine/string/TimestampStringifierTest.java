@@ -24,7 +24,7 @@ import com.google.protobuf.Timestamp;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("TimestampStringifier should")
@@ -36,14 +36,14 @@ class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
 
     @Override
     protected Timestamp createObject() {
-        return getCurrentTime();
+        return currentTime();
     }
 
     @Test
     @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
     void parsingError() {
         // This uses TextFormat printing, for the output which won't be parsable.
-        String time = getCurrentTime().toString();
+        String time = currentTime().toString();
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Stringifiers.fromString(time, Timestamp.class)

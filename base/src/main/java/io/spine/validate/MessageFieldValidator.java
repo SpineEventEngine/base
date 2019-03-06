@@ -77,7 +77,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
     private boolean isOfType(Class<? extends Message> type) {
-        ImmutableList<V> values = getValues();
+        ImmutableList<V> values = values();
         Message value = values.isEmpty()
                         ? null
                         : values.get(0);
@@ -86,13 +86,13 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     private void validateFields() {
-        for (Message value : getValues()) {
+        for (Message value : values()) {
             validateSingle(value);
         }
     }
 
     private void validateAny() {
-        for (Message value : getValues()) {
+        for (Message value : values()) {
             Any any = (Any) value;
             Message unpacked = AnyPacker.unpack(any);
             validateSingle(unpacked);
@@ -110,7 +110,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
         IfInvalidOption ifInvalid = ifInvalid();
-        String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+        String msg = errorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)

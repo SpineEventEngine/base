@@ -37,7 +37,7 @@ public class ConstantTimeProvider implements Time.Provider {
     }
 
     @Override
-    public Timestamp getCurrentTime() {
+    public Timestamp currentTime() {
         return timestamp;
     }
 }

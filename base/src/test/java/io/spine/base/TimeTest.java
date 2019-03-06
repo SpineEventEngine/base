@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.subtract;
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
 import static io.spine.base.Time.systemTime;
@@ -53,7 +53,7 @@ class TimeTest {
     @Test
     @DisplayName("accept TimeProvider")
     void acceptProvider() {
-        Timestamp fiveMinutesAgo = subtract(getCurrentTime(), DURATION_5_MINUTES);
+        Timestamp fiveMinutesAgo = subtract(currentTime(), DURATION_5_MINUTES);
 
         setProvider(new ConstantTimeProvider(fiveMinutesAgo));
 
@@ -61,7 +61,7 @@ class TimeTest {
     }
 
     private static Subject<DefaultSubject, Object> assertCurrentTime() {
-        return assertThat(getCurrentTime());
+        return assertThat(currentTime());
     }
 
     @Test

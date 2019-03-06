@@ -27,12 +27,12 @@ import io.spine.base.FieldPath;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
 
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.Timestamps2.isLaterThan;
-import static io.spine.validate.FieldValidator.getErrorMsgFormat;
+import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint that, when applied to a {@link Timestamp} field value, checks for whether the
@@ -49,7 +49,7 @@ final class WhenConstraint extends FieldValueConstraint<Timestamp, TimeOption> {
         if (when == TIME_UNDEFINED) {
             return ImmutableList.of();
         }
-        Timestamp now = getCurrentTime();
+        Timestamp now = currentTime();
         for (Message value : fieldValue.asList()) {
             Timestamp time = (Timestamp) value;
             if (isTimeInvalid(time, when, now)) {
@@ -81,7 +81,7 @@ final class WhenConstraint extends FieldValueConstraint<Timestamp, TimeOption> {
 
     private ConstraintViolation newTimeViolation(FieldValue<Timestamp> fieldValue,
                                                  Timestamp value) {
-        String msg = getErrorMsgFormat(optionValue(), optionValue().getMsgFormat());
+        String msg = errorMsgFormat(optionValue(), optionValue().getMsgFormat());
         String when = optionValue().getIn()
                                       .toString()
                                       .toLowerCase();
