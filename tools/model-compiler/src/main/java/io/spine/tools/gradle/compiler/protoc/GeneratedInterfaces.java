@@ -67,7 +67,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateI
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        FilePatternFactory filePattern = config.filePattern();
+        FileSelectorFactory filePattern = config.filePattern();
         config.mark(filePattern.endsWith(COMMANDS.suffix()), CommandMessage.class.getName());
         config.mark(filePattern.endsWith(EVENTS.suffix()), EventMessage.class.getName());
         config.mark(filePattern.endsWith(REJECTIONS.suffix()), RejectionMessage.class.getName());

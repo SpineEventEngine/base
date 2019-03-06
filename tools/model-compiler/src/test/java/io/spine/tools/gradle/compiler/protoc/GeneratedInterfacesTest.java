@@ -149,7 +149,7 @@ final class GeneratedInterfacesTest {
         String interfaceName = "io.spine.test.TestInterface";
 
         GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-        FilePatternFactory filePattern = defaults.filePattern();
+        FileSelectorFactory filePattern = defaults.filePattern();
         defaults.mark(filePattern.endsWith(pattern), interfaceName);
         defaults.mark(filePattern.startsWith(pattern), interfaceName);
         defaults.mark(filePattern.matches(pattern), interfaceName);

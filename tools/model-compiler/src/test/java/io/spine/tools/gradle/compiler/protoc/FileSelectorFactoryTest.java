@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FilePatternFactory should")
-final class FilePatternFactoryTest {
+@DisplayName("FileSelectorFactory should")
+final class FileSelectorFactoryTest {
 
-    private final FilePatternFactory factory = FilePatternFactory.INSTANCE;
+    private final FileSelectorFactory factory = FileSelectorFactory.INSTANCE;
 
     @DisplayName("create")
     @Nested

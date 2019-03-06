@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
-import io.spine.tools.gradle.compiler.protoc.FilePatternFactory;
+import io.spine.tools.gradle.compiler.protoc.FileSelectorFactory;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.given.TestInterface;
@@ -59,7 +59,7 @@ final class PluginTest {
     @Test
     void processPostfixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FilePatternFactory filePattern = interfaces.filePattern();
+        FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.endsWith(TEST_PROTO_POSTFIX), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
@@ -84,7 +84,7 @@ final class PluginTest {
     @Test
     void skipStandardInterfacesIfIgnored() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FilePatternFactory filePattern = interfaces.filePattern();
+        FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.ignore(filePattern.endsWith(EVENTS.suffix()));
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestEventsProto.getDescriptor()
@@ -120,7 +120,7 @@ final class PluginTest {
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FilePatternFactory filePattern = interfaces.filePattern();
+        FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.startsWith(TEST_PROTO_PREFIX), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
@@ -146,7 +146,7 @@ final class PluginTest {
     @DisplayName("process matches patterns")
     void processRegexPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FilePatternFactory filePattern = interfaces.filePattern();
+        FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.matches(TEST_PROTO_REGEX), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),

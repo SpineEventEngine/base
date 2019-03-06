@@ -56,7 +56,7 @@ final class GeneratedMethodsTest {
         String interfaceName = "io.spine.test.TestInterface";
 
         GeneratedMethods defaults = GeneratedMethods.withDefaults();
-        FilePatternFactory filePattern = defaults.filePattern();
+        FileSelectorFactory filePattern = defaults.filePattern();
         defaults.useFactory(interfaceName, filePattern.endsWith(pattern));
         defaults.useFactory(interfaceName, filePattern.startsWith(pattern));
         defaults.useFactory(interfaceName, filePattern.matches(pattern));

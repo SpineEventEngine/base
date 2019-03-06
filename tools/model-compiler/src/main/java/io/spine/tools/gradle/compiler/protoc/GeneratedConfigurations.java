@@ -47,10 +47,10 @@ abstract class GeneratedConfigurations<C extends Message> {
     }
 
     /**
-     * Returns {@link FilePatternFactory}.
+     * Returns {@link FileSelectorFactory}.
      */
-    public FilePatternFactory filePattern() {
-        return FilePatternFactory.INSTANCE;
+    public FileSelectorFactory filePattern() {
+        return FileSelectorFactory.INSTANCE;
     }
 
     /**

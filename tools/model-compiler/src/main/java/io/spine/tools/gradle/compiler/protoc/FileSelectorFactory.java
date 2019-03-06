@@ -27,12 +27,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Creates {@link FileSelector} selectors.
  **/
-public final class FilePatternFactory {
+public final class FileSelectorFactory {
 
-    static final FilePatternFactory INSTANCE = new FilePatternFactory();
+    static final FileSelectorFactory INSTANCE = new FileSelectorFactory();
 
     /** Prevents direct instantiation. **/
-    private FilePatternFactory() {
+    private FileSelectorFactory() {
     }
 
     /**
