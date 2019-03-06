@@ -23,10 +23,10 @@ package io.spine.tools.protoc.messageinterface;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GenerateInterface;
-import io.spine.tools.protoc.GenerateInterfacesConfig;
+import io.spine.tools.protoc.ImplementInterface;
+import io.spine.tools.protoc.InterfacesGeneration;
 import io.spine.tools.protoc.TypeScanner;
-import io.spine.tools.protoc.UuidInterface;
+import io.spine.tools.protoc.UuidImplementInterface;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -37,20 +37,20 @@ import static io.spine.tools.protoc.messageinterface.MessageImplements.implement
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link GenerateInterfacesConfig}.
+ * Scans the given type for a match upon patterns defined in {@link InterfacesGeneration}.
  */
-final class MessageInterfaceScanner extends TypeScanner<GenerateInterface> {
+final class MessageInterfaceScanner extends TypeScanner<ImplementInterface> {
 
-    private final GenerateInterfacesConfig config;
+    private final InterfacesGeneration config;
 
-    MessageInterfaceScanner(GenerateInterfacesConfig config) {
+    MessageInterfaceScanner(InterfacesGeneration config) {
         super();
         this.config = config;
     }
 
     @Override
     protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
-        UuidInterface uuidInterface = config.getUuidInterface();
+        UuidImplementInterface uuidInterface = config.getUuidInterface();
         if (isDefault(uuidInterface)) {
             return ImmutableList.of();
         }
@@ -59,32 +59,33 @@ final class MessageInterfaceScanner extends TypeScanner<GenerateInterface> {
     }
 
     @Override
-    protected List<GenerateInterface> filePatterns() {
-        return config.getGenerateInterfaceList();
+    protected List<ImplementInterface> filePatterns() {
+        return config.getImplementInterfaceList();
     }
 
     @Override
     protected MatchesPattern matchesPattern(MessageType type) {
-        return new MatchesPattern(type, GenerateInterface::getPattern);
+        return new MatchesPattern(type, ImplementInterface::getPattern);
     }
 
     @Override
     protected IsNotBlank isNotBlank() {
-        return new IsNotBlank(GenerateInterface::getInterfaceName);
+        return new IsNotBlank(ImplementInterface::getInterfaceName);
     }
 
     @Override
-    protected Function<GenerateInterface, ImmutableList<CompilerOutput>>
+    protected Function<ImplementInterface, ImmutableList<CompilerOutput>>
     filePatternMapper(MessageType type) {
         return new GenerateInterfaces(type);
     }
 
     @Override
-    protected Predicate<GenerateInterface> customFilter(MessageType type) {
+    protected Predicate<ImplementInterface> customFilter(MessageType type) {
         return configuration -> type.isTopLevel();
     }
 
-    private static CompilerOutput uuidInterface(MessageType type, UuidInterface uuidInterface) {
+    private static CompilerOutput uuidInterface(MessageType type,
+                                                UuidImplementInterface uuidInterface) {
         ClassName interfaceName = ClassName.of(uuidInterface.getInterfaceName());
         MessageInterfaceParameters parameters =
                 MessageInterfaceParameters.of(new IdentityParameter());
@@ -94,7 +95,7 @@ final class MessageInterfaceScanner extends TypeScanner<GenerateInterface> {
     }
 
     private static class GenerateInterfaces
-            implements Function<GenerateInterface, ImmutableList<CompilerOutput>> {
+            implements Function<ImplementInterface, ImmutableList<CompilerOutput>> {
 
         private final MessageType type;
 
@@ -103,9 +104,9 @@ final class MessageInterfaceScanner extends TypeScanner<GenerateInterface> {
         }
 
         @Override
-        public ImmutableList<CompilerOutput> apply(GenerateInterface generatedInterface) {
+        public ImmutableList<CompilerOutput> apply(ImplementInterface implementInterface) {
             MessageInterface messageInterface = new PredefinedInterface(
-                    ClassName.of(generatedInterface.getInterfaceName()),
+                    ClassName.of(implementInterface.getInterfaceName()),
                     MessageInterfaceParameters.empty()
             );
             MessageImplements result = implementInterface(type, messageInterface);

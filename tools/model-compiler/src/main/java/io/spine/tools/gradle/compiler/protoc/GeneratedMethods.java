@@ -23,8 +23,8 @@ package io.spine.tools.gradle.compiler.protoc;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.GenerateMethodsConfig;
-import io.spine.tools.protoc.UuidMethod;
+import io.spine.tools.protoc.MethodsGeneration;
+import io.spine.tools.protoc.UuidGenerateMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
@@ -35,9 +35,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class GeneratedMethods extends GeneratedConfigurations<GenerateMethodsConfig> {
+public final class GeneratedMethods extends GeneratedConfigurations<MethodsGeneration> {
 
-    private UuidMethod uuidMethod = UuidMethod.getDefaultInstance();
+    private UuidGenerateMethod uuidGenerateMethod = UuidGenerateMethod.getDefaultInstance();
 
     private GeneratedMethods() {
         super();
@@ -132,37 +132,38 @@ public final class GeneratedMethods extends GeneratedConfigurations<GenerateMeth
     public final void useFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
         checkNotNull(factoryName);
         checkNotNull(uuidMessage);
-        uuidMethod = uuidMethod(factoryName);
+        uuidGenerateMethod = uuidMethod(factoryName);
     }
 
     @Override
     public void ignore(UuidMessage uuidMessage) {
         checkNotNull(uuidMessage);
-        uuidMethod = UuidMethod.getDefaultInstance();
+        uuidGenerateMethod = UuidGenerateMethod.getDefaultInstance();
     }
 
     // GeneratedMethodsConfig.Builder usage in `forEach`
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Internal
     @Override
-    public GenerateMethodsConfig asProtocConfig() {
-        GenerateMethodsConfig.Builder result = GenerateMethodsConfig
+    public MethodsGeneration asProtocConfig() {
+        MethodsGeneration.Builder result = MethodsGeneration
                 .newBuilder()
-                .setUuidMethod(uuidMethod);
+                .setUuidMethod(uuidGenerateMethod);
         patternConfigurations()
                 .stream()
-                .map(GeneratedMethods::toGeneratedMethod)
+                .map(GeneratedMethods::toCommand)
                 .forEach(result::addGenerateMethod);
         return result.build();
     }
 
-    private static UuidMethod uuidMethod(@FullyQualifiedName String factoryName) {
-        return UuidMethod.newBuilder()
-                         .setFactoryName(factoryName)
-                         .build();
+    private static UuidGenerateMethod uuidMethod(@FullyQualifiedName String factoryName) {
+        return UuidGenerateMethod
+                .newBuilder()
+                .setFactoryName(factoryName)
+                .build();
     }
 
-    private static GenerateMethod toGeneratedMethod(Map.Entry<FileSelector, ClassName> e) {
+    private static GenerateMethod toCommand(Map.Entry<FileSelector, ClassName> e) {
         FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
         return GenerateMethod

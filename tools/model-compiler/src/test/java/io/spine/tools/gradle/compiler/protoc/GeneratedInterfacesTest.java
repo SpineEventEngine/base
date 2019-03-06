@@ -26,9 +26,9 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.GenerateInterface;
-import io.spine.tools.protoc.GenerateInterfacesConfig;
-import io.spine.tools.protoc.UuidInterface;
+import io.spine.tools.protoc.ImplementInterface;
+import io.spine.tools.protoc.InterfacesGeneration;
+import io.spine.tools.protoc.UuidImplementInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,8 +53,8 @@ final class GeneratedInterfacesTest {
         @DisplayName("UuidValue")
         @Test
         void uuid() {
-            GenerateInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
-                                                                   .asProtocConfig();
+            InterfacesGeneration defaults = GeneratedInterfaces.withDefaults()
+                                                               .asProtocConfig();
             assertHasInterface(UuidValue.class, defaults.getUuidInterface()
                                                         .getInterfaceName());
         }
@@ -62,31 +62,31 @@ final class GeneratedInterfacesTest {
         @DisplayName("CommandMessage")
         @Test
         void command() {
-            GenerateInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
-                                                                   .asProtocConfig();
+            InterfacesGeneration defaults = GeneratedInterfaces.withDefaults()
+                                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(CommandMessage.class, COMMANDS.suffix(), defaults);
         }
 
         @DisplayName("EventMessage")
         @Test
         void event() {
-            GenerateInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
-                                                                   .asProtocConfig();
+            InterfacesGeneration defaults = GeneratedInterfaces.withDefaults()
+                                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(EventMessage.class, EVENTS.suffix(), defaults);
         }
 
         @DisplayName("RejectionMessage")
         @Test
         void rejection() {
-            GenerateInterfacesConfig defaults = GeneratedInterfaces.withDefaults()
-                                                                   .asProtocConfig();
+            InterfacesGeneration defaults = GeneratedInterfaces.withDefaults()
+                                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(RejectionMessage.class, REJECTIONS.suffix(),
                                                  defaults);
         }
 
         private void assertHasInterfaceWithNameAndPostfix(Class<?> interfaceClass,
                                                           String postfix,
-                                                          GenerateInterfacesConfig config) {
+                                                          InterfacesGeneration config) {
             String expectedInterface = interfaceClass.getName();
             assertTrue(hasPostfixConfig(postfix, expectedInterface, config));
         }
@@ -101,8 +101,9 @@ final class GeneratedInterfacesTest {
         void uuid() {
             GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
             defaults.ignore(defaults.uuidMessage());
-            GenerateInterfacesConfig protocConfig = defaults.asProtocConfig();
-            assertSame(UuidInterface.getDefaultInstance(), protocConfig.getUuidInterface());
+            InterfacesGeneration protocConfig = defaults.asProtocConfig();
+            assertSame(UuidImplementInterface.getDefaultInstance(),
+                       protocConfig.getUuidInterface());
         }
 
         @DisplayName("CommandMessage")
@@ -132,10 +133,10 @@ final class GeneratedInterfacesTest {
             assertHasNot(REJECTIONS.suffix(), defaults.asProtocConfig());
         }
 
-        private void assertHasNot(String prefix, GenerateInterfacesConfig config) {
+        private void assertHasNot(String prefix, InterfacesGeneration config) {
             boolean hasPattern = false;
-            for (GenerateInterface generatedInterface : config.getGenerateInterfaceList()) {
-                if (generatedInterface.getPattern()
+            for (ImplementInterface implementInterface : config.getImplementInterfaceList()) {
+                if (implementInterface.getPattern()
                                       .getFilePrefix()
                                       .equalsIgnoreCase(prefix)) {
                     hasPattern = true;
@@ -163,31 +164,31 @@ final class GeneratedInterfacesTest {
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String interfaceName, GenerateInterfacesConfig config) {
+    hasPostfixConfig(String postfix, String interfaceName, InterfacesGeneration config) {
         return hasInterface(config, interfaceName,
                             pattern -> postfix.equals(pattern.getFilePostfix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String interfaceName, GenerateInterfacesConfig config) {
+    hasPrefixConfig(String prefix, String interfaceName, InterfacesGeneration config) {
         return hasInterface(config, interfaceName,
                             pattern -> prefix.equals(pattern.getFilePrefix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String interfaceName, GenerateInterfacesConfig config) {
+    hasRegexConfig(String regex, String interfaceName, InterfacesGeneration config) {
         return hasInterface(config, interfaceName,
                             pattern -> regex.equals(pattern.getRegex()));
     }
 
-    private static boolean hasInterface(GenerateInterfacesConfig config,
+    private static boolean hasInterface(InterfacesGeneration config,
                                         String interfaceName,
                                         Predicate<? super FilePattern> patternPredicate) {
         return config
-                .getGenerateInterfaceList()
+                .getImplementInterfaceList()
                 .stream()
-                .filter(genInterface -> interfaceName.equals(genInterface.getInterfaceName()))
-                .map(GenerateInterface::getPattern)
+                .filter(implInterface -> interfaceName.equals(implInterface.getInterfaceName()))
+                .map(ImplementInterface::getPattern)
                 .anyMatch(patternPredicate);
     }
 

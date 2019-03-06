@@ -23,9 +23,9 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.GenerateMethodsConfig;
+import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.tools.protoc.TypeScanner;
-import io.spine.tools.protoc.UuidMethod;
+import io.spine.tools.protoc.UuidGenerateMethod;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -35,14 +35,14 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Scans the given type for a match upon patterns defined in {@link GenerateMethodsConfig}.
+ * Scans the given type for a match upon patterns defined in {@link MethodsGeneration}.
  */
 final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
 
-    private final GenerateMethodsConfig config;
+    private final MethodsGeneration config;
     private final MethodFactories methodFactories;
 
-    GeneratedMethodScanner(GenerateMethodsConfig config) {
+    GeneratedMethodScanner(MethodsGeneration config) {
         super();
         this.config = config;
         this.methodFactories = new MethodFactories(config.getFactoryConfiguration());
@@ -50,7 +50,7 @@ final class GeneratedMethodScanner extends TypeScanner<GenerateMethod> {
 
     @Override
     protected ImmutableList<CompilerOutput> uuidMessage(MessageType type) {
-        UuidMethod uuidMethod = config.getUuidMethod();
+        UuidGenerateMethod uuidMethod = config.getUuidMethod();
         if (isDefault(uuidMethod)) {
             return ImmutableList.of();
         }

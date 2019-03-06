@@ -23,7 +23,7 @@ package io.spine.tools.protoc.messageinterface;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GenerateInterfacesConfig;
+import io.spine.tools.protoc.InterfacesGeneration;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -50,7 +50,7 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
     private final MessageInterfaceScanner messageInterfaceScanner;
 
     /** Prevents singleton class instantiation. */
-    private MessageInterfaceGenerator(GenerateInterfacesConfig config) {
+    private MessageInterfaceGenerator(InterfacesGeneration config) {
         super();
         this.messageInterfaceScanner = new MessageInterfaceScanner(config);
     }
@@ -60,7 +60,7 @@ public final class MessageInterfaceGenerator extends SpineProtoGenerator {
      */
     public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
         checkNotNull(parameter);
-        return new MessageInterfaceGenerator(parameter.getGenerateInterfaces());
+        return new MessageInterfaceGenerator(parameter.getInterfacesGeneration());
     }
 
     /**

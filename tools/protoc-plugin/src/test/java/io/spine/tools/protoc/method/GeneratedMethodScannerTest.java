@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.GenerateMethodsConfig;
+import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +42,7 @@ final class GeneratedMethodScannerTest {
     @DisplayName("scan type for any generated methods")
     @Test
     void scanTypeForAnyGeneratedMethods() {
-        GenerateMethodsConfig config = configBuilder()
+        MethodsGeneration config = configBuilder()
                 .addGenerateMethod(generatedMethod(FirstMethodFactory.FQN, "_patterns.proto"))
                 .addGenerateMethod(generatedMethod(SecondMethodFactory.FQN, "_patterns.proto"))
                 .build();
@@ -59,7 +59,7 @@ final class GeneratedMethodScannerTest {
         @DisplayName("blank MessageGenerator options")
         @Test
         void blankGenerators() {
-            GenerateMethodsConfig config = configBuilder()
+            MethodsGeneration config = configBuilder()
                     .addGenerateMethod(generatedMethod("", "*"))
                     .addGenerateMethod(generatedMethod(" ", "*"))
                     .addGenerateMethod(GenerateMethod.getDefaultInstance())
@@ -71,22 +71,22 @@ final class GeneratedMethodScannerTest {
         @DisplayName("types from non-matched patterns")
         @Test
         void typesFromNonMatchedPatterns() {
-            GenerateMethodsConfig config = configBuilder()
+            MethodsGeneration config = configBuilder()
                     .addGenerateMethod(generatedMethod(FirstMethodFactory.FQN, "NOT_EXIST"))
                     .build();
             MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
         }
 
-        private void noMethodsGeneratedFor(GenerateMethodsConfig config, MessageType type) {
+        private void noMethodsGeneratedFor(MethodsGeneration config, MessageType type) {
             GeneratedMethodScanner scanner = new GeneratedMethodScanner(config);
             ImmutableList<CompilerOutput> result = scanner.scan(type);
             assertTrue(result.isEmpty());
         }
     }
 
-    private static GenerateMethodsConfig.Builder configBuilder() {
-        return GenerateMethodsConfig.newBuilder();
+    private static MethodsGeneration.Builder configBuilder() {
+        return MethodsGeneration.newBuilder();
     }
 
     private static GenerateMethod generatedMethod(String factoryName, String postfix) {

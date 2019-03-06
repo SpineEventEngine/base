@@ -27,9 +27,9 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GenerateInterface;
-import io.spine.tools.protoc.GenerateInterfacesConfig;
-import io.spine.tools.protoc.UuidInterface;
+import io.spine.tools.protoc.ImplementInterface;
+import io.spine.tools.protoc.InterfacesGeneration;
+import io.spine.tools.protoc.UuidImplementInterface;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Map;
@@ -42,9 +42,9 @@ import static io.spine.base.MessageFile.REJECTIONS;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateInterfacesConfig> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<InterfacesGeneration> {
 
-    private UuidInterface uuidInterface = UuidInterface.getDefaultInstance();
+    private UuidImplementInterface uuidInterface = UuidImplementInterface.getDefaultInstance();
 
     private GeneratedInterfaces() {
         super();
@@ -167,34 +167,35 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<GenerateI
     @Override
     public final void ignore(UuidMessage uuidMessage) {
         checkNotNull(uuidMessage);
-        uuidInterface = UuidInterface.getDefaultInstance();
+        uuidInterface = UuidImplementInterface.getDefaultInstance();
     }
 
     // GeneratedInterfacesConfig.Builder usage in `forEach`.
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     @Internal
-    public GenerateInterfacesConfig asProtocConfig() {
-        GenerateInterfacesConfig.Builder result = GenerateInterfacesConfig
+    public InterfacesGeneration asProtocConfig() {
+        InterfacesGeneration.Builder result = InterfacesGeneration
                 .newBuilder()
                 .setUuidInterface(uuidInterface);
         patternConfigurations()
                 .stream()
-                .map(GeneratedInterfaces::toGeneratedInterface)
-                .forEach(result::addGenerateInterface);
+                .map(GeneratedInterfaces::toCommand)
+                .forEach(result::addImplementInterface);
         return result.build();
     }
 
-    private static UuidInterface uuidInterface(@FullyQualifiedName String interfaceName) {
-        return UuidInterface.newBuilder()
-                            .setInterfaceName(interfaceName)
-                            .build();
+    private static UuidImplementInterface uuidInterface(@FullyQualifiedName String interfaceName) {
+        return UuidImplementInterface
+                .newBuilder()
+                .setInterfaceName(interfaceName)
+                .build();
     }
 
-    private static GenerateInterface toGeneratedInterface(Map.Entry<FileSelector, ClassName> e) {
+    private static ImplementInterface toCommand(Map.Entry<FileSelector, ClassName> e) {
         FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
-        return GenerateInterface
+        return ImplementInterface
                 .newBuilder()
                 .setPattern(fileSelector.toProto())
                 .setInterfaceName(className.value())
