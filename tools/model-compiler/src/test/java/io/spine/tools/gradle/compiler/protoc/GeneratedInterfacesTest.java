@@ -25,12 +25,15 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.GenerateInterface;
 import io.spine.tools.protoc.GenerateInterfacesConfig;
 import io.spine.tools.protoc.UuidInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Predicate;
 
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
@@ -161,38 +164,31 @@ final class GeneratedInterfacesTest {
 
     private static boolean
     hasPostfixConfig(String postfix, String interfaceName, GenerateInterfacesConfig config) {
-        for (GenerateInterface generatedInterface : config.getGenerateInterfaceList()) {
-            if (postfix.equals(generatedInterface.getPattern()
-                                                 .getFilePostfix()) &&
-                    interfaceName.equals(generatedInterface.getInterfaceName())) {
-                return true;
-            }
-        }
-        return false;
+        return hasInterface(config, interfaceName,
+                            pattern -> postfix.equals(pattern.getFilePostfix()));
     }
 
     private static boolean
     hasPrefixConfig(String prefix, String interfaceName, GenerateInterfacesConfig config) {
-        for (GenerateInterface generatedInterface : config.getGenerateInterfaceList()) {
-            if (prefix.equals(generatedInterface.getPattern()
-                                                .getFilePrefix()) &&
-                    interfaceName.equals(generatedInterface.getInterfaceName())) {
-                return true;
-            }
-        }
-        return false;
+        return hasInterface(config, interfaceName,
+                            pattern -> prefix.equals(pattern.getFilePrefix()));
     }
 
     private static boolean
     hasRegexConfig(String regex, String interfaceName, GenerateInterfacesConfig config) {
-        for (GenerateInterface generatedInterface : config.getGenerateInterfaceList()) {
-            if (regex.equals(generatedInterface.getPattern()
-                                               .getRegex()) &&
-                    interfaceName.equals(generatedInterface.getInterfaceName())) {
-                return true;
-            }
-        }
-        return false;
+        return hasInterface(config, interfaceName,
+                            pattern -> regex.equals(pattern.getRegex()));
+    }
+
+    private static boolean hasInterface(GenerateInterfacesConfig config,
+                                        String interfaceName,
+                                        Predicate<? super FilePattern> patternPredicate) {
+        return config
+                .getGenerateInterfaceList()
+                .stream()
+                .filter(genInterface -> interfaceName.equals(genInterface.getInterfaceName()))
+                .map(GenerateInterface::getPattern)
+                .anyMatch(patternPredicate);
     }
 
     private static void assertHasInterface(Class<?> interfaceClass, String actualValue) {

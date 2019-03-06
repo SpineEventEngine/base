@@ -20,11 +20,14 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.GenerateMethodsConfig;
 import io.spine.tools.protoc.UuidMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -78,38 +81,31 @@ final class GeneratedMethodsTest {
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String interfaceName, GenerateMethodsConfig config) {
-        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
-            if (postfix.equals(generatedInterface.getPattern()
-                                                 .getFilePostfix()) &&
-                    interfaceName.equals(generatedInterface.getFactoryName())) {
-                return true;
-            }
-        }
-        return false;
+    hasPostfixConfig(String postfix, String factoryName, GenerateMethodsConfig config) {
+        return hasInterface(config, factoryName,
+                            pattern -> postfix.equals(pattern.getFilePostfix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String interfaceName, GenerateMethodsConfig config) {
-        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
-            if (prefix.equals(generatedInterface.getPattern()
-                                                .getFilePrefix()) &&
-                    interfaceName.equals(generatedInterface.getFactoryName())) {
-                return true;
-            }
-        }
-        return false;
+    hasPrefixConfig(String prefix, String factoryName, GenerateMethodsConfig config) {
+        return hasInterface(config, factoryName,
+                            pattern -> prefix.equals(pattern.getFilePrefix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String interfaceName, GenerateMethodsConfig config) {
-        for (GenerateMethod generatedInterface : config.getGenerateMethodList()) {
-            if (regex.equals(generatedInterface.getPattern()
-                                               .getRegex()) &&
-                    interfaceName.equals(generatedInterface.getFactoryName())) {
-                return true;
-            }
-        }
-        return false;
+    hasRegexConfig(String regex, String factoryName, GenerateMethodsConfig config) {
+        return hasInterface(config, factoryName,
+                            pattern -> regex.equals(pattern.getRegex()));
+    }
+
+    private static boolean hasInterface(GenerateMethodsConfig config,
+                                        String factoryName,
+                                        Predicate<? super FilePattern> patternPredicate) {
+        return config
+                .getGenerateMethodList()
+                .stream()
+                .filter(genMathod -> factoryName.equals(genMathod.getFactoryName()))
+                .map(GenerateMethod::getPattern)
+                .anyMatch(patternPredicate);
     }
 }
