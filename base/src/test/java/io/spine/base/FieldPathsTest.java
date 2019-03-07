@@ -91,7 +91,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @Test
     @DisplayName("obtain value at a complex path")
     void obtainComplex() {
-        Any value = pack(Time.getCurrentTime());
+        Any value = pack(Time.currentTime());
         AnyHolder anyHolder = AnyHolder
                 .newBuilder()
                 .setVal(value)

@@ -33,7 +33,6 @@ import io.spine.validate.ConstraintViolation;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.setProvider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -69,7 +68,7 @@ public class MessageValidatorTestEnv {
     }
 
     public static Timestamp currentTimeWithNanos(int nanos) {
-        Timestamp result = timeWithNanos(getCurrentTime(), nanos);
+        Timestamp result = timeWithNanos(Time.currentTime(), nanos);
         return result;
     }
 
@@ -93,7 +92,7 @@ public class MessageValidatorTestEnv {
      * Freezes time for current thread by setting the time provider to a 
      * {@link ConstantTimeProvider}.
      *
-     * @param time time to be returned upon {@link Time#getCurrentTime()} call. 
+     * @param time time to be returned upon {@link Time#currentTime()} call.
      */
     public static void freezeTime(Timestamp time) {
         Time.Provider frozenTimeProvider = new ConstantTimeProvider(time);
@@ -108,12 +107,12 @@ public class MessageValidatorTestEnv {
     }
 
     public static Timestamp getFuture() {
-        Timestamp future = add(getCurrentTime(), newDuration(SECONDS_IN_5_MINUTES));
+        Timestamp future = add(Time.currentTime(), newDuration(SECONDS_IN_5_MINUTES));
         return future;
     }
 
     public static Timestamp getPast() {
-        Timestamp past = subtract(getCurrentTime(), newDuration(SECONDS_IN_5_MINUTES));
+        Timestamp past = subtract(Time.currentTime(), newDuration(SECONDS_IN_5_MINUTES));
         return past;
     }
 
@@ -137,7 +136,7 @@ public class MessageValidatorTestEnv {
         }
 
         @Override
-        public Timestamp getCurrentTime() {
+        public Timestamp currentTime() {
             return timestamp;
         }
     }

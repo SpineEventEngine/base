@@ -384,7 +384,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         }
 
         @Override
-        public int getIndex() {
+        public int index() {
             return this.index;
         }
     }

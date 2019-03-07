@@ -26,7 +26,7 @@ import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 
 import static io.spine.protobuf.TypeConverter.toAny;
-import static io.spine.validate.FieldValidator.getErrorMsgFormat;
+import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A numerical field constraint that limits the number of whole and decimal digits.
@@ -45,8 +45,9 @@ final class DigitsConstraint<V extends Number & Comparable>
 
     @Override
     boolean satisfies(FieldValue<V> value) {
-        int wholeDigitsMax = optionValue().getIntegerMax();
-        int fractionDigitsMax = optionValue().getFractionMax();
+        DigitsOption option = optionValue();
+        int wholeDigitsMax = option.getIntegerMax();
+        int fractionDigitsMax = option.getFractionMax();
         if (wholeDigitsMax < 1 || fractionDigitsMax < 1) {
             return true;
         }
@@ -76,9 +77,10 @@ final class DigitsConstraint<V extends Number & Comparable>
 
     @Override
     ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
-        String msg = getErrorMsgFormat(optionValue(), optionValue().getMsgFormat());
-        String intMax = String.valueOf(optionValue().getIntegerMax());
-        String fractionMax = String.valueOf(optionValue().getFractionMax());
+        DigitsOption option = optionValue();
+        String msg = errorMsgFormat(option, option.getMsgFormat());
+        String intMax = String.valueOf(option.getIntegerMax());
+        String fractionMax = String.valueOf(option.getFractionMax());
         FieldPath fieldPath = value.context()
                                    .fieldPath();
 

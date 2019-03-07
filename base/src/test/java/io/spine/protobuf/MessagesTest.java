@@ -58,7 +58,7 @@ class MessagesTest extends UtilityClassTest<Messages> {
     @Test
     @DisplayName("pack to Any")
     void packToAny() {
-        Timestamp timestamp = Time.getCurrentTime();
+        Timestamp timestamp = Time.currentTime();
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
     }
 

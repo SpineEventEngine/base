@@ -87,7 +87,7 @@ public abstract class NamedProperty<T, H> {
         }
 
         @Override
-        public int getIndex() {
+        public int index() {
             return this.index;
         }
     }

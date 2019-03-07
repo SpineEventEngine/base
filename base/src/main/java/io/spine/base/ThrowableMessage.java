@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -38,9 +38,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>Typically used to signalize about a command rejection, occurred in a system. In which case
  * the {@code message} thrown is a detailed description of the rejection reason.
- *
- * @author Alex Tymchenko
- * @author Alexander Yevsyukov
  */
 public abstract class ThrowableMessage extends Throwable {
 
@@ -57,17 +54,20 @@ public abstract class ThrowableMessage extends Throwable {
     protected ThrowableMessage(RejectionMessage message) {
         super();
         this.message = checkNotNull(message);
-        this.timestamp = getCurrentTime();
+        this.timestamp = currentTime();
     }
 
-    public RejectionMessage getMessageThrown() {
+    /**
+     * Obtains the thrown rejection message.
+     */
+    public RejectionMessage messageThrown() {
         return message;
     }
 
     /**
-     * Returns timestamp of the rejection message creation.
+     * Obtains the time when the rejection message was created.
      */
-    public Timestamp getTimestamp() {
+    public Timestamp timestamp() {
         return timestamp;
     }
 

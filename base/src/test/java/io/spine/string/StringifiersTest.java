@@ -89,7 +89,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         private ImmutableList<Timestamp> createList() {
             ImmutableList.Builder<Timestamp> builder = ImmutableList.builder();
             for (int i = 0; i < SIZE; i++) {
-                builder.add(Time.getCurrentTime());
+                builder.add(Time.currentTime());
             }
             return builder.build();
         }
@@ -97,7 +97,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         private ImmutableMap<Long, Timestamp> createMap() {
             ImmutableMap.Builder<Long, Timestamp> builder = ImmutableMap.builder();
             for (int i = 0; i < SIZE; i++) {
-                Timestamp t = Time.getCurrentTime();
+                Timestamp t = Time.currentTime();
                 builder.put((long) i, t);
             }
             return builder.build();

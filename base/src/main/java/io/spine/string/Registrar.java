@@ -50,7 +50,7 @@ public final class Registrar {
      * Registers stringifiers.
      */
     public void register() {
-        StringifierRegistry registry = StringifierRegistry.getInstance();
+        StringifierRegistry registry = StringifierRegistry.instance();
         stringifiers.forEach((stringifier) -> {
             Class<?> dataClass = getDataClass(stringifier.getClass());
             registry.register(stringifier, dataClass);

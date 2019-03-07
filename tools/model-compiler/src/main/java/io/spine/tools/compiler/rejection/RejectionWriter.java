@@ -50,7 +50,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 public class RejectionWriter implements Logging {
 
-    private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
+    private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
     private final RejectionType declaration;
     private final ClassName messageClass;
@@ -97,7 +97,7 @@ public class RejectionWriter implements Logging {
                             .superclass(ThrowableMessage.class)
                             .addField(serialVersionUID())
                             .addMethod(constructor())
-                            .addMethod(getMessageThrown())
+                            .addMethod(messageThrown())
                             .addMethod(builder.newBuilder())
                             .addType(builder.typeDeclaration())
                             .build();
@@ -129,11 +129,11 @@ public class RejectionWriter implements Logging {
                 .build();
     }
 
-    private MethodSpec getMessageThrown() {
-        String methodSignature = getMessageThrown.signature();
+    private MethodSpec messageThrown() {
+        String methodSignature = messageThrown.signature();
         _debug("Constructing method {}", methodSignature);
         ClassName returnType = messageClass;
-        return MethodSpec.methodBuilder(getMessageThrown.name())
+        return MethodSpec.methodBuilder(messageThrown.name())
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
                          .returns(returnType)

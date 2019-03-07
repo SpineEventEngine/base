@@ -62,7 +62,7 @@ class LoggerClassValue extends ClassValue<Logger> {
         this.muted = false;
     }
 
-    static Logger getFor(Class<?> cls) {
+    static Logger loggerOf(Class<?> cls) {
         return INSTANCE.get(cls);
     }
 

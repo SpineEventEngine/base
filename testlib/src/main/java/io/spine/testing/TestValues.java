@@ -44,9 +44,6 @@ public final class TestValues {
 
     /**
      * Generates a {@code StringValue} with generated UUID.
-     *
-     * <p>Use this method when you need to generate a test {@code Message} value
-     * but do not want to resort to {@code Timestamp} via {@code Timestamps#getCurrentTime()}.
      */
     public static StringValue newUuidValue() {
         String id = randomString();
@@ -67,6 +64,14 @@ public final class TestValues {
      */
     public static int random(int min, int max) {
         int randomNum = ThreadLocalRandom.current().nextInt(min, max);
+        return randomNum;
+    }
+
+    /**
+     * Generates a random long value in the range [min, max).
+     */
+    public static long longRandom(long min, long max) {
+        long randomNum = ThreadLocalRandom.current().nextLong(min, max);
         return randomNum;
     }
 }

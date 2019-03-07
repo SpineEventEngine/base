@@ -18,35 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
+package io.spine.util;
 
-import com.google.protobuf.Timestamp;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.base.Converter;
 
-import static io.spine.base.Time.currentTime;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.io.Serializable;
 
-@DisplayName("TimestampStringifier should")
-class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
+/**
+ * Abstract base for serializable converters.
+ *
+ * @see SerializableFunction
+ */
+public abstract class SerializableConverter<A, B>
+        extends Converter<A, B>
+        implements Serializable {
 
-    TimestampStringifierTest() {
-        super(Stringifiers.forTimestamp(), Timestamp.class);
-    }
-
-    @Override
-    protected Timestamp createObject() {
-        return currentTime();
-    }
-
-    @Test
-    @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
-    void parsingError() {
-        // This uses TextFormat printing, for the output which won't be parsable.
-        String time = currentTime().toString();
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Stringifiers.fromString(time, Timestamp.class)
-        );
-    }
+    private static final long serialVersionUID = 0L;
 }
