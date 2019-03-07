@@ -43,7 +43,7 @@ class RangeConstraintTest {
 
     @ParameterizedTest
     @MethodSource("validRanges")
-    @DisplayName("be able to obtain adequate ranges")
+    @DisplayName("be able to parse valid range strings")
     void acceptProperRanges(String range, BoundType expected) {
         Range<ComparableNumber> result = RangeConstraint.rangeFromOption(range);
         assertEquals(expected, result.upperBoundType());
