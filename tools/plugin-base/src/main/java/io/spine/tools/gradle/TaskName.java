@@ -135,7 +135,7 @@ public enum TaskName {
     copyPluginJar,
 
     /**
-     * Creates the {@code desc.ref} file containing the reference to the descriptor file(-s) with
+     * Creates the {@code desc.ref} file containing the reference to the descriptor file(s) with
      * the known types.
      *
      * <p>Works only with the {@code main} scope descriptors.
@@ -143,7 +143,7 @@ public enum TaskName {
     writeDescriptorReference,
 
     /**
-     * Creates the {@code desc.ref} file containing the reference to the descriptor file(-s) with
+     * Creates the {@code desc.ref} file containing the reference to the descriptor file(s) with
      * the known types.
      *
      * <p>Works only with the {@code test} scope descriptors.
