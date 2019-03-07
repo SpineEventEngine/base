@@ -74,7 +74,7 @@ final class SpineProtoGeneratorTest {
                 .addFileToGenerate(TEST_PROTO_FILE)
                 .setParameter(encodedProtocConfig(interfaces, methods))
                 .build();
-        MessageType type = new MessageType(TestMessage.getDescriptor());
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File firstFile = File
                 .newBuilder()
                 .setName("file.proto")
@@ -110,7 +110,7 @@ final class SpineProtoGeneratorTest {
                 .addFileToGenerate(TEST_PROTO_FILE)
                 .setParameter(encodedProtocConfig(methods))
                 .build();
-        MessageType type = new MessageType(TestMessage.getDescriptor());
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String firstMethod = "public void test1(){}";
         String secondMethod = "public void test2(){}";
         File firstFile = File
@@ -147,7 +147,7 @@ final class SpineProtoGeneratorTest {
                 .addFileToGenerate(TEST_PROTO_FILE)
                 .setParameter(encodedProtocConfig(methods))
                 .build();
-        MessageType type = new MessageType(TestMessage.getDescriptor());
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String method = "public void test1(){}";
         File generated = File
                 .newBuilder()

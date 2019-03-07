@@ -38,7 +38,7 @@ final class ProtocPluginFilesTest extends UtilityClassTest<ProtocPluginFiles> {
     @DisplayName("prepare File builder for supplied Type")
     @Test
     void prepareFileBuilderForType() {
-        MessageType type = new MessageType(TestMessage.getDescriptor());
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File.Builder result = ProtocPluginFiles.prepareFile(type);
 
         assertEquals("io/spine/tools/protoc/TestMessage.java", result.getName());

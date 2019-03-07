@@ -39,7 +39,7 @@ final class InsertionPointTest {
     @ParameterizedTest(name = "\"{0}\"")
     @EnumSource(value = InsertionPoint.class, names = "outer_class_scope", mode = EXCLUDE)
     void createValidInsertionPoint(InsertionPoint insertionPoint) {
-        MessageType testMessage = new MessageType(TestMessage.getDescriptor());
+        MessageType testMessage = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         TypeName typeName = testMessage.name();
         StringSubject subject = assertThat(insertionPoint.forType(testMessage));
         subject.contains(typeName.toString());

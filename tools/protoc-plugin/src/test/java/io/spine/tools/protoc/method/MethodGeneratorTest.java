@@ -41,7 +41,7 @@ final class MethodGeneratorTest {
         MethodGenerator generator =
                 MethodGenerator.instance(SpineProtocConfig.getDefaultInstance());
         Descriptors.ServiceDescriptor service = TestServiceProto.getDescriptor()
-                                                                .findServiceByName("TestService");
+                                                                .findServiceByName("MGTService");
         ServiceType type = ServiceType.of(service);
         Collection<CompilerOutput> result = generator.generate(type);
         assertTrue(result.isEmpty());

@@ -27,16 +27,16 @@ option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.tools.protoc.method";
 option java_outer_classname = "TestServiceProto";
 
-// This file contains test service for GeneratedMethodGeneratorTest.
+// This file contains test service for MethodGeneratorTest.
 
-service TestService {
-    rpc GetById(TestId) returns (TestValue);
+service MGTService {
+    rpc GetById(MGTServiceId) returns (MGTServiceValue);
 }
 
-message TestId {
+message MGTServiceId {
     string id = 1;
 }
 
-message TestValue {
+message MGTServiceValue {
     string value = 1;
 }

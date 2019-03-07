@@ -28,6 +28,6 @@ option java_package = "io.spine.tools.protoc";
 option java_outer_classname = "TestGeneratorsProto";
 option java_multiple_files = true;
 
-message TestMessage {
+message EnhancedWithCodeGeneration {
     string id = 1;
 }

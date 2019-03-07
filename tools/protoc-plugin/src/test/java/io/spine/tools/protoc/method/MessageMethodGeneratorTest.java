@@ -46,7 +46,7 @@ final class MessageMethodGeneratorTest {
                 .addGenerateMethod(generatedMethod(F1.class.getName(), "_patterns.proto"))
                 .addGenerateMethod(generatedMethod(F2.class.getName(), "_patterns.proto"))
                 .build();
-        MessageType type = new MessageType(TestMessage.getDescriptor());
+        MessageType type = new MessageType(EnhancedWithPatternBasedCodeGeneration.getDescriptor());
         MessageMethodGenerator generator = new MessageMethodGenerator(config);
         ImmutableList<CompilerOutput> result = generator.generate(type);
         assertEquals(3, result.size());
