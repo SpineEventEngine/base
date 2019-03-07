@@ -112,7 +112,7 @@ final class PluginTest {
         CodeGeneratorResponse response = runPlugin(request);
 
         List<CodeGeneratorResponse.File> messageMethods =
-                filterMethods(response, InsertionPoint.CLASS_SCOPE);
+                filterMethods(response, InsertionPoint.class_scope);
         assertEquals(1, messageMethods.size());
     }
 

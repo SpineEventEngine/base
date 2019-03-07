@@ -41,7 +41,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(message_implements:TYPENAME)}.
      */
-    MESSAGE_IMPLEMENTS("message_implements"),
+    message_implements,
 
     /**
      * Member declarations that belong in a message's builder class interface implementations.
@@ -50,7 +50,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(builder_implements:TYPENAME)}.
      */
-    BUILDER_IMPLEMENTS("builder_implements"),
+    builder_implements,
 
     /**
      * Member declarations that belong in a message interface.
@@ -59,7 +59,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(interface_extends:TYPENAME)}.
      */
-    INTERFACE_EXTENDS("interface_extends"),
+    interface_extends,
 
     /**
      * Member declarations that belong in a message class.
@@ -68,7 +68,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(class_scope:TYPENAME)}.
      */
-    CLASS_SCOPE("class_scope"),
+    class_scope,
 
     /**
      * Member declarations that belong in a message's builder class.
@@ -77,7 +77,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(builder_scope:TYPENAME)}.
      */
-    BUILDER_SCOPE("builder_scope"),
+    builder_scope,
 
     /**
      * Member declarations that belong in an enum class.
@@ -86,7 +86,7 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(enum_scope:TYPENAME)}.
      */
-    ENUM_SCOPE("enum_scope"),
+    enum_scope,
 
     /**
      * Member declarations that belong in the file's outer class.
@@ -95,31 +95,25 @@ public enum InsertionPoint {
      *
      * <p>Uses {@code @@protoc_insertion_point(outer_class_scope)}.
      */
-    OUTER_CLASS_SCOPE("outer_class_scope") {
+    outer_class_scope {
         @Override
         public String forType(Type<?, ?> ignored) {
             return getDefinition();
         }
     };
 
-    private final String definition;
-
-    InsertionPoint(String definition) {
-        this.definition = definition;
-    }
-
     /**
      * Returns current insertion point definition.
      */
     public String getDefinition() {
-        return definition;
+        return name();
     }
 
     /**
      * Creates Protoc insertion point for the supplied type.
      */
     public String forType(Type<?, ?> protobufType) {
-        String result = format("%s:%s", definition, protobufType.name());
+        String result = format("%s:%s", getDefinition(), protobufType.name());
         return result;
     }
 }

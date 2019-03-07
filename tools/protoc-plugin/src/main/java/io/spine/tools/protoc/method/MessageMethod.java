@@ -40,7 +40,7 @@ final class MessageMethod extends AbstractCompilerOutput {
      * Creates a new instance of {@code MessageMethod}.
      */
     static MessageMethod from(GeneratedMethod generatedMethod, MessageType messageType) {
-        String insertionPoint = InsertionPoint.CLASS_SCOPE.forType(messageType);
+        String insertionPoint = InsertionPoint.class_scope.forType(messageType);
         String content = generatedMethod.value();
         File.Builder file = ProtocPluginFiles.prepareFile(messageType);
         File result = file.setInsertionPoint(insertionPoint)

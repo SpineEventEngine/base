@@ -79,13 +79,13 @@ final class SpineProtoGeneratorTest {
                 .newBuilder()
                 .setName("file.proto")
                 .setContent(TestInterface.class.getName() + ',')
-                .setInsertionPoint(InsertionPoint.MESSAGE_IMPLEMENTS.forType(type))
+                .setInsertionPoint(InsertionPoint.message_implements.forType(type))
                 .build();
         File secondFile = File
                 .newBuilder()
                 .setName("file.proto")
                 .setContent("public void test(){}")
-                .setInsertionPoint(InsertionPoint.CLASS_SCOPE.forType(type))
+                .setInsertionPoint(InsertionPoint.class_scope.forType(type))
                 .build();
         TestGenerator firstGenerator =
                 new TestGenerator(ImmutableList.of(new TestCompilerOutput(firstFile)));
@@ -117,7 +117,7 @@ final class SpineProtoGeneratorTest {
                 .newBuilder()
                 .setName("file.proto")
                 .setContent(firstMethod)
-                .setInsertionPoint(InsertionPoint.CLASS_SCOPE.forType(type))
+                .setInsertionPoint(InsertionPoint.class_scope.forType(type))
                 .build();
         File secondFile = firstFile
                 .toBuilder()
@@ -153,7 +153,7 @@ final class SpineProtoGeneratorTest {
                 .newBuilder()
                 .setName("file.proto")
                 .setContent(method)
-                .setInsertionPoint(InsertionPoint.CLASS_SCOPE.forType(type))
+                .setInsertionPoint(InsertionPoint.class_scope.forType(type))
                 .build();
         ImmutableList<CompilerOutput> compilerOutputs = ImmutableList.of(
                 new TestCompilerOutput(generated), new TestCompilerOutput(generated)

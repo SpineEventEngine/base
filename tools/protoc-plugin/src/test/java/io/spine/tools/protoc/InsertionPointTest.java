@@ -37,7 +37,7 @@ final class InsertionPointTest {
 
     @DisplayName("create valid Protoc insertion point")
     @ParameterizedTest(name = "\"{0}\"")
-    @EnumSource(value = InsertionPoint.class, names = "OUTER_CLASS_SCOPE", mode = EXCLUDE)
+    @EnumSource(value = InsertionPoint.class, names = "outer_class_scope", mode = EXCLUDE)
     void createValidInsertionPoint(InsertionPoint insertionPoint) {
         MessageType testMessage = new MessageType(TestMessage.getDescriptor());
         TypeName typeName = testMessage.name();
@@ -50,7 +50,7 @@ final class InsertionPointTest {
     @DisplayName("create valid \"outer_class_scope\" insertion point")
     @Test
     void createValidOuterClassScopeInsertionPoint() {
-        String actual = InsertionPoint.OUTER_CLASS_SCOPE.forType(null);
-        assertEquals(InsertionPoint.OUTER_CLASS_SCOPE.getDefinition(), actual);
+        String actual = InsertionPoint.outer_class_scope.forType(null);
+        assertEquals(InsertionPoint.outer_class_scope.getDefinition(), actual);
     }
 }

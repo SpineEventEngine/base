@@ -52,7 +52,7 @@ final class MessageImplements extends AbstractCompilerOutput {
      */
     static MessageImplements implementInterface(MessageType type,
                                                 MessageInterface messageInterface) {
-        String insertionPoint = InsertionPoint.MESSAGE_IMPLEMENTS.forType(type);
+        String insertionPoint = InsertionPoint.message_implements.forType(type);
         String content = buildContent(type, messageInterface);
         File.Builder file = ProtocPluginFiles.prepareFile(type);
         File result = file.setInsertionPoint(insertionPoint)
