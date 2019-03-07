@@ -29,7 +29,7 @@ import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
-import io.spine.tools.protoc.messageinterface.TestEventsProto;
+import io.spine.tools.protoc.iface.TestEventsProto;
 import io.spine.tools.protoc.method.TestMethodProtos;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,7 +89,7 @@ final class PluginTest {
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestEventsProto.getDescriptor()
                                              .toProto())
-                .addFileToGenerate("spine/tools/protoc/messageinterface/test_events.proto")
+                .addFileToGenerate("spine/tools/protoc/iface/test_events.proto")
                 .setParameter(encodedProtocConfig(interfaces))
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
