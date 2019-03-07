@@ -130,8 +130,7 @@ public enum TaskName {
     generateJsonParsers,
 
     /**
-     * Downloads the Protobuf compiler plugin executable JAR and distributes it into the required
-     * paths in the project.
+     * Downloads the Protobuf compiler plugin executable JAR into the required paths in the project.
      */
     copyPluginJar,
 
