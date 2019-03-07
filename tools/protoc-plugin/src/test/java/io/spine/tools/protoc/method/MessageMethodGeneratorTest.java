@@ -43,8 +43,8 @@ final class MessageMethodGeneratorTest {
     @Test
     void scanTypeForAnyGeneratedMethods() {
         MethodsGeneration config = configBuilder()
-                .addGenerateMethod(generatedMethod(MF1.class.getName(), "_patterns.proto"))
-                .addGenerateMethod(generatedMethod(MF2.class.getName(), "_patterns.proto"))
+                .addGenerateMethod(generatedMethod(F1.class.getName(), "_patterns.proto"))
+                .addGenerateMethod(generatedMethod(F2.class.getName(), "_patterns.proto"))
                 .build();
         MessageType type = new MessageType(TestMessage.getDescriptor());
         MessageMethodGenerator generator = new MessageMethodGenerator(config);
@@ -72,7 +72,7 @@ final class MessageMethodGeneratorTest {
         @Test
         void typesFromNonMatchedPatterns() {
             MethodsGeneration config = configBuilder()
-                    .addGenerateMethod(generatedMethod(MF1.class.getName(), "NOT_EXIST"))
+                    .addGenerateMethod(generatedMethod(F1.class.getName(), "NOT_EXIST"))
                     .build();
             MessageType type = new MessageType(NonEnhancedMessage.getDescriptor());
             noMethodsGeneratedFor(config, type);
@@ -97,7 +97,7 @@ final class MessageMethodGeneratorTest {
     }
 
     @Immutable
-    public static class MF1 implements MethodFactory {
+    public static class F1 implements MethodFactory {
 
         private static final GeneratedMethod TEST_METHOD = new GeneratedMethod(
                 "public void first(){}");
@@ -109,7 +109,7 @@ final class MessageMethodGeneratorTest {
     }
 
     @Immutable
-    public static class MF2 implements MethodFactory {
+    public static class F2 implements MethodFactory {
 
         private static final GeneratedMethod TEST_METHOD_1 =
                 new GeneratedMethod("public void second1(){}");
