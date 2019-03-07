@@ -36,7 +36,6 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * Utility class for working with {@code Type}s.
  */
-@SuppressWarnings("UnstableApiUsage") // Guava's Reflection tools will probably be OK.
 public final class Types {
 
     /** Prevents instantiation of this utility class. */
@@ -129,9 +128,8 @@ public final class Types {
      *         the type of superclass
      * @return the class of the generic type argument
      */
-    static <T> Class<?> getArgument(Class<? extends T> cls,
-                                    Class<T> genericSuperclass,
-                                    int argNumber) {
+    static
+    <T> Class<?> argumentIn(Class<? extends T> cls, Class<T> genericSuperclass, int argNumber) {
         checkNotNull(cls);
         checkNotNull(genericSuperclass);
         TypeToken<?> supertypeToken =

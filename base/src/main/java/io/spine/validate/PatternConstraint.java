@@ -25,7 +25,7 @@ import io.spine.base.FieldPath;
 import io.spine.option.PatternOption;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.validate.FieldValidator.getErrorMsgFormat;
+import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint that, when applied to a string field, checks whether that field matches the
@@ -50,7 +50,7 @@ final class PatternConstraint extends FieldValueConstraint<String, PatternOption
     }
 
     private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
-        String msg = getErrorMsgFormat(optionValue(), optionValue().getMsgFormat());
+        String msg = errorMsgFormat(optionValue(), optionValue().getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
                                         .fieldPath();
         String regex = optionValue().getRegex();

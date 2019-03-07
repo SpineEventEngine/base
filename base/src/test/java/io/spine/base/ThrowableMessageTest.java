@@ -57,13 +57,13 @@ class ThrowableMessageTest {
     @Test
     @DisplayName("return the thrown message")
     void return_message_thrown() {
-        assertEquals(message, throwableMessage.getMessageThrown());
+        assertEquals(message, throwableMessage.messageThrown());
     }
 
     @Test
     @DisplayName("have timestamp")
     void have_timestamp() {
-        assertTrue(Timestamps.isValid(throwableMessage.getTimestamp()));
+        assertTrue(Timestamps.isValid(throwableMessage.timestamp()));
     }
 
     @Test

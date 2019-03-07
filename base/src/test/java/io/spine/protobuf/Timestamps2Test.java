@@ -35,7 +35,7 @@ import java.time.Instant;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static io.spine.protobuf.Timestamps2.fromInstant;
 import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.protobuf.Timestamps2.toInstant;
@@ -54,7 +54,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
 
     @Override
     protected void configure(NullPointerTester nullTester) {
-        nullTester.setDefault(Timestamp.class, Time.getCurrentTime())
+        nullTester.setDefault(Timestamp.class, Time.currentTime())
                   .setDefault(Instant.class, Instant.now());
     }
 
@@ -65,7 +65,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
         @Test
         @DisplayName("between two others")
         void isBetween() {
-            Timestamp start = getCurrentTime();
+            Timestamp start = currentTime();
             Timestamp timeBetween = add(start, TEN_SECONDS);
             Timestamp finish = add(timeBetween, TEN_SECONDS);
 
@@ -77,7 +77,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
         @Test
         @DisplayName("not between two others")
         void isNotBetween() {
-            Timestamp start = getCurrentTime();
+            Timestamp start = currentTime();
             Timestamp finish = add(start, TEN_SECONDS);
             Timestamp timeNotBetween = add(finish, TEN_SECONDS);
 
@@ -94,7 +94,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
         @Test
         @DisplayName("later than another")
         void isLater() {
-            Timestamp fromPoint = getCurrentTime();
+            Timestamp fromPoint = currentTime();
             Timestamp timeToCheck = add(fromPoint, TEN_SECONDS);
 
             boolean isAfter = isLaterThan(timeToCheck, fromPoint);
@@ -105,7 +105,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
         @Test
         @DisplayName("not later than another")
         void isNotLater() {
-            Timestamp fromPoint = getCurrentTime();
+            Timestamp fromPoint = currentTime();
             Timestamp timeToCheck = subtract(fromPoint, TEN_SECONDS);
 
             boolean isAfter = isLaterThan(timeToCheck, fromPoint);
@@ -122,7 +122,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
     @Test
     @DisplayName("convert Timestamp to Instant")
     void convertToInstant() {
-        Timestamp timestamp = Time.getCurrentTime();
+        Timestamp timestamp = Time.currentTime();
         Instant instant = toInstant(timestamp);
 
         assertEqual(timestamp, instant);
@@ -140,7 +140,7 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
     @Test
     @DisplayName("provide converter to Instant")
     void converterToInstant() {
-        Timestamp timestamp = Time.getCurrentTime();
+        Timestamp timestamp = Time.currentTime();
         Converter<Timestamp, Instant> converter = Timestamps2.converter()
                                                              .reverse();
         Instant instant = converter.convert(timestamp);

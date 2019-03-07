@@ -92,7 +92,7 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("be registered")
     void isRegistered() {
-        assertTrue(StringifierRegistry.getInstance()
+        assertTrue(StringifierRegistry.instance()
                                       .get(dataClass)
                                       .isPresent());
     }

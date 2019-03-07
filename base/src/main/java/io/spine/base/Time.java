@@ -44,26 +44,27 @@ public final class Time {
     }
 
     /**
-     * Obtains current time.
+     * Obtains current time via the current {@link Time.Provider}.
      *
      * @return current time
+     * @see #setProvider(Provider)
      */
-    public static Timestamp getCurrentTime() {
+    public static Timestamp currentTime() {
         Timestamp result = timeProvider.get()
-                                       .getCurrentTime();
+                                       .currentTime();
         return result;
     }
 
     /**
      * Obtains system time.
      *
-     * <p>Unlike {@link #getCurrentTime()} this method <strong>always</strong> uses
+     * <p>Unlike {@link #currentTime()} this method <strong>always</strong> uses
      * system time millis.
      *
      * @return current system time
      */
     public static Timestamp systemTime() {
-        return SystemTimeProvider.INSTANCE.getCurrentTime();
+        return SystemTimeProvider.INSTANCE.currentTime();
     }
 
     /**
@@ -91,11 +92,11 @@ public final class Time {
      * The provider of the current time.
      *
      * <p>Implement this interface and pass the resulting class to {@link #setProvider(Provider)}
-     * in order to change the {@link #getCurrentTime()} results.
+     * in order to change the {@link Time#currentTime()} results.
      */
     @Internal
     public interface Provider {
-        Timestamp getCurrentTime();
+        Timestamp currentTime();
     }
 
     /**
@@ -112,7 +113,7 @@ public final class Time {
         }
 
         @Override
-        public Timestamp getCurrentTime() {
+        public Timestamp currentTime() {
             Instant now = Instant.now();
             Timestamp result = Timestamp.newBuilder()
                                         .setSeconds(now.getEpochSecond())

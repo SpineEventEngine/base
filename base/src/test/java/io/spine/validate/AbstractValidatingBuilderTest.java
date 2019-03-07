@@ -171,7 +171,7 @@ class AbstractValidatingBuilderTest {
             @Test
             @DisplayName("of messages")
             void toMessageList() {
-                Timestamp now = Time.getCurrentTime();
+                Timestamp now = Time.currentTime();
                 Timestamp soon = Timestamps.add(now, Durations2.minutes(5));
                 ImmutableList<Timestamp> times = ImmutableList.of(now, soon);
                 String str = createInput(times);

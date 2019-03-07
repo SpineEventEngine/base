@@ -32,6 +32,7 @@ import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.logging.LogMessages.logThrowable;
+import static io.spine.logging.LoggerClassValue.loggerOf;
 import static java.lang.String.format;
 
 /**
@@ -69,14 +70,14 @@ public interface Logging {
      * @apiNote The primary purpose of this method is to provide logging in static methods.
      */
     static Logger get(Class<?> cls) {
-        return LoggerClassValue.getFor(cls);
+        return loggerOf(cls);
     }
 
     /**
      * Obtains logger associated with the class of this instance.
      */
     default Logger log() {
-        return LoggerClassValue.getFor(getClass());
+        return loggerOf(getClass());
     }
 
     /**

@@ -18,35 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
+package io.spine.util;
 
+import com.google.common.testing.SerializableTester;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.base.Time.currentTime;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.text.ParseException;
 
-@DisplayName("TimestampStringifier should")
-class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
-
-    TimestampStringifierTest() {
-        super(Stringifiers.forTimestamp(), Timestamp.class);
-    }
-
-    @Override
-    protected Timestamp createObject() {
-        return currentTime();
-    }
+@DisplayName("SerializableConverter should")
+class SerializableConverterTest {
 
     @Test
-    @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
-    void parsingError() {
-        // This uses TextFormat printing, for the output which won't be parsable.
-        String time = currentTime().toString();
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Stringifiers.fromString(time, Timestamp.class)
-        );
+    @DisplayName("serialize")
+    void serialize() {
+        SerializableTester.reserialize(new StubSerializer());
+    }
+
+    private static class StubSerializer extends SerializableConverter<Timestamp, String> {
+
+        private static final long serialVersionUID = 0L;
+
+        @Override
+        protected String doForward(Timestamp timestamp) {
+            return Timestamps.toString(timestamp);
+        }
+
+        @Override
+        protected Timestamp doBackward(String s) {
+            try {
+                return Timestamps.parse(s);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
     }
 }
