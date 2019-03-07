@@ -149,28 +149,29 @@ class IdentifierTest {
         @Test
         @DisplayName("Integer")
         void ofInteger() {
-            assertEquals(0, Identifier.defaultValue(Integer.class)
-                                      .intValue());
+            assertThat(Identifier.defaultValue(Integer.class))
+                    .isEqualTo(0);
         }
 
         @Test
         @DisplayName("Long")
         void ofLong() {
-            assertEquals(0L, Identifier.defaultValue(Long.class)
-                                       .longValue());
+            assertThat(Identifier.defaultValue(Long.class))
+                    .isEqualTo(0L);
         }
 
         @Test
         @DisplayName("String")
         void ofString() {
-            assertEquals("", Identifier.defaultValue(String.class));
+            assertThat(Identifier.defaultValue(String.class))
+                    .isEmpty();
         }
 
         @Test
         @DisplayName("Message")
         void ofMessage() {
-            assertEquals(Timestamp.getDefaultInstance(),
-                         Identifier.defaultValue(Timestamp.class));
+            assertThat(Identifier.defaultValue(Timestamp.class))
+                    .isEqualTo(Timestamp.getDefaultInstance());
         }
     }
 
@@ -181,22 +182,26 @@ class IdentifierTest {
         @Test
         @DisplayName("empty string")
         void emptyString() {
-            assertEquals(EMPTY_ID, Identifier.toString(""));
+            assertEmpty("");
         }
 
         @Test
         @DisplayName("a Message with the default value")
         void defaultInstance() {
-            assertEquals(EMPTY_ID, Identifier.toString(StringValue.getDefaultInstance()));
+            assertEmpty(StringValue.getDefaultInstance());
         }
 
         @Test
         @DisplayName("a Message with a field of Message type, which has the default value")
         void defaultNestedMessage() {
-            assertEquals(EMPTY_ID, Identifier.toString(TimestampFieldId.getDefaultInstance()));
+            assertEmpty(TimestampFieldId.getDefaultInstance());
+        }
+
+        private void assertEmpty(Object id) {
+            String str = Identifier.toString(id);
+            assertThat(str).isEqualTo(EMPTY_ID);
         }
     }
-
 
     @Nested
     @DisplayName("verify if ID is empty")
