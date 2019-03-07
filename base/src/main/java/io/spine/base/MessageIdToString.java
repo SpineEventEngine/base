@@ -47,7 +47,7 @@ final class MessageIdToString {
     static String toString(Message message) {
         checkNotNull(message);
         String result;
-        StringifierRegistry registry = StringifierRegistry.getInstance();
+        StringifierRegistry registry = StringifierRegistry.instance();
         Class<? extends Message> msgClass = message.getClass();
         TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
         java.lang.reflect.Type msgType = msgToken.getType();

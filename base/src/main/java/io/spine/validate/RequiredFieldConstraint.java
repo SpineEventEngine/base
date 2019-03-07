@@ -57,7 +57,7 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
         ImmutableList<RequiredFieldAlternatives> alternatives = parse(this.optionValue);
         if (!alternativeFound(alternatives, messageField)) {
             String msgFormat =
-                    "None of the fields match the `required_field` definition: %s";
+                    "None of the fields match the `required_field` definition: `%s`.";
             ConstraintViolation requiredFieldNotFound = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(msgFormat)

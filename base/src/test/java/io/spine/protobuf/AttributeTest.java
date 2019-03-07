@@ -54,7 +54,7 @@ class AttributeTest {
 
         boolAttr.setValue(builder, Boolean.TRUE);
         longAttr.setValue(builder, LONG_VAL);
-        timestampAttr.setValue(builder, Time.getCurrentTime());
+        timestampAttr.setValue(builder, Time.currentTime());
 
         msg = builder.build();
     }

@@ -218,7 +218,7 @@ abstract class FieldValidator<V> implements Logging {
 
     /** Returns an immutable list of the field values. */
     @SuppressWarnings("ReturnOfCollectionOrArrayField") // is immutable list
-    protected ImmutableList<V> getValues() {
+    protected ImmutableList<V> values() {
         return values;
     }
 
@@ -233,7 +233,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private ConstraintViolation newViolation(IfMissingOption option) {
-        String msg = getErrorMsgFormat(option, option.getMsgFormat());
+        String msg = errorMsgFormat(option, option.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
@@ -243,14 +243,17 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     /**
-     * Returns a validation error message (a custom one (if present) or the default one).
+     * Returns a validation error message, which may have formatting placeholders
+     *
+     * <p>A custom message is returned if it is present in the option. Otherwise,
+     * default message is returned.
      *
      * @param option
      *         a validation option used to get the default message
      * @param customMsg
      *         a user-defined error message
      */
-    static String getErrorMsgFormat(Message option, String customMsg) {
+    static String errorMsgFormat(Message option, String customMsg) {
         String defaultMsg = option.getDescriptorForType()
                                   .getOptions()
                                   .getExtension(OptionsProto.defaultMessage);

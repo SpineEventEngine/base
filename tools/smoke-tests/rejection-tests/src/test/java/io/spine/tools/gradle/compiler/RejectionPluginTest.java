@@ -37,10 +37,11 @@ class RejectionPluginTest {
     @DisplayName("generate a rejection, which extends ThrowableMessage")
     void generate() {
         String username = Identifier.newUuid();
-        CannotUpdateUsername rejection = CannotUpdateUsername.newBuilder()
-                                                             .setUsername(username)
-                                                             .build();
-        Rejections.CannotUpdateUsername rejectionMessage = rejection.getMessageThrown();
+        CannotUpdateUsername rejection = CannotUpdateUsername
+                .newBuilder()
+                .setUsername(username)
+                .build();
+        Rejections.CannotUpdateUsername rejectionMessage = rejection.messageThrown();
         assertEquals(username, rejectionMessage.getUsername());
     }
 

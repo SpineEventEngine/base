@@ -69,7 +69,7 @@ import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.currentTime;
 import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
 import static io.spine.test.validate.msg.builder.TaskLabel.IMPORTANT;
 import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
@@ -500,11 +500,11 @@ class ValidatingBuilderTest {
     }
 
     private static Timestamp timeInPast() {
-        return add(getCurrentTime(), fromSeconds(-1000L));
+        return add(currentTime(), fromSeconds(-1000L));
     }
 
     private static Timestamp timeInFuture() {
-        return add(getCurrentTime(), fromSeconds(1000L));
+        return add(currentTime(), fromSeconds(1000L));
     }
 
     private static double safeOdds() {

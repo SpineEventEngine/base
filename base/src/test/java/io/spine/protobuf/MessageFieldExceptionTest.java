@@ -58,7 +58,7 @@ class MessageFieldExceptionTest {
     @Test
     @DisplayName("contain an instance without text")
     void contains_instance_without_text() {
-        Timestamp protobufMessage = Time.getCurrentTime();
+        Timestamp protobufMessage = Time.currentTime();
         MessageFieldException exception = new MessageFieldException(protobufMessage);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());

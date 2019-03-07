@@ -32,15 +32,15 @@ class GenericTypeIndexTest {
     @DisplayName("obtain generic argument assuming generic superclass")
     void obtain_generic_argument_assuming_generic_superclass() {
         Parametrized<Long, String> val = new Parametrized<Long, String>() {};
-        assertEquals(Long.class, Types.getArgument(val.getClass(), Base.class, 0));
-        assertEquals(String.class, Types.getArgument(val.getClass(), Base.class, 1));
+        assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
+        assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
     }
 
     @Test
     @DisplayName("obtain generic argument via superclass")
     void obtain_generic_argument_via_superclass() {
-        assertEquals(String.class, Types.getArgument(Leaf.class, Base.class, 0));
-        assertEquals(Float.class, Types.getArgument(Leaf.class, Base.class, 1));
+        assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
+        assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
     }
 
     @SuppressWarnings({"EmptyClass", "unused"})

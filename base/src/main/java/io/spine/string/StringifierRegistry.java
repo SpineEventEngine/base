@@ -66,13 +66,16 @@ public final class StringifierRegistry {
     private StringifierRegistry() {
     }
 
-    public static StringifierRegistry getInstance() {
+    /**
+     * Obtains the instance of the singleton registry.
+     */
+    public static StringifierRegistry instance() {
         return INSTANCE;
     }
 
     static <T> Stringifier<T> getStringifier(Type typeOfT) {
         checkNotNull(typeOfT);
-        Optional<Stringifier<T>> optional = getInstance().get(typeOfT);
+        Optional<Stringifier<T>> optional = instance().get(typeOfT);
 
         if (optional.isPresent()) {
             Stringifier<T> stringifier = optional.get();
