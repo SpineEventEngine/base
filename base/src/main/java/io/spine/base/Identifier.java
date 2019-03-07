@@ -109,8 +109,6 @@ public final class Identifier<I> {
      *
      * <p>A string identifier is empty, if it contains an empty string.
      *
-     * <p>A message identifier is empty if
-     *
      * @param value
      *         the value to check
      * @param <I>
