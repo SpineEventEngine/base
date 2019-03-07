@@ -177,12 +177,12 @@ final class PluginTest {
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("ZeroLengthArrayAllocation")
     private static CodeGeneratorResponse runPlugin(CodeGeneratorRequest request) {
         try (InputStream testInput = new ByteArrayInputStream(request.toByteArray());
              ByteArrayOutputStream bos = new ByteArrayOutputStream();
              PrintStream testOutput = new PrintStream(bos)
         ) {
-            //noinspection ZeroLengthArrayAllocation
             withSystemStreams(testInput, testOutput, () -> Plugin.main(new String[]{}));
             return CodeGeneratorResponse.parseFrom(bos.toByteArray(),
                                                    OptionExtensionRegistry.instance());
