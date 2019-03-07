@@ -38,7 +38,7 @@ import static java.lang.String.format;
 final class TestEnvGradle {
 
     private static final String VAR_NAME = "enclosingRootDir";
-    private static final String FILE_NAME = "testEnv.gradle";
+    private static final String FILE_NAME = "test-env.gradle";
 
     private final Path projectRoot;
     private final Path testProjectRoot;
@@ -46,6 +46,12 @@ final class TestEnvGradle {
     TestEnvGradle(Path projectRoot, Path testProjectRoot) {
         this.projectRoot = projectRoot;
         this.testProjectRoot = testProjectRoot;
+    }
+
+    void createFile() throws IOException {
+        Path testEnvFile = testProjectRoot.resolve(FILE_NAME);
+        List<String> lines = content();
+        Files.write(testEnvFile, lines);
     }
 
     private List<String> content() {
@@ -57,11 +63,5 @@ final class TestEnvGradle {
                 "}"
         );
         return lines;
-    }
-
-    void createFile() throws IOException {
-        Path testEnvFile = testProjectRoot.resolve(FILE_NAME);
-        List<String> lines = content();
-        Files.write(testEnvFile, lines);
     }
 }
