@@ -50,7 +50,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *     <li>filter out code generation tasks with blank target field (e.g. interface name);
  *     <li>apply custom generator-specific filtering (e.g. only top-level messages should implement
  *         an interface);
- *     <li>filter out all non-matching code generation tasks;
+ *     <li>filter out all code generation tasks which pattern does not match supplied message;
  *     <li>perform the actual code generation.
  * </ul>
  *

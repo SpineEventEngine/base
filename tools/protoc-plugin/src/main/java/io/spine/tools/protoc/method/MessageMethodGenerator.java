@@ -32,8 +32,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Generates new methods for types based on {@link GenerateMethod} tasks defined in
- * {@link MethodsGeneration configuration}.
+ * Generates new methods based on {@link MethodsGeneration} configuration.
  */
 final class MessageMethodGenerator extends AbstractCodeGenerator<GenerateMethod> {
 

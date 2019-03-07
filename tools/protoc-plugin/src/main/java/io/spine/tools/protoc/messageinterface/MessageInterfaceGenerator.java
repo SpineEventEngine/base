@@ -35,31 +35,32 @@ import static io.spine.tools.protoc.messageinterface.MessageImplements.implement
 import static io.spine.validate.Validate.isDefault;
 
 /**
- * Makes types implement interfaces configured in {@link ImplementInterface} tasks within the
- * {@link InterfacesGeneration configuration}.
+ * Makes types implement interfaces configured in {@link InterfacesGeneration} configuration.
  */
 final class MessageInterfaceGenerator extends AbstractCodeGenerator<ImplementInterface> {
 
-    private final InterfacesGeneration config;
+    private final UuidImplementInterface uuidInterface;
+    private final boolean implementUuidInterface;
+    private final ImmutableList<ImplementInterface> implementInterfaces;
 
     MessageInterfaceGenerator(InterfacesGeneration config) {
         super();
-        this.config = config;
+        this.uuidInterface = config.getUuidInterface();
+        this.implementUuidInterface = !isDefault(this.uuidInterface);
+        this.implementInterfaces = ImmutableList.copyOf(config.getImplementInterfaceList());
     }
 
     @Override
     protected ImmutableList<CompilerOutput> generateForUuidMessage(MessageType type) {
-        UuidImplementInterface uuidInterface = config.getUuidInterface();
-        if (isDefault(uuidInterface)) {
-            return ImmutableList.of();
+        if (implementUuidInterface) {
+            return ImmutableList.of(uuidInterface(type, uuidInterface));
         }
-        CompilerOutput result = uuidInterface(type, uuidInterface);
-        return ImmutableList.of(result);
+        return ImmutableList.of();
     }
 
     @Override
     protected ImmutableList<ImplementInterface> codeGenerationTasks() {
-        return ImmutableList.copyOf(config.getImplementInterfaceList());
+        return implementInterfaces;
     }
 
     @Override
