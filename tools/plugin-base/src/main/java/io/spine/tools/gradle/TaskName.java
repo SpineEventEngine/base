@@ -129,10 +129,26 @@ public enum TaskName {
      */
     generateJsonParsers,
 
+    /**
+     * Downloads the Protobuf compiler plugin executable JAR and distributes it into the required
+     * paths in the project.
+     */
     copyPluginJar,
 
+    /**
+     * Creates the {@code desc.ref} file containing the reference to the descriptor file(-s) with
+     * the known types.
+     *
+     * <p>Works only with the {@code main} scope descriptors.
+     */
     writeDescriptorReference,
 
+    /**
+     * Creates the {@code desc.ref} file containing the reference to the descriptor file(-s) with
+     * the known types.
+     *
+     * <p>Works only with the {@code test} scope descriptors.
+     */
     writeTestDescriptorReference;
 
     /**
