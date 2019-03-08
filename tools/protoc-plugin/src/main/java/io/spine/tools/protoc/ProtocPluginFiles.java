@@ -47,8 +47,21 @@ public final class ProtocPluginFiles {
         checkNotNull(type);
         String fileName = SourceFile.forType(type)
                                     .toString();
+        return prepareFile(fileName);
+    }
+
+    /**
+     * Prepares {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File file}
+     * builder with a pre-defined name.
+     *
+     * @param name
+     *         name of the file
+     * @return file builder
+     */
+    public static File.Builder prepareFile(String name) {
+        checkNotNull(name);
         // Protoc consumes only `/` path separators.
-        String uriStyleName = fileName.replace('\\', '/');
+        String uriStyleName = name.replace('\\', '/');
         File.Builder srcFile = File.newBuilder()
                                    .setName(uriStyleName);
         return srcFile;

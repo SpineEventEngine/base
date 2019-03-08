@@ -24,6 +24,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
+import io.spine.tools.protoc.ProtocPluginFiles;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -54,9 +55,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
-        File interfaceFile = File
-                .newBuilder()
-                .setName(file.toString())
+        File interfaceFile = ProtocPluginFiles.prepareFile(file.toString())
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.getFqn();
