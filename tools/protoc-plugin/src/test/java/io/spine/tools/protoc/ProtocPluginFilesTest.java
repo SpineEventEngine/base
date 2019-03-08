@@ -41,6 +41,6 @@ final class ProtocPluginFilesTest extends UtilityClassTest<ProtocPluginFiles> {
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File.Builder result = ProtocPluginFiles.prepareFile(type);
 
-        assertEquals("io/spine/tools/protoc/TestMessage.java", result.getName());
+        assertEquals("io/spine/tools/protoc/EnhancedWithCodeGeneration.java", result.getName());
     }
 }
