@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * {@link FilePattern} predicate that returns {@code true} if supplied Protobuf
  * {@link MessageType type} matches pattern's value.
  */
-public class FilePatternMatcher implements Predicate<MessageType> {
+public final class FilePatternMatcher implements Predicate<MessageType> {
 
     private final FilePattern pattern;
 
