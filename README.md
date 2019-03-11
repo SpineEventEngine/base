@@ -43,5 +43,3 @@ However, Gradle plugins, that are a significant part of this repository, are cov
 
 Therefore the current coverage percentage shown is significantly lower than a real one.
 
-This issue will be addressed with the new API in Gradle 5.0 once it is released.
-
