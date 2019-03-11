@@ -66,9 +66,9 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
         InterfacesGeneration config = spineProtocConfig.getInterfacesGeneration();
         ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
                 .<CodeGenerationTask>builder()
-                .add(new GenerateUuidInterface(config.getUuidInterface()));
+                .add(new GenerateUuidInterfaces(config.getUuidInterface()));
         for (ImplementInterface taskConfiguration : config.getImplementInterfaceList()) {
-            codeGenerationTasks.add(new GenerateInterface(taskConfiguration));
+            codeGenerationTasks.add(new GenerateInterfaces(taskConfiguration));
         }
         return new InterfaceGenerator(codeGenerationTasks.build());
     }

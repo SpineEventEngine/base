@@ -22,42 +22,35 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.FilePatternMatcher;
-import io.spine.tools.protoc.ImplementInterface;
+import io.spine.tools.protoc.UuidImplementInterface;
 import io.spine.type.MessageType;
 
-import static io.spine.validate.Validate.checkNotDefault;
-
 /**
- * Makes type implement interface supplied with the {@link ImplementInterface configuration}.
+ * Makes UUID value type implement interface supplied with the {@link UuidImplementInterface
+ * configuration}.
  */
-final class GenerateInterface extends InterfaceGenerationTask {
+final class GenerateUuidInterfaces extends InterfaceGenerationTask {
 
-    private final FilePatternMatcher patternMatcher;
-
-    GenerateInterface(ImplementInterface config) {
+    GenerateUuidInterfaces(UuidImplementInterface config) {
         super(config.getInterfaceName());
-        checkNotDefault(config.getPattern());
-        this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
     /**
-     * Makes supplied type implement configured interface.
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} Protobuf type implement configured
+     * interface.
      *
-     * <p>The type does not implement an interface if:
-     *
-     * <ul>
-     *     <li>the interface name is empty;
-     *     <li>the type is not {@link MessageType#isTopLevel() top level};
-     *     <li>the type file name does not match supplied
-     *     {@link io.spine.tools.protoc.FilePattern pattern}.
-     * </ul>
-     */
+     * <p>The type does not implement an interface if interface name is empty.
+     **/
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        if (isInterfaceNameEmpty() || !type.isTopLevel() || !patternMatcher.test(type)) {
+        if (isInterfaceNameEmpty() || !type.isUuidValue()) {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);
+    }
+
+    @Override
+    MessageInterfaceParameters interfaceParameters() {
+        return MessageInterfaceParameters.of(new IdentityParameter());
     }
 }
