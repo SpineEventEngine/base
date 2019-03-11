@@ -24,17 +24,35 @@ import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.tools.protoc.UuidGenerateMethod;
+import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
 final class GeneratedMethodsTest {
+
+    @DisplayName("prepare default generated config for")
+    @Nested
+    class Default {
+
+        @DisplayName("UUID value")
+        @Test
+        void uuid() {
+            MethodsGeneration config = GeneratedMethods.withDefaults()
+                                                       .asProtocConfig();
+            UuidGenerateMethod uuidMethod = config.getUuidMethod();
+            assertThat(uuidMethod.getFactoryName())
+                    .isEqualTo(UuidMethodFactory.class.getName());
+        }
+    }
 
     @DisplayName("convert to proper Protoc configuration")
     @Test

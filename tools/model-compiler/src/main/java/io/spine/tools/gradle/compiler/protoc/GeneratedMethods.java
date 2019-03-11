@@ -26,6 +26,7 @@ import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.tools.protoc.UuidGenerateMethod;
 import io.spine.tools.protoc.method.MethodFactory;
+import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Map;
@@ -48,6 +49,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
      */
     public static GeneratedMethods withDefaults() {
         GeneratedMethods defaults = new GeneratedMethods();
+        defaults.useFactory(UuidMethodFactory.class.getName(), defaults.uuidMessage());
         return defaults;
     }
 
