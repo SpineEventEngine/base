@@ -26,6 +26,7 @@ import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.tools.protoc.ImplementInterface;
 import io.spine.type.MessageType;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNotDefault;
 
 /**
@@ -55,6 +56,7 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
         if (isInterfaceNameEmpty() || !type.isTopLevel() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }
