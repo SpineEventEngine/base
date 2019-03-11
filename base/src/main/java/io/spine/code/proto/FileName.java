@@ -95,7 +95,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     }
 
     /**
-     * Returns the file name with extension (but without path).
+     * Returns the file name with extension but without path.
      */
     public String nameWithExtension() {
         String fullName = value();
@@ -113,7 +113,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     }
 
     /**
-     * Returns the file name without extension (but including path).
+     * Returns the file name without extension but including path.
      */
     public String nameWithoutExtension() {
         String value = value();
