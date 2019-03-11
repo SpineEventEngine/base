@@ -23,6 +23,8 @@ package io.spine.tools.protoc;
 import com.google.common.collect.ImmutableList;
 import io.spine.type.MessageType;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * {@link CodeGenerationTask}s container.
  */
@@ -31,13 +33,14 @@ public final class CodeGenerationTasks {
     private final ImmutableList<CodeGenerationTask> tasks;
 
     public CodeGenerationTasks(ImmutableList<CodeGenerationTask> tasks) {
-        this.tasks = tasks;
+        this.tasks = checkNotNull(tasks);
     }
 
     /**
      * Generates code for the supplied {@code type} using all configured {@code tasks}.
      */
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
         for (CodeGenerationTask task : tasks) {
             result.addAll(task.generateFor(type));
