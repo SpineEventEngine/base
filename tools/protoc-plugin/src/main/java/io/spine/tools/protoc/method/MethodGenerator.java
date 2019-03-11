@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.AbstractCodeGenerator;
+import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
@@ -40,18 +40,27 @@ import java.util.Collection;
  */
 public final class MethodGenerator extends SpineProtoGenerator {
 
-    private final AbstractCodeGenerator<GenerateMethod> messageMethodGenerator;
+    private final ImmutableList<CodeGenerationTask> codeGenerationTasks;
 
-    private MethodGenerator(MethodsGeneration methodsGeneration) {
+    private MethodGenerator(ImmutableList<CodeGenerationTask> codeGenerationTasks) {
         super();
-        messageMethodGenerator = new MessageMethodGenerator(methodsGeneration);
+        this.codeGenerationTasks = codeGenerationTasks;
+
     }
 
     /**
-     * Retrieves the single instance of the {@code GeneratedMethodGenerator} type.
+     * Retrieves the single instance of the {@code MethodGenerator}.
      */
-    public static MethodGenerator instance(SpineProtocConfig config) {
-        return new MethodGenerator(config.getMethodsGeneration());
+    public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
+        MethodsGeneration config = spineProtocConfig.getMethodsGeneration();
+        MethodFactories methodFactories = new MethodFactories(config.getFactoryConfiguration());
+        ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
+                .<CodeGenerationTask>builder()
+                .add(new GenerateUuidMethods(methodFactories, config.getUuidMethod()));
+        for (GenerateMethod generateMethod : config.getGenerateMethodList()) {
+            codeGenerationTasks.add(new GenerateMethods(methodFactories, generateMethod));
+        }
+        return new MethodGenerator(codeGenerationTasks.build());
     }
 
     @Override
@@ -60,7 +69,10 @@ public final class MethodGenerator extends SpineProtoGenerator {
             return ImmutableList.of();
         }
         MessageType messageType = (MessageType) type;
-        ImmutableList<CompilerOutput> result = messageMethodGenerator.generate(messageType);
-        return result;
+        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
+        for (CodeGenerationTask task : codeGenerationTasks) {
+            result.addAll(task.generateFor(messageType));
+        }
+        return result.build();
     }
 }
