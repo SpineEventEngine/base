@@ -37,7 +37,7 @@ public class TestMethodFactory implements MethodFactory {
     public static final GeneratedMethod TEST_METHOD = new GeneratedMethod("public void test(){}");
 
     @Override
-    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> createFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
     }
 }

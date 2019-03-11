@@ -81,7 +81,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
      *         public CustomMethodFactory(){
      *         }
      *
-     *         List<MethodBody> newMethodsFor(MessageType messageType) {
+     *         List<MethodBody> createFor(MessageType messageType) {
      *             // ...
      *         }
      *     }

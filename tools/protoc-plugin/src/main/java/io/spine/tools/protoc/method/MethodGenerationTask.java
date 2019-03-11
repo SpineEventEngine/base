@@ -55,7 +55,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
     ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
         MethodFactory factory = methodFactories.newFactory(factoryName);
         return factory
-                .newMethodsFor(type)
+                .createFor(type)
                 .stream()
                 .map(methodBody -> MessageMethod.from(methodBody, type))
                 .collect(toImmutableList());

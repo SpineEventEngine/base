@@ -146,7 +146,7 @@ final class MethodFactories implements Logging {
         static final MethodFactory INSTANCE = new NoOpMethodFactory();
 
         @Override
-        public List<GeneratedMethod> newMethodsFor(MessageType ignored) {
+        public List<GeneratedMethod> createFor(MessageType ignored) {
             return ImmutableList.of();
         }
     }
