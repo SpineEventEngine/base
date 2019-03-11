@@ -58,5 +58,4 @@ final class MethodFactoryInstantiationException extends RuntimeException {
     MethodFactoryInstantiationException(String factoryName, Throwable cause) {
         super(makeMsg(factoryName), cause);
     }
-
 }
