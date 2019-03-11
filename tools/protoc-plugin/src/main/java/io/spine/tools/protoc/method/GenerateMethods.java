@@ -26,6 +26,9 @@ import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.type.MessageType;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.validate.Validate.checkNotDefault;
+
 /**
  * Generates methods for supplied type based on code generation task {@link GenerateMethod
  * configuration}.
@@ -36,6 +39,7 @@ final class GenerateMethods extends AbstractMethodGenerationTask {
 
     GenerateMethods(MethodFactories methodFactories, GenerateMethod config) {
         super(methodFactories, config.getFactoryName());
+        checkNotDefault(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
@@ -52,6 +56,7 @@ final class GenerateMethods extends AbstractMethodGenerationTask {
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
         if (isFactoryNameEmpty() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }

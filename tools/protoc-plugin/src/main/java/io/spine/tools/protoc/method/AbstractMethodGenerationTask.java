@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.type.MessageType;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -51,7 +52,7 @@ abstract class AbstractMethodGenerationTask implements CodeGenerationTask {
     /**
      * Performs the actual method code generation using supplied {@link MethodFactories}.
      */
-    ImmutableList<CompilerOutput> generateMethods(MessageType type) {
+    ImmutableList<CompilerOutput> generateMethods(@NonNull MessageType type) {
         MethodFactory factory = methodFactories.newFactory(factoryName);
         return factory
                 .newMethodsFor(type)
