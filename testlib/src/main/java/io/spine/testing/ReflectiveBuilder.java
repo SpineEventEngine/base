@@ -39,12 +39,12 @@ public abstract class ReflectiveBuilder<T> {
     /**
      * Obtains constructor for the result object.
      */
-    protected abstract Constructor<T> getConstructor();
+    protected abstract Constructor<T> constructor();
 
     /**
      * Obtains the class of the object to build.
      */
-    public Class<T> getResultClass() {
+    public Class<T> resultClass() {
         return this.resultClass;
     }
 

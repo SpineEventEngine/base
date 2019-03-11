@@ -33,23 +33,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ReflectiveBuilderTest {
 
     @Test
-    @DisplayName("has the result class")
-    void has_result_class() {
+    @DisplayName("have the result class")
+    void resultClass() {
         ReflectiveBuilder<Any> builder =
                 new DummyBuilder().setResultClass(Any.class);
-        assertEquals(Any.class, builder.getResultClass());
+        assertEquals(Any.class, builder.resultClass());
     }
 
     @Test
     @DisplayName("obtain a constructor")
-    void obtain_ctor() {
-        assertNotNull(new DummyBuilder().getConstructor());
+    void ctor() {
+        assertNotNull(new DummyBuilder().constructor());
     }
 
     private static class DummyBuilder extends ReflectiveBuilder<Any> {
 
         @Override
-        protected Constructor<Any> getConstructor() {
+        protected Constructor<Any> constructor() {
             Constructor<Any> ctor;
             try {
                 ctor = Any.class.getDeclaredConstructor();
