@@ -43,20 +43,20 @@ final class FilePatternsTest {
             });
         }
 
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         @DisplayName("filePrefix pattern")
         @Test
         void filePrefix() {
             Assertions.assertThrows(NullPointerException.class, () -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
                 FilePatterns.filePrefix(null);
             });
         }
 
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         @DisplayName("regex pattern")
         @Test
         void regex() {
             Assertions.assertThrows(NullPointerException.class, () -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
                 FilePatterns.fileRegex(null);
             });
         }
@@ -74,6 +74,14 @@ final class FilePatternsTest {
             assertEquals(postfix, filter.getFilePostfix());
         }
 
+        @DisplayName("file_postfix pattern with path parts")
+        @Test
+        void filePostfixWithPathParts(){
+            String postfix = "tools/protoc/documents.proto";
+            FilePattern filter = FilePatterns.filePostfix(postfix);
+            assertEquals(postfix, filter.getFilePostfix());
+        }
+
         @DisplayName("file_prefix pattern")
         @Test
         void filePrefix() {
@@ -82,10 +90,26 @@ final class FilePatternsTest {
             assertEquals(prefix, pattern.getFilePrefix());
         }
 
+        @DisplayName("file_prefix pattern with path parts")
+        @Test
+        void filePrefixWithPathParts(){
+            String prefix = "io/spine/tools/documents_";
+            FilePattern pattern = FilePatterns.filePrefix(prefix);
+            assertEquals(prefix, pattern.getFilePrefix());
+        }
+
         @DisplayName("regex pattern")
         @Test
         void regex() {
             String regex = ".*documents.*";
+            FilePattern pattern = FilePatterns.fileRegex(regex);
+            assertEquals(regex, pattern.getRegex());
+        }
+
+        @DisplayName("regex pattern with path parts")
+        @Test
+        void regexWithPathParts(){
+            String regex = "io/spine/.*/documents/.*\\.proto";
             FilePattern pattern = FilePatterns.fileRegex(regex);
             assertEquals(regex, pattern.getRegex());
         }
