@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.java.VBuilderClassName;
@@ -316,9 +317,19 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public static Comparator<MessageType> fullNameComparator() {
         return (o1, o2) -> {
-            String name1 = o1.descriptor().getFullName();
-            String name2 = o2.descriptor().getFullName();
+            String name1 = o1.descriptor()
+                             .getFullName();
+            String name2 = o2.descriptor()
+                             .getFullName();
             return name1.compareTo(name2);
         };
+    }
+
+    /**
+     * Determines if the message type represents a {@link UuidValue}.
+     */
+    public boolean isUuidValue() {
+        return UuidValue.classifier()
+                        .test(this);
     }
 }
