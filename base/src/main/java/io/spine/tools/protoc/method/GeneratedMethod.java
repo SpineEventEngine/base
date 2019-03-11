@@ -26,7 +26,7 @@ import io.spine.value.StringTypeValue;
 /**
  * A generated Java method source code.
  *
- * <p>Developers are responsible for checking that the content of the method is properly formatted
+ * <p>SPI users are responsible for checking that the content of the method is properly formatted
  * and contains all the required modifiers, comments, javadocs.
  *
  * <p>The actual compilation of the generated method is performed as a part of the compilation
