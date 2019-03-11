@@ -34,7 +34,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("GenerateMethods should")
-public class GenerateMethodsTest {
+final class GenerateMethodsTest {
 
     @DisplayName("throw NullPointerException if")
     @Nested
