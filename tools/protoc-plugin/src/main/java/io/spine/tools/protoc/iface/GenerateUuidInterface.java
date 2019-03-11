@@ -21,26 +21,18 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.UuidImplementInterface;
 import io.spine.type.MessageType;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
 /**
  * Makes UUID value type implement interface supplied with the {@link UuidImplementInterface
  * configuration}.
  */
-final class GenerateUuidInterface implements CodeGenerationTask {
-
-    private final String interfaceName;
+final class GenerateUuidInterface extends InterfaceGenerationTask {
 
     GenerateUuidInterface(UuidImplementInterface config) {
-        checkNotNull(config);
-        this.interfaceName = config.getInterfaceName();
+        super(config.getInterfaceName());
     }
 
     /**
@@ -51,18 +43,14 @@ final class GenerateUuidInterface implements CodeGenerationTask {
      **/
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        if (interfaceName.isEmpty() || !type.isUuidValue()) {
+        if (isInterfaceNameEmpty() || !type.isUuidValue()) {
             return ImmutableList.of();
         }
-        return ImmutableList.of(uuidInterface(type, interfaceName));
+        return generateInterfacesFor(type);
     }
 
-    private static CompilerOutput uuidInterface(MessageType uuidMessage, String uuidInterface) {
-        ClassName interfaceName = ClassName.of(uuidInterface);
-        MessageInterfaceParameters parameters =
-                MessageInterfaceParameters.of(new IdentityParameter());
-        MessageInterface messageInterface = new PredefinedInterface(interfaceName, parameters);
-        CompilerOutput insertionPoint = implementInterface(uuidMessage, messageInterface);
-        return insertionPoint;
+    @Override
+    MessageInterfaceParameters interfaceParameters() {
+        return MessageInterfaceParameters.of(new IdentityParameter());
     }
 }

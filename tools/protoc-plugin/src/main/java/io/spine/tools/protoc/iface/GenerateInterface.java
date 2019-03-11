@@ -21,27 +21,23 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.tools.protoc.ImplementInterface;
 import io.spine.type.MessageType;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
+import static io.spine.validate.Validate.checkNotDefault;
 
 /**
  * Makes type implement interface supplied with the {@link ImplementInterface configuration}.
  */
-final class GenerateInterface implements CodeGenerationTask {
+final class GenerateInterface extends InterfaceGenerationTask {
 
-    private final String interfaceName;
     private final FilePatternMatcher patternMatcher;
 
     GenerateInterface(ImplementInterface config) {
-        checkNotNull(config);
-        this.interfaceName = config.getInterfaceName();
+        super(config.getInterfaceName());
+        checkNotDefault(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
@@ -59,14 +55,9 @@ final class GenerateInterface implements CodeGenerationTask {
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        if (interfaceName.isEmpty() || !type.isTopLevel() || !patternMatcher.test(type)) {
+        if (isInterfaceNameEmpty() || !type.isTopLevel() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }
-        MessageInterface messageInterface = new PredefinedInterface(
-                ClassName.of(interfaceName),
-                MessageInterfaceParameters.empty()
-        );
-        MessageImplements result = implementInterface(type, messageInterface);
-        return ImmutableList.of(result);
+        return generateInterfacesFor(type);
     }
 }
