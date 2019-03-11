@@ -33,7 +33,7 @@ import static io.spine.validate.Validate.checkNotDefault;
  * Generates methods for supplied type based on code generation task {@link GenerateMethod
  * configuration}.
  */
-final class GenerateMethods extends AbstractMethodGenerationTask {
+final class GenerateMethods extends MethodGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 

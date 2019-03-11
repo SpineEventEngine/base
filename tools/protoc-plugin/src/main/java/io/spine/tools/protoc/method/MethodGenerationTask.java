@@ -32,12 +32,12 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * An abstract base for the method code generation tasks.
  */
-abstract class AbstractMethodGenerationTask implements CodeGenerationTask {
+abstract class MethodGenerationTask implements CodeGenerationTask {
 
     private final MethodFactories methodFactories;
     private final String factoryName;
 
-    AbstractMethodGenerationTask(MethodFactories methodFactories, String factoryName) {
+    MethodGenerationTask(MethodFactories methodFactories, String factoryName) {
         this.methodFactories = checkNotNull(methodFactories);
         this.factoryName = checkNotNull(factoryName);
     }

@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Generates methods for supplied UUID value type based on code generation task
  * {@link UuidGenerateMethod configuration}.
  */
-final class GenerateUuidMethods extends AbstractMethodGenerationTask {
+final class GenerateUuidMethods extends MethodGenerationTask {
 
     GenerateUuidMethods(MethodFactories methodFactories, UuidGenerateMethod config) {
         super(methodFactories, config.getFactoryName());
