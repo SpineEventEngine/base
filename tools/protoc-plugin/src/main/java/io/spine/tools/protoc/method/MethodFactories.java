@@ -86,7 +86,7 @@ final class MethodFactories implements Logging {
         }
     }
 
-    @SuppressWarnings("unchecked") //we do already know that the class represents MethodFactory
+    @SuppressWarnings("unchecked") // factory is already assignable from MethodFactory during cast
     private Class<MethodFactory> methodFactoryClass(String fqn) {
         Class<?> factory = factoryClass(fqn);
         if (MethodFactory.class.isAssignableFrom(factory)) {
