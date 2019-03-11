@@ -44,7 +44,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
     }
 
     /**
-     * Creates a new instance of {@code GeneratedMethods} with the default values.
+     * Creates a new instance of {@code GeneratedMethods} with no code generation configured.
      */
     public static GeneratedMethods withDefaults() {
         GeneratedMethods defaults = new GeneratedMethods();
