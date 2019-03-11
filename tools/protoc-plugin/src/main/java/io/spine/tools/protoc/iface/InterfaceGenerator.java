@@ -22,7 +22,8 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.protoc.AbstractCodeGenerator;
+import io.spine.tools.protoc.CodeGenerationTask;
+import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ImplementInterface;
 import io.spine.tools.protoc.InterfacesGeneration;
@@ -49,20 +50,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class InterfaceGenerator extends SpineProtoGenerator {
 
-    private final AbstractCodeGenerator<ImplementInterface> messageInterfaceGenerator;
+    private final CodeGenerationTasks codeGenerationTasks;
 
     /** Prevents singleton class instantiation. */
-    private InterfaceGenerator(InterfacesGeneration interfacesGeneration) {
+    private InterfaceGenerator(ImmutableList<CodeGenerationTask> tasks) {
         super();
-        this.messageInterfaceGenerator = new MessageInterfaceGenerator(interfacesGeneration);
+        this.codeGenerationTasks = new CodeGenerationTasks(tasks);
     }
 
     /**
-     * Retrieves the single instance of the {@code MessageInterfaceGenerator} type.
+     * Retrieves the single instance of the {@code InterfaceGenerator}.
      */
-    public static SpineProtoGenerator instance(SpineProtocConfig parameter) {
-        checkNotNull(parameter);
-        return new InterfaceGenerator(parameter.getInterfacesGeneration());
+    public static SpineProtoGenerator instance(SpineProtocConfig spineProtocConfig) {
+        checkNotNull(spineProtocConfig);
+        InterfacesGeneration config = spineProtocConfig.getInterfacesGeneration();
+        ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
+                .<CodeGenerationTask>builder()
+                .add(new GenerateUuidInterface(config.getUuidInterface()));
+        for (ImplementInterface taskConfiguration : config.getImplementInterfaceList()) {
+            codeGenerationTasks.add(new GenerateInterface(taskConfiguration));
+        }
+        return new InterfaceGenerator(codeGenerationTasks.build());
     }
 
     /**
@@ -92,7 +100,7 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
     private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        ImmutableList<CompilerOutput> matched = messageInterfaceGenerator.generate(type);
+        ImmutableList<CompilerOutput> matched = codeGenerationTasks.generateFor(type);
         result.addAll(matched);
 
         Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(type);

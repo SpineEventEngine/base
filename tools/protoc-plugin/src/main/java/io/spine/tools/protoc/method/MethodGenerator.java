@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CodeGenerationTask;
+import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.GenerateMethod;
 import io.spine.tools.protoc.MethodsGeneration;
@@ -32,6 +33,8 @@ import io.spine.type.Type;
 
 import java.util.Collection;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The {@link SpineProtoGenerator} implementation generating additional message methods.
  *
@@ -40,25 +43,26 @@ import java.util.Collection;
  */
 public final class MethodGenerator extends SpineProtoGenerator {
 
-    private final ImmutableList<CodeGenerationTask> codeGenerationTasks;
+    private final CodeGenerationTasks codeGenerationTasks;
 
+    /** Prevents singleton class instantiation. */
     private MethodGenerator(ImmutableList<CodeGenerationTask> codeGenerationTasks) {
         super();
-        this.codeGenerationTasks = codeGenerationTasks;
-
+        this.codeGenerationTasks = new CodeGenerationTasks(codeGenerationTasks);
     }
 
     /**
      * Retrieves the single instance of the {@code MethodGenerator}.
      */
     public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
+        checkNotNull(spineProtocConfig);
         MethodsGeneration config = spineProtocConfig.getMethodsGeneration();
         MethodFactories methodFactories = new MethodFactories(config.getFactoryConfiguration());
         ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
                 .<CodeGenerationTask>builder()
                 .add(new GenerateUuidMethods(methodFactories, config.getUuidMethod()));
-        for (GenerateMethod generateMethod : config.getGenerateMethodList()) {
-            codeGenerationTasks.add(new GenerateMethods(methodFactories, generateMethod));
+        for (GenerateMethod taskConfiguration : config.getGenerateMethodList()) {
+            codeGenerationTasks.add(new GenerateMethods(methodFactories, taskConfiguration));
         }
         return new MethodGenerator(codeGenerationTasks.build());
     }
@@ -69,10 +73,7 @@ public final class MethodGenerator extends SpineProtoGenerator {
             return ImmutableList.of();
         }
         MessageType messageType = (MessageType) type;
-        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
-        for (CodeGenerationTask task : codeGenerationTasks) {
-            result.addAll(task.generateFor(messageType));
-        }
-        return result.build();
+        ImmutableList<CompilerOutput> result = codeGenerationTasks.generateFor(messageType);
+        return result;
     }
 }
