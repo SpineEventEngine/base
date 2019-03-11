@@ -43,6 +43,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * @param <I>
  *         the type of created messages
  */
+@Deprecated // use methods generated with io.spine.tools.protoc.method.uuid.UuidMethodFactory
 final class UuidFactory<I extends Message> {
 
     private static final String ERROR_MESSAGE =

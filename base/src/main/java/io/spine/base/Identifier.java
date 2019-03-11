@@ -273,6 +273,7 @@ public final class Identifier<I> {
      * @throws java.lang.IllegalStateException
      *         if the message is not a UUID message
      */
+    @Deprecated // use methods generated with io.spine.tools.protoc.method.uuid.UuidMethodFactory
     public static <I extends Message> I generate(Class<I> idClass) {
         checkNotNull(idClass);
         UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
