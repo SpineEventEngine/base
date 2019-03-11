@@ -60,6 +60,6 @@ final class GenerateMethods extends MethodGenerationTask {
         if (isFactoryNameEmpty() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }
-        return generateMethods(type);
+        return generateMethodsFor(type);
     }
 }

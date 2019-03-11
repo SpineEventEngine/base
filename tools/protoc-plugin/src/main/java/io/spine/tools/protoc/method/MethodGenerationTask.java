@@ -52,7 +52,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
     /**
      * Performs the actual method code generation using supplied {@link MethodFactories}.
      */
-    ImmutableList<CompilerOutput> generateMethods(@NonNull MessageType type) {
+    ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
         MethodFactory factory = methodFactories.newFactory(factoryName);
         return factory
                 .newMethodsFor(type)

@@ -49,6 +49,6 @@ final class GenerateUuidMethods extends MethodGenerationTask {
         if (isFactoryNameEmpty() || !type.isUuidValue()) {
             return ImmutableList.of();
         }
-        return generateMethods(type);
+        return generateMethodsFor(type);
     }
 }
