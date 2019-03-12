@@ -170,8 +170,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Interface
         uuidInterface = UuidImplementInterface.getDefaultInstance();
     }
 
-    // GeneratedInterfacesConfig.Builder usage in `forEach`.
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Override
     @Internal
     public InterfacesGeneration asProtocConfig() {

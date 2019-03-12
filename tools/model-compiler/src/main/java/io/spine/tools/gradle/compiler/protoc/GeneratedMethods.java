@@ -84,7 +84,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
      *         public CustomMethodFactory(){
      *         }
      *
-     *         List<MethodBody> newMethodsFor(MessageType messageType) {
+     *         List<MethodBody> createFor(MessageType messageType) {
      *             // ...
      *         }
      *     }
@@ -144,8 +144,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
         uuidGenerateMethod = UuidGenerateMethod.getDefaultInstance();
     }
 
-    // GeneratedMethodsConfig.Builder usage in `forEach`
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Internal
     @Override
     public MethodsGeneration asProtocConfig() {

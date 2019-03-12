@@ -60,7 +60,7 @@ public final class UuidMethodFactory implements MethodFactory {
     }
 
     @Override
-    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> createFor(MessageType messageType) {
         checkNotNull(messageType);
         if (!messageType.isUuidValue()) {
             return ImmutableList.of();

@@ -30,7 +30,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNotDefault;
 
 /**
- * Makes type implement interface supplied with the {@link ImplementInterface configuration}.
+ * Generates interfaces for Protobuf messages that match supplied
+ * {@link io.spine.tools.protoc.FilePattern pattern}.
  */
 final class GenerateInterfaces extends InterfaceGenerationTask {
 
@@ -48,7 +49,6 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
      * <p>The type does not implement an interface if:
      *
      * <ul>
-     *     <li>the interface name is empty;
      *     <li>the type is not {@link MessageType#isTopLevel() top level};
      *     <li>the type file name does not match supplied
      *     {@link io.spine.tools.protoc.FilePattern pattern}.
@@ -57,7 +57,7 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (isInterfaceNameEmpty() || !type.isTopLevel() || !patternMatcher.test(type)) {
+        if (!type.isTopLevel() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);

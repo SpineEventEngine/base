@@ -46,5 +46,5 @@ public interface MethodFactory {
      *         message to generate new methods for
      * @return generated methods
      */
-    List<GeneratedMethod> newMethodsFor(MessageType messageType);
+    List<GeneratedMethod> createFor(MessageType messageType);
 }

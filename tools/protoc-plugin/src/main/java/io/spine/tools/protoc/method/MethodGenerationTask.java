@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An abstract base for the method code generation tasks.
@@ -39,14 +40,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
 
     MethodGenerationTask(MethodFactories methodFactories, String factoryName) {
         this.methodFactories = checkNotNull(methodFactories);
-        this.factoryName = checkNotNull(factoryName);
-    }
-
-    /**
-     * Determines if the {@link #factoryName factory name} is empty.
-     */
-    boolean isFactoryNameEmpty() {
-        return factoryName.isEmpty();
+        this.factoryName = checkNotEmptyOrBlank(factoryName);
     }
 
     /**
@@ -55,7 +49,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
     ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
         MethodFactory factory = methodFactories.newFactory(factoryName);
         return factory
-                .newMethodsFor(type)
+                .createFor(type)
                 .stream()
                 .map(methodBody -> MessageMethod.from(methodBody, type))
                 .collect(toImmutableList());

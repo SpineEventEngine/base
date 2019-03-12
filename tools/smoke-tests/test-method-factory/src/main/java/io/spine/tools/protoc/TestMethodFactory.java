@@ -37,7 +37,7 @@ public class TestMethodFactory implements MethodFactory {
     }
 
     @Override
-    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> createFor(MessageType messageType) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("ownType")
                 .returns(MessageType.class)

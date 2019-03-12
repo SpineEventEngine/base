@@ -65,8 +65,8 @@ public abstract class FileSelector implements Selector {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FileSelector pattern1 = (FileSelector) o;
-        return Objects.equal(getPattern(), pattern1.getPattern());
+        FileSelector selector = (FileSelector) o;
+        return Objects.equal(getPattern(), selector.getPattern());
     }
 
     @Override

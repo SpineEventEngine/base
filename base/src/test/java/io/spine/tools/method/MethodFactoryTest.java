@@ -33,7 +33,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
- * With this unit test we fixating {@link MethodFactory} contract.
+ * With this unit test we are fixating {@link MethodFactory} contract.
  */
 @DisplayName("MethodFactory should")
 final class MethodFactoryTest {
@@ -41,7 +41,7 @@ final class MethodFactoryTest {
     @DisplayName("have specific contract")
     @Test
     void shouldGenerateNewMethod() {
-        assertThat(new TestMethodFactory().newMethodsFor(null)).isEmpty();
+        assertThat(new TestMethodFactory().createFor(null)).isEmpty();
     }
 
     @Immutable
@@ -51,7 +51,7 @@ final class MethodFactoryTest {
         }
 
         @Override
-        public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
+        public List<GeneratedMethod> createFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

@@ -41,7 +41,7 @@ final class UuidMethodFactoryTest {
     @DisplayName("not allow null values")
     @Test
     void notAllowNulls() {
-        assertThrows(NullPointerException.class, () -> factory.newMethodsFor(null));
+        assertThrows(NullPointerException.class, () -> factory.createFor(null));
     }
 
     @DisplayName("create new")
@@ -52,7 +52,7 @@ final class UuidMethodFactoryTest {
         @Test
         void generateMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.newMethodsFor(uuidType);
+            List<GeneratedMethod> methods = factory.createFor(uuidType);
             GeneratedMethod generate = methods.get(0);
             assertThat(generate.value())
                     .isEqualTo("/**\n" +
@@ -68,7 +68,7 @@ final class UuidMethodFactoryTest {
         @Test
         void ofMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.newMethodsFor(uuidType);
+            List<GeneratedMethod> methods = factory.createFor(uuidType);
             GeneratedMethod of = methods.get(1);
             assertThat(of.value())
                     .isEqualTo("/**\n" +

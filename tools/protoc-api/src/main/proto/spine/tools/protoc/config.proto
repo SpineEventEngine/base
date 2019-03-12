@@ -97,16 +97,13 @@ message FilePattern {
     }
 }
 
-// Configuration of the Spine Protoc plugin interfaces generation.
+// Spine Protoc plugin interfaces generation tasks.
 //
 message InterfacesGeneration {
 
     repeated ImplementInterface implement_interface = 1;
 
     UuidImplementInterface uuid_interface = 2;
-
-    // Reserved for future configurations.
-    reserved 4 to 15;
 }
 
 // A container for the java classpath items.
@@ -117,7 +114,9 @@ message Classpath {
     repeated string jar = 1;
 }
 
-// Configuration of the Spine Protoc method factory.
+// Method factories configuration.
+//
+// Allows {@code MethodFactory} instances to be loaded from the project classpath.
 //
 message MethodFactoryConfiguration {
 
@@ -125,7 +124,7 @@ message MethodFactoryConfiguration {
     Classpath classpath = 1;
 }
 
-// Configuration of the Spine Protoc plugin methods generation.
+// Spine Protoc plugin methods generation tasks.
 //
 message MethodsGeneration {
 
@@ -133,11 +132,8 @@ message MethodsGeneration {
 
     UuidGenerateMethod uuid_method = 2;
 
-    // Reserved for future configurations.
-    reserved 4 to 14;
-
     // Method Factory configuration.
-    MethodFactoryConfiguration factory_configuration = 15;
+    MethodFactoryConfiguration factory_configuration = 3;
 }
 
 // Configuration of the Spine Protoc plugin.
@@ -147,9 +143,9 @@ message MethodsGeneration {
 //
 message SpineProtocConfig {
 
-    // Interfaces configuration.
+    // Interfaces generation tasks.
     InterfacesGeneration interfaces_generation = 1;
 
-    // Methods configuration.
+    // Methods generation tasks.
     MethodsGeneration methods_generation = 2;
 }

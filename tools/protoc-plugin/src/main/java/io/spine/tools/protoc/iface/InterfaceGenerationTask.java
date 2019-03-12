@@ -25,10 +25,9 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An abstract base for the interface code generation tasks.
@@ -38,14 +37,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     private final String interfaceName;
 
     InterfaceGenerationTask(String interfaceName) {
-        this.interfaceName = checkNotNull(interfaceName);
-    }
-
-    /**
-     * Determines if the {@link #interfaceName interface name} is empty.
-     */
-    boolean isInterfaceNameEmpty() {
-        return interfaceName.isEmpty();
+        this.interfaceName = checkNotEmptyOrBlank(interfaceName);
     }
 
     /**
@@ -58,7 +50,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Performs the actual interface code generation.
      */
-    ImmutableList<CompilerOutput> generateInterfacesFor(@NonNull MessageType type) {
+    ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
         ClassName interfaceName = ClassName.of(this.interfaceName);
         MessageInterface messageInterface =
                 new PredefinedInterface(interfaceName, interfaceParameters());

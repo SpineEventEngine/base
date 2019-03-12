@@ -43,20 +43,20 @@ final class FilePatternsTest {
             });
         }
 
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         @DisplayName("filePrefix pattern")
         @Test
         void filePrefix() {
             Assertions.assertThrows(NullPointerException.class, () -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
                 FilePatterns.filePrefix(null);
             });
         }
 
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         @DisplayName("regex pattern")
         @Test
         void regex() {
             Assertions.assertThrows(NullPointerException.class, () -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
                 FilePatterns.fileRegex(null);
             });
         }
@@ -67,27 +67,90 @@ final class FilePatternsTest {
     final class CreateValid {
 
         @DisplayName("file_postfix pattern")
-        @Test
-        void filePostfix() {
-            String postfix = "documents.proto";
-            FilePattern filter = FilePatterns.filePostfix(postfix);
-            assertEquals(postfix, filter.getFilePostfix());
+        @Nested
+        class Postfix {
+
+            @DisplayName("with file name")
+            @Test
+            void withFileName() {
+                String postfix = "documents.proto";
+                FilePattern filter = FilePatterns.filePostfix(postfix);
+                assertEquals(postfix, filter.getFilePostfix());
+            }
+
+            @DisplayName("with path parts")
+            @Test
+            void withPathParts() {
+                String postfix = "tools/protoc/documents.proto";
+                FilePattern filter = FilePatterns.filePostfix(postfix);
+                assertEquals(postfix, filter.getFilePostfix());
+            }
+
+            @DisplayName("with absolute file path")
+            @Test
+            void withAbsolutePath() {
+                String postfix = "/home/user/development/petproject/src/main/proto/documents.proto";
+                FilePattern filter = FilePatterns.filePostfix(postfix);
+                assertEquals(postfix, filter.getFilePostfix());
+            }
         }
 
         @DisplayName("file_prefix pattern")
-        @Test
-        void filePrefix() {
-            String prefix = "documents_";
-            FilePattern pattern = FilePatterns.filePrefix(prefix);
-            assertEquals(prefix, pattern.getFilePrefix());
+        @Nested
+        class Prefix {
+
+            @DisplayName("with file name")
+            @Test
+            void withFileName() {
+                String prefix = "documents_";
+                FilePattern pattern = FilePatterns.filePrefix(prefix);
+                assertEquals(prefix, pattern.getFilePrefix());
+            }
+
+            @DisplayName("with path parts")
+            @Test
+            void withPathParts() {
+                String prefix = "io/spine/tools/documents_";
+                FilePattern pattern = FilePatterns.filePrefix(prefix);
+                assertEquals(prefix, pattern.getFilePrefix());
+            }
+
+            @DisplayName("with absolute file path")
+            @Test
+            void withAbsolutePath() {
+                String prefix = "/home/user/development/petproject/src/main/proto/test_";
+                FilePattern filter = FilePatterns.filePrefix(prefix);
+                assertEquals(prefix, filter.getFilePrefix());
+            }
         }
 
         @DisplayName("regex pattern")
-        @Test
-        void regex() {
-            String regex = ".*documents.*";
-            FilePattern pattern = FilePatterns.fileRegex(regex);
-            assertEquals(regex, pattern.getRegex());
+        @Nested
+        class Regex {
+
+            @DisplayName("with prefix and postfix wildcards")
+            @Test
+            void withBothWildcards() {
+                String regex = ".*documents.*";
+                FilePattern pattern = FilePatterns.fileRegex(regex);
+                assertEquals(regex, pattern.getRegex());
+            }
+
+            @DisplayName("with path parts")
+            @Test
+            void withPathParts() {
+                String regex = "io/spine/.*/documents/.*\\.proto";
+                FilePattern pattern = FilePatterns.fileRegex(regex);
+                assertEquals(regex, pattern.getRegex());
+            }
+
+            @DisplayName("with absolute file path")
+            @Test
+            void withAbsolutePath() {
+                String regex = "/home/user/development/petproject/.*/proto/test_.*\\.proto";
+                FilePattern filter = FilePatterns.fileRegex(regex);
+                assertEquals(regex, filter.getRegex());
+            }
         }
     }
 }
