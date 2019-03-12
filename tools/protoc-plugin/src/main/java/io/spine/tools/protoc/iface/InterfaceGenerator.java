@@ -35,6 +35,7 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.validate.Validate.isNotDefault;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
@@ -64,13 +65,14 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
     public static SpineProtoGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
         InterfacesGeneration config = spineProtocConfig.getInterfacesGeneration();
-        ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
-                .<CodeGenerationTask>builder()
-                .add(new GenerateUuidInterfaces(config.getUuidInterface()));
-        for (ImplementInterface taskConfiguration : config.getImplementInterfaceList()) {
-            codeGenerationTasks.add(new GenerateInterfaces(taskConfiguration));
+        ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
+        if (isNotDefault(config.getUuidInterface())) {
+            tasks.add(new GenerateUuidInterfaces(config.getUuidInterface()));
         }
-        return new InterfaceGenerator(codeGenerationTasks.build());
+        for (ImplementInterface taskConfiguration : config.getImplementInterfaceList()) {
+            tasks.add(new GenerateInterfaces(taskConfiguration));
+        }
+        return new InterfaceGenerator(tasks.build());
     }
 
     /**

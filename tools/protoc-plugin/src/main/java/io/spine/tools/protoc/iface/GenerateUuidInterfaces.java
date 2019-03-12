@@ -28,8 +28,7 @@ import io.spine.type.MessageType;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Makes UUID value type implement interface supplied with the {@link UuidImplementInterface
- * configuration}.
+ * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
  */
 final class GenerateUuidInterfaces extends InterfaceGenerationTask {
 
@@ -40,13 +39,11 @@ final class GenerateUuidInterfaces extends InterfaceGenerationTask {
     /**
      * Makes supplied {@link io.spine.base.UuidValue UuidValue} Protobuf type implement configured
      * interface.
-     *
-     * <p>The type does not implement an interface if interface name is empty.
      **/
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (isInterfaceNameEmpty() || !type.isUuidValue()) {
+        if (!type.isUuidValue()) {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);
