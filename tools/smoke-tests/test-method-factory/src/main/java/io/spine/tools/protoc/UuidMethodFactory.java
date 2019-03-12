@@ -41,7 +41,7 @@ public class UuidMethodFactory implements MethodFactory {
     }
 
     @Override
-    public List<GeneratedMethod> newMethodsFor(MessageType messageType) {
+    public List<GeneratedMethod> createFor(MessageType messageType) {
         PackageName packageName = messageType.javaPackage();
         SimpleClassName simpleClassName = messageType.simpleJavaClassName();
         ClassName className = ClassName.get(packageName.value(), simpleClassName.value());
