@@ -34,6 +34,7 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.validate.Validate.isNotDefault;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating additional message methods.
@@ -58,13 +59,14 @@ public final class MethodGenerator extends SpineProtoGenerator {
         checkNotNull(spineProtocConfig);
         MethodsGeneration config = spineProtocConfig.getMethodsGeneration();
         MethodFactories methodFactories = new MethodFactories(config.getFactoryConfiguration());
-        ImmutableList.Builder<CodeGenerationTask> codeGenerationTasks = ImmutableList
-                .<CodeGenerationTask>builder()
-                .add(new GenerateUuidMethods(methodFactories, config.getUuidMethod()));
-        for (GenerateMethod taskConfiguration : config.getGenerateMethodList()) {
-            codeGenerationTasks.add(new GenerateMethods(methodFactories, taskConfiguration));
+        ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
+        if (isNotDefault(config.getUuidMethod())) {
+            tasks.add(new GenerateUuidMethods(methodFactories, config.getUuidMethod()));
         }
-        return new MethodGenerator(codeGenerationTasks.build());
+        for (GenerateMethod taskConfiguration : config.getGenerateMethodList()) {
+            tasks.add(new GenerateMethods(methodFactories, taskConfiguration));
+        }
+        return new MethodGenerator(tasks.build());
     }
 
     @Override

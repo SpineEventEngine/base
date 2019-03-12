@@ -38,15 +38,13 @@ final class GenerateUuidMethods extends MethodGenerationTask {
     }
 
     /**
-     * Generates new method for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
+     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
      * {@code type}.
-     *
-     * <p>No methods are generated if the method factory name is empty.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (isFactoryNameEmpty() || !type.isUuidValue()) {
+        if (!type.isUuidValue()) {
             return ImmutableList.of();
         }
         return generateMethodsFor(type);

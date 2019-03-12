@@ -20,13 +20,9 @@
 
 package io.spine.tools.protoc.method;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.MethodFactoryConfiguration;
-import io.spine.type.MessageType;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -34,10 +30,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An utility class for instantiating {@link MethodFactory}.
@@ -54,10 +49,7 @@ final class MethodFactories implements Logging {
      * Instantiates a {@link MethodFactory} with the specified {@code factoryName}.
      */
     MethodFactory newFactory(String factoryName) {
-        checkNotNull(factoryName);
-        if (factoryName.isEmpty()) {
-            return NoOpMethodFactory.INSTANCE;
-        }
+        checkNotEmptyOrBlank(factoryName);
         MethodFactory result = from(factoryName);
         return result;
     }
@@ -131,23 +123,6 @@ final class MethodFactories implements Logging {
         } catch (MalformedURLException e) {
             throw newIllegalArgumentException("Could not retrieve classpath dependency '%s'.",
                                               uri, e);
-        }
-    }
-
-    /**
-     * A no-operation stub implementation of a {@link MethodFactory} that is used if the
-     * method factory is not configured.
-     */
-    @VisibleForTesting
-    @Immutable
-    static class NoOpMethodFactory implements MethodFactory {
-
-        @VisibleForTesting
-        static final MethodFactory INSTANCE = new NoOpMethodFactory();
-
-        @Override
-        public List<GeneratedMethod> createFor(MessageType ignored) {
-            return ImmutableList.of();
         }
     }
 }

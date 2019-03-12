@@ -28,6 +28,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,24 +44,17 @@ final class MethodFactoriesTest {
         methodFactories = new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
     }
 
-    @DisplayName("return NoOpMessageFactory if generator name is empty")
-    @Test
-    void returnNoOpFactoryForEmptyFactoryName() {
-        assertThat(methodFactories.newFactory(""))
-                .isSameAs(MethodFactories.NoOpMethodFactory.INSTANCE);
+    @DisplayName("throw IllegalArgumentException if factory name is")
+    @ParameterizedTest(name = "\"{0}\"")
+    @ValueSource(strings = {"", "  "})
+    void throwIllegalArgumentException(String factoryName) {
+        assertThrows(IllegalArgumentException.class, () -> methodFactories.newFactory(factoryName));
     }
 
     @SuppressWarnings("NonExceptionNameEndsWithException")
     @DisplayName("throw MethodFactoryInstantiationException")
     @Nested
     final class ThrowInstantiationException {
-
-        @DisplayName("if supplied factory name is blank")
-        @Test
-        void forBlankFactoryName() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> methodFactories.newFactory("   "));
-        }
 
         @DisplayName("if implementation does not have a public constructor")
         @Test

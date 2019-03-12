@@ -46,18 +46,13 @@ final class GenerateMethods extends MethodGenerationTask {
     /**
      * Generates new method for supplied {@code type}.
      *
-     * <p>No methods are generated if:
-     *
-     * <ul>
-     *     <li>the method factory name is empty;
-     *     <li>the type file name does not match supplied
-     *     {@link io.spine.tools.protoc.FilePattern pattern}.
-     * </ul>
+     * <p>No methods are generated if the type file name does not match supplied
+     * {@link io.spine.tools.protoc.FilePattern pattern}.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (isFactoryNameEmpty() || !patternMatcher.test(type)) {
+        if (!patternMatcher.test(type)) {
             return ImmutableList.of();
         }
         return generateMethodsFor(type);

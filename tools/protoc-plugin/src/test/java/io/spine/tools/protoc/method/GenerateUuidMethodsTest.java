@@ -29,6 +29,8 @@ import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,15 +61,18 @@ final class GenerateUuidMethodsTest {
         }
     }
 
+    @DisplayName("throw IllegalArgumentException if factory name is ")
+    @ParameterizedTest(name = "\"{0}\"")
+    @ValueSource(strings = {"", "  "})
+    void throwIllegalArgumentException(String factoryName) {
+        UuidGenerateMethod config = newTaskConfig(factoryName);
+        assertThrows(IllegalArgumentException.class, () ->
+                new GenerateUuidMethods(testMethodFactories(), config));
+    }
+
     @DisplayName("generate empty result if")
     @Nested
     class GenerateEmptyResult {
-
-        @DisplayName("factory name is empty")
-        @Test
-        void factoryNameIsEmpty() {
-            assertEmptyResult("");
-        }
 
         @DisplayName("message is not UUID value")
         @Test
