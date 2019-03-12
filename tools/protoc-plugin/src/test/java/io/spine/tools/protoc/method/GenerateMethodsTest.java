@@ -20,10 +20,10 @@
 
 package io.spine.tools.protoc.method;
 
+import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.MethodFactoryConfiguration;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +46,7 @@ final class GenerateMethodsTest {
         @Test
         void isCreatedWithNullArguments() {
             assertThrows(NullPointerException.class, () ->
-                    new GenerateMethods(null, GenerateMethod.getDefaultInstance()));
+                    new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
             assertThrows(NullPointerException.class, () ->
                     new GenerateMethods(testMethodFactories(), null)
             );
@@ -55,7 +55,7 @@ final class GenerateMethodsTest {
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
-            GenerateMethod config = newTaskConfig("test")
+            ConfigByPattern config = newTaskConfig("test")
                     .setPattern(FilePatterns.filePrefix("non-default"))
                     .build();
             GenerateMethods generateMethods = new GenerateMethods(testMethodFactories(), config);
@@ -74,7 +74,7 @@ final class GenerateMethodsTest {
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String factoryName) {
-        GenerateMethod config = newTaskConfig(factoryName)
+        ConfigByPattern config = newTaskConfig(factoryName)
                 .setPattern(FilePatterns.filePrefix("non-default"))
                 .build();
         assertThrows(IllegalArgumentException.class, () ->
@@ -92,7 +92,7 @@ final class GenerateMethodsTest {
         }
 
         private void assertEmptyResult(String factoryName, FilePattern filePattern) {
-            GenerateMethod config = newTaskConfig(factoryName)
+            ConfigByPattern config = newTaskConfig(factoryName)
                     .setPattern(filePattern)
                     .build();
             assertThat(newTask(config).generateFor(testType()))
@@ -103,24 +103,24 @@ final class GenerateMethodsTest {
     @DisplayName("generate new methods")
     @Test
     void generateNewMethods() {
-        GenerateMethod config = newTaskConfig(TestMethodFactory.class.getName())
+        ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
                 .setPattern(FilePatterns.filePostfix("test_patterns.proto"))
                 .build();
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();
     }
 
-    private static GenerateMethod.Builder newTaskConfig(String factoryName) {
-        return GenerateMethod.newBuilder()
-                             .setFactoryName(factoryName);
+    private static ConfigByPattern.Builder newTaskConfig(String factoryName) {
+        return ConfigByPattern.newBuilder()
+                              .setValue(factoryName);
     }
 
-    private static GenerateMethods newTask(GenerateMethod config) {
+    private static GenerateMethods newTask(ConfigByPattern config) {
         return new GenerateMethods(testMethodFactories(), config);
     }
 
     private static MethodFactories testMethodFactories() {
-        return new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
+        return new MethodFactories(Classpath.getDefaultInstance());
     }
 
     private static MessageType testType() {

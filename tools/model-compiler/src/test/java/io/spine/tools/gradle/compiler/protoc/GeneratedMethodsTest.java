@@ -20,10 +20,10 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.tools.protoc.AddMethods;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.MethodsGeneration;
-import io.spine.tools.protoc.UuidGenerateMethod;
+import io.spine.tools.protoc.UuidConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,12 +44,12 @@ final class GeneratedMethodsTest {
         methods.useFactory(testMethodFactory, methods.uuidMessage());
         methods.useFactory(testMethodFactory, methods.filePattern()
                                                      .endsWith("_test.proto"));
-        MethodsGeneration config = methods.asProtocConfig();
+        AddMethods config = methods.asProtocConfig();
 
-        assertEquals(testMethodFactory, config.getUuidMethod()
-                                              .getFactoryName());
-        assertEquals(testMethodFactory, config.getGenerateMethod(0)
-                                              .getFactoryName());
+        assertEquals(testMethodFactory, config.getUuidFactory()
+                                              .getValue());
+        assertEquals(testMethodFactory, config.getFactoryByPattern(0)
+                                              .getValue());
     }
 
     @DisplayName("add multiple file patterns")
@@ -76,36 +76,36 @@ final class GeneratedMethodsTest {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.useFactory(testMethodFactory, methods.uuidMessage());
         methods.ignore(methods.uuidMessage());
-        assertSame(UuidGenerateMethod.getDefaultInstance(), methods.asProtocConfig()
-                                                                   .getUuidMethod());
+        assertSame(UuidConfig.getDefaultInstance(), methods.asProtocConfig()
+                                                           .getUuidFactory());
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String factoryName, MethodsGeneration config) {
+    hasPostfixConfig(String postfix, String factoryName, AddMethods config) {
         return hasInterface(config, factoryName,
                             pattern -> postfix.equals(pattern.getFilePostfix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String factoryName, MethodsGeneration config) {
+    hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
         return hasInterface(config, factoryName,
                             pattern -> prefix.equals(pattern.getFilePrefix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String factoryName, MethodsGeneration config) {
+    hasRegexConfig(String regex, String factoryName, AddMethods config) {
         return hasInterface(config, factoryName,
                             pattern -> regex.equals(pattern.getRegex()));
     }
 
-    private static boolean hasInterface(MethodsGeneration config,
+    private static boolean hasInterface(AddMethods config,
                                         String factoryName,
                                         Predicate<? super FilePattern> patternPredicate) {
         return config
-                .getGenerateMethodList()
+                .getFactoryByPatternList()
                 .stream()
-                .filter(genMathod -> factoryName.equals(genMathod.getFactoryName()))
-                .map(GenerateMethod::getPattern)
+                .filter(byPattern -> factoryName.equals(byPattern.getValue()))
+                .map(ConfigByPattern::getPattern)
                 .anyMatch(patternPredicate);
     }
 }

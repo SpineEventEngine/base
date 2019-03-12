@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.protobuf.Descriptors;
-import io.spine.tools.protoc.UuidImplementInterface;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +50,7 @@ final class GenerateUuidInterfacesTest {
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
-            UuidImplementInterface config = newTaskConfig("test");
+            UuidConfig config = newTaskConfig("test");
             GenerateUuidInterfaces generateMethods = new GenerateUuidInterfaces(config);
             assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
         }
@@ -75,7 +75,7 @@ final class GenerateUuidInterfacesTest {
         }
 
         private void assertEmptyResult(String interfaceName, Descriptors.Descriptor descriptor) {
-            UuidImplementInterface config = newTaskConfig(interfaceName);
+            UuidConfig config = newTaskConfig(interfaceName);
             assertThat(newTask(config).generateFor(new MessageType(descriptor)))
                     .isEmpty();
         }
@@ -84,18 +84,18 @@ final class GenerateUuidInterfacesTest {
     @DisplayName("implement interface")
     @Test
     void implementInterface() {
-        UuidImplementInterface config = newTaskConfig(TestInterface.class.getName());
+        UuidConfig config = newTaskConfig(TestInterface.class.getName());
         assertThat(newTask(config).generateFor(new MessageType(ProjectId.getDescriptor())))
                 .isNotEmpty();
     }
 
-    private static GenerateUuidInterfaces newTask(UuidImplementInterface config) {
+    private static GenerateUuidInterfaces newTask(UuidConfig config) {
         return new GenerateUuidInterfaces(config);
     }
 
-    private static UuidImplementInterface newTaskConfig(String interfaceName) {
-        return UuidImplementInterface.newBuilder()
-                                     .setInterfaceName(interfaceName)
-                                     .build();
+    private static UuidConfig newTaskConfig(String interfaceName) {
+        return UuidConfig.newBuilder()
+                         .setValue(interfaceName)
+                         .build();
     }
 }

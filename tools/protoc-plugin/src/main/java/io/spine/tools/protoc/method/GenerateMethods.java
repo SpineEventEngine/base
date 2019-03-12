@@ -22,23 +22,22 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatternMatcher;
-import io.spine.tools.protoc.GenerateMethod;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNotDefault;
 
 /**
- * Generates methods for supplied type based on code generation task {@link GenerateMethod
- * configuration}.
+ * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
  */
 final class GenerateMethods extends MethodGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    GenerateMethods(MethodFactories methodFactories, GenerateMethod config) {
-        super(methodFactories, config.getFactoryName());
+    GenerateMethods(MethodFactories methodFactories, ConfigByPattern config) {
+        super(methodFactories, config.getValue());
         checkNotDefault(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }

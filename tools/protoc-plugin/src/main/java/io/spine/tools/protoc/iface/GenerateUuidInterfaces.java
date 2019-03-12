@@ -22,7 +22,7 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.UuidImplementInterface;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,8 +32,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class GenerateUuidInterfaces extends InterfaceGenerationTask {
 
-    GenerateUuidInterfaces(UuidImplementInterface config) {
-        super(config.getInterfaceName());
+    GenerateUuidInterfaces(UuidConfig config) {
+        super(config.getValue());
     }
 
     /**

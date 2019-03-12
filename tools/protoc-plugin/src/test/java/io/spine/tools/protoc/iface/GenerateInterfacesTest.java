@@ -20,9 +20,9 @@
 
 package io.spine.tools.protoc.iface;
 
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.ImplementInterface;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.method.OuterMessage;
 import io.spine.type.MessageType;
@@ -52,7 +52,7 @@ final class GenerateInterfacesTest {
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
-            ImplementInterface config = newTaskConfig("test")
+            ConfigByPattern config = newTaskConfig("test")
                     .setPattern(FilePatterns.filePrefix("non-default"))
                     .build();
             GenerateInterfaces generateMethods = new GenerateInterfaces(config);
@@ -100,7 +100,7 @@ final class GenerateInterfacesTest {
 
         private void
         assertEmptyResult(String interfaceName, FilePattern filePattern, MessageType type) {
-            ImplementInterface config = newTaskConfig(interfaceName)
+            ConfigByPattern config = newTaskConfig(interfaceName)
                     .setPattern(filePattern)
                     .build();
             assertThat(newTask(config).generateFor(type))
@@ -111,19 +111,19 @@ final class GenerateInterfacesTest {
     @DisplayName("implement interface")
     @Test
     void implementInterface() {
-        ImplementInterface config = newTaskConfig(TestInterface.class.getName())
+        ConfigByPattern config = newTaskConfig(TestInterface.class.getName())
                 .setPattern(FilePatterns.filePostfix("test_events.proto"))
                 .build();
         assertThat(newTask(config).generateFor(new MessageType(ProjectCreated.getDescriptor())))
                 .isNotEmpty();
     }
 
-    private static GenerateInterfaces newTask(ImplementInterface config) {
+    private static GenerateInterfaces newTask(ConfigByPattern config) {
         return new GenerateInterfaces(config);
     }
 
-    private static ImplementInterface.Builder newTaskConfig(String interfaceName) {
-        return ImplementInterface.newBuilder()
-                                 .setInterfaceName(interfaceName);
+    private static ConfigByPattern.Builder newTaskConfig(String interfaceName) {
+        return ConfigByPattern.newBuilder()
+                              .setValue(interfaceName);
     }
 }

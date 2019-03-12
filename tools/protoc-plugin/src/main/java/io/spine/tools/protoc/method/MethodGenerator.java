@@ -21,11 +21,11 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.MethodsGeneration;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -57,14 +57,14 @@ public final class MethodGenerator extends SpineProtoGenerator {
      */
     public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        MethodsGeneration config = spineProtocConfig.getMethodsGeneration();
-        MethodFactories methodFactories = new MethodFactories(config.getFactoryConfiguration());
+        AddMethods config = spineProtocConfig.getAddMethods();
+        MethodFactories methodFactories = new MethodFactories(config.getFactoryClasspath());
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        if (isNotDefault(config.getUuidMethod())) {
-            tasks.add(new GenerateUuidMethods(methodFactories, config.getUuidMethod()));
+        if (isNotDefault(config.getUuidFactory())) {
+            tasks.add(new GenerateUuidMethods(methodFactories, config.getUuidFactory()));
         }
-        for (GenerateMethod taskConfiguration : config.getGenerateMethodList()) {
-            tasks.add(new GenerateMethods(methodFactories, taskConfiguration));
+        for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
+            tasks.add(new GenerateMethods(methodFactories, byPattern));
         }
         return new MethodGenerator(tasks.build());
     }

@@ -22,19 +22,18 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.UuidGenerateMethod;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Generates methods for supplied UUID value type based on code generation task
- * {@link UuidGenerateMethod configuration}.
+ * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
  */
 final class GenerateUuidMethods extends MethodGenerationTask {
 
-    GenerateUuidMethods(MethodFactories methodFactories, UuidGenerateMethod config) {
-        super(methodFactories, config.getFactoryName());
+    GenerateUuidMethods(MethodFactories methodFactories, UuidConfig config) {
+        super(methodFactories, config.getValue());
     }
 
     /**

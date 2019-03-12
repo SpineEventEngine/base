@@ -22,11 +22,11 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ImplementInterface;
-import io.spine.tools.protoc.InterfacesGeneration;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -64,13 +64,13 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
      */
     public static SpineProtoGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        InterfacesGeneration config = spineProtocConfig.getInterfacesGeneration();
+        AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
         if (isNotDefault(config.getUuidInterface())) {
             tasks.add(new GenerateUuidInterfaces(config.getUuidInterface()));
         }
-        for (ImplementInterface taskConfiguration : config.getImplementInterfaceList()) {
-            tasks.add(new GenerateInterfaces(taskConfiguration));
+        for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
+            tasks.add(new GenerateInterfaces(byPattern));
         }
         return new InterfaceGenerator(tasks.build());
     }

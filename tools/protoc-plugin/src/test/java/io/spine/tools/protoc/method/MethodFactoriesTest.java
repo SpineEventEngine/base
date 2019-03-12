@@ -22,7 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.MethodFactoryConfiguration;
+import io.spine.tools.protoc.Classpath;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ final class MethodFactoriesTest {
 
     @BeforeEach
     void setUp() {
-        methodFactories = new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
+        methodFactories = new MethodFactories(Classpath.getDefaultInstance());
     }
 
     @DisplayName("throw IllegalArgumentException if factory name is")

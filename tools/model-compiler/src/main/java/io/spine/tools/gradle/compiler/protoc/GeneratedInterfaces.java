@@ -27,9 +27,9 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.ImplementInterface;
-import io.spine.tools.protoc.InterfacesGeneration;
-import io.spine.tools.protoc.UuidImplementInterface;
+import io.spine.tools.protoc.AddInterfaces;
+import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.UuidConfig;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Map;
@@ -42,9 +42,9 @@ import static io.spine.base.MessageFile.REJECTIONS;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<InterfacesGeneration> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
 
-    private UuidImplementInterface uuidInterface = UuidImplementInterface.getDefaultInstance();
+    private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
 
     private GeneratedInterfaces() {
         super();
@@ -167,37 +167,37 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<Interface
     @Override
     public final void ignore(UuidMessage uuidMessage) {
         checkNotNull(uuidMessage);
-        uuidInterface = UuidImplementInterface.getDefaultInstance();
+        uuidInterface = UuidConfig.getDefaultInstance();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Override
     @Internal
-    public InterfacesGeneration asProtocConfig() {
-        InterfacesGeneration.Builder result = InterfacesGeneration
+    public AddInterfaces asProtocConfig() {
+        AddInterfaces.Builder result = AddInterfaces
                 .newBuilder()
                 .setUuidInterface(uuidInterface);
         patternConfigurations()
                 .stream()
-                .map(GeneratedInterfaces::toCommand)
-                .forEach(result::addImplementInterface);
+                .map(GeneratedInterfaces::toPatternConfig)
+                .forEach(result::addInterfaceByPattern);
         return result.build();
     }
 
-    private static UuidImplementInterface uuidInterface(@FullyQualifiedName String interfaceName) {
-        return UuidImplementInterface
+    private static UuidConfig uuidInterface(@FullyQualifiedName String interfaceName) {
+        return UuidConfig
                 .newBuilder()
-                .setInterfaceName(interfaceName)
+                .setValue(interfaceName)
                 .build();
     }
 
-    private static ImplementInterface toCommand(Map.Entry<FileSelector, ClassName> e) {
+    private static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
         FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
-        return ImplementInterface
+        return ConfigByPattern
                 .newBuilder()
                 .setPattern(fileSelector.toProto())
-                .setInterfaceName(className.value())
+                .setValue(className.value())
                 .build();
     }
 }
