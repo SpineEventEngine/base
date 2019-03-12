@@ -117,7 +117,9 @@ message Classpath {
     repeated string jar = 1;
 }
 
-// Configuration of the Spine Protoc method factory.
+// Method factories configuration.
+//
+// Allows {@code MethodFactory} instances to be loaded from the project classpath.
 //
 message MethodFactoryConfiguration {
 
