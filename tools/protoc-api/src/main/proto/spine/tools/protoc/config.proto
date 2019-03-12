@@ -104,9 +104,6 @@ message InterfacesGeneration {
     repeated ImplementInterface implement_interface = 1;
 
     UuidImplementInterface uuid_interface = 2;
-
-    // Reserved for future configurations.
-    reserved 4 to 15;
 }
 
 // A container for the java classpath items.
@@ -135,11 +132,8 @@ message MethodsGeneration {
 
     UuidGenerateMethod uuid_method = 2;
 
-    // Reserved for future configurations.
-    reserved 4 to 14;
-
     // Method Factory configuration.
-    MethodFactoryConfiguration factory_configuration = 15;
+    MethodFactoryConfiguration factory_configuration = 3;
 }
 
 // Configuration of the Spine Protoc plugin.
