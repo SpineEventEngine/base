@@ -97,7 +97,7 @@ message FilePattern {
     }
 }
 
-// Configuration of the Spine Protoc plugin interfaces generation.
+// Spine Protoc plugin interfaces generation tasks.
 //
 message InterfacesGeneration {
 
@@ -127,7 +127,7 @@ message MethodFactoryConfiguration {
     Classpath classpath = 1;
 }
 
-// Configuration of the Spine Protoc plugin methods generation.
+// Spine Protoc plugin methods generation tasks.
 //
 message MethodsGeneration {
 
@@ -149,9 +149,9 @@ message MethodsGeneration {
 //
 message SpineProtocConfig {
 
-    // Interfaces configuration.
+    // Interfaces generation tasks.
     InterfacesGeneration interfaces_generation = 1;
 
-    // Methods configuration.
+    // Methods generation tasks.
     MethodsGeneration methods_generation = 2;
 }
