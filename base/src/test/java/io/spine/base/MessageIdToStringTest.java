@@ -37,7 +37,9 @@ class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
     @Test
     @DisplayName("convert Message to String")
     void convert() {
-        UuidMessage test = Identifier.generate(UuidMessage.class);
+        UuidMessage test = UuidMessage.newBuilder()
+                                      .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
+                                      .build();
         String value = MessageIdToString.toString(test);
 
         assertThat(value).contains(test.getUuid());
