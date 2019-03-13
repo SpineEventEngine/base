@@ -31,7 +31,7 @@ option java_outer_classname = "MttUuidMessagesProto";
 
 // This file defines test environment for `MessageTypeTest.java`.
 
-// A sample uuid message to verify detecting that a message is a UuidValue from `MessageType`.
+// A sample UUID message to verify UuidValue detection from `MessageType`.
 message MttUuidMessage {
 
     string uuid = 1;
