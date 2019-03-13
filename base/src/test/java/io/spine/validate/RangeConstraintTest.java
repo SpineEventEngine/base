@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.ImmutableSet.builder;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -129,7 +128,7 @@ class RangeConstraintTest {
     }
 
     private static ImmutableSet<Arguments> argumentsFrom(Object... elements) {
-        ImmutableSet.Builder<Arguments> builder = builder();
+        ImmutableSet.Builder<Arguments> builder = ImmutableSet.builder();
         for (Object element : elements) {
             builder.add(Arguments.of(element));
         }

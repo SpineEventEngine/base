@@ -34,6 +34,7 @@ import io.spine.option.MinOption;
 import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.test.code.proto.uuid.MttUuidMessage;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -109,6 +110,12 @@ class MessageTypeTest {
             );
         }
 
+        @DisplayName("a UUID value")
+        @Test
+        void uuid() {
+            assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
+        }
+
         @Nested
         @DisplayName("not")
         class NotA {
@@ -135,6 +142,12 @@ class MessageTypeTest {
                 assertQuality(not(MessageType::isEvent),
                               MttProjectStarted.Details.getDescriptor()
                 );
+            }
+
+            @DisplayName("a UUID value")
+            @Test
+            void uuid() {
+                assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
             }
         }
 
