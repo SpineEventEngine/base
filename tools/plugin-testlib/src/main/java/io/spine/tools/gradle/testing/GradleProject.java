@@ -76,6 +76,9 @@ public final class GradleProject {
         this.gradleRunner = GradleRunner.create()
                                         .withProjectDir(builder.folder)
                                         .withDebug(builder.debug);
+        if (builder.addPluginUnderTestClasspath) {
+            gradleRunner.withPluginClasspath();
+        }
         writeGradleScripts();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
@@ -163,6 +166,21 @@ public final class GradleProject {
         private final List<String> protoFileNames = newLinkedList();
         private final List<String> javaFileNames = newLinkedList();
 
+        /**
+         * Determines whether the plugin under test classpath is defined and should be added to
+         * the Gradle execution classpath.
+         *
+         * <p>The {@code plugin-under-test-metadata.properties} resource must be present in
+         * the current classpath. The file defines the {@code implementation-classpath} property,
+         * which contains the classpath to be added to the Gradle run.
+         *
+         * <p>Whenever the added classpath contains a Gradle plugin, the executed Gradle scripts may
+         * apply it via the {@code plugins} block.
+         *
+         * @see GradleRunner#withPluginClasspath
+         */
+        private boolean addPluginUnderTestClasspath;
+
         /** Prevents direct instantiation of this class. */
         private Builder() {
         }
@@ -200,11 +218,18 @@ public final class GradleProject {
             return this;
         }
 
+        public Builder withPluginClasspath() {
+            this.addPluginUnderTestClasspath = true;
+            return this;
+        }
+
         /**
          * Creates a {@code .proto} source file with the given name and content.
          *
-         * @param fileName the name of the file
-         * @param lines    the content of the file
+         * @param fileName
+         *         the name of the file
+         * @param lines
+         *         the content of the file
          */
         public Builder createProto(String fileName, Iterable<String> lines) {
             String path = BASE_PROTO_LOCATION + fileName;
@@ -214,8 +239,10 @@ public final class GradleProject {
         /**
          * Creates a file in the project directory under the given path and with the given content.
          *
-         * @param path  the path to the file relative to the project dir
-         * @param lines the content of the file
+         * @param path
+         *         the path to the file relative to the project dir
+         * @param lines
+         *         the content of the file
          */
         public Builder createFile(String path, Iterable<String> lines) {
             Path sourcePath = folder.toPath()
