@@ -44,7 +44,7 @@ import com.google.protobuf.Message;
  * @param <I>
  *         the type of the message
  */
-@SuppressWarnings("InterfaceNeverImplemented")/* Used by the Protobuf Compiler plugin. */
+@SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
