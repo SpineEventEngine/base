@@ -18,30 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+/**
+ * This package provides method generation extension point for the Protoc plugins.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.method;
 
-import io.spine.test.identifiers.UuidMessage;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("MessageIdToString utility class should")
-class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
-
-    MessageIdToStringTest() {
-        super(MessageIdToString.class);
-    }
-
-    @Test
-    @DisplayName("convert Message to String")
-    void convert() {
-        UuidMessage test = UuidMessage.newBuilder()
-                                      .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
-                                      .build();
-        String value = MessageIdToString.toString(test);
-
-        assertThat(value).contains(test.getUuid());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

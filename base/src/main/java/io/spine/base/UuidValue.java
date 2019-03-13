@@ -23,8 +23,6 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-
 /**
  * A common interface for the {@code string}-based unique identifiers.
  *
@@ -46,8 +44,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * @param <I>
  *         the type of the message
  */
-@SuppressWarnings({"unchecked" /* Class cast correctness guaranteed by the interface contract. */,
-        "InterfaceNeverImplemented" /* Used by the Protobuf Compiler plugin. */})
+@SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
@@ -57,27 +54,5 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
      */
     static MessageClassifier classifier() {
         return new UuidValueClassifier();
-    }
-
-    /**
-     * Generates a new identifier instance using a generated UUID value.
-     */
-    default I generate() {
-        Class<I> thisClass = (Class<I>) this.getClass();
-        UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
-        return uuidFactory.newUuid();
-    }
-
-    /**
-     * Creates a new identifier instance from the passed value.
-     *
-     * @throws IllegalArgumentException
-     *         if the passed value is not a valid UUID string
-     */
-    default I of(String value) {
-        checkNotEmptyOrBlank(value);
-        Class<I> thisClass = (Class<I>) this.getClass();
-        UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
-        return uuidFactory.newUuidOf(value);
     }
 }

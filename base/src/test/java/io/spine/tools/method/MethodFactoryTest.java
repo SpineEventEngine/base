@@ -18,30 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.tools.method;
 
-import io.spine.test.identifiers.UuidMessage;
-import io.spine.testing.UtilityClassTest;
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.method.MethodFactory;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("MessageIdToString utility class should")
-class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
+/**
+ * With this unit test we are fixating {@link MethodFactory} contract.
+ */
+@DisplayName("MethodFactory should")
+final class MethodFactoryTest {
 
-    MessageIdToStringTest() {
-        super(MessageIdToString.class);
+    @DisplayName("have specific contract")
+    @Test
+    void shouldGenerateNewMethod() {
+        assertThat(new TestMethodFactory().createFor(null)).isEmpty();
     }
 
-    @Test
-    @DisplayName("convert Message to String")
-    void convert() {
-        UuidMessage test = UuidMessage.newBuilder()
-                                      .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
-                                      .build();
-        String value = MessageIdToString.toString(test);
+    @Immutable
+    public static class TestMethodFactory implements MethodFactory {
 
-        assertThat(value).contains(test.getUuid());
+        public TestMethodFactory() {
+        }
+
+        @Override
+        public List<GeneratedMethod> createFor(MessageType messageType) {
+            return ImmutableList.of();
+        }
     }
 }

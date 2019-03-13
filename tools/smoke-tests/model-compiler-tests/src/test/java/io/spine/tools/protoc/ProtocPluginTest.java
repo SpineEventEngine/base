@@ -196,9 +196,16 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("generate a custom UUID message method using io.spine.tools.protoc.UuidMethodFactory")
-    void generateCustomUuidMethod() {
-        assertNotEquals(TypicalIdentifier.random(), TypicalIdentifier.random());
+    @DisplayName("generate a random UUID message")
+    void generateRandomUuidMethod() {
+        assertNotEquals(TypicalIdentifier.generate(), TypicalIdentifier.generate());
+    }
+
+    @Test
+    @DisplayName("create instance of UUID identifier")
+    void createInstanceOfUuidIdentifier() {
+        String uuid = Identifier.newUuid();
+        assertEquals(TypicalIdentifier.of(uuid), TypicalIdentifier.of(uuid));
     }
 
     @Test

@@ -17,31 +17,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.base;
+package spine.test.tools.method.uuid;
 
-import io.spine.test.identifiers.UuidMessage;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import "spine/options.proto";
 
-import static com.google.common.truth.Truth.assertThat;
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.test.tools.method.uuid";
+option java_multiple_files = true;
+option java_outer_classname = "UuidMessageProto";
 
-@DisplayName("MessageIdToString utility class should")
-class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
+// Only for usage in `UuidMethodFactoryTest` class.
 
-    MessageIdToStringTest() {
-        super(MessageIdToString.class);
-    }
-
-    @Test
-    @DisplayName("convert Message to String")
-    void convert() {
-        UuidMessage test = UuidMessage.newBuilder()
-                                      .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
-                                      .build();
-        String value = MessageIdToString.toString(test);
-
-        assertThat(value).contains(test.getUuid());
-    }
+// A message with a single `uuid` field.
+message UuidMessage {
+    string uuid = 1;
 }

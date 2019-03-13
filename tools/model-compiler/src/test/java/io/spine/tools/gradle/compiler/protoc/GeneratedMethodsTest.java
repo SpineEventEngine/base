@@ -24,17 +24,35 @@ import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
 final class GeneratedMethodsTest {
+
+    @DisplayName("prepare default generated config for")
+    @Nested
+    class Default {
+
+        @DisplayName("UUID value")
+        @Test
+        void uuid() {
+            AddMethods config = GeneratedMethods.withDefaults()
+                                                .asProtocConfig();
+            UuidConfig uuid = config.getUuidFactory();
+            assertThat(uuid.getValue())
+                    .isEqualTo(UuidMethodFactory.class.getName());
+        }
+    }
 
     @DisplayName("convert to proper Protoc configuration")
     @Test
@@ -72,9 +90,7 @@ final class GeneratedMethodsTest {
     @DisplayName("be able to ignore UUID message configuration")
     @Test
     void ignoreUuidMessageConfig() {
-        String testMethodFactory = "io.spine.test.MethodFactory";
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(testMethodFactory, methods.uuidMessage());
         methods.ignore(methods.uuidMessage());
         assertSame(UuidConfig.getDefaultInstance(), methods.asProtocConfig()
                                                            .getUuidFactory());
@@ -82,25 +98,22 @@ final class GeneratedMethodsTest {
 
     private static boolean
     hasPostfixConfig(String postfix, String factoryName, AddMethods config) {
-        return hasInterface(config, factoryName,
-                            pattern -> postfix.equals(pattern.getFilePostfix()));
+        return hasConfig(config, factoryName, pattern -> postfix.equals(pattern.getFilePostfix()));
     }
 
     private static boolean
     hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
-        return hasInterface(config, factoryName,
-                            pattern -> prefix.equals(pattern.getFilePrefix()));
+        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getFilePrefix()));
     }
 
     private static boolean
     hasRegexConfig(String regex, String factoryName, AddMethods config) {
-        return hasInterface(config, factoryName,
-                            pattern -> regex.equals(pattern.getRegex()));
+        return hasConfig(config, factoryName, pattern -> regex.equals(pattern.getRegex()));
     }
 
-    private static boolean hasInterface(AddMethods config,
-                                        String factoryName,
-                                        Predicate<? super FilePattern> patternPredicate) {
+    private static boolean hasConfig(AddMethods config,
+                                     String factoryName,
+                                     Predicate<? super FilePattern> patternPredicate) {
         return config
                 .getFactoryByPatternList()
                 .stream()

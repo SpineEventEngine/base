@@ -273,6 +273,9 @@ public final class Identifier<I> {
      * @throws java.lang.IllegalStateException
      *         if the message is not a UUID message
      */
+    @Deprecated // use methods generated with io.spine.tools.protoc.method.uuid.UuidMethodFactory
+    //TODO:2019-03-13:yuri.sergiichuk: remove as soon as the core-java will be migrated to the
+    // new generated methods, see https://github.com/SpineEventEngine/base/issues/360
     public static <I extends Message> I generate(Class<I> idClass) {
         checkNotNull(idClass);
         UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
