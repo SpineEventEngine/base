@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides method generation extension point UUID Protobuf messages.
+ * This package provides method generation extension point for UUID Protobuf messages.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

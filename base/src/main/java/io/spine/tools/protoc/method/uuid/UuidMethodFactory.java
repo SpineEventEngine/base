@@ -69,7 +69,6 @@ public final class UuidMethodFactory implements MethodFactory {
         SimpleClassName simpleClassName = messageType.simpleJavaClassName();
         ClassName self = ClassName.get(packageName.value(), simpleClassName.value());
         return ImmutableList.of(newGenerateMethodSpec(self), newOfMethodSpec(self));
-
     }
 
     /**
