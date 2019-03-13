@@ -20,10 +20,12 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.testing.NullPointerTester;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
@@ -54,7 +56,7 @@ class GradleProjectTest {
 
     @Test
     @DisplayName("build from project folder and project name")
-    void build_from_project_folder_and_project_name() {
+    void buildFromProjectFolderAndProjectName() {
         GradleProject project = GradleProject
                 .newBuilder()
                 .setProjectFolder(temporaryFolder)
@@ -67,7 +69,7 @@ class GradleProjectTest {
     // OK for this test case; result of `build` it ignored.
     @Test
     @DisplayName("write given Java files")
-    void write_given_java_files() {
+    void writeGivenJavaFiles() {
         String[] files = {"Foo.java", "Bar.java"};
         GradleProject.newBuilder()
                      .setProjectFolder(temporaryFolder)
@@ -86,7 +88,7 @@ class GradleProjectTest {
 
     @Test
     @DisplayName("execute faulty build")
-    void execute_faulty_build() {
+    void executeFaultyBuild() {
         GradleProject project = GradleProject.newBuilder()
                                              .setProjectName(PROJECT_NAME)
                                              .setProjectFolder(temporaryFolder)
@@ -97,5 +99,18 @@ class GradleProjectTest {
         BuildTask compileTask = buildResult.task(':' + compileJava.value());
         assertNotNull(compileTask);
         assertEquals(FAILED, compileTask.getOutcome());
+    }
+
+    @Nested
+    @DisplayName("have Builder which")
+    class Builder {
+
+        @Test
+        @DisplayName("does not accept nulls")
+        void nulls() {
+            GradleProject.Builder instance = GradleProject.newBuilder();
+            new NullPointerTester()
+                    .testAllPublicInstanceMethods(instance);
+        }
     }
 }

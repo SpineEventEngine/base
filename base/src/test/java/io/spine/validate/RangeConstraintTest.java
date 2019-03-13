@@ -104,20 +104,19 @@ class RangeConstraintTest {
         return Sets.union(leftGreaterThanRight, ImmutableSet.of(closedWithSameNumber));
     }
 
-    private static ImmutableSet<Arguments> rangeCombinationsFor(Number left,
-                                                                Number right,
-                                                                ImmutableSet<Character> leftBoundary,
-                                                                ImmutableSet<Character> rightBoundary) {
+    private static ImmutableSet<Arguments>
+    rangeCombinationsFor(Number left,
+                         Number right,
+                         ImmutableSet<Character> leftBoundary,
+                         ImmutableSet<Character> rightBoundary) {
         ImmutableSet<String> lefts = leftBoundary
                 .stream()
                 .map(boundary -> String.valueOf(boundary) + left + "..")
                 .collect(toImmutableSet());
-
         ImmutableSet<String> rights = rightBoundary
                 .stream()
                 .map(boundary -> String.valueOf(right) + boundary)
                 .collect(toImmutableSet());
-
         ImmutableSet<Arguments> result =
                 Sets.cartesianProduct(lefts, rights)
                     .stream()
