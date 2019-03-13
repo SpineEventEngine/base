@@ -261,28 +261,6 @@ public final class Identifier<I> {
     }
 
     /**
-     * Generates a UUID message of the specified class.
-     *
-     * <p>A UUID message should have a single string field named {@code uuid}.
-     *
-     * @param idClass
-     *         the class of the message to generate
-     * @param <I>
-     *         the type of the message to generate
-     * @return a message with the initialized {@code uuid} field
-     * @throws java.lang.IllegalStateException
-     *         if the message is not a UUID message
-     */
-    @Deprecated // use methods generated with io.spine.tools.protoc.method.uuid.UuidMethodFactory
-    //TODO:2019-03-13:yuri.sergiichuk: remove as soon as the core-java will be migrated to the
-    // new generated methods, see https://github.com/SpineEventEngine/base/issues/360
-    public static <I extends Message> I generate(Class<I> idClass) {
-        checkNotNull(idClass);
-        UuidFactory<I> uuidFactory = UuidFactory.forClass(idClass);
-        return uuidFactory.newUuid();
-    }
-
-    /**
      * Converts the passed ID value into the string representation.
      *
      * @param id
