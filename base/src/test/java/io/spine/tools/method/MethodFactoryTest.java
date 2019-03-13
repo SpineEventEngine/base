@@ -55,5 +55,4 @@ final class MethodFactoryTest {
             return ImmutableList.of();
         }
     }
-
 }

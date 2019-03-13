@@ -28,7 +28,6 @@ option java_package="io.spine.test.tools.method.uuid";
 option java_multiple_files = true;
 option java_outer_classname = "UuidMessageProto";
 
-
 // Only for usage in `UuidMethodFactoryTest` class.
 
 // A message with a single `uuid` field.
