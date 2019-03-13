@@ -196,7 +196,8 @@ public final class GradleProject {
         }
 
         public Builder addProtoFile(String protoFileName) {
-            checkArgument(!isNullOrEmpty(protoFileName));
+            checkNotNull(protoFileName);
+            checkArgument(!protoFileName.isEmpty());
             protoFileNames.add(protoFileName);
             return this;
         }
@@ -232,6 +233,9 @@ public final class GradleProject {
          *         the content of the file
          */
         public Builder createProto(String fileName, Iterable<String> lines) {
+            checkNotNull(fileName);
+            checkNotNull(lines);
+
             String path = BASE_PROTO_LOCATION + fileName;
             return createFile(path, lines);
         }
@@ -245,6 +249,9 @@ public final class GradleProject {
          *         the content of the file
          */
         public Builder createFile(String path, Iterable<String> lines) {
+            checkNotNull(path);
+            checkNotNull(lines);
+
             Path sourcePath = folder.toPath()
                                     .resolve(path);
             try {
@@ -257,6 +264,8 @@ public final class GradleProject {
         }
 
         public Builder addProtoFiles(Collection<String> protoFileNames) {
+            checkNotNull(protoFileNames);
+
             for (String protoFileName : protoFileNames) {
                 checkArgument(!isNullOrEmpty(protoFileName));
             }
