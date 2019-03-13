@@ -22,23 +22,21 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GenerateMethod;
-import io.spine.tools.protoc.MethodsGeneration;
-import io.spine.tools.protoc.UuidGenerateMethod;
+import io.spine.tools.protoc.AddMethods;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class GeneratedMethods extends GeneratedConfigurations<MethodsGeneration> {
+public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> {
 
-    private UuidGenerateMethod uuidGenerateMethod = UuidGenerateMethod.getDefaultInstance();
+    private UuidConfig uuidFactoryConfig = UuidConfig.getDefaultInstance();
 
     private GeneratedMethods() {
         super();
@@ -112,7 +110,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
      * <p>In such case, no additional methods are added to the message classes matching the
      * pattern.
      */
-    public final void useFactory(@FullyQualifiedName String factoryName, FileSelector fileSelector) {
+    public final void useFactory(@FullyQualifiedName String factoryName,
+                                 FileSelector fileSelector) {
         checkNotNull(factoryName);
         checkNotNull(fileSelector);
         addPattern(fileSelector, ClassName.of(factoryName));
@@ -133,45 +132,27 @@ public final class GeneratedMethods extends GeneratedConfigurations<MethodsGener
      * </pre>
      */
     public final void useFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
-        checkNotNull(factoryName);
         checkNotNull(uuidMessage);
-        uuidGenerateMethod = uuidMethod(factoryName);
+        uuidFactoryConfig = uuidConfig(factoryName);
     }
 
     @Override
     public void ignore(UuidMessage uuidMessage) {
         checkNotNull(uuidMessage);
-        uuidGenerateMethod = UuidGenerateMethod.getDefaultInstance();
+        uuidFactoryConfig = UuidConfig.getDefaultInstance();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Internal
     @Override
-    public MethodsGeneration asProtocConfig() {
-        MethodsGeneration.Builder result = MethodsGeneration
+    public AddMethods asProtocConfig() {
+        AddMethods.Builder result = AddMethods
                 .newBuilder()
-                .setUuidMethod(uuidGenerateMethod);
+                .setUuidFactory(uuidFactoryConfig);
         patternConfigurations()
                 .stream()
-                .map(GeneratedMethods::toCommand)
-                .forEach(result::addGenerateMethod);
+                .map(GeneratedConfigurations::toPatternConfig)
+                .forEach(result::addFactoryByPattern);
         return result.build();
-    }
-
-    private static UuidGenerateMethod uuidMethod(@FullyQualifiedName String factoryName) {
-        return UuidGenerateMethod
-                .newBuilder()
-                .setFactoryName(factoryName)
-                .build();
-    }
-
-    private static GenerateMethod toCommand(Map.Entry<FileSelector, ClassName> e) {
-        FileSelector fileSelector = e.getKey();
-        ClassName className = e.getValue();
-        return GenerateMethod
-                .newBuilder()
-                .setPattern(fileSelector.toProto())
-                .setFactoryName(className.value())
-                .build();
     }
 }

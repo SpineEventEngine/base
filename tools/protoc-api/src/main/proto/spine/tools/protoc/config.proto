@@ -11,60 +11,65 @@ option java_multiple_files = true;
 
 option (internal_all) = true;
 
-// Interface implementation task for Protobuf UUID messages.
+// Configuration of the Spine Protoc plugin.
 //
-// Specifies which interface Protobuf message that are labeled as UUID messages should implement.
+// The configuration is passed to the plugin as the single option. The passed value is serialized
+// and base-64 encoded.
 //
-// An empty interface name signifies that no interface should be implemented.
-//
-message UuidImplementInterface {
+message SpineProtocConfig {
 
-    // A fully-qualified name of the message interface class.
-    string interface_name = 1;
+    // Interfaces generation tasks.
+    AddInterfaces add_interfaces = 1;
+
+    // Methods generation tasks.
+    AddMethods add_methods = 2;
 }
 
-// Interface implementation task for Protobuf messages that match a certain file pattern.
-//
-// Specifies which interface Protobuf messages that match a specified file pattern selector should
-// implement.
-//
-// An empty interface name signifies that no interface should be implemented.
-//
-message ImplementInterface {
+// Interfaces generation configuration.
+message AddInterfaces {
 
-    // A fully-qualified name of the message interface class.
-    string interface_name = 1;
+    // UUID value interface.
+    UuidConfig uuid_interface = 1;
 
-    // A file pattern that defines which message types should implement the interface.
-    FilePattern pattern = 2;
+    // Pattern-based interfaces.
+    repeated ConfigByPattern interface_by_pattern = 2;
 }
 
-// Method generation task for Protobuf UUID messages.
-//
-// Specifies which method factory should be used for method generation for Protobuf messages
-// that are labeled as UUID messages.
-//
-// An empty value signifies that the additional methods should not be generated.
-//
-message UuidGenerateMethod {
+// Methods generation configuration.
+message AddMethods {
 
-    // A fully-qualified name of the message factory class.
-    string factory_name = 1;
+    // UUID value method factory.
+    UuidConfig uuid_factory = 1;
+
+    // Pattern-based method factories.
+    repeated ConfigByPattern factory_by_pattern = 2;
+
+    Classpath factory_classpath = 3;
 }
 
-// Method generation task for Protobuf messages that match a certain file pattern.
+// UUID value code generation configuration
 //
-// Specifies which method factory should be used for method generation applied to Protobuf messages
-// that match specified file pattern selector.
-//
-// An empty factory name signifies that the additional methods should not be generated.
-//
-message GenerateMethod {
+message UuidConfig {
 
-    // A fully-qualified name of the message factory class.
-    string factory_name = 1;
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+}
 
-    // A file pattern that defines for which message types the message factory should be called.
+// Code generation configuration based on the FilePattern.
+//
+message ConfigByPattern {
+
+
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+
+    // A file pattern that defines for which message types code should be generated.
     FilePattern pattern = 2;
 }
 
@@ -97,55 +102,10 @@ message FilePattern {
     }
 }
 
-// Spine Protoc plugin interfaces generation tasks.
-//
-message InterfacesGeneration {
-
-    repeated ImplementInterface implement_interface = 1;
-
-    UuidImplementInterface uuid_interface = 2;
-}
-
 // A container for the java classpath items.
 //
 message Classpath {
 
     // An absolute OS-dependent path to a particular classpath JAR.
     repeated string jar = 1;
-}
-
-// Method factories configuration.
-//
-// Allows {@code MethodFactory} instances to be loaded from the project classpath.
-//
-message MethodFactoryConfiguration {
-
-    // Java classpath of a project for which code generation is performed
-    Classpath classpath = 1;
-}
-
-// Spine Protoc plugin methods generation tasks.
-//
-message MethodsGeneration {
-
-    repeated GenerateMethod generate_method = 1;
-
-    UuidGenerateMethod uuid_method = 2;
-
-    // Method Factory configuration.
-    MethodFactoryConfiguration factory_configuration = 3;
-}
-
-// Configuration of the Spine Protoc plugin.
-//
-// The configuration is passed to the plugin as the single option. The passed value is serialized
-// and base-64 encoded.
-//
-message SpineProtocConfig {
-
-    // Interfaces generation tasks.
-    InterfacesGeneration interfaces_generation = 1;
-
-    // Methods generation tasks.
-    MethodsGeneration methods_generation = 2;
 }

@@ -90,7 +90,7 @@ final class InterfaceGeneratorTest {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
-                .setInterfacesGeneration(interfaces.asProtocConfig())
+                .setAddInterfaces(interfaces.asProtocConfig())
                 .build();
         codeGenerator = InterfaceGenerator.instance(config);
     }

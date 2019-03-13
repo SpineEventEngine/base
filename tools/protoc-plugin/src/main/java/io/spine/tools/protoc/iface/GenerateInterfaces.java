@@ -22,8 +22,8 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatternMatcher;
-import io.spine.tools.protoc.ImplementInterface;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -37,8 +37,8 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    GenerateInterfaces(ImplementInterface config) {
-        super(config.getInterfaceName());
+    GenerateInterfaces(ConfigByPattern config) {
+        super(config.getValue());
         checkNotDefault(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }

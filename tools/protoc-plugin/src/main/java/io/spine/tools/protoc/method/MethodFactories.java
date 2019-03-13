@@ -22,7 +22,6 @@ package io.spine.tools.protoc.method;
 
 import io.spine.logging.Logging;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.MethodFactoryConfiguration;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -41,8 +40,8 @@ final class MethodFactories implements Logging {
 
     private final ClassLoader externalClassLoader;
 
-    MethodFactories(MethodFactoryConfiguration configuration) {
-        this.externalClassLoader = externalClassLoader(configuration);
+    MethodFactories(Classpath factoryClasspath) {
+        this.externalClassLoader = externalClassLoader(factoryClasspath);
     }
 
     /**
@@ -98,16 +97,15 @@ final class MethodFactories implements Logging {
         }
     }
 
-    private static ClassLoader externalClassLoader(MethodFactoryConfiguration configuration) {
+    private static ClassLoader externalClassLoader(Classpath factoryClasspath) {
         ClassLoader currentClassLoader = Thread.currentThread()
                                                .getContextClassLoader();
-        URL[] classPathUrls = classPathUrls(configuration);
+        URL[] classPathUrls = classPathUrls(factoryClasspath);
         URLClassLoader loader = URLClassLoader.newInstance(classPathUrls, currentClassLoader);
         return loader;
     }
 
-    private static URL[] classPathUrls(MethodFactoryConfiguration configuration) {
-        Classpath classpath = configuration.getClasspath();
+    private static URL[] classPathUrls(Classpath classpath) {
         return classpath
                 .getJarList()
                 .stream()

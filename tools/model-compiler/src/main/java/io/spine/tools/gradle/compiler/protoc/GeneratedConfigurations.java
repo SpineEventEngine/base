@@ -25,10 +25,12 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.ConfigByPattern;
 
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
 
 /**
  * Abstract base for Gradle extension configurations related to Spine Protoc plugin.
@@ -108,5 +110,14 @@ abstract class GeneratedConfigurations<C extends Message> {
      */
     ImmutableSet<Map.Entry<FileSelector, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
+    }
+
+    /**
+     * Converts {@link FileSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
+     */
+    static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
+        FileSelector fileSelector = e.getKey();
+        ClassName className = e.getValue();
+        return byPatternConfig(className.value(), fileSelector.toProto());
     }
 }

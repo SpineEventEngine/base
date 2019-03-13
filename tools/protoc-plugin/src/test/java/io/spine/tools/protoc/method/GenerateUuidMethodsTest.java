@@ -21,9 +21,9 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.MethodFactoryConfiguration;
-import io.spine.tools.protoc.UuidGenerateMethod;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +46,7 @@ final class GenerateUuidMethodsTest {
         @Test
         void isCreatedWithNullArguments() {
             assertThrows(NullPointerException.class, () ->
-                    new GenerateUuidMethods(null, UuidGenerateMethod.getDefaultInstance()));
+                    new GenerateUuidMethods(null, UuidConfig.getDefaultInstance()));
             assertThrows(NullPointerException.class, () ->
                     new GenerateUuidMethods(testMethodFactories(), null)
             );
@@ -55,7 +55,7 @@ final class GenerateUuidMethodsTest {
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
-            UuidGenerateMethod config = newTaskConfig("test");
+            UuidConfig config = newTaskConfig("test");
             GenerateUuidMethods task = new GenerateUuidMethods(testMethodFactories(), config);
             assertThrows(NullPointerException.class, () -> task.generateFor(null));
         }
@@ -65,7 +65,7 @@ final class GenerateUuidMethodsTest {
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String factoryName) {
-        UuidGenerateMethod config = newTaskConfig(factoryName);
+        UuidConfig config = newTaskConfig(factoryName);
         assertThrows(IllegalArgumentException.class, () ->
                 new GenerateUuidMethods(testMethodFactories(), config));
     }
@@ -81,7 +81,7 @@ final class GenerateUuidMethodsTest {
         }
 
         private void assertEmptyResult(String factoryName) {
-            UuidGenerateMethod config = newTaskConfig(factoryName);
+            UuidConfig config = newTaskConfig(factoryName);
             ImmutableList<CompilerOutput> result = newTask(config)
                     .generateFor(new MessageType(NonEnhancedMessage.getDescriptor()));
             assertThat(result).isEmpty();
@@ -91,23 +91,23 @@ final class GenerateUuidMethodsTest {
     @DisplayName("generate new methods")
     @Test
     void generateNewMethods() {
-        UuidGenerateMethod config = newTaskConfig(TestMethodFactory.class.getName());
+        UuidConfig config = newTaskConfig(TestMethodFactory.class.getName());
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();
     }
 
-    private static UuidGenerateMethod newTaskConfig(String factoryName) {
-        return UuidGenerateMethod.newBuilder()
-                                 .setFactoryName(factoryName)
+    private static UuidConfig newTaskConfig(String factoryName) {
+        return UuidConfig.newBuilder()
+                                 .setValue(factoryName)
                                  .build();
     }
 
-    private static GenerateUuidMethods newTask(UuidGenerateMethod config) {
+    private static GenerateUuidMethods newTask(UuidConfig config) {
         return new GenerateUuidMethods(testMethodFactories(), config);
     }
 
     private static MethodFactories testMethodFactories() {
-        return new MethodFactories(MethodFactoryConfiguration.getDefaultInstance());
+        return new MethodFactories(Classpath.getDefaultInstance());
     }
 
     private static MessageType testType() {

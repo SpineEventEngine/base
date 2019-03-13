@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,7 +29,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FilePatterns should")
-final class FilePatternsTest {
+final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
+
+    FilePatternsTest() {
+        super(FilePatterns.class);
+    }
 
     @DisplayName("not allow null values for")
     @Nested

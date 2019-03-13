@@ -37,9 +37,8 @@ import io.spine.tools.gradle.TaskName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
+import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.MethodFactoryConfiguration;
-import io.spine.tools.protoc.MethodsGeneration;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -263,21 +262,21 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     private static SpineProtocConfig assembleParameter(Project project) {
         GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
         GeneratedMethods methods = getGeneratedMethods(project);
-        MethodsGeneration methodsGeneration = methods
+        AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()
-                .setFactoryConfiguration(prepareGeneratorConfiguration(project))
+                .setFactoryClasspath(projectClasspath(project))
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
-                .setInterfacesGeneration(interfaces.asProtocConfig())
-                .setMethodsGeneration(methodsGeneration)
+                .setAddInterfaces(interfaces.asProtocConfig())
+                .setAddMethods(methodsGeneration)
                 .build();
         return result;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // Classpath.Builder usage in `forEach`
-    private static MethodFactoryConfiguration prepareGeneratorConfiguration(Project project) {
+    private static Classpath projectClasspath(Project project) {
         Classpath.Builder classpath = Classpath.newBuilder();
         Collection<JavaCompile> javaCompileViews = project.getTasks()
                                                           .withType(JavaCompile.class);
@@ -288,10 +287,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                      .flatMap(Set::stream)
                      .map(File::getAbsolutePath)
                      .forEach(classpath::addJar);
-        return MethodFactoryConfiguration
-                .newBuilder()
-                .setClasspath(classpath)
-                .build();
+        return classpath.build();
     }
 
     private enum ProtocPlugin {
