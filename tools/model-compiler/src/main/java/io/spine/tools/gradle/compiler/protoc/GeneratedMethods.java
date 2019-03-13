@@ -23,14 +23,12 @@ package io.spine.tools.gradle.compiler.protoc;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddMethods;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
-import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
  * A configuration of methods to be generated for Java message classes.
@@ -131,9 +129,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * </pre>
      */
     public final void useFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
-        checkNotNull(factoryName);
         checkNotNull(uuidMessage);
-        uuidFactoryConfig = uuidFactoryConfig(factoryName);
+        uuidFactoryConfig = uuidConfig(factoryName);
     }
 
     @Override
@@ -151,25 +148,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
                 .setUuidFactory(uuidFactoryConfig);
         patternConfigurations()
                 .stream()
-                .map(GeneratedMethods::toPatternConfig)
+                .map(GeneratedConfigurations::toPatternConfig)
                 .forEach(result::addFactoryByPattern);
         return result.build();
-    }
-
-    private static UuidConfig uuidFactoryConfig(@FullyQualifiedName String factoryName) {
-        return UuidConfig
-                .newBuilder()
-                .setValue(factoryName)
-                .build();
-    }
-
-    private static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
-        FileSelector fileSelector = e.getKey();
-        ClassName className = e.getValue();
-        return ConfigByPattern
-                .newBuilder()
-                .setPattern(fileSelector.toProto())
-                .setValue(className.value())
-                .build();
     }
 }

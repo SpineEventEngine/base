@@ -28,16 +28,14 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddInterfaces;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.UuidConfig;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
-
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
+import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
@@ -160,8 +158,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      */
     public final void mark(UuidMessage uuidMessage, @FullyQualifiedName String interfaceName) {
         checkNotNull(uuidMessage);
-        checkNotNull(interfaceName);
-        uuidInterface = uuidInterface(interfaceName);
+        uuidInterface = uuidConfig(interfaceName);
     }
 
     @Override
@@ -179,25 +176,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
                 .setUuidInterface(uuidInterface);
         patternConfigurations()
                 .stream()
-                .map(GeneratedInterfaces::toPatternConfig)
+                .map(GeneratedConfigurations::toPatternConfig)
                 .forEach(result::addInterfaceByPattern);
         return result.build();
-    }
-
-    private static UuidConfig uuidInterface(@FullyQualifiedName String interfaceName) {
-        return UuidConfig
-                .newBuilder()
-                .setValue(interfaceName)
-                .build();
-    }
-
-    private static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
-        FileSelector fileSelector = e.getKey();
-        ClassName className = e.getValue();
-        return ConfigByPattern
-                .newBuilder()
-                .setPattern(fileSelector.toProto())
-                .setValue(className.value())
-                .build();
     }
 }

@@ -22,6 +22,8 @@ group 'io.spine.tools'
 
 dependencies {
     compile project(':base')
+
+    testImplementation project(':testlib')
 }
 
 sourceSets.main {
