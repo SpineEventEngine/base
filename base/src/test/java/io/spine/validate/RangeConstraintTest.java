@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.ImmutableSet.builder;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -105,20 +104,19 @@ class RangeConstraintTest {
         return Sets.union(leftGreaterThanRight, ImmutableSet.of(closedWithSameNumber));
     }
 
-    private static ImmutableSet<Arguments> rangeCombinationsFor(Number left,
-                                                                Number right,
-                                                                ImmutableSet<Character> leftBoundary,
-                                                                ImmutableSet<Character> rightBoundary) {
+    private static ImmutableSet<Arguments>
+    rangeCombinationsFor(Number left,
+                         Number right,
+                         ImmutableSet<Character> leftBoundary,
+                         ImmutableSet<Character> rightBoundary) {
         ImmutableSet<String> lefts = leftBoundary
                 .stream()
                 .map(boundary -> String.valueOf(boundary) + left + "..")
                 .collect(toImmutableSet());
-
         ImmutableSet<String> rights = rightBoundary
                 .stream()
                 .map(boundary -> String.valueOf(right) + boundary)
                 .collect(toImmutableSet());
-
         ImmutableSet<Arguments> result =
                 Sets.cartesianProduct(lefts, rights)
                     .stream()
@@ -129,7 +127,7 @@ class RangeConstraintTest {
     }
 
     private static ImmutableSet<Arguments> argumentsFrom(Object... elements) {
-        ImmutableSet.Builder<Arguments> builder = builder();
+        ImmutableSet.Builder<Arguments> builder = ImmutableSet.builder();
         for (Object element : elements) {
             builder.add(Arguments.of(element));
         }
