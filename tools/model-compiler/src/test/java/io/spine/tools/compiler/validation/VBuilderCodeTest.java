@@ -99,8 +99,9 @@ class VBuilderCodeTest {
 
             @Test
             @DisplayName("2nd level")
-            void doSomething() {
+            void secondLevel() {
                 assertGeneratesFor(VbtProcess.Point.getDescriptor());
+                assertGeneratesFor(VbtProcess.getDescriptor());
             }
         }
     }
