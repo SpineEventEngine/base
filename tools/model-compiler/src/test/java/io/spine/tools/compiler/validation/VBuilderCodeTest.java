@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.FileName;
 import io.spine.test.tools.validation.builder.TheOuterProto;
+import io.spine.test.tools.validation.builder.VbtOrder;
 import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;
