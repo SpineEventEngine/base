@@ -34,9 +34,9 @@ import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
 import io.spine.test.tools.protoc.WeatherForecast;
-import io.spine.tools.protoc.SomeMessage.InnerMessageNotEnrichment;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,11 +45,12 @@ import java.lang.reflect.Method;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ProtocPlugin should")
-class ProtocPluginTest {
+final class ProtocPluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
             "io.spine.tools.protoc.PICustomerEvent";
@@ -177,6 +178,57 @@ class ProtocPluginTest {
         assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
         assertThat(WeatherForecast.Temperature.getDefaultInstance())
                 .isNotInstanceOf(DocumentMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method for an .endsWith() pattern")
+    void generateCustomPatternBasedMethod() {
+        MessageType expectedType =
+                new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
+    }
+
+    @Test
+    @DisplayName("mark a message with interface using .endsWith() pattern")
+    void markMessageWithInterfaceUsingEndsWithPattern() {
+        assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
+                .isInstanceOf(PostfixedMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom UUID message method using io.spine.tools.protoc.UuidMethodFactory")
+    void generateCustomUuidMethod() {
+        assertNotEquals(TypicalIdentifier.random(), TypicalIdentifier.random());
+    }
+
+    @Test
+    @DisplayName("mark a message with interface using .startsWith() pattern")
+    void markMessageWithInterfaceUsingStartsWithPattern() {
+        assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
+                .isInstanceOf(PrefixedMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method for a .startsWith() pattern")
+    void generateCustomPrefixBasedMethod() {
+        MessageType expectedType =
+                new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+    }
+
+    @Test
+    @DisplayName("mark a message with interface using .regex() pattern")
+    void markMessageWithInterfaceUsingRegexPattern() {
+        assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
+                .isInstanceOf(RegexedMessage.class);
+    }
+
+    @Test
+    @DisplayName("generate a custom method for a .regex() pattern")
+    void generateCustomRegexBasedMethod() {
+        MessageType expectedType =
+                new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
     }
 
     @CanIgnoreReturnValue

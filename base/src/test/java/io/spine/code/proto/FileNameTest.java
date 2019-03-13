@@ -138,4 +138,12 @@ class FileNameTest {
         assertFalse(rejectionsFile.isCommands());
         assertFalse(rejectionsFile.isEvents());
     }
+
+    @Test
+    @DisplayName("return file name with extension")
+    void returnFileNameWithExtension(){
+        FileName fileName = FileName.of("io/spine/test/test_protos.proto");
+
+        assertEquals("test_protos.proto", fileName.nameWithExtension());
+    }
 }

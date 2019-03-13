@@ -11,33 +11,6 @@ option java_multiple_files = true;
 
 option (internal_all) = true;
 
-// Interface to mark UUID messages.
-//
-// An empty value signifies that the messages should not be marked.
-//
-message UuidInterface {
-
-    string interface_name = 1;
-}
-
-// Interface to mark messages defined in a file with a certain name postfix.
-//
-message GeneratedInterface {
-
-    string interface_name = 1;
-
-    string file_postfix = 2 [(required) = true];
-}
-
-// Interface to mark Enrichment messages.
-//
-// An empty value signifies that the messages should not be marked.
-//
-message EnrichmentInterface {
-
-    string interface_name = 1;
-}
-
 // Configuration of the Spine Protoc plugin.
 //
 // The configuration is passed to the plugin as the single option. The passed value is serialized
@@ -45,7 +18,94 @@ message EnrichmentInterface {
 //
 message SpineProtocConfig {
 
-    UuidInterface uuid_interface = 1;
+    // Interfaces generation tasks.
+    AddInterfaces add_interfaces = 1;
 
-    repeated GeneratedInterface generated_interface = 2;
+    // Methods generation tasks.
+    AddMethods add_methods = 2;
+}
+
+// Interfaces generation configuration.
+message AddInterfaces {
+
+    // UUID value interface.
+    UuidConfig uuid_interface = 1;
+
+    // Pattern-based interfaces.
+    repeated ConfigByPattern interface_by_pattern = 2;
+}
+
+// Methods generation configuration.
+message AddMethods {
+
+    // UUID value method factory.
+    UuidConfig uuid_factory = 1;
+
+    // Pattern-based method factories.
+    repeated ConfigByPattern factory_by_pattern = 2;
+
+    Classpath factory_classpath = 3;
+}
+
+// UUID value code generation configuration
+//
+message UuidConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+}
+
+// Code generation configuration based on the FilePattern.
+//
+message ConfigByPattern {
+
+
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+
+    // A file pattern that defines for which message types code should be generated.
+    FilePattern pattern = 2;
+}
+
+// File pattern which is used to filter messages.
+//
+message FilePattern {
+
+    oneof value {
+
+        // An ending that a .proto file's full name should end with.
+        //
+        // If a .proto file matches the postfix, some code generation will be applied to all its
+        // messages.
+        //
+        string file_postfix = 1;
+
+        // A prefix that a .proto file's full name should start with.
+        //
+        // If a .proto file matches the prefix, some code generation will be applied to all its
+        // messages.
+        //
+        string file_prefix = 2;
+
+        // A regex a .proto file's full name should match.
+        //
+        // If a .proto file matches the regex, some code generation will be applied to all its
+        // messages.
+        //
+        string regex = 3;
+    }
+}
+
+// A container for the java classpath items.
+//
+message Classpath {
+
+    // An absolute OS-dependent path to a particular classpath JAR.
+    repeated string jar = 1;
 }

@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -31,6 +32,7 @@ import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.type.Type;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +42,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
@@ -81,7 +84,57 @@ import static java.util.stream.Collectors.toSet;
  */
 public abstract class SpineProtoGenerator {
 
+    private @Nullable SpineProtoGenerator linkedGenerator;
+
     protected SpineProtoGenerator() {
+    }
+
+    /**
+     * Processes the given compiler request and generates the response to the compiler.
+     *
+     * <p>Each {@linkplain FileDescriptorProto .proto file} may cause none, one or many
+     * generated {@link File CodeGeneratorResponse.File} instances.
+     *
+     * <p>Note: there are several preconditions for this method to run successfully:
+     * <ul>
+     *     <li>since Spine relies on 3rd version of Protobuf, the Proto compiler version should be
+     *         {@code 3.*} or greater;
+     *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
+     * </ul>
+     *
+     * @param request
+     *         the compiler request
+     * @return the response to the compiler
+     * @see #generate Javadoc for generate(...) for more detailed description
+     */
+    public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
+        checkNotNull(request);
+        checkCompilerVersion(request);
+        checkNotEmpty(request);
+        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
+        Set<FileName> requestedFileNames = request.getFileToGenerateList()
+                                                  .stream()
+                                                  .map(FileName::of)
+                                                  .collect(toSet());
+        FileSet requestedFiles = fileSet.find(requestedFileNames);
+        TypeSet typeSet = TypeSet.from(requestedFiles);
+        CodeGeneratorResponse response = process(typeSet);
+        return response;
+    }
+
+    /**
+     * Links current proto generator with a next one and returns the current one.
+     *
+     * <p>A linked generator is activate prior to the current in the generation chain.
+     *
+     * <p>All generated files are than merged into one response.
+     *
+     * @see #process(TypeSet)
+     */
+    public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator) {
+        checkNotNull(nextGenerator);
+        this.linkedGenerator = nextGenerator;
+        return this;
     }
 
     /**
@@ -99,44 +152,13 @@ public abstract class SpineProtoGenerator {
      *         the Protobuf type to process
      * @return optionally a {@link Collection} of {@linkplain CompilerOutput CompilerOutputs}
      *         to write or an empty {@code Collection}
-     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e. equal in
-     *         terms of {@link Object#equals(Object) equals()} method), but should not produce
-     *         non-equal instances with the same value of {@code CodeGeneratorResponse.File.name}.
-     *         Such entries cause {@code protoc} to fail and should be filtered on an early stage.
+     * @apiNote This method may produce identical {@link CompilerOutput} instances (i.e.
+     *         equal in terms of {@link Object#equals(Object) equals()} method), but should
+     *         not produce non-equal instances with the same value of
+     *         {@code CodeGeneratorResponse.File.name}. Such entries cause {@code protoc}
+     *         to fail and should be filtered on an early stage.
      */
-    protected abstract Collection<CompilerOutput> processType(Type<?, ?> type);
-
-    /**
-     * Processes the given compiler request and generates the response to the compiler.
-     *
-     * <p>Each {@linkplain FileDescriptorProto .proto file} may cause none, one or many
-     * generated {@link File CodeGeneratorResponse.File} instances.
-     *
-     * <p>Note: there are several preconditions for this method to run successfully:
-     * <ul>
-     *     <li>since Spine relies on 3rd version of Protobuf, the Proto compiler version should be
-     *         {@code 3.*} or greater;
-     *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
-     * </ul>
-     *
-     * @param request the compiler request
-     * @return the response to the compiler
-     * @see #processType Javadoc for processType(...) for more detailed description
-     */
-    public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
-        checkNotNull(request);
-        checkCompilerVersion(request);
-        checkNotEmpty(request);
-        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
-        Set<FileName> requestedFileNames = request.getFileToGenerateList()
-                                                  .stream()
-                                                  .map(FileName::of)
-                                                  .collect(toSet());
-        FileSet requestedFiles = fileSet.find(requestedFileNames);
-        TypeSet typeSet = TypeSet.from(requestedFiles);
-        CodeGeneratorResponse response = process(typeSet);
-        return response;
-    }
+    protected abstract Collection<CompilerOutput> generate(Type<?, ?> type);
 
     private static void checkNotEmpty(CodeGeneratorRequest request)
             throws IllegalArgumentException {
@@ -147,16 +169,30 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(TypeSet types) {
-        Set<CompilerOutput> rawOutput = types.allTypes()
-                                             .stream()
-                                             .flatMap(type -> processType(type).stream())
-                                             .collect(toSet());
+        Set<CompilerOutput> rawOutput = generate(types);
         Collection<File> mergedFiles = mergeFiles(rawOutput);
         CodeGeneratorResponse response = CodeGeneratorResponse
                 .newBuilder()
                 .addAllFile(mergedFiles)
                 .build();
         return response;
+    }
+
+    /**
+     * Generates code for the supplied types.
+     */
+    private Set<CompilerOutput> generate(TypeSet types) {
+        Set<CompilerOutput> result = newHashSet();
+        if (linkedGenerator != null) {
+            result.addAll(linkedGenerator.generate(types));
+        }
+        Set<CompilerOutput> rawOutput = types.allTypes()
+                                             .stream()
+                                             .map(this::generate)
+                                             .flatMap(Collection::stream)
+                                             .collect(toSet());
+        result.addAll(rawOutput);
+        return result;
     }
 
     /**
@@ -201,5 +237,10 @@ public abstract class SpineProtoGenerator {
         return left.toBuilder()
                    .setContent(left.getContent() + right.getContent())
                    .build();
+    }
+
+    @VisibleForTesting
+    @Nullable SpineProtoGenerator linkedGenerator() {
+        return linkedGenerator;
     }
 }
