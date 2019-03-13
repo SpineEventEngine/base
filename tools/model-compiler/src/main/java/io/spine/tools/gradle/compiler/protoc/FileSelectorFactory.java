@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
+import io.spine.code.proto.FileName;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -59,6 +60,16 @@ public final class FileSelectorFactory {
     public RegexSelector matches(@Regex String regex) {
         checkNotNull(regex);
         RegexSelector result = new RegexSelector(regex);
+        return result;
+    }
+
+    /**
+     * Creates a {@link PostfixSelector} selector that matches {@code all} Protobuf files.
+     *
+     * <p>It is expected that a Protobuf file ends with {@link FileName#EXTENSION .proto} extension.
+     */
+    public PostfixSelector all() {
+        PostfixSelector result = new PostfixSelector(FileName.EXTENSION);
         return result;
     }
 }

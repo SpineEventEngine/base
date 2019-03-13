@@ -24,6 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,6 +53,13 @@ final class FileSelectorFactoryTest {
         @Test
         void regex() {
             assertNotNull(factory.matches(".*/spine/.*"));
+        }
+
+        @DisplayName("all pattern")
+        @Test
+        void all() {
+            assertThat(factory.all())
+                    .isEqualTo(factory.endsWith(".proto"));
         }
     }
 
