@@ -40,8 +40,8 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.type.MessageType.VBUILDER_SUFFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TempDirectory.class)
@@ -101,7 +101,15 @@ class VBuilderCodeTest {
             @DisplayName("2nd level")
             void secondLevel() {
                 assertGeneratesFor(VbtProcess.Point.getDescriptor());
+                // ... and the outer class is generated too.
                 assertGeneratesFor(VbtProcess.getDescriptor());
+            }
+
+            @Test
+            @DisplayName("2nd level with repeated")
+            void secondLevelRepeated() {
+                assertGeneratesFor(VbtOrder.Item.getDescriptor());
+                assertGeneratesFor(VbtOrder.getDescriptor());
             }
         }
     }
@@ -113,7 +121,9 @@ class VBuilderCodeTest {
         void assertFileName(String expected, Descriptor descriptor) {
             File file = assertGeneratesFor(descriptor);
             String nameOnly = FileName.nameOnly(file);
-            assertEquals(expected, nameOnly);
+
+            assertThat(nameOnly)
+                    .isEqualTo(expected);
         }
 
         @Test

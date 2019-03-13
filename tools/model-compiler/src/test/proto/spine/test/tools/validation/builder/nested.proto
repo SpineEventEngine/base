@@ -88,3 +88,19 @@ message VbtTree {
 message VbtForest {
     repeated VbtTree tree = 1 [(required) = true];
 }
+
+
+message VbtOrderId {
+    string uuid = 1;
+}
+
+message VbtOrder {
+    VbtOrderId id = 1;
+    string name = 2 [(required) = true];
+    repeated Item item = 3;
+
+    message Item {
+        string name = 1 [(required) = true];
+        string description = 2;
+    }
+}
