@@ -93,5 +93,4 @@ final class VBuilderMethodFactoryTest {
                                    "  return io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
                                    "}\n");
     }
-
 }
