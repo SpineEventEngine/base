@@ -212,10 +212,6 @@ class MessageTypeTest {
         }
     }
 
-    private static MessageType type(Descriptor descriptor) {
-        return new MessageType(descriptor);
-    }
-
     @Test
     @DisplayName("support equality and hashing")
     void equalityAndHasing() {
@@ -223,5 +219,15 @@ class MessageTypeTest {
                 .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
                 .addEqualityGroup(type(Timestamp.getDescriptor()))
                 .testEquals();
+    }
+
+    @Test
+    @DisplayName("has a Validating Builder")
+    void hasVBuilder(){
+
+    }
+
+    private static MessageType type(Descriptor descriptor) {
+        return new MessageType(descriptor);
     }
 }
