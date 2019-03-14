@@ -25,6 +25,7 @@ import com.google.common.truth.IterableSubject;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.net.Uri;
 import io.spine.net.Url;
@@ -46,7 +47,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MessageType should")
-class MessageTypeTest {
+final class MessageTypeTest {
 
     /**
      * Negates the passed predicate.
@@ -60,8 +61,8 @@ class MessageTypeTest {
     }
 
     @Nested
-    @DisplayName("tell if message is")
-    class Tell {
+    @DisplayName("tell if message")
+    final class Tell {
 
         /**
          * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
@@ -72,118 +73,146 @@ class MessageTypeTest {
             assertTrue(result);
         }
 
-        @DisplayName("nested")
-        @Test
-        void nested() {
-            assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
-            assertQuality(not(MessageType::isNested), Url.getDescriptor());
-        }
-
-        @DisplayName("top-level")
-        @Test
-        void topLevel() {
-            assertQuality(MessageType::isTopLevel, Url.getDescriptor());
-            assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
-        }
-
-        @DisplayName("a rejection")
-        @Test
-        void rejection() {
-            assertQuality(MessageType::isRejection,
-                          TestRejections.MttSampleRejection.getDescriptor()
-            );
-        }
-
-        @DisplayName("a command")
-        @Test
-        void command() {
-            assertQuality(MessageType::isCommand,
-                          MttStartProject.getDescriptor()
-            );
-        }
-
-        @DisplayName("an event")
-        @Test
-        void event() {
-            assertQuality(MessageType::isEvent,
-                          MttProjectStarted.getDescriptor()
-            );
-        }
-
-        @DisplayName("a UUID value")
-        @Test
-        void uuid() {
-            assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
-        }
-
+        @DisplayName("is")
         @Nested
-        @DisplayName("not")
-        class NotA {
+        final class Is {
+
+            @DisplayName("nested")
+            @Test
+            void nested() {
+                assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
+                assertQuality(not(MessageType::isNested), Url.getDescriptor());
+            }
+
+            @DisplayName("top-level")
+            @Test
+            void topLevel() {
+                assertQuality(MessageType::isTopLevel, Url.getDescriptor());
+                assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
+            }
 
             @DisplayName("a rejection")
             @Test
             void rejection() {
-                assertQuality(not(MessageType::isRejection),
-                              TestRejections.MttSampleRejection.Details.getDescriptor()
+                assertQuality(MessageType::isRejection,
+                              TestRejections.MttSampleRejection.getDescriptor()
                 );
             }
 
             @DisplayName("a command")
             @Test
             void command() {
-                assertQuality(not(MessageType::isCommand),
-                              MttStartProject.Details.getDescriptor()
+                assertQuality(MessageType::isCommand,
+                              MttStartProject.getDescriptor()
                 );
             }
 
             @DisplayName("an event")
             @Test
             void event() {
-                assertQuality(not(MessageType::isEvent),
-                              MttProjectStarted.Details.getDescriptor()
+                assertQuality(MessageType::isEvent,
+                              MttProjectStarted.getDescriptor()
                 );
             }
 
             @DisplayName("a UUID value")
             @Test
             void uuid() {
-                assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
+                assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
+            }
+
+            @Nested
+            @DisplayName("not")
+            class NotA {
+
+                @DisplayName("a rejection")
+                @Test
+                void rejection() {
+                    assertQuality(not(MessageType::isRejection),
+                                  TestRejections.MttSampleRejection.Details.getDescriptor()
+                    );
+                }
+
+                @DisplayName("a command")
+                @Test
+                void command() {
+                    assertQuality(not(MessageType::isCommand),
+                                  MttStartProject.Details.getDescriptor()
+                    );
+                }
+
+                @DisplayName("an event")
+                @Test
+                void event() {
+                    assertQuality(not(MessageType::isEvent),
+                                  MttProjectStarted.Details.getDescriptor()
+                    );
+                }
+
+                @DisplayName("a UUID value")
+                @Test
+                void uuid() {
+                    assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
+                }
+            }
+
+            @Nested
+            @DisplayName("a non-Google or a Spine options type")
+            final class Custom {
+
+                @Test
+                @DisplayName("positively for a custom type")
+                void custom() {
+                    assertQuality(MessageType::isCustom, Url.getDescriptor());
+                }
+
+                @Test
+                @DisplayName("negatively for Google type")
+                void google() {
+                    assertNotCustom(Timestamp.getDescriptor());
+                }
+
+                @Test
+                @DisplayName("negatively for Spine options type")
+                void options() {
+                    assertNotCustom(GoesOption.getDescriptor());
+                    assertNotCustom(EntityOption.getDescriptor());
+                    assertNotCustom(MinOption.getDescriptor());
+                }
+
+                void assertNotCustom(Descriptor descriptor) {
+                    assertQuality(not(MessageType::isCustom), descriptor);
+                }
             }
         }
 
+        @DisplayName("has")
         @Nested
-        @DisplayName("a non-Google or a Spine options type")
-        class Custom {
+        final class Has {
 
             @Test
-            @DisplayName("positively for a custom type")
-            void custom() {
-                assertQuality(MessageType::isCustom, Url.getDescriptor());
+            @DisplayName("a Validating Builder")
+            void hasVBuilder() {
+                assertQuality(MessageType::hasVBuilder, MttUuidMessage.getDescriptor());
+                assertQuality(MessageType::hasVBuilder, MttProjectStarted.getDescriptor());
+                assertQuality(MessageType::hasVBuilder, MttStartProject.getDescriptor());
+                assertQuality(MessageType::hasVBuilder, MttStartProject.getDescriptor());
             }
 
             @Test
-            @DisplayName("negatively for Google type")
-            void google() {
-                assertNotCustom(Timestamp.getDescriptor());
-            }
-
-            @Test
-            @DisplayName("negatively for Spine options type")
-            void options() {
-                assertNotCustom(GoesOption.getDescriptor());
-                assertNotCustom(EntityOption.getDescriptor());
-                assertNotCustom(MinOption.getDescriptor());
-            }
-
-            void assertNotCustom(Descriptor descriptor) {
-                assertQuality(not(MessageType::isCustom), descriptor);
+            @DisplayName("not a Validating Builder")
+            void hasNotVBuilder() {
+                assertQuality(not(MessageType::hasVBuilder),
+                              TestRejections.MttSampleRejection.getDescriptor());
+                assertQuality(not(MessageType::hasVBuilder), StringValue.getDescriptor());
+                assertQuality(not(MessageType::hasVBuilder), EntityOption.getDescriptor());
             }
         }
     }
 
     @Nested
     @DisplayName("Obtain path for")
-    class Path {
+    final class Path {
 
         @Test
         @DisplayName("top-level message")
@@ -219,12 +248,6 @@ class MessageTypeTest {
                 .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
                 .addEqualityGroup(type(Timestamp.getDescriptor()))
                 .testEquals();
-    }
-
-    @Test
-    @DisplayName("has a Validating Builder")
-    void hasVBuilder(){
-
     }
 
     private static MessageType type(Descriptor descriptor) {
