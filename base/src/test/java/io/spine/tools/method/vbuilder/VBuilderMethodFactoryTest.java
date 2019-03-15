@@ -78,19 +78,42 @@ final class VBuilderMethodFactoryTest {
         }
     }
 
-    @DisplayName("generate vBuilder method")
-    @Test
-    void generateVBuilderMethod() {
-        MessageType type = new MessageType(ExampleEvent.getDescriptor());
-        List<GeneratedMethod> newMethods = factory.createFor(type);
-        assertEquals(1, newMethods.size());
-        assertThat(newMethods.get(0)
-                             .value())
-                .isEqualTo("/**\n" +
-                                   " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.ExampleEventVBuilder}.\n" +
-                                   " */\n" +
-                                   "public static final io.spine.test.tools.method.vbuilder.ExampleEventVBuilder vBuilder() {\n" +
-                                   "  return io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
-                                   "}\n");
+    @DisplayName("generate")
+    @Nested
+    final class Generate {
+
+        @DisplayName("vBuilder static method")
+        @Test
+        void vBuilderMethod() {
+            MessageType type = new MessageType(ExampleEvent.getDescriptor());
+            List<GeneratedMethod> newMethods = factory.createFor(type);
+            assertEquals(2, newMethods.size());
+            assertThat(newMethods.get(0)
+                                 .value())
+                    .isEqualTo("/**\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.ExampleEventVBuilder}.\n" +
+                                       " */\n" +
+                                       "public static final io.spine.test.tools.method.vbuilder.ExampleEventVBuilder vBuilder() {\n" +
+                                       "  return io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
+                                       "}\n");
+        }
+
+        @DisplayName("toVBuilder instance method")
+        @Test
+        void toVBuilderMethod() {
+            MessageType type = new MessageType(ExampleEvent.getDescriptor());
+            List<GeneratedMethod> newMethods = factory.createFor(type);
+            assertEquals(2, newMethods.size());
+            assertThat(newMethods.get(1)
+                                 .value())
+                    .isEqualTo("/**\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.ExampleEventVBuilder} with the current state.\n" +
+                                       " */\n" +
+                                       "public final io.spine.test.tools.method.vbuilder.ExampleEventVBuilder toVBuilder() {\n" +
+                                       "  io.spine.test.tools.method.vbuilder.ExampleEventVBuilder result = io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
+                                       "  result.setOriginalState(this);\n" +
+                                       "  return result;\n" +
+                                       "}\n");
+        }
     }
 }

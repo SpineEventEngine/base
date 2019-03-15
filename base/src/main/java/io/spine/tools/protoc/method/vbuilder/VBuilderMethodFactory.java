@@ -52,7 +52,10 @@ public class VBuilderMethodFactory implements MethodFactory {
         if (!messageType.hasVBuilder()) {
             return ImmutableList.of();
         }
-        return ImmutableList.of(newVBuilderSpec(messageType));
+        SimpleClassName vBuilderClass = messageType.validatingBuilderClass();
+        PackageName packageName = messageType.javaPackage();
+        ClassName vBuilder = ClassName.get(packageName.value(), vBuilderClass.value());
+        return ImmutableList.of(newVBuilderSpec(vBuilder), newToVBuilderSpec(vBuilder));
     }
 
     /**
@@ -66,16 +69,41 @@ public class VBuilderMethodFactory implements MethodFactory {
      *     }
      * </pre>
      */
-    private static GeneratedMethod newVBuilderSpec(MessageType type) {
-        SimpleClassName vBuilderClass = type.validatingBuilderClass();
-        PackageName packageName = type.javaPackage();
-        ClassName vBuilder = ClassName.get(packageName.value(), vBuilderClass.value());
+    private static GeneratedMethod newVBuilderSpec(ClassName vBuilder) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("vBuilder")
                 .returns(vBuilder)
                 .addStatement("return $T.newBuilder()", vBuilder)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .addJavadoc("Creates a new instance of a {@link $T}.\n", vBuilder)
+                .build();
+        return new GeneratedMethod(spec.toString());
+    }
+
+    /**
+     * Creates new {@code public final T toVBuilder()} method where {@code <T>} is a
+     * {@link io.spine.validate.ValidatingBuilder ValidatingBuilder} created from the current
+     * instance state:
+     * <pre>
+     *     {@code
+     *     public final T toVBuilder(){
+     *         T result = T.newBuilder();
+     *         result.setOriginalState(this);
+     *         return result;
+     *     }
+     *     }
+     * </pre>
+     */
+    private static GeneratedMethod newToVBuilderSpec(ClassName vBuilder) {
+        MethodSpec spec = MethodSpec
+                .methodBuilder("toVBuilder")
+                .returns(vBuilder)
+                .addStatement("$1T result = $1T.newBuilder()", vBuilder)
+                .addStatement("result.setOriginalState(this)")
+                .addStatement("return result")
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addJavadoc("Creates a new instance of a {@link $T} with the current state.\n",
+                            vBuilder)
                 .build();
         return new GeneratedMethod(spec.toString());
     }
