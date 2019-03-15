@@ -37,6 +37,9 @@ import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValu
  */
 abstract class AbstractMethodGroup implements MethodGroup {
 
+    static final String FMT_CONVERTED_VALUE_STATEMENT = "%s.%s(convertedValue)";
+    static final String FMT_RETURN_BUILD_METHOD = "return %s.%s()";
+
     /** The name of the {@code FieldDescriptor} variable. */
     private static final String FIELD_DESCRIPTOR_NAME = "fieldDescriptor";
 

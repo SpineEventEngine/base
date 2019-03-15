@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -39,6 +40,7 @@ import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
 /**
  * A value object holding a fully-qualified Java class name.
  */
+@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
 public final class ClassName extends StringTypeValue {
 
@@ -223,7 +225,11 @@ public final class ClassName extends StringTypeValue {
         return of(withDots);
     }
 
-    static String toDotted(String outerDelimited) {
+    /**
+     * Replaces {@link #OUTER_CLASS_DELIMITER} with {@link #DOT_SEPARATOR}.
+     */
+    @Internal
+    public static String toDotted(String outerDelimited) {
         String result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
         return result;
     }
