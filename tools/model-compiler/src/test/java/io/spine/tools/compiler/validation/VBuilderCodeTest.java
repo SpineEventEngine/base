@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.generate.Indent;
 import io.spine.code.java.FileName;
 import io.spine.test.tools.validation.builder.TheOuterProto;
+import io.spine.test.tools.validation.builder.VbtMap;
 import io.spine.test.tools.validation.builder.VbtOrder;
 import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
@@ -94,24 +95,26 @@ class VBuilderCodeTest {
 
         }
 
-        @Nested
-        @DisplayName("a message nested into another message")
-        class NestedSecondLevel {
-
-            @Test
-            @DisplayName("2nd level")
-            void secondLevel() {
-                assertGeneratesFor(VbtProcess.Point.getDescriptor());
-                // ... and the outer class is generated too.
-                assertGeneratesFor(VbtProcess.getDescriptor());
-            }
+        @Test
+        @DisplayName("a 2nd level message nested into another message")
+        void secondLevel() {
+            assertGeneratesFor(VbtProcess.Point.getDescriptor());
+            // ... and the outer class is generated too.
+            assertGeneratesFor(VbtProcess.getDescriptor());
         }
 
         @Test
-        @DisplayName("Top level message with `repeated` field of nested type")
+        @DisplayName("Top level message with `repeated` field of a nested type")
         void secondLevelRepeated() {
             assertGeneratesFor(VbtOrder.Item.getDescriptor());
             assertGeneratesFor(VbtOrder.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("Top level message with map field of a nested type")
+        void mapOfNested() {
+            assertGeneratesFor(VbtMap.Value.getDescriptor());
+            assertGeneratesFor(VbtMap.getDescriptor());
         }
     }
 

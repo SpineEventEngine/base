@@ -94,6 +94,7 @@ message VbtOrderId {
     string uuid = 1;
 }
 
+// A message which has a repeated field of a nested types.
 message VbtOrder {
     VbtOrderId id = 1;
     string name = 2 [(required) = true];
@@ -102,5 +103,15 @@ message VbtOrder {
     message Item {
         string name = 1 [(required) = true];
         string description = 2;
+    }
+}
+
+// A message which has a map with nested type values.
+message VbtMap {
+
+    map <string, Value> item = 1 [(distinct) = true];
+
+    message Value {
+        string uuid = 1;
     }
 }
