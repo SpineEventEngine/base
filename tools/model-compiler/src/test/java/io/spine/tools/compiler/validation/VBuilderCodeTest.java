@@ -105,13 +105,13 @@ class VBuilderCodeTest {
                 // ... and the outer class is generated too.
                 assertGeneratesFor(VbtProcess.getDescriptor());
             }
+        }
 
-            @Test
-            @DisplayName("2nd level with repeated")
-            void secondLevelRepeated() {
-                assertGeneratesFor(VbtOrder.Item.getDescriptor());
-                assertGeneratesFor(VbtOrder.getDescriptor());
-            }
+        @Test
+        @DisplayName("Top level message with `repeated` field of nested type")
+        void secondLevelRepeated() {
+            assertGeneratesFor(VbtOrder.Item.getDescriptor());
+            assertGeneratesFor(VbtOrder.getDescriptor());
         }
     }
 

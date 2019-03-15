@@ -94,7 +94,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         String fieldJavaClass = fieldDeclaration.javaTypeName();
-        this.listElementClassName = ClassName.bestGuess(fieldJavaClass);
+        String dottedForm = io.spine.code.java.ClassName.toDotted(fieldJavaClass);
+        this.listElementClassName = ClassName.bestGuess(dottedForm);
         this.isScalarOrEnum = fieldDeclaration.isScalar() || fieldDeclaration.isEnum();
     }
 
@@ -115,7 +116,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         String methodName = AccessorTemplates.getter().format(javaFieldName);
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType, listElementClassName);
-        String returnStatement = format("return %s.%s()",
+        String returnStatement = format(FMT_RETURN_BUILD_METHOD,
                                         getMessageBuilder(), listGetter().format(javaFieldName));
         MethodSpec methodSpec = MethodSpec
                 .methodBuilder(methodName)
@@ -161,14 +162,13 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     private MethodSpec rawAddObjectMethod() {
         String methodName = adder().toRaw().format(javaFieldName);
         String messageBuilderMethod = adder().format(javaFieldName);
-        String addValueStatement = format("%s.%s(convertedValue)",
+        String addValueStatement = format(FMT_CONVERTED_VALUE_STATEMENT,
                                           getMessageBuilder(), messageBuilderMethod);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(ConvertStatement.of(VALUE, listElementClassName)
-                                              .value())
+                .addStatement(convertStatement())
                 .addStatement(descriptorDeclaration())
                 .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
@@ -197,8 +197,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(ConvertStatement.of(VALUE, listElementClassName)
-                                              .value())
+                .addStatement(convertStatement())
                 .addStatement(descriptorDeclaration())
                 .addStatement(ensureNotSetOnce())
                 .addStatement(validateStatement(CONVERTED_VALUE, javaFieldName))
@@ -206,6 +205,15 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(returnThis())
                 .build();
         return result;
+    }
+
+    /**
+     * Obtains a string vale of the conversion statement.
+     */
+    private String convertStatement() {
+        ConvertStatement statement = ConvertStatement.of(VALUE, listElementClassName);
+        String value = statement.value();
+        return value;
     }
 
     private MethodSpec rawAddAllMethod() {
@@ -293,7 +301,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private MethodSpec modifyCollectionByIndex(AccessorTemplate template) {
         String methodName = template.format(javaFieldName);
-        String modificationStatement = format("%s.%s(%s, %s)", getMessageBuilder(), methodName, INDEX, VALUE);
+        String modificationStatement =
+                format("%s.%s(%s, %s)", getMessageBuilder(), methodName, INDEX, VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(listElementClassName, VALUE)
