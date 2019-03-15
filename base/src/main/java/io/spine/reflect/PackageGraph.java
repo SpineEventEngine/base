@@ -226,6 +226,11 @@ public final class PackageGraph implements Graph<PackageInfo> {
         return impl.hasEdgeConnecting(nodeU, nodeV);
     }
 
+    @Override
+    public boolean hasEdgeConnecting(EndpointPair<PackageInfo> endpoints) {
+        return impl.hasEdgeConnecting(endpoints);
+    }
+
     private static void checkNotNullOrEmpty(String packagePrefix) {
         checkNotNull(packagePrefix);
         checkArgument(!packagePrefix.isEmpty(), "Package prefix cannot be empty");
