@@ -58,10 +58,10 @@ final class PluginTest {
     @DisplayName("process postfix patterns")
     @Test
     void processPostfixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.endsWith(TEST_PROTO_POSTFIX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.endsWith(TEST_PROTO_POSTFIX));
         CodeGeneratorRequest request = requestBuilder()
@@ -83,7 +83,7 @@ final class PluginTest {
     @DisplayName("skip generation of standard interfaces if they are `ignored`")
     @Test
     void skipStandardInterfacesIfIgnored() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.ignore(filePattern.endsWith(EVENTS.suffix()));
         CodeGeneratorRequest request = requestBuilder()
@@ -100,7 +100,7 @@ final class PluginTest {
     @DisplayName("generate UUID message")
     @Test
     void generateUuidMethod() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
 
         CodeGeneratorRequest request = requestBuilder()
@@ -119,10 +119,10 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.startsWith(TEST_PROTO_PREFIX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.startsWith(TEST_PROTO_PREFIX));
 
@@ -145,10 +145,10 @@ final class PluginTest {
     @Test
     @DisplayName("process matches patterns")
     void processRegexPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.matches(TEST_PROTO_REGEX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.matches(TEST_PROTO_REGEX));
         CodeGeneratorRequest request = requestBuilder()

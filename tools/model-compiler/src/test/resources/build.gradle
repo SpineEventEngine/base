@@ -77,3 +77,9 @@ sourceSets {
         resources.srcDirs "$projectDir/generated/main/resources"
     }
 }
+
+modelCompiler {
+    generateInterfaces {
+        mark filePattern().endsWith("rejections.proto"), "io.spine.base.RejectionMessage"
+    }
+}

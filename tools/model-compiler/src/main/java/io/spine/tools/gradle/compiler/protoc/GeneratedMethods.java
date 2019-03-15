@@ -25,7 +25,6 @@ import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.method.MethodFactory;
-import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -38,18 +37,8 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
 
     private UuidConfig uuidFactoryConfig = UuidConfig.getDefaultInstance();
 
-    private GeneratedMethods() {
+    public GeneratedMethods() {
         super();
-    }
-
-    /**
-     * Creates a new instance of {@code GeneratedMethods} with the default {@link UuidMethodFactory}
-     * configured for {@link UuidMessage} selector.
-     */
-    public static GeneratedMethods withDefaults() {
-        GeneratedMethods defaults = new GeneratedMethods();
-        defaults.useFactory(UuidMethodFactory.class.getName(), defaults.uuidMessage());
-        return defaults;
     }
 
     /**

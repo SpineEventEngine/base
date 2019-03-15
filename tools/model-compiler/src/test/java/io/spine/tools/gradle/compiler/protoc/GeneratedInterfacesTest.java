@@ -20,131 +20,20 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.base.CommandMessage;
-import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
-import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.UuidConfig;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static io.spine.base.MessageFile.COMMANDS;
-import static io.spine.base.MessageFile.EVENTS;
-import static io.spine.base.MessageFile.REJECTIONS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedInterfaces should")
 final class GeneratedInterfacesTest {
-
-    @DisplayName("prepare default GeneratedInterfaceConfig for")
-    @Nested
-    class Default {
-
-        @DisplayName("UuidValue")
-        @Test
-        void uuid() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterface(UuidValue.class, defaults.getUuidInterface()
-                                                        .getValue());
-        }
-
-        @DisplayName("CommandMessage")
-        @Test
-        void command() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(CommandMessage.class, COMMANDS.suffix(), defaults);
-        }
-
-        @DisplayName("EventMessage")
-        @Test
-        void event() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(EventMessage.class, EVENTS.suffix(), defaults);
-        }
-
-        @DisplayName("RejectionMessage")
-        @Test
-        void rejection() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(RejectionMessage.class, REJECTIONS.suffix(),
-                                                 defaults);
-        }
-
-        private void assertHasInterfaceWithNameAndPostfix(Class<?> interfaceClass,
-                                                          String postfix,
-                                                          AddInterfaces config) {
-            String expectedInterface = interfaceClass.getName();
-            assertTrue(hasPostfixConfig(postfix, expectedInterface, config));
-        }
-    }
-
-    @DisplayName("be able to ignore default GeneratedInterfaceConfig for")
-    @Nested
-    class IgnoreDefault {
-
-        @DisplayName("UuidValue")
-        @Test
-        void uuid() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-            defaults.ignore(defaults.uuidMessage());
-            AddInterfaces protocConfig = defaults.asProtocConfig();
-            assertSame(UuidConfig.getDefaultInstance(),
-                       protocConfig.getUuidInterface());
-        }
-
-        @DisplayName("CommandMessage")
-        @Test
-        void command() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-            defaults.ignore(defaults.filePattern()
-                                    .endsWith(COMMANDS.suffix()));
-            assertHasNot(COMMANDS.suffix(), defaults.asProtocConfig());
-        }
-
-        @DisplayName("EventMessage")
-        @Test
-        void event() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-            defaults.ignore(defaults.filePattern()
-                                    .endsWith(EVENTS.suffix()));
-            assertHasNot(EVENTS.suffix(), defaults.asProtocConfig());
-        }
-
-        @DisplayName("RejectionMessage")
-        @Test
-        void rejection() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
-            defaults.ignore(defaults.filePattern()
-                                    .endsWith(REJECTIONS.suffix()));
-            assertHasNot(REJECTIONS.suffix(), defaults.asProtocConfig());
-        }
-
-        private void assertHasNot(String prefix, AddInterfaces config) {
-            boolean hasPattern = false;
-            for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
-                if (byPattern.getPattern()
-                             .getFilePrefix()
-                             .equalsIgnoreCase(prefix)) {
-                    hasPattern = true;
-                }
-            }
-            assertFalse(hasPattern);
-        }
-    }
 
     @DisplayName("add multiple file patterns")
     @Test
@@ -152,7 +41,7 @@ final class GeneratedInterfacesTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces defaults = new GeneratedInterfaces();
         FileSelectorFactory filePattern = defaults.filePattern();
         defaults.mark(filePattern.endsWith(pattern), interfaceName);
         defaults.mark(filePattern.startsWith(pattern), interfaceName);

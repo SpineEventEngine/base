@@ -71,7 +71,7 @@ public final class CodeGeneratorRequestGiven {
      * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
      */
     public static String encodedProtocConfig(GeneratedMethods methods) {
-        return encodedProtocConfig(GeneratedInterfaces.withDefaults(), methods);
+        return encodedProtocConfig(new GeneratedInterfaces(), methods);
     }
 
     /**
@@ -81,7 +81,7 @@ public final class CodeGeneratorRequestGiven {
      * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
      */
     public static String encodedProtocConfig(GeneratedInterfaces interfaces) {
-        return encodedProtocConfig(interfaces, GeneratedMethods.withDefaults());
+        return encodedProtocConfig(interfaces, new GeneratedMethods());
     }
 
     /**

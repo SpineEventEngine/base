@@ -20,21 +20,14 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.annotation.Internal;
-import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
-import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.UuidConfig;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.MessageFile.COMMANDS;
-import static io.spine.base.MessageFile.EVENTS;
-import static io.spine.base.MessageFile.REJECTIONS;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
@@ -44,33 +37,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
 
-    private GeneratedInterfaces() {
+    public GeneratedInterfaces() {
         super();
-    }
-
-    /**
-     * Creates a new instance of {@code GeneratedInterfaces} with the default values.
-     *
-     * <p>The default values are:
-     * <ul>
-     *     <li>{@link CommandMessage} interface for Proto files ending with {@code commands.proto};
-     *     <li>{@link EventMessage} interface for Proto files ending with {@code events.proto};
-     *     <li>{@link RejectionMessage} interface for Proto files ending with
-     *         {@code rejections.proto};
-     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages}.
-     * </ul>
-     *
-     * @return new config
-     */
-    @VisibleForTesting
-    public static GeneratedInterfaces withDefaults() {
-        GeneratedInterfaces config = new GeneratedInterfaces();
-        FileSelectorFactory filePattern = config.filePattern();
-        config.mark(filePattern.endsWith(COMMANDS.suffix()), CommandMessage.class.getName());
-        config.mark(filePattern.endsWith(EVENTS.suffix()), EventMessage.class.getName());
-        config.mark(filePattern.endsWith(REJECTIONS.suffix()), RejectionMessage.class.getName());
-        config.mark(config.uuidMessage(), UuidValue.class.getName());
-        return config;
     }
 
     /**
@@ -89,10 +57,6 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * <p>Note that only the top-level messages declarations are affected by this configuration.
      * Nested messages defined in the same file do not implement the interface.
-     *
-     * <p>Caution. In order for the framework components to function properly, one should not
-     * entirely override the {@linkplain #withDefaults() default} message interfaces. Instead,
-     * provide a custom interface which {@code extends} the standard one.
      *
      * Example of a safe way to override standard interfaces:
      * <pre>

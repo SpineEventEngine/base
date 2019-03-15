@@ -87,7 +87,7 @@ final class InterfaceGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())

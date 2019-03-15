@@ -64,9 +64,9 @@ final class SpineProtoGeneratorTest {
     @DisplayName("process valid CodeGeneratorRequest")
     @Test
     void processValidRequest() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         interfaces.mark(interfaces.uuidMessage(), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -102,7 +102,7 @@ final class SpineProtoGeneratorTest {
     @DisplayName("concatenate code generated for the same insertion point")
     @Test
     void concatenateGeneratedCode() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -139,7 +139,7 @@ final class SpineProtoGeneratorTest {
     @DisplayName("drop duplicates in generated code for the same insertion point")
     @Test
     void dropCodeDuplicates() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
