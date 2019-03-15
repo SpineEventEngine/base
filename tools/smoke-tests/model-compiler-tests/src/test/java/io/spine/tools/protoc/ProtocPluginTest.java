@@ -253,6 +253,8 @@ final class ProtocPluginTest {
         void allBasedMethod() {
             assertThat(MessageEnhancedWithPostfixGenerations.vBuilder())
                     .isInstanceOf(MessageEnhancedWithPostfixGenerationsVBuilder.class);
+            assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance().toVBuilder())
+                    .isInstanceOf(MessageEnhancedWithPostfixGenerationsVBuilder.class);
         }
     }
 
@@ -272,6 +274,8 @@ final class ProtocPluginTest {
         @Test
         void vBuilderMethodFactory() {
             assertThat(MFGTMessage.vBuilder())
+                    .isInstanceOf(MFGTMessageVBuilder.class);
+            assertThat(MFGTMessage.getDefaultInstance().toVBuilder())
                     .isInstanceOf(MFGTMessageVBuilder.class);
         }
 
