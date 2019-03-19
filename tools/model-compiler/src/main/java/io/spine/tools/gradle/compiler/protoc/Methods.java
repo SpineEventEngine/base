@@ -136,12 +136,6 @@ public final class Methods extends GeneratedConfigurations<AddMethods> {
         uuidFactoryConfig = uuidConfig(factoryName);
     }
 
-    @Override
-    public void ignore(UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidFactoryConfig = UuidConfig.getDefaultInstance();
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Internal
     @Override

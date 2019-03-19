@@ -29,7 +29,6 @@ import io.spine.tools.protoc.ConfigByPattern;
 
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
 
 /**
@@ -61,33 +60,6 @@ abstract class GeneratedConfigurations<C extends Message> {
     public UuidMessage uuidMessage() {
         return UuidMessage.INSTANCE;
     }
-
-    /**
-     * Ignores code generation for Protobuf files that matches supplied {@code pattern}.
-     *
-     * <p>Sample usage is:
-     * <pre>
-     *     {@code
-     *     ignore filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     */
-    public final void ignore(FileSelector pattern) {
-        checkNotNull(pattern);
-        patterns.remove(pattern);
-    }
-
-    /**
-     * Ignores code generation for UUID messages.
-     *
-     * <p>Sample usage is:
-     * <pre>
-     *     {@code
-     *     ignore uuidMessage()
-     *     }
-     * </pre>
-     */
-    public abstract void ignore(UuidMessage uuidMessage);
 
     /**
      * Converts current configuration into its Protobuf counterpart.

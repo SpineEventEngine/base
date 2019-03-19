@@ -30,8 +30,6 @@ modelCompiler {
         mark filePattern().startsWith("spine/tools/protoc/prefix_generation"), "io.spine.tools.protoc.PrefixedMessage"
         mark filePattern().endsWith("postfix_generation_test.proto"), "io.spine.tools.protoc.PostfixedMessage"
         mark filePattern().matches(".*regex.*test.*"), "io.spine.tools.protoc.RegexedMessage"
-        ignore uuidMessage()
-        ignore filePattern().endsWith("events.proto")
     }
 
     methods {

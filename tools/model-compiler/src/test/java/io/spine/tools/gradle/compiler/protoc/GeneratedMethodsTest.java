@@ -33,7 +33,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
@@ -85,15 +84,6 @@ final class GeneratedMethodsTest {
         assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
-    }
-
-    @DisplayName("be able to ignore UUID message configuration")
-    @Test
-    void ignoreUuidMessageConfig() {
-        Methods methods = Methods.withDefaults();
-        methods.ignore(methods.uuidMessage());
-        assertSame(UuidConfig.getDefaultInstance(), methods.asProtocConfig()
-                                                           .getUuidFactory());
     }
 
     private static boolean

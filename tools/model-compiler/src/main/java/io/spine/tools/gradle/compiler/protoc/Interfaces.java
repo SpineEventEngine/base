@@ -161,12 +161,6 @@ public final class Interfaces extends GeneratedConfigurations<AddInterfaces> {
         uuidInterface = uuidConfig(interfaceName);
     }
 
-    @Override
-    public final void ignore(UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidInterface = UuidConfig.getDefaultInstance();
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
     @Override
     @Internal
