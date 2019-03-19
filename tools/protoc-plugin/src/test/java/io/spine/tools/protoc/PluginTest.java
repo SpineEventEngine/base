@@ -24,8 +24,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
 import io.spine.tools.gradle.compiler.protoc.FileSelectorFactory;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.Methods;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
@@ -58,10 +58,10 @@ final class PluginTest {
     @DisplayName("process postfix patterns")
     @Test
     void processPostfixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        Interfaces interfaces = Interfaces.withDefaults();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.endsWith(TEST_PROTO_POSTFIX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.endsWith(TEST_PROTO_POSTFIX));
         CodeGeneratorRequest request = requestBuilder()
@@ -83,7 +83,7 @@ final class PluginTest {
     @DisplayName("skip generation of standard interfaces if they are `ignored`")
     @Test
     void skipStandardInterfacesIfIgnored() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        Interfaces interfaces = Interfaces.withDefaults();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.ignore(filePattern.endsWith(EVENTS.suffix()));
         CodeGeneratorRequest request = requestBuilder()
@@ -100,7 +100,7 @@ final class PluginTest {
     @DisplayName("generate UUID message")
     @Test
     void generateUuidMethod() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
 
         CodeGeneratorRequest request = requestBuilder()
@@ -119,10 +119,10 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        Interfaces interfaces = Interfaces.withDefaults();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.startsWith(TEST_PROTO_PREFIX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.startsWith(TEST_PROTO_PREFIX));
 
@@ -145,10 +145,10 @@ final class PluginTest {
     @Test
     @DisplayName("process matches patterns")
     void processRegexPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        Interfaces interfaces = Interfaces.withDefaults();
         FileSelectorFactory filePattern = interfaces.filePattern();
         interfaces.mark(filePattern.matches(TEST_PROTO_REGEX), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(TestMethodFactory.class.getName(),
                            filePattern.matches(TEST_PROTO_REGEX));
         CodeGeneratorRequest request = requestBuilder()

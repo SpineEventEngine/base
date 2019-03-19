@@ -26,8 +26,8 @@ import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.Methods;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -167,9 +167,9 @@ public class Extension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final GeneratedInterfaces generateInterfaces = GeneratedInterfaces.withDefaults();
+    public final Interfaces interfaces = Interfaces.withDefaults();
 
-    public final GeneratedMethods generateMethods = GeneratedMethods.withDefaults();
+    public final Methods methods = Methods.withDefaults();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -344,24 +344,24 @@ public class Extension extends GradleExtension {
         action.execute(generateAnnotations);
     }
 
-    @SuppressWarnings("unused") // Configures `generateInterfaces` closure.
-    public void generateInterfaces(Closure closure) {
-        ConfigureUtil.configure(closure, generateInterfaces);
+    @SuppressWarnings("unused") // Configures `interfaces` closure.
+    public void interfaces(Closure closure) {
+        ConfigureUtil.configure(closure, interfaces);
     }
 
-    @SuppressWarnings("unused") // Configures `generateInterfaces` closure.
-    public void generateInterfaces(Action<? super GeneratedInterfaces> action) {
-        action.execute(generateInterfaces);
+    @SuppressWarnings("unused") // Configures `interfaces` closure.
+    public void interfaces(Action<? super Interfaces> action) {
+        action.execute(interfaces);
     }
 
-    @SuppressWarnings("unused") // Configures `generateMethods` closure.
-    public void generateMethods(Closure closure) {
-        ConfigureUtil.configure(closure, generateMethods);
+    @SuppressWarnings("unused") // Configures `methods` closure.
+    public void methods(Closure closure) {
+        ConfigureUtil.configure(closure, methods);
     }
 
-    @SuppressWarnings("unused") // Configures `generateMethods` closure.
-    public void generateMethods(Action<? super GeneratedMethods> action) {
-        action.execute(generateMethods);
+    @SuppressWarnings("unused") // Configures `methods` closure.
+    public void methods(Action<? super Methods> action) {
+        action.execute(methods);
     }
 
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
@@ -369,13 +369,13 @@ public class Extension extends GradleExtension {
         return annotations;
     }
 
-    public static GeneratedInterfaces getGeneratedInterfaces(Project project) {
-        GeneratedInterfaces interfaces = extension(project).generateInterfaces;
+    public static Interfaces getInterfaces(Project project) {
+        Interfaces interfaces = extension(project).interfaces;
         return interfaces;
     }
 
-    public static GeneratedMethods getGeneratedMethods(Project project) {
-        GeneratedMethods methods = extension(project).generateMethods;
+    public static Methods getMethods(Project project) {
+        Methods methods = extension(project).methods;
         return methods;
     }
 

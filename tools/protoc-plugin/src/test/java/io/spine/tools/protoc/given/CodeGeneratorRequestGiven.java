@@ -23,8 +23,8 @@ package io.spine.tools.protoc.given;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.Methods;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.util.Base64;
@@ -68,28 +68,28 @@ public final class CodeGeneratorRequestGiven {
      * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
      * {@code GeneratedMethods} and a default instance of {@code GeneratedInterfaces}.
      *
-     * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
+     * @see #encodedProtocConfig(Interfaces, Methods)
      */
-    public static String encodedProtocConfig(GeneratedMethods methods) {
-        return encodedProtocConfig(GeneratedInterfaces.withDefaults(), methods);
+    public static String encodedProtocConfig(Methods methods) {
+        return encodedProtocConfig(Interfaces.withDefaults(), methods);
     }
 
     /**
      * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
      * {@code GeneratedInterfaces} and a default instance of {@code GeneratedMethods}.
      *
-     * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
+     * @see #encodedProtocConfig(Interfaces, Methods)
      */
-    public static String encodedProtocConfig(GeneratedInterfaces interfaces) {
-        return encodedProtocConfig(interfaces, GeneratedMethods.withDefaults());
+    public static String encodedProtocConfig(Interfaces interfaces) {
+        return encodedProtocConfig(interfaces, Methods.withDefaults());
     }
 
     /**
      * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
      * {@code GeneratedInterfaces} and {@code GeneratedMethods}.
      */
-    public static String encodedProtocConfig(GeneratedInterfaces interfaces,
-                                             GeneratedMethods methods) {
+    public static String encodedProtocConfig(Interfaces interfaces,
+                                             Methods methods) {
         SpineProtocConfig protocConfig = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())

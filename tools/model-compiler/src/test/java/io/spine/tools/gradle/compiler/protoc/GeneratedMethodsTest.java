@@ -46,8 +46,8 @@ final class GeneratedMethodsTest {
         @DisplayName("UUID value")
         @Test
         void uuid() {
-            AddMethods config = GeneratedMethods.withDefaults()
-                                                .asProtocConfig();
+            AddMethods config = Methods.withDefaults()
+                                       .asProtocConfig();
             UuidConfig uuid = config.getUuidFactory();
             assertThat(uuid.getValue())
                     .isEqualTo(UuidMethodFactory.class.getName());
@@ -58,7 +58,7 @@ final class GeneratedMethodsTest {
     @Test
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(testMethodFactory, methods.uuidMessage());
         methods.useFactory(testMethodFactory, methods.filePattern()
                                                      .endsWith("_test.proto"));
@@ -76,7 +76,7 @@ final class GeneratedMethodsTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedMethods defaults = GeneratedMethods.withDefaults();
+        Methods defaults = Methods.withDefaults();
         FileSelectorFactory filePattern = defaults.filePattern();
         defaults.useFactory(interfaceName, filePattern.endsWith(pattern));
         defaults.useFactory(interfaceName, filePattern.startsWith(pattern));
@@ -90,7 +90,7 @@ final class GeneratedMethodsTest {
     @DisplayName("be able to ignore UUID message configuration")
     @Test
     void ignoreUuidMessageConfig() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.ignore(methods.uuidMessage());
         assertSame(UuidConfig.getDefaultInstance(), methods.asProtocConfig()
                                                            .getUuidFactory());

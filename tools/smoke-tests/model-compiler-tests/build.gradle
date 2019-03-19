@@ -25,7 +25,7 @@ dependencies {
 
 modelCompiler {
 
-    generateInterfaces {
+    interfaces {
         mark filePattern().endsWith("documents.proto"), "io.spine.tools.protoc.DocumentMessage"
         mark filePattern().startsWith("spine/tools/protoc/prefix_generation"), "io.spine.tools.protoc.PrefixedMessage"
         mark filePattern().endsWith("postfix_generation_test.proto"), "io.spine.tools.protoc.PostfixedMessage"
@@ -34,7 +34,7 @@ modelCompiler {
         ignore filePattern().endsWith("events.proto")
     }
 
-    generateMethods {
+    methods {
         useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().endsWith("postfix_generation_test.proto")
         useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().startsWith("spine/tools/protoc/prefix_generation")
         useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().matches(".*regex.*test.*")

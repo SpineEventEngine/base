@@ -34,8 +34,8 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.Methods;
 import io.spine.tools.groovy.GStrings;
 import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.Classpath;
@@ -63,9 +63,9 @@ import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
-import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
-import static io.spine.tools.gradle.compiler.Extension.getGeneratedMethods;
+import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
+import static io.spine.tools.gradle.compiler.Extension.getMethods;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static org.gradle.internal.os.OperatingSystem.current;
@@ -260,8 +260,8 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private static SpineProtocConfig assembleParameter(Project project) {
-        GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
-        GeneratedMethods methods = getGeneratedMethods(project);
+        Interfaces interfaces = getInterfaces(project);
+        Methods methods = getMethods(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()

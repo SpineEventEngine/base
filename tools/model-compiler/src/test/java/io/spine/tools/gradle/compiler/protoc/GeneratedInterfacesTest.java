@@ -53,8 +53,8 @@ final class GeneratedInterfacesTest {
         @DisplayName("UuidValue")
         @Test
         void uuid() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+            AddInterfaces defaults = Interfaces.withDefaults()
+                                               .asProtocConfig();
             assertHasInterface(UuidValue.class, defaults.getUuidInterface()
                                                         .getValue());
         }
@@ -62,24 +62,24 @@ final class GeneratedInterfacesTest {
         @DisplayName("CommandMessage")
         @Test
         void command() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+            AddInterfaces defaults = Interfaces.withDefaults()
+                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(CommandMessage.class, COMMANDS.suffix(), defaults);
         }
 
         @DisplayName("EventMessage")
         @Test
         void event() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+            AddInterfaces defaults = Interfaces.withDefaults()
+                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(EventMessage.class, EVENTS.suffix(), defaults);
         }
 
         @DisplayName("RejectionMessage")
         @Test
         void rejection() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
+            AddInterfaces defaults = Interfaces.withDefaults()
+                                               .asProtocConfig();
             assertHasInterfaceWithNameAndPostfix(RejectionMessage.class, REJECTIONS.suffix(),
                                                  defaults);
         }
@@ -99,7 +99,7 @@ final class GeneratedInterfacesTest {
         @DisplayName("UuidValue")
         @Test
         void uuid() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+            Interfaces defaults = Interfaces.withDefaults();
             defaults.ignore(defaults.uuidMessage());
             AddInterfaces protocConfig = defaults.asProtocConfig();
             assertSame(UuidConfig.getDefaultInstance(),
@@ -109,7 +109,7 @@ final class GeneratedInterfacesTest {
         @DisplayName("CommandMessage")
         @Test
         void command() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+            Interfaces defaults = Interfaces.withDefaults();
             defaults.ignore(defaults.filePattern()
                                     .endsWith(COMMANDS.suffix()));
             assertHasNot(COMMANDS.suffix(), defaults.asProtocConfig());
@@ -118,7 +118,7 @@ final class GeneratedInterfacesTest {
         @DisplayName("EventMessage")
         @Test
         void event() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+            Interfaces defaults = Interfaces.withDefaults();
             defaults.ignore(defaults.filePattern()
                                     .endsWith(EVENTS.suffix()));
             assertHasNot(EVENTS.suffix(), defaults.asProtocConfig());
@@ -127,7 +127,7 @@ final class GeneratedInterfacesTest {
         @DisplayName("RejectionMessage")
         @Test
         void rejection() {
-            GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+            Interfaces defaults = Interfaces.withDefaults();
             defaults.ignore(defaults.filePattern()
                                     .endsWith(REJECTIONS.suffix()));
             assertHasNot(REJECTIONS.suffix(), defaults.asProtocConfig());
@@ -152,7 +152,7 @@ final class GeneratedInterfacesTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+        Interfaces defaults = Interfaces.withDefaults();
         FileSelectorFactory filePattern = defaults.filePattern();
         defaults.mark(filePattern.endsWith(pattern), interfaceName);
         defaults.mark(filePattern.startsWith(pattern), interfaceName);

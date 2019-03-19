@@ -40,11 +40,11 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
+public final class Interfaces extends GeneratedConfigurations<AddInterfaces> {
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
 
-    private GeneratedInterfaces() {
+    private Interfaces() {
         super();
     }
 
@@ -63,8 +63,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * @return new config
      */
     @VisibleForTesting
-    public static GeneratedInterfaces withDefaults() {
-        GeneratedInterfaces config = new GeneratedInterfaces();
+    public static Interfaces withDefaults() {
+        Interfaces config = new Interfaces();
         FileSelectorFactory filePattern = config.filePattern();
         config.mark(filePattern.endsWith(COMMANDS.suffix()), CommandMessage.class.getName());
         config.mark(filePattern.endsWith(EVENTS.suffix()), EventMessage.class.getName());
@@ -110,7 +110,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *     // ...
      *
      *     modelCompiler {
-     *         generateInterfaces {
+     *         interfaces {
      *             mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
      *         }
      *     }

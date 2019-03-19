@@ -26,8 +26,8 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.Methods;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
@@ -64,9 +64,9 @@ final class SpineProtoGeneratorTest {
     @DisplayName("process valid CodeGeneratorRequest")
     @Test
     void processValidRequest() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        Interfaces interfaces = Interfaces.withDefaults();
         interfaces.mark(interfaces.uuidMessage(), TestInterface.class.getName());
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -102,7 +102,7 @@ final class SpineProtoGeneratorTest {
     @DisplayName("concatenate code generated for the same insertion point")
     @Test
     void concatenateGeneratedCode() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -139,7 +139,7 @@ final class SpineProtoGeneratorTest {
     @DisplayName("drop duplicates in generated code for the same insertion point")
     @Test
     void dropCodeDuplicates() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        Methods methods = Methods.withDefaults();
         methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
