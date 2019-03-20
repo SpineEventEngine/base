@@ -28,12 +28,12 @@ modelCompiler {
     interfaces {
         mark messages().inFiles(suffix: 'documents.proto'), asType('io.spine.tools.protoc.DocumentMessage')
         mark messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation'), asType('io.spine.tools.protoc.PrefixedMessage')
-        mark messages().inFiles(suffix: 'postfix_generation_test.proto'), asType('io.spine.tools.protoc.PostfixedMessage')
+        mark messages().inFiles(suffix: 'suffix_generation_test.proto'), asType('io.spine.tools.protoc.SuffixedMessage')
         mark messages().inFiles(regex: '.*regex.*test.*'), asType('io.spine.tools.protoc.RegexedMessage')
     }
 
     methods {
-        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(suffix: 'postfix_generation_test.proto')
+        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(suffix: 'suffix_generation_test.proto')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*regex.*test.*')
     }

@@ -18,21 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.base.SerializableMessage;
 
-@DisplayName("PostfixPattern should")
-final class PostfixPatternTest {
-
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String postfix = "test.proto";
-        FilePattern pattern = new PostfixSelector(postfix).toProto();
-        Assertions.assertEquals(postfix, pattern.getFilePostfix());
-    }
+public interface SuffixedMessage extends SerializableMessage {
 }

@@ -184,15 +184,15 @@ final class ProtocPluginTest {
     @DisplayName("generate a custom method for an .endsWith() pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
+                new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
     }
 
     @Test
     @DisplayName("mark a message with interface using .endsWith() pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
-        assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
-                .isInstanceOf(PostfixedMessage.class);
+        assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                .isInstanceOf(SuffixedMessage.class);
     }
 
     @Test

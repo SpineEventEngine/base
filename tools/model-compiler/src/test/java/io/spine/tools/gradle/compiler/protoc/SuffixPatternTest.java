@@ -21,20 +21,18 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A file pattern matching file names which end with a certain postfix.
- */
-public final class PostfixSelector extends FileSelector {
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
-    PostfixSelector(@Regex String postfix) {
-        super(postfix);
-    }
-
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.filePostfix(getPattern());
+    @DisplayName("translate itself to Protobuf counterpart")
+    @Test
+    void convertToProtobufCounterpart() {
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
     }
 }

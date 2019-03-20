@@ -59,7 +59,7 @@ public final class MessageSelectorFactory {
      *
      * <p>The supported configuration parameters are:
      * <ul>
-     *     <li>{@code suffix} — for the {@link PostfixSelector};
+     *     <li>{@code suffix} — for the {@link SuffixSelector};
      *     <li>{@code prefix} — for the {@link PrefixSelector};
      *     <li>{@code regex} — for the {@link RegexSelector}.
      * </ul>
@@ -103,7 +103,7 @@ public final class MessageSelectorFactory {
 
         private Parser() {
             configurations = Maps.newConcurrentMap();
-            configurations.put(SUFFIX, PostfixSelector::new);
+            configurations.put(SUFFIX, SuffixSelector::new);
             configurations.put(PREFIX, PrefixSelector::new);
             configurations.put(REGEX, RegexSelector::new);
         }

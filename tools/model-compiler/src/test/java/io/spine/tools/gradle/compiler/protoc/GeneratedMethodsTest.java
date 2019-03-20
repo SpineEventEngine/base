@@ -84,19 +84,19 @@ final class GeneratedMethodsTest {
         defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
         defaults.applyFactory(interfaceName, messages.inFiles(regex(pattern)));
 
-        assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String factoryName, AddMethods config) {
-        return hasConfig(config, factoryName, pattern -> postfix.equals(pattern.getFilePostfix()));
+    hasSuffixConfig(String suffix, String factoryName, AddMethods config) {
+        return hasConfig(config, factoryName, pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
     hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
-        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getFilePrefix()));
+        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean

@@ -52,17 +52,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Plugin should")
 final class PluginTest {
 
-    private static final String TEST_PROTO_POSTFIX = "_generators.proto";
+    private static final String TEST_PROTO_SUFFIX = "_generators.proto";
     private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
-    @DisplayName("process postfix patterns")
+    @DisplayName("process suffix patterns")
     @Test
-    void processPostfixPatterns() {
+    void processSuffixPatterns() {
         Interfaces interfaces = Interfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
-        FileSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_POSTFIX));
+        FileSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, TestInterface.class.getName());
         Methods methods = Methods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);

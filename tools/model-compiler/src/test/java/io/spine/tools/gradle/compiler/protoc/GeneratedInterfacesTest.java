@@ -64,7 +64,7 @@ final class GeneratedInterfacesTest {
         void command() {
             AddInterfaces defaults = Interfaces.withDefaults()
                                                .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(CommandMessage.class, COMMANDS.suffix(), defaults);
+            assertHasInterfaceWithNameAndSuffix(CommandMessage.class, COMMANDS.suffix(), defaults);
         }
 
         @DisplayName("EventMessage")
@@ -72,7 +72,7 @@ final class GeneratedInterfacesTest {
         void event() {
             AddInterfaces defaults = Interfaces.withDefaults()
                                                .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(EventMessage.class, EVENTS.suffix(), defaults);
+            assertHasInterfaceWithNameAndSuffix(EventMessage.class, EVENTS.suffix(), defaults);
         }
 
         @DisplayName("RejectionMessage")
@@ -80,15 +80,15 @@ final class GeneratedInterfacesTest {
         void rejection() {
             AddInterfaces defaults = Interfaces.withDefaults()
                                                .asProtocConfig();
-            assertHasInterfaceWithNameAndPostfix(RejectionMessage.class, REJECTIONS.suffix(),
-                                                 defaults);
+            assertHasInterfaceWithNameAndSuffix(RejectionMessage.class, REJECTIONS.suffix(),
+                                                defaults);
         }
 
-        private void assertHasInterfaceWithNameAndPostfix(Class<?> interfaceClass,
-                                                          String postfix,
-                                                          AddInterfaces config) {
+        private void assertHasInterfaceWithNameAndSuffix(Class<?> interfaceClass,
+                                                         String suffix,
+                                                         AddInterfaces config) {
             String expectedInterface = interfaceClass.getName();
-            assertTrue(hasPostfixConfig(postfix, expectedInterface, config));
+            assertTrue(hasSuffixConfig(suffix, expectedInterface, config));
         }
     }
 
@@ -104,21 +104,21 @@ final class GeneratedInterfacesTest {
         defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
         defaults.mark(messages.inFiles(regex(pattern)), interfaceName);
 
-        assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String interfaceName, AddInterfaces config) {
+    hasSuffixConfig(String suffix, String interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
-                            pattern -> postfix.equals(pattern.getFilePostfix()));
+                            pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
     hasPrefixConfig(String prefix, String interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
-                            pattern -> prefix.equals(pattern.getFilePrefix()));
+                            pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean
