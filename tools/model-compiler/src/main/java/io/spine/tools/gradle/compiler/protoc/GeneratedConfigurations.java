@@ -48,17 +48,10 @@ abstract class GeneratedConfigurations<C extends Message> {
     }
 
     /**
-     * Returns {@link FileSelectorFactory}.
+     * Returns {@link MessageSelectorFactory}.
      */
-    public FileSelectorFactory filePattern() {
-        return FileSelectorFactory.INSTANCE;
-    }
-
-    /**
-     * Returns {@link UuidMessage} selector.
-     */
-    public UuidMessage uuidMessage() {
-        return UuidMessage.INSTANCE;
+    public MessageSelectorFactory messages() {
+        return MessageSelectorFactory.INSTANCE;
     }
 
     /**

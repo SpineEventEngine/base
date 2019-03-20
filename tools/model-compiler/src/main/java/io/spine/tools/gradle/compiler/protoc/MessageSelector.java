@@ -18,23 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    testImplementation project(':test-method-factory')
-    testImplementation deps.test.truth
-}
+package io.spine.tools.gradle.compiler.protoc;
 
-modelCompiler {
+/**
+ * An abstract {@link com.google.protobuf.Message Message} selector base.
+ */
+class MessageSelector implements Selector {
 
-    interfaces {
-        mark messages().inFiles(suffix: 'documents.proto'), asType('io.spine.tools.protoc.DocumentMessage')
-        mark messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation'), asType('io.spine.tools.protoc.PrefixedMessage')
-        mark messages().inFiles(suffix: 'postfix_generation_test.proto'), asType('io.spine.tools.protoc.PostfixedMessage')
-        mark messages().inFiles(regex: '.*regex.*test.*'), asType('io.spine.tools.protoc.RegexedMessage')
+    private boolean isEnabled = true;
+
+    @Override
+    public void disable() {
+        isEnabled = false;
     }
 
-    methods {
-        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(suffix: 'postfix_generation_test.proto')
-        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
-        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*regex.*test.*')
+    @Override
+    public void enable() {
+        isEnabled = true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }

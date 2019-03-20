@@ -24,17 +24,18 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.spine.tools.protoc.FilePattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Selects messages by a pattern.
  */
-public abstract class FileSelector implements Selector {
+public abstract class FileSelector extends MessageSelector {
 
     private final String pattern;
 
     FileSelector(String pattern) {
-        this.pattern = checkNotNull(pattern);
+        super();
+        this.pattern = checkNotEmptyOrBlank(pattern);
     }
 
     /**

@@ -37,6 +37,9 @@ import java.util.function.Predicate;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -96,10 +99,10 @@ final class GeneratedInterfacesTest {
         String interfaceName = "io.spine.test.TestInterface";
 
         Interfaces defaults = Interfaces.withDefaults();
-        FileSelectorFactory filePattern = defaults.filePattern();
-        defaults.mark(filePattern.endsWith(pattern), interfaceName);
-        defaults.mark(filePattern.startsWith(pattern), interfaceName);
-        defaults.mark(filePattern.matches(pattern), interfaceName);
+        MessageSelectorFactory messages = defaults.messages();
+        defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(regex(pattern)), interfaceName);
 
         assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));

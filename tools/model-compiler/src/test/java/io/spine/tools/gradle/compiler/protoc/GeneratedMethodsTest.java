@@ -32,6 +32,9 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,9 +61,9 @@ final class GeneratedMethodsTest {
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
         Methods methods = Methods.withDefaults();
-        methods.useFactory(testMethodFactory, methods.uuidMessage());
-        methods.useFactory(testMethodFactory, methods.filePattern()
-                                                     .endsWith("_test.proto"));
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(testMethodFactory, messages.uuid());
+        methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
         AddMethods config = methods.asProtocConfig();
 
         assertEquals(testMethodFactory, config.getUuidFactory()
@@ -76,10 +79,10 @@ final class GeneratedMethodsTest {
         String interfaceName = "io.spine.test.TestInterface";
 
         Methods defaults = Methods.withDefaults();
-        FileSelectorFactory filePattern = defaults.filePattern();
-        defaults.useFactory(interfaceName, filePattern.endsWith(pattern));
-        defaults.useFactory(interfaceName, filePattern.startsWith(pattern));
-        defaults.useFactory(interfaceName, filePattern.matches(pattern));
+        MessageSelectorFactory messages = defaults.messages();
+        defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(regex(pattern)));
 
         assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
