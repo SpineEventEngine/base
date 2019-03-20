@@ -38,8 +38,8 @@ import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GeneratedMethods should")
-final class GeneratedMethodsTest {
+@DisplayName("Methods should")
+final class MethodsTest {
 
     @DisplayName("prepare default generated config for")
     @Nested

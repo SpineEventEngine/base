@@ -43,8 +43,8 @@ import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GeneratedInterfaces should")
-final class GeneratedInterfacesTest {
+@DisplayName("Interfaces should")
+final class InterfacesTest {
 
     @DisplayName("prepare default GeneratedInterfaceConfig for")
     @Nested
