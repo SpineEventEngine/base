@@ -77,21 +77,21 @@ public final class MessageSelectorFactory {
      * Creates {@code inFiles} {@code prefix} configuration.
      */
     public static ImmutableMap<String, String> prefix(String prefix) {
-        return ImmutableMap.of(PREFIX, prefix);
+        return ImmutableMap.of(PREFIX, checkNotNull(prefix));
     }
 
     /**
      * Creates {@code inFiles} {@code suffix} configuration.
      */
     public static ImmutableMap<String, String> suffix(String suffix) {
-        return ImmutableMap.of(SUFFIX, suffix);
+        return ImmutableMap.of(SUFFIX, checkNotNull(suffix));
     }
 
     /**
      * Creates {@code inFiles} {@code regex} configuration.
      */
     public static ImmutableMap<String, String> regex(String regex) {
-        return ImmutableMap.of(REGEX, regex);
+        return ImmutableMap.of(REGEX, checkNotNull(regex));
     }
 
     /**
