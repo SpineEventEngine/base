@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,12 +32,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("MessageSelectorFactory should")
 final class MessageSelectorFactoryTest {
 
-    private MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
+    private final MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
 
     @DisplayName("create UuidMessage selector")
     @Test
     void createUuidSelector() {
         assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
+    }
+
+    @DisplayName("create all messages selector")
+    @Test
+    void createAllSelector() {
+        FileSelector allSelector = factory.all();
+        assertThat(allSelector).isInstanceOf(SuffixSelector.class);
+        assertThat(allSelector.getPattern()).isEqualTo(FileName.EXTENSION);
     }
 
     @DisplayName("create FileSelector out of")

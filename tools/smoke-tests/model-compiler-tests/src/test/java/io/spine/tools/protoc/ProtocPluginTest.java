@@ -214,24 +214,24 @@ final class ProtocPluginTest {
     final class MarkMessages {
 
         @Test
-        @DisplayName(".regex() pattern")
+        @DisplayName("regex pattern")
         void regex() {
             assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
                     .isInstanceOf(RegexedMessage.class);
         }
 
         @Test
-        @DisplayName(".startsWith() pattern")
+        @DisplayName("prefix pattern")
         void prefix() {
             assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
                     .isInstanceOf(PrefixedMessage.class);
         }
 
         @Test
-        @DisplayName(".endsWith() pattern")
+        @DisplayName("suffix pattern")
         void postfix() {
-            assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
-                    .isInstanceOf(PostfixedMessage.class);
+            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                    .isInstanceOf(SuffixedMessage.class);
         }
     }
 
@@ -240,7 +240,7 @@ final class ProtocPluginTest {
     final class GenerateMethods {
 
         @Test
-        @DisplayName(".startsWith() pattern")
+        @DisplayName("prefix pattern")
         void prefixBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
@@ -248,7 +248,7 @@ final class ProtocPluginTest {
         }
 
         @Test
-        @DisplayName(".regex() pattern")
+        @DisplayName("regex pattern")
         void regexBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
@@ -256,20 +256,20 @@ final class ProtocPluginTest {
         }
 
         @Test
-        @DisplayName(".endsWith() pattern")
-        void patternBasedMethod() {
+        @DisplayName("suffix pattern")
+        void suffixBasedMethod() {
             MessageType expectedType =
-                    new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
+                    new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
+            assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
         }
 
         @Test
         @DisplayName("all() pattern")
         void allBasedMethod() {
-            assertThat(MessageEnhancedWithPostfixGenerations.vBuilder())
-                    .isInstanceOf(MessageEnhancedWithPostfixGenerationsVBuilder.class);
-            assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance().toVBuilder())
-                    .isInstanceOf(MessageEnhancedWithPostfixGenerationsVBuilder.class);
+            assertThat(MessageEnhancedWithSuffixGenerations.vBuilder())
+                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
+            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance().toVBuilder())
+                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
         }
     }
 
