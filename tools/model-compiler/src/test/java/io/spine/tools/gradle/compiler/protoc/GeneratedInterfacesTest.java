@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
@@ -107,6 +108,13 @@ final class GeneratedInterfacesTest {
         assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
+    }
+
+    @DisplayName("allows asType syntax sugar method")
+    void allowAsTypeSugar() {
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        String interfaceName = "MyInterface";
+        assertThat(interfaces.asType(interfaceName)).isEqualTo(interfaceName);
     }
 
     private static boolean
