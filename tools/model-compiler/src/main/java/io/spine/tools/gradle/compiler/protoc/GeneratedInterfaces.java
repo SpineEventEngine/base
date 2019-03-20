@@ -35,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
@@ -57,7 +58,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *     <li>{@link EventMessage} interface for Proto files ending with {@code events.proto};
      *     <li>{@link RejectionMessage} interface for Proto files ending with
      *         {@code rejections.proto};
-     *     <li>{@link UuidValue} interface for {@linkplain #uuidMessage() UUID messages}.
+     *     <li>{@link UuidValue} interface for {@link MessageSelectorFactory#uuid() UUID messages}.
      * </ul>
      *
      * @return new config
@@ -65,11 +66,12 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     @VisibleForTesting
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
-        FileSelectorFactory filePattern = config.filePattern();
-        config.mark(filePattern.endsWith(COMMANDS.suffix()), CommandMessage.class.getName());
-        config.mark(filePattern.endsWith(EVENTS.suffix()), EventMessage.class.getName());
-        config.mark(filePattern.endsWith(REJECTIONS.suffix()), RejectionMessage.class.getName());
-        config.mark(config.uuidMessage(), UuidValue.class.getName());
+        MessageSelectorFactory messages = config.messages();
+        config.mark(messages.inFiles(suffix(COMMANDS.suffix())), CommandMessage.class.getName());
+        config.mark(messages.inFiles(suffix(EVENTS.suffix())), EventMessage.class.getName());
+        config.mark(messages.inFiles(suffix(REJECTIONS.suffix())),
+                    RejectionMessage.class.getName());
+        config.mark(messages.uuid(), UuidValue.class.getName());
         return config;
     }
 
@@ -79,7 +81,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
+     *     mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      *     }
      * </pre>
      *
@@ -110,8 +112,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *     // ...
      *
      *     modelCompiler {
-     *         generateInterfaces {
-     *             mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
+     *         interfaces {
+     *             mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      *         }
      *     }
      *     }
@@ -120,17 +122,6 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>In the example above, {@code my.custom.EventMessage} extends
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
-     *
-     * <p>Another option for an interface generation configuration is to turn it off completely:
-     * <pre>
-     *     {@code
-     *     ignore filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     *
-     * <p>In such case, no additional interface is added to the top-level message classes matching
-     * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
-     * are generated regardless the configuration.
      */
     public final void mark(FileSelector fileSelector, @FullyQualifiedName String interfaceName) {
         checkNotNull(fileSelector);
@@ -152,7 +143,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>Sample usage is:
      * <pre>
      *      {@code
-     *      mark uuidMessage(), "my.custom.Identifier"
+     *      mark messages().uuid(), asType("my.custom.Identifier")
      *      }
      * </pre>
      */
@@ -161,10 +152,12 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
         uuidInterface = uuidConfig(interfaceName);
     }
 
-    @Override
-    public final void ignore(UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidInterface = UuidConfig.getDefaultInstance();
+    /**
+     * A syntax sugar method required for a more natual Gradle DSL.
+     */
+    @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
+    public final String asType(String interfaceName){
+        return checkNotNull(interfaceName);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.

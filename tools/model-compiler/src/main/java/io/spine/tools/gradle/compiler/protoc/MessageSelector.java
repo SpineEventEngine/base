@@ -18,9 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.base.SerializableMessage;
+/**
+ * An abstract {@link com.google.protobuf.Message Message} selector base.
+ */
+class MessageSelector implements Selector {
 
-public interface PostfixedMessage extends SerializableMessage {
+    private boolean isEnabled = true;
+
+    @Override
+    public void disable() {
+        isEnabled = false;
+    }
+
+    @Override
+    public void enable() {
+        isEnabled = true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
 }

@@ -39,12 +39,12 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
     @Nested
     final class NotAllowNulls {
 
-        @DisplayName("filePostfix pattern")
+        @DisplayName("fileSuffix pattern")
         @Test
-        void filePostfix() {
+        void fileSuffix() {
             Assertions.assertThrows(NullPointerException.class, () -> {
                 //noinspection ConstantConditions,ResultOfMethodCallIgnored
-                FilePatterns.filePostfix(null);
+                FilePatterns.fileSuffix(null);
             });
         }
 
@@ -71,36 +71,36 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
     @Nested
     final class CreateValid {
 
-        @DisplayName("file_postfix pattern")
+        @DisplayName("suffix pattern")
         @Nested
-        class Postfix {
+        class Suffix {
 
             @DisplayName("with file name")
             @Test
             void withFileName() {
-                String postfix = "documents.proto";
-                FilePattern filter = FilePatterns.filePostfix(postfix);
-                assertEquals(postfix, filter.getFilePostfix());
+                String suffix = "documents.proto";
+                FilePattern filter = FilePatterns.fileSuffix(suffix);
+                assertEquals(suffix, filter.getSuffix());
             }
 
             @DisplayName("with path parts")
             @Test
             void withPathParts() {
-                String postfix = "tools/protoc/documents.proto";
-                FilePattern filter = FilePatterns.filePostfix(postfix);
-                assertEquals(postfix, filter.getFilePostfix());
+                String suffix = "tools/protoc/documents.proto";
+                FilePattern filter = FilePatterns.fileSuffix(suffix);
+                assertEquals(suffix, filter.getSuffix());
             }
 
             @DisplayName("with absolute file path")
             @Test
             void withAbsolutePath() {
-                String postfix = "/home/user/development/petproject/src/main/proto/documents.proto";
-                FilePattern filter = FilePatterns.filePostfix(postfix);
-                assertEquals(postfix, filter.getFilePostfix());
+                String suffix = "/home/user/development/petproject/src/main/proto/documents.proto";
+                FilePattern filter = FilePatterns.fileSuffix(suffix);
+                assertEquals(suffix, filter.getSuffix());
             }
         }
 
-        @DisplayName("file_prefix pattern")
+        @DisplayName("prefix pattern")
         @Nested
         class Prefix {
 
@@ -109,7 +109,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withFileName() {
                 String prefix = "documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, pattern.getFilePrefix());
+                assertEquals(prefix, pattern.getPrefix());
             }
 
             @DisplayName("with path parts")
@@ -117,7 +117,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withPathParts() {
                 String prefix = "io/spine/tools/documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, pattern.getFilePrefix());
+                assertEquals(prefix, pattern.getPrefix());
             }
 
             @DisplayName("with absolute file path")
@@ -125,7 +125,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withAbsolutePath() {
                 String prefix = "/home/user/development/petproject/src/main/proto/test_";
                 FilePattern filter = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, filter.getFilePrefix());
+                assertEquals(prefix, filter.getPrefix());
             }
         }
 
@@ -133,7 +133,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
         @Nested
         class Regex {
 
-            @DisplayName("with prefix and postfix wildcards")
+            @DisplayName("with prefix and suffix wildcards")
             @Test
             void withBothWildcards() {
                 String regex = ".*documents.*";

@@ -55,10 +55,10 @@ class FilePatternMatcherTest {
     @Nested
     class Match {
 
-        @DisplayName("postfix pattern")
+        @DisplayName("suffix pattern")
         @Test
-        void postfix() {
-            assertMatches(FilePatterns.filePostfix("file_patterns.proto"));
+        void suffix() {
+            assertMatches(FilePatterns.fileSuffix("file_patterns.proto"));
         }
 
         @DisplayName("prefix pattern")
@@ -84,10 +84,10 @@ class FilePatternMatcherTest {
     @Nested
     class NotMatch {
 
-        @DisplayName("postfix pattern")
+        @DisplayName("suffix pattern")
         @Test
-        void postfix() {
-            assertNotMatches(FilePatterns.filePostfix("test_file.proto"));
+        void suffix() {
+            assertNotMatches(FilePatterns.fileSuffix("test_file.proto"));
         }
 
         @DisplayName("prefix pattern")

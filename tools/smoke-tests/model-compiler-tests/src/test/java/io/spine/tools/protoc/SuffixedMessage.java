@@ -18,25 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-/**
- * Represents a Protoc Spine plugin configuration selector.
- */
-public interface Selector {
+import io.spine.base.SerializableMessage;
 
-    /**
-     * Disables current selector.
-     */
-    void disable();
-
-    /**
-     * Enables current selector.
-     */
-    void enable();
-
-    /**
-     * Determines if the current selector is enabled.
-     */
-    boolean isEnabled();
+public interface SuffixedMessage extends SerializableMessage {
 }

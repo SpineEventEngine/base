@@ -20,23 +20,19 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-/**
- * Represents a Protoc Spine plugin configuration selector.
- */
-public interface Selector {
+import io.spine.tools.protoc.FilePattern;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Disables current selector.
-     */
-    void disable();
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
-    /**
-     * Enables current selector.
-     */
-    void enable();
-
-    /**
-     * Determines if the current selector is enabled.
-     */
-    boolean isEnabled();
+    @DisplayName("translate itself to Protobuf counterpart")
+    @Test
+    void convertToProtobufCounterpart() {
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
+    }
 }

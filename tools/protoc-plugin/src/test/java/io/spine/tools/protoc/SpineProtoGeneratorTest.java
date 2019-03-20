@@ -28,6 +28,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
@@ -65,9 +66,10 @@ final class SpineProtoGeneratorTest {
     @Test
     void processValidRequest() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        interfaces.mark(interfaces.uuidMessage(), TestInterface.class.getName());
+        MessageSelectorFactory messages = interfaces.messages();
+        interfaces.mark(messages.uuid(), TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
+        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
@@ -103,7 +105,8 @@ final class SpineProtoGeneratorTest {
     @Test
     void concatenateGeneratedCode() {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
@@ -140,7 +143,8 @@ final class SpineProtoGeneratorTest {
     @Test
     void dropCodeDuplicates() {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())

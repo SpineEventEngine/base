@@ -17,17 +17,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
-import "spine/options.proto";
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.FilePatterns;
+import org.checkerframework.checker.regex.qual.Regex;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "PostfixGenerationTestProto";
-option java_package = "io.spine.tools.protoc";
+/**
+ * A file pattern matching file names which end with a certain postfix.
+ */
+public final class SuffixSelector extends FileSelector {
 
-message MessageEnhancedWithPostfixGenerations {
-    string value = 1;
+    SuffixSelector(@Regex String suffix) {
+        super(suffix);
+    }
+
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.fileSuffix(getPattern());
+    }
 }
