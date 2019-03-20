@@ -26,8 +26,8 @@ import io.spine.code.generate.Indent;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;
-import io.spine.tools.gradle.compiler.protoc.Interfaces;
-import io.spine.tools.gradle.compiler.protoc.Methods;
+import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -167,9 +167,9 @@ public class Extension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final Interfaces interfaces = Interfaces.withDefaults();
+    public final GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
 
-    public final Methods methods = Methods.withDefaults();
+    public final GeneratedMethods methods = GeneratedMethods.withDefaults();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -350,7 +350,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Action<? super Interfaces> action) {
+    public void interfaces(Action<? super GeneratedInterfaces> action) {
         action.execute(interfaces);
     }
 
@@ -360,7 +360,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Action<? super Methods> action) {
+    public void methods(Action<? super GeneratedMethods> action) {
         action.execute(methods);
     }
 
@@ -369,13 +369,13 @@ public class Extension extends GradleExtension {
         return annotations;
     }
 
-    public static Interfaces getInterfaces(Project project) {
-        Interfaces interfaces = extension(project).interfaces;
+    public static GeneratedInterfaces getInterfaces(Project project) {
+        GeneratedInterfaces interfaces = extension(project).interfaces;
         return interfaces;
     }
 
-    public static Methods getMethods(Project project) {
-        Methods methods = extension(project).methods;
+    public static GeneratedMethods getMethods(Project project) {
+        GeneratedMethods methods = extension(project).methods;
         return methods;
     }
 

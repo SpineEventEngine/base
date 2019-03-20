@@ -24,9 +24,9 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
 import io.spine.tools.gradle.compiler.protoc.FileSelector;
-import io.spine.tools.gradle.compiler.protoc.Interfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
+import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
-import io.spine.tools.gradle.compiler.protoc.Methods;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
@@ -60,11 +60,11 @@ final class PluginTest {
     @DisplayName("process suffix patterns")
     @Test
     void processSuffixPatterns() {
-        Interfaces interfaces = Interfaces.withDefaults();
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         FileSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, TestInterface.class.getName());
-        Methods methods = Methods.withDefaults();
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -85,7 +85,7 @@ final class PluginTest {
     @DisplayName("generate UUID message")
     @Test
     void generateUuidMethod() {
-        Methods methods = Methods.withDefaults();
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
 
@@ -105,11 +105,11 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        Interfaces interfaces = Interfaces.withDefaults();
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         FileSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, TestInterface.class.getName());
-        Methods methods = Methods.withDefaults();
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
 
         CodeGeneratorRequest request = requestBuilder()
@@ -131,11 +131,11 @@ final class PluginTest {
     @Test
     @DisplayName("process regex patterns")
     void processRegexPatterns() {
-        Interfaces interfaces = Interfaces.withDefaults();
+        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         FileSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, TestInterface.class.getName());
-        Methods methods = Methods.withDefaults();
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()

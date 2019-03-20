@@ -34,11 +34,11 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 /**
  * A configuration of methods to be generated for Java message classes.
  */
-public final class Methods extends GeneratedConfigurations<AddMethods> {
+public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> {
 
     private UuidConfig uuidFactoryConfig = UuidConfig.getDefaultInstance();
 
-    private Methods() {
+    private GeneratedMethods() {
         super();
     }
 
@@ -46,8 +46,8 @@ public final class Methods extends GeneratedConfigurations<AddMethods> {
      * Creates a new instance of {@code GeneratedMethods} with the default {@link UuidMethodFactory}
      * configured for {@link UuidMessage} selector.
      */
-    public static Methods withDefaults() {
-        Methods defaults = new Methods();
+    public static GeneratedMethods withDefaults() {
+        GeneratedMethods defaults = new GeneratedMethods();
         MessageSelectorFactory messages = defaults.messages();
         defaults.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         return defaults;

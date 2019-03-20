@@ -43,8 +43,8 @@ import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Interfaces should")
-final class InterfacesTest {
+@DisplayName("GeneratedInterfaces should")
+final class GeneratedInterfacesTest {
 
     @DisplayName("prepare default GeneratedInterfaceConfig for")
     @Nested
@@ -53,8 +53,8 @@ final class InterfacesTest {
         @DisplayName("UuidValue")
         @Test
         void uuid() {
-            AddInterfaces defaults = Interfaces.withDefaults()
-                                               .asProtocConfig();
+            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
+                                                        .asProtocConfig();
             assertHasInterface(UuidValue.class, defaults.getUuidInterface()
                                                         .getValue());
         }
@@ -62,24 +62,24 @@ final class InterfacesTest {
         @DisplayName("CommandMessage")
         @Test
         void command() {
-            AddInterfaces defaults = Interfaces.withDefaults()
-                                               .asProtocConfig();
+            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
+                                                        .asProtocConfig();
             assertHasInterfaceWithNameAndSuffix(CommandMessage.class, COMMANDS.suffix(), defaults);
         }
 
         @DisplayName("EventMessage")
         @Test
         void event() {
-            AddInterfaces defaults = Interfaces.withDefaults()
-                                               .asProtocConfig();
+            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
+                                                        .asProtocConfig();
             assertHasInterfaceWithNameAndSuffix(EventMessage.class, EVENTS.suffix(), defaults);
         }
 
         @DisplayName("RejectionMessage")
         @Test
         void rejection() {
-            AddInterfaces defaults = Interfaces.withDefaults()
-                                               .asProtocConfig();
+            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
+                                                        .asProtocConfig();
             assertHasInterfaceWithNameAndSuffix(RejectionMessage.class, REJECTIONS.suffix(),
                                                 defaults);
         }
@@ -98,7 +98,7 @@ final class InterfacesTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        Interfaces defaults = Interfaces.withDefaults();
+        GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = defaults.messages();
         defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
         defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);

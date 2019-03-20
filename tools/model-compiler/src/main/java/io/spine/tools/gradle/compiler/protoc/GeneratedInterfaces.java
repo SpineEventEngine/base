@@ -41,11 +41,11 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 /**
  * A configuration of interfaces to be generated for Java message classes.
  */
-public final class Interfaces extends GeneratedConfigurations<AddInterfaces> {
+public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
 
-    private Interfaces() {
+    private GeneratedInterfaces() {
         super();
     }
 
@@ -64,8 +64,8 @@ public final class Interfaces extends GeneratedConfigurations<AddInterfaces> {
      * @return new config
      */
     @VisibleForTesting
-    public static Interfaces withDefaults() {
-        Interfaces config = new Interfaces();
+    public static GeneratedInterfaces withDefaults() {
+        GeneratedInterfaces config = new GeneratedInterfaces();
         MessageSelectorFactory messages = config.messages();
         config.mark(messages.inFiles(suffix(COMMANDS.suffix())), CommandMessage.class.getName());
         config.mark(messages.inFiles(suffix(EVENTS.suffix())), EventMessage.class.getName());

@@ -38,8 +38,8 @@ import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Methods should")
-final class MethodsTest {
+@DisplayName("GeneratedMethods should")
+final class GeneratedMethodsTest {
 
     @DisplayName("prepare default generated config for")
     @Nested
@@ -48,8 +48,8 @@ final class MethodsTest {
         @DisplayName("UUID value")
         @Test
         void uuid() {
-            AddMethods config = Methods.withDefaults()
-                                       .asProtocConfig();
+            AddMethods config = GeneratedMethods.withDefaults()
+                                                .asProtocConfig();
             UuidConfig uuid = config.getUuidFactory();
             assertThat(uuid.getValue())
                     .isEqualTo(UuidMethodFactory.class.getName());
@@ -60,7 +60,7 @@ final class MethodsTest {
     @Test
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
-        Methods methods = Methods.withDefaults();
+        GeneratedMethods methods = GeneratedMethods.withDefaults();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(testMethodFactory, messages.uuid());
         methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
@@ -78,7 +78,7 @@ final class MethodsTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        Methods defaults = Methods.withDefaults();
+        GeneratedMethods defaults = GeneratedMethods.withDefaults();
         MessageSelectorFactory messages = defaults.messages();
         defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
         defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
