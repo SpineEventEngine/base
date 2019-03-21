@@ -66,9 +66,6 @@ public final class MessageSelectorFactory {
      */
     public FileSelector inFiles(Map<String, String> conf) {
         checkNotNull(conf);
-        checkArgument(conf.size() == 1,
-                      "File selector should have a single value, but had: '%s'",
-                      conf);
         Parser parser = new Parser();
         return parser.fileSelector(conf);
     }
@@ -109,6 +106,9 @@ public final class MessageSelectorFactory {
         }
 
         private FileSelector fileSelector(Map<String, String> conf) {
+            checkArgument(conf.size() == 1,
+                          "File selector should have a single value, but had: '%s'",
+                          conf);
             for (Entry<String, Function<String, FileSelector>> configEntry : configurations.entrySet()) {
                 String filePattern = conf.get(configEntry.getKey());
                 if (!isNullOrEmpty(filePattern)) {
