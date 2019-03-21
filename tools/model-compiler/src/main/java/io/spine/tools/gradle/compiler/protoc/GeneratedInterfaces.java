@@ -153,7 +153,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     }
 
     /**
-     * A syntax sugar method required for a more natual Gradle DSL.
+     * A syntax sugar method used for a more natural Gradle DSL.
      */
     @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
     public final String asType(String interfaceName){
