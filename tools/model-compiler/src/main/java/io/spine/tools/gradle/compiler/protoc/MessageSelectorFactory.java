@@ -121,5 +121,4 @@ public final class MessageSelectorFactory {
                     conf, configurations.keySet());
         }
     }
-
 }
