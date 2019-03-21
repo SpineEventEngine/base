@@ -31,22 +31,27 @@ import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.tools.protoc.iface.TestEventsProto;
 import io.spine.tools.protoc.method.TestMethodProtos;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.spine.base.MessageFile.EVENTS;
-import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.encodedProtocConfig;
+import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("Plugin should")
 final class PluginTest {
 
@@ -54,6 +59,13 @@ final class PluginTest {
     private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
+
+    private Path testPluginConfig;
+
+    @BeforeEach
+    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+        testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
+    }
 
     @DisplayName("process postfix patterns")
     @Test
@@ -68,7 +80,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(interfaces, methods))
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -90,7 +102,7 @@ final class PluginTest {
                 .addProtoFile(TestEventsProto.getDescriptor()
                                              .toProto())
                 .addFileToGenerate("spine/tools/protoc/iface/test_events.proto")
-                .setParameter(encodedProtocConfig(interfaces))
+                .setParameter(protocConfig(interfaces, testPluginConfig).toString())
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
@@ -107,7 +119,7 @@ final class PluginTest {
                 .addProtoFile(TestMethodProtos.getDescriptor()
                                               .toProto())
                 .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
-                .setParameter(encodedProtocConfig(methods))
+                .setParameter(protocConfig(methods, testPluginConfig).toString())
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
@@ -130,7 +142,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(interfaces, methods))
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -155,7 +167,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(interfaces, methods))
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
