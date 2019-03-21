@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("MessageSelectorFactory should")
 final class MessageSelectorFactoryTest {
 
-    private MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
+    private final MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
 
     @DisplayName("create UuidMessage selector")
     @Test
