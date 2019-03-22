@@ -135,6 +135,18 @@ public enum TaskName {
     copyPluginJar,
 
     /**
+     * Creates the Protobuf compiler plugin configuration.
+     *
+     * <p>Works only with the {@code main} scope.
+     */
+    writePluginConfiguration,
+
+    /**
+     * Creates the Protobuf compiler plugin test configuration.
+     */
+    writeTestPluginConfiguration,
+
+    /**
      * Creates the {@code desc.ref} file containing the reference to the descriptor file(s) with
      * the known types.
      *

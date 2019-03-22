@@ -35,21 +35,33 @@ import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.encodedProtocConfig;
+import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("SpineProtoGenerator should")
 final class SpineProtoGeneratorTest {
 
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
+
+    private Path testPluginConfig;
+
+    @BeforeEach
+    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+        testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
+    }
 
     @DisplayName("link with another generator")
     @Test
@@ -75,7 +87,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(interfaces, methods))
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File firstFile = File
@@ -112,7 +124,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(methods))
+                .setParameter(protocConfig(methods, testPluginConfig).toString())
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String firstMethod = "public void test1(){}";
@@ -150,7 +162,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(encodedProtocConfig(methods))
+                .setParameter(protocConfig(methods, testPluginConfig).toString())
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String method = "public void test1(){}";

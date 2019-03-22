@@ -21,7 +21,6 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
@@ -34,12 +33,7 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.groovy.GStrings;
-import io.spine.tools.protoc.AddMethods;
-import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
@@ -47,27 +41,27 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
+import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
+import static io.spine.tools.gradle.TaskName.writePluginConfiguration;
 import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
-import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
+import static io.spine.tools.gradle.TaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
-import static io.spine.tools.gradle.compiler.Extension.getMethods;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
@@ -127,6 +121,22 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protobuf.generateProtoTasks(closure(
                 (GenerateProtoTaskCollection tasks) -> configureProtocTasks(tasks, copyPluginJar)
         ));
+    }
+
+    private void configureProtocTasks(GenerateProtoTaskCollection tasks, GradleTask dependency) {
+        // This is a "live" view of the current Gradle tasks.
+        Collection<GenerateProtoTask> tasksProxy = tasks.all();
+
+        /*
+         *  Creating a hard-copy of "live" view of matching Gradle tasks.
+         *
+         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
+         *  insert a task into the Gradle lifecycle.
+         */
+        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
+        for (GenerateProtoTask task : allTasks) {
+            configureProtocTask(task, dependency.getTask());
+        }
     }
 
     private static void
@@ -192,9 +202,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private void configureDescriptorSetGeneration(GenerateProtoTask protocTask) {
         protocTask.setGenerateDescriptorSet(true);
-        boolean tests = protocTask.getSourceSet()
-                                  .getName()
-                                  .contains(SourceScope.test.name());
+        boolean tests = isTestsTask(protocTask);
         Project project = protocTask.getProject();
         File descriptor;
         TaskName writeRefName;
@@ -227,67 +235,58 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         protocTask.finalizedBy(writeRef.getTask());
     }
 
-    private static void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
-        protocTask.dependsOn(dependency);
+    private void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
+        Path spineProtocConfigPath = spineProtocConfigPath(protocTask);
+        Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
+        protocTask.dependsOn(dependency, writeConfig);
         protocTask.getPlugins()
                   .create(ProtocPlugin.GRPC.name);
         protocTask.getPlugins()
                   .create(ProtocPlugin.SPINE.name,
                           options -> {
                               options.setOutputSubDir("java");
-                              SpineProtocConfig param = assembleParameter(protocTask.getProject());
-                              String option = Base64.getEncoder()
-                                                    .encodeToString(param.toByteArray());
+                              String option = spineProtocConfigPath.toString();
                               options.option(option);
                           });
     }
 
-    private void configureProtocTasks(GenerateProtoTaskCollection tasks,
-                                      GradleTask dependency) {
-        // This is a "live" view of the current Gradle tasks.
-        Collection<GenerateProtoTask> tasksProxy = tasks.all();
-
-        /*
-         *  Creating a hard-copy of "live" view of matching Gradle tasks.
-         *
-         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
-         *  insert a task into the Gradle lifecycle.
-         */
-        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
-        for (GenerateProtoTask task : allTasks) {
-            configureProtocTask(task, dependency.getTask());
-        }
+    /**
+     * Creates a new {@code writeSpineProtocConfig} task that is expected to run after the
+     * {@code clean} task.
+     */
+    private Task newWriteSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
+        return newTask(spineProtocConfigWriteTaskName(protocTask), task -> {
+            ProtocPluginConfiguration configuration = ProtocPluginConfiguration
+                    .forProject(protocTask.getProject());
+            configuration.writeTo(configPath);
+        }).allowNoDependencies()
+          .applyNowTo(protocTask.getProject())
+          .getTask()
+          .mustRunAfter(clean.value());
     }
 
-    private static SpineProtocConfig assembleParameter(Project project) {
-        GeneratedInterfaces interfaces = getInterfaces(project);
-        GeneratedMethods methods = getMethods(project);
-        AddMethods methodsGeneration = methods
-                .asProtocConfig()
-                .toBuilder()
-                .setFactoryClasspath(projectClasspath(project))
-                .build();
-        SpineProtocConfig result = SpineProtocConfig
-                .newBuilder()
-                .setAddInterfaces(interfaces.asProtocConfig())
-                .setAddMethods(methodsGeneration)
-                .build();
-        return result;
+    private static TaskName spineProtocConfigWriteTaskName(GenerateProtoTask protoTask) {
+        return isTestsTask(protoTask) ?
+               writeTestPluginConfiguration :
+               writePluginConfiguration;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored") // Classpath.Builder usage in `forEach`
-    private static Classpath projectClasspath(Project project) {
-        Classpath.Builder classpath = Classpath.newBuilder();
-        Collection<JavaCompile> javaCompileViews = project.getTasks()
-                                                          .withType(JavaCompile.class);
-        ImmutableList.copyOf(javaCompileViews)
-                     .stream()
-                     .map(JavaCompile::getClasspath)
-                     .map(FileCollection::getFiles)
-                     .flatMap(Set::stream)
-                     .map(File::getAbsolutePath)
-                     .forEach(classpath::addJar);
-        return classpath.build();
+    private static Path spineProtocConfigPath(GenerateProtoTask protocTask) {
+        Project project = protocTask.getProject();
+        File buildDir = project.getBuildDir();
+        Path spinePluginTmpDir = Paths.get(buildDir.getAbsolutePath(),
+                                           "tmp",
+                                           SPINE_PLUGIN_NAME);
+        Path protocConfigPath = isTestsTask(protocTask) ?
+                                spinePluginTmpDir.resolve("test-config.pb") :
+                                spinePluginTmpDir.resolve("config.pb");
+        return protocConfigPath;
+    }
+
+    private static boolean isTestsTask(GenerateProtoTask protocTask) {
+        return protocTask.getSourceSet()
+                         .getName()
+                         .contains(SourceScope.test.name());
     }
 
     private enum ProtocPlugin {
@@ -333,10 +332,9 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         private static void copy(File file, File destinationDir) {
             try {
                 destinationDir.mkdirs();
-                File destination = destinationDir.toPath()
-                                                 .resolve(file.getName())
-                                                 .toFile();
-                Files.copy(file, destination);
+                Path destination = destinationDir.toPath()
+                                                 .resolve(file.getName());
+                Files.copy(file.toPath(), destination, REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new GradleException("Failed to copy Spine Protoc executable JAR.", e);
             }
