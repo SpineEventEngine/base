@@ -32,7 +32,7 @@ option java_package = "io.spine.test.tools.method.vbuilder.rejections";
 
 // A sample rejection to verify that VBuilderMethodFactory does not generate `vBuilder` method for
 // rejections.
-message SampleRejection {
+message VBuilderNotGenerated {
 
     Details details = 1;
 

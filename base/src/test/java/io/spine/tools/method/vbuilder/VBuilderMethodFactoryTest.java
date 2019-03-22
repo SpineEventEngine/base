@@ -23,7 +23,7 @@ package io.spine.tools.method.vbuilder;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.option.EntityOption;
-import io.spine.test.tools.method.vbuilder.ExampleEvent;
+import io.spine.test.tools.method.vbuilder.VBMFTExampleMessage;
 import io.spine.test.tools.method.vbuilder.rejections.Rejections;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.vbuilder.VBuilderMethodFactory;
@@ -56,7 +56,7 @@ final class VBuilderMethodFactoryTest {
         @DisplayName("rejection")
         @Test
         void rejection() {
-            assertEmptyResult(Rejections.SampleRejection.getDescriptor());
+            assertEmptyResult(Rejections.VBuilderNotGenerated.getDescriptor());
         }
 
         @DisplayName("google messages")
@@ -85,32 +85,32 @@ final class VBuilderMethodFactoryTest {
         @DisplayName("vBuilder static method")
         @Test
         void vBuilderMethod() {
-            MessageType type = new MessageType(ExampleEvent.getDescriptor());
+            MessageType type = new MessageType(VBMFTExampleMessage.getDescriptor());
             List<GeneratedMethod> newMethods = factory.createFor(type);
             assertEquals(2, newMethods.size());
             assertThat(newMethods.get(0)
                                  .value())
                     .isEqualTo("/**\n" +
-                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.ExampleEventVBuilder}.\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder}.\n" +
                                        " */\n" +
-                                       "public static final io.spine.test.tools.method.vbuilder.ExampleEventVBuilder vBuilder() {\n" +
-                                       "  return io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
+                                       "public static final io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder vBuilder() {\n" +
+                                       "  return io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
                                        "}\n");
         }
 
         @DisplayName("toVBuilder instance method")
         @Test
         void toVBuilderMethod() {
-            MessageType type = new MessageType(ExampleEvent.getDescriptor());
+            MessageType type = new MessageType(VBMFTExampleMessage.getDescriptor());
             List<GeneratedMethod> newMethods = factory.createFor(type);
             assertEquals(2, newMethods.size());
             assertThat(newMethods.get(1)
                                  .value())
                     .isEqualTo("/**\n" +
-                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.ExampleEventVBuilder} with the current state.\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder} with the current state.\n" +
                                        " */\n" +
-                                       "public final io.spine.test.tools.method.vbuilder.ExampleEventVBuilder toVBuilder() {\n" +
-                                       "  io.spine.test.tools.method.vbuilder.ExampleEventVBuilder result = io.spine.test.tools.method.vbuilder.ExampleEventVBuilder.newBuilder();\n" +
+                                       "public final io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder toVBuilder() {\n" +
+                                       "  io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder result = io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
                                        "  result.setOriginalState(this);\n" +
                                        "  return result;\n" +
                                        "}\n");

@@ -26,11 +26,11 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.test.tools.method.vbuilder";
 option java_multiple_files = true;
-option java_outer_classname = "WithVBuildersProto";
+option java_outer_classname = "MessagesWithVBuildersProto";
 
 // This file defines test environment for `VBuilderMethodFactoryTest`.
 
-// An example event message.
-message ExampleEvent {
-    int32 id = 2;
+// An example Protobuf message.
+message VBMFTExampleMessage {
+    int32 id = 1;
 }
