@@ -43,19 +43,28 @@ import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getGeneratedMethods;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A {@link SpineProtocConfig} holder.
+ */
 final class ProtocPluginConfiguration {
 
     private final SpineProtocConfig config;
 
-    ProtocPluginConfiguration(SpineProtocConfig config) {
+    private ProtocPluginConfiguration(SpineProtocConfig config) {
         this.config = config;
     }
 
+    /**
+     * Creates a configuration holder for a supplied {@code project}.
+     */
     static ProtocPluginConfiguration forProject(Project project) {
         SpineProtocConfig config = assembleSpineProtocConfig(project);
         return new ProtocPluginConfiguration(config);
     }
 
+    /**
+     * Writes the configuration to the file denoted by the supplied {@code configPath}.
+     */
     void writeTo(Path configPath) {
         Files2.ensureFile(configPath);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
