@@ -29,16 +29,16 @@ class MessageSelector implements Selector {
 
     @Override
     public void disable() {
-        isEnabled = false;
+        enabled = false;
     }
 
     @Override
     public void enable() {
-        isEnabled = true;
+        enabled = true;
     }
 
     @Override
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean enabled() {
+        return enabled;
     }
 }
