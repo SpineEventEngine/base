@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
@@ -28,10 +27,12 @@ import io.spine.option.OptionExtensionRegistry;
 import io.spine.tools.protoc.iface.InterfaceGenerator;
 import io.spine.tools.protoc.method.MethodGenerator;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Base64;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
@@ -66,35 +67,37 @@ public final class Plugin {
 
     private static CodeGeneratorRequest readRequest() {
         try {
-            CodeGeneratorRequest request =
-                    CodeGeneratorRequest.parseFrom(System.in, OptionExtensionRegistry.instance());
+            CodeGeneratorRequest request = CodeGeneratorRequest
+                    .parseFrom(System.in, OptionExtensionRegistry.instance());
             return request;
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw newIllegalStateException(e, "Unable to read Code Generator Request.");
         }
     }
 
     private static SpineProtocConfig readConfig(CodeGeneratorRequest request) {
-        try {
-            String rawBase64Parameter = request.getParameter();
-            byte[] rawParameter = Base64.getDecoder()
-                                        .decode(rawBase64Parameter);
-            SpineProtocConfig config = SpineProtocConfig.parseFrom(rawParameter);
+        String configFilePath = request.getParameter();
+        try (FileInputStream fis = new FileInputStream(configFilePath)) {
+            SpineProtocConfig config = SpineProtocConfig
+                    .parseFrom(fis, OptionExtensionRegistry.instance());
             return config;
         } catch (InvalidProtocolBufferException e) {
-            throw new IllegalStateException(e);
+            throw newIllegalStateException(e, "Unable to decode Spine Protoc Plugin config.");
+        } catch (FileNotFoundException e) {
+            throw newIllegalStateException(e, "Spine Protoc Plugin config file not found.");
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Unable to read Spine Protoc Plugin config.");
         }
     }
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
     private static void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
-        CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
         try {
-            response.writeTo(stream);
-            stream.flush();
+            response.writeTo(System.out);
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw newIllegalStateException(
+                    e, "Unable to write Spine Protoc Plugin code generator response.");
         }
     }
 }

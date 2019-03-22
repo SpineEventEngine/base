@@ -27,7 +27,10 @@ import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.SpineProtocConfig;
 
-import java.util.Base64;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * A helper class for {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
@@ -65,38 +68,46 @@ public final class CodeGeneratorRequestGiven {
     }
 
     /**
-     * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
-     * {@code GeneratedMethods} and a default instance of {@code GeneratedInterfaces}.
+     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedMethods} and
+     * a default instance of {@code GeneratedInterfaces} and stores it in the supplied {@code path}.
      *
-     * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
+     * @return configuration file absolute path
+     * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
-    public static String encodedProtocConfig(GeneratedMethods methods) {
-        return encodedProtocConfig(GeneratedInterfaces.withDefaults(), methods);
+    public static Path protocConfig(GeneratedMethods methods, Path configPath) {
+        return protocConfig(GeneratedInterfaces.withDefaults(), methods, configPath);
     }
 
     /**
-     * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
-     * {@code GeneratedInterfaces} and a default instance of {@code GeneratedMethods}.
+     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
+     * a default instance of {@code GeneratedMethods} and stores it in the supplied {@code path}.
      *
-     * @see #encodedProtocConfig(GeneratedInterfaces, GeneratedMethods)
+     * @return configuration file absolute path
+     * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
-    public static String encodedProtocConfig(GeneratedInterfaces interfaces) {
-        return encodedProtocConfig(interfaces, GeneratedMethods.withDefaults());
+    public static Path protocConfig(GeneratedInterfaces interfaces, Path configPath) {
+        return protocConfig(interfaces, GeneratedMethods.withDefaults(), configPath);
     }
 
     /**
-     * Creates a Base64-encoded version of a {@link SpineProtocConfig} out of the supplied
-     * {@code GeneratedInterfaces} and {@code GeneratedMethods}.
+     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
+     * {@code GeneratedMethods} and stores it in the supplied {@code path}.
+     *
+     * @return configuration file absolute path
      */
-    public static String encodedProtocConfig(GeneratedInterfaces interfaces,
-                                             GeneratedMethods methods) {
-        SpineProtocConfig protocConfig = SpineProtocConfig
+    public static Path
+    protocConfig(GeneratedInterfaces interfaces, GeneratedMethods methods, Path configPath) {
+        SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methods.asProtocConfig())
                 .build();
-        return Base64.getEncoder()
-                     .encodeToString(protocConfig.toByteArray());
+        try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
+            config.writeTo(fos);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        return configPath.toAbsolutePath();
     }
 
     private static DescriptorProtos.FileDescriptorProto spineOptionsProto() {
