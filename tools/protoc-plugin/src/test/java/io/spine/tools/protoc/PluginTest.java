@@ -65,7 +65,7 @@ final class PluginTest {
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()

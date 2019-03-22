@@ -79,7 +79,7 @@ sourceSets {
 }
 
 modelCompiler {
-    generateInterfaces {
-        mark filePattern().endsWith("rejections.proto"), "io.spine.base.RejectionMessage"
+    interfaces {
+        mark messages.inFiles(suffix: "rejections.proto"), asType("io.spine.base.RejectionMessage")
     }
 }
