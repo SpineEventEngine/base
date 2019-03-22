@@ -25,7 +25,7 @@ package io.spine.tools.gradle.compiler.protoc;
  */
 class MessageSelector implements Selector {
 
-    private boolean isEnabled = true;
+    private boolean enabled = true;
 
     @Override
     public void disable() {
