@@ -123,6 +123,22 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         ));
     }
 
+    private void configureProtocTasks(GenerateProtoTaskCollection tasks, GradleTask dependency) {
+        // This is a "live" view of the current Gradle tasks.
+        Collection<GenerateProtoTask> tasksProxy = tasks.all();
+
+        /*
+         *  Creating a hard-copy of "live" view of matching Gradle tasks.
+         *
+         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
+         *  insert a task into the Gradle lifecycle.
+         */
+        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
+        for (GenerateProtoTask task : allTasks) {
+            configureProtocTask(task, dependency.getTask());
+        }
+    }
+
     private static void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.GRPC.name,
@@ -221,7 +237,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
         Path spineProtocConfigPath = spineProtocConfigPath(protocTask);
-        Task writeConfig = writeSpineProtocConfigTask(protocTask, spineProtocConfigPath);
+        Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
         protocTask.dependsOn(dependency, writeConfig);
         protocTask.getPlugins()
                   .create(ProtocPlugin.GRPC.name);
@@ -234,7 +250,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                           });
     }
 
-    private Task writeSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
+    /**
+     * Creates a new {@code writeSpineProtocConfig} task that is expected to run after the
+     * {@code clean} task.
+     */
+    private Task newWriteSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
         return newTask(spineProtocConfigWriteTaskName(protocTask), task -> {
             ProtocPluginConfiguration configuration = ProtocPluginConfiguration
                     .forProject(protocTask.getProject());
@@ -243,23 +263,6 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
           .applyNowTo(protocTask.getProject())
           .getTask()
           .mustRunAfter(clean.value());
-    }
-
-    private void configureProtocTasks(GenerateProtoTaskCollection tasks,
-                                      GradleTask dependency) {
-        // This is a "live" view of the current Gradle tasks.
-        Collection<GenerateProtoTask> tasksProxy = tasks.all();
-
-        /*
-         *  Creating a hard-copy of "live" view of matching Gradle tasks.
-         *
-         *  Otherwise a `ConcurrentModificationException` is thrown upon an attempt to
-         *  insert a task into the Gradle lifecycle.
-         */
-        ImmutableList<GenerateProtoTask> allTasks = ImmutableList.copyOf(tasksProxy);
-        for (GenerateProtoTask task : allTasks) {
-            configureProtocTask(task, dependency.getTask());
-        }
     }
 
     private static TaskName spineProtocConfigWriteTaskName(GenerateProtoTask protoTask) {
