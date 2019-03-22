@@ -24,4 +24,19 @@ package io.spine.tools.gradle.compiler.protoc;
  * Represents a Protoc Spine plugin configuration selector.
  */
 public interface Selector {
+
+    /**
+     * Disables current selector.
+     */
+    void disable();
+
+    /**
+     * Enables current selector.
+     */
+    void enable();
+
+    /**
+     * Determines if the current selector is enabled.
+     */
+    boolean enabled();
 }

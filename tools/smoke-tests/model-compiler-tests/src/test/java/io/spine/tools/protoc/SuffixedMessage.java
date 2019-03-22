@@ -18,21 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.base.SerializableMessage;
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
-
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
-    }
+public interface SuffixedMessage extends SerializableMessage {
 }

@@ -28,6 +28,8 @@ import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,11 +37,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("ClassName should")
 class ClassNameTest {
 
-    @Test
-    @DisplayName("reject empty value")
-    void reject_empty_value() {
+    @DisplayName("reject value")
+    @ParameterizedTest(name = "\"{0}\"")
+    @ValueSource(strings = {"", "    "})
+    void rejectEmptyAndBlankValues(String value) {
         assertThrows(IllegalArgumentException.class,
-                     () -> ClassName.of(""));
+                     () -> ClassName.of(value));
     }
 
     @Test

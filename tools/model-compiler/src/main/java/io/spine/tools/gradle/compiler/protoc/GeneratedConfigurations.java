@@ -29,7 +29,6 @@ import io.spine.tools.protoc.ConfigByPattern;
 
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
 
 /**
@@ -42,52 +41,18 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
-    private final Map<FileSelector, ClassName> patterns;
+    private final Map<PatternSelector, ClassName> patterns;
 
     GeneratedConfigurations() {
         this.patterns = Maps.newConcurrentMap();
     }
 
     /**
-     * Returns {@link FileSelectorFactory}.
+     * Returns {@link MessageSelectorFactory}.
      */
-    public FileSelectorFactory filePattern() {
-        return FileSelectorFactory.INSTANCE;
+    public MessageSelectorFactory messages() {
+        return MessageSelectorFactory.INSTANCE;
     }
-
-    /**
-     * Returns {@link UuidMessage} selector.
-     */
-    public UuidMessage uuidMessage() {
-        return UuidMessage.INSTANCE;
-    }
-
-    /**
-     * Ignores code generation for Protobuf files that matches supplied {@code pattern}.
-     *
-     * <p>Sample usage is:
-     * <pre>
-     *     {@code
-     *     ignore filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     */
-    public final void ignore(FileSelector pattern) {
-        checkNotNull(pattern);
-        patterns.remove(pattern);
-    }
-
-    /**
-     * Ignores code generation for UUID messages.
-     *
-     * <p>Sample usage is:
-     * <pre>
-     *     {@code
-     *     ignore uuidMessage()
-     *     }
-     * </pre>
-     */
-    public abstract void ignore(UuidMessage uuidMessage);
 
     /**
      * Converts current configuration into its Protobuf counterpart.
@@ -96,28 +61,28 @@ abstract class GeneratedConfigurations<C extends Message> {
     public abstract C asProtocConfig();
 
     /**
-     * Adds a new {@link FileSelector} configuration with a supplied {@link ClassName}.
+     * Adds a new {@link PatternSelector} configuration with a supplied {@link ClassName}.
      *
-     * <p>The {@code className} can represent a fully-qualified name of an interface of a
+     * <p>The {@code className} can represent a fully-qualified name of an interface or a
      * method factory.
      */
-    void addPattern(FileSelector pattern, ClassName className) {
+    void addPattern(PatternSelector pattern, ClassName className) {
         patterns.put(pattern, className);
     }
 
     /**
      * Obtains current unique pattern configurations.
      */
-    ImmutableSet<Map.Entry<FileSelector, ClassName>> patternConfigurations() {
+    ImmutableSet<Map.Entry<PatternSelector, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
     }
 
     /**
-     * Converts {@link FileSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
+     * Converts {@link PatternSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
      */
-    static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
-        FileSelector fileSelector = e.getKey();
+    static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
+        PatternSelector patternSelector = e.getKey();
         ClassName className = e.getValue();
-        return byPatternConfig(className.value(), fileSelector.toProto());
+        return byPatternConfig(className, patternSelector.toProto());
     }
 }

@@ -25,18 +25,16 @@ dependencies {
 
 modelCompiler {
 
-    generateInterfaces {
-        mark filePattern().endsWith("documents.proto"), "io.spine.tools.protoc.DocumentMessage"
-        mark filePattern().startsWith("spine/tools/protoc/prefix_generation"), "io.spine.tools.protoc.PrefixedMessage"
-        mark filePattern().endsWith("postfix_generation_test.proto"), "io.spine.tools.protoc.PostfixedMessage"
-        mark filePattern().matches(".*regex.*test.*"), "io.spine.tools.protoc.RegexedMessage"
-        ignore uuidMessage()
-        ignore filePattern().endsWith("events.proto")
+    interfaces {
+        mark messages().inFiles(suffix: 'documents.proto'), asType('io.spine.tools.protoc.DocumentMessage')
+        mark messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation'), asType('io.spine.tools.protoc.PrefixedMessage')
+        mark messages().inFiles(suffix: 'suffix_generation_test.proto'), asType('io.spine.tools.protoc.SuffixedMessage')
+        mark messages().inFiles(regex: '.*regex.*test.*'), asType('io.spine.tools.protoc.RegexedMessage')
     }
 
-    generateMethods {
-        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().endsWith("postfix_generation_test.proto")
-        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().startsWith("spine/tools/protoc/prefix_generation")
-        useFactory "io.spine.tools.protoc.TestMethodFactory", filePattern().matches(".*regex.*test.*")
+    methods {
+        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(suffix: 'suffix_generation_test.proto')
+        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
+        applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*regex.*test.*')
     }
 }

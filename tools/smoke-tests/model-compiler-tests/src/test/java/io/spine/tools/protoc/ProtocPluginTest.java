@@ -114,12 +114,12 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("skip standard interfaces if overridden with `ignore()`")
+    @DisplayName("mark as event messages")
     void skipStandardTypesIfIgnored() {
-        assertThat(UserCreated.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
-        assertThat(UserNotified.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
+        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
 
-        assertThat(TypicalIdentifier.getDefaultInstance()).isNotInstanceOf(UuidValue.class);
+        assertThat(TypicalIdentifier.getDefaultInstance()).isInstanceOf(UuidValue.class);
     }
 
     @Test
@@ -184,15 +184,15 @@ final class ProtocPluginTest {
     @DisplayName("generate a custom method for an .endsWith() pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
+                new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
     }
 
     @Test
     @DisplayName("mark a message with interface using .endsWith() pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
-        assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
-                .isInstanceOf(PostfixedMessage.class);
+        assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                .isInstanceOf(SuffixedMessage.class);
     }
 
     @Test

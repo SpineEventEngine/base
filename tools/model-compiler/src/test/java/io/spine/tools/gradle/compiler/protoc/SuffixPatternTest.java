@@ -25,14 +25,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
     @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
     }
 }

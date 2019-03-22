@@ -104,7 +104,7 @@ final class GenerateMethodsTest {
     @Test
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
-                .setPattern(FilePatterns.filePostfix("test_patterns.proto"))
+                .setPattern(FilePatterns.fileSuffix("test_patterns.proto"))
                 .build();
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();

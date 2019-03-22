@@ -34,22 +34,22 @@ public final class FilePatterns {
     }
 
     /**
-     * Creates a new {@link FilePattern} with a {@code file_postfix} field filled.
+     * Creates a new {@link FilePattern} with a {@code suffix} field filled.
      */
-    public static FilePattern filePostfix(@Regex String postfix) {
-        checkNotNull(postfix);
+    public static FilePattern fileSuffix(@Regex String suffix) {
+        checkNotNull(suffix);
         return FilePattern.newBuilder()
-                          .setFilePostfix(postfix)
+                          .setSuffix(suffix)
                           .build();
     }
 
     /**
-     * Creates a new {@link FilePattern} with a {@code file_prefix} field filled.
+     * Creates a new {@link FilePattern} with a {@code prefix} field filled.
      */
     public static FilePattern filePrefix(@Regex String prefix) {
         checkNotNull(prefix);
         return FilePattern.newBuilder()
-                          .setFilePrefix(prefix)
+                          .setPrefix(prefix)
                           .build();
     }
 
