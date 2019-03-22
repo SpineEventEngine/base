@@ -41,10 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Creates {@code public static final VBuilder vBuilder()} method.
  */
 @Immutable
-public class VBuilderMethodFactory implements MethodFactory {
-
-    public VBuilderMethodFactory() {
-    }
+public final class VBuilderMethodFactory implements MethodFactory {
 
     @Override
     public List<GeneratedMethod> createFor(MessageType messageType) {
@@ -59,12 +56,11 @@ public class VBuilderMethodFactory implements MethodFactory {
     }
 
     /**
-     * Creates new {@code public static final T vBuilder()} method where {@code <T>} is a
-     * {@link io.spine.validate.ValidatingBuilder ValidatingBuilder}:
+     * Creates new {@code public static final MessageVBuilder vBuilder()} method:
      * <pre>
      *     {@code
-     *     public static final T vBuilder(){
-     *         return T.newBuilder();
+     *     public static final MessageVBuilder vBuilder(){
+     *         return MessageVBuilder.newBuilder();
      *     }
      *     }
      * </pre>
@@ -81,13 +77,12 @@ public class VBuilderMethodFactory implements MethodFactory {
     }
 
     /**
-     * Creates new {@code public final T toVBuilder()} method where {@code <T>} is a
-     * {@link io.spine.validate.ValidatingBuilder ValidatingBuilder} created from the current
+     * Creates new {@code public final MessageVBuilder toVBuilder()} method created from the current
      * instance state:
      * <pre>
      *     {@code
-     *     public final T toVBuilder(){
-     *         T result = T.newBuilder();
+     *     public final MessageVBuilder toVBuilder(){
+     *         MessageVBuilder result = MessageVBuilder.newBuilder();
      *         result.setOriginalState(this);
      *         return result;
      *     }
