@@ -31,7 +31,7 @@ final class MessageSelectorTest {
     @DisplayName("be enabled by default")
     @Test
     void beEnabledByDefault() {
-        assertThat(new MessageSelector().isEnabled()).isTrue();
+        assertThat(new MessageSelector().enabled()).isTrue();
     }
 
     @DisplayName("allow disabling and enabling itself")
@@ -39,8 +39,8 @@ final class MessageSelectorTest {
     void allowDisablingAndEnablingItself() {
         MessageSelector selector = new MessageSelector();
         selector.disable();
-        assertThat(selector.isEnabled()).isFalse();
+        assertThat(selector.enabled()).isFalse();
         selector.enable();
-        assertThat(selector.isEnabled()).isTrue();
+        assertThat(selector.enabled()).isTrue();
     }
 }
