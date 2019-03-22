@@ -26,6 +26,7 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.code.java.ClassName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
@@ -67,7 +68,7 @@ final class SpineProtoGeneratorTest {
     void processValidRequest() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
-        interfaces.mark(messages.uuid(), TestInterface.class.getName());
+        interfaces.mark(messages.uuid(), ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()

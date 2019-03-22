@@ -22,6 +22,7 @@ package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import io.spine.code.java.ClassName;
 import io.spine.option.OptionExtensionRegistry;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
@@ -63,7 +64,7 @@ final class PluginTest {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
-        interfaces.mark(suffixSelector, TestInterface.class.getName());
+        interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
@@ -108,7 +109,7 @@ final class PluginTest {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
-        interfaces.mark(prefixSelector, TestInterface.class.getName());
+        interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
 
@@ -134,7 +135,7 @@ final class PluginTest {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
-        interfaces.mark(regexSelector, TestInterface.class.getName());
+        interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
         CodeGeneratorRequest request = requestBuilder()

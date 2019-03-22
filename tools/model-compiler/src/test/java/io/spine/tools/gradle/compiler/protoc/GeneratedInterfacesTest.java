@@ -88,8 +88,7 @@ final class GeneratedInterfacesTest {
         private void assertHasInterfaceWithNameAndSuffix(Class<?> interfaceClass,
                                                          String suffix,
                                                          AddInterfaces config) {
-            String expectedInterface = interfaceClass.getName();
-            assertTrue(hasSuffixConfig(suffix, expectedInterface, config));
+            assertTrue(hasSuffixConfig(suffix, ClassName.of(interfaceClass), config));
         }
     }
 
@@ -97,7 +96,7 @@ final class GeneratedInterfacesTest {
     @Test
     void addMultipleFilePatterns() {
         String pattern = "testPattern";
-        String interfaceName = "io.spine.test.TestInterface";
+        ClassName interfaceName = ClassName.of("io.spine.test.TestInterface");
 
         GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = defaults.messages();
@@ -118,30 +117,31 @@ final class GeneratedInterfacesTest {
     }
 
     private static boolean
-    hasSuffixConfig(String suffix, String interfaceName, AddInterfaces config) {
+    hasSuffixConfig(String suffix, ClassName interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
                             pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String interfaceName, AddInterfaces config) {
+    hasPrefixConfig(String prefix, ClassName interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
                             pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String interfaceName, AddInterfaces config) {
+    hasRegexConfig(String regex, ClassName interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
                             pattern -> regex.equals(pattern.getRegex()));
     }
 
     private static boolean hasInterface(AddInterfaces config,
-                                        String interfaceName,
+                                        ClassName interfaceName,
                                         Predicate<? super FilePattern> patternPredicate) {
         return config
                 .getInterfaceByPatternList()
                 .stream()
-                .filter(byPattern -> interfaceName.equals(byPattern.getValue()))
+                .filter(byPattern -> interfaceName.value()
+                                                  .equals(byPattern.getValue()))
                 .map(ConfigByPattern::getPattern)
                 .anyMatch(patternPredicate);
     }
