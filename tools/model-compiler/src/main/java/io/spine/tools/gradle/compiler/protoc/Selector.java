@@ -38,5 +38,5 @@ public interface Selector {
     /**
      * Determines if the current selector is enabled.
      */
-    boolean isEnabled();
+    boolean enabled();
 }
