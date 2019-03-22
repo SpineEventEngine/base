@@ -143,8 +143,6 @@ public enum TaskName {
 
     /**
      * Creates the Protobuf compiler plugin test configuration.
-     *
-     * <p>Works only with the {@code test} scope.
      */
     writeTestPluginConfiguration,
 
