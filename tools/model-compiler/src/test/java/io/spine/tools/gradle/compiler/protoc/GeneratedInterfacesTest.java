@@ -110,10 +110,11 @@ final class GeneratedInterfacesTest {
     }
 
     @DisplayName("allows asType syntax sugar method")
+    @Test
     void allowAsTypeSugar() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         String interfaceName = "MyInterface";
-        assertThat(interfaces.asType(interfaceName)).isEqualTo(interfaceName);
+        assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
     }
 
     private static boolean
