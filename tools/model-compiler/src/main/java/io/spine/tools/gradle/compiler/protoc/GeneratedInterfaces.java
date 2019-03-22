@@ -28,10 +28,6 @@ import io.spine.tools.protoc.UuidConfig;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.MessageFile.COMMANDS;
-import static io.spine.base.MessageFile.EVENTS;
-import static io.spine.base.MessageFile.REJECTIONS;
-import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**

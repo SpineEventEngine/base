@@ -36,6 +36,7 @@ import io.spine.code.java.SourceFile;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.given.SpineProtocConfigGiven;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,7 @@ final class InterfaceGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        GeneratedInterfaces interfaces = new GeneratedInterfaces();
+        GeneratedInterfaces interfaces = SpineProtocConfigGiven.defaultInterfaces();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
