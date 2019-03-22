@@ -99,7 +99,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
         _debug("The getter construction for the map field is started.");
         String methodName = AccessorTemplates.mapGetter()
                                              .format(javaFieldName);
-        String returnStatement = format("return %s.%s()",
+        String returnStatement = format(FMT_RETURN_BUILD_METHOD,
                                         getMessageBuilder(), methodName);
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
@@ -205,7 +205,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putAllRawMethod() {
-        String putAllStatement = format("%s.%s(convertedValue)",
+        String putAllStatement = format(FMT_CONVERTED_VALUE_STATEMENT,
                                         getMessageBuilder(), allPutter().format(javaFieldName));
         String methodName = fieldType.primarySetterTemplate()
                                      .format(javaFieldName);

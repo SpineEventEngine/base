@@ -28,6 +28,10 @@ import io.spine.tools.protoc.UuidConfig;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.base.MessageFile.COMMANDS;
+import static io.spine.base.MessageFile.EVENTS;
+import static io.spine.base.MessageFile.REJECTIONS;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
@@ -47,7 +51,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
+     *     mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      *     }
      * </pre>
      *
@@ -57,6 +61,10 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * <p>Note that only the top-level messages declarations are affected by this configuration.
      * Nested messages defined in the same file do not implement the interface.
+     *
+     * <p>Caution. In order for the framework components to function properly, one should not
+     * entirely override the {@linkplain #withDefaults() default} message interfaces. Instead,
+     * provide a custom interface which {@code extends} the standard one.
      *
      * Example of a safe way to override standard interfaces:
      * <pre>
@@ -74,8 +82,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *     // ...
      *
      *     modelCompiler {
-     *         generateInterfaces {
-     *             mark filePattern().endsWith("events.proto"), "my.custom.EventMessage"
+     *         interfaces {
+     *             mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      *         }
      *     }
      *     }
@@ -84,29 +92,18 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>In the example above, {@code my.custom.EventMessage} extends
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
-     *
-     * <p>Another option for an interface generation configuration is to turn it off completely:
-     * <pre>
-     *     {@code
-     *     ignore filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     *
-     * <p>In such case, no additional interface is added to the top-level message classes matching
-     * the pattern. However, the interfaces defined via {@code (is)} and {@code (every_is)} options
-     * are generated regardless the configuration.
      */
-    public final void mark(FileSelector fileSelector, @FullyQualifiedName String interfaceName) {
-        checkNotNull(fileSelector);
+    public final void mark(PatternSelector patternSelector, @FullyQualifiedName ClassName interfaceName) {
+        checkNotNull(patternSelector);
         checkNotNull(interfaceName);
-        addPattern(fileSelector, ClassName.of(interfaceName));
+        addPattern(patternSelector, interfaceName);
     }
 
     /**
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(FileSelector, String)} except for
+     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -116,19 +113,21 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>Sample usage is:
      * <pre>
      *      {@code
-     *      mark uuidMessage(), "my.custom.Identifier"
+     *      mark messages().uuid(), asType("my.custom.Identifier")
      *      }
      * </pre>
      */
-    public final void mark(UuidMessage uuidMessage, @FullyQualifiedName String interfaceName) {
+    public final void mark(UuidMessage uuidMessage, ClassName interfaceName) {
         checkNotNull(uuidMessage);
         uuidInterface = uuidConfig(interfaceName);
     }
 
-    @Override
-    public final void ignore(UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidInterface = UuidConfig.getDefaultInstance();
+    /**
+     * A syntax sugar method used for a more natural Gradle DSL.
+     */
+    @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
+    public final ClassName asType(String interfaceName){
+        return ClassName.of(interfaceName);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.

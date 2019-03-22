@@ -29,8 +29,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
@@ -41,9 +44,9 @@ final class GeneratedMethodsTest {
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
         GeneratedMethods methods = new GeneratedMethods();
-        methods.useFactory(testMethodFactory, methods.uuidMessage());
-        methods.useFactory(testMethodFactory, methods.filePattern()
-                                                     .endsWith("_test.proto"));
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(testMethodFactory, messages.uuid());
+        methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
         AddMethods config = methods.asProtocConfig();
 
         assertEquals(testMethodFactory, config.getUuidFactory()
@@ -58,34 +61,25 @@ final class GeneratedMethodsTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedMethods methods = new GeneratedMethods();
-        FileSelectorFactory filePattern = methods.filePattern();
-        methods.useFactory(interfaceName, filePattern.endsWith(pattern));
-        methods.useFactory(interfaceName, filePattern.startsWith(pattern));
-        methods.useFactory(interfaceName, filePattern.matches(pattern));
+        GeneratedMethods defaults = new GeneratedMethods();
+        MessageSelectorFactory messages = defaults.messages();
+        defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(regex(pattern)));
 
-        assertTrue(hasPostfixConfig(pattern, interfaceName, methods.asProtocConfig()));
-        assertTrue(hasPrefixConfig(pattern, interfaceName, methods.asProtocConfig()));
-        assertTrue(hasRegexConfig(pattern, interfaceName, methods.asProtocConfig()));
-    }
-
-    @DisplayName("be able to ignore UUID message configuration")
-    @Test
-    void ignoreUuidMessageConfig() {
-        GeneratedMethods methods = new GeneratedMethods();
-        methods.ignore(methods.uuidMessage());
-        assertSame(UuidConfig.getDefaultInstance(), methods.asProtocConfig()
-                                                           .getUuidFactory());
+        assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
     private static boolean
-    hasPostfixConfig(String postfix, String factoryName, AddMethods config) {
-        return hasConfig(config, factoryName, pattern -> postfix.equals(pattern.getFilePostfix()));
+    hasSuffixConfig(String suffix, String factoryName, AddMethods config) {
+        return hasConfig(config, factoryName, pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
     hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
-        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getFilePrefix()));
+        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean

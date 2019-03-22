@@ -47,7 +47,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * <p>Sample usage is:
      * <pre>
      *     {@code
-     *     useFactory "io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
+     *     applyFactory "io.spine.code.CustomMethodFactory",messages().inFiles(suffix: "events.proto")
      *     }
      * </pre>
      *
@@ -82,53 +82,37 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *     // ...
      *
      *     modelCompiler {
-     *         generateMethods {
-     *             useFactory "io.spine.code.CustomMethodFactory", filePattern().endsWith("events.proto")
+     *         methods {
+     *             applyFactory "io.spine.code.CustomMethodFactory", messages().inFiles(suffix: "events.proto")
      *         }
      *     }
      *     }
      * </pre>
-     *
-     * <p>Another option for an method generation configuration is to turn it off completely:
-     * <pre>
-     *     {@code
-     *     ignore filePattern().endsWith("events.proto")
-     *     }
-     * </pre>
-     *
-     * <p>In such case, no additional methods are added to the message classes matching the
-     * pattern.
      */
-    public final void useFactory(@FullyQualifiedName String factoryName,
-                                 FileSelector fileSelector) {
-        checkNotNull(factoryName);
-        checkNotNull(fileSelector);
-        addPattern(fileSelector, ClassName.of(factoryName));
+    public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
+        checkNotNull(factory);
+        checkNotNull(selector);
+        addPattern(selector, ClassName.of(factory));
     }
 
     /**
      * Configures method generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #useFactory(String, FileSelector)} except
+     * <p>This method functions similarly to the {@link #applyFactory(String, PatternSelector)}
+     * except
      * the file in which the message type is defined does not matter.
      *
      * <p>Sample usage is:
      * <pre>
      *      {@code
-     *      useFactory "io.spine.code.CustomMethodFactory", uuidMessage()
+     *      applyFactory "io.spine.code.CustomMethodFactory", messages().uuid()
      *      }
      * </pre>
      */
-    public final void useFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidFactoryConfig = uuidConfig(factoryName);
-    }
-
-    @Override
-    public void ignore(UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidFactoryConfig = UuidConfig.getDefaultInstance();
+    public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {
+        checkNotNull(selector);
+        uuidFactoryConfig = uuidConfig(ClassName.of(factory));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.

@@ -89,7 +89,7 @@ final class GenerateInterfacesTest {
         @Test
         void messageIsNotTopLevel() {
             assertEmptyResult(TestInterface.class.getName(),
-                              FilePatterns.filePostfix("inner_messages.proto"),
+                              FilePatterns.fileSuffix("inner_messages.proto"),
                               new MessageType(OuterMessage.InnerMessage.getDescriptor()));
         }
 
@@ -112,7 +112,7 @@ final class GenerateInterfacesTest {
     @Test
     void implementInterface() {
         ConfigByPattern config = newTaskConfig(TestInterface.class.getName())
-                .setPattern(FilePatterns.filePostfix("test_events.proto"))
+                .setPattern(FilePatterns.fileSuffix("test_events.proto"))
                 .build();
         assertThat(newTask(config).generateFor(new MessageType(ProjectCreated.getDescriptor())))
                 .isNotEmpty();

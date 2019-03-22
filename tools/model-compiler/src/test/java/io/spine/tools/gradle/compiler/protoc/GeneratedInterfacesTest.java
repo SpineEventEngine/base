@@ -29,6 +29,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.MessageFile.COMMANDS;
+import static io.spine.base.MessageFile.EVENTS;
+import static io.spine.base.MessageFile.REJECTIONS;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,44 +46,53 @@ final class GeneratedInterfacesTest {
     @Test
     void addMultipleFilePatterns() {
         String pattern = "testPattern";
-        String interfaceName = "io.spine.test.TestInterface";
+        ClassName interfaceName = ClassName.of("io.spine.test.TestInterface");
 
         GeneratedInterfaces defaults = new GeneratedInterfaces();
-        FileSelectorFactory filePattern = defaults.filePattern();
-        defaults.mark(filePattern.endsWith(pattern), interfaceName);
-        defaults.mark(filePattern.startsWith(pattern), interfaceName);
-        defaults.mark(filePattern.matches(pattern), interfaceName);
+        MessageSelectorFactory messages = defaults.messages();
+        defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(regex(pattern)), interfaceName);
 
-        assertTrue(hasPostfixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
-    private static boolean
-    hasPostfixConfig(String postfix, String interfaceName, AddInterfaces config) {
-        return hasInterface(config, interfaceName,
-                            pattern -> postfix.equals(pattern.getFilePostfix()));
+    @DisplayName("allows asType syntax sugar method")
+    @Test
+    void allowAsTypeSugar() {
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
+        String interfaceName = "MyInterface";
+        assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String interfaceName, AddInterfaces config) {
+    hasSuffixConfig(String suffix, ClassName interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
-                            pattern -> prefix.equals(pattern.getFilePrefix()));
+                            pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String interfaceName, AddInterfaces config) {
+    hasPrefixConfig(String prefix, ClassName interfaceName, AddInterfaces config) {
+        return hasInterface(config, interfaceName,
+                            pattern -> prefix.equals(pattern.getPrefix()));
+    }
+
+    private static boolean
+    hasRegexConfig(String regex, ClassName interfaceName, AddInterfaces config) {
         return hasInterface(config, interfaceName,
                             pattern -> regex.equals(pattern.getRegex()));
     }
 
     private static boolean hasInterface(AddInterfaces config,
-                                        String interfaceName,
+                                        ClassName interfaceName,
                                         Predicate<? super FilePattern> patternPredicate) {
         return config
                 .getInterfaceByPatternList()
                 .stream()
-                .filter(byPattern -> interfaceName.equals(byPattern.getValue()))
+                .filter(byPattern -> interfaceName.value()
+                                                  .equals(byPattern.getValue()))
                 .map(ConfigByPattern::getPattern)
                 .anyMatch(patternPredicate);
     }

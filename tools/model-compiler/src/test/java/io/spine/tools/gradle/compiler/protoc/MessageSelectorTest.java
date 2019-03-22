@@ -17,17 +17,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
-import "spine/options.proto";
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "PostfixGenerationTestProto";
-option java_package = "io.spine.tools.protoc";
+import static com.google.common.truth.Truth.assertThat;
 
-message MessageEnhancedWithPostfixGenerations {
-    string value = 1;
+@DisplayName("MessageSelector should")
+final class MessageSelectorTest {
+
+    @DisplayName("be enabled by default")
+    @Test
+    void beEnabledByDefault() {
+        assertThat(new MessageSelector().enabled()).isTrue();
+    }
+
+    @DisplayName("allow disabling and enabling itself")
+    @Test
+    void allowDisablingAndEnablingItself() {
+        MessageSelector selector = new MessageSelector();
+        selector.disable();
+        assertThat(selector.enabled()).isFalse();
+        selector.enable();
+        assertThat(selector.enabled()).isTrue();
+    }
 }

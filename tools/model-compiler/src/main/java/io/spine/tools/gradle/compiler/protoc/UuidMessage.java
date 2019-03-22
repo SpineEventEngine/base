@@ -23,11 +23,9 @@ package io.spine.tools.gradle.compiler.protoc;
 /**
  * Selects messages with a single {@code string} field named {@code uuid}.
  */
-public final class UuidMessage implements Selector {
+public final class UuidMessage extends MessageSelector {
 
-    static final UuidMessage INSTANCE = new UuidMessage();
-
-    /** Prevents direct instantiation. **/
-    private UuidMessage(){
+    UuidMessage() {
+        super();
     }
 }
