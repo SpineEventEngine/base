@@ -55,7 +55,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a {@link FileSelector} out of the supplied configuration.
+     * Creates a {@link PatternSelector} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:
      * <ul>
@@ -64,7 +64,7 @@ public final class MessageSelectorFactory {
      *     <li>{@code regex} — for the {@link RegexSelector}.
      * </ul>
      */
-    public FileSelector inFiles(Map<String, String> conf) {
+    public PatternSelector inFiles(Map<String, String> conf) {
         checkNotNull(conf);
         Parser parser = new Parser();
         return parser.fileSelector(conf);
@@ -96,7 +96,7 @@ public final class MessageSelectorFactory {
      */
     private static class Parser {
 
-        private final Map<String, Function<String, FileSelector>> configurations;
+        private final Map<String, Function<String, PatternSelector>> configurations;
 
         private Parser() {
             configurations = Maps.newConcurrentMap();
@@ -105,11 +105,11 @@ public final class MessageSelectorFactory {
             configurations.put(REGEX, RegexSelector::new);
         }
 
-        private FileSelector fileSelector(Map<String, String> conf) {
+        private PatternSelector fileSelector(Map<String, String> conf) {
             checkArgument(conf.size() == 1,
                           "File selector should have a single value, but had: '%s'",
                           conf);
-            for (Entry<String, Function<String, FileSelector>> configEntry : configurations.entrySet()) {
+            for (Entry<String, Function<String, PatternSelector>> configEntry : configurations.entrySet()) {
                 String filePattern = conf.get(configEntry.getKey());
                 if (!isNullOrEmpty(filePattern)) {
                     return configEntry.getValue()

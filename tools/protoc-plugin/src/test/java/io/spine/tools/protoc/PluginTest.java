@@ -23,10 +23,10 @@ package io.spine.tools.protoc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.option.OptionExtensionRegistry;
-import io.spine.tools.gradle.compiler.protoc.FileSelector;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
+import io.spine.tools.gradle.compiler.protoc.PatternSelector;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
@@ -62,7 +62,7 @@ final class PluginTest {
     void processSuffixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
-        FileSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
+        PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
@@ -107,7 +107,7 @@ final class PluginTest {
     void processPrefixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
-        FileSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
+        PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
@@ -133,7 +133,7 @@ final class PluginTest {
     void processRegexPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
         MessageSelectorFactory messages = interfaces.messages();
-        FileSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
+        PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, TestInterface.class.getName());
         GeneratedMethods methods = GeneratedMethods.withDefaults();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);

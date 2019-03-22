@@ -27,7 +27,7 @@ import org.checkerframework.checker.regex.qual.Regex;
 /**
  * A file pattern matching file names that qualifies supplied regex.
  */
-public final class RegexSelector extends FileSelector {
+public final class RegexSelector extends PatternSelector {
 
     RegexSelector(@Regex String regex) {
         super(regex);

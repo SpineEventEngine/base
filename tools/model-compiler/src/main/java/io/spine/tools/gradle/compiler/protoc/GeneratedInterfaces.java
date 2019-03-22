@@ -125,17 +125,17 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
      */
-    public final void mark(FileSelector fileSelector, @FullyQualifiedName ClassName interfaceName) {
-        checkNotNull(fileSelector);
+    public final void mark(PatternSelector patternSelector, @FullyQualifiedName ClassName interfaceName) {
+        checkNotNull(patternSelector);
         checkNotNull(interfaceName);
-        addPattern(fileSelector, interfaceName);
+        addPattern(patternSelector, interfaceName);
     }
 
     /**
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(FileSelector, ClassName)} except for
+     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;

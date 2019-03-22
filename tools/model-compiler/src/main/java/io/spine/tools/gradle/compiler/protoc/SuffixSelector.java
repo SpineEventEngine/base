@@ -27,7 +27,7 @@ import org.checkerframework.checker.regex.qual.Regex;
 /**
  * A file pattern matching file names which end with a certain postfix.
  */
-public final class SuffixSelector extends FileSelector {
+public final class SuffixSelector extends PatternSelector {
 
     SuffixSelector(@Regex String suffix) {
         super(suffix);

@@ -28,12 +28,16 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Selects messages by a pattern.
+ *
+ * @see PrefixSelector
+ * @see RegexSelector
+ * @see SuffixSelector
  */
-public abstract class FileSelector extends MessageSelector {
+public abstract class PatternSelector extends MessageSelector {
 
     private final String pattern;
 
-    FileSelector(String pattern) {
+    PatternSelector(String pattern) {
         super();
         this.pattern = checkNotEmptyOrBlank(pattern);
     }
@@ -66,7 +70,7 @@ public abstract class FileSelector extends MessageSelector {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FileSelector selector = (FileSelector) o;
+        PatternSelector selector = (PatternSelector) o;
         return Objects.equal(getPattern(), selector.getPattern());
     }
 

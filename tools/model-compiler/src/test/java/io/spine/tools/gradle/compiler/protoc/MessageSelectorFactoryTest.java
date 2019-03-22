@@ -39,9 +39,9 @@ final class MessageSelectorFactoryTest {
         assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
     }
 
-    @DisplayName("create FileSelector out of")
+    @DisplayName("create PatternSelector out of")
     @Nested
-    final class CreateFileSelector {
+    final class CreatePatternSelector {
 
         @DisplayName("suffix")
         @Test
@@ -75,25 +75,22 @@ final class MessageSelectorFactoryTest {
         @DisplayName("more than one element")
         @Test
         void moreThanOneElement() {
-            assertThrows(IllegalArgumentException.class, () -> {
-                factory.inFiles(ImmutableMap.of("first", "v1", "second", "v2"));
-            });
+            assertThrows(IllegalArgumentException.class, () ->
+                    factory.inFiles(ImmutableMap.of("first", "v1", "second", "v2")));
         }
 
         @DisplayName("non supported parameter")
         @Test
         void nonSupportParameter() {
-            assertThrows(IllegalArgumentException.class, () -> {
-                factory.inFiles(ImmutableMap.of("NON_SUPPORTED", "v1"));
-            });
+            assertThrows(IllegalArgumentException.class, () ->
+                    factory.inFiles(ImmutableMap.of("NON_SUPPORTED", "v1")));
         }
     }
 
     @DisplayName("throw NullPointerException if a null value is supplied to inFiles method")
     @Test
     void throwNPE() {
-        assertThrows(NullPointerException.class, () -> {
-            factory.inFiles(null);
-        });
+        assertThrows(NullPointerException.class, () ->
+                factory.inFiles(null));
     }
 }

@@ -41,7 +41,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
-    private final Map<FileSelector, ClassName> patterns;
+    private final Map<PatternSelector, ClassName> patterns;
 
     GeneratedConfigurations() {
         this.patterns = Maps.newConcurrentMap();
@@ -61,28 +61,28 @@ abstract class GeneratedConfigurations<C extends Message> {
     public abstract C asProtocConfig();
 
     /**
-     * Adds a new {@link FileSelector} configuration with a supplied {@link ClassName}.
+     * Adds a new {@link PatternSelector} configuration with a supplied {@link ClassName}.
      *
-     * <p>The {@code className} can represent a fully-qualified name of an interface of a
+     * <p>The {@code className} can represent a fully-qualified name of an interface or a
      * method factory.
      */
-    void addPattern(FileSelector pattern, ClassName className) {
+    void addPattern(PatternSelector pattern, ClassName className) {
         patterns.put(pattern, className);
     }
 
     /**
      * Obtains current unique pattern configurations.
      */
-    ImmutableSet<Map.Entry<FileSelector, ClassName>> patternConfigurations() {
+    ImmutableSet<Map.Entry<PatternSelector, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
     }
 
     /**
-     * Converts {@link FileSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
+     * Converts {@link PatternSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
      */
-    static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
-        FileSelector fileSelector = e.getKey();
+    static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
+        PatternSelector patternSelector = e.getKey();
         ClassName className = e.getValue();
-        return byPatternConfig(className, fileSelector.toProto());
+        return byPatternConfig(className, patternSelector.toProto());
     }
 }
