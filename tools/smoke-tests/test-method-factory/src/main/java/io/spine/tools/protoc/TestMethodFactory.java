@@ -31,10 +31,7 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 
 @Immutable
-public class TestMethodFactory implements MethodFactory {
-
-    public TestMethodFactory() {
-    }
+public final class TestMethodFactory implements MethodFactory {
 
     @Override
     public List<GeneratedMethod> createFor(MessageType messageType) {

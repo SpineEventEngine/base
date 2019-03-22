@@ -39,8 +39,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.tools.gradle.compiler.Extension.getGeneratedInterfaces;
-import static io.spine.tools.gradle.compiler.Extension.getGeneratedMethods;
+import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
+import static io.spine.tools.gradle.compiler.Extension.getMethods;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -83,8 +83,8 @@ final class ProtocPluginConfiguration {
     }
 
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
-        GeneratedInterfaces interfaces = getGeneratedInterfaces(project);
-        GeneratedMethods methods = getGeneratedMethods(project);
+        GeneratedInterfaces interfaces = getInterfaces(project);
+        GeneratedMethods methods = getMethods(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()

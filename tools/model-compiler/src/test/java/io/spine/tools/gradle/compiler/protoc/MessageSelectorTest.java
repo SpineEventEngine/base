@@ -20,21 +20,27 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A file pattern matching file names which end with a certain postfix.
- */
-public final class PostfixSelector extends FileSelector {
+import static com.google.common.truth.Truth.assertThat;
 
-    PostfixSelector(@Regex String postfix) {
-        super(postfix);
+@DisplayName("MessageSelector should")
+final class MessageSelectorTest {
+
+    @DisplayName("be enabled by default")
+    @Test
+    void beEnabledByDefault() {
+        assertThat(new MessageSelector().enabled()).isTrue();
     }
 
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.filePostfix(getPattern());
+    @DisplayName("allow disabling and enabling itself")
+    @Test
+    void allowDisablingAndEnablingItself() {
+        MessageSelector selector = new MessageSelector();
+        selector.disable();
+        assertThat(selector.enabled()).isFalse();
+        selector.enable();
+        assertThat(selector.enabled()).isTrue();
     }
 }

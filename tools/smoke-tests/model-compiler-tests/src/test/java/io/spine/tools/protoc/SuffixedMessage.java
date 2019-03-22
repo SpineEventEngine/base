@@ -18,13 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides method generation extension point for UUID Protobuf messages.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.method.uuid;
+package io.spine.tools.protoc;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.base.SerializableMessage;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public interface SuffixedMessage extends SerializableMessage {
+}

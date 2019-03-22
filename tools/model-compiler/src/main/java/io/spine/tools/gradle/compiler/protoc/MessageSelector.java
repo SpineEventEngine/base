@@ -17,17 +17,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.tools.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
-import "spine/options.proto";
+/**
+ * An abstract {@link com.google.protobuf.Message Message} selector base.
+ */
+class MessageSelector implements Selector {
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "PostfixGenerationTestProto";
-option java_package = "io.spine.tools.protoc";
+    private boolean enabled = true;
 
-message MessageEnhancedWithPostfixGenerations {
-    string value = 1;
+    @Override
+    public void disable() {
+        enabled = false;
+    }
+
+    @Override
+    public void enable() {
+        enabled = true;
+    }
+
+    @Override
+    public boolean enabled() {
+        return enabled;
+    }
 }

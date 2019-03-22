@@ -45,10 +45,10 @@ public final class FilePatternMatcher implements Predicate<MessageType> {
         String protoFileName = type.declaringFileName()
                                    .value();
         switch (pattern.getValueCase()) {
-            case FILE_POSTFIX:
-                return protoFileName.endsWith(pattern.getFilePostfix());
-            case FILE_PREFIX:
-                return protoFileName.startsWith(pattern.getFilePrefix());
+            case SUFFIX:
+                return protoFileName.endsWith(pattern.getSuffix());
+            case PREFIX:
+                return protoFileName.startsWith(pattern.getPrefix());
             case REGEX:
                 return protoFileName.matches(pattern.getRegex());
             case VALUE_NOT_SET:

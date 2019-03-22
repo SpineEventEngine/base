@@ -38,6 +38,7 @@ import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -114,12 +115,12 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("skip standard interfaces if overridden with `ignore()`")
+    @DisplayName("mark as event messages")
     void skipStandardTypesIfIgnored() {
-        assertThat(UserCreated.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
-        assertThat(UserNotified.getDefaultInstance()).isNotInstanceOf(EventMessage.class);
+        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
+        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
 
-        assertThat(TypicalIdentifier.getDefaultInstance()).isNotInstanceOf(UuidValue.class);
+        assertThat(TypicalIdentifier.getDefaultInstance()).isInstanceOf(UuidValue.class);
     }
 
     @Test
@@ -184,15 +185,15 @@ final class ProtocPluginTest {
     @DisplayName("generate a custom method for an .endsWith() pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
-                new MessageType(MessageEnhancedWithPostfixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithPostfixGenerations.ownType());
+                new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
+        assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
     }
 
     @Test
     @DisplayName("mark a message with interface using .endsWith() pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
-        assertThat(MessageEnhancedWithPostfixGenerations.getDefaultInstance())
-                .isInstanceOf(PostfixedMessage.class);
+        assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                .isInstanceOf(SuffixedMessage.class);
     }
 
     @Test
@@ -208,34 +209,96 @@ final class ProtocPluginTest {
         assertEquals(TypicalIdentifier.of(uuid), TypicalIdentifier.of(uuid));
     }
 
-    @Test
-    @DisplayName("mark a message with interface using .startsWith() pattern")
-    void markMessageWithInterfaceUsingStartsWithPattern() {
-        assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
-                .isInstanceOf(PrefixedMessage.class);
+    @DisplayName("mark a message with the interface using")
+    @Nested
+    final class MarkMessages {
+
+        @Test
+        @DisplayName("regex pattern")
+        void regex() {
+            assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
+                    .isInstanceOf(RegexedMessage.class);
+        }
+
+        @Test
+        @DisplayName("prefix pattern")
+        void prefix() {
+            assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
+                    .isInstanceOf(PrefixedMessage.class);
+        }
+
+        @Test
+        @DisplayName("suffix pattern")
+        void postfix() {
+            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                    .isInstanceOf(SuffixedMessage.class);
+        }
     }
 
-    @Test
-    @DisplayName("generate a custom method for a .startsWith() pattern")
-    void generateCustomPrefixBasedMethod() {
-        MessageType expectedType =
-                new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+    @DisplayName("generate a custom method for a message using")
+    @Nested
+    final class GenerateMethods {
+
+        @Test
+        @DisplayName("prefix pattern")
+        void prefixBasedMethod() {
+            MessageType expectedType =
+                    new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
+            assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+        }
+
+        @Test
+        @DisplayName("regex pattern")
+        void regexBasedMethod() {
+            MessageType expectedType =
+                    new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
+            assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
+        }
+
+        @Test
+        @DisplayName("suffix pattern")
+        void suffixBasedMethod() {
+            MessageType expectedType =
+                    new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
+            assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
+        }
+
+        @Test
+        @DisplayName("all() pattern")
+        void allBasedMethod() {
+            assertThat(MessageEnhancedWithSuffixGenerations.vBuilder())
+                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
+            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance().toVBuilder())
+                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
+        }
     }
 
-    @Test
-    @DisplayName("mark a message with interface using .regex() pattern")
-    void markMessageWithInterfaceUsingRegexPattern() {
-        assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
-                .isInstanceOf(RegexedMessage.class);
-    }
+    @DisplayName("generate methods for MFGTMessage using")
+    @Nested
+    final class MultiFactoryGeneration {
 
-    @Test
-    @DisplayName("generate a custom method for a .regex() pattern")
-    void generateCustomRegexBasedMethod() {
-        MessageType expectedType =
-                new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
-        assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
+        @DisplayName("UuidMethodFactory")
+        @Test
+        void uuidMethodFactory() {
+            assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
+            String uuid = Identifier.newUuid();
+            assertEquals(MFGTMessage.of(uuid), MFGTMessage.of(uuid));
+        }
+
+        @DisplayName("VBuilderMethodFactory")
+        @Test
+        void vBuilderMethodFactory() {
+            assertThat(MFGTMessage.vBuilder())
+                    .isInstanceOf(MFGTMessageVBuilder.class);
+            assertThat(MFGTMessage.getDefaultInstance().toVBuilder())
+                    .isInstanceOf(MFGTMessageVBuilder.class);
+        }
+
+        @DisplayName("TestMethodFactory")
+        @Test
+        void testMethodFactory() {
+            assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
+        }
     }
 
     @CanIgnoreReturnValue

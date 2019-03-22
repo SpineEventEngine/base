@@ -192,6 +192,14 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
+     * Tells if this message has a {@link io.spine.validate.ValidatingBuilder Validating Builder}.
+     */
+    public boolean hasVBuilder(){
+        boolean result = isCustom() && !isRejection();
+        return result;
+    }
+
+    /**
      * Obtains the name of a Validating Builder class for the type.
      *
      * @throws java.lang.IllegalStateException
@@ -199,7 +207,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      *         a Validating Builder class, for example, because it's a Google Protobuf message
      */
     public SimpleClassName validatingBuilderClass() {
-        checkState(isCustom(), "No validating builder class available for the type `%s`.", this);
+        checkState(hasVBuilder(), "No validating builder class available for the type `%s`.", this);
         SimpleClassName result = VBuilderClassName.of(this);
         return result;
     }

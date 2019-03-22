@@ -18,13 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.gradle.compiler.protoc;
+
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.FilePatterns;
+import org.checkerframework.checker.regex.qual.Regex;
+
 /**
- * This package provides method generation extension point for UUID Protobuf messages.
+ * A file pattern matching file names which end with a certain postfix.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.method.uuid;
+public final class SuffixSelector extends PatternSelector {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    SuffixSelector(@Regex String suffix) {
+        super(suffix);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.fileSuffix(getPattern());
+    }
+}

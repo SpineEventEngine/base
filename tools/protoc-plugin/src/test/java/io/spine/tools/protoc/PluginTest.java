@@ -22,14 +22,15 @@ package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import io.spine.code.java.ClassName;
 import io.spine.option.OptionExtensionRegistry;
-import io.spine.tools.gradle.compiler.protoc.FileSelectorFactory;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
+import io.spine.tools.gradle.compiler.protoc.PatternSelector;
 import io.spine.tools.protoc.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
-import io.spine.tools.protoc.iface.TestEventsProto;
 import io.spine.tools.protoc.method.TestMethodProtos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.spine.base.MessageFile.EVENTS;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Plugin should")
 final class PluginTest {
 
-    private static final String TEST_PROTO_POSTFIX = "_generators.proto";
+    private static final String TEST_PROTO_SUFFIX = "_generators.proto";
     private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
@@ -67,15 +70,15 @@ final class PluginTest {
         testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
     }
 
-    @DisplayName("process postfix patterns")
+    @DisplayName("process suffix patterns")
     @Test
-    void processPostfixPatterns() {
+    void processSuffixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FileSelectorFactory filePattern = interfaces.filePattern();
-        interfaces.mark(filePattern.endsWith(TEST_PROTO_POSTFIX), TestInterface.class.getName());
+        MessageSelectorFactory messages = interfaces.messages();
+        PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
+        interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(TestMethodFactory.class.getName(),
-                           filePattern.endsWith(TEST_PROTO_POSTFIX));
+        methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
@@ -92,28 +95,12 @@ final class PluginTest {
         assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
     }
 
-    @DisplayName("skip generation of standard interfaces if they are `ignored`")
-    @Test
-    void skipStandardInterfacesIfIgnored() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FileSelectorFactory filePattern = interfaces.filePattern();
-        interfaces.ignore(filePattern.endsWith(EVENTS.suffix()));
-        CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestEventsProto.getDescriptor()
-                                             .toProto())
-                .addFileToGenerate("spine/tools/protoc/iface/test_events.proto")
-                .setParameter(protocConfig(interfaces, testPluginConfig).toString())
-                .build();
-        CodeGeneratorResponse response = runPlugin(request);
-
-        assertEquals(0, response.getFileCount());
-    }
-
     @DisplayName("generate UUID message")
     @Test
     void generateUuidMethod() {
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(UuidMethodFactory.class.getName(), methods.uuidMessage());
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
 
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestMethodProtos.getDescriptor()
@@ -132,11 +119,11 @@ final class PluginTest {
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FileSelectorFactory filePattern = interfaces.filePattern();
-        interfaces.mark(filePattern.startsWith(TEST_PROTO_PREFIX), TestInterface.class.getName());
+        MessageSelectorFactory messages = interfaces.messages();
+        PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
+        interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(TestMethodFactory.class.getName(),
-                           filePattern.startsWith(TEST_PROTO_PREFIX));
+        methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
 
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -155,14 +142,14 @@ final class PluginTest {
     }
 
     @Test
-    @DisplayName("process matches patterns")
+    @DisplayName("process regex patterns")
     void processRegexPatterns() {
         GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
-        FileSelectorFactory filePattern = interfaces.filePattern();
-        interfaces.mark(filePattern.matches(TEST_PROTO_REGEX), TestInterface.class.getName());
+        MessageSelectorFactory messages = interfaces.messages();
+        PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
+        interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
         GeneratedMethods methods = GeneratedMethods.withDefaults();
-        methods.useFactory(TestMethodFactory.class.getName(),
-                           filePattern.matches(TEST_PROTO_REGEX));
+        methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
