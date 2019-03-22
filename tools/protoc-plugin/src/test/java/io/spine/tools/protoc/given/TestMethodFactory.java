@@ -32,7 +32,7 @@ import java.util.List;
  * A test-only implementation of a {@link MethodFactory}.
  */
 @Immutable
-public class TestMethodFactory implements MethodFactory {
+public final class TestMethodFactory implements MethodFactory {
 
     public static final GeneratedMethod TEST_METHOD = new GeneratedMethod("public void test(){}");
 
