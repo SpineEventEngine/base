@@ -101,18 +101,18 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *     }
      * </pre>
      */
-    public final void applyFactory(@FullyQualifiedName String factoryName,
-                                   FileSelector fileSelector) {
-        checkNotNull(factoryName);
-        checkNotNull(fileSelector);
-        addPattern(fileSelector, ClassName.of(factoryName));
+    public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
+        checkNotNull(factory);
+        checkNotNull(selector);
+        addPattern(selector, ClassName.of(factory));
     }
 
     /**
      * Configures method generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #applyFactory(String, FileSelector)} except
+     * <p>This method functions similarly to the {@link #applyFactory(String, PatternSelector)}
+     * except
      * the file in which the message type is defined does not matter.
      *
      * <p>Sample usage is:
@@ -122,9 +122,9 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *      }
      * </pre>
      */
-    public final void applyFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
-        checkNotNull(uuidMessage);
-        uuidFactoryConfig = uuidConfig(factoryName);
+    public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {
+        checkNotNull(selector);
+        uuidFactoryConfig = uuidConfig(ClassName.of(factory));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.

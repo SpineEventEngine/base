@@ -56,7 +56,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a {@link FileSelector} out of the supplied configuration.
+     * Creates a {@link PatternSelector} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:
      * <ul>
@@ -65,11 +65,8 @@ public final class MessageSelectorFactory {
      *     <li>{@code regex} — for the {@link RegexSelector}.
      * </ul>
      */
-    public FileSelector inFiles(Map<String, String> conf) {
+    public PatternSelector inFiles(Map<String, String> conf) {
         checkNotNull(conf);
-        checkArgument(conf.size() == 1,
-                      "File selector should have a single value, but had: '%s'",
-                      conf);
         Parser parser = new Parser();
         return parser.fileSelector(conf);
     }
@@ -79,7 +76,7 @@ public final class MessageSelectorFactory {
      *
      * <p>It is expected that a Protobuf file ends with {@link FileName#EXTENSION .proto} extension.
      */
-    public FileSelector all() {
+    public PatternSelector all() {
         SuffixSelector result = new SuffixSelector(FileName.EXTENSION);
         return result;
     }
@@ -110,7 +107,7 @@ public final class MessageSelectorFactory {
      */
     private static class Parser {
 
-        private final Map<String, Function<String, FileSelector>> configurations;
+        private final Map<String, Function<String, PatternSelector>> configurations;
 
         private Parser() {
             configurations = Maps.newConcurrentMap();
@@ -119,8 +116,11 @@ public final class MessageSelectorFactory {
             configurations.put(REGEX, RegexSelector::new);
         }
 
-        private FileSelector fileSelector(Map<String, String> conf) {
-            for (Entry<String, Function<String, FileSelector>> configEntry : configurations.entrySet()) {
+        private PatternSelector fileSelector(Map<String, String> conf) {
+            checkArgument(conf.size() == 1,
+                          "File selector should have a single value, but had: '%s'",
+                          conf);
+            for (Entry<String, Function<String, PatternSelector>> configEntry : configurations.entrySet()) {
                 String filePattern = conf.get(configEntry.getKey());
                 if (!isNullOrEmpty(filePattern)) {
                     return configEntry.getValue()
@@ -132,5 +132,4 @@ public final class MessageSelectorFactory {
                     conf, configurations.keySet());
         }
     }
-
 }

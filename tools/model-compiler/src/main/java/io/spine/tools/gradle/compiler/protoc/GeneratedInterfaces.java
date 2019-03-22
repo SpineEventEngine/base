@@ -67,11 +67,13 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     public static GeneratedInterfaces withDefaults() {
         GeneratedInterfaces config = new GeneratedInterfaces();
         MessageSelectorFactory messages = config.messages();
-        config.mark(messages.inFiles(suffix(COMMANDS.suffix())), CommandMessage.class.getName());
-        config.mark(messages.inFiles(suffix(EVENTS.suffix())), EventMessage.class.getName());
+        config.mark(messages.inFiles(suffix(COMMANDS.suffix())),
+                    ClassName.of(CommandMessage.class));
+        config.mark(messages.inFiles(suffix(EVENTS.suffix())),
+                    ClassName.of(EventMessage.class));
         config.mark(messages.inFiles(suffix(REJECTIONS.suffix())),
-                    RejectionMessage.class.getName());
-        config.mark(messages.uuid(), UuidValue.class.getName());
+                    ClassName.of(RejectionMessage.class));
+        config.mark(messages.uuid(), ClassName.of(UuidValue.class));
         return config;
     }
 
@@ -123,17 +125,17 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
      */
-    public final void mark(FileSelector fileSelector, @FullyQualifiedName String interfaceName) {
-        checkNotNull(fileSelector);
+    public final void mark(PatternSelector patternSelector, @FullyQualifiedName ClassName interfaceName) {
+        checkNotNull(patternSelector);
         checkNotNull(interfaceName);
-        addPattern(fileSelector, ClassName.of(interfaceName));
+        addPattern(patternSelector, interfaceName);
     }
 
     /**
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(FileSelector, String)} except for
+     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except for
      * several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -147,17 +149,17 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *      }
      * </pre>
      */
-    public final void mark(UuidMessage uuidMessage, @FullyQualifiedName String interfaceName) {
+    public final void mark(UuidMessage uuidMessage, ClassName interfaceName) {
         checkNotNull(uuidMessage);
         uuidInterface = uuidConfig(interfaceName);
     }
 
     /**
-     * A syntax sugar method required for a more natual Gradle DSL.
+     * A syntax sugar method used for a more natural Gradle DSL.
      */
     @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
-    public final String asType(String interfaceName){
-        return checkNotNull(interfaceName);
+    public final ClassName asType(String interfaceName){
+        return ClassName.of(interfaceName);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.

@@ -21,6 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.code.java.ClassName;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,7 +39,7 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
     @Override
     protected void configure(NullPointerTester nullTester) {
         nullTester.setDefault(FilePattern.class, FilePattern.getDefaultInstance());
-        nullTester.setDefault(String.class, "not-empty");
+        nullTester.setDefault(ClassName.class, ClassName.of("not-empty"));
     }
 
     @DisplayName("create valid")
@@ -48,18 +49,18 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         @DisplayName("UuidConfig")
         @Test
         void uuidConfig() {
-            String value = "test-value";
-            UuidConfig actual = ProtocTaskConfigs.uuidConfig(value);
-            assertEquals(value, actual.getValue());
+            ClassName className = ClassName.of("test-value");
+            UuidConfig actual = ProtocTaskConfigs.uuidConfig(className);
+            assertEquals(className.value(), actual.getValue());
         }
 
         @DisplayName("ConfigByPattern")
         @Test
         void configByPattern() {
-            String value = "test-value";
+            ClassName className = ClassName.of("test-value");
             FilePattern pattern = FilePatterns.filePrefix("test");
-            ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(value, pattern);
-            assertEquals(value, actual.getValue());
+            ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(className, pattern);
+            assertEquals(className.value(), actual.getValue());
             assertEquals(pattern, actual.getPattern());
         }
     }

@@ -20,9 +20,9 @@
 
 package io.spine.tools.protoc;
 
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+import io.spine.code.java.ClassName;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNotDefault;
 
 /**
@@ -36,28 +36,33 @@ public final class ProtocTaskConfigs {
     }
 
     /**
-     * Creates a new {@link UuidConfig} from the supplied {@code value}.
+     * Creates a new {@link UuidConfig} instance from the supplied {@code className}.
      *
-     * @throws IllegalArgumentException
-     *         if the value is blank
      * @throws NullPointerException
-     *         if the value is {@code null}
+     *         if the class name is {@code null}
      */
-    public static UuidConfig uuidConfig(@FullyQualifiedName String value) {
-        checkNotEmptyOrBlank(value);
+    public static UuidConfig uuidConfig(ClassName className) {
+        checkNotNull(className);
         return UuidConfig
                 .newBuilder()
-                .setValue(value)
+                .setValue(className.value())
                 .build();
     }
 
+    /**
+     * Creates a new {@link ConfigByPattern} instance from the supplied {@code className} and
+     * {@code pattern}.
+     *
+     * @throws NullPointerException
+     *         if the class name or pattern is {@code null}
+     */
     public static ConfigByPattern
-    byPatternConfig(@FullyQualifiedName String value, FilePattern pattern) {
-        checkNotEmptyOrBlank(value);
+    byPatternConfig(ClassName className, FilePattern pattern) {
+        checkNotNull(className);
         checkNotDefault(pattern);
         return ConfigByPattern
                 .newBuilder()
-                .setValue(value)
+                .setValue(className.value())
                 .setPattern(pattern)
                 .build();
     }
