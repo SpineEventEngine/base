@@ -63,8 +63,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * Nested messages defined in the same file do not implement the interface.
      *
      * <p>Caution. In order for the framework components to function properly, one should not
-     * entirely override the {@linkplain #withDefaults() default} message interfaces. Instead,
-     * provide a custom interface which {@code extends} the standard one.
+     * entirely override the {@code default} message interfaces. Instead, provide a custom
+     * interface which {@code extends} the standard one.
      *
      * Example of a safe way to override standard interfaces:
      * <pre>
