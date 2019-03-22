@@ -19,11 +19,12 @@
  */
 
 /**
- * This package provides method generation extension point for UUID Protobuf messages.
+ * This package provides method generation extension point for Protobuf messages with
+ * {@link io.spine.validate.ValidatingBuilder ValidatingBuilder}s.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protoc.method.uuid;
+package io.spine.tools.protoc.method.vbuilder;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

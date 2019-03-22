@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import io.spine.code.proto.FileName;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -68,6 +69,16 @@ public final class MessageSelectorFactory {
         checkNotNull(conf);
         Parser parser = new Parser();
         return parser.fileSelector(conf);
+    }
+
+    /**
+     * Creates a {@link SuffixSelector} selector that matches {@code all} Protobuf files.
+     *
+     * <p>It is expected that a Protobuf file ends with {@link FileName#EXTENSION .proto} extension.
+     */
+    public PatternSelector all() {
+        SuffixSelector result = new SuffixSelector(FileName.EXTENSION);
+        return result;
     }
 
     /**

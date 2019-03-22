@@ -17,14 +17,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-/**
- * This package provides method generation extension point for UUID Protobuf messages.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.method.uuid;
+package spine.test.tools.method.vbuilder;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import "spine/options.proto";
 
-import javax.annotation.ParametersAreNonnullByDefault;
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.tools.method.vbuilder";
+option java_multiple_files = true;
+option java_outer_classname = "MessagesWithVBuildersProto";
+
+// This file defines test environment for `VBuilderMethodFactoryTest`.
+
+// An example Protobuf message.
+message VBMFTExampleMessage {
+    int32 id = 1;
+}
