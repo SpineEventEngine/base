@@ -120,7 +120,7 @@ final class MethodFactoriesTest {
     }
 
     @Immutable
-    public static class StubMethodFactory extends EmptyMethodFactory {
+    public static final class StubMethodFactory extends EmptyMethodFactory {
 
         public StubMethodFactory() {
         }
@@ -128,19 +128,19 @@ final class MethodFactoriesTest {
 
     @Immutable
     @SuppressWarnings("EmptyClass") // for test reasons
-    private static class WithoutPublicConstructor extends EmptyMethodFactory {
+    private static final class WithoutPublicConstructor extends EmptyMethodFactory {
 
     }
 
     @Immutable
-    public static class WithPrivateConstructor extends EmptyMethodFactory {
+    public static final class WithPrivateConstructor extends EmptyMethodFactory {
 
         private WithPrivateConstructor() {
         }
     }
 
     @Immutable
-    public static class WithExceptionDuringInstantiation extends EmptyMethodFactory {
+    public static final class WithExceptionDuringInstantiation extends EmptyMethodFactory {
 
         public WithExceptionDuringInstantiation() {
             throw new RuntimeException("Test exception during instantiation");
@@ -156,7 +156,7 @@ final class MethodFactoriesTest {
         }
     }
 
-    public static class NotMethodFactory {
+    public static final class NotMethodFactory {
 
         public NotMethodFactory() {
         }

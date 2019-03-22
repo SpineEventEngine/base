@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("UuidMethodFactory should")
 final class UuidMethodFactoryTest {
 
-    UuidMethodFactory factory = new UuidMethodFactory();
+    private final UuidMethodFactory factory = new UuidMethodFactory();
 
     @DisplayName("not allow null values")
     @Test
@@ -46,7 +46,7 @@ final class UuidMethodFactoryTest {
 
     @DisplayName("create new")
     @Nested
-    class CreateNew {
+    final class CreateNew {
 
         @DisplayName("`generate` method")
         @Test
