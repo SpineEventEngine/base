@@ -83,6 +83,6 @@ abstract class GeneratedConfigurations<C extends Message> {
     static ConfigByPattern toPatternConfig(Map.Entry<FileSelector, ClassName> e) {
         FileSelector fileSelector = e.getKey();
         ClassName className = e.getValue();
-        return byPatternConfig(className.value(), fileSelector.toProto());
+        return byPatternConfig(className, fileSelector.toProto());
     }
 }

@@ -124,7 +124,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      */
     public final void applyFactory(@FullyQualifiedName String factoryName, UuidMessage uuidMessage) {
         checkNotNull(uuidMessage);
-        uuidFactoryConfig = uuidConfig(factoryName);
+        uuidFactoryConfig = uuidConfig(ClassName.of(factoryName));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // `Builder` API is used in `forEach` lambda.
