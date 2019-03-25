@@ -28,26 +28,51 @@ option java_multiple_files = true;
 option java_outer_classname = "MessageValidatorTestOneofProto";
 option java_package = "io.spine.test.validate.oneof";
 
+// `oneof` declarations for `OneofTest`.
 
-// `oneof` declarations for `MessageValidatorTest`.
+message OneofWithRequiredFields {
 
-message EveryRequired {
+    option (required_field) = "first | second";
+
     oneof fields {
-        string first = 1 [(required) = true];
-        string second = 2 [(required) = true];
+        string first = 1;
+        string second = 2;
     }
 }
 
-message OneRequired {
+message OneofWithOptionalFields {
     oneof fields {
-        string required_val = 1 [(required) = true];
-        string optional = 2 [(required) = false];
+        string first = 1;
+        string second = 2;
     }
 }
 
-message EveryOptional {
+message OneofAndOtherAreRequired {
+
+    option (required_field) = "first | second";
+
     oneof fields {
-        string first = 1 [(required) = false];
-        string second = 2 [(required) = false];
+        string first = 1;
+        string second = 2;
+    }
+
+    string third = 3 [(required) = true];
+}
+
+message OneofWithValidation {
+
+    oneof fields {
+        string no_validation = 1;
+        string with_validation = 2 [(valid) = true, (pattern).regex = "^[A-Za-z0-9+]+$"];
+    }
+}
+
+message RequiredOneofWithValidation {
+
+    option (required_field) = "raw_value | valid_value";
+
+    oneof fields {
+        int32 raw_value = 1;
+        int32 valid_value = 2 [(valid) = true, (min).value = "1"];
     }
 }

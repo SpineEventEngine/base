@@ -20,54 +20,142 @@
 
 package io.spine.validate;
 
-import io.spine.test.validate.oneof.EveryOptional;
-import io.spine.test.validate.oneof.EveryRequired;
-import io.spine.test.validate.oneof.OneRequired;
+import io.spine.test.validate.oneof.OneofAndOtherAreRequired;
+import io.spine.test.validate.oneof.OneofWithOptionalFields;
+import io.spine.test.validate.oneof.OneofWithRequiredFields;
+import io.spine.test.validate.oneof.OneofWithValidation;
+import io.spine.test.validate.oneof.RequiredOneofWithValidation;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
 @DisplayName(MESSAGE_VALIDATOR_SHOULD + "consider Oneof")
-class OneofTest extends MessageValidatorTest {
+final class OneofTest extends MessageValidatorTest {
 
-    @Test
-    @DisplayName("valid if a required field is set to a non-default value")
-    void validIfRequireFieldIsNotDefault() {
-        EveryRequired requiredIsNotDefault = EveryRequired
-                .newBuilder()
-                .setFirst(newUuid())
-                .build();
-        assertValid(requiredIsNotDefault);
+    @DisplayName("valid if")
+    @Nested
+    final class Valid {
+
+        @Test
+        @DisplayName("a required field is set to a non-default value")
+        void requiredFieldIsNotDefault() {
+            OneofWithRequiredFields requiredIsSet = OneofWithRequiredFields
+                    .newBuilder()
+                    .setFirst(newUuid())
+                    .build();
+            assertValid(requiredIsSet);
+        }
+
+        @Test
+        @DisplayName("all required fields are set")
+        void allRequiredFieldsAreNotDefault() {
+            OneofAndOtherAreRequired requiredAreSet = OneofAndOtherAreRequired
+                    .newBuilder()
+                    .setSecond(newUuid())
+                    .setThird(newUuid())
+                    .build();
+            assertValid(requiredAreSet);
+        }
+
+        @Test
+        @DisplayName("an optional field is set to the default value")
+        void optionalIsDefault() {
+            OneofWithOptionalFields optionalIsDefault = OneofWithOptionalFields
+                    .newBuilder()
+                    .setFirst("")
+                    .build();
+            assertValid(optionalIsDefault);
+            assertValid(OneofWithOptionalFields.getDefaultInstance());
+        }
+
+        @Test
+        @DisplayName("an optional field is properly validated")
+        void optionalIsValid() {
+            OneofWithValidation validFieldSet = OneofWithValidation
+                    .newBuilder()
+                    .setWithValidation("valid")
+                    .build();
+            assertValid(validFieldSet);
+        }
+
+        @Test
+        @DisplayName("an optional validated field is is default")
+        void optionalFieldWithValidationIsDefault() {
+            assertValid(OneofWithValidation.getDefaultInstance());
+        }
+
+        @Test
+        @DisplayName("an optional field without validation is set")
+        void optionalFieldWithoutValidationSet() {
+            OneofWithValidation fieldWithoutValidationSet = OneofWithValidation
+                    .newBuilder()
+                    .setNoValidation("does not require validation")
+                    .build();
+            assertValid(fieldWithoutValidationSet);
+        }
+
+        @Test
+        @DisplayName("a required field without validation is set")
+        void requiredNonValidatedFieldSet() {
+            RequiredOneofWithValidation requiredWithoutValidationSet = RequiredOneofWithValidation
+                    .newBuilder()
+                    .setRawValue(-1)
+                    .build();
+            assertValid(requiredWithoutValidationSet);
+        }
+
+        @Test
+        @DisplayName("a required field with validation is set")
+        void requiredValidatedFieldSet() {
+            RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
+                    .newBuilder()
+                    .setValidValue(1)
+                    .build();
+            assertValid(requiredWithValidationSet);
+        }
     }
 
-    @Test
-    @DisplayName("invalid if a required field is set to the default value")
-    void invalidIfRequireFieldIsDefault() {
-        EveryRequired requiredIsDefault = EveryRequired
-                .newBuilder()
-                .setFirst("")
-                .build();
-        assertNotValid(requiredIsDefault);
-    }
+    @DisplayName("invalid if")
+    @Nested
+    final class Invalid {
 
-    @Test
-    @DisplayName("valid if a non-required field is set to the default value")
-    void validIfOptionalIsDefault() {
-        OneRequired optionalIsDefault = OneRequired
-                .newBuilder()
-                .setOptional("")
-                .build();
-        assertValid(optionalIsDefault);
-    }
+        @Test
+        @DisplayName("a required field is set to the default value")
+        void requiredFieldIsDefault() {
+            OneofWithRequiredFields requiredIsDefault = OneofWithRequiredFields
+                    .newBuilder()
+                    .setFirst("")
+                    .build();
+            assertNotValid(requiredIsDefault, false);
+        }
 
-    @Test
-    @DisplayName("invalid if all fields are optional, but none is set")
-    void invalidIfNoneIsSet() {
-        EveryOptional noneIsSet = EveryOptional
-                .newBuilder()
-                .build();
-        assertNotValid(noneIsSet);
+        @Test
+        @DisplayName("a field within oneof is not valid")
+        void fieldIsNotValid() {
+            OneofWithValidation validFieldSet = OneofWithValidation
+                    .newBuilder()
+                    .setWithValidation("   ")
+                    .build();
+            assertNotValid(validFieldSet);
+        }
+
+        @Test
+        @DisplayName("a required field is not set")
+        void requiredFieldNotSet() {
+            assertNotValid(OneofWithRequiredFields.getDefaultInstance(), false);
+        }
+
+        @Test
+        @DisplayName("a required field is not valid")
+        void requiredFieldIsNotValid() {
+            RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
+                    .newBuilder()
+                    .setValidValue(0)
+                    .build();
+            assertNotValid(requiredWithValidationSet);
+        }
     }
 }
