@@ -34,9 +34,20 @@ import java.util.regex.Pattern;
 final class RequiredFieldConstraint implements Constraint<MessageValue> {
 
     /**
-     * Combination of fields are made with ampersand.
+     * The pattern to remove whitespace from the option field value.
      */
-    private static final char AMPERSAND = '&';
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
+
+    /**
+     * Splits field name (or field combination) options.
+     */
+    private static final Splitter optionSeparator = Splitter.on('|');
+
+    /**
+     * Splits fields combination within the option.
+     */
+    private static final Splitter fieldsCombinationSeparator = Splitter.on('&');
+
     private final String optionValue;
 
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
@@ -74,39 +85,27 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
      */
     private static class RequiredFieldAlternatives {
 
-        /**
-         * The pattern to remove whitespace from the option field value.
-         */
-        private static final Pattern WHITESPACE = Pattern.compile("\\s+");
-
-        /**
-         * The separator of field name (or field combination) options.
-         */
-        private static final char OPTION_SEPARATOR = '|';
-
         private final ImmutableList<String> fieldNames;
 
         private RequiredFieldAlternatives(ImmutableList<String> names) {
             fieldNames = names;
         }
 
-        static RequiredFieldAlternatives ofCombination(ImmutableList<String> fieldNames) {
+        private static RequiredFieldAlternatives ofCombination(ImmutableList<String> fieldNames) {
             return new RequiredFieldAlternatives(fieldNames);
         }
 
-        static RequiredFieldAlternatives ofCombination(CharSequence expression) {
-            ImmutableList<String> parts = ImmutableList.copyOf(Splitter.on(AMPERSAND)
-                                                                       .split(expression));
-            return ofCombination(parts);
+        private static RequiredFieldAlternatives ofCombination(CharSequence expression) {
+            Iterable<String> parts = fieldsCombinationSeparator.split(expression);
+            return ofCombination(ImmutableList.copyOf(parts));
         }
     }
 
-    private static ImmutableList<RequiredFieldAlternatives> parse(String expression) {
+    private static ImmutableList<RequiredFieldAlternatives> parse(CharSequence expression) {
         ImmutableList.Builder<RequiredFieldAlternatives> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = RequiredFieldAlternatives.WHITESPACE.matcher(expression)
-                                                                       .replaceAll("");
-        Iterable<String> parts = Splitter.on(RequiredFieldAlternatives.OPTION_SEPARATOR)
-                                         .split(whiteSpaceRemoved);
+        String whiteSpaceRemoved = WHITESPACE.matcher(expression)
+                                             .replaceAll("");
+        Iterable<String> parts = optionSeparator.split(whiteSpaceRemoved);
         for (String part : parts) {
             alternatives.add(RequiredFieldAlternatives.ofCombination(part));
         }
@@ -144,7 +143,7 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
         return violations.isEmpty();
     }
 
-    private boolean checkFields(ImmutableList<String> fieldNames, MessageValue message) {
+    private boolean checkFields(Iterable<String> fieldNames, MessageValue message) {
         for (String fieldName : fieldNames) {
             if (!checkField(fieldName, message)) {
                 return false;
