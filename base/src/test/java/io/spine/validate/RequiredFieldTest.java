@@ -81,6 +81,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
             }
         }
 
+        @Disabled  // () syntax is currently not supported
         @DisplayName("oneof and other field are set")
         @Test
         void oneofAndOtherFieldsAreSet() {
@@ -104,6 +105,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
             assertValid(message);
         }
 
+        @Disabled  // () syntax is currently not supported
         @DisplayName("a message qualifies for complex required field pattern")
         @ParameterizedTest
         @MethodSource("io.spine.validate.RequiredFieldTest#validComplexMessages")
