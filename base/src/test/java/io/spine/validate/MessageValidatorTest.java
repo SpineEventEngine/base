@@ -61,7 +61,16 @@ abstract class MessageValidatorTest {
         assertIsValid(false);
     }
 
+    void assertNotValid(Message msg, boolean checkFieldPath) {
+        validate(msg);
+        assertIsValid(false, checkFieldPath);
+    }
+
     void assertIsValid(boolean isValid) {
+        assertIsValid(isValid, true);
+    }
+
+    void assertIsValid(boolean isValid, boolean checkFieldPath) {
         if (isValid) {
             assertTrue(violations.isEmpty(), () -> violations.toString());
         } else {
@@ -76,9 +85,11 @@ abstract class MessageValidatorTest {
                 } else {
                     assertTrue(noParams);
                 }
-                assertFalse(violation.getFieldPath()
-                                     .getFieldNameList()
-                                     .isEmpty());
+                if (checkFieldPath) {
+                    assertFalse(violation.getFieldPath()
+                                         .getFieldNameList()
+                                         .isEmpty());
+                }
             }
         }
     }
