@@ -112,7 +112,6 @@ final class RequiredFieldTest extends MessageValidatorTest {
         void qualifiesForComplexRequiredFieldPattern(ComplexRequiredFields message) {
             assertValid(message);
         }
-
     }
 
     private static Stream<ComplexRequiredFields> validComplexMessages() {
