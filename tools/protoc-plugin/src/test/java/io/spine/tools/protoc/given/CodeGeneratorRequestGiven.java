@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc.given;
 
-import com.google.common.base.Charsets;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
@@ -33,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Base64;
+
+import static com.google.common.base.Charsets.UTF_8;
 
 /**
  * A helper class for {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
@@ -114,7 +115,7 @@ public final class CodeGeneratorRequestGiven {
     }
 
     private static String base64Encoded(String value) {
-        byte[] valueBytes = value.getBytes(Charsets.UTF_8);
+        byte[] valueBytes = value.getBytes(UTF_8);
         String result = Base64.getEncoder()
                               .encodeToString(valueBytes);
         return result;

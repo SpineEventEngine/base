@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.base.Charsets;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
@@ -33,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Base64;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -95,7 +95,7 @@ public final class Plugin {
     private static String decodeBase64(String value) {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] decodedBytes = decoder.decode(value);
-        String result = new String(decodedBytes, Charsets.UTF_8);
+        String result = new String(decodedBytes, UTF_8);
         return result;
     }
 
