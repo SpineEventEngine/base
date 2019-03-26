@@ -39,14 +39,14 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
     /**
-     * Splits field name (or field combination) options.
+     * Splits Protobuf field names separated with a logical disjunction (OR) literal {@literal |}.
      */
-    private static final Splitter optionSeparator = Splitter.on('|');
+    private static final Splitter orSplitter = Splitter.on('|');
 
     /**
-     * Splits fields combination within the option.
+     * Splits Protobuf field names separated with a logical conjunction (AND) literal {@literal &}.
      */
-    private static final Splitter fieldsCombinationSeparator = Splitter.on('&');
+    private static final Splitter andSplitter = Splitter.on('&');
 
     private final String optionValue;
 
@@ -95,17 +95,17 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
             return new RequiredFieldAlternatives(fieldNames);
         }
 
-        private static RequiredFieldAlternatives ofCombination(CharSequence expression) {
-            Iterable<String> parts = fieldsCombinationSeparator.split(expression);
+        private static RequiredFieldAlternatives ofCombination(String expression) {
+            Iterable<String> parts = andSplitter.split(expression);
             return ofCombination(ImmutableList.copyOf(parts));
         }
     }
 
-    private static ImmutableList<RequiredFieldAlternatives> parse(CharSequence expression) {
+    private static ImmutableList<RequiredFieldAlternatives> parse(String expression) {
         ImmutableList.Builder<RequiredFieldAlternatives> alternatives = ImmutableList.builder();
         String whiteSpaceRemoved = WHITESPACE.matcher(expression)
                                              .replaceAll("");
-        Iterable<String> parts = optionSeparator.split(whiteSpaceRemoved);
+        Iterable<String> parts = orSplitter.split(whiteSpaceRemoved);
         for (String part : parts) {
             alternatives.add(RequiredFieldAlternatives.ofCombination(part));
         }
