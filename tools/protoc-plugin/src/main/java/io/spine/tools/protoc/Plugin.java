@@ -30,7 +30,9 @@ import io.spine.tools.protoc.method.MethodGenerator;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Base64;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -76,7 +78,7 @@ public final class Plugin {
     }
 
     private static SpineProtocConfig readConfig(CodeGeneratorRequest request) {
-        String configFilePath = request.getParameter();
+        String configFilePath = decodeBase64(request.getParameter());
         try (FileInputStream fis = new FileInputStream(configFilePath)) {
             SpineProtocConfig config = SpineProtocConfig
                     .parseFrom(fis, OptionExtensionRegistry.instance());
@@ -88,6 +90,13 @@ public final class Plugin {
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to read Spine Protoc Plugin config.");
         }
+    }
+
+    private static String decodeBase64(String value) {
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] decodedBytes = decoder.decode(value);
+        String result = new String(decodedBytes, UTF_8);
+        return result;
     }
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
