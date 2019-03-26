@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc.given;
 
+import com.google.common.base.Charsets;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Base64;
 
 /**
  * A helper class for {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
@@ -71,10 +73,10 @@ public final class CodeGeneratorRequestGiven {
      * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedMethods} and
      * a default instance of {@code GeneratedInterfaces} and stores it in the supplied {@code path}.
      *
-     * @return configuration file absolute path
+     * @return base64 encoded path to the plugin configuration
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
-    public static Path protocConfig(GeneratedMethods methods, Path configPath) {
+    public static String protocConfig(GeneratedMethods methods, Path configPath) {
         return protocConfig(GeneratedInterfaces.withDefaults(), methods, configPath);
     }
 
@@ -82,10 +84,10 @@ public final class CodeGeneratorRequestGiven {
      * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
      * a default instance of {@code GeneratedMethods} and stores it in the supplied {@code path}.
      *
-     * @return configuration file absolute path
+     * @return base64 encoded path to the plugin configuration
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
-    public static Path protocConfig(GeneratedInterfaces interfaces, Path configPath) {
+    public static String protocConfig(GeneratedInterfaces interfaces, Path configPath) {
         return protocConfig(interfaces, GeneratedMethods.withDefaults(), configPath);
     }
 
@@ -93,9 +95,9 @@ public final class CodeGeneratorRequestGiven {
      * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
      * {@code GeneratedMethods} and stores it in the supplied {@code path}.
      *
-     * @return configuration file absolute path
+     * @return base64 encoded path to the plugin configuration
      */
-    public static Path
+    public static String
     protocConfig(GeneratedInterfaces interfaces, GeneratedMethods methods, Path configPath) {
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
@@ -107,7 +109,15 @@ public final class CodeGeneratorRequestGiven {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        return configPath.toAbsolutePath();
+        return base64Encoded(configPath.toAbsolutePath()
+                                       .toString());
+    }
+
+    private static String base64Encoded(String value) {
+        byte[] valueBytes = value.getBytes(Charsets.UTF_8);
+        String result = Base64.getEncoder()
+                              .encodeToString(valueBytes);
+        return result;
     }
 
     private static DescriptorProtos.FileDescriptorProto spineOptionsProto() {

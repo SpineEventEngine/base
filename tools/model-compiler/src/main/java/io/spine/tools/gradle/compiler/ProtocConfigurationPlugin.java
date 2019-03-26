@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
@@ -48,6 +49,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -246,8 +248,16 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
                           options -> {
                               options.setOutputSubDir("java");
                               String option = spineProtocConfigPath.toString();
-                              options.option(option);
+                              String encodedOption = base64Encoded(option);
+                              options.option(encodedOption);
                           });
+    }
+
+    private static String base64Encoded(String value) {
+        Base64.Encoder encoder = Base64.getEncoder();
+        byte[] valueBytes = value.getBytes(Charsets.UTF_8);
+        String result = encoder.encodeToString(valueBytes);
+        return result;
     }
 
     /**
