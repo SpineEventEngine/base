@@ -81,7 +81,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
             }
         }
 
-        @Disabled  // () syntax is currently not supported
+        @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
         @DisplayName("oneof and other field are set")
         @Test
         void oneofAndOtherFieldsAreSet() {
@@ -105,7 +105,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
             assertValid(message);
         }
 
-        @Disabled  // () syntax is currently not supported
+        @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
         @DisplayName("a message qualifies for complex required field pattern")
         @ParameterizedTest
         @MethodSource("io.spine.validate.RequiredFieldTest#validComplexMessages")
@@ -184,7 +184,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
             assertNotValid(withOtherFieldOnly, false);
         }
 
-        @Disabled // () syntax is currently not supported
+        @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
         @DisplayName("a message does not qualifies for a complext required field pattern")
         @ParameterizedTest
         @MethodSource("io.spine.validate.RequiredFieldTest#invalidComplexMessages")

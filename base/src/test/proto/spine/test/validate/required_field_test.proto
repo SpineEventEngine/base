@@ -53,6 +53,7 @@ message OneofRequired {
 
 // Currently () syntax is not supported.
 // The message is here because the test that validates the behavior is disabled.
+// Remove the comment when the https://github.com/SpineEventEngine/base/issues/381 is resolved.
 message OneofFieldAndOtherFieldRequired {
 
     option (required_field) = "(first | second) & third";
@@ -76,6 +77,7 @@ message EveryFieldOptional {
 
 // Currently () syntax is not supported.
 // The message is here because the test that validates the behavior is disabled.
+// Remove the comment when the https://github.com/SpineEventEngine/base/issues/381 is resolved.
 message ComplexRequiredFields {
 
     option (required_field) = "(first | second) & (third | fourth) & fifth";
