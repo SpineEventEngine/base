@@ -87,7 +87,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File firstFile = File
