@@ -42,7 +42,7 @@ dependencies {
     api deps.build.errorProneAnnotations
 
     implementation deps.gen.javaPoet
-    
+
     testImplementation project(path: ":testlib")
 }
 
@@ -76,6 +76,10 @@ sourceSets {
 jar {
     // See `base-validating-builders/README.md`.
     from "$rootDir/base-validating-builders/builders"
+    exclude { final FileTreeElement file ->
+        final String[] pathSegments = file.relativePath.segments
+        return pathSegments.length >= 1 && pathSegments[0].equals("google")
+    }
 }
 
 build.doLast {
