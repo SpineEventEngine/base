@@ -20,23 +20,14 @@
 
 group = 'io.spine'
 
-configurations {
-    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-}
-
 apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
+
+apply from: "$projectDir/script/protobuf.gradle"
 
 apply from: deps.scripts.testArtifacts
 apply from: deps.scripts.runBuild
 
 dependencies {
-    // Re-generate standard Proto types, so they are included in `known_types.desc`.
-    //noinspection GroovyAssignabilityCheck
-    protobuf deps.build.protobuf
-
     // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
     // ErrorProne Annotations is part of our API. 
     api deps.build.errorProneAnnotations
@@ -44,22 +35,6 @@ dependencies {
     implementation deps.gen.javaPoet
 
     testImplementation project(path: ":testlib")
-}
-
-protobuf {
-    generatedFilesBaseDir = "$projectDir/generated"
-    protoc {
-        artifact = deps.build.protoc
-    }
-    generateProtoTasks {
-        all().each { final task ->
-            final def scope = task.sourceSet.name
-            task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
-        }
-    }
 }
 
 sourceSets {
@@ -76,10 +51,6 @@ sourceSets {
 jar {
     // See `base-validating-builders/README.md`.
     from "$rootDir/base-validating-builders/builders"
-    exclude { final FileTreeElement file ->
-        final String[] pathSegments = file.relativePath.segments
-        return pathSegments.length >= 1 && pathSegments[0].equals("google")
-    }
 }
 
 build.doLast {
