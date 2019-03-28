@@ -44,7 +44,7 @@ abstract class MessageFieldValidatingOption<T, M extends Message>
     @Override
     boolean shouldValidate(FieldDescriptor value) {
         FieldDeclaration declaration = new FieldDeclaration(value);
-        Valid<M> validOption = new Valid<>();
+        Valid validOption = new Valid();
         Boolean valid = validOption.valueFrom(value)
                                    .orElse(false);
         boolean shouldValidateCollection = declaration.isNotCollection() || valid;
