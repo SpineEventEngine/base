@@ -64,7 +64,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     private boolean shouldValidateFields() {
         boolean fieldValueSet = !fieldValueNotSet();
         Valid<V> validOption = new Valid<>();
-        Boolean valid = validOption.valueFrom(descriptor())
+        boolean valid = validOption.valueFrom(descriptor())
                                    .orElse(false);
         return valid && fieldValueSet;
     }
