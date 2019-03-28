@@ -31,8 +31,24 @@ dependencies {
     protobuf deps.build.protobuf
 }
 
+ext {
+    compiledProtoRoot = "$projectDir/generated"
+    mainCompiledProto = "$compiledProtoRoot/main/java"
+    testCompiledProto = "$compiledProtoRoot/test/java"
+}
+
+final def mainPruneTask = task pruneGoogleProtos(type: Delete) {
+    delete "$mainCompiledProto/com"
+    compileJava.dependsOn it
+}
+
+final def testPruneTask = task pruneTestGoogleProtos(type: Delete) {
+    delete "$testCompiledProto/com"
+    compileTestJava.dependsOn it
+}
+
 protobuf {
-    generatedFilesBaseDir = "$projectDir/generated"
+    generatedFilesBaseDir = compiledProtoRoot
     protoc {
         artifact = deps.build.protoc
     }
@@ -43,6 +59,12 @@ protobuf {
             task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
+
+            if (task.sourceSet.name.contains('test')) {
+                testPruneTask.dependsOn task
+            } else {
+                mainPruneTask.dependsOn task
+            }
         }
     }
 }
