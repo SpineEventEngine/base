@@ -78,27 +78,8 @@ static boolean isGoogleProtoSource(final FileTreeElement file) {
 }
 
 /**
- * Checks if the given directory hosts files generated from the Google `.proto` sources.
- * 
- * <p>The directory should be called `com` and should have a single child directory called `google`.
- */
-static boolean isCompiledGoogleProtoDir(final FileTreeElement file) {
-    if (!file.directory) {
-        return false
-    }
-    if (!file.name.equals('com')) {
-        return false
-    }
-    final File directory = file.file
-    final String[] children = directory.list()
-    return children.length == 1 && children[0].equals('google')
-}
-
-/**
- * From all artifacts, exclude Google `.proto` sources and files generated from those sources.
+ * From all artifacts, exclude Google `.proto` sources.
  */
 tasks.withType(Jar) {
-    it.exclude { final FileTreeElement file ->
-        isGoogleProtoSource(file) || isCompiledGoogleProtoDir(file)
-    }
+    it.exclude { final FileTreeElement file -> isGoogleProtoSource(file) }
 }
