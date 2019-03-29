@@ -55,8 +55,9 @@ final class WhenConstraint<T extends Message> extends FieldValueConstraint<T, Ti
                           .map(Temporals::from)
                           .filter(temporalValue -> isTimeInvalid(temporalValue, when))
                           .findFirst()
-                          .map(invalidValue -> newTimeViolation(fieldValue, invalidValue))
-                          .map(ImmutableList::of)
+                          .map(invalidValue -> ImmutableList.of(
+                                  newTimeViolation(fieldValue, invalidValue)
+                          ))
                           .orElse(ImmutableList.of());
         return violations;
     }
