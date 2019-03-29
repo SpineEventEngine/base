@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.util.Timestamps.compare;
 
 /**
  * Utilities class for working with {@link com.google.protobuf.Timestamp Timestamp} values in
@@ -38,35 +37,6 @@ public final class Timestamps2 {
 
     /** Prevent instantiation of this utility class. */
     private Timestamps2() {
-    }
-
-    /**
-     * Calculates if the {@code timestamp} is between the {@code start} and
-     * {@code finish} timestamps.
-     *
-     * @param timestamp the timestamp to check if it is between the {@code start} and {@code finish}
-     * @param start     the first point in time, must be before the {@code finish} timestamp
-     * @param finish    the second point in time, must be after the {@code start} timestamp
-     * @return {@code true} if the {@code timestamp} is after the {@code start} and before
-     * the {@code finish} timestamps, {@code false} otherwise
-     */
-    public static boolean isBetween(Timestamp timestamp, Timestamp start, Timestamp finish) {
-        boolean isAfterStart = compare(start, timestamp) < 0;
-        boolean isBeforeFinish = compare(timestamp, finish) < 0;
-        return isAfterStart && isBeforeFinish;
-    }
-
-    /**
-     * Calculates if {@code timestamp} is later {@code thanTime} timestamp.
-     *
-     * @param timestamp the timestamp to check if it is later then {@code thanTime}
-     * @param thanTime  the first point in time which is supposed to be before the {@code timestamp}
-     * @return {@code true} if the {@code timestamp} is later than {@code thanTime} timestamp,
-     * {@code false} otherwise
-     */
-    public static boolean isLaterThan(Timestamp timestamp, Timestamp thanTime) {
-        boolean isAfter = compare(timestamp, thanTime) > 0;
-        return isAfter;
     }
 
     /**

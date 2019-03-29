@@ -22,31 +22,20 @@ package io.spine.protobuf;
 
 import com.google.common.base.Converter;
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static com.google.protobuf.util.Durations.fromSeconds;
-import static com.google.protobuf.util.Timestamps.add;
-import static com.google.protobuf.util.Timestamps.subtract;
-import static io.spine.base.Time.currentTime;
 import static io.spine.protobuf.Timestamps2.fromInstant;
-import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.protobuf.Timestamps2.toInstant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Timestamps2 should")
 class Timestamps2Test extends UtilityClassTest<Timestamps2> {
-
-    private static final Duration TEN_SECONDS = fromSeconds(10L);
 
     Timestamps2Test() {
         super(Timestamps2.class);
@@ -56,62 +45,6 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
     protected void configure(NullPointerTester nullTester) {
         nullTester.setDefault(Timestamp.class, Time.currentTime())
                   .setDefault(Instant.class, Instant.now());
-    }
-
-    @Nested
-    @DisplayName("Check that a Timestamp is")
-    class Between {
-
-        @Test
-        @DisplayName("between two others")
-        void isBetween() {
-            Timestamp start = currentTime();
-            Timestamp timeBetween = add(start, TEN_SECONDS);
-            Timestamp finish = add(timeBetween, TEN_SECONDS);
-
-            boolean isBetween = Timestamps2.isBetween(timeBetween, start, finish);
-
-            assertTrue(isBetween);
-        }
-
-        @Test
-        @DisplayName("not between two others")
-        void isNotBetween() {
-            Timestamp start = currentTime();
-            Timestamp finish = add(start, TEN_SECONDS);
-            Timestamp timeNotBetween = add(finish, TEN_SECONDS);
-
-            boolean isBetween = Timestamps2.isBetween(timeNotBetween, start, finish);
-
-            assertFalse(isBetween);
-        }
-    }
-
-    @Nested
-    @DisplayName("Verify that a Timestamp is")
-    class Later {
-
-        @Test
-        @DisplayName("later than another")
-        void isLater() {
-            Timestamp fromPoint = currentTime();
-            Timestamp timeToCheck = add(fromPoint, TEN_SECONDS);
-
-            boolean isAfter = isLaterThan(timeToCheck, fromPoint);
-
-            assertTrue(isAfter);
-        }
-
-        @Test
-        @DisplayName("not later than another")
-        void isNotLater() {
-            Timestamp fromPoint = currentTime();
-            Timestamp timeToCheck = subtract(fromPoint, TEN_SECONDS);
-
-            boolean isAfter = isLaterThan(timeToCheck, fromPoint);
-
-            assertFalse(isAfter);
-        }
     }
 
     private static void assertEqual(Timestamp timestamp, Instant instant) {
