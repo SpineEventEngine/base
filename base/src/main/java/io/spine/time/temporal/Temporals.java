@@ -50,6 +50,7 @@ public final class Temporals {
      *         message to convert
      * @return instance of {@link Temporal}
      */
+    @SuppressWarnings("ChainOfInstanceofChecks") // Creating an abstraction over all the time types.
     public static Temporal<?> from(Message value) {
         if (value instanceof Temporal) {
             return (Temporal<?>) value;
