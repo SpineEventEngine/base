@@ -121,9 +121,9 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
         return violation;
     }
 
-    @SuppressWarnings("unchecked"/*`When` option validates `Timestamp`s, which extend `Message`.*/)
-    private static <V extends Message> ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        return ImmutableSet.of(((FieldValidatingOption<?, V>) When.create()));
+    private static <V extends Message>
+    ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
+        return ImmutableSet.of(When.create());
     }
 
     /**
