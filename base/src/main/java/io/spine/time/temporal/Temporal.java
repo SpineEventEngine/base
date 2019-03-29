@@ -20,6 +20,7 @@
 
 package io.spine.time.temporal;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 
@@ -49,6 +50,13 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      * @return this is a {@code Timestamp}
      */
     Timestamp toTimestamp();
+
+    /**
+     * Packs this point in time into an {@link Any}.
+     *
+     * @return itself packed as {@code Any}
+     */
+    Any toAny();
 
     /**
      * Compares this point in time to the given one.
@@ -126,7 +134,7 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      *         lower bound, exclusive
      * @param periodEnd
      *         higher bound, inclusive
-     * @return
+     * @return {@code true} if this point in time lies in between the given two
      */
     default boolean isBetween(T periodStart, T periodEnd) {
         checkArgument(periodStart.isEarlierThan(periodEnd),

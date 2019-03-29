@@ -20,45 +20,31 @@
 
 package io.spine.time.temporal;
 
-import com.google.protobuf.Any;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
-import io.spine.protobuf.AnyPacker;
+import io.spine.type.TypeName;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.util.Timestamps.checkValid;
+import static java.lang.String.format;
 
-/**
- * An implementation of {@link Temporal} for the Protobuf {@link Timestamp}.
- */
 @Internal
-public final class TimestampTemporal implements Temporal<TimestampTemporal> {
-
-    private final Timestamp value;
-
-    private TimestampTemporal(Timestamp value) {
-        this.value = value;
-    }
+public final class Temporals {
 
     /**
-     * Creates a new instance with the given {@code Timestamp}.
-     *
-     * <p>The given value must be valid in terms of {@code Timestamps.checkValid(..)}. Otherwise,
-     * as {@code IllegalStateException} is thrown.
+     * Prevents the utility class instantiation.
      */
-    public static TimestampTemporal from(Timestamp value) {
-        checkNotNull(value);
-        checkValid(value);
-        return new TimestampTemporal(value);
+    private Temporals() {
     }
 
-    @Override
-    public Timestamp toTimestamp() {
-        return value;
-    }
-
-    @Override
-    public Any toAny() {
-        return AnyPacker.pack(value);
+    public static Temporal<?> from(Message value) {
+        if (value instanceof Temporal) {
+            return (Temporal<?>) value;
+        } else if (value instanceof Timestamp) {
+            Timestamp timestampValue = (Timestamp) value;
+            return TimestampTemporal.from(timestampValue);
+        } else {
+            throw new IllegalArgumentException(format("Type `%s` cannot represent a point in time.",
+                                                      TypeName.of(value)));
+        }
     }
 }

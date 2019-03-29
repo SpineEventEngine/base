@@ -26,65 +26,63 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.FieldPath;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
+import io.spine.time.temporal.Temporal;
+import io.spine.time.temporal.Temporals;
 
-import static io.spine.base.Time.currentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
-import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint that, when applied to a {@link Timestamp} field value, checks for whether the
  * actual value is in the future or in the past, defined by the value of the field option.
  */
-final class WhenConstraint extends FieldValueConstraint<Timestamp, TimeOption> {
+final class WhenConstraint<T extends Message> extends FieldValueConstraint<T, TimeOption> {
 
     WhenConstraint(TimeOption optionValue) {
         super(optionValue);
     }
 
-    private ImmutableList<ConstraintViolation> validateTimestamps(FieldValue<Timestamp> fieldValue) {
+    @Override
+    public ImmutableList<ConstraintViolation> check(FieldValue<T> fieldValue) {
         Time when = optionValue().getIn();
         if (when == TIME_UNDEFINED) {
             return ImmutableList.of();
         }
-        Timestamp now = currentTime();
-        for (Message value : fieldValue.asList()) {
-            Timestamp time = (Timestamp) value;
-            if (isTimeInvalid(time, when, now)) {
-                return ImmutableList.of(newTimeViolation(fieldValue, time));
-            }
-        }
-        return ImmutableList.of();
+        ImmutableList<ConstraintViolation> violations =
+                fieldValue.asList()
+                          .stream()
+                          .map(Temporals::from)
+                          .filter(temporalValue -> isTimeInvalid(temporalValue, when))
+                          .findFirst()
+                          .map(invalidValue -> newTimeViolation(fieldValue, invalidValue))
+                          .map(ImmutableList::of)
+                          .orElse(ImmutableList.of());
+        return violations;
     }
 
     /**
      * Checks the time.
      *
-     * @param timeToCheck
-     *         a timestamp to check
+     * @param temporalValue
+     *         a time point to check
      * @param whenExpected
      *         the time when the checked timestamp should be
-     * @param now
-     *         the current moment
      * @return {@code true} if the time is valid according to {@code whenExpected} parameter,
      *         {@code false} otherwise
      */
-    private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
-        boolean isValid = (whenExpected == FUTURE)
-                          ? isLaterThan(timeToCheck, /*than*/ now)
-                          : isLaterThan(now, /*than*/ timeToCheck);
-        boolean isInvalid = !isValid;
-        return isInvalid;
+    private static boolean isTimeInvalid(Temporal<?> temporalValue, Time whenExpected) {
+        boolean valid = (whenExpected == FUTURE)
+                          ? temporalValue.isInFuture()
+                          : temporalValue.isInPast();
+        return !valid;
     }
 
-    private ConstraintViolation newTimeViolation(FieldValue<Timestamp> fieldValue,
-                                                 Timestamp value) {
+    private ConstraintViolation newTimeViolation(FieldValue<?> fieldValue, Temporal<?> value) {
         String msg = errorMsgFormat(optionValue(), optionValue().getMsgFormat());
         String when = optionValue().getIn()
-                                      .toString()
-                                      .toLowerCase();
+                                   .toString()
+                                   .toLowerCase();
         FieldPath fieldPath = fieldValue.context()
                                         .fieldPath();
         ConstraintViolation violation = ConstraintViolation
@@ -92,13 +90,8 @@ final class WhenConstraint extends FieldValueConstraint<Timestamp, TimeOption> {
                 .setMsgFormat(msg)
                 .addParam(when)
                 .setFieldPath(fieldPath)
-                .setFieldValue(pack(value))
+                .setFieldValue(value.toAny())
                 .build();
         return violation;
-    }
-
-    @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<Timestamp> value) {
-        return validateTimestamps(value);
     }
 }
