@@ -27,10 +27,45 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.compare;
 
+/**
+ * A point in time represented with a certain accuracy.
+ *
+ * <p>The name of this interface is inspired by the {@link java.time.temporal.Temporal}.
+ *
+ * <p>Provides a {@linkplain #compareTo(Temporal) default implementation} comparison of two points
+ * in time. It is not supposed that the implementation would override this comparison mechanism.
+ *
+ * @param <T>
+ *         the type of itself
+ */
 public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
 
+    /**
+     * Obtains this point in time as a Protobuf {@link Timestamp}.
+     *
+     * <p>The Protobuf {@code Timestamp} represents the UTC Epoch time. All the implementations
+     * should assemble timestamps regarding that fact.
+     *
+     * @return this is a {@code Timestamp}
+     */
     Timestamp toTimestamp();
 
+    /**
+     * Compares this point in time to the given one.
+     *
+     * <p>The {@code other} point should have <strong>the exact</strong> runtime type as this one.
+     * Otherwise, an {@code IllegalArgumentException} is thrown. The same constraint is applicable
+     * to all the other comparison methods of {@code Temporal}.
+     *
+     * @param other
+     *         the value to compare to
+     * @return <ul>
+     *             <li>an integer greater than 0 if point in time occurs later than the other
+     *             <li>an integer less than 0 if point in time occurs earlier than other
+     *             <li>and 0 of these points in time are identical
+     *         </ul>
+     * @implNote Translates both temporal values into {@code Timestamp}s and compares them.
+     */
     @Override
     default int compareTo(T other) {
         checkNotNull(other);
@@ -46,26 +81,53 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
         return result;
     }
 
+    /**
+     * Checks if this point is time occurs earlier than the other one.
+     */
     default boolean isEarlierThan(T other) {
         return compareTo(other) < 0;
     }
 
+    /**
+     * Checks if this point is time occurs earlier than the other one or they coincide.
+     */
     default boolean isEarlierOrSameAs(T other) {
         return compareTo(other) <= 0;
     }
 
+    /**
+     * Checks if this point is time occurs later than the other one.
+     */
     default boolean isLaterThan(T other) {
         return compareTo(other) > 0;
     }
 
+    /**
+     * Checks if this point is time occurs later than the other one or they coincide.
+     */
     default boolean isLaterOrSameAs(T other) {
         return compareTo(other) >= 0;
     }
 
+    /**
+     * Checks if this point in time coincides with the given one.
+     */
     default boolean isSameAs(T other) {
         return compareTo(other) == 0;
     }
 
+    /**
+     * Checks if this point is time lies between the given.
+     *
+     * <p>All three {@code Temporal}s must exactly the same runtime type. Otherwise,
+     * an {@code IllegalArgumentException} is thrown.
+     *
+     * @param periodStart
+     *         lower bound, exclusive
+     * @param periodEnd
+     *         higher bound, inclusive
+     * @return
+     */
     default boolean isBetween(T periodStart, T periodEnd) {
         checkArgument(periodStart.isEarlierThan(periodEnd),
                       "Period start `%s` must be earlier than period end `%s`.",
@@ -75,12 +137,28 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
             && this.isEarlierOrSameAs(periodEnd);
     }
 
+    /**
+     * Checks that this point in time lies in the future.
+     *
+     * <p>Uses {@link Time#currentTime()} to determine the "current" time to compare to.
+     *
+     * @return {@code true} if this point is time is later than the current time,
+     *         {@code false} otherwise
+     */
     default boolean isInFuture() {
         Timestamp now = Time.currentTime();
         Timestamp thisTime = toTimestamp();
         return compare(thisTime, now) > 0;
     }
 
+    /**
+     * Checks that this point in time lies in the past.
+     *
+     * <p>Uses {@link Time#currentTime()} to determine the "current" time to compare to.
+     *
+     * @return {@code true} if this point is time is earlier than the current time,
+     *         {@code false} otherwise
+     */
     default boolean isInPast() {
         Timestamp now = Time.currentTime();
         Timestamp thisTime = toTimestamp();
