@@ -23,13 +23,31 @@ package io.spine.time.temporal;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.util.Timestamps.checkValid;
+
+/**
+ * An implementation of {@link Temporal} for the Protobuf {@link Timestamp}.
+ */
 @Internal
 public final class TimestampTemporal implements Temporal<TimestampTemporal> {
 
     private final Timestamp value;
 
-    public TimestampTemporal(Timestamp value) {
+    private TimestampTemporal(Timestamp value) {
         this.value = value;
+    }
+
+    /**
+     * Creates a new instance with the given {@code Timestamp}.
+     *
+     * <p>The given value must be valid in terms of {@code Timestamps.checkValid(..)}. Otherwise,
+     * as {@code IllegalStateException} is thrown.
+     */
+    public static TimestampTemporal from(Timestamp value) {
+        checkNotNull(value);
+        checkValid(value);
+        return new TimestampTemporal(value);
     }
 
     @Override
