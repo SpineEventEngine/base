@@ -35,15 +35,16 @@ ext {
     compiledProtoRoot = "$projectDir/generated"
     mainCompiledProto = "$compiledProtoRoot/main/java"
     testCompiledProto = "$compiledProtoRoot/test/java"
+    googlePackagePrefix = 'com/google'
 }
 
 final def mainPruneTask = task pruneGoogleProtos(type: Delete) {
-    delete "$mainCompiledProto/com"
+    delete "$mainCompiledProto/$googlePackagePrefix"
     compileJava.dependsOn it
 }
 
 final def testPruneTask = task pruneTestGoogleProtos(type: Delete) {
-    delete "$testCompiledProto/com"
+    delete "$testCompiledProto/$googlePackagePrefix"
     compileTestJava.dependsOn it
 }
 
