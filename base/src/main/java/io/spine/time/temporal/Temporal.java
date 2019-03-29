@@ -82,7 +82,7 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
         checkNotNull(other);
         Class<? extends Temporal> thisClass = getClass();
         Class<? extends Temporal> otherClass = other.getClass();
-        checkArgument(thisClass == otherClass,
+        checkArgument(thisClass.equals(otherClass),
                       "Expected an instance of %s but got %s.",
                       thisClass.getCanonicalName(),
                       otherClass.getCanonicalName());
