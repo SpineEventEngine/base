@@ -27,6 +27,9 @@ import io.spine.type.TypeName;
 
 import static java.lang.String.format;
 
+/**
+ * A factory of {@link Temporal} instances.
+ */
 @Internal
 public final class Temporals {
 
@@ -36,6 +39,17 @@ public final class Temporals {
     private Temporals() {
     }
 
+    /**
+     * Produces an instance of {@link Temporal} from the given message.
+     *
+     * <p>If the given message is a {@link Timestamp}, produces a {@link TimestampTemporal}.
+     * If the given message is a {@link Temporal}, returns it without a change. Otherwise, throws
+     * an {@code IllegalArgumentException}.
+     *
+     * @param value
+     *         message to convert
+     * @return instance of {@link Temporal}
+     */
     public static Temporal<?> from(Message value) {
         if (value instanceof Temporal) {
             return (Temporal<?>) value;
