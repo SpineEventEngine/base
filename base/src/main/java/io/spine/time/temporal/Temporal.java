@@ -50,6 +50,13 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      * <p>The Protobuf {@code Timestamp} represents the UTC Epoch time. All the implementations
      * should assemble timestamps regarding that fact.
      *
+     * <p>If this {@code Temporal} type lacks precision of the {@code Timestamp}, such as seconds,
+     * nanoseconds, etc., the smallest possible value of {@code Timestamp} should be returned.
+     * For example, if this type represents time up to a minute, the value {@code 01-02-2019 09:40}
+     * is translated to the timestamp as if it was {@code 01-02-2019 09:40:00.000000000} (with zero
+     * seconds and zero nanoseconds). Similarly, if the type only represents a year, then
+     * the obtained timestamp points at the {@code 1st of January 00:00:00} of that year.
+     *
      * @return this is a {@code Timestamp}
      */
     Timestamp toTimestamp();
@@ -155,6 +162,8 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      *
      * @return {@code true} if this point is time is later than the current time,
      *         {@code false} otherwise
+     * @apiNote Note that a point in time is considered to be in the future only if its
+     *         {@linkplain #toTimestamp() timestamp representation} is in the future.
      */
     default boolean isInFuture() {
         Timestamp now = Time.currentTime();
@@ -169,6 +178,10 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      *
      * @return {@code true} if this point is time is earlier than the current time,
      *         {@code false} otherwise
+     * @apiNote Note that a point in time is considered to be in the past only if its
+     *         {@linkplain #toTimestamp() timestamp representation} is in the past. Thus, if a type
+     *         representing time with precision with up to a year contains current year, it is
+     *         considered to be in the past, as the year has already started.
      */
     default boolean isInPast() {
         Timestamp now = Time.currentTime();
