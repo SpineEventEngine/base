@@ -21,6 +21,7 @@
 package io.spine.time.temporal;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.time.temporal.given.InstantTemporal;
@@ -39,9 +40,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.time.temporal.given.TemporalTestEnv.future;
 import static io.spine.time.temporal.given.TemporalTestEnv.inBetween;
 import static io.spine.time.temporal.given.TemporalTestEnv.past;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("Temporal should")
 class TemporalTest {
@@ -129,6 +133,34 @@ class TemporalTest {
 
         assertThrows(IllegalArgumentException.class,
                      () -> instantTemporal.compareTo(timestampTemporal));
+    }
+
+    @Nested
+    @DisplayName("instantiate itself")
+    class CreateInstances {
+
+        @Test
+        @DisplayName("from a Timestamp")
+        void timestamp() {
+            Timestamp timestamp = Time.currentTime();
+            Temporal<?> temporal = Temporal.from(timestamp);
+            assertEquals(timestamp, temporal.toTimestamp());
+        }
+
+        @Test
+        @DisplayName("from a temporal message")
+        void message() {
+            TemporalMessage mock = mock(TemporalMessage.class);
+            Temporal<?> temporal = Temporal.from(mock);
+            assertSame(mock, temporal);
+        }
+
+        @Test
+        @DisplayName("and fail for unknown types")
+        void failOtherwise() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> Temporal.from(Empty.getDefaultInstance()));
+        }
     }
 
     @Nested
