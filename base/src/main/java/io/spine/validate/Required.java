@@ -27,8 +27,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
 
-import java.util.function.Predicate;
-
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE;
@@ -46,7 +44,6 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final Predicate<FieldDescriptor> hasOption;
     private final IfMissing ifMissing = new IfMissing();
 
     /**
@@ -54,7 +51,6 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
      */
     Required() {
         super(OptionsProto.required);
-        this.hasOption = this::notAssumingRequired;
     }
 
     /**
@@ -77,13 +73,13 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
                : new Required<>();
     }
 
-    private Boolean notAssumingRequired(FieldDescriptor field) {
+    private boolean notAssumingRequired(FieldDescriptor field) {
         return valueFrom(field).orElse(false);
     }
 
     @Override
     boolean shouldValidate(FieldDescriptor value) {
-        return this.hasOption.test(value);
+        return notAssumingRequired(value);
     }
 
     /**
@@ -98,7 +94,8 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
     void checkUsage(FieldDescriptor field) {
         ifMissing.valueFrom(field)
                  .ifPresent(ifMissingOption -> _warn(
-                         "'if_missing' option is set without '(required) = true'"));
+                         "(if_missing) option is set without (required) = true"
+                 ));
         checkCanBeRequired(field);
     }
 
@@ -106,8 +103,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
         JavaType type = field.getJavaType();
         if (!CAN_BE_REQUIRED.contains(type)) {
             String typeName = field.getType().name();
-            _warn("Fields of type {} should not be declared as `(required)`. " +
-                          "Please see the declaration of `{}.{}`.",
+            _warn("Fields of type {} should not be declared as (required) ({}.{}).",
                   typeName,
                   field.getContainingType().getFullName(),
                   field.getName());
