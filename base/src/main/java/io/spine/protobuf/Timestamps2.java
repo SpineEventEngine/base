@@ -22,6 +22,7 @@ package io.spine.protobuf;
 import com.google.common.base.Converter;
 import com.google.protobuf.Timestamp;
 import io.spine.string.Stringifiers;
+import io.spine.time.temporal.TimestampTemporal;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -47,6 +48,49 @@ public final class Timestamps2 {
         return InstantConverter.INSTANCE.reverse()
                                         .convert(timestamp);
     }
+
+    /**
+     * Calculates if the {@code timestamp} is between the {@code start} and
+     * {@code finish} timestamps.
+     *
+     * @param timestamp
+     *         the timestamp to check if it is between the {@code start} and {@code finish}
+     * @param start
+     *         the first point in time, must be before the {@code finish} timestamp
+     * @param finish
+     *         the second point in time, must be after the {@code start} timestamp
+     * @return {@code true} if the {@code timestamp} is after the {@code start} and before
+     *         the {@code finish} timestamps, {@code false} otherwise
+     * @deprecated Use {@link TimestampTemporal} instead. Also, consider domain-specific types for
+     *         time representation.
+     */
+    @Deprecated
+    public static boolean isBetween(Timestamp timestamp, Timestamp start, Timestamp finish) {
+        TimestampTemporal temporal = TimestampTemporal.from(timestamp);
+        TimestampTemporal startTemporal = TimestampTemporal.from(start);
+        TimestampTemporal finishTemporal = TimestampTemporal.from(finish);
+        return temporal.isBetween(startTemporal, finishTemporal);
+    }
+
+    /**
+     * Calculates if {@code timestamp} is later {@code thanTime} timestamp.
+     *
+     * @param timestamp
+     *         the timestamp to check if it is later then {@code thanTime}
+     * @param thanTime
+     *         the first point in time which is supposed to be before the {@code timestamp}
+     * @return {@code true} if the {@code timestamp} is later than {@code thanTime} timestamp,
+     *         {@code false} otherwise
+     * @deprecated Use {@link TimestampTemporal} instead. Also, consider domain-specific types for
+     *         time representation.
+     */
+    @Deprecated
+    public static boolean isLaterThan(Timestamp timestamp, Timestamp thanTime) {
+        TimestampTemporal later = TimestampTemporal.from(timestamp);
+        TimestampTemporal earlier = TimestampTemporal.from(thanTime);
+        return later.isLaterThan(earlier);
+    }
+
 
     /**
      * Parses a timestamp from an RFC-3339 date-time string.
