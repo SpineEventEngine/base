@@ -21,13 +21,9 @@ package io.spine.protobuf;
 
 import com.google.common.base.Converter;
 import com.google.protobuf.Timestamp;
-import io.spine.string.Stringifiers;
 import io.spine.time.temporal.TimestampTemporal;
 
-import java.io.Serializable;
 import java.time.Instant;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities class for working with {@link com.google.protobuf.Timestamp Timestamp} values in
@@ -49,9 +45,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Instant toInstant(Timestamp timestamp) {
-        checkNotNull(timestamp);
-        return InstantConverter.INSTANCE.reverse()
-                                        .convert(timestamp);
+        return TimestampTemporal.from(timestamp)
+                                .toInstant();
     }
 
     /**
@@ -103,10 +98,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Timestamp parse(String str) {
-        checkNotNull(str);
-        return Stringifiers.forTimestamp()
-                           .reverse()
-                           .convert(str);
+        return TimestampTemporal.parse(str)
+                                .toTimestamp();
     }
 
     /**
@@ -114,8 +107,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Timestamp fromInstant(Instant instant) {
-        checkNotNull(instant);
-        return InstantConverter.INSTANCE.convert(instant);
+        return TimestampTemporal.from(instant)
+                                .toTimestamp();
     }
 
     /**
@@ -123,44 +116,6 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Converter<Instant, Timestamp> converter() {
-        return InstantConverter.INSTANCE;
-    }
-
-    /**
-     * Converts {@code Timestamp} to {@code Instant}.
-     */
-    @Deprecated
-    private static final class InstantConverter extends Converter<Instant, Timestamp>
-            implements Serializable {
-
-        private static final long serialVersionUID = 0L;
-        private static final InstantConverter INSTANCE = new InstantConverter();
-
-        @Override
-        protected Timestamp doForward(Instant value) {
-            checkNotNull(value);
-            Timestamp result = Timestamp
-                    .newBuilder()
-                    .setSeconds(value.getEpochSecond())
-                    .setNanos(value.getNano())
-                    .build();
-            return result;
-        }
-
-        @Override
-        protected Instant doBackward(Timestamp value) {
-            checkNotNull(value);
-            Instant result = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Timestamps2.converter()";
-        }
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
+        return TimestampTemporal.converter();
     }
 }
