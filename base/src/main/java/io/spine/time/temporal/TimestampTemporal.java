@@ -22,7 +22,6 @@ package io.spine.time.temporal;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
-import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,7 +30,6 @@ import static com.google.protobuf.util.Timestamps.checkValid;
 /**
  * An implementation of {@link Temporal} for the Protobuf {@link Timestamp}.
  */
-@Internal
 public final class TimestampTemporal implements Temporal<TimestampTemporal> {
 
     private final Timestamp value;
