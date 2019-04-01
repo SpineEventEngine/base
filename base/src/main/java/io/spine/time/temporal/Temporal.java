@@ -33,14 +33,15 @@ import static com.google.protobuf.util.Timestamps.compare;
  *
  * <p>The name of this interface is inspired by the {@link java.time.temporal.Temporal}.
  *
- * <p>Provides a {@linkplain #compareTo(Temporal) default implementation} comparison of two points
- * in time. It is not supposed that the implementation would override this comparison mechanism.
- *
- * @apiNote This interface is mainly (though not exclusively) designed to be implemented in messages
- * marked with the {@code (is)} option. See {@link TemporalMessage}.
+ * <p>Provides a {@linkplain #compareTo(Temporal) default implementation} for comparison of two
+ * points in time. It is not supposed that concrete {@code Temporal}s would override this comparison
+ * mechanism.
  *
  * @param <T>
  *         the type of itself
+ * @apiNote This interface is mainly (though not exclusively) designed to be implemented in
+ *         messages
+ *         marked with the {@code (is)} option. See {@link TemporalMessage}.
  */
 public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
 
