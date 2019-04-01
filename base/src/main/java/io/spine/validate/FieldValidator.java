@@ -210,10 +210,9 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected boolean isRequiredField() {
         Required<V> requiredOption = Required.create(assumeRequired);
-        Boolean required = requiredOption.valueFrom(descriptor())
-                                         .orElse(false);
-        boolean result = required || assumeRequired;
-        return result;
+        boolean required = requiredOption.valueFrom(descriptor())
+                                         .orElse(assumeRequired);
+        return required;
     }
 
     /** Returns an immutable list of the field values. */

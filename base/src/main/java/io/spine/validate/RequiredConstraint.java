@@ -56,9 +56,9 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
         if (canNotCheckPresence) {
             return ImmutableList.of();
         }
-        return value.isDefault() ?
-               requiredViolated(value) :
-               ImmutableList.of();
+        return value.isDefault()
+               ? requiredViolated(value)
+               : ImmutableList.of();
     }
 
     private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
