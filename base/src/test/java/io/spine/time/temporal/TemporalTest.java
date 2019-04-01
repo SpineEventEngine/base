@@ -20,6 +20,7 @@
 
 package io.spine.time.temporal;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.time.temporal.given.InstantTemporal;
@@ -44,6 +45,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Temporal should")
 class TemporalTest {
+
+    @Test
+    @DisplayName("not accept nulls for comparison")
+    void nullTest() {
+        new NullPointerTester()
+                .setDefault(TimestampTemporal.class, future())
+                .testAllPublicInstanceMethods(future());
+    }
+
+    @Test
+    @DisplayName("not accept nulls for instance creation")
+    void staticNullTest() {
+        new NullPointerTester()
+                .testAllPublicStaticMethods(Temporal.class);
+    }
 
     @Test
     @DisplayName("compare to an instance of same type")

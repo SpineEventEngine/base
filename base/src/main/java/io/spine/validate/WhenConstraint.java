@@ -27,7 +27,6 @@ import io.spine.base.FieldPath;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
 import io.spine.time.temporal.Temporal;
-import io.spine.time.temporal.Temporals;
 
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
@@ -52,7 +51,7 @@ final class WhenConstraint<T extends Message> extends FieldValueConstraint<T, Ti
         ImmutableList<ConstraintViolation> violations =
                 fieldValue.asList()
                           .stream()
-                          .map(Temporals::from)
+                          .map(Temporal::from)
                           .filter(temporalValue -> isTimeInvalid(temporalValue, when))
                           .findFirst()
                           .map(invalidValue -> ImmutableList.of(

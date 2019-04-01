@@ -21,12 +21,15 @@
 package io.spine.time.temporal;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
+import io.spine.type.TypeName;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.compare;
+import static java.lang.String.format;
 
 /**
  * A point in time represented with a certain accuracy.
@@ -44,6 +47,32 @@ import static com.google.protobuf.util.Timestamps.compare;
  *         marked with the {@code (is)} option. See {@link TemporalMessage}.
  */
 public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
+
+    /**
+     * Produces an instance of {@code Temporal} from the given message.
+     *
+     * <p>If the given message is a {@link Timestamp}, produces a {@link TimestampTemporal}.
+     * If the given message is a {@code Temporal}, returns it without a change. Otherwise, throws
+     * an {@code IllegalArgumentException}.
+     *
+     * @param value
+     *         message to convert
+     * @return instance of {@code Temporal}
+     */
+    @SuppressWarnings("ChainOfInstanceofChecks") // Creating an abstraction over all the time types.
+    static Temporal<?> from(Message value) {
+        checkNotNull(value);
+
+        if (value instanceof Temporal) {
+            return (Temporal<?>) value;
+        } else if (value instanceof Timestamp) {
+            Timestamp timestampValue = (Timestamp) value;
+            return TimestampTemporal.from(timestampValue);
+        } else {
+            throw new IllegalArgumentException(format("Type `%s` cannot represent a point in time.",
+                                                      TypeName.of(value)));
+        }
+    }
 
     /**
      * Obtains this point in time as a Protobuf {@link Timestamp}.

@@ -69,8 +69,7 @@ public final class TimestampTemporal implements Temporal<TimestampTemporal> {
     /**
      * Parses a timestamp from an {@code RFC-3339} date-time string.
      *
-     * <p>Unlike {@link com.google.protobuf.util.Timestamps#parse(String) its Protobuf counterpart}
-     * this method does not throw a checked exception.
+     * <p>Unlike {@code Timestamps.parse(String)}, this method does not throw a checked exception.
      *
      * @throws IllegalArgumentException if the string is not of required format
      */
