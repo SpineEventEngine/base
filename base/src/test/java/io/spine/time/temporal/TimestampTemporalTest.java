@@ -18,54 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf;
+package io.spine.time.temporal;
 
 import com.google.common.base.Converter;
-import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
-import io.spine.testing.UtilityClassTest;
+import io.spine.string.Stringifiers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static io.spine.protobuf.Timestamps2.fromInstant;
-import static io.spine.protobuf.Timestamps2.toInstant;
+import static io.spine.time.temporal.given.TimestampTemporalTestEnv.assertEqual;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Timestamps2 should")
-class Timestamps2Test extends UtilityClassTest<Timestamps2> {
-
-    Timestamps2Test() {
-        super(Timestamps2.class);
-    }
-
-    @Override
-    protected void configure(NullPointerTester nullTester) {
-        nullTester.setDefault(Timestamp.class, Time.currentTime())
-                  .setDefault(Instant.class, Instant.now());
-    }
-
-    private static void assertEqual(Timestamp timestamp, Instant instant) {
-        assertEquals(timestamp.getSeconds(), instant.getEpochSecond());
-        assertEquals(timestamp.getNanos(), instant.getNano());
-    }
+@DisplayName("TimestampTemporal should")
+class TimestampTemporalTest {
 
     @Test
-    @DisplayName("convert Timestamp to Instant")
+    @DisplayName("convert to Instant")
     void convertToInstant() {
-        Timestamp timestamp = Time.currentTime();
-        Instant instant = toInstant(timestamp);
+        TimestampTemporal timestamp = TimestampTemporal.now();
+        Instant instant = timestamp.toInstant();
 
         assertEqual(timestamp, instant);
     }
 
     @Test
-    @DisplayName("create Timestamp by Instant")
+    @DisplayName("create from Instant")
     void createFromInstant() {
         Instant instant = Instant.now();
-        Timestamp timestamp = fromInstant(instant);
+        TimestampTemporal timestamp = TimestampTemporal.from(instant);
 
         assertEqual(timestamp, instant);
     }
@@ -73,16 +57,28 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
     @Test
     @DisplayName("provide converter to Instant")
     void converterToInstant() {
+        Converter<Timestamp, Instant> converter = TimestampTemporal
+                .converter()
+                .reverse();
         Timestamp timestamp = Time.currentTime();
-        Converter<Timestamp, Instant> converter = Timestamps2.converter()
-                                                             .reverse();
         Instant instant = converter.convert(timestamp);
 
         // Check forward conversion.
+        assertNotNull(instant);
         assertEqual(timestamp, instant);
 
         // Check backward conversion.
         assertEquals(timestamp, converter.reverse()
                                          .convert(instant));
+    }
+
+    @Test
+    @DisplayName("parse RFC-3339 timestamps")
+    void parse() {
+        Timestamp timestamp = Time.currentTime();
+        String rfcString = Stringifiers.forTimestamp()
+                                       .convert(timestamp);
+        TimestampTemporal parsed = TimestampTemporal.parse(rfcString);
+        assertEquals(timestamp, parsed.toTimestamp());
     }
 }

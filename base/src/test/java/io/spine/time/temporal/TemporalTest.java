@@ -35,7 +35,6 @@ import static com.google.common.collect.BoundType.CLOSED;
 import static com.google.common.collect.BoundType.OPEN;
 import static com.google.common.collect.Range.range;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.protobuf.Timestamps2.fromInstant;
 import static io.spine.time.temporal.given.TemporalTestEnv.future;
 import static io.spine.time.temporal.given.TemporalTestEnv.inBetween;
 import static io.spine.time.temporal.given.TemporalTestEnv.past;
@@ -109,9 +108,8 @@ class TemporalTest {
     @SuppressWarnings("unchecked") // Supposed to fail.
     void failWithDifferentTypes() {
         Instant instant = Instant.now();
-        Timestamp timestamp = fromInstant(instant);
         Temporal instantTemporal = new InstantTemporal(instant);
-        Temporal timestampTemporal = TimestampTemporal.from(timestamp);
+        Temporal timestampTemporal = TimestampTemporal.from(instant);
 
         assertThrows(IllegalArgumentException.class,
                      () -> instantTemporal.compareTo(timestampTemporal));

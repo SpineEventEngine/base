@@ -23,8 +23,8 @@ package io.spine.time.temporal.given;
 import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
 import io.spine.protobuf.AnyPacker;
-import io.spine.protobuf.Timestamps2;
 import io.spine.time.temporal.Temporal;
+import io.spine.time.temporal.TimestampTemporal;
 
 import java.time.Instant;
 
@@ -43,7 +43,8 @@ public final class InstantTemporal implements Temporal<InstantTemporal> {
 
     @Override
     public Timestamp toTimestamp() {
-        return Timestamps2.fromInstant(value);
+        TimestampTemporal timestamp = TimestampTemporal.from(value);
+        return timestamp.toTimestamp();
     }
 
     @Override

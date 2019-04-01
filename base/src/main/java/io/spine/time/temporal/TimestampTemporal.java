@@ -20,9 +20,15 @@
 
 package io.spine.time.temporal;
 
+import com.google.common.base.Converter;
 import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
+import io.spine.base.Time;
 import io.spine.protobuf.AnyPacker;
+import io.spine.string.Stringifiers;
+
+import java.io.Serializable;
+import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.checkValid;
@@ -50,6 +56,41 @@ public final class TimestampTemporal implements Temporal<TimestampTemporal> {
         return new TimestampTemporal(value);
     }
 
+    /**
+     * Creates a new instance from the passed {@link java.time.Instant} value.
+     */
+    public static TimestampTemporal from(Instant instant) {
+        checkNotNull(instant);
+        Timestamp timestamp = converter().convert(instant);
+        checkNotNull(timestamp);
+        return from(timestamp);
+    }
+
+    /**
+     * Parses a timestamp from an {@code RFC-3339} date-time string.
+     *
+     * <p>Unlike {@link com.google.protobuf.util.Timestamps#parse(String) its Protobuf counterpart}
+     * this method does not throw a checked exception.
+     *
+     * @throws IllegalArgumentException if the string is not of required format
+     */
+    public static TimestampTemporal parse(String rfcString) {
+        checkNotNull(rfcString);
+        Timestamp timestamp = Stringifiers.forTimestamp()
+                                          .reverse()
+                                          .convert(rfcString);
+        checkNotNull(timestamp);
+        return from(timestamp);
+    }
+
+    /**
+     * Creates a new instance with the {@linkplain Time#currentTime() current} time.
+     */
+    public static TimestampTemporal now() {
+        Timestamp currentTime = Time.currentTime();
+        return from(currentTime);
+    }
+
     @Override
     public Timestamp toTimestamp() {
         return value;
@@ -58,5 +99,53 @@ public final class TimestampTemporal implements Temporal<TimestampTemporal> {
     @Override
     public Any toAny() {
         return AnyPacker.pack(value);
+    }
+
+    /**
+     * Converts the passed timestamp to {@code Instant}.
+     */
+    public Instant toInstant() {
+        Instant instant = converter().reverse().convert(value);
+        checkNotNull(instant);
+        return instant;
+    }
+
+    /**
+     * Obtains converter of {@code Timestamp}s to {@code Instant}s.
+     */
+    public static Converter<Instant, Timestamp> converter() {
+        return InstantConverter.INSTANCE;
+    }
+
+    /**
+     * Converts {@code Timestamp} to {@code Instant}.
+     */
+    private static final class InstantConverter extends Converter<Instant, Timestamp>
+            implements Serializable {
+
+        private static final long serialVersionUID = 0L;
+        private static final InstantConverter INSTANCE = new InstantConverter();
+
+        @Override
+        protected Timestamp doForward(Instant value) {
+            checkNotNull(value);
+            Timestamp result = Timestamp
+                    .newBuilder()
+                    .setSeconds(value.getEpochSecond())
+                    .setNanos(value.getNano())
+                    .build();
+            return result;
+        }
+
+        @Override
+        protected Instant doBackward(Timestamp value) {
+            checkNotNull(value);
+            Instant result = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
+            return result;
+        }
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
     }
 }

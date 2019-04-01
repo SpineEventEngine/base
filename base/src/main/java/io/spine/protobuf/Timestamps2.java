@@ -33,7 +33,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Utilities class for working with {@link com.google.protobuf.Timestamp Timestamp} values in
  * addition to those available from {@link com.google.protobuf.util.Timestamps Timestamps} utility
  * class from the Protobuf Util library.
+ *
+ * @deprecated Use {@link TimestampTemporal} instead. Also, consider domain-specific types for time
+ *         representation.
  */
+@Deprecated
 public final class Timestamps2 {
 
     /** Prevent instantiation of this utility class. */
@@ -43,6 +47,7 @@ public final class Timestamps2 {
     /**
      * Converts the passed timestamp to {@code Instant}.
      */
+    @Deprecated
     public static Instant toInstant(Timestamp timestamp) {
         checkNotNull(timestamp);
         return InstantConverter.INSTANCE.reverse()
@@ -61,8 +66,6 @@ public final class Timestamps2 {
      *         the second point in time, must be after the {@code start} timestamp
      * @return {@code true} if the {@code timestamp} is after the {@code start} and before
      *         the {@code finish} timestamps, {@code false} otherwise
-     * @deprecated Use {@link TimestampTemporal} instead. Also, consider domain-specific types for
-     *         time representation.
      */
     @Deprecated
     public static boolean isBetween(Timestamp timestamp, Timestamp start, Timestamp finish) {
@@ -81,8 +84,6 @@ public final class Timestamps2 {
      *         the first point in time which is supposed to be before the {@code timestamp}
      * @return {@code true} if the {@code timestamp} is later than {@code thanTime} timestamp,
      *         {@code false} otherwise
-     * @deprecated Use {@link TimestampTemporal} instead. Also, consider domain-specific types for
-     *         time representation.
      */
     @Deprecated
     public static boolean isLaterThan(Timestamp timestamp, Timestamp thanTime) {
@@ -91,15 +92,16 @@ public final class Timestamps2 {
         return later.isLaterThan(earlier);
     }
 
-
     /**
      * Parses a timestamp from an RFC-3339 date-time string.
      *
      * <p>Unlike {@link com.google.protobuf.util.Timestamps#parse(String) its Protobuf counterpart}
      * this method does not throw a checked exception.
      *
-     * @throws IllegalArgumentException if the string is not of required format
+     * @throws IllegalArgumentException
+     *         if the string is not of required format
      */
+    @Deprecated
     public static Timestamp parse(String str) {
         checkNotNull(str);
         return Stringifiers.forTimestamp()
@@ -110,6 +112,7 @@ public final class Timestamps2 {
     /**
      * Creates {@code Timestamp} by the passed {@code Instant} value.
      */
+    @Deprecated
     public static Timestamp fromInstant(Instant instant) {
         checkNotNull(instant);
         return InstantConverter.INSTANCE.convert(instant);
@@ -118,6 +121,7 @@ public final class Timestamps2 {
     /**
      * Obtains converter of {@code Timestamp}s to {@code Instant}s.
      */
+    @Deprecated
     public static Converter<Instant, Timestamp> converter() {
         return InstantConverter.INSTANCE;
     }
@@ -125,6 +129,7 @@ public final class Timestamps2 {
     /**
      * Converts {@code Timestamp} to {@code Instant}.
      */
+    @Deprecated
     private static final class InstantConverter extends Converter<Instant, Timestamp>
             implements Serializable {
 

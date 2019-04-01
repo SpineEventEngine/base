@@ -20,27 +20,27 @@
 
 package io.spine.time.temporal.given;
 
+import com.google.protobuf.Timestamp;
 import io.spine.time.temporal.TimestampTemporal;
 
-import static io.spine.time.temporal.TimestampTemporal.parse;
+import java.time.Instant;
 
-public final class TemporalTestEnv {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public final class TimestampTemporalTestEnv {
 
     /**
      * Prevents the utility class instantiation.
      */
-    private TemporalTestEnv() {
+    private TimestampTemporalTestEnv() {
     }
 
-    public static TimestampTemporal past() {
-        return parse("1879-03-14T00:00:00Z");
+    public static void assertEqual(TimestampTemporal timestamp, Instant instant) {
+        assertEqual(timestamp.toTimestamp(), instant);
     }
 
-    public static TimestampTemporal inBetween() {
-        return parse("2079-03-14T00:00:00Z");
-    }
-
-    public static TimestampTemporal future() {
-        return parse("2879-03-14T00:00:00Z");
+    public static void assertEqual(Timestamp timestamp, Instant instant) {
+        assertEquals(timestamp.getSeconds(), instant.getEpochSecond());
+        assertEquals(timestamp.getNanos(), instant.getNano());
     }
 }
