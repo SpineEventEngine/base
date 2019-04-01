@@ -77,6 +77,8 @@ public final class ViolationText {
     }
 
     private StringBuilder buildMessage() {
+        String typeName = violation.getTypeName();
+
         String fieldPath = FieldPaths.toString(violation.getFieldPath());
 
         String format = violation.getMsgFormat();
@@ -84,12 +86,17 @@ public final class ViolationText {
         String formattedMessage = format(format, params.toArray());
 
         StringBuilder result = new StringBuilder();
-        if (!fieldPath.isEmpty()) {
-            result.append("At ")
-                  .append(fieldPath)
-                  .append(": ");
-        }
+        appendPrefix(result, typeName);
+        appendPrefix(result, fieldPath);
         result.append(formattedMessage);
         return result;
+    }
+
+    private static void appendPrefix(StringBuilder target, String prefix) {
+        if (!prefix.isEmpty()) {
+            target.append("At ")
+                  .append(prefix)
+                  .append(": ");
+        }
     }
 }
