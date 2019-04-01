@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
+import io.spine.type.TypeName;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,11 +57,15 @@ final class DistinctConstraint<T> extends FieldValueConstraint<T, Boolean> {
     private ConstraintViolation distinctViolated(FieldValue<T> value, T duplicate) {
         FieldPath path = value.context()
                               .fieldPath();
+        TypeName declaringTypeName = value.declaration()
+                                          .declaringType()
+                                          .name();
         return ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Values must be distinct.")
                 .setFieldPath(path)
                 .setFieldValue(toAny(duplicate))
+                .setTypeName(declaringTypeName.value())
                 .build();
     }
 

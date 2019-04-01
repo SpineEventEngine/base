@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.PatternOption;
+import io.spine.type.TypeName;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
@@ -54,11 +55,15 @@ final class PatternConstraint extends FieldValueConstraint<String, PatternOption
         FieldPath fieldPath = fieldValue.context()
                                         .fieldPath();
         String regex = optionValue().getRegex();
+        TypeName declaringType = fieldValue.declaration()
+                                           .declaringType()
+                                           .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
                 .addParam(regex)
                 .setFieldPath(fieldPath)
+                .setTypeName(declaringType.value())
                 .build();
         return violation;
     }

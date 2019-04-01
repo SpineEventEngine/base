@@ -52,6 +52,9 @@ message ConstraintViolation {
     // Parameters referenced by the format specifiers in the message format string.
     repeated string param = 2;
 
+    // The name of the validated message type.
+    string type_name = 7;
+
     // A path to the field in an invalid value.
     base.FieldPath field_path = 3;
 

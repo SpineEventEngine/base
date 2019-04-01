@@ -24,6 +24,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
+import io.spine.type.TypeName;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
@@ -83,7 +84,9 @@ final class DigitsConstraint<V extends Number & Comparable>
         String fractionMax = String.valueOf(option.getFractionMax());
         FieldPath fieldPath = value.context()
                                    .fieldPath();
-
+        TypeName declaringTypeName = value.declaration()
+                                          .declaringType()
+                                          .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
@@ -91,6 +94,7 @@ final class DigitsConstraint<V extends Number & Comparable>
                 .addParam(fractionMax)
                 .setFieldPath(fieldPath)
                 .setFieldValue(toAny(value.singleValue()))
+                .setTypeName(declaringTypeName.value())
                 .build();
         return ImmutableList.of(violation);
     }

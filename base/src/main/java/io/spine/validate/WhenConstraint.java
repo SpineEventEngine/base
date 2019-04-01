@@ -28,6 +28,7 @@ import io.spine.option.Time;
 import io.spine.option.TimeOption;
 import io.spine.time.temporal.Temporal;
 import io.spine.time.temporal.Temporals;
+import io.spine.type.TypeName;
 
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
@@ -86,10 +87,14 @@ final class WhenConstraint<T extends Message> extends FieldValueConstraint<T, Ti
                                    .toLowerCase();
         FieldPath fieldPath = fieldValue.context()
                                         .fieldPath();
+        TypeName declaringTypeName = fieldValue.declaration()
+                                               .declaringType()
+                                               .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
                 .addParam(when)
+                .setTypeName(declaringTypeName.value())
                 .setFieldPath(fieldPath)
                 .setFieldValue(value.toAny())
                 .build();

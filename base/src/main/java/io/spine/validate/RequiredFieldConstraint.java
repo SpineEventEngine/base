@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import io.spine.type.TypeName;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,10 +70,13 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
         if (!alternativeFound(alternatives, messageField)) {
             String msgFormat =
                     "None of the fields match the `required_field` definition: `%s`.";
+            TypeName typeName = messageField.declaration()
+                                            .name();
             ConstraintViolation requiredFieldNotFound = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(msgFormat)
                     .addParam(this.optionValue)
+                    .setTypeName(typeName.value())
                     .build();
             violations.add(requiredFieldNotFound);
             return false;

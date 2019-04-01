@@ -22,12 +22,14 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.base.FieldPath;
 import io.spine.code.AbstractFieldName;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.base.FieldPaths.fromElements;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -106,5 +108,12 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
         String camelCase = toCamelCase();
         String result = Character.toLowerCase(camelCase.charAt(0)) + camelCase.substring(1);
         return result;
+    }
+
+    /**
+     * Obtains this field name as a single-entry field path.
+     */
+    public FieldPath asPath() {
+        return fromElements(ImmutableList.of(value()));
     }
 }

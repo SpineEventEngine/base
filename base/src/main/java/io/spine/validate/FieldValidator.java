@@ -32,6 +32,7 @@ import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.TypeName;
 
 import java.util.List;
 import java.util.Optional;
@@ -233,9 +234,13 @@ abstract class FieldValidator<V> implements Logging {
 
     private ConstraintViolation newViolation(IfMissingOption option) {
         String msg = errorMsgFormat(option, option.getMsgFormat());
+        TypeName typeName = value.declaration()
+                                 .declaringType()
+                                 .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
+                .setTypeName(typeName.value())
                 .setFieldPath(fieldPath())
                 .build();
         return violation;
