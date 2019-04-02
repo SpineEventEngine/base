@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import java.util.Set;
+
 /**
  * Validates fields of type {@link Boolean}.
  */
@@ -43,5 +45,10 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     @Override
     protected boolean isNotSet(Boolean value) {
         return false;
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, Boolean>> createMoreOptions(ValidatorFactory factory) {
+        return factory.optionsForBoolean(fieldValue());
     }
 }

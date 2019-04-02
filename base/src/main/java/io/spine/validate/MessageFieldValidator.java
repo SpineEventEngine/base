@@ -21,13 +21,13 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
+import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.validate.Validate.isDefault;
@@ -48,7 +48,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      *         such constraint is not explicitly set
      */
     MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, additionalOptions());
+        super(fieldValue, assumeRequired);
     }
 
     @Override
@@ -73,6 +73,11 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     protected boolean isNotSet(Message value) {
         boolean result = isDefault(value);
         return result;
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatorFactory factory) {
+        return factory.optionsForMessage(fieldValue());
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
@@ -119,11 +124,6 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
                 .addAllViolation(violations)
                 .build();
         return violation;
-    }
-
-    private static <V extends Message>
-    ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        return ImmutableSet.of();
     }
 
     /**

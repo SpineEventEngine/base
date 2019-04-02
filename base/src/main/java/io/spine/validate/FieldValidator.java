@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -35,8 +34,11 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Sets.union;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -72,36 +74,27 @@ public abstract class FieldValidator<V> implements Logging {
      * @param assumeRequired
      *         if {@code true} the validator would assume that the field is required regardless
      *         of the {@code required} Protobuf option value
-     * @param validatingOptions
-     *         additional options against which the field should be validated
      */
-    protected FieldValidator(FieldValue<V> value,
-                             boolean assumeRequired,
-                             ImmutableSet<FieldValidatingOption<?, V>> validatingOptions) {
+    protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
         this.ifInvalid = ifInvalid(descriptor(value));
         ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
-        this.fieldValidatingOptions = ImmutableSet.copyOf(
-                Sets.union(commonOptions, validatingOptions));
+        ImmutableSet<FieldValidatingOption<?, V>> additionalOptions = additionalOptions();
+        this.fieldValidatingOptions = ImmutableSet.copyOf(union(commonOptions, additionalOptions));
     }
 
-    /**
-     * Creates a new validator instance.
-     *
-     * <p>Validator created by this constructors applies no additional validating options.
-     *
-     * @param value
-     *         the value to validate
-     * @param assumeRequired
-     *         if {@code true} the validator would assume that the field is required even
-     *         if this constraint is not set explicitly
-     */
-    protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
-        this(value, assumeRequired, ImmutableSet.of());
+    private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
+        ImmutableSet<FieldValidatingOption<?, V>> options = ValidatorFactory
+                .all()
+                .flatMap(factory -> createMoreOptions(factory).stream())
+                .collect(toImmutableSet());
+        return options;
     }
+
+    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatorFactory factory);
 
     /**
      * Checks if the value of the validated field is not set.

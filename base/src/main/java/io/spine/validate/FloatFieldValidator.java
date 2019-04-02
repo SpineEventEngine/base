@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import java.util.Set;
+
 import static java.lang.Math.abs;
 
 /**
@@ -47,5 +49,10 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
     protected Float getAbs(Float value) {
         Float abs = abs(value);
         return abs;
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, Float>> createMoreOptions(ValidatorFactory factory) {
+        return factory.optionsForFloat(fieldValue());
     }
 }
