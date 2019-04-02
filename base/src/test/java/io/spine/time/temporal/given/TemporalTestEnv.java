@@ -20,9 +20,13 @@
 
 package io.spine.time.temporal.given;
 
+import com.google.protobuf.Timestamp;
+import io.spine.string.Stringifiers;
+import io.spine.time.temporal.Temporal;
+import io.spine.time.temporal.Temporals;
 import io.spine.time.temporal.TimestampTemporal;
 
-import static io.spine.time.temporal.TimestampTemporal.parse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class TemporalTestEnv {
 
@@ -42,5 +46,14 @@ public final class TemporalTestEnv {
 
     public static TimestampTemporal future() {
         return parse("2879-03-14T00:00:00Z");
+    }
+
+    private static TimestampTemporal parse(String rfcString) {
+        Timestamp timestamp = Stringifiers.forTimestamp()
+                                          .reverse()
+                                          .convert(rfcString);
+        assertNotNull(timestamp);
+        Temporal<?> temporal = Temporals.from(timestamp);
+        return (TimestampTemporal) temporal;
     }
 }

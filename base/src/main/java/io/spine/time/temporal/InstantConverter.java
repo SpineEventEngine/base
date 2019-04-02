@@ -43,6 +43,10 @@ public final class InstantConverter extends Converter<Instant, Timestamp>
         return INSTANCE;
     }
 
+    public static Converter<Timestamp, Instant> reversed() {
+        return instance().reverse();
+    }
+
     @Override
     protected Timestamp doForward(Instant value) {
         checkNotNull(value);

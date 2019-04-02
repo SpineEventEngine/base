@@ -20,32 +20,52 @@
 
 package io.spine.time.temporal;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.protobuf.AnyPacker.pack;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.Instant;
 
-@DisplayName("TimestampTemporal should")
-class TimestampTemporalTest {
+import static io.spine.time.temporal.given.TimestampTemporalTestEnv.assertEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+
+@DisplayName("Temporal factory should")
+class TemporalsTest {
 
     @Test
-    @DisplayName("be created from a Timestamp")
-    void fromTimestamp() {
+    @DisplayName("crete from a Timestamp")
+    void timestamp() {
         Timestamp timestamp = Time.currentTime();
         Temporal<?> temporal = Temporals.from(timestamp);
-        assertThat(temporal).isInstanceOf(TimestampTemporal.class);
         assertEquals(timestamp, temporal.toTimestamp());
     }
 
     @Test
-    @DisplayName("convert the value to Any")
-    void convertToAny() {
-        Timestamp timestamp = Time.currentTime();
-        Temporal<?> temporal = Temporals.from(timestamp);
-        assertEquals(pack(timestamp), temporal.toAny());
+    @DisplayName("crete from a temporal message")
+    void message() {
+        TemporalMessage mock = mock(TemporalMessage.class);
+        Temporal<?> temporal = Temporals.from(mock);
+        assertSame(mock, temporal);
+    }
+
+    @Test
+    @DisplayName("fail for unknown types")
+    void failOtherwise() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> Temporals.from(Empty.getDefaultInstance()));
+    }
+
+    @Test
+    @DisplayName("create from Instant")
+    void createFromInstant() {
+        Instant instant = Instant.now();
+        Temporal timestamp = Temporals.from(instant);
+
+        assertEqual(timestamp, instant);
     }
 }

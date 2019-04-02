@@ -21,11 +21,15 @@ package io.spine.protobuf;
 
 import com.google.common.base.Converter;
 import com.google.protobuf.Timestamp;
+import io.spine.string.Stringifiers;
 import io.spine.time.temporal.InstantConverter;
 import io.spine.time.temporal.Temporal;
+import io.spine.time.temporal.Temporals;
 import io.spine.time.temporal.TimestampTemporal;
 
 import java.time.Instant;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities class for working with {@link com.google.protobuf.Timestamp Timestamp} values in
@@ -47,8 +51,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Instant toInstant(Timestamp timestamp) {
-        return TimestampTemporal.from(timestamp)
-                                .toInstant();
+        return Temporals.from(timestamp)
+                        .toInstant();
     }
 
     /**
@@ -66,10 +70,13 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static boolean isBetween(Timestamp timestamp, Timestamp start, Timestamp finish) {
-        TimestampTemporal temporal = TimestampTemporal.from(timestamp);
-        TimestampTemporal startTemporal = TimestampTemporal.from(start);
-        TimestampTemporal finishTemporal = TimestampTemporal.from(finish);
-        return temporal.isBetween(startTemporal, finishTemporal);
+        Temporal temporal = Temporals.from(timestamp);
+        Temporal startTemporal = Temporals.from(start);
+        Temporal finishTemporal = Temporals.from(finish);
+        @SuppressWarnings("unchecked")
+            // OK since `Temporals.from` produces same types of Temporal for the same input type.
+        boolean between = temporal.isBetween(startTemporal, finishTemporal);
+        return between;
     }
 
     /**
@@ -84,9 +91,12 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static boolean isLaterThan(Timestamp timestamp, Timestamp thanTime) {
-        TimestampTemporal later = TimestampTemporal.from(timestamp);
-        TimestampTemporal earlier = TimestampTemporal.from(thanTime);
-        return later.isLaterThan(earlier);
+        Temporal later = Temporals.from(timestamp);
+        Temporal earlier = Temporals.from(thanTime);
+        @SuppressWarnings("unchecked")
+            // OK since `Temporals.from` produces same types of Temporal for the same input type.
+        boolean result = later.isLaterThan(earlier);
+        return result;
     }
 
     /**
@@ -99,9 +109,13 @@ public final class Timestamps2 {
      *         if the string is not of required format
      */
     @Deprecated
-    public static Timestamp parse(String str) {
-        return TimestampTemporal.parse(str)
-                                .toTimestamp();
+    public static Timestamp parse(String rfcString) {
+        checkNotNull(rfcString);
+        Timestamp timestamp = Stringifiers.forTimestamp()
+                                          .reverse()
+                                          .convert(rfcString);
+        checkNotNull(timestamp);
+        return timestamp;
     }
 
     /**
@@ -109,8 +123,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Timestamp fromInstant(Instant instant) {
-        return Temporal.from(instant)
-                       .toTimestamp();
+        return Temporals.from(instant)
+                        .toTimestamp();
     }
 
     /**

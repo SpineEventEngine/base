@@ -22,6 +22,7 @@ package io.spine.time.temporal.given;
 
 import com.google.protobuf.Timestamp;
 import io.spine.time.temporal.Temporal;
+import io.spine.time.temporal.Temporals;
 
 import java.time.Instant;
 
@@ -40,6 +41,6 @@ public final class TimestampTemporalTestEnv {
     }
 
     public static void assertEqual(Timestamp timestamp, Instant instant) {
-        assertEqual(Temporal.from(timestamp), instant);
+        assertEqual(Temporals.from(timestamp), instant);
     }
 }

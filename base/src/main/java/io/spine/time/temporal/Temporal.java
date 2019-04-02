@@ -21,18 +21,14 @@
 package io.spine.time.temporal;
 
 import com.google.protobuf.Any;
-import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
-import io.spine.type.TypeName;
 
 import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.compare;
-import static io.spine.time.temporal.TimestampTemporal.converter;
-import static java.lang.String.format;
 
 /**
  * A point in time represented with a certain accuracy.
@@ -50,49 +46,6 @@ import static java.lang.String.format;
  *         marked with the {@code (is)} option. See {@link TemporalMessage}.
  */
 public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
-
-    /**
-     * Produces an instance of {@code Temporal} from the given message.
-     *
-     * <p>If the given message is a {@link Timestamp}, produces a wrapper {@code Temporal} instance.
-     * If the given message is a {@code Temporal}, returns it without a change. Otherwise, throws
-     * an {@code IllegalArgumentException}.
-     *
-     * @param value
-     *         message to convert
-     * @return instance of {@code Temporal}
-     */
-    @SuppressWarnings("ChainOfInstanceofChecks") // Creating an abstraction over all the time types.
-    static Temporal<?> from(Message value) {
-        checkNotNull(value);
-
-        if (value instanceof Temporal) {
-            return (Temporal<?>) value;
-        } else if (value instanceof Timestamp) {
-            Timestamp timestampValue = (Timestamp) value;
-            return TimestampTemporal.from(timestampValue);
-        } else {
-            throw new IllegalArgumentException(format("Type `%s` cannot represent a point in time.",
-                                                      TypeName.of(value)));
-        }
-    }
-
-    /**
-     * Produces an instance of {@code Temporal} from the given {@link java.time.Instant}.
-     *
-     * @param instant
-     *         the instance of {@code Instant} to convert into a {@code Temporal}
-     * @return instance of {@code Temporal}
-     * @implSpec Converts the given {@code Instant} into a {@code Timestamp} and generates
-     *         a {@code Temporal} from the {@code Timestamp}
-     */
-    static Temporal<?> from(Instant instant) {
-        checkNotNull(instant);
-        Timestamp timestamp = InstantConverter.instance()
-                                              .convert(instant);
-        checkNotNull(timestamp);
-        return from(timestamp);
-    }
 
     /**
      * Obtains this point in time as a Protobuf {@link Timestamp}.
@@ -125,8 +78,8 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      */
     default Instant toInstant() {
         Timestamp timestampValue = toTimestamp();
-        Instant instant = converter().reverse()
-                                     .convert(timestampValue);
+        Instant instant = InstantConverter.reversed()
+                                          .convert(timestampValue);
         checkNotNull(instant);
         return instant;
     }
