@@ -23,11 +23,11 @@ package io.spine.time.temporal;
 import com.google.common.base.Converter;
 import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
+import io.spine.annotation.Internal;
 import io.spine.base.Time;
 import io.spine.protobuf.AnyPacker;
 import io.spine.string.Stringifiers;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,6 +36,7 @@ import static com.google.protobuf.util.Timestamps.checkValid;
 /**
  * An implementation of {@link Temporal} for the Protobuf {@link Timestamp}.
  */
+@Internal
 public final class TimestampTemporal implements Temporal<TimestampTemporal> {
 
     private final Timestamp value;
@@ -54,16 +55,6 @@ public final class TimestampTemporal implements Temporal<TimestampTemporal> {
         checkNotNull(value);
         checkValid(value);
         return new TimestampTemporal(value);
-    }
-
-    /**
-     * Creates a new instance from the passed {@link java.time.Instant} value.
-     */
-    public static TimestampTemporal from(Instant instant) {
-        checkNotNull(instant);
-        Timestamp timestamp = converter().convert(instant);
-        checkNotNull(timestamp);
-        return from(timestamp);
     }
 
     /**
@@ -101,50 +92,10 @@ public final class TimestampTemporal implements Temporal<TimestampTemporal> {
     }
 
     /**
-     * Converts the passed timestamp to {@code Instant}.
-     */
-    public Instant toInstant() {
-        Instant instant = converter().reverse().convert(value);
-        checkNotNull(instant);
-        return instant;
-    }
-
-    /**
      * Obtains converter of {@code Timestamp}s to {@code Instant}s.
      */
     public static Converter<Instant, Timestamp> converter() {
-        return InstantConverter.INSTANCE;
+        return InstantConverter.instance();
     }
 
-    /**
-     * Converts {@code Timestamp} to {@code Instant}.
-     */
-    private static final class InstantConverter extends Converter<Instant, Timestamp>
-            implements Serializable {
-
-        private static final long serialVersionUID = 0L;
-        private static final InstantConverter INSTANCE = new InstantConverter();
-
-        @Override
-        protected Timestamp doForward(Instant value) {
-            checkNotNull(value);
-            Timestamp result = Timestamp
-                    .newBuilder()
-                    .setSeconds(value.getEpochSecond())
-                    .setNanos(value.getNano())
-                    .build();
-            return result;
-        }
-
-        @Override
-        protected Instant doBackward(Timestamp value) {
-            checkNotNull(value);
-            Instant result = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
-            return result;
-        }
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-    }
 }

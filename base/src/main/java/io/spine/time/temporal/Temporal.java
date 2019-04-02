@@ -26,9 +26,12 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.type.TypeName;
 
+import java.time.Instant;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.compare;
+import static io.spine.time.temporal.TimestampTemporal.converter;
 import static java.lang.String.format;
 
 /**
@@ -51,7 +54,7 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
     /**
      * Produces an instance of {@code Temporal} from the given message.
      *
-     * <p>If the given message is a {@link Timestamp}, produces a {@link TimestampTemporal}.
+     * <p>If the given message is a {@link Timestamp}, produces a wrapper {@code Temporal} instance.
      * If the given message is a {@code Temporal}, returns it without a change. Otherwise, throws
      * an {@code IllegalArgumentException}.
      *
@@ -72,6 +75,23 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
             throw new IllegalArgumentException(format("Type `%s` cannot represent a point in time.",
                                                       TypeName.of(value)));
         }
+    }
+
+    /**
+     * Produces an instance of {@code Temporal} from the given {@link java.time.Instant}.
+     *
+     * @param instant
+     *         the instance of {@code Instant} to convert into a {@code Temporal}
+     * @return instance of {@code Temporal}
+     * @implSpec Converts the given {@code Instant} into a {@code Timestamp} and generates
+     *         a {@code Temporal} from the {@code Timestamp}
+     */
+    static Temporal<?> from(Instant instant) {
+        checkNotNull(instant);
+        Timestamp timestamp = InstantConverter.instance()
+                                              .convert(instant);
+        checkNotNull(timestamp);
+        return from(timestamp);
     }
 
     /**
@@ -97,6 +117,19 @@ public interface Temporal<T extends Temporal<T>> extends Comparable<T> {
      * @return itself packed as {@code Any}
      */
     Any toAny();
+
+    /**
+     * Converts this {@code Temporal} into a {@link java.time.Instant}.
+     *
+     * @return this as an {@code Instant}
+     */
+    default Instant toInstant() {
+        Timestamp timestampValue = toTimestamp();
+        Instant instant = converter().reverse()
+                                     .convert(timestampValue);
+        checkNotNull(instant);
+        return instant;
+    }
 
     /**
      * Compares this point in time to the given one.

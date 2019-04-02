@@ -18,39 +18,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.time.temporal.given;
+package io.spine.time.temporal;
 
-import com.google.protobuf.Any;
+import com.google.common.base.Converter;
 import com.google.protobuf.Timestamp;
-import io.spine.protobuf.AnyPacker;
-import io.spine.time.temporal.InstantConverter;
-import io.spine.time.temporal.Temporal;
+import io.spine.annotation.Internal;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link Temporal} based on a {@link java.time.Instant}.
+ * Converts {@code Timestamp} to {@code Instant}.
  */
-public final class InstantTemporal implements Temporal<InstantTemporal> {
+@Internal
+public final class InstantConverter extends Converter<Instant, Timestamp>
+        implements Serializable {
 
-    private final Instant value;
+    private static final long serialVersionUID = 0L;
+    private static final InstantConverter INSTANCE = new InstantConverter();
 
-    public InstantTemporal(Instant value) {
-        this.value = checkNotNull(value);
+    public static Converter<Instant, Timestamp> instance() {
+        return INSTANCE;
     }
 
     @Override
-    public Timestamp toTimestamp() {
-        Timestamp result = InstantConverter.instance()
-                                           .convert(value);
-        checkNotNull(result);
+    protected Timestamp doForward(Instant value) {
+        checkNotNull(value);
+        Timestamp result = Timestamp
+                .newBuilder()
+                .setSeconds(value.getEpochSecond())
+                .setNanos(value.getNano())
+                .build();
         return result;
     }
 
     @Override
-    public Any toAny() {
-        return AnyPacker.pack(toTimestamp());
+    protected Instant doBackward(Timestamp value) {
+        checkNotNull(value);
+        Instant result = Instant.ofEpochSecond(value.getSeconds(), value.getNanos());
+        return result;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
     }
 }

@@ -21,6 +21,8 @@ package io.spine.protobuf;
 
 import com.google.common.base.Converter;
 import com.google.protobuf.Timestamp;
+import io.spine.time.temporal.InstantConverter;
+import io.spine.time.temporal.Temporal;
 import io.spine.time.temporal.TimestampTemporal;
 
 import java.time.Instant;
@@ -107,8 +109,8 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Timestamp fromInstant(Instant instant) {
-        return TimestampTemporal.from(instant)
-                                .toTimestamp();
+        return Temporal.from(instant)
+                       .toTimestamp();
     }
 
     /**
@@ -116,6 +118,6 @@ public final class Timestamps2 {
      */
     @Deprecated
     public static Converter<Instant, Timestamp> converter() {
-        return TimestampTemporal.converter();
+        return InstantConverter.instance();
     }
 }
