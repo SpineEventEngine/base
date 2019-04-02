@@ -187,7 +187,7 @@ public final class FieldValue<T> {
         throw new IllegalArgumentException(msg);
     }
 
-    FieldDescriptor descriptor() {
+    public FieldDescriptor descriptor() {
         return context.target();
     }
 
@@ -198,7 +198,7 @@ public final class FieldValue<T> {
      *
      * @return {@link JavaType} of {@linkplain #asList() list} elements
      */
-    JavaType javaType() {
+    public JavaType javaType() {
         if (!declaration.isMap()) {
             return declaration.javaType();
         }
@@ -212,16 +212,16 @@ public final class FieldValue<T> {
      *
      * @return the value as a list
      */
-    ImmutableList<T> asList() {
+    public ImmutableList<T> asList() {
         return ImmutableList.copyOf(values);
     }
 
-    T singleValue() {
+    public T singleValue() {
         return asList().get(0);
     }
 
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
-    boolean isDefault() {
+    public boolean isDefault() {
         return asList().isEmpty() || (declaration.isNotCollection() &&
                 isSingleValueDefault());
     }

@@ -123,7 +123,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
 
     private static <V extends Message>
     ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        return ImmutableSet.of(When.create());
+        return ImmutableSet.of();
     }
 
     /**
