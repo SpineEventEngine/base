@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
  * @param <T>
  *         a type of values that this constraint is applicable to
  */
-interface Constraint<T> {
+public interface Constraint<T> {
 
     /**
      * Checks the specified value against this constraint.

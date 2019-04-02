@@ -47,7 +47,7 @@ import static java.util.stream.Collectors.toList;
  *         a type of field values
  */
 @SuppressWarnings("ClassWithTooManyMethods") // OK for this central class.
-abstract class FieldValidator<V> implements Logging {
+public abstract class FieldValidator<V> implements Logging {
 
     private final FieldValue<V> value;
     private final FieldDeclaration declaration;
@@ -110,7 +110,7 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    final boolean fieldValueNotSet() {
+    protected final boolean fieldValueNotSet() {
         boolean valueNotSet =
                 values.isEmpty()
                         || (declaration.isNotCollection() && isNotSet(values.get(0)));
@@ -155,7 +155,7 @@ abstract class FieldValidator<V> implements Logging {
         return result.build();
     }
 
-    final IfInvalidOption ifInvalid() {
+    protected final IfInvalidOption ifInvalid() {
         return ifInvalid;
     }
 
@@ -201,7 +201,7 @@ abstract class FieldValidator<V> implements Logging {
         }
     }
 
-    FieldValue<V> fieldValue() {
+    protected FieldValue<V> fieldValue() {
         return value;
     }
 
@@ -228,7 +228,7 @@ abstract class FieldValidator<V> implements Logging {
      * @param violation
      *         a violation to add
      */
-    void addViolation(ConstraintViolation violation) {
+    protected void addViolation(ConstraintViolation violation) {
         violations.add(violation);
     }
 
@@ -253,7 +253,7 @@ abstract class FieldValidator<V> implements Logging {
      * @param customMsg
      *         a user-defined error message
      */
-    static String errorMsgFormat(Message option, String customMsg) {
+    public static String errorMsgFormat(Message option, String customMsg) {
         String defaultMsg = option.getDescriptorForType()
                                   .getOptions()
                                   .getExtension(OptionsProto.defaultMessage);
@@ -301,7 +301,7 @@ abstract class FieldValidator<V> implements Logging {
                     .descriptor();
     }
 
-    final FieldDescriptor descriptor() {
+    protected final FieldDescriptor descriptor() {
         return descriptor(value);
     }
 
