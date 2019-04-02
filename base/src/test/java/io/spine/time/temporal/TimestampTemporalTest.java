@@ -49,7 +49,7 @@ class TimestampTemporalTest {
     @DisplayName("create from Instant")
     void createFromInstant() {
         Instant instant = Instant.now();
-        TimestampTemporal timestamp = TimestampTemporal.from(instant);
+        Temporal timestamp = Temporal.from(instant);
 
         assertEqual(timestamp, instant);
     }

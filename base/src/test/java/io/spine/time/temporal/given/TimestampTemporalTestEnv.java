@@ -21,7 +21,7 @@
 package io.spine.time.temporal.given;
 
 import com.google.protobuf.Timestamp;
-import io.spine.time.temporal.TimestampTemporal;
+import io.spine.time.temporal.Temporal;
 
 import java.time.Instant;
 
@@ -35,12 +35,11 @@ public final class TimestampTemporalTestEnv {
     private TimestampTemporalTestEnv() {
     }
 
-    public static void assertEqual(TimestampTemporal timestamp, Instant instant) {
-        assertEqual(timestamp.toTimestamp(), instant);
+    public static void assertEqual(Temporal<?> temporal, Instant instant) {
+        assertEquals(temporal.toInstant(), instant);
     }
 
     public static void assertEqual(Timestamp timestamp, Instant instant) {
-        assertEquals(timestamp.getSeconds(), instant.getEpochSecond());
-        assertEquals(timestamp.getNanos(), instant.getNano());
+        assertEqual(Temporal.from(timestamp), instant);
     }
 }

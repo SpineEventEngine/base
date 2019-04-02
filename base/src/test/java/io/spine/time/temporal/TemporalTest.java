@@ -129,7 +129,7 @@ class TemporalTest {
     void failWithDifferentTypes() {
         Instant instant = Instant.now();
         Temporal instantTemporal = new InstantTemporal(instant);
-        Temporal timestampTemporal = TimestampTemporal.from(instant);
+        Temporal timestampTemporal = Temporal.from(instant);
 
         assertThrows(IllegalArgumentException.class,
                      () -> instantTemporal.compareTo(timestampTemporal));
