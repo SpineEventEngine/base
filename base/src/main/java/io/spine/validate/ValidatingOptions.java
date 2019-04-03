@@ -121,7 +121,7 @@ public interface ValidatingOptions {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default <T extends Message> Set<FieldValidatingOption<?, T>> forMessage() {
+    default Set<FieldValidatingOption<?, Message>> forMessage() {
         return ImmutableSet.of();
     }
 

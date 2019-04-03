@@ -142,7 +142,7 @@ public final class FieldValue<T> {
      *         if {@code true} validators would always assume that the field is required even
      *         if the constraint is not set explicitly
      */
-    @SuppressWarnings({"OverlyComplexMethod", "unchecked"})
+    @SuppressWarnings("OverlyComplexMethod")
     private FieldValidator<?> createValidator(boolean assumeRequired) {
         JavaType fieldType = javaType();
         switch (fieldType) {
