@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.IfInvalidOption;
@@ -29,6 +28,7 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.type.TypeName;
 
 import java.util.List;
+import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.validate.Validate.isDefault;
@@ -37,7 +37,7 @@ import static io.spine.validate.Validate.isDefault;
  * Validates fields of type {@link Message}, as opposed to primitive
  * Protobuf fields.
  */
-final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
+final class MessageFieldValidator extends FieldValidator<Message> {
 
     /**
      * Creates a new validator instance.
@@ -48,8 +48,8 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
-    MessageFieldValidator(FieldValue<V> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, additionalOptions());
+    MessageFieldValidator(FieldValue<Message> fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired);
     }
 
     @Override
@@ -83,9 +83,14 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
         return result;
     }
 
+    @Override
+    protected Set<FieldValidatingOption<?, Message>> createMoreOptions(ValidatingOptions factory) {
+        return factory.forMessage();
+    }
+
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
     private boolean isOfType(Class<? extends Message> type) {
-        ImmutableList<V> values = values();
+        ImmutableList<Message> values = values();
         Message value = values.isEmpty()
                         ? null
                         : values.get(0);
@@ -132,11 +137,6 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
         return violation;
     }
 
-    private static <V extends Message>
-    ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        return ImmutableSet.of(When.create());
-    }
-
     /**
      * The enumeration of pre-defined custom validations for a message field.
      */
@@ -147,7 +147,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
          */
         ANY(Any.class) {
             @Override
-            void doValidate(MessageFieldValidator<?> validator) {
+            void doValidate(MessageFieldValidator validator) {
                 validator.validateAny();
             }
         };
@@ -162,12 +162,12 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
          * Validates the field with the given {@code validator} if the field is of
          * the {@code targetType}.
          */
-        private void validateIfApplies(MessageFieldValidator<?> validator) {
+        private void validateIfApplies(MessageFieldValidator validator) {
             if (validator.isOfType(targetType)) {
                 doValidate(validator);
             }
         }
 
-        abstract void doValidate(MessageFieldValidator<?> validator);
+        abstract void doValidate(MessageFieldValidator validator);
     }
 }

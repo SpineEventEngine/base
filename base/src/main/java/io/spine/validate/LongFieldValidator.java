@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import java.util.Set;
+
 import static java.lang.Math.abs;
 
 /**
@@ -47,5 +49,10 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
     protected Long getAbs(Long value) {
         Long abs = abs(value);
         return abs;
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, Long>> createMoreOptions(ValidatingOptions factory) {
+        return factory.forLong();
     }
 }

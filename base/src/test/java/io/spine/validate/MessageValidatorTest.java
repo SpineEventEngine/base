@@ -91,7 +91,7 @@ abstract class MessageValidatorTest {
 
     private static void assertHasCorrectFormat(ConstraintViolation violation) {
         String format = violation.getMsgFormat();
-        assertTrue(!format.isEmpty());
+        assertFalse(format.isEmpty());
         boolean noParams = violation.getParamList()
                                     .isEmpty();
         if (format.contains("%s")) {

@@ -18,10 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.time.temporal;
+package io.spine.validate;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("ValidatingOptionsLoader should")
+class ValidatingOptionsLoaderTest {
+
+    @Test
+    @DisplayName("load common options")
+    void loadCommon() {
+        List<ValidatingOptions> implementations = ValidatingOptionsLoader.INSTANCE
+                .implementations()
+                .asList();
+        assertThat(implementations).hasSize(1);
+        assertThat(implementations.get(0)).isInstanceOf(CommonValidatingOptions.class);
+    }
+}

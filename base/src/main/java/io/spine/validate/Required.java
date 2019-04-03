@@ -76,7 +76,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
     }
 
     @Override
-    boolean shouldValidate(FieldDescriptor value) {
+    protected boolean shouldValidate(FieldDescriptor value) {
         return notAssumingRequired(value);
     }
 

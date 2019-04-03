@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 /**
  * Validates fields of type {@link String}.
@@ -37,7 +37,12 @@ class StringFieldValidator extends FieldValidator<String> {
      *         if this constraint is not set explicitly
      */
     StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
-        super(fieldValue, assumeRequired, ImmutableSet.of(Pattern.create()));
+        super(fieldValue, assumeRequired);
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, String>> createMoreOptions(ValidatingOptions factory) {
+        return factory.forString();
     }
 
     @Override

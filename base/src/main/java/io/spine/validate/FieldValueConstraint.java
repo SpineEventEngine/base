@@ -40,7 +40,7 @@ public abstract class FieldValueConstraint<T, V> implements Constraint<FieldValu
      * @param optionValue
      *         a value that describes the field constraints
      */
-    FieldValueConstraint(V optionValue) {
+    protected FieldValueConstraint(V optionValue) {
         checkNotNull(optionValue);
         this.optionValue = optionValue;
     }

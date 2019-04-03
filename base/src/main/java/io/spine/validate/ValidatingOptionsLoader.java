@@ -20,28 +20,36 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
-import io.spine.option.OptionsProto;
-import io.spine.option.TimeOption;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.ServiceLoader;
 
 /**
- * A validating option that specified the point in time which a {@link Timestamp} field value
- * has.
+ * Loads the implementations of {@link ValidatingOptions} using a {@link ServiceLoader}.
+ *
+ * <p>Caches the loaded results and never reloads the services.
  */
-final class When<T extends Message> extends MessageFieldValidatingOption<TimeOption, T> {
+enum ValidatingOptionsLoader {
 
-    private When() {
-        super(OptionsProto.when);
+    INSTANCE;
+
+    private final ImmutableSet<ValidatingOptions> implementations;
+
+    ValidatingOptionsLoader() {
+        ServiceLoader<ValidatingOptions> loader = ServiceLoader.load(ValidatingOptions.class);
+        this.implementations = ImmutableSet.copyOf(loader);
     }
 
-    /** Creates a new instance of this option. */
-    public static <T extends Message> When<T> create() {
-        return new When<>();
-    }
-
-    @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> value) {
-        return new WhenConstraint<>(optionValue(value));
+    /**
+     * Obtains all the implementations of {@link ValidatingOptions} available at current runtime.
+     *
+     * <p>Uses a {@link ServiceLoader} to scan for the SPI implementations.
+     *
+     * @return a stream of all available {@link ValidatingOptions} implementations
+     * @implNote The implementations are actually loaded when the enum instance is created.
+     *         This method only accesses the loaded services.
+     */
+    ImmutableSet<ValidatingOptions> implementations() {
+        return implementations;
     }
 }

@@ -45,7 +45,7 @@ final class AlwaysRequired<T> extends Required<T> {
      * @param value
      */
     @Override
-    boolean shouldValidate(FieldDescriptor value) {
+    protected boolean shouldValidate(FieldDescriptor value) {
         checkUsage(value);
         return true;
     }

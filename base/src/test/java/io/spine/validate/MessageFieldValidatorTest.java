@@ -35,51 +35,54 @@ import java.util.Collections;
 import java.util.List;
 
 @DisplayName("MessageFieldValidator should")
-@SuppressWarnings("unchecked")
-// Since `FieldValues` can be created of either `T` or `Map<T>` or List<T>`, a cast has to happen.
 public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
-            MessageWithRepeatedUnchekedMessageField.getDescriptor()
-                                                   .getFields()
-                                                   .get(0);
+            MessageWithRepeatedUnchekedMessageField
+                    .getDescriptor()
+                    .getFields()
+                    .get(0);
 
     private static final FieldDescriptor VALIDATED_FIELD_DESC =
-            MessageWithRepeatedValidatedMessageField.getDescriptor()
-                                                    .getFields()
-                                                    .get(0);
+            MessageWithRepeatedValidatedMessageField
+                    .getDescriptor()
+                    .getFields()
+                    .get(0);
 
     private static final FieldDescriptor REQUIRED_FIELD_DESC =
-            MessegeWithRepeatedRequiredMessageField.getDescriptor()
-                                                   .getFields()
-                                                   .get(0);
+            MessegeWithRepeatedRequiredMessageField
+                    .getDescriptor()
+                    .getFields()
+                    .get(0);
 
     private static final FieldDescriptor VALIDATED_REQUIRED_FIELD_DESC =
-            MessageWithRepeatedRequiredValidatedMessageField.getDescriptor()
-                                                            .getFields()
-                                                            .get(0);
+            MessageWithRepeatedRequiredValidatedMessageField
+                    .getDescriptor()
+                    .getFields()
+                    .get(0);
 
-    private static final FieldDescriptor MAP_FIELD_DESC = MessageWithMapMessageField.getDescriptor()
-                                                                                    .getFields()
-                                                                                    .get(0);
+    private static final FieldDescriptor MAP_FIELD_DESC = MessageWithMapMessageField
+            .getDescriptor()
+            .getFields()
+            .get(0);
 
     @Override
-    protected MessageFieldValidator<Message> validatedRequiredRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator validatedRequiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator<Message> requiredRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator requiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator<Message> validatedRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator validatedRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator<Message> uncheckedRepeatedFieldValidator(List<Message> values) {
+    protected MessageFieldValidator uncheckedRepeatedFieldValidator(List<Message> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 
@@ -103,6 +106,6 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     private static MessageFieldValidator getValidator(FieldDescriptor field,
                                                       Object rawValue) {
         FieldContext context = FieldContext.create(field);
-        return new MessageFieldValidator<>(FieldValue.of(rawValue, context), false);
+        return new MessageFieldValidator(FieldValue.of(rawValue, context), false);
     }
 }
