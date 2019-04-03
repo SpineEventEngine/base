@@ -20,23 +20,29 @@
 
 package io.spine.validate;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.collect.ImmutableSet;
 
-import java.util.List;
+import java.util.ServiceLoader;
 
-import static com.google.common.truth.Truth.assertThat;
+enum ValidationOptionsLoader {
 
-@DisplayName("ValidatorFactoryLoader should")
-class ValidatorFactoryLoaderTest {
+    INSTANCE;
 
-    @Test
-    @DisplayName("load common options")
-    void loadCommon() {
-        List<ValidatorFactory> implementations = ValidatorFactoryLoader.INSTANCE
-                .implementations()
-                .asList();
-        assertThat(implementations).hasSize(1);
-        assertThat(implementations.get(0)).isInstanceOf(CommonValidatorFactory.class);
+    private final ImmutableSet<ValidationOptions> implementations;
+
+    ValidationOptionsLoader() {
+        ServiceLoader<ValidationOptions> loader = ServiceLoader.load(ValidationOptions.class);
+        this.implementations = ImmutableSet.copyOf(loader);
+    }
+
+    /**
+     * Obtains all the implementations of {@link ValidationOptions} available at current runtime.
+     *
+     * <p>Uses a {@link ServiceLoader} to scan for the SPI implementations.
+     *
+     * @return a stream of all available {@link ValidationOptions} implementations
+     */
+    ImmutableSet<ValidationOptions> implementations() {
+        return implementations;
     }
 }

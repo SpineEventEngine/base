@@ -48,7 +48,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
 
     @Override
     protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatorFactory factory) {
-        return factory.optionsForEnum();
+    createMoreOptions(ValidationOptions factory) {
+        return factory.forEnum();
     }
 }

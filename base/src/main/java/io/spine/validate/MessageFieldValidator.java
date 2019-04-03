@@ -76,8 +76,8 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatorFactory factory) {
-        return factory.optionsForMessage();
+    protected Set<FieldValidatingOption<?, V>> createMoreOptions(ValidationOptions factory) {
+        return factory.forMessage();
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.

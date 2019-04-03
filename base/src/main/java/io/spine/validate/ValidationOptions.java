@@ -37,45 +37,45 @@ import java.util.Set;
  * implementation. The default implementation retrieves empty sets.
  *
  * <p>This interface is designed as a Service Provider Interface. The implementations are
- * {@linkplain ValidatorFactoryLoader loaded} via the {@link ServiceLoader} mechanism.
+ * {@linkplain ValidationOptionsLoader loaded} via the {@link ServiceLoader} mechanism.
  */
 @SPI
 @Immutable
-public interface ValidatorFactory {
+public interface ValidationOptions {
 
-    default Set<FieldValidatingOption<?, Boolean>> optionsForBoolean() {
+    default Set<FieldValidatingOption<?, Boolean>> forBoolean() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, ByteString>> optionsForByteString() {
+    default Set<FieldValidatingOption<?, ByteString>> forByteString() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Double>> optionsForDouble() {
+    default Set<FieldValidatingOption<?, Double>> forDouble() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, EnumValueDescriptor>> optionsForEnum() {
+    default Set<FieldValidatingOption<?, EnumValueDescriptor>> forEnum() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Float>> optionsForFloat() {
+    default Set<FieldValidatingOption<?, Float>> forFloat() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Integer>> optionsForInt() {
+    default Set<FieldValidatingOption<?, Integer>> forInt() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Long>> optionsForLong() {
+    default Set<FieldValidatingOption<?, Long>> forLong() {
         return ImmutableSet.of();
     }
 
-    default <T extends Message> Set<FieldValidatingOption<?, T>> optionsForMessage() {
+    default <T extends Message> Set<FieldValidatingOption<?, T>> forMessage() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, String>> optionsForString() {
+    default Set<FieldValidatingOption<?, String>> forString() {
         return ImmutableSet.of();
     }
 }

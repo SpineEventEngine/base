@@ -60,7 +60,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
 
     @Override
     protected Set<FieldValidatingOption<?, ByteString>>
-    createMoreOptions(ValidatorFactory factory) {
-        return factory.optionsForByteString();
+    createMoreOptions(ValidationOptions factory) {
+        return factory.forByteString();
     }
 }

@@ -26,7 +26,7 @@ import com.google.errorprone.annotations.Immutable;
 import java.util.Set;
 
 /**
- * An implementation of {@link ValidatorFactory} which adds common validation options.
+ * An implementation of {@link ValidationOptions} which adds common validation options.
  *
  * <p>Creates options:
  * <ul>
@@ -35,7 +35,7 @@ import java.util.Set;
  * </ul>
  */
 @Immutable
-public final class CommonValidatorFactory implements ValidatorFactory {
+public final class CommonValidationOptions implements ValidationOptions {
 
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());
@@ -49,27 +49,27 @@ public final class CommonValidatorFactory implements ValidatorFactory {
             ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
 
     @Override
-    public Set<FieldValidatingOption<?, String>> optionsForString() {
+    public Set<FieldValidatingOption<?, String>> forString() {
         return STRING_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Integer>> optionsForInt() {
+    public Set<FieldValidatingOption<?, Integer>> forInt() {
         return INT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Long>> optionsForLong() {
+    public Set<FieldValidatingOption<?, Long>> forLong() {
         return LONG_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Float>> optionsForFloat() {
+    public Set<FieldValidatingOption<?, Float>> forFloat() {
         return FLOAT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Double>> optionsForDouble() {
+    public Set<FieldValidatingOption<?, Double>> forDouble() {
         return DOUBLE_OPTIONS;
     }
 }

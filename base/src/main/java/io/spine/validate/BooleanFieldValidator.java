@@ -48,7 +48,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, Boolean>> createMoreOptions(ValidatorFactory factory) {
-        return factory.optionsForBoolean();
+    protected Set<FieldValidatingOption<?, Boolean>> createMoreOptions(ValidationOptions factory) {
+        return factory.forBoolean();
     }
 }
