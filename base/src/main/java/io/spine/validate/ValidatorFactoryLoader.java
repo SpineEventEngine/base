@@ -29,6 +29,7 @@ enum ValidatorFactoryLoader {
 
     INSTANCE;
 
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for an enum singleton.
     private final ServiceLoader<ValidatorFactory> loader;
 
     ValidatorFactoryLoader() {
@@ -43,7 +44,6 @@ enum ValidatorFactoryLoader {
      * @return a stream of all available {@link ValidatorFactory} implementations
      */
     Stream<ValidatorFactory> implementations() {
-        ServiceLoader<ValidatorFactory> loader = ServiceLoader.load(ValidatorFactory.class);
         Spliterator<ValidatorFactory> spliterator = loader.spliterator();
         return StreamSupport.stream(spliterator, false);
     }
