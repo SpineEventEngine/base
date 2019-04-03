@@ -45,8 +45,7 @@ public interface ValidatorFactory {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, ByteString>>
-    optionsForByteString() {
+    default Set<FieldValidatingOption<?, ByteString>> optionsForByteString() {
         return ImmutableSet.of();
     }
 
@@ -54,8 +53,7 @@ public interface ValidatorFactory {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    optionsForEnum() {
+    default Set<FieldValidatingOption<?, EnumValueDescriptor>> optionsForEnum() {
         return ImmutableSet.of();
     }
 
@@ -71,8 +69,7 @@ public interface ValidatorFactory {
         return ImmutableSet.of();
     }
 
-    default <T extends Message> Set<FieldValidatingOption<?, T>>
-    optionsForMessage() {
+    default <T extends Message> Set<FieldValidatingOption<?, T>> optionsForMessage() {
         return ImmutableSet.of();
     }
 
