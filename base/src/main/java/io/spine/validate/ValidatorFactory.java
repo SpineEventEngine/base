@@ -28,10 +28,16 @@ import io.spine.annotation.SPI;
 
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
+/**
+ * A factory of validation options for message fields.
+ *
+ * <p>This interface has no abstract methods. All the overridable methods are optional for
+ * implementation. The default implementation retrieves empty sets.
+ *
+ * <p>This interface is designed as a Service Provider Interface. The implementations are
+ * {@linkplain ValidatorFactoryLoader loaded} via the {@link ServiceLoader} mechanism.
+ */
 @SPI
 public interface ValidatorFactory {
 
@@ -46,37 +52,37 @@ public interface ValidatorFactory {
     }
 
     default Set<FieldValidatingOption<?, ByteString>>
-    optionsForByteString(FieldValue<ByteString> value) {
+    optionsForByteString() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Double>> optionsForDouble(FieldValue<Double> value) {
+    default Set<FieldValidatingOption<?, Double>> optionsForDouble() {
         return ImmutableSet.of();
     }
 
     default Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    optionsForEnum(FieldValue<EnumValueDescriptor> value) {
+    optionsForEnum() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Float>> optionsForFloat(FieldValue<Float> value) {
+    default Set<FieldValidatingOption<?, Float>> optionsForFloat() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Integer>> optionsForInt(FieldValue<Integer> value) {
+    default Set<FieldValidatingOption<?, Integer>> optionsForInt() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, Long>> optionsForLong(FieldValue<Long> value) {
+    default Set<FieldValidatingOption<?, Long>> optionsForLong() {
         return ImmutableSet.of();
     }
 
     default <T extends Message> Set<FieldValidatingOption<?, T>>
-    optionsForMessage(FieldValue<T> value) {
+    optionsForMessage() {
         return ImmutableSet.of();
     }
 
-    default Set<FieldValidatingOption<?, String>> optionsForString(FieldValue<String> value) {
+    default Set<FieldValidatingOption<?, String>> optionsForString() {
         return ImmutableSet.of();
     }
 }

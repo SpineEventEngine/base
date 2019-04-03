@@ -37,37 +37,37 @@ public final class CommonValidatorFactory implements ValidatorFactory {
 
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());
+    private static final ImmutableSet<FieldValidatingOption<?, Integer>> INT_OPTIONS =
+            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+    private static final ImmutableSet<FieldValidatingOption<?, Long>> LONG_OPTIONS =
+            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+    private static final ImmutableSet<FieldValidatingOption<?, Float>> FLOAT_OPTIONS =
+            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+    private static final ImmutableSet<FieldValidatingOption<?, Double>> DOUBLE_OPTIONS =
+            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
 
     @Override
-    public Set<FieldValidatingOption<?, String>> optionsForString(FieldValue<String> value) {
+    public Set<FieldValidatingOption<?, String>> optionsForString() {
         return STRING_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Integer>> optionsForInt(FieldValue<Integer> value) {
-        return numberOptions();
+    public Set<FieldValidatingOption<?, Integer>> optionsForInt() {
+        return INT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Long>> optionsForLong(FieldValue<Long> value) {
-        return numberOptions();
+    public Set<FieldValidatingOption<?, Long>> optionsForLong() {
+        return LONG_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Float>> optionsForFloat(FieldValue<Float> value) {
-        return numberOptions();
+    public Set<FieldValidatingOption<?, Float>> optionsForFloat() {
+        return FLOAT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Double>> optionsForDouble(FieldValue<Double> value) {
-        return numberOptions();
-    }
-
-    private static <N extends Number & Comparable<N>> Set<FieldValidatingOption<?, N>>
-    numberOptions() {
-        return ImmutableSet.of(Max.create(),
-                               Min.create(),
-                               Range.create(),
-                               Digits.create());
+    public Set<FieldValidatingOption<?, Double>> optionsForDouble() {
+        return DOUBLE_OPTIONS;
     }
 }

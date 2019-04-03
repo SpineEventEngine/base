@@ -53,6 +53,6 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
 
     @Override
     protected Set<FieldValidatingOption<?, Long>> createMoreOptions(ValidatorFactory factory) {
-        return factory.optionsForLong(fieldValue());
+        return factory.optionsForLong();
     }
 }
