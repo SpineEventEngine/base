@@ -41,13 +41,7 @@ import java.util.Set;
 @SPI
 public interface ValidatorFactory {
 
-    static Stream<ValidatorFactory> all() {
-        ServiceLoader<ValidatorFactory> loader = ServiceLoader.load(ValidatorFactory.class);
-        Spliterator<ValidatorFactory> spliterator = loader.spliterator();
-        return StreamSupport.stream(spliterator, false);
-    }
-
-    default Set<FieldValidatingOption<?, Boolean>> optionsForBoolean(FieldValue<Boolean> value) {
+    default Set<FieldValidatingOption<?, Boolean>> optionsForBoolean() {
         return ImmutableSet.of();
     }
 
