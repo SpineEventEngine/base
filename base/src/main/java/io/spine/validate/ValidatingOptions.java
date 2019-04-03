@@ -43,38 +43,94 @@ import java.util.Set;
 @Immutable
 public interface ValidatingOptions {
 
+    /**
+     * Obtains additional options for {@code bool} fields validation.
+     * 
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, Boolean>> forBoolean() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code bytes} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, ByteString>> forByteString() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code double} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, Double>> forDouble() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for enum fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, EnumValueDescriptor>> forEnum() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code float} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, Float>> forFloat() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code int64}, {@code sint64}, {@code uint64},
+     * {@code fixed64}, and {@code sfixed64} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, Integer>> forInt() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code int32}, {@code sint32}, {@code uint32},
+     * {@code fixed32}, and {@code sfixed32} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, Long>> forLong() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for message fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default <T extends Message> Set<FieldValidatingOption<?, T>> forMessage() {
         return ImmutableSet.of();
     }
 
+    /**
+     * Obtains additional options for {@code string} fields validation.
+     *
+     * @return the set of additional options
+     * @implSpec By default, obtains an empty set.
+     */
     default Set<FieldValidatingOption<?, String>> forString() {
         return ImmutableSet.of();
     }
