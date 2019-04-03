@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.Internal;
 
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import java.util.Set;
  *     <li>{@code (max)}, {@code (min)}, {@code (range)}, and {@code (digits)} for number fields.
  * </ul>
  */
+@Internal
 @Immutable
 public final class CommonValidationOptions implements ValidationOptions {
 
