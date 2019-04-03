@@ -92,9 +92,8 @@ final class VBuilderMethods {
     }
 
     private ClassName validatingBuilderClass() {
-        return ClassName.get(type.javaPackage()
-                                 .value(), type.validatingBuilderClass()
-                                               .value());
+        return ClassName.get(type.javaPackage().value(),
+                             type.validatingBuilderClass().value());
     }
 
     private MethodSpec mergeFromMethod() {
