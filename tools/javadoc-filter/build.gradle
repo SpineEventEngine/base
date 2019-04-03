@@ -17,6 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 group 'io.spine.tools'
 
 ext {
@@ -29,6 +30,7 @@ dependencies {
     implementation "javax.annotation:javax.annotation-api:$javaxAnnotationsVersion"
 
     testImplementation project(':testlib')
+    testImplementation project(':mute-logging')
 }
 
 // We need to include module dependencies to JAR.

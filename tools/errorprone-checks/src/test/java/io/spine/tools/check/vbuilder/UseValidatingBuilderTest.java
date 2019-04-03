@@ -23,7 +23,6 @@ package io.spine.tools.check.vbuilder;
 import com.google.common.base.Predicates;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +50,6 @@ import java.util.function.Predicate;
  * guide</a> to testing the custom checks.
  */
 @DisplayName("UseValidatingBuilder should")
-@Disabled("Until https://github.com/SpineEventEngine/base/issues/263 is resolved")
 class UseValidatingBuilderTest {
 
     private CompilationTestHelper compilationTestHelper;

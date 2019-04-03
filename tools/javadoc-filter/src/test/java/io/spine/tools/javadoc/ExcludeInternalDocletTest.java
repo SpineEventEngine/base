@@ -24,6 +24,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 import io.spine.testing.Tests;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.util.Exceptions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * <p>The source code used by this test suite is located under {@code resources/testsources}.
  */
+@MuteLogging
 @DisplayName("ExcludeInternalDoclet should")
 class ExcludeInternalDocletTest {
 
