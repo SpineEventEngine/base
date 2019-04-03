@@ -37,11 +37,11 @@ import java.util.Set;
  * implementation. The default implementation retrieves empty sets.
  *
  * <p>This interface is designed as a Service Provider Interface. The implementations are
- * {@linkplain ValidationOptionsLoader loaded} via the {@link ServiceLoader} mechanism.
+ * {@linkplain ValidatingOptionsLoader loaded} via the {@link ServiceLoader} mechanism.
  */
 @SPI
 @Immutable
-public interface ValidationOptions {
+public interface ValidatingOptions {
 
     default Set<FieldValidatingOption<?, Boolean>> forBoolean() {
         return ImmutableSet.of();

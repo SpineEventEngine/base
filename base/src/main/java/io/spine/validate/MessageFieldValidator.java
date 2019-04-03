@@ -76,7 +76,7 @@ final class MessageFieldValidator<V extends Message> extends FieldValidator<V> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, V>> createMoreOptions(ValidationOptions factory) {
+    protected Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatingOptions factory) {
         return factory.forMessage();
     }
 

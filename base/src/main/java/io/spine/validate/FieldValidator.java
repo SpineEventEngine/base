@@ -87,7 +87,7 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        ImmutableSet<FieldValidatingOption<?, V>> options = ValidationOptionsLoader.INSTANCE
+        ImmutableSet<FieldValidatingOption<?, V>> options = ValidatingOptionsLoader.INSTANCE
                 .implementations()
                 .stream()
                 .flatMap(factory -> createMoreOptions(factory).stream())
@@ -95,7 +95,7 @@ public abstract class FieldValidator<V> implements Logging {
         return options;
     }
 
-    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(ValidationOptions factory);
+    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatingOptions factory);
 
     /**
      * Checks if the value of the validated field is not set.

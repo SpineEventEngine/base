@@ -24,25 +24,25 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.ServiceLoader;
 
-enum ValidationOptionsLoader {
+enum ValidatingOptionsLoader {
 
     INSTANCE;
 
-    private final ImmutableSet<ValidationOptions> implementations;
+    private final ImmutableSet<ValidatingOptions> implementations;
 
-    ValidationOptionsLoader() {
-        ServiceLoader<ValidationOptions> loader = ServiceLoader.load(ValidationOptions.class);
+    ValidatingOptionsLoader() {
+        ServiceLoader<ValidatingOptions> loader = ServiceLoader.load(ValidatingOptions.class);
         this.implementations = ImmutableSet.copyOf(loader);
     }
 
     /**
-     * Obtains all the implementations of {@link ValidationOptions} available at current runtime.
+     * Obtains all the implementations of {@link ValidatingOptions} available at current runtime.
      *
      * <p>Uses a {@link ServiceLoader} to scan for the SPI implementations.
      *
-     * @return a stream of all available {@link ValidationOptions} implementations
+     * @return a stream of all available {@link ValidatingOptions} implementations
      */
-    ImmutableSet<ValidationOptions> implementations() {
+    ImmutableSet<ValidatingOptions> implementations() {
         return implementations;
     }
 }

@@ -27,16 +27,16 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ValidationOptionsLoader should")
-class ValidationOptionsLoaderTest {
+@DisplayName("ValidatingOptionsLoader should")
+class ValidatingOptionsLoaderTest {
 
     @Test
     @DisplayName("load common options")
     void loadCommon() {
-        List<ValidationOptions> implementations = ValidationOptionsLoader.INSTANCE
+        List<ValidatingOptions> implementations = ValidatingOptionsLoader.INSTANCE
                 .implementations()
                 .asList();
         assertThat(implementations).hasSize(1);
-        assertThat(implementations.get(0)).isInstanceOf(CommonValidationOptions.class);
+        assertThat(implementations.get(0)).isInstanceOf(CommonValidatingOptions.class);
     }
 }
