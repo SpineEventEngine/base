@@ -89,6 +89,7 @@ public abstract class FieldValidator<V> implements Logging {
     private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
         ImmutableSet<FieldValidatingOption<?, V>> options = ValidatorFactoryLoader.INSTANCE
                 .implementations()
+                .stream()
                 .flatMap(factory -> createMoreOptions(factory).stream())
                 .collect(toImmutableSet());
         return options;

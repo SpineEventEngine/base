@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.util.stream.Collectors.toList;
 
 @DisplayName("ValidatorFactoryLoader should")
 class ValidatorFactoryLoaderTest {
@@ -36,7 +35,7 @@ class ValidatorFactoryLoaderTest {
     void loadCommon() {
         List<ValidatorFactory> implementations = ValidatorFactoryLoader.INSTANCE
                 .implementations()
-                .collect(toList());
+                .asList();
         assertThat(implementations).hasSize(1);
         assertThat(implementations.get(0)).isInstanceOf(CommonValidatorFactory.class);
     }

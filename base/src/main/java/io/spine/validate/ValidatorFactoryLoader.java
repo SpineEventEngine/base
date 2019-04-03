@@ -20,20 +20,19 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.util.ServiceLoader;
-import java.util.Spliterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 enum ValidatorFactoryLoader {
 
     INSTANCE;
 
-    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for an enum singleton.
-    private final ServiceLoader<ValidatorFactory> loader;
+    private final ImmutableSet<ValidatorFactory> implementations;
 
     ValidatorFactoryLoader() {
-        this.loader = ServiceLoader.load(ValidatorFactory.class);
+        ServiceLoader<ValidatorFactory> loader = ServiceLoader.load(ValidatorFactory.class);
+        this.implementations = ImmutableSet.copyOf(loader);
     }
 
     /**
@@ -43,8 +42,7 @@ enum ValidatorFactoryLoader {
      *
      * @return a stream of all available {@link ValidatorFactory} implementations
      */
-    Stream<ValidatorFactory> implementations() {
-        Spliterator<ValidatorFactory> spliterator = loader.spliterator();
-        return StreamSupport.stream(spliterator, false);
+    ImmutableSet<ValidatorFactory> implementations() {
+        return implementations;
     }
 }
