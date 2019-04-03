@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Message;
@@ -39,6 +40,7 @@ import java.util.Set;
  * {@linkplain ValidatorFactoryLoader loaded} via the {@link ServiceLoader} mechanism.
  */
 @SPI
+@Immutable
 public interface ValidatorFactory {
 
     default Set<FieldValidatingOption<?, Boolean>> optionsForBoolean() {

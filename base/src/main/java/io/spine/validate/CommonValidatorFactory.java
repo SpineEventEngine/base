@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.Set;
 
@@ -33,6 +34,7 @@ import java.util.Set;
  *     <li>{@code (max)}, {@code (min)}, {@code (range)}, and {@code (digits)} for number fields.
  * </ul>
  */
+@Immutable
 public final class CommonValidatorFactory implements ValidatorFactory {
 
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
