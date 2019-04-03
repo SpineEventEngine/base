@@ -24,7 +24,16 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Set;
 
-public final class DefaultValidatorFactory implements ValidatorFactory {
+/**
+ * An implementation of {@link ValidatorFactory} which adds common validation options.
+ *
+ * <p>Creates options:
+ * <ul>
+ *     <li>{@code (pattern)} for {@code string} fields;
+ *     <li>{@code (max)}, {@code (min)}, {@code (range)}, and {@code (digits)} for number fields.
+ * </ul>
+ */
+public final class CommonValidatorFactory implements ValidatorFactory {
 
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());

@@ -1,1 +1,1 @@
-io.spine.validate.DefaultValidatorFactory
+io.spine.validate.CommonValidatorFactory
