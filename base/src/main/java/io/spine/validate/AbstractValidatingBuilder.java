@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import com.google.protobuf.UnknownFieldSet;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldContext;
@@ -196,10 +195,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
     protected B getMessageBuilder() {
         return messageBuilder;
-    }
-
-    public UnknownFieldSet getUnknownFields() {
-        return getMessageBuilder().getUnknownFields();
     }
 
     @Override
