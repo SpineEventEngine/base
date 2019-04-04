@@ -54,7 +54,7 @@ public final class SingularFieldType implements FieldType {
 
     private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
             ImmutableSet.of(
-                    bytesGetter(),
+                    prefixAndPostfix("get", BYTES),
                     prefixAndPostfix("set", BYTES)
             );
 
@@ -70,10 +70,6 @@ public final class SingularFieldType implements FieldType {
     SingularFieldType(FieldDeclaration declaration) {
         this.typeName = constructTypeNameFor(declaration.javaTypeName());
         this.javaType = declaration.javaType();
-    }
-
-    public static AccessorTemplate bytesGetter() {
-        return prefixAndPostfix("get", BYTES);
     }
 
     @Override
