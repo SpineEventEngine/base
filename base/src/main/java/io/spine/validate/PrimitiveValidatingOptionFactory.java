@@ -27,7 +27,8 @@ import io.spine.annotation.Internal;
 import java.util.Set;
 
 /**
- * An implementation of {@link ValidatingOptionFactory} which adds common validation options.
+ * An implementation of {@link ValidatingOptionFactory} which adds validation options for some
+ * primitive types.
  *
  * <p>Creates options:
  * <ul>
