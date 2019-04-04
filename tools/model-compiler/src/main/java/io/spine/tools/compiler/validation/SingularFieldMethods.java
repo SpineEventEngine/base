@@ -41,8 +41,10 @@ import java.util.Collection;
 
 import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
 import static io.spine.tools.compiler.field.type.SingularFieldType.bytesGetter;
+import static io.spine.tools.compiler.validation.Methods.callMethod;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
+import static io.spine.tools.compiler.validation.Methods.returnValue;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -110,7 +112,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
         String descriptorDeclaration = descriptorDeclaration();
         String validateStatement = validateStatement(javaFieldName.value(), javaFieldName);
-        String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, javaFieldName);
+        String setStatement = callMethod(getMessageBuilder(), methodName, javaFieldName.value());
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addParameter(parameter)
@@ -132,7 +134,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
                           .returns(fieldTypeName)
-                          .addStatement("return " + getMessageBuilder() + '.' + methodName + "()")
+                          .addStatement(returnValue(getMessageBuilder() + '.' + methodName + "()"))
                           .build();
         _debug("The getter construction for the singular method is finished.");
         return methodSpec;
@@ -141,7 +143,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     private MethodSpec clearMethod() {
         _debug("The 'clear..()' method construction for the singular field is started.");
         String methodName = clearer().format(javaFieldName);
-        String methodBody = format("%s.%s()", getMessageBuilder(), methodName);
+        String methodBody = callMethod(getMessageBuilder(), methodName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                         .addStatement(descriptorDeclaration())
@@ -164,10 +166,9 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ConvertStatement convertStatement =
                 ConvertStatement.of(javaFieldName.value(), fieldTypeName);
         String convertedVariableName = convertStatement.convertedVariableName();
-        String setStatement = format("%s.%s(%s)",
-                                     getMessageBuilder(),
-                                     messageBuilderSetter,
-                                     convertedVariableName);
+        String setStatement = callMethod(getMessageBuilder(),
+                                         messageBuilderSetter,
+                                         convertedVariableName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
                           .addParameter(parameter)
@@ -187,12 +188,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     private MethodSpec bytesGetterMethod() {
         String methodName = bytesGetter().format(javaFieldName);
 
-        String getStatement = format(FMT_RETURN_BUILD_METHOD, getMessageBuilder(), methodName);
+        String returnStatement = returnValue(callMethod(getMessageBuilder(), methodName));
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
                           .returns(ByteString.class)
-                          .addStatement(getStatement)
+                          .addStatement(returnStatement)
                           .build();
         return methodSpec;
     }

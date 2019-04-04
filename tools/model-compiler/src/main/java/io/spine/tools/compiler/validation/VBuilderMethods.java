@@ -39,6 +39,7 @@ import java.util.Map;
 
 import static io.spine.tools.compiler.validation.Methods.callSuper;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -84,7 +85,7 @@ final class VBuilderMethods {
         ClassName vbClass = validatingBuilderClass();
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addModifiers(PUBLIC, Modifier.STATIC)
                 .returns(vbClass)
                 .addStatement("return new $T()", vbClass)
                 .build();
@@ -105,7 +106,7 @@ final class VBuilderMethods {
                 .methodBuilder(methodName)
                 .addAnnotation(Override.class)
                 .addAnnotation(CanIgnoreReturnValue.class)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
                 .addCode(checkSetOnceOnAllFields())
                 .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
