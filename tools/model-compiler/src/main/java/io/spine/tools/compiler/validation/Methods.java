@@ -38,6 +38,7 @@ final class Methods {
     }
 
     static String returnValue(String value) {
+        checkNotNull(value);
         return "return " + value;
     }
 
