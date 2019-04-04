@@ -73,7 +73,7 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDeclaration(FieldDescriptor field, MessageType message) {
         this.field = checkNotNull(field);
-        this.declaringMessage = message;
+        this.declaringMessage = checkNotNull(message);
     }
 
     /**
