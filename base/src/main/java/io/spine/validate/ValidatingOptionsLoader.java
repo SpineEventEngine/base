@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ServiceLoader;
 
 /**
- * Loads the implementations of {@link ValidatingOptions} using a {@link ServiceLoader}.
+ * Loads the implementations of {@link ValidatingOptionFactory} using a {@link ServiceLoader}.
  *
  * <p>Caches the loaded results and never reloads the services.
  */
@@ -33,23 +33,23 @@ enum ValidatingOptionsLoader {
 
     INSTANCE;
 
-    private final ImmutableSet<ValidatingOptions> implementations;
+    private final ImmutableSet<ValidatingOptionFactory> implementations;
 
     ValidatingOptionsLoader() {
-        ServiceLoader<ValidatingOptions> loader = ServiceLoader.load(ValidatingOptions.class);
+        ServiceLoader<ValidatingOptionFactory> loader = ServiceLoader.load(ValidatingOptionFactory.class);
         this.implementations = ImmutableSet.copyOf(loader);
     }
 
     /**
-     * Obtains all the implementations of {@link ValidatingOptions} available at current runtime.
+     * Obtains all the implementations of {@link ValidatingOptionFactory} available at current runtime.
      *
      * <p>Uses a {@link ServiceLoader} to scan for the SPI implementations.
      *
-     * @return a stream of all available {@link ValidatingOptions} implementations
+     * @return a stream of all available {@link ValidatingOptionFactory} implementations
      * @implNote The implementations are actually loaded when the enum instance is created.
      *         This method only accesses the loaded services.
      */
-    ImmutableSet<ValidatingOptions> implementations() {
+    ImmutableSet<ValidatingOptionFactory> implementations() {
         return implementations;
     }
 }

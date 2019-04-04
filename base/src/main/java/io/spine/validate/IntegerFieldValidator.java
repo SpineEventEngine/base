@@ -52,7 +52,8 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, Integer>> createMoreOptions(ValidatingOptions factory) {
+    protected Set<FieldValidatingOption<?, Integer>> createMoreOptions(
+            ValidatingOptionFactory factory) {
         return factory.forInt();
     }
 }

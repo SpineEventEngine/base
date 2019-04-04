@@ -41,7 +41,7 @@ import java.util.Set;
  */
 @SPI
 @Immutable
-public interface ValidatingOptions {
+public interface ValidatingOptionFactory {
 
     /**
      * Obtains additional options for {@code bool} fields validation.

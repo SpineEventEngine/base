@@ -95,7 +95,8 @@ public abstract class FieldValidator<V> implements Logging {
         return options;
     }
 
-    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(ValidatingOptions factory);
+    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
+            ValidatingOptionFactory factory);
 
     /**
      * Checks if the value of the validated field is not set.

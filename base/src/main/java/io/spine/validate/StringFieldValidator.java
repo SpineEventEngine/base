@@ -41,7 +41,8 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, String>> createMoreOptions(ValidatingOptions factory) {
+    protected Set<FieldValidatingOption<?, String>> createMoreOptions(
+            ValidatingOptionFactory factory) {
         return factory.forString();
     }
 
