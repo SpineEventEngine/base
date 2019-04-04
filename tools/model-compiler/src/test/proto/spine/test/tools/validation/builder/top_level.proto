@@ -85,7 +85,7 @@ message VbtProject {
     //
     // Note that the `when` option is redundant.
     //
-    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true, (when).in = PAST];
+    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true];
 
     // The map of the task IDs to the labels of the task.
     //
