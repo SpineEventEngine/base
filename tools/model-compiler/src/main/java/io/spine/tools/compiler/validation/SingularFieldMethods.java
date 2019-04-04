@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -39,6 +40,7 @@ import io.spine.value.StringTypeValue;
 import java.util.Collection;
 
 import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.type.SingularFieldType.bytesGetter;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
@@ -89,7 +91,9 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(setter());
 
-        if (!fieldTypeName.equals(stringClassName())) {
+        if (fieldTypeName.equals(stringClassName())) {
+            methods.add(bytesGetterMethod());
+        } else {
             methods.add(rawSetterMethod());
         }
 
@@ -177,6 +181,19 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addStatement(returnThis())
                           .build();
         _debug("The raw setters construction is finished.");
+        return methodSpec;
+    }
+
+    private MethodSpec bytesGetterMethod() {
+        String methodName = bytesGetter().format(javaFieldName);
+
+        String getStatement = format(FMT_RETURN_BUILD_METHOD, getMessageBuilder(), methodName);
+        MethodSpec methodSpec =
+                MethodSpec.methodBuilder(methodName)
+                          .addModifiers(PUBLIC)
+                          .returns(ByteString.class)
+                          .addStatement(getStatement)
+                          .build();
         return methodSpec;
     }
 
