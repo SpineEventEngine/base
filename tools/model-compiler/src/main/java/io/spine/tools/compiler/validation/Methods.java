@@ -33,20 +33,28 @@ final class Methods {
     }
 
     /** Returns the `return` statement for the methods of the `ValidatingBuilder` classes.*/
-    @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
     static String returnThis() {
-        return "return this";
+        return returnValue("this");
+    }
+
+    static String returnValue(String value) {
+        return "return " + value;
+    }
+
+    static String callMethod(String receiver, String methodName, String... parameters) {
+        checkNotNull(receiver);
+        checkNotNull(methodName);
+        checkNotNull(parameters);
+        StringBuilder superMethodCall = new StringBuilder();
+        superMethodCall.append(format("%s.%s(", receiver, methodName));
+        String parameterList = String.join(", ", parameters);
+        superMethodCall.append(parameterList).append(')');
+        return superMethodCall.toString();
     }
 
     /** Returns a call to the specified method of the parent class with the specified parameters. */
     static String callSuper(String methodName, String... parameters) {
-        checkNotNull(methodName);
-        checkNotNull(parameters);
-        StringBuilder superMethodCall = new StringBuilder();
-        superMethodCall.append(format("super.%s(", methodName));
-        String parameterList = String.join(", ", parameters);
-        superMethodCall.append(parameterList).append(')');
-        return superMethodCall.toString();
+        return callMethod("super", methodName, parameters);
     }
 
     /** Returns the getter code fragment of the predefined {@code Message.Builder}. */

@@ -39,8 +39,10 @@ import static io.spine.tools.compiler.field.AccessorTemplates.allPutter;
 import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
 import static io.spine.tools.compiler.field.AccessorTemplates.putter;
 import static io.spine.tools.compiler.field.AccessorTemplates.remover;
+import static io.spine.tools.compiler.validation.Methods.callMethod;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
+import static io.spine.tools.compiler.validation.Methods.returnValue;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -99,8 +101,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
         _debug("The getter construction for the map field is started.");
         String methodName = AccessorTemplates.mapGetter()
                                              .format(javaFieldName);
-        String returnStatement = format(FMT_RETURN_BUILD_METHOD,
-                                        getMessageBuilder(), methodName);
+        String returnStatement = returnValue(callMethod(getMessageBuilder(), methodName));
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
@@ -137,11 +138,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = putter().format(javaFieldName);
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
-        String putStatement = format("%s.%s(%s, %s)",
-                                     getMessageBuilder(),
-                                     methodName,
-                                     KEY,
-                                     VALUE);
+        String putStatement = callMethod(getMessageBuilder(),methodName, KEY, VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addModifiers(PUBLIC)
                 .addException(ValidationException.class)
@@ -186,10 +183,9 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec putAllMethod() {
-        String putAllStatement = format("%s.%s(%s)",
-                                        getMessageBuilder(),
-                                        allPutter().format(javaFieldName),
-                                        MAP_PARAM_NAME);
+        String putAllStatement = callMethod(getMessageBuilder(),
+                                            allPutter().format(javaFieldName),
+                                            MAP_PARAM_NAME);
         String methodName = fieldType.primarySetterTemplate()
                                      .format(javaFieldName);
         MethodSpec result = newBuilderSetter(methodName)
@@ -227,8 +223,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec removeMethod() {
         String methodName = remover().format(javaFieldName);
-        String removeFromMap = format("%s.%s(%s)",
-                                      getMessageBuilder(), methodName, KEY);
+        String removeFromMap = callMethod(getMessageBuilder(), methodName, KEY);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(keyTypeName, KEY)
                 .addStatement(descriptorDeclaration())
@@ -241,7 +236,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
 
     private MethodSpec clearMethod() {
         String methodName = clearer().format(javaFieldName);
-        String clearMap = format("%s.%s()", getMessageBuilder(), methodName);
+        String clearMap = callMethod(getMessageBuilder(), methodName);
         MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(descriptorDeclaration())
                 .addStatement(ensureNotSetOnce())
