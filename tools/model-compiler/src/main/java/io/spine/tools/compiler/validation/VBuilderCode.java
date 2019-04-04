@@ -97,24 +97,15 @@ final class VBuilderCode implements Logging {
         ParameterizedTypeName superClass =
                 ParameterizedTypeName.get(baseClass, messageClass, messageBuilderClass);
 
-        ClassName orBuilderClass = orBuilderClass();
         Collection<MethodSpec> methods = methodsOf(type);
         classBuilder.addModifiers(PUBLIC, FINAL)
                     .superclass(superClass)
-                    .addSuperinterface(orBuilderClass)
                     .addMethods(methods);
         return classBuilder;
     }
 
     private ClassName messageClass() {
         return ClassName.get(javaPackage, type.javaClassName()
-                                              .toNested()
-                                              .value());
-    }
-
-    private ClassName orBuilderClass() {
-        return ClassName.get(javaPackage, type.javaClassName()
-                                              .orBuilder()
                                               .toNested()
                                               .value());
     }

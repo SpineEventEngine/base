@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -236,6 +237,13 @@ public final class ClassName extends StringTypeValue {
 
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
+    }
+
+    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
+        ClassName dotted = this.toDotted();
+        FieldName oneofName = FieldName.from(oneof.name());
+        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
+        return of(enumName);
     }
 
     private static ClassName construct(FileDescriptor file,
