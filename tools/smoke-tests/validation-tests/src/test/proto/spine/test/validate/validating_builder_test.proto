@@ -22,18 +22,15 @@ syntax = "proto3";
 
 package spine.test.validate.msg;
 
+import "spine/options.proto";
+
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "ValidatingBuilderTestProto";
 option java_package = "io.spine.test.validate.msg.builder";
 
 import "google/protobuf/timestamp.proto";
-
-import "spine/options.proto";
-
-import "spine/net/email_address.proto";
 import "spine/net/url.proto";
-import "spine/people/person_name.proto";
 
 // The test definitions for the `ValidatingBuilder` tests.
 //
@@ -80,9 +77,7 @@ message Project {
     //
     // This field is required, but the contents of the messages are never validated.
     //
-    // Note that the `when` option is redundant.
-    //
-    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true, (when).in = PAST];
+    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true];
 
     // The map of the task IDs to the labels of the task.
     //

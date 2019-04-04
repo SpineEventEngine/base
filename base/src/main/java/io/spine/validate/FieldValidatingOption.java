@@ -41,7 +41,7 @@ import static java.lang.String.format;
  * @param <F>
  *         type of field that this option is applied to
  */
-abstract class FieldValidatingOption<T, F>
+public abstract class FieldValidatingOption<T, F>
         extends FieldOption<T>
         implements ValidatingOption<T, FieldDescriptor, FieldValue<F>> {
 
@@ -57,7 +57,7 @@ abstract class FieldValidatingOption<T, F>
      *         the option. For all other cases please refer to
      *         {@link #valueFrom(com.google.protobuf.Descriptors.FieldDescriptor, FieldContext)}.
      */
-    T optionValue(FieldValue<F> value) throws IllegalStateException {
+    protected T optionValue(FieldValue<F> value) throws IllegalStateException {
         FieldDescriptor field = value.declaration()
                                      .descriptor();
         FieldContext context = value.context();
@@ -112,7 +112,7 @@ abstract class FieldValidatingOption<T, F>
      * @param field
      *         the type of the field
      */
-    boolean shouldValidate(FieldDescriptor field) {
+    protected boolean shouldValidate(FieldDescriptor field) {
         return valueFrom(field).isPresent();
     }
 }

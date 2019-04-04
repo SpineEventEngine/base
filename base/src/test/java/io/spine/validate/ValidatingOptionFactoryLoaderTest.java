@@ -20,27 +20,23 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Timestamp;
-import io.spine.option.OptionsProto;
-import io.spine.option.TimeOption;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A validating option that specified the point in time which a {@link Timestamp} field value
- * has.
- */
-final class When extends MessageFieldValidatingOption<TimeOption, Timestamp> {
+import java.util.List;
 
-    private When() {
-        super(OptionsProto.when);
-    }
+import static com.google.common.truth.Truth.assertThat;
 
-    /** Creates a new instance of this option. */
-    public static When create() {
-        return new When();
-    }
+@DisplayName("ValidatingOptionsLoader should")
+class ValidatingOptionFactoryLoaderTest {
 
-    @Override
-    public Constraint<FieldValue<Timestamp>> constraintFor(FieldValue<Timestamp> value) {
-        return new WhenConstraint(optionValue(value));
+    @Test
+    @DisplayName("load common options")
+    void loadCommon() {
+        List<ValidatingOptionFactory> implementations = ValidatingOptionsLoader.INSTANCE
+                .implementations()
+                .asList();
+        assertThat(implementations).hasSize(1);
+        assertThat(implementations.get(0)).isInstanceOf(PrimitiveValidatingOptionFactory.class);
     }
 }

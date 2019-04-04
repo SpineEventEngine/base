@@ -61,7 +61,7 @@ message RepeatedRequiredMsgFieldValue {
 }
 
 message RequiredEnumFieldValue {
-    Time value = 1 [(required) = true];
+    Planet value = 1 [(required) = true];
 }
 
 message RequiredBooleanFieldValue {
@@ -102,7 +102,7 @@ message CustomMessageRequiredRepeatedMsgFieldValue {
 }
 
 message CustomMessageRequiredEnumFieldValue {
-    Time value = 1 [(required) = true, (if_missing).msg_format = "EnumError"];
+    Planet value = 1 [(required) = true, (if_missing).msg_format = "EnumError"];
 }
 
 message CustomMessageWithNoRequiredOption {
@@ -131,20 +131,6 @@ message MaxExclusiveNumberFieldValue {
 
 message DigitsCountNumberFieldValue {
     double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
-}
-
-// Messages for "time" option tests.
-
-message TimeInFutureFieldValue {
-    google.protobuf.Timestamp value = 1 [(when).in = FUTURE];
-}
-
-message TimeInPastFieldValue {
-    google.protobuf.Timestamp value = 1 [(when).in = PAST];
-}
-
-message TimeWithoutOptsFieldValue {
-    google.protobuf.Timestamp value = 1;
 }
 
 // Messages for "pattern" option tests.
@@ -264,4 +250,18 @@ message ProjectionState {
 
     // An entity ID, but it isn't required since the option is set to `false`.
     string not_important_id = 1 [(required) = false];
+}
+
+enum Planet {
+
+    PLANET_UNDEFINED = 0;
+
+    MERCURY = 1;
+    VENUS = 2;
+    EARTH = 3;
+    MARS = 4;
+    JUPITER = 5;
+    SATURN = 6;
+    URANUS = 7;
+    NEPTUNE = 8;
 }

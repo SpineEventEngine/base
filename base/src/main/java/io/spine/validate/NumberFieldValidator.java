@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -40,9 +39,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable> extends Field
      *         the value to validate
      */
     NumberFieldValidator(FieldValue<V> fieldValue) {
-        super(fieldValue,
-              false,
-              ImmutableSet.of(Max.create(), Min.create(), Digits.create(), Range.create()));
+        super(fieldValue, false);
     }
 
     /** Converts a string representation to a number. */

@@ -21,8 +21,8 @@
 package io.spine.validate;
 
 import com.google.protobuf.StringValue;
-import io.spine.option.Time;
 import io.spine.test.validate.CustomMessageWithNoRequiredOption;
+import io.spine.test.validate.Planet;
 import io.spine.test.validate.RepeatedRequiredMsgFieldValue;
 import io.spine.test.validate.RequiredBooleanFieldValue;
 import io.spine.test.validate.RequiredByteStringFieldValue;
@@ -102,7 +102,7 @@ class RequiredTest extends MessageValidatorTest {
     @DisplayName("find out that required Enum field is NOT set")
     void findOutThatRequiredEnumFieldIsSet() {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.newBuilder()
-                                                                  .setValue(Time.FUTURE)
+                                                                  .setValue(Planet.EARTH)
                                                                   .build();
         assertValid(invalidMsg);
     }

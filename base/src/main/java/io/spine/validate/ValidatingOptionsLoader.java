@@ -20,36 +20,36 @@
 
 package io.spine.validate;
 
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.ServiceLoader;
 
 /**
- * Validates fields of type {@link Boolean}.
+ * Loads the implementations of {@link ValidatingOptionFactory} using a {@link ServiceLoader}.
+ *
+ * <p>Caches the loaded results and never reloads the services.
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> {
+enum ValidatingOptionsLoader {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to to validate
-     */
-    BooleanFieldValidator(FieldValue<Boolean> fieldValue) {
-        super(fieldValue, false);
+    INSTANCE;
+
+    private final ImmutableSet<ValidatingOptionFactory> implementations;
+
+    ValidatingOptionsLoader() {
+        ServiceLoader<ValidatingOptionFactory> loader = ServiceLoader.load(ValidatingOptionFactory.class);
+        this.implementations = ImmutableSet.copyOf(loader);
     }
 
     /**
-     * In Protobuf there is no way to tell if the value is {@code false} or was not set.
+     * Obtains all the implementations of {@link ValidatingOptionFactory} available at current runtime.
      *
-     * @return false
+     * <p>Uses a {@link ServiceLoader} to scan for the SPI implementations.
+     *
+     * @return a stream of all available {@link ValidatingOptionFactory} implementations
+     * @implNote The implementations are actually loaded when the enum instance is created.
+     *         This method only accesses the loaded services.
      */
-    @Override
-    protected boolean isNotSet(Boolean value) {
-        return false;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, Boolean>> createMoreOptions(
-            ValidatingOptionFactory factory) {
-        return factory.forBoolean();
+    ImmutableSet<ValidatingOptionFactory> implementations() {
+        return implementations;
     }
 }
