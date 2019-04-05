@@ -24,6 +24,9 @@ import com.google.protobuf.Descriptors.OneofDescriptor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A declaration of a {@code oneof} field.
+ */
 public final class OneofDeclaration {
 
     private final OneofDescriptor oneof;
@@ -32,6 +35,9 @@ public final class OneofDeclaration {
         this.oneof = checkNotNull(oneof);
     }
 
+    /**
+     * Obtains the name of the {@code oneof} field.
+     */
     public FieldName name() {
         return FieldName.of(oneof.getName());
     }
