@@ -27,7 +27,8 @@ import io.spine.annotation.Internal;
 import java.util.Set;
 
 /**
- * An implementation of {@link ValidatingOptions} which adds common validation options.
+ * An implementation of {@link ValidatingOptionFactory} which adds validation options for some
+ * primitive types.
  *
  * <p>Creates options:
  * <ul>
@@ -37,7 +38,7 @@ import java.util.Set;
  */
 @Internal
 @Immutable
-public final class CommonValidatingOptions implements ValidatingOptions {
+public final class PrimitiveValidatingOptionFactory implements ValidatingOptionFactory {
 
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());

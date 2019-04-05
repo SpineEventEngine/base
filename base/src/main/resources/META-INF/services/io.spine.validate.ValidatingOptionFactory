@@ -18,7 +18,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# Defines the known implementations of the `ValidatingOptions` service.
+# Defines the known implementations of the `ValidatingOptionFactory` service.
 # This resource file is accessed at runtime by a `ServiceLoader`.
 
-io.spine.validate.CommonValidatingOptions
+io.spine.validate.PrimitiveValidatingOptionFactory

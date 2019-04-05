@@ -30,38 +30,38 @@ import java.util.function.Function;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DisplayName("Interface `ValidatingOptions` should")
-class ValidatingOptionsTest {
+@DisplayName("Interface `ValidatingOptionFactory` should")
+class ValidatingOptionFactoryTest {
 
-    private ValidatingOptions options;
+    private ValidatingOptionFactory options;
 
     @BeforeEach
     void setUp() {
-        options = new ValidatingOptions() {};
+        options = new ValidatingOptionFactory() {};
     }
 
     @Test
     @DisplayName("have no abstract methods")
     void noAbstract() {
         // Actually, just has to at least compile.
-        assertDoesNotThrow(() -> new ValidatingOptions() {});
+        assertDoesNotThrow(() -> new ValidatingOptionFactory() {});
     }
 
     @Test
     @DisplayName("provide empty sets of options for all types by default")
     void provideEmptySets() {
-        assetEmpty(ValidatingOptions::forBoolean);
-        assetEmpty(ValidatingOptions::forByteString);
-        assetEmpty(ValidatingOptions::forDouble);
-        assetEmpty(ValidatingOptions::forEnum);
-        assetEmpty(ValidatingOptions::forFloat);
-        assetEmpty(ValidatingOptions::forInt);
-        assetEmpty(ValidatingOptions::forLong);
-        assetEmpty(ValidatingOptions::forMessage);
-        assetEmpty(ValidatingOptions::forString);
+        assetEmpty(ValidatingOptionFactory::forBoolean);
+        assetEmpty(ValidatingOptionFactory::forByteString);
+        assetEmpty(ValidatingOptionFactory::forDouble);
+        assetEmpty(ValidatingOptionFactory::forEnum);
+        assetEmpty(ValidatingOptionFactory::forFloat);
+        assetEmpty(ValidatingOptionFactory::forInt);
+        assetEmpty(ValidatingOptionFactory::forLong);
+        assetEmpty(ValidatingOptionFactory::forMessage);
+        assetEmpty(ValidatingOptionFactory::forString);
     }
 
-    private void assetEmpty(Function<ValidatingOptions, Set<?>> typeSelector) {
+    private void assetEmpty(Function<ValidatingOptionFactory, Set<?>> typeSelector) {
         Set<?> result = typeSelector.apply(options);
         assertThat(result).isEmpty();
     }
