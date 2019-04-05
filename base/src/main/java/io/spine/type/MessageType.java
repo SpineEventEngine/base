@@ -35,12 +35,10 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.OneofDeclaration;
-import io.spine.code.proto.SourceFile;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
-import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -114,13 +112,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Obtains source file with the declaration of this message type.
-     */
-    public SourceFile sourceFile() {
-        return SourceFile.from(descriptor().getFile());
-    }
-
-    /**
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
@@ -137,8 +128,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (isGoogle()) {
             return false;
         }
-        FileDescriptor optionsProto = IsOption.getDescriptor()
-                                              .getFile();
+        FileDescriptor optionsProto = OptionsProto.getDescriptor();
         FileDescriptor file = descriptor().getFile();
         return !sameFiles(optionsProto, file);
     }
@@ -329,19 +319,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
-    }
-
-    /**
-     * Obtains a lexicographical comparator of full type names.
-     */
-    public static Comparator<MessageType> fullNameComparator() {
-        return (o1, o2) -> {
-            String name1 = o1.descriptor()
-                             .getFullName();
-            String name2 = o2.descriptor()
-                             .getFullName();
-            return name1.compareTo(name2);
-        };
     }
 
     /**
