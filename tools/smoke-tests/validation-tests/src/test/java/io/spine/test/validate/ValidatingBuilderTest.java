@@ -34,6 +34,7 @@ import io.spine.test.validate.msg.builder.FrostyWeatherButInWholeNumberVBuilder;
 import io.spine.test.validate.msg.builder.FrostyWeatherVBuilder;
 import io.spine.test.validate.msg.builder.InconsistentBoundariesVBuilder;
 import io.spine.test.validate.msg.builder.Member;
+import io.spine.test.validate.msg.builder.Menu;
 import io.spine.test.validate.msg.builder.MenuVBuilder;
 import io.spine.test.validate.msg.builder.MinorCitizenVBuilder;
 import io.spine.test.validate.msg.builder.ProjectVBuilder;
@@ -65,11 +66,13 @@ import java.util.Queue;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.currentTime;
+import static io.spine.test.validate.msg.builder.Menu.CriterionCase.VEGETARIAN;
 import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
 import static io.spine.test.validate.msg.builder.TaskLabel.IMPORTANT;
 import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
@@ -467,6 +470,16 @@ class ValidatingBuilderTest {
         testOption(SpacedOutBoundariesVBuilder.newBuilder(),
                    builder -> builder,
                    builder -> builder.setValue(32));
+    }
+
+    @Test
+    @DisplayName("obtain the case a oneof")
+    void provideOneofCase() {
+        Menu.CriterionCase criterionCase = MenuVBuilder
+                .newBuilder()
+                .setVegetarian(true)
+                .getCriterionCase();
+        assertThat(criterionCase).isEqualTo(VEGETARIAN);
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
