@@ -29,6 +29,7 @@ import io.spine.test.validate.RequiredByteStringFieldValue;
 import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.RequiredStringFieldValue;
+import io.spine.testing.logging.MuteLogging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +108,7 @@ class RequiredTest extends MessageValidatorTest {
         assertValid(invalidMsg);
     }
 
+    @MuteLogging
     @Test
     @DisplayName("find out that required NOT set Boolean field passes validation")
     void findOutThatRequiredNotSetBooleanFieldPassValidation() {
