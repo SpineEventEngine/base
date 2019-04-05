@@ -252,6 +252,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return result;
     }
 
+    /**
+     * Obtains {@code oneof} fields declared in the message type.
+     */
     public ImmutableList<OneofDeclaration> oneofs() {
         ImmutableList<OneofDeclaration> result =
                 descriptor().getOneofs()

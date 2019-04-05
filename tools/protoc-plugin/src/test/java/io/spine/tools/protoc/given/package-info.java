@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Test environment for the tests of the Spine Protoc plugin.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.protoc.given;
