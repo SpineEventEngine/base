@@ -13,7 +13,7 @@ before_install:
   - chmod +x gradlew
 
 script:
-  - ./gradlew build check --stacktrace
+  - ./gradlew build check --debug
   - cd ./tools/smoke-tests
   - ./gradlew check --stacktrace
   - cd ../..
