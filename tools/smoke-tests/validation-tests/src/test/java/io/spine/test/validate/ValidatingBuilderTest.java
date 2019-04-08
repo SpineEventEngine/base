@@ -28,7 +28,8 @@ import io.spine.logging.Logging;
 import io.spine.test.validate.msg.builder.ArtificialBlizzardVBuilder;
 import io.spine.test.validate.msg.builder.Attachment;
 import io.spine.test.validate.msg.builder.BlizzardVBuilder;
-import io.spine.test.validate.msg.builder.Drink;
+import io.spine.test.validate.msg.builder.Drink.Ingredient;
+import io.spine.test.validate.msg.builder.DrinkCoffeeVBuilder;
 import io.spine.test.validate.msg.builder.DrinkTeaVBuilder;
 import io.spine.test.validate.msg.builder.DrinkVBuilder;
 import io.spine.test.validate.msg.builder.EditTaskStateVBuilder;
@@ -76,6 +77,8 @@ import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.currentTime;
 import static io.spine.test.validate.msg.builder.Drink.BeverageCase.TEA;
+import static io.spine.test.validate.msg.builder.Drink.Coffee.MilkCase.ALMOND;
+import static io.spine.test.validate.msg.builder.Drink.Coffee.MilkCase.DIARY;
 import static io.spine.test.validate.msg.builder.Drink.Tea.SweetenerCase.HONEY;
 import static io.spine.test.validate.msg.builder.Menu.CriterionCase.VEGETARIAN;
 import static io.spine.test.validate.msg.builder.TaskLabel.CRITICAL;
@@ -491,7 +494,7 @@ class ValidatingBuilderTest {
     @Test
     @DisplayName("generate case getters for nested oneofs")
     void generateComplexOneofAccessors() {
-        Drink.Ingredient honey = Drink.Ingredient
+        Ingredient honey = Ingredient
                 .newBuilder()
                 .setAmountGrams(2)
                 .build();
@@ -503,6 +506,17 @@ class ValidatingBuilderTest {
                 .setTea(tea.build());
         assertThat(tea.getSweetenerCase()).isEqualTo(HONEY);
         assertThat(drink.getBeverageCase()).isEqualTo(TEA);
+    }
+
+    @Test
+    @DisplayName("update the value of oneof case when set many times")
+    void updateOneofCase() {
+        DrinkCoffeeVBuilder builder = DrinkCoffeeVBuilder
+                .newBuilder()
+                .setDiary(Ingredient.getDefaultInstance());
+        assertThat(builder.getMilkCase()).isEqualTo(DIARY);
+        builder.setAlmond(Ingredient.getDefaultInstance());
+        assertThat(builder.getMilkCase()).isEqualTo(ALMOND);
     }
 
     /** Redirects logging of all validating builders to the queue that is returned. */
