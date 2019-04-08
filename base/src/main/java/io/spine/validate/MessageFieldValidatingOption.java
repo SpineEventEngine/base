@@ -34,20 +34,20 @@ import io.spine.code.proto.FieldDeclaration;
  * @param <M>
  *         type of the message being validated by this option
  */
-abstract class MessageFieldValidatingOption<T, M extends Message>
+public abstract class MessageFieldValidatingOption<T, M extends Message>
         extends FieldValidatingOption<T, M> {
 
-    MessageFieldValidatingOption(GeneratedExtension<FieldOptions, T> extension) {
+    protected MessageFieldValidatingOption(GeneratedExtension<FieldOptions, T> extension) {
         super(extension);
     }
 
     @Override
-    boolean shouldValidate(FieldDescriptor value) {
+    protected boolean shouldValidate(FieldDescriptor value) {
         FieldDeclaration declaration = new FieldDeclaration(value);
-        Valid<M> validOption = new Valid<>();
+        Valid validOption = new Valid();
         Boolean valid = validOption.valueFrom(value)
                                    .orElse(false);
         boolean shouldValidateCollection = declaration.isNotCollection() || valid;
-        return super.shouldValidate(value) && shouldValidateCollection;
+        return shouldValidateCollection && super.shouldValidate(value);
     }
 }

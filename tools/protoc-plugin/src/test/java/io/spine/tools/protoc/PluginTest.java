@@ -83,7 +83,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -106,7 +106,7 @@ final class PluginTest {
                 .addProtoFile(TestMethodProtos.getDescriptor()
                                               .toProto())
                 .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
-                .setParameter(protocConfig(methods, testPluginConfig).toString())
+                .setParameter(protocConfig(methods, testPluginConfig))
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
@@ -129,7 +129,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -154,7 +154,7 @@ final class PluginTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, testPluginConfig).toString())
+                .setParameter(protocConfig(interfaces, methods, testPluginConfig))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);

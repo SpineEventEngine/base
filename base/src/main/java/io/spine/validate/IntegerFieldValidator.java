@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import java.util.Set;
+
 import static java.lang.Math.abs;
 
 /**
@@ -47,5 +49,11 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     protected Integer getAbs(Integer value) {
         Integer abs = abs(value);
         return abs;
+    }
+
+    @Override
+    protected Set<FieldValidatingOption<?, Integer>> createMoreOptions(
+            ValidatingOptionFactory factory) {
+        return factory.forInt();
     }
 }

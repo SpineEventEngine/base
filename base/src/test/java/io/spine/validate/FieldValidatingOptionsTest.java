@@ -52,7 +52,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
 @DisplayName("FieldValidatorFactory should")
-class FieldValidatorFactoryTest {
+class FieldValidatingOptionsTest {
 
     @Test
     @DisplayName("create message field validator")

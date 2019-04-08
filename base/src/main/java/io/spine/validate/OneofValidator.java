@@ -22,10 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.base.FieldPath;
-
-import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,7 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Only a single field from a {@code Oneof} is validated — the field that is actually set.
  * If none of fields is set, a constraint violation is created.
  *
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">Oneof documentation</a>
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">
+ *         Oneof documentation</a>
  */
 class OneofValidator {
 
@@ -48,33 +45,14 @@ class OneofValidator {
     }
 
     ImmutableList<ConstraintViolation> validate() {
-        ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Optional<FieldValue<?>> populatedField = message.valueOf(oneof);
-        if (!populatedField.isPresent()) {
-            violations.add(noneFieldIsSet());
-        } else {
-            List<ConstraintViolation> fieldViolations = validateField(populatedField.get());
-            violations.addAll(fieldViolations);
-        }
-        return violations.build();
+        ImmutableList<ConstraintViolation> violations = message.valueOf(oneof)
+                                                               .map(OneofValidator::validateField)
+                                                               .orElse(ImmutableList.of());
+
+        return violations;
     }
 
-    private ConstraintViolation noneFieldIsSet() {
-        FieldPath oneofPath = message.context()
-                                     .fieldPath()
-                                     .toBuilder()
-                                     .addFieldName(oneof.getName())
-                                     .build();
-        ConstraintViolation requiredFieldNotFound = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("None of the %s Oneof fields is set.")
-                .addParam(oneof.getName())
-                .setFieldPath(oneofPath)
-                .build();
-        return requiredFieldNotFound;
-    }
-
-    private static List<ConstraintViolation> validateField(FieldValue<?> field) {
+    private static ImmutableList<ConstraintViolation> validateField(FieldValue<?> field) {
         FieldValidator<?> validator = field.createValidator();
         return validator.validate();
     }

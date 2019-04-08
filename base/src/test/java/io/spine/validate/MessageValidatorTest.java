@@ -61,26 +61,50 @@ abstract class MessageValidatorTest {
         assertIsValid(false);
     }
 
+    void assertNotValid(Message msg, boolean checkFieldPath) {
+        validate(msg);
+        assertIsValid(false, checkFieldPath);
+    }
+
     void assertIsValid(boolean isValid) {
+        assertIsValid(isValid, true);
+    }
+
+    void assertIsValid(boolean isValid, boolean checkFieldPath) {
         if (isValid) {
             assertTrue(violations.isEmpty(), () -> violations.toString());
         } else {
-            assertFalse(violations.isEmpty());
-            for (ConstraintViolation violation : violations) {
-                String format = violation.getMsgFormat();
-                assertTrue(!format.isEmpty());
-                boolean noParams = violation.getParamList()
-                                            .isEmpty();
-                if (format.contains("%s")) {
-                    assertFalse(noParams);
-                } else {
-                    assertTrue(noParams);
-                }
-                assertFalse(violation.getFieldPath()
-                                     .getFieldNameList()
-                                     .isEmpty());
+            assertViolations(violations, checkFieldPath);
+        }
+    }
+
+    private static void assertViolations(List<ConstraintViolation> violations,
+                                         boolean checkFieldPath) {
+        assertFalse(violations.isEmpty());
+        for (ConstraintViolation violation : violations) {
+            assertHasCorrectFormat(violation);
+            if (checkFieldPath) {
+                assertHasFieldPath(violation);
             }
         }
+    }
+
+    private static void assertHasCorrectFormat(ConstraintViolation violation) {
+        String format = violation.getMsgFormat();
+        assertFalse(format.isEmpty());
+        boolean noParams = violation.getParamList()
+                                    .isEmpty();
+        if (format.contains("%s")) {
+            assertFalse(noParams);
+        } else {
+            assertTrue(noParams);
+        }
+    }
+
+    private static void assertHasFieldPath(ConstraintViolation violation) {
+        assertFalse(violation.getFieldPath()
+                             .getFieldNameList()
+                             .isEmpty());
     }
 
     void assertSingleViolation(Message message,

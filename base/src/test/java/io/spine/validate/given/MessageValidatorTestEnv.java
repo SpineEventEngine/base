@@ -22,18 +22,12 @@ package io.spine.validate.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Duration;
 import com.google.protobuf.ProtocolStringList;
 import com.google.protobuf.StringValue;
-import com.google.protobuf.Timestamp;
 import io.spine.base.FieldPath;
-import io.spine.base.Time;
 import io.spine.validate.ConstraintViolation;
 
-import static com.google.protobuf.util.Timestamps.add;
-import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.base.Time.setProvider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageValidatorTestEnv {
@@ -55,48 +49,11 @@ public class MessageValidatorTestEnv {
     public static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
     public static final String MATCH_REGEXP_MSG = "String must match the regular expression '%s'.";
 
-    public static final int SECONDS_IN_MINUTE = 60;
-
-    public static final int SECONDS_IN_5_MINUTES = 5 * SECONDS_IN_MINUTE;
-    public static final int FIFTY_NANOSECONDS = 50;
-    public static final int ZERO_NANOSECONDS = 0;
     public static final double INT_DIGIT_COUNT_LESS_THAN_MAX = 1.5;
     public static final double LESS_THAN_MAX = EQUAL_MAX - 5;
 
     /** Prevent instantiation of this test environment. */
     private MessageValidatorTestEnv() {
-    }
-
-    public static Timestamp currentTimeWithNanos(int nanos) {
-        Timestamp result = timeWithNanos(Time.currentTime(), nanos);
-        return result;
-    }
-
-    public static Timestamp timeWithNanos(Timestamp time, int nanos) {
-        Timestamp result =
-                time.toBuilder()
-                    .setNanos(nanos)
-                    .build();
-        return result;
-    }
-
-    public static Duration newDuration(int seconds) {
-        Duration result =
-                Duration.newBuilder()
-                        .setSeconds(seconds)
-                        .build();
-        return result;
-    }
-    
-    /**
-     * Freezes time for current thread by setting the time provider to a 
-     * {@link ConstantTimeProvider}.
-     *
-     * @param time time to be returned upon {@link Time#currentTime()} call.
-     */
-    public static void freezeTime(Timestamp time) {
-        Time.Provider frozenTimeProvider = new ConstantTimeProvider(time);
-        setProvider(frozenTimeProvider);
     }
 
     public static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
@@ -106,16 +63,6 @@ public class MessageValidatorTestEnv {
         assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
     }
 
-    public static Timestamp getFuture() {
-        Timestamp future = add(Time.currentTime(), newDuration(SECONDS_IN_5_MINUTES));
-        return future;
-    }
-
-    public static Timestamp getPast() {
-        Timestamp past = subtract(Time.currentTime(), newDuration(SECONDS_IN_5_MINUTES));
-        return past;
-    }
-
     public static StringValue newStringValue() {
         return StringValue.of(newUuid());
     }
@@ -123,21 +70,5 @@ public class MessageValidatorTestEnv {
     public static ByteString newByteString() {
         ByteString bytes = ByteString.copyFromUtf8(newUuid());
         return bytes;
-    }
-
-    /**
-     * The provider of the current time with value that does not change.
-     */
-    private static class ConstantTimeProvider implements Time.Provider {
-        private final Timestamp timestamp;
-
-        private ConstantTimeProvider(Timestamp timestamp) {
-            this.timestamp = timestamp;
-        }
-
-        @Override
-        public Timestamp currentTime() {
-            return timestamp;
-        }
     }
 }
