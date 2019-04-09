@@ -18,38 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'known-types-tests'
-include 'validation-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
-include 'test-method-factory'
+package io.spine.code.proto;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-testlib'             : ':testlib'
-]
+import com.google.protobuf.Descriptors.OneofDescriptor;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * A declaration of a {@code oneof} field.
  */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+public final class OneofDeclaration {
+
+    private final OneofDescriptor oneof;
+
+    public OneofDeclaration(OneofDescriptor oneof) {
+        this.oneof = checkNotNull(oneof);
+    }
+
+    /**
+     * Obtains the name of the {@code oneof} field.
+     */
+    public FieldName name() {
+        return FieldName.of(oneof.getName());
     }
 }
-

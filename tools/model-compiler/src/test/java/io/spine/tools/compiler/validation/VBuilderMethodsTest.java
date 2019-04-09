@@ -20,30 +20,90 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.type.MessageType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.List;
 
-@DisplayName("VBuilderMethods should")
+import static com.google.common.truth.Truth.assertThat;
+import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
+import static org.junit.jupiter.api.Assertions.fail;
+
+@DisplayName("VBuilderMethods should generate")
 class VBuilderMethodsTest {
 
-    @Nested
-    @DisplayName("collect methods of")
-    class CollectMethods {
+    private static final MessageType messageType = new MessageType(VbtProject.getDescriptor());
 
-        @Test
-        @DisplayName("a top level message")
-        void topLevelMessage() {
-            MessageType type = new MessageType(VbtProject.getDescriptor());
+    private List<MethodSpec> methods;
 
-            ImmutableList<MethodSpec> specs = VBuilderMethods.methodsOf(type);
-            assertThat(specs).isNotEmpty();
-        }
+    @BeforeEach
+    void setUp() {
+        methods = VBuilderMethods.methodsOf(messageType);
+    }
+
+    @Test
+    @DisplayName("`newBuilder` method")
+    void newBuilder() {
+        MethodSpec newBuilder = methodWithName("newBuilder");
+        assertThat(newBuilder.modifiers).containsAllOf(PUBLIC, STATIC);
+        assertThat(newBuilder.returnType.toString())
+                .endsWith(messageType.validatingBuilderClass()
+                                     .value());
+        assertThat(newBuilder.parameters).isEmpty();
+    }
+
+    @Test
+    @DisplayName("getter methods for attributes")
+    void getters() {
+        MethodSpec getDescription = methodWithName("getDescription");
+        assertThat(getDescription.returnType).isEqualTo(TypeName.get(String.class));
+        assertThat(getDescription.modifiers).containsExactly(PUBLIC);
+        assertThat(getDescription.parameters).isEmpty();
+    }
+
+    @Test
+    @DisplayName("setter methods for attributes")
+    void setters() {
+        MethodSpec getDescription = methodWithName("setDescription");
+        assertThat(getDescription.returnType.toString())
+                .endsWith(messageType.validatingBuilderClass()
+                                     .value());
+        assertThat(getDescription.modifiers).containsExactly(PUBLIC);
+        assertThat(getDescription.parameters).hasSize(1);
+        assertThat(getDescription.parameters.get(0).type).isEqualTo(TypeName.get(String.class));
+    }
+
+    @Test
+    @DisplayName("accessor methods for oneof case enums")
+    void caseGetters() {
+        MethodSpec getDescription = methodWithName("getOwnerCase");
+        Descriptors.OneofDescriptor oneofDescriptor = messageType
+                .descriptor()
+                .getOneofs()
+                .get(0);
+        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor);
+        ClassName expectedReturnType = messageType.javaClassName()
+                                                  .oneofCaseEnum(declaration);
+        assertThat(getDescription.returnType.toString())
+                .isEqualTo(expectedReturnType.toString());
+        assertThat(getDescription.modifiers).containsExactly(PUBLIC);
+        assertThat(getDescription.parameters).isEmpty();
+    }
+
+    private MethodSpec methodWithName(String name) {
+        return methods.stream()
+                      .filter(method -> method.name.equals(name))
+                      .findAny()
+                      .orElseGet(() -> fail(format("Method with name %s does not exist.", name)));
     }
 }

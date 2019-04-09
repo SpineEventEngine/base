@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.method.vbuilder;
+package io.spine.tools.protoc.method.vbuilder;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
@@ -26,7 +26,6 @@ import io.spine.option.EntityOption;
 import io.spine.test.tools.method.vbuilder.VBMFTExampleMessage;
 import io.spine.test.tools.method.vbuilder.rejections.Rejections;
 import io.spine.tools.protoc.method.GeneratedMethod;
-import io.spine.tools.protoc.method.vbuilder.VBuilderMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

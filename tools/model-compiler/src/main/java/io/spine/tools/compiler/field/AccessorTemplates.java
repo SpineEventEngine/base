@@ -35,6 +35,7 @@ public final class AccessorTemplates {
     private static final AccessorTemplate GET_LIST = prefixAndPostfix("get", "List");
     private static final AccessorTemplate GET_MAP = prefixAndPostfix("get", "Map");
     private static final AccessorTemplate GET_COUNT = prefixAndPostfix("get", "Count");
+    private static final AccessorTemplate GET_CASE = prefixAndPostfix("get", "Case");
 
     private static final AccessorTemplate SET = prefix("set");
     private static final AccessorTemplate ADD = prefix("add");
@@ -68,6 +69,11 @@ public final class AccessorTemplates {
     /** Obtains {@code get...Count} template. */
     public static AccessorTemplate countGetter() {
         return GET_COUNT;
+    }
+
+    /** Obtains {@code get...Case} template. */
+    public static AccessorTemplate caseGetter() {
+        return GET_CASE;
     }
 
     /** Obtains {@code set...} template. */

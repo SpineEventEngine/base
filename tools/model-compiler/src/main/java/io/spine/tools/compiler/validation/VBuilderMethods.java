@@ -26,9 +26,12 @@ import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.java.FieldName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.protobuf.Messages;
+import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.type.MessageType;
 
@@ -37,8 +40,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.tools.compiler.validation.Methods.callMethod;
 import static io.spine.tools.compiler.validation.Methods.callSuper;
+import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
+import static io.spine.tools.compiler.validation.Methods.returnValue;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -68,6 +76,7 @@ final class VBuilderMethods {
                 .add(privateConstructor())
                 .add(newBuilderMethod())
                 .addAll(fieldMethods())
+                .addAll(oneofMethods())
                 .add(mergeFromMethod())
                 .build();
     }
@@ -84,7 +93,7 @@ final class VBuilderMethods {
         ClassName vbClass = validatingBuilderClass();
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addModifiers(PUBLIC, Modifier.STATIC)
                 .returns(vbClass)
                 .addStatement("return new $T()", vbClass)
                 .build();
@@ -92,9 +101,8 @@ final class VBuilderMethods {
     }
 
     private ClassName validatingBuilderClass() {
-        return ClassName.get(type.javaPackage()
-                                 .value(), type.validatingBuilderClass()
-                                               .value());
+        return ClassName.get(type.javaPackage().value(),
+                             type.validatingBuilderClass().value());
     }
 
     private MethodSpec mergeFromMethod() {
@@ -106,7 +114,7 @@ final class VBuilderMethods {
                 .methodBuilder(methodName)
                 .addAnnotation(Override.class)
                 .addAnnotation(CanIgnoreReturnValue.class)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(PUBLIC)
                 .addParameter(messageClass, MERGE_FROM_METHOD_PARAMETER_NAME)
                 .addCode(checkSetOnceOnAllFields())
                 .addStatement(callSuper(methodName, MERGE_FROM_METHOD_PARAMETER_NAME))
@@ -169,8 +177,29 @@ final class VBuilderMethods {
 
             ++index;
         }
-
         return result.build();
+    }
+
+    private List<MethodSpec> oneofMethods() {
+        return type.oneofs()
+                   .stream()
+                   .map(this::getCaseMethod)
+                   .collect(toImmutableList());
+    }
+
+    private MethodSpec getCaseMethod(OneofDeclaration oneof) {
+        String methodName = AccessorTemplates.caseGetter()
+                                             .format(FieldName.from(oneof.name()));
+        ClassName returnType = ClassName.bestGuess(type.javaClassName()
+                                                       .oneofCaseEnum(oneof)
+                                                       .value());
+        MethodSpec methodSpec =
+                MethodSpec.methodBuilder(methodName)
+                          .addModifiers(PUBLIC)
+                          .returns(returnType)
+                          .addStatement(returnValue(callMethod(getMessageBuilder(), methodName)))
+                          .build();
+        return methodSpec;
     }
 
     private ClassName messageClass() {
