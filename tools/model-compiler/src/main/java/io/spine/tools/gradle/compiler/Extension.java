@@ -167,9 +167,9 @@ public class Extension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+    public final GeneratedInterfaces interfaces = new GeneratedInterfaces();
 
-    public final GeneratedMethods methods = GeneratedMethods.withDefaults();
+    public final GeneratedMethods methods = new GeneratedMethods();
 
     public List<String> internalClassPatterns = new ArrayList<>();
 

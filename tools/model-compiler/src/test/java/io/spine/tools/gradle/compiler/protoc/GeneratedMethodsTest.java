@@ -24,9 +24,7 @@ import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.UuidConfig;
-import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
@@ -41,26 +39,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("GeneratedMethods should")
 final class GeneratedMethodsTest {
 
-    @DisplayName("prepare default generated config for")
-    @Nested
-    class Default {
-
-        @DisplayName("UUID value")
-        @Test
-        void uuid() {
-            AddMethods config = GeneratedMethods.withDefaults()
-                                                .asProtocConfig();
-            UuidConfig uuid = config.getUuidFactory();
-            assertThat(uuid.getValue())
-                    .isEqualTo(UuidMethodFactory.class.getName());
-        }
-    }
-
     @DisplayName("convert to proper Protoc configuration")
     @Test
     void convertToProperProtocConfiguration() {
         String testMethodFactory = "io.spine.test.MethodFactory";
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(testMethodFactory, messages.uuid());
         methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
@@ -78,7 +61,7 @@ final class GeneratedMethodsTest {
         String pattern = "testPattern";
         String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedMethods defaults = GeneratedMethods.withDefaults();
+        GeneratedMethods defaults = new GeneratedMethods();
         MessageSelectorFactory messages = defaults.messages();
         defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
         defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));

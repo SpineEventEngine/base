@@ -20,16 +20,11 @@
 
 package io.spine.tools.gradle.compiler.protoc;
 
-import io.spine.base.CommandMessage;
-import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
-import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
@@ -47,58 +42,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("GeneratedInterfaces should")
 final class GeneratedInterfacesTest {
 
-    @DisplayName("prepare default GeneratedInterfaceConfig for")
-    @Nested
-    class Default {
-
-        @DisplayName("UuidValue")
-        @Test
-        void uuid() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterface(UuidValue.class, defaults.getUuidInterface()
-                                                        .getValue());
-        }
-
-        @DisplayName("CommandMessage")
-        @Test
-        void command() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndSuffix(CommandMessage.class, COMMANDS.suffix(), defaults);
-        }
-
-        @DisplayName("EventMessage")
-        @Test
-        void event() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndSuffix(EventMessage.class, EVENTS.suffix(), defaults);
-        }
-
-        @DisplayName("RejectionMessage")
-        @Test
-        void rejection() {
-            AddInterfaces defaults = GeneratedInterfaces.withDefaults()
-                                                        .asProtocConfig();
-            assertHasInterfaceWithNameAndSuffix(RejectionMessage.class, REJECTIONS.suffix(),
-                                                defaults);
-        }
-
-        private void assertHasInterfaceWithNameAndSuffix(Class<?> interfaceClass,
-                                                         String suffix,
-                                                         AddInterfaces config) {
-            assertTrue(hasSuffixConfig(suffix, ClassName.of(interfaceClass), config));
-        }
-    }
-
     @DisplayName("add multiple file patterns")
     @Test
     void addMultipleFilePatterns() {
         String pattern = "testPattern";
         ClassName interfaceName = ClassName.of("io.spine.test.TestInterface");
 
-        GeneratedInterfaces defaults = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces defaults = new GeneratedInterfaces();
         MessageSelectorFactory messages = defaults.messages();
         defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
         defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
@@ -112,7 +62,7 @@ final class GeneratedInterfacesTest {
     @DisplayName("allows asType syntax sugar method")
     @Test
     void allowAsTypeSugar() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         String interfaceName = "MyInterface";
         assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
     }
