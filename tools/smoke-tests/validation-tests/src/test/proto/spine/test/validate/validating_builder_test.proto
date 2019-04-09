@@ -267,7 +267,6 @@ message Drink {
             Ingredient diary = 1;
             Ingredient almond = 2;
         }
-
     }
 
     message Ingredient {
