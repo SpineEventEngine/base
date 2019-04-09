@@ -73,11 +73,11 @@ final class PluginTest {
     @DisplayName("process suffix patterns")
     @Test
     void processSuffixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -98,7 +98,7 @@ final class PluginTest {
     @DisplayName("generate UUID message")
     @Test
     void generateUuidMethod() {
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
 
@@ -118,11 +118,11 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
 
         CodeGeneratorRequest request = requestBuilder()
@@ -144,11 +144,11 @@ final class PluginTest {
     @Test
     @DisplayName("process regex patterns")
     void processRegexPatterns() {
-        GeneratedInterfaces interfaces = GeneratedInterfaces.withDefaults();
+        GeneratedInterfaces interfaces = new GeneratedInterfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = GeneratedMethods.withDefaults();
+        GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()

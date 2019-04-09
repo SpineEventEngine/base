@@ -46,8 +46,10 @@ import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
 import static io.spine.tools.compiler.field.AccessorTemplates.listGetter;
 import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 import static io.spine.tools.compiler.field.AccessorTemplates.setter;
+import static io.spine.tools.compiler.validation.Methods.callMethod;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
 import static io.spine.tools.compiler.validation.Methods.returnThis;
+import static io.spine.tools.compiler.validation.Methods.returnValue;
 import static java.lang.String.format;
 
 /**
@@ -116,8 +118,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         String methodName = AccessorTemplates.getter().format(javaFieldName);
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType, listElementClassName);
-        String returnStatement = format(FMT_RETURN_BUILD_METHOD,
-                                        getMessageBuilder(), listGetter().format(javaFieldName));
+        String returnStatement = returnValue(callMethod(getMessageBuilder(),
+                                                        listGetter().format(javaFieldName)));
         MethodSpec methodSpec = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
@@ -257,14 +259,13 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private String addAllStatement(String parameter) {
         String addAllMethodName = allAdder().format(javaFieldName);
-        String addAllValues = format("%s.%s(%s)", getMessageBuilder(), addAllMethodName, parameter);
+        String addAllValues = callMethod(getMessageBuilder(), addAllMethodName, parameter);
         return addAllValues;
     }
 
     private MethodSpec addObjectMethod() {
         String methodName = adder().format(javaFieldName);
-        String addValue = format("%s.%s(%s)",
-                                 getMessageBuilder(), methodName, VALUE);
+        String addValue = callMethod(getMessageBuilder(), methodName, VALUE);
         String descriptorDeclaration = descriptorDeclaration();
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(listElementClassName, VALUE)
@@ -288,7 +289,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private MethodSpec removeObjectByIndexMethod() {
         String methodName = remover().format(javaFieldName);
-        String addValue = format("%s.%s(%s)", getMessageBuilder(), methodName, INDEX);
+        String addValue = callMethod(getMessageBuilder(), methodName, INDEX);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addStatement(descriptorDeclaration())
@@ -301,8 +302,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private MethodSpec modifyCollectionByIndex(AccessorTemplate template) {
         String methodName = template.format(javaFieldName);
-        String modificationStatement =
-                format("%s.%s(%s, %s)", getMessageBuilder(), methodName, INDEX, VALUE);
+        String modificationStatement = callMethod(getMessageBuilder(), methodName, INDEX, VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(listElementClassName, VALUE)
@@ -318,7 +318,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private MethodSpec clearMethod() {
         String methodName = clearer().format(javaFieldName);
-        String clearField = format("%s.%s()", getMessageBuilder(), clearer().format(javaFieldName));
+        String clearField = callMethod(getMessageBuilder(), clearer().format(javaFieldName));
         MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(descriptorDeclaration())
                 .addStatement(ensureNotSetOnce())

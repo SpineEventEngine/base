@@ -28,28 +28,63 @@ import static java.lang.String.format;
  */
 final class Methods {
 
-    /** Prevents instantiation of this utility class. */
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private Methods() {
     }
 
-    /** Returns the `return` statement for the methods of the `ValidatingBuilder` classes.*/
-    @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
+    /**
+     * Returns the `return` statement which always return {@code this}.
+     */
     static String returnThis() {
-        return "return this";
+        return returnValue("this");
     }
 
-    /** Returns a call to the specified method of the parent class with the specified parameters. */
-    static String callSuper(String methodName, String... parameters) {
+    /**
+     * Returns the {@code return} statement for with the given return value.
+     *
+     * @param value
+     *         the value to return
+     */
+    static String returnValue(String value) {
+        checkNotNull(value);
+        return "return " + value;
+    }
+
+    /**
+     * Creates a Java statement which calls a method on an object.
+     *
+     * @param receiver
+     *         the object on which the method is called
+     * @param methodName
+     *         the name of the method
+     * @param parameters
+     *         the method parameters
+     * @return the constructed statement
+     */
+    static String callMethod(String receiver, String methodName, String... parameters) {
+        checkNotNull(receiver);
         checkNotNull(methodName);
         checkNotNull(parameters);
         StringBuilder superMethodCall = new StringBuilder();
-        superMethodCall.append(format("super.%s(", methodName));
+        superMethodCall.append(format("%s.%s(", receiver, methodName));
         String parameterList = String.join(", ", parameters);
-        superMethodCall.append(parameterList).append(')');
+        superMethodCall.append(parameterList)
+                       .append(')');
         return superMethodCall.toString();
     }
 
-    /** Returns the getter code fragment of the predefined {@code Message.Builder}. */
+    /**
+     * Returns a call to the specified method of the parent class with the specified parameters.
+     */
+    static String callSuper(String methodName, String... parameters) {
+        return callMethod("super", methodName, parameters);
+    }
+
+    /**
+     * Returns the getter code fragment of the predefined {@code Message.Builder}.
+     */
     static String getMessageBuilder() {
         return "getMessageBuilder()";
     }

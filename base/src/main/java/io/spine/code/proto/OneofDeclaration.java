@@ -18,29 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.code.proto;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.value.StringTypeValue;
+import com.google.protobuf.Descriptors.OneofDescriptor;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A generated Java method source code.
- *
- * <p>SPI users are responsible for checking that the content of the method is properly formatted
- * and contains all the required modifiers, comments, and Javadoc.
- *
- * <p>The actual compilation of the generated method is performed as a part of the compilation
- * of other Protobuf-generated sources.
+ * A declaration of a {@code oneof} field.
  */
-@Immutable
-public final class GeneratedMethod extends StringTypeValue {
+public final class OneofDeclaration {
 
-    private static final long serialVersionUID = 0L;
+    private final OneofDescriptor oneof;
+
+    public OneofDeclaration(OneofDescriptor oneof) {
+        this.oneof = checkNotNull(oneof);
+    }
 
     /**
-     * Creates a new instance of the method value holder.
+     * Obtains the name of the {@code oneof} field.
      */
-    public GeneratedMethod(String value) {
-        super(value);
+    public FieldName name() {
+        return FieldName.of(oneof.getName());
     }
 }

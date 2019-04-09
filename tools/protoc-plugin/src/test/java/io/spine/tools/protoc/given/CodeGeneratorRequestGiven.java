@@ -78,7 +78,7 @@ public final class CodeGeneratorRequestGiven {
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
     public static String protocConfig(GeneratedMethods methods, Path configPath) {
-        return protocConfig(GeneratedInterfaces.withDefaults(), methods, configPath);
+        return protocConfig(new GeneratedInterfaces(), methods, configPath);
     }
 
     /**
@@ -89,7 +89,7 @@ public final class CodeGeneratorRequestGiven {
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
     public static String protocConfig(GeneratedInterfaces interfaces, Path configPath) {
-        return protocConfig(interfaces, GeneratedMethods.withDefaults(), configPath);
+        return protocConfig(interfaces, new GeneratedMethods(), configPath);
     }
 
     /**

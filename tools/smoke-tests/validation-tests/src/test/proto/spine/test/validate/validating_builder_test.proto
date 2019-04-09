@@ -169,7 +169,7 @@ message RequiredBooleanField {
     bool value = 1 [(required) = true];
 }
 
-// A number between 0 and 9 incusive.
+// A number between 0 and 9 inclusive.
 message DecimalDigit {
     int32 value = 1 [(range) = "[0..10)"];
 }
@@ -246,4 +246,30 @@ enum TaskLabel {
     OF_LITTLE_IMPORTANCE = 1;
     IMPORTANT = 2;
     CRITICAL = 3;
+}
+
+message Drink {
+
+    oneof beverage {
+        Tea tea = 1;
+        Coffee coffee = 2;
+    }
+
+    message Tea {
+        oneof sweetener {
+            Ingredient sugar = 1;
+            Ingredient honey = 2;
+        }
+    }
+
+    message Coffee {
+        oneof milk {
+            Ingredient diary = 1;
+            Ingredient almond = 2;
+        }
+    }
+
+    message Ingredient {
+        uint32 amount_grams = 1;
+    }
 }
