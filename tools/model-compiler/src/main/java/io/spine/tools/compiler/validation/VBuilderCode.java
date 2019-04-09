@@ -34,7 +34,6 @@ import io.spine.logging.Logging;
 import io.spine.type.MessageType;
 import io.spine.validate.AbstractValidatingBuilder;
 
-import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +45,8 @@ import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineMod
 import static io.spine.tools.compiler.validation.VBuilderMethods.methodsOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * Generates source code for a Java class with Validating Builder for a message type.
@@ -92,12 +93,12 @@ final class VBuilderCode implements Logging {
         ClassName baseClass = ClassName.get(AbstractValidatingBuilder.class);
         ClassName messageClass = messageClass();
         ClassName messageBuilderClass = builderClass();
-        Collection<MethodSpec> methods = methodsOf(type);
 
         ParameterizedTypeName superClass =
                 ParameterizedTypeName.get(baseClass, messageClass, messageBuilderClass);
 
-        classBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+        Collection<MethodSpec> methods = methodsOf(type);
+        classBuilder.addModifiers(PUBLIC, FINAL)
                     .superclass(superClass)
                     .addMethods(methods);
         return classBuilder;

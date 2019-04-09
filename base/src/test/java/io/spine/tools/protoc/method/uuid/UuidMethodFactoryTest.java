@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.method.uuid;
+package io.spine.tools.protoc.method.uuid;
 
 import io.spine.test.tools.method.uuid.UuidMessage;
 import io.spine.tools.protoc.method.GeneratedMethod;
-import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

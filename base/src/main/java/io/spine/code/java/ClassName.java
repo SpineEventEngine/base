@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
@@ -234,8 +235,42 @@ public final class ClassName extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Obtains the name of the {@link com.google.protobuf.MessageOrBuilder} interface for this
+     * message class.
+     *
+     * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
+     * {@code com.acme.cms.CustomerOrBuilder}.
+     *
+     * <p>If this class name is {@linkplain #toDotted() dotted}, then the resulting name is dotted.
+     *
+     * @return {@code MessageOrBuilder} interface FQN
+     */
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
+    }
+
+    /**
+     * Obtains the name of an enum which represents cases of a {@code oneof} field.
+     *
+     * <p>Such an enum should be nested in this class. The name of the {@code oneof} field is
+     * obtained from the given {@link OneofDeclaration}.
+     *
+     * <p>If this class name is {@code com.acme.cms.Customer} and the {@code oneof} name is
+     * {@code auth_provider}, the resulting class name would be
+     * {@code com.acme.cms.Customer.AuthProviderCase}.
+     *
+     * <p>The resulting class name is always {@linkplain #toDotted() dotted}.
+     *
+     * @param oneof
+     *         the declaration of the {@code oneof} field
+     * @return the case enum FQN
+     */
+    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
+        ClassName dotted = this.toDotted();
+        FieldName oneofName = FieldName.from(oneof.name());
+        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
+        return of(enumName);
     }
 
     private static ClassName construct(FileDescriptor file,
