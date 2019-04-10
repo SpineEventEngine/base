@@ -31,6 +31,7 @@ import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.TypeName;
 
 import java.util.List;
 import java.util.Optional;
@@ -205,10 +206,9 @@ public abstract class FieldValidator<V> implements Logging {
      */
     protected boolean isRequiredField() {
         Required<V> requiredOption = Required.create(assumeRequired);
-        Boolean required = requiredOption.valueFrom(descriptor())
-                                         .orElse(false);
-        boolean result = required || assumeRequired;
-        return result;
+        boolean required = requiredOption.valueFrom(descriptor())
+                                         .orElse(assumeRequired);
+        return required;
     }
 
     /** Returns an immutable list of the field values. */
@@ -229,9 +229,13 @@ public abstract class FieldValidator<V> implements Logging {
 
     private ConstraintViolation newViolation(IfMissingOption option) {
         String msg = errorMsgFormat(option, option.getMsgFormat());
+        TypeName typeName = value.declaration()
+                                 .declaringType()
+                                 .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
+                .setTypeName(typeName.value())
                 .setFieldPath(fieldPath())
                 .build();
         return violation;

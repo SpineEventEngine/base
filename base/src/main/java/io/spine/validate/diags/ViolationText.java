@@ -20,10 +20,11 @@
 
 package io.spine.validate.diags;
 
+import io.spine.base.FieldPaths;
 import io.spine.validate.ConstraintViolation;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -39,6 +40,10 @@ public final class ViolationText {
 
     private final ConstraintViolation violation;
 
+    private ViolationText(ConstraintViolation violation) {
+        this.violation = violation;
+    }
+
     /**
      * Creates a new instance of the text for the passed violation.
      */
@@ -51,34 +56,47 @@ public final class ViolationText {
      * Creates text with diagnostics for the passed violations, starting each of them from
      * a new line.
      */
-    public static String ofAll(Iterable<ConstraintViolation> violations) {
+    public static String ofAll(Collection<ConstraintViolation> violations) {
         String result =
-                StreamSupport.stream(violations.spliterator(), false)
-                             .map(ViolationText::of)
-                             .map(ViolationText::toString)
-                             .collect(joining(lineSeparator()));
+                violations.stream()
+                          .map(ViolationText::of)
+                          .map(ViolationText::toString)
+                          .collect(joining(lineSeparator()));
         return result;
-    }
-
-    private ViolationText(ConstraintViolation violation) {
-        this.violation = violation;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(formattedMessage());
-        for (ConstraintViolation v : violation.getViolationList()) {
+        StringBuilder builder = buildMessage();
+        for (ConstraintViolation violation : this.violation.getViolationList()) {
             builder.append(lineSeparator());
-            ViolationText nested = of(v);
+            ViolationText nested = of(violation);
             builder.append(nested.toString());
         }
         return builder.toString();
     }
 
-    private String formattedMessage() {
+    private StringBuilder buildMessage() {
+        String typeName = violation.getTypeName();
+
+        String fieldPath = FieldPaths.toString(violation.getFieldPath());
+
         String format = violation.getMsgFormat();
         List<String> params = violation.getParamList();
-        String result = format(format, params.toArray());
+        String formattedMessage = format(format, params.toArray());
+
+        StringBuilder result = new StringBuilder();
+        appendPrefix(result, typeName);
+        appendPrefix(result, fieldPath);
+        result.append(formattedMessage);
         return result;
+    }
+
+    private static void appendPrefix(StringBuilder target, String prefix) {
+        if (!prefix.isEmpty()) {
+            target.append("At ")
+                  .append(prefix)
+                  .append(": ");
+        }
     }
 }

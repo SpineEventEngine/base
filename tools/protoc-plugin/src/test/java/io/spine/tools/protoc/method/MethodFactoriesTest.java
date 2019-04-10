@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.tools.protoc.Classpath;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,7 @@ final class MethodFactoriesTest {
         assertThrows(IllegalArgumentException.class, () -> methodFactories.newFactory(factoryName));
     }
 
+    @MuteLogging
     @SuppressWarnings("NonExceptionNameEndsWithException")
     @DisplayName("throw MethodFactoryInstantiationException")
     @Nested

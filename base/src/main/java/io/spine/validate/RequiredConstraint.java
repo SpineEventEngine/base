@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
 import io.spine.option.IfMissingOption;
+import io.spine.type.TypeName;
 
 import java.util.Optional;
 
@@ -56,17 +57,21 @@ final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
         if (canNotCheckPresence) {
             return ImmutableList.of();
         }
-        return value.isDefault() ?
-               requiredViolated(value) :
-               ImmutableList.of();
+        return value.isDefault()
+               ? requiredViolated(value)
+               : ImmutableList.of();
     }
 
     private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
         FieldPath path = fieldValue.context()
                                    .fieldPath();
+        TypeName declaringType = fieldValue.declaration()
+                                           .declaringType()
+                                           .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msgFormat(fieldValue))
+                .setTypeName(declaringType.value())
                 .setFieldPath(path)
                 .build();
         return ImmutableList.of(violation);

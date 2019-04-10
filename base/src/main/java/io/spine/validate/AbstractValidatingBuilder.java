@@ -325,6 +325,11 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                                       "`(set_once) = true` and is already set.")
                 .addParam(declaringTypeName.value())
                 .addParam(fieldName.value())
+                .setFieldPath(declaration.name()
+                                         .asPath())
+                .setTypeName(declaration.declaringType()
+                                        .name()
+                                        .value())
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
     }

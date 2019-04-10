@@ -25,6 +25,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
+import io.spine.type.TypeName;
 
 import java.util.List;
 import java.util.Set;
@@ -62,11 +63,18 @@ final class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private boolean shouldValidateFields() {
-        boolean fieldValueSet = !fieldValueNotSet();
+        return validOptionValue() && fieldValueIsSet();
+    }
+
+    private boolean validOptionValue() {
         Valid validOption = new Valid();
         boolean valid = validOption.valueFrom(descriptor())
                                    .orElse(false);
-        return valid && fieldValueSet;
+        return valid;
+    }
+
+    private boolean fieldValueIsSet() {
+        return !fieldValueNotSet();
     }
 
     @Override
@@ -117,12 +125,15 @@ final class MessageFieldValidator extends FieldValidator<Message> {
                                                   Iterable<ConstraintViolation> violations) {
         IfInvalidOption ifInvalid = ifInvalid();
         String msg = errorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+        TypeName validatedType = field().declaringType()
+                                        .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(msg)
                 .setFieldPath(fieldPath())
                 .setFieldValue(pack(fieldValue))
                 .addAllViolation(violations)
+                .setTypeName(validatedType.value())
                 .build();
         return violation;
     }

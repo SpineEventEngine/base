@@ -141,7 +141,6 @@ subprojects {
         implementation deps.build.errorProneAnnotations
         implementation deps.build.jsr305Annotations
 
-        testImplementation deps.test.slf4j
         testImplementation deps.test.guavaTestlib
         testImplementation deps.test.junit5Api
         testImplementation deps.test.junit5Runner

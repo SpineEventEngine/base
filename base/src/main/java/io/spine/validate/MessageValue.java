@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
+import io.spine.type.MessageType;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -47,10 +48,6 @@ final class MessageValue {
         this.message = checkNotNull(message);
         this.descriptor = message.getDescriptorForType();
         this.context = checkNotNull(context);
-    }
-
-    Descriptor descriptor(){
-        return descriptor;
     }
 
     /**
@@ -75,6 +72,14 @@ final class MessageValue {
      */
     static MessageValue atTopLevel(Message message) {
         return new MessageValue(message, FieldContext.empty());
+    }
+
+    Descriptor descriptor(){
+        return descriptor;
+    }
+
+    MessageType declaration() {
+        return new MessageType(descriptor());
     }
 
     /**

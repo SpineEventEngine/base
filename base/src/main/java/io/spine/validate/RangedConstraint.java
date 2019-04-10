@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import io.spine.base.FieldPath;
+import io.spine.type.TypeName;
 
 import static com.google.common.collect.BoundType.CLOSED;
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -101,10 +102,14 @@ abstract class RangedConstraint<V extends Number & Comparable, T>
     ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
         FieldPath path = value.context()
                               .fieldPath();
+        TypeName declaringType = value.declaration()
+                                      .declaringType()
+                                      .name();
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
                 .setMsgFormat(errorMsgFormat())
                 .addAllParam(formatParams())
+                .setTypeName(declaringType.value())
                 .setFieldPath(path)
                 .setFieldValue(toAny(value.singleValue()))
                 .build();
