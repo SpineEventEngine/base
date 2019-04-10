@@ -50,7 +50,6 @@ ext {
         'javadoc-prettifier',
         'proto-js-plugin',
         'plugin-base',
-        'reflections-plugin',
         'model-compiler',
 
         'plugin-testlib',
