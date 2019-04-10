@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
-import io.spine.code.generate.Indent;
+import io.spine.code.structure.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;

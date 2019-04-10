@@ -18,15 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains language-neutral classes and interfaces for code generation.
- */
-@Internal
+// TODO:2019-04-10:dmytro.dashenkov: Document.
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.generate;
+package io.spine.code.structure;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

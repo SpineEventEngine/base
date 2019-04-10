@@ -20,8 +20,8 @@
 
 package io.spine.js.generate.output;
 
-import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
+import io.spine.code.structure.Directory;
+import io.spine.code.structure.FileName;
 import io.spine.js.generate.TaskProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

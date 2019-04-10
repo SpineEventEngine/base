@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.js.FileReference;
+import io.spine.code.structure.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

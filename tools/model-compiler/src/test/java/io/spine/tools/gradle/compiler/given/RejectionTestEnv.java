@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import io.spine.code.java.DefaultJavaProject;
+import io.spine.code.structure.DefaultJavaProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;

@@ -23,7 +23,7 @@ import java.nio.file.Files
 group 'io.spine.tools'
 
 dependencies {
-    implementation project(':base')
+    implementation project(':plugin-base')
     implementation project(':protoc-api')
     implementation deps.gen.javaPoet
 

@@ -22,7 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import io.spine.code.generate.Indent;
+import io.spine.code.structure.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceProtoBelongsToModule;

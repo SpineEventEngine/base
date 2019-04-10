@@ -28,7 +28,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.code.java.DefaultJavaProject;
+import io.spine.code.structure.DefaultJavaProject;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;

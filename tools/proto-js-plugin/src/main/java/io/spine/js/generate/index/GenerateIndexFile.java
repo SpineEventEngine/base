@@ -22,8 +22,8 @@ package io.spine.js.generate.index;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors;
-import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
+import io.spine.code.structure.Directory;
+import io.spine.code.structure.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.GenerationTask;
@@ -34,7 +34,7 @@ import io.spine.js.generate.output.snippet.Import;
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.code.js.LibraryFile.INDEX;
+import static io.spine.code.structure.LibraryFile.INDEX;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 import static java.util.stream.Collectors.toSet;
 

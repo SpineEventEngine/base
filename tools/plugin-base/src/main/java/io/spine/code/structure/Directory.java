@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.structure;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;

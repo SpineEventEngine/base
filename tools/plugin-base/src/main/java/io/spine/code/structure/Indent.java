@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate;
+package io.spine.code.structure;
 
 import com.google.common.base.Strings;
 import io.spine.value.StringTypeValue;

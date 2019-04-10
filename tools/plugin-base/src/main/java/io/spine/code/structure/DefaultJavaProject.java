@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.code.structure;
 
-import io.spine.code.DefaultProject;
 import io.spine.code.SourceCodeDirectory;
+import io.spine.code.java.Directory;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -101,7 +101,7 @@ public final class DefaultJavaProject extends DefaultProject {
      * A root source code directory for manually written code.
      *
      * <p>Adds a root directory for the proto code in addition to those exposed
-     * by {@link io.spine.code.DefaultProject.SourceRoot SourceRoot}.
+     * by {@link DefaultProject.SourceRoot SourceRoot}.
      */
     public static class HandmadeCodeRoot extends JavaCodeRoot {
 
@@ -132,7 +132,6 @@ public final class DefaultJavaProject extends DefaultProject {
         @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
         private static final String SPINE_DIR = "spine";
         private static final String GRPC_DIR = "grpc";
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
         private static final String RESOURCES_DIR = "resources";
 
         private GeneratedRoot(DefaultProject parent) {
