@@ -29,7 +29,6 @@ import java.util.Iterator;
 /**
  * An iterator that packs messages from the source iterator.
  *
- * @author Alexander Yevsyukov
  * @see AnyPacker#pack(Iterator)
  */
 final class PackingIterator extends UnmodifiableIterator<Any> {

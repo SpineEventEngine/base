@@ -28,8 +28,6 @@ import static java.lang.String.format;
 
 /**
  * Signals an error working with a Protobuf message field.
- *
- * @author Alexander Yevsyukov
  */
 public class MessageFieldException extends RuntimeException {
 

@@ -41,7 +41,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>When unpacking, the {@code AnyPacker} obtains Java class matching the type URL
  * from the passed {@code Any}.
  *
- * @author Alexander Yevsyukov
  * @see Any#pack(Message, String)
  * @see Any#unpack(Class)
  */

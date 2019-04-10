@@ -59,8 +59,6 @@ import static io.spine.protobuf.AnyPacker.unpack;
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
  *         EnumValue#getName() name}.
  * </ul>
- *
- * @author Dmytro Dashenkov
  */
 @Internal
 public final class TypeConverter {
