@@ -23,7 +23,6 @@ package io.spine.validate.rule;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
-import io.spine.Resources;
 import io.spine.io.PropertyFiles;
 
 import java.util.Collection;
@@ -36,6 +35,8 @@ import java.util.Properties;
  * If an invalid validation rule was found, a runtime exception will be thrown.
  */
 public final class ValidationRules {
+
+    private static final String RESOURCE_NAME = "validation_rules.properties";
 
     /**
      * An instance of {@link Splitter} for the string option values.
@@ -61,7 +62,7 @@ public final class ValidationRules {
     }
 
     public static String fileName() {
-        return Resources.VALIDATION_RULES;
+        return RESOURCE_NAME;
     }
 
     /**
@@ -88,7 +89,7 @@ public final class ValidationRules {
         private final ImmutableCollection.Builder<ValidationRule> rules;
 
         private Builder() {
-            this.properties = PropertyFiles.loadAllProperties(Resources.VALIDATION_RULES);
+            this.properties = PropertyFiles.loadAllProperties(RESOURCE_NAME);
             this.rules = ImmutableSet.builder();
         }
 
