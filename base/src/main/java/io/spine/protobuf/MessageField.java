@@ -37,9 +37,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
  * Abstract base for classes working with message fields.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
  */
 public abstract class MessageField implements Serializable {
 
