@@ -18,48 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure;
+package io.spine.code.generate.java;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import io.spine.value.StringTypeValue;
+import io.spine.code.AbstractFieldName;
 
-import java.util.List;
-
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Character.toUpperCase;
 
 /**
- * A reference to a directory.
- *
- * <p>May include parent directories separated by {@linkplain FileReference#separator() slashes},
- * e.g. {@code root/sub}.
+ * A name of a field declared in a Java class.
  */
-public final class DirectoryReference extends StringTypeValue {
+public final class FieldName extends AbstractFieldName {
 
     private static final long serialVersionUID = 0L;
+    private static final FieldName SERIAL_VERSION_UID = new FieldName("serialVersionUID");
 
-    private DirectoryReference(String value) {
+    private FieldName(String value) {
         super(value);
     }
 
     /**
-     * Creates a new instance.
-     *
-     * @param value
-     *         the value of the reference
-     * @return a new instance
+     * Creates Java field name that corresponds to the passed Proto field name.
      */
-    public static DirectoryReference of(String value) {
-        checkNotEmptyOrBlank(value);
-        return new DirectoryReference(value);
+    public static FieldName from(io.spine.code.generate.FieldName protoField) {
+        checkNotNull(protoField);
+        String fieldName = protoField.javaCase();
+        FieldName result = new FieldName(fieldName);
+        return result;
     }
 
-    /**
-     * Obtains all directory names composing this reference.
-     */
-    public List<String> elements() {
-        Iterable<String> elements = Splitter.on(FileReference.separator())
-                                            .split(value());
-        return ImmutableList.copyOf(elements);
+    /** Obtains this name starting with a capital letter. */
+    public String capitalize() {
+        String name = value();
+        String result = toUpperCase(name.charAt(0)) + name.substring(1);
+        return result;
+    }
+
+    public static FieldName serialVersionUID() {
+        return SERIAL_VERSION_UID;
     }
 }

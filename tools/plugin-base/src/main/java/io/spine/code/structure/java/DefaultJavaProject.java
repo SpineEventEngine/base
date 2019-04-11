@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure;
+package io.spine.code.structure.java;
 
 import io.spine.code.SourceCodeDirectory;
-import io.spine.code.java.Directory;
+import io.spine.code.structure.DefaultProject;
 
 import java.io.File;
 import java.nio.file.Path;

@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve;
 
-import io.spine.code.structure.FileReference;
+import io.spine.code.structure.js.FileReference;
 import io.spine.logging.Logging;
 
 import java.io.File;

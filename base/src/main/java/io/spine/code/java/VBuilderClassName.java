@@ -68,7 +68,7 @@ public final class VBuilderClassName {
             topLevelName = className.toSimple();
         } else {
             // Nested: either with outer class, or with enclosing message, or both.
-            String nestedName = ClassName.afterDot(className.value());
+            String nestedName = ClassNameNotation.afterDot(className.value());
             String mergedNames = nestedName.replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
             topLevelName = SimpleClassName.create(mergedNames);
         }

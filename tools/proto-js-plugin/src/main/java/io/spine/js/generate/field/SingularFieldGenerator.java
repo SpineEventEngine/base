@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.field;
 
-import io.spine.code.js.FieldName;
+import io.spine.code.generate.js.FieldName;
 
 /**
  * The generator of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).

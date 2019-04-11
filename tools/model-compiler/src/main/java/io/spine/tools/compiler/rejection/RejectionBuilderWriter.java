@@ -27,10 +27,10 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.generate.FieldName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.type.RejectionType;
@@ -209,7 +209,7 @@ final class RejectionBuilderWriter {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.primarySetterTemplate()
-                                     .format(io.spine.code.java.FieldName.from(fieldName));
+                                     .format(io.spine.code.generate.java.FieldName.from(fieldName));
         @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)

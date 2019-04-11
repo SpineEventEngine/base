@@ -18,14 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.code.generate.java;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.ClassNameNotation;
+import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.java.ClassName.DOT_SEPARATOR;
+import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
 
 /**
  * A name of a potentially nested class with outer class names separated with dots.
@@ -47,7 +50,7 @@ public final class NestedClassName extends StringTypeValue {
      * Creates a new instance by fully-qualified name.
      */
     static NestedClassName create(ClassName className) {
-        String nameWithOuter = ClassName.afterDot(className.value());
+        String nameWithOuter = ClassNameNotation.afterDot(className.value());
         String dotted = ClassName.toDotted(nameWithOuter);
         return new NestedClassName(dotted);
     }

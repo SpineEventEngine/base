@@ -33,16 +33,16 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
+import static io.spine.code.java.ClassNameNotation.afterDot;
 import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A value object holding a fully-qualified Java class name.
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
 public final class ClassName extends StringTypeValue {
 
@@ -52,12 +52,6 @@ public final class ClassName extends StringTypeValue {
      * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
     public static final char OUTER_CLASS_DELIMITER = '$';
-
-    /**
-     * Separates class name from package, and outer class name with nested when such a class is
-     * referenced as a parameter.
-     */
-    static final char DOT_SEPARATOR = '.';
 
     private static final String GRPC_POSTFIX = "Grpc";
 
@@ -227,7 +221,7 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
-     * Replaces {@link #OUTER_CLASS_DELIMITER} with {@link #DOT_SEPARATOR}.
+     * Replaces {@link #OUTER_CLASS_DELIMITER} with {@link ClassNameNotation#DOT_SEPARATOR}.
      */
     @Internal
     public static String toDotted(String outerDelimited) {
@@ -266,12 +260,13 @@ public final class ClassName extends StringTypeValue {
      *         the declaration of the {@code oneof} field
      * @return the case enum FQN
      */
-    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
-        ClassName dotted = this.toDotted();
-        FieldName oneofName = FieldName.from(oneof.name());
-        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
-        return of(enumName);
-    }
+    // TODO:2019-04-10:dmytro.dashenkov: Revert.
+//    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
+//        ClassName dotted = this.toDotted();
+//        FieldName oneofName = FieldName.from(oneof.name());
+//        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
+//        return of(enumName);
+//    }
 
     private static ClassName construct(FileDescriptor file,
                                        String typeName,
@@ -293,54 +288,51 @@ public final class ClassName extends StringTypeValue {
         return SimpleClassName.create(result);
     }
 
-    static String afterDot(String fullName) {
-        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
-        return fullName.substring(lastDotIndex + 1);
-    }
-
     /**
      * Converts a possibly nested class name into a nested name.
      *
      * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
      */
-    public NestedClassName toNested() {
-        return NestedClassName.create(this);
-    }
+    // TODO:2019-04-10:dmytro.dashenkov: Invert.
+//    public NestedClassName toNested() {
+//        return NestedClassName.create(this);
+//    }
 
-    /**
-     * Resolves the file which contains the declaration of the associated class.
-     *
-     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
-     * file starting at the top level package.
-     *
-     * <p>In the simplest case, the file name is the same as the simple class name. However, if
-     * the class is nested, then the file name coincides with the simple name of the top-level
-     * class.
-     *
-     * @return the file in which the Java class is declared
-     */
-    public SourceFile resolveFile() {
-        Directory directory = getPackage().toDirectory();
-        SimpleClassName topLevelClass = topLevelClass();
-        FileName javaFile = FileName.forType(topLevelClass.value());
-        SourceFile sourceFile = directory.resolve(javaFile);
-        return sourceFile;
-    }
-
-    private PackageName getPackage() {
-        String fullName = value();
-        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
-        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
-        String result = fullName.substring(0, lastDotIndex);
-        return PackageName.of(result);
-    }
-
-    private SimpleClassName topLevelClass() {
-        String qualifiedClassName = afterDot(value());
-        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
-        String topLevelClassName = delimiterIndex >= 0
-                                   ? qualifiedClassName.substring(0, delimiterIndex)
-                                   : qualifiedClassName;
-        return SimpleClassName.create(topLevelClassName);
-    }
+    // TODO:2019-04-10:dmytro.dashenkov: Invert.
+//    /**
+//     * Resolves the file which contains the declaration of the associated class.
+//     *
+//     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
+//     * file starting at the top level package.
+//     *
+//     * <p>In the simplest case, the file name is the same as the simple class name. However, if
+//     * the class is nested, then the file name coincides with the simple name of the top-level
+//     * class.
+//     *
+//     * @return the file in which the Java class is declared
+//     */
+//    public SourceFile resolveFile() {
+//        Directory directory = getPackage().toDirectory();
+//        SimpleClassName topLevelClass = topLevelClass();
+//        FileName javaFile = FileName.forType(topLevelClass.value());
+//        SourceFile sourceFile = directory.resolve(javaFile);
+//        return sourceFile;
+//    }
+//
+//    private PackageName getPackage() {
+//        String fullName = value();
+//        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+//        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
+//        String result = fullName.substring(0, lastDotIndex);
+//        return PackageName.of(result);
+//    }
+//
+//    private SimpleClassName topLevelClass() {
+//        String qualifiedClassName = afterDot(value());
+//        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
+//        String topLevelClassName = delimiterIndex >= 0
+//                                   ? qualifiedClassName.substring(0, delimiterIndex)
+//                                   : qualifiedClassName;
+//        return SimpleClassName.create(topLevelClassName);
+//    }
 }

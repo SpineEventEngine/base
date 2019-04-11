@@ -22,7 +22,7 @@ package io.spine.tools.protoc.iface;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
-import io.spine.code.java.SourceFile;
+import io.spine.code.structure.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.ProtocPluginFiles;
 

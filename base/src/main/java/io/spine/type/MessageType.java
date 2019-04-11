@@ -197,6 +197,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      *         if the message type does not have a corresponding
      *         a Validating Builder class, for example, because it's a Google Protobuf message
      */
+    // TODO:2019-04-10:dmytro.dashenkov: Invert.
     public SimpleClassName validatingBuilderClass() {
         checkState(hasVBuilder(), "No validating builder class available for the type `%s`.", this);
         SimpleClassName result = VBuilderClassName.of(this);

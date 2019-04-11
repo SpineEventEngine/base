@@ -18,35 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.java;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.value.StringTypeValue;
+public final class ClassNameNotation {
 
-import static com.google.common.base.Preconditions.checkNotNull;
+    /**
+     * Separates class name from package, and outer class name with nested when such a class is
+     * referenced as a parameter.
+     */
+    public static final char DOT_SEPARATOR = '.';
 
-/**
- * A name of the generated Protobuf message field in JavaScript.
- *
- * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
- * {@code CamelCase}.
- *
- * @author Dmytro Kuzmin
- */
-public final class FieldName extends StringTypeValue {
 
-    private static final long serialVersionUID = 0L;
-
-    private FieldName(String value) {
-        super(value);
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private ClassNameNotation() {
     }
 
-    public static FieldName from(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
-                                                              .toCamelCase();
-        return new FieldName(capitalizedName);
+    public static String afterDot(String fullName) {
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        return fullName.substring(lastDotIndex + 1);
     }
 }

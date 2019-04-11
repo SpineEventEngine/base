@@ -21,7 +21,7 @@
 package io.spine.js.generate.index;
 
 import com.google.common.collect.Maps;
-import io.spine.code.js.TypeName;
+import io.spine.code.generate.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.Snippet;

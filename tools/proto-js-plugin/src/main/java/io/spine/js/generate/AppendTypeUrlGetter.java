@@ -22,11 +22,11 @@ package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.structure.Directory;
-import io.spine.code.js.MethodReference;
-import io.spine.code.js.TypeName;
+import io.spine.code.generate.js.MethodReference;
+import io.spine.code.generate.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
+import io.spine.code.structure.js.Directory;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;

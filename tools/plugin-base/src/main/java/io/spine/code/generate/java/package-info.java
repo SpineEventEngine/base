@@ -18,30 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure;
+// TODO:2019-04-10:dmytro.dashenkov: Document.
 
-/**
- * The enumeration of project files provided by the Spine framework.
- */
-public enum LibraryFile {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.generate.java;
 
-    /**
-     * The index file exposing data about generated Protobuf types.
-     */
-    INDEX("index.js");
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    private final FileName fileName;
-
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
-    }
-
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

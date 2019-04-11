@@ -25,13 +25,13 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.SourceFile;
+import io.spine.code.structure.java.SourceFile;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.java.SourceFile.forMessage;
-import static io.spine.code.java.SourceFile.forMessageOrBuilder;
+import static io.spine.code.structure.java.SourceFile.forMessage;
+import static io.spine.code.structure.java.SourceFile.forMessageOrBuilder;
 
 /**
  * An {@link Annotator} which annotates Java sources basing on a given Protobuf option.

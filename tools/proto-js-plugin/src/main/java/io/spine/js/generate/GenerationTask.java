@@ -20,11 +20,11 @@
 
 package io.spine.js.generate;
 
-import io.spine.code.structure.Directory;
-import io.spine.code.structure.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceFile;
+import io.spine.code.structure.js.Directory;
+import io.spine.code.structure.js.FileName;
 
 import java.nio.file.Path;
 

@@ -21,7 +21,7 @@
 package io.spine.js.generate.resolve;
 
 import com.google.common.testing.EqualsTester;
-import io.spine.code.structure.FileReference;
+import io.spine.code.structure.js.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

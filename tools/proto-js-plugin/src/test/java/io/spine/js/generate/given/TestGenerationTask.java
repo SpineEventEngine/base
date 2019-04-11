@@ -20,8 +20,8 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.structure.Directory;
 import io.spine.code.proto.FileSet;
+import io.spine.code.structure.js.Directory;
 import io.spine.js.generate.GenerationTask;
 
 import javax.annotation.Nullable;

@@ -23,9 +23,6 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.value.StringTypeValue;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -97,14 +94,15 @@ public final class PackageName extends StringTypeValue {
         return javaPackage;
     }
 
-    /**
-     * Obtains file system folder path for the package.
-     */
-    public Directory toDirectory() {
-        String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        Directory result = Directory.at(Paths.get(packageDir));
-        return result;
-    }
+    // TODO:2019-04-10:dmytro.dashenkov: Invert.
+//    /**
+//     * Obtains file system folder path for the package.
+//     */
+//    public Directory toDirectory() {
+//        String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
+//        Directory result = Directory.at(Paths.get(packageDir));
+//        return result;
+//    }
 
     /**
      * Always returns {@code false}.

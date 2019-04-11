@@ -22,9 +22,9 @@ package io.spine.js.generate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.structure.Directory;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
+import io.spine.code.structure.js.Directory;
 import io.spine.js.generate.given.TestGenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

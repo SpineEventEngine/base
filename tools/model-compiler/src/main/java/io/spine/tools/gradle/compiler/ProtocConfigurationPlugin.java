@@ -26,8 +26,8 @@ import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
-import io.spine.code.structure.DefaultJavaProject;
 import io.spine.code.proto.DescriptorReference;
+import io.spine.code.structure.java.DefaultJavaProject;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SourceScope;
@@ -53,7 +53,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.structure.DefaultJavaProject.at;
+import static io.spine.code.structure.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.writeDescriptorReference;

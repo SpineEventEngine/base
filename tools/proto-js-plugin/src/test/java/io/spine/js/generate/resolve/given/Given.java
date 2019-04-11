@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.resolve.given;
 
-import io.spine.code.structure.Directory;
+import io.spine.code.structure.js.Directory;
 import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.js.generate.resolve.ImportStatement;

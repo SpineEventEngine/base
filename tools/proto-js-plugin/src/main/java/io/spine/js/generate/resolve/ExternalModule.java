@@ -22,8 +22,8 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.structure.DirectoryReference;
-import io.spine.code.structure.FileReference;
+import io.spine.code.structure.js.DirectoryReference;
+import io.spine.code.structure.js.FileReference;
 
 import java.util.Collection;
 import java.util.Objects;

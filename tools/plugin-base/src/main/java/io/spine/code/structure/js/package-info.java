@@ -18,30 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output.snippet;
+// TODO:2019-04-10:dmytro.dashenkov: Document.
 
-import com.google.protobuf.Any;
-import io.spine.code.generate.js.TypeName;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.structure.js;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("VariableDeclaration should")
-class VariableDeclarationTest {
-
-    @Test
-    @DisplayName("be initialized by value")
-    void initializedByValue() {
-        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
-        assertEquals("let someVariable = someValue;", line.content());
-    }
-
-    @Test
-    @DisplayName("be initialized by new instance")
-    void initializedByNewInstance() {
-        TypeName type = TypeName.from(Any.getDescriptor());
-        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
-        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

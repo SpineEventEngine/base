@@ -20,8 +20,8 @@
 
 package io.spine.js.gradle;
 
-import io.spine.code.structure.DefaultJsProject;
-import io.spine.code.structure.Directory;
+import io.spine.code.structure.js.DefaultJsProject;
+import io.spine.code.structure.js.Directory;
 import io.spine.js.generate.resolve.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;

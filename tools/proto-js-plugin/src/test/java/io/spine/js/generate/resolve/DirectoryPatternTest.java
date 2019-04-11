@@ -22,7 +22,7 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.structure.DirectoryReference;
+import io.spine.code.structure.js.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -18,15 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.code.structure.js;
+
 /**
- * The tools for generating and working with JavaScript code.
+ * The enumeration of project files provided by the Spine framework.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.js;
+public enum LibraryFile {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
+    /**
+     * The index file exposing data about generated Protobuf types.
+     */
+    INDEX("index.js");
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    private final FileName fileName;
+
+    LibraryFile(String fileName) {
+        this.fileName = FileName.of(fileName);
+    }
+
+    public FileName fileName() {
+        return fileName;
+    }
+
+    @Override
+    public String toString() {
+        return fileName.value();
+    }
+}

@@ -27,13 +27,13 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.SourceFile;
+import io.spine.code.structure.java.SourceFile;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.java.SourceFile.forEnum;
-import static io.spine.code.java.SourceFile.forService;
+import static io.spine.code.structure.java.SourceFile.forEnum;
+import static io.spine.code.structure.java.SourceFile.forService;
 
 /**
  * A file-level annotator.

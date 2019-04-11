@@ -21,9 +21,9 @@
 package io.spine.js.generate.index;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.structure.Directory;
-import io.spine.code.structure.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.structure.js.Directory;
+import io.spine.code.structure.js.FileName;
 import io.spine.js.generate.given.GivenProject;
 import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-import static io.spine.code.structure.LibraryFile.INDEX;
+import static io.spine.code.structure.js.LibraryFile.INDEX;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;

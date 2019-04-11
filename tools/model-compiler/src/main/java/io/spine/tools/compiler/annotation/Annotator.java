@@ -23,7 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.SourceFile;
+import io.spine.code.structure.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;

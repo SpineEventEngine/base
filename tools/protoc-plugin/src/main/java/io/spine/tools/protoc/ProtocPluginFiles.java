@@ -20,7 +20,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.SourceFile;
+import io.spine.code.structure.java.SourceFile;
 import io.spine.type.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
