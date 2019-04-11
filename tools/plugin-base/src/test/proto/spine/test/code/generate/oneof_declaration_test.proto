@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package spine.test.code.generate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.generate";
+option java_outer_classname = "OneofDeclarationTestProto";
+option java_multiple_files = true;
+
+message Transmission {
+
+    oneof type {
+        Manual manual = 1;
+        Automatic automatic = 2;
+    }
+}
+
+message Manual {
+
+    uint32 gear_count = 1;
+}
+
+message Automatic {
+
+    string name = 1;
+}

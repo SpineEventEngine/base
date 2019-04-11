@@ -40,7 +40,7 @@ public final class OneofDeclaration {
 
     public OneofDeclaration(OneofDescriptor oneof, MessageType type) {
         this.oneof = checkNotNull(oneof);
-        this.declaringType = type;
+        this.declaringType = checkNotNull(type);
     }
 
     public static ImmutableSet<OneofDeclaration> allFromType(MessageType declaringType) {

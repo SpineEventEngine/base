@@ -22,8 +22,9 @@ package io.spine.code.generate.java;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Empty;
 import io.spine.code.proto.FieldName;
-import io.spine.net.Uri;
+import io.spine.test.code.generate.Transmission;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,21 +38,25 @@ class OneofDeclarationTest {
     @DisplayName("not accept nulls")
     void nonNull() {
         new NullPointerTester()
+                .setDefault(MessageType.class, new MessageType(Empty.getDescriptor()))
+                .setDefault(Descriptors.OneofDescriptor.class, Transmission.getDescriptor()
+                                                                           .getOneofs()
+                                                                           .get(0))
                 .testAllPublicConstructors(OneofDeclaration.class);
     }
 
     @Test
     @DisplayName("obtain name")
     @SuppressWarnings("DuplicateStringLiteralInspection")
-        // "protocol" is also used in generated code.
+        // "type" is also used in generated code.
     void obtainName() {
-        Descriptors.Descriptor declaringType = Uri.Protocol.getDescriptor();
+        Descriptors.Descriptor declaringType = Transmission.getDescriptor();
         Descriptors.OneofDescriptor protocolOneof = declaringType
-                                                                .getOneofs()
-                                                                .get(0);
+                .getOneofs()
+                .get(0);
         MessageType declaringMessageType = new MessageType(declaringType);
         OneofDeclaration declaration = new OneofDeclaration(protocolOneof, declaringMessageType);
         FieldName name = declaration.name();
-        assertThat(name.javaCase()).isEqualTo("protocol");
+        assertThat(name.javaCase()).isEqualTo("type");
     }
 }
