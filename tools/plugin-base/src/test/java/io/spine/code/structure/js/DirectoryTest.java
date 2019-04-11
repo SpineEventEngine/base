@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.code.js.LibraryFile.INDEX;
+import static io.spine.code.structure.js.LibraryFile.INDEX;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

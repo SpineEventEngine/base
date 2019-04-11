@@ -91,9 +91,8 @@ class VBuilderMethodsTest {
                 .descriptor()
                 .getOneofs()
                 .get(0);
-        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor, type);
-        ClassName expectedReturnType = messageType.javaClassName()
-                                                  .oneofCaseEnum(declaration);
+        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor, messageType);
+        ClassName expectedReturnType = declaration.javaCaseEnum();
         assertThat(getDescription.returnType.toString())
                 .isEqualTo(expectedReturnType.toString());
         assertThat(getDescription.modifiers).containsExactly(PUBLIC);

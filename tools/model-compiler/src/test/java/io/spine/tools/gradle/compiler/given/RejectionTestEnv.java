@@ -23,6 +23,7 @@ package io.spine.tools.gradle.compiler.given;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;
 import io.spine.code.structure.java.DefaultJavaProject;
+import io.spine.code.structure.java.Directory;
 import io.spine.code.structure.java.FileName;
 import io.spine.tools.gradle.testing.GradleProject;
 
@@ -62,7 +63,7 @@ public class RejectionTestEnv {
         Path fileName = DefaultJavaProject.at(Paths.get("/"))
                                           .generated()
                                           .mainSpine()
-                                          .resolve(JAVA_PACKAGE.toDirectory())
+                                          .resolve(Directory.of(JAVA_PACKAGE))
                                           .resolve(REJECTION_FILE_NAME.value());
         return fileName.toString();
     }
