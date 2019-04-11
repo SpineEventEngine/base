@@ -80,7 +80,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
         FieldDescriptor field = builder.getField();
-        this.javaFieldName = FieldName.from(io.spine.code.generate.FieldName.of(field.toProto()));
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
         this.keyTypeName = fieldType.getKeyTypeName();
         this.valueTypeName = fieldType.getValueTypeName();
     }

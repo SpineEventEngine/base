@@ -73,7 +73,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
         this.fieldTypeName = fieldType.getTypeName();
-        this.javaFieldName = FieldName.from(io.spine.code.generate.FieldName.of(field.toProto()));
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
     }
 
     /**
@@ -185,7 +185,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         TypeName methodParamType = raw
                                  ? stringClassName()
                                  : fieldTypeName;
-        String paramName = io.spine.code.generate.FieldName.of(field).javaCase();
+        String paramName = io.spine.code.proto.FieldName.of(field).javaCase();
         ParameterSpec result = ParameterSpec.builder(methodParamType, paramName)
                                             .build();
         return result;

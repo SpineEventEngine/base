@@ -18,34 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.generate.java;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@DisplayName("DirectoryReference should")
-class DirectoryReferenceTest {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
     @Test
-    @DisplayName("not be empty")
-    void notEmpty() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> DirectoryReference.of("")
-        );
-    }
-
-    @Test
-    @DisplayName("provide names it consists from")
-    void provideDirectoryNames() {
-        DirectoryReference reference = DirectoryReference.of("a/b/c");
-        List<String> expected = ImmutableList.of("a", "b", "c");
-        assertThat(reference.elements()).containsAllIn(expected);
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .setDefault(io.spine.code.proto.FieldName.class,
+                            io.spine.code.proto.FieldName.of("value"))
+                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
     }
 }

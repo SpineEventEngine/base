@@ -23,8 +23,8 @@ package io.spine.tools.compiler.validation;
 import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.generate.java.OneofDeclaration;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +91,7 @@ class VBuilderMethodsTest {
                 .descriptor()
                 .getOneofs()
                 .get(0);
-        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor);
+        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor, type);
         ClassName expectedReturnType = messageType.javaClassName()
                                                   .oneofCaseEnum(declaration);
         assertThat(getDescription.returnType.toString())

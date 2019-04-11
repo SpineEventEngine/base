@@ -22,10 +22,14 @@ package io.spine.code.structure.java;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
+import io.spine.code.java.PackageName;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
 
 /**
  * A folder with Java source files.
@@ -53,6 +57,14 @@ public final class Directory extends SourceCodeDirectory {
         checkNotNull(parent);
         Path path = parent.getPath()
                           .resolve(ROOT_NAME);
+        return at(path);
+    }
+
+    public static Directory of(PackageName packageName) {
+        checkNotNull(packageName);
+        String packagePath = packageName.value()
+                                        .replace(DOT_SEPARATOR, File.separatorChar);
+        Path path = Paths.get(packagePath);
         return at(path);
     }
 

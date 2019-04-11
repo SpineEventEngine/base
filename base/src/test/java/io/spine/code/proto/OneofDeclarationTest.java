@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import io.spine.net.Uri;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,10 +44,12 @@ class OneofDeclarationTest {
     @SuppressWarnings("DuplicateStringLiteralInspection")
         // "protocol" is also used in generated code.
     void obtainName() {
-        Descriptors.OneofDescriptor protocolOneof = Uri.Protocol.getDescriptor()
+        Descriptors.Descriptor declaringType = Uri.Protocol.getDescriptor();
+        Descriptors.OneofDescriptor protocolOneof = declaringType
                                                                 .getOneofs()
                                                                 .get(0);
-        OneofDeclaration declaration = new OneofDeclaration(protocolOneof);
+        MessageType declaringMessageType = new MessageType(declaringType);
+        OneofDeclaration declaration = new OneofDeclaration(protocolOneof, declaringMessageType);
         FieldName name = declaration.name();
         assertThat(name.javaCase()).isEqualTo("protocol");
     }

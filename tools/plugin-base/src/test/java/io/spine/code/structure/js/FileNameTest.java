@@ -18,33 +18,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.structure.js;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FieldName should")
-class FieldNameTest {
+@DisplayName("FileName should")
+class FileNameTest {
+
+    private final FileDescriptor file = Any.getDescriptor()
+                                           .getFile();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(FieldName.class);
+        new NullPointerTester().testAllPublicStaticMethods(FileName.class);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with generated code.
     @Test
-    @DisplayName("create CamelCase name from Protobuf field")
-    void convertToCamelCase() {
-        FieldDescriptor typeUrlDescriptor = Any.getDescriptor()
-                                               .findFieldByName("type_url");
-        FieldName fieldName = FieldName.from(typeUrlDescriptor);
-        assertEquals("TypeUrl", fieldName.value());
+    @DisplayName("not accept names without extension")
+    void notAcceptNameWithoutExtension() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileName.of("no-extension")
+        );
+    }
+
+    @Test
+    @DisplayName("replace `.proto` extension with predefined suffix")
+    void appendSuffix() {
+        FileName fileName = FileName.from(file);
+        String expected = "google/protobuf/any_pb.js";
+        assertEquals(expected, fileName.value());
+    }
+
+    @Test
+    @DisplayName("return path elements")
+    void returnPathElements() {
+        FileName fileName = FileName.from(file);
+        List<String> pathElements = fileName.pathElements();
+        assertThat(pathElements).contains("google");
+        assertThat(pathElements).contains("protobuf");
+        assertThat(pathElements).contains("any_pb.js");
     }
 }

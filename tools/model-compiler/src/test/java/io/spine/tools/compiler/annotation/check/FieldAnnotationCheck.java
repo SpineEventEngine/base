@@ -21,7 +21,7 @@
 package io.spine.tools.compiler.annotation.check;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.generate.FieldName;
+import io.spine.code.proto.FieldName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.TypeHolder;

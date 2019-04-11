@@ -26,13 +26,13 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
@@ -319,20 +319,20 @@ public final class ClassName extends StringTypeValue {
 //        return sourceFile;
 //    }
 //
-//    private PackageName getPackage() {
-//        String fullName = value();
-//        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
-//        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
-//        String result = fullName.substring(0, lastDotIndex);
-//        return PackageName.of(result);
-//    }
-//
-//    private SimpleClassName topLevelClass() {
-//        String qualifiedClassName = afterDot(value());
-//        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
-//        String topLevelClassName = delimiterIndex >= 0
-//                                   ? qualifiedClassName.substring(0, delimiterIndex)
-//                                   : qualifiedClassName;
-//        return SimpleClassName.create(topLevelClassName);
-//    }
+    public PackageName getPackage() {
+        String fullName = value();
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
+        String result = fullName.substring(0, lastDotIndex);
+        return PackageName.of(result);
+    }
+
+    public SimpleClassName topLevelClass() {
+        String qualifiedClassName = afterDot(value());
+        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
+        String topLevelClassName = delimiterIndex >= 0
+                                   ? qualifiedClassName.substring(0, delimiterIndex)
+                                   : qualifiedClassName;
+        return SimpleClassName.create(topLevelClassName);
+    }
 }

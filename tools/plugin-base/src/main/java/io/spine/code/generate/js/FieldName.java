@@ -29,10 +29,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A name of the generated Protobuf message field in JavaScript.
  *
- * <p>Represents the {@linkplain io.spine.code.generate.FieldName proto name} converted to
+ * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
  * {@code CamelCase}.
- *
- * @author Dmytro Kuzmin
  */
 public final class FieldName extends StringTypeValue {
 
@@ -45,8 +43,8 @@ public final class FieldName extends StringTypeValue {
     public static FieldName from(FieldDescriptor fieldDescriptor) {
         checkNotNull(fieldDescriptor);
         FieldDescriptorProto proto = fieldDescriptor.toProto();
-        String capitalizedName = io.spine.code.generate.FieldName.of(proto)
-                                                                 .toCamelCase();
+        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
+                                                              .toCamelCase();
         return new FieldName(capitalizedName);
     }
 }

@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.code.structure.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;

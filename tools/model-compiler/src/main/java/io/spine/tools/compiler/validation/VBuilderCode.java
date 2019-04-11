@@ -27,8 +27,9 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.generate.Indent;
+import io.spine.code.generate.java.NestedClassName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.structure.Indent;
 import io.spine.code.structure.java.FileName;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;
@@ -105,9 +106,8 @@ final class VBuilderCode implements Logging {
     }
 
     private ClassName messageClass() {
-        return ClassName.get(javaPackage, type.javaClassName()
-                                              .toNested()
-                                              .value());
+        return ClassName.get(javaPackage, NestedClassName.from(type.javaClassName())
+                                                         .value());
     }
 
     private ClassName builderClass() {

@@ -55,7 +55,7 @@ public final class GeneratedAccessors {
      *         the type of the field associated with the accessors
      * @return new instance
      */
-    public static GeneratedAccessors forField(io.spine.code.generate.FieldName name,
+    public static GeneratedAccessors forField(io.spine.code.proto.FieldName name,
                                               FieldType type) {
         FieldName javaFieldName = FieldName.from(name);
 

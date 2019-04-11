@@ -49,7 +49,7 @@ public final class NestedClassName extends StringTypeValue {
     /**
      * Creates a new instance by fully-qualified name.
      */
-    static NestedClassName create(ClassName className) {
+    public static NestedClassName from(ClassName className) {
         String nameWithOuter = ClassNameNotation.afterDot(className.value());
         String dotted = ClassName.toDotted(nameWithOuter);
         return new NestedClassName(dotted);

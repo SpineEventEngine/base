@@ -93,7 +93,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());
         FieldDescriptor field = checkNotNull(builder.getField());
-        this.javaFieldName = FieldName.from(io.spine.code.generate.FieldName.of(field.toProto()));
+        this.javaFieldName = FieldName.from(io.spine.code.proto.FieldName.of(field.toProto()));
         FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
         String fieldJavaClass = fieldDeclaration.javaTypeName();
         String dottedForm = io.spine.code.java.ClassName.toDotted(fieldJavaClass);

@@ -18,23 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.code.generate;
 
-import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("FieldName should")
-class FieldNameTest {
+@DisplayName("GeneratedBySpine should")
+class GeneratedBySpineTest {
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(io.spine.code.proto.FieldName.class,
-                            io.spine.code.proto.FieldName.of("value"))
-                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
+    @DisplayName("provide information for annotation spec.")
+    void byModelCompiler() {
+        GeneratedBySpine annotation = GeneratedBySpine.instance();
+        assertNotNull(annotation);
+        assertFalse(annotation.getFieldName()
+                              .isEmpty());
+        assertFalse(annotation.getCodeBlock()
+                              .isEmpty());
     }
 }

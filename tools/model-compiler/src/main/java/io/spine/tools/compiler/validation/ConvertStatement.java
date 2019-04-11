@@ -22,7 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.generate.FieldName;
+import io.spine.code.proto.FieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;

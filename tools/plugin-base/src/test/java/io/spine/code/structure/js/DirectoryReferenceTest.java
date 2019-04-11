@@ -18,27 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.structure.js;
 
-import com.google.protobuf.Descriptors.OneofDescriptor;
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
 
-/**
- * A declaration of a {@code oneof} field.
- */
-public final class OneofDeclaration {
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private final OneofDescriptor oneof;
+@DisplayName("DirectoryReference should")
+class DirectoryReferenceTest {
 
-    public OneofDeclaration(OneofDescriptor oneof) {
-        this.oneof = checkNotNull(oneof);
+    @Test
+    @DisplayName("not be empty")
+    void notEmpty() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> DirectoryReference.of("")
+        );
     }
 
-    /**
-     * Obtains the name of the {@code oneof} field.
-     */
-    public FieldName name() {
-        return FieldName.of(oneof.getName());
+    @Test
+    @DisplayName("provide names it consists from")
+    void provideDirectoryNames() {
+        DirectoryReference reference = DirectoryReference.of("a/b/c");
+        List<String> expected = ImmutableList.of("a", "b", "c");
+        assertThat(reference.elements()).containsAllIn(expected);
     }
 }

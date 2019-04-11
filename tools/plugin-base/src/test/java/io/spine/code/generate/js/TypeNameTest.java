@@ -18,54 +18,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.generate.js;
 
 import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.BeforeEach;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Syntax;
+import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static io.spine.code.js.LibraryFile.INDEX;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Directory should")
-class DirectoryTest {
-
-    private static final Path DIRECTORY_PATH = Paths.get("/home/user/directory");
-
-    private Directory directory;
-
-    @BeforeEach
-    void setUp() {
-        directory = Directory.at(DIRECTORY_PATH);
-    }
+@DisplayName("TypeName should")
+class TypeNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(Directory.class);
-        new NullPointerTester().testAllPublicInstanceMethods(directory);
+        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
     }
 
     @Test
-    @DisplayName("resolve file name")
-    void resolveFileName() {
-        String rawName = "tasks_pb.js";
-        FileName fileName = FileName.of(rawName);
-        Path resolved = directory.resolve(fileName);
-        Path expected = DIRECTORY_PATH.resolve(rawName);
-        assertEquals(expected, resolved);
+    @DisplayName("append `proto.` prefix to message type")
+    void appendPrefixToMessage() {
+        Descriptor descriptor = Any.getDescriptor();
+        TypeName typeName = TypeName.from(descriptor);
+        String expected = "proto.google.protobuf.Any";
+        assertEquals(expected, typeName.value());
     }
 
     @Test
-    @DisplayName("resolve LibraryFile")
-    void resolveCommonFileName() {
-        Path resolved = directory.resolve(INDEX);
-        Path expected = DIRECTORY_PATH.resolve(INDEX.toString());
-        assertEquals(expected, resolved);
+    @DisplayName("append `proto.` prefix to enum type")
+    void appendPrefixToEnum() {
+        EnumDescriptor descriptor = Syntax.getDescriptor();
+        TypeName typeName = TypeName.from(descriptor);
+        String expected = "proto.google.protobuf.Syntax";
+        assertEquals(expected, typeName.value());
+    }
+
+    @Test
+    @DisplayName("provide a name for a message parser")
+    void messageParserName() {
+        TypeName anyParser = TypeName.ofParser(Any.getDescriptor());
+        assertEquals("proto.google.protobuf.Any.Parser", anyParser.value());
     }
 }

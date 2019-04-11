@@ -22,7 +22,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import groovy.lang.Closure;
-import io.spine.code.structure.Indent;
+import io.spine.code.generate.Indent;
 import io.spine.code.structure.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;

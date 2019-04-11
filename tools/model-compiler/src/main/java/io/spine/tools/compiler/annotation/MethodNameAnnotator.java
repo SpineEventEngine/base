@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
+import io.spine.code.structure.java.SourceFile;
 import io.spine.type.Type;
 import org.jboss.forge.roaster.model.Method;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -63,7 +64,7 @@ final class MethodNameAnnotator extends Annotator {
                          .map(TypeSet::allTypes)
                          .flatMap(ImmutableSet::stream)
                          .map(Type::javaClassName)
-                         .map(ClassName::resolveFile)
+                         .map(SourceFile::whichDeclares)
                          .forEach(file -> rewriteSource(file, visitor));
         }
     }

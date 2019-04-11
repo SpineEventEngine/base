@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractSourceFile;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.Type;
@@ -58,9 +59,17 @@ public final class SourceFile extends AbstractSourceFile {
      * @return a relative file path
      */
     public static SourceFile forType(Type<?, ?> type) {
-        SourceFile classFile = type.javaClassName()
-                                   .resolveFile();
+        SourceFile classFile = whichDeclares(type.javaClassName());
         return classFile;
+    }
+
+    public static SourceFile whichDeclares(ClassName javaClass) {
+        checkNotNull(javaClass);
+        Directory directory = Directory.of(javaClass.getPackage());
+        SimpleClassName topLevelClass = javaClass.topLevelClass();
+        FileName javaFile = FileName.forType(topLevelClass.value());
+        SourceFile sourceFile = directory.resolve(javaFile);
+        return sourceFile;
     }
 
     /**
@@ -72,8 +81,7 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
-        FileName filename = SimpleClassName.outerOf(file)
-                                           .toFileName();
+        FileName filename = FileName.forType(SimpleClassName.outerOf(file).value());
         SourceFile result = getGeneratedFolder(file).resolve(filename);
         return result;
     }
@@ -89,7 +97,7 @@ public final class SourceFile extends AbstractSourceFile {
     private static Directory getGeneratedFolder(FileDescriptorProto file) {
         checkNotNull(file);
         PackageName packageName = PackageName.resolve(file);
-        Directory result = packageName.toDirectory();
+        Directory result = Directory.of(packageName);
         return result;
     }
 
@@ -206,9 +214,9 @@ public final class SourceFile extends AbstractSourceFile {
      * Obtains a file path for the source code file of the give type in the passed package.
      */
     public static SourceFile forType(String javaPackage, String typename) {
-        SourceFile result = PackageName.of(javaPackage)
-                                       .toDirectory()
-                                       .resolve(FileName.forType(typename));
+        PackageName packageName = PackageName.of(javaPackage);
+        SourceFile result = Directory.of(packageName)
+                                     .resolve(FileName.forType(typename));
         return result;
     }
 
@@ -216,8 +224,8 @@ public final class SourceFile extends AbstractSourceFile {
      * Obtains a source file of the specified class.
      */
     public static SourceFile of(Class cls) {
-        Directory packageDirectory = PackageName.of(cls)
-                                                .toDirectory();
-        return forType(packageDirectory.toString(), cls.getSimpleName());
+        PackageName packageName = PackageName.of(cls);
+        Directory directory = Directory.of(packageName);
+        return forType(directory.toString(), cls.getSimpleName());
     }
 }

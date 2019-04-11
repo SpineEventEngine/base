@@ -34,7 +34,6 @@ import io.spine.code.java.VBuilderClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
@@ -251,19 +250,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                             .map(field -> new FieldDeclaration(field, this))
                             .collect(toImmutableList());
         return result;
-    }
-
-    /**
-     * Obtains {@code oneof} fields declared in the message type.
-     */
-    public ImmutableList<OneofDeclaration> oneofs() {
-        ImmutableList<OneofDeclaration> result =
-                descriptor().getOneofs()
-                            .stream()
-                            .map(OneofDeclaration::new)
-                            .collect(toImmutableList());
-        return result;
-
     }
 
     /**

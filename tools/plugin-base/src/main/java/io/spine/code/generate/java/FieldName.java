@@ -40,7 +40,7 @@ public final class FieldName extends AbstractFieldName {
     /**
      * Creates Java field name that corresponds to the passed Proto field name.
      */
-    public static FieldName from(io.spine.code.generate.FieldName protoField) {
+    public static FieldName from(io.spine.code.proto.FieldName protoField) {
         checkNotNull(protoField);
         String fieldName = protoField.javaCase();
         FieldName result = new FieldName(fieldName);

@@ -27,9 +27,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.code.generate.java.FieldName;
+import io.spine.code.generate.java.OneofDeclaration;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
@@ -181,18 +181,16 @@ final class VBuilderMethods {
     }
 
     private List<MethodSpec> oneofMethods() {
-        return type.oneofs()
-                   .stream()
-                   .map(this::getCaseMethod)
-                   .collect(toImmutableList());
+        return OneofDeclaration.allFromType(type)
+                               .stream()
+                               .map(VBuilderMethods::getCaseMethod)
+                               .collect(toImmutableList());
     }
 
-    private MethodSpec getCaseMethod(OneofDeclaration oneof) {
+    private static MethodSpec getCaseMethod(OneofDeclaration oneof) {
         String methodName = AccessorTemplates.caseGetter()
                                              .format(FieldName.from(oneof.name()));
-        ClassName returnType = ClassName.bestGuess(type.javaClassName()
-                                                       .oneofCaseEnum(oneof)
-                                                       .value());
+        ClassName returnType = ClassName.bestGuess(oneof.javaCaseEnum().value());
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
