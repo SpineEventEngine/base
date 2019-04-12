@@ -32,6 +32,7 @@ final def module = { final String name ->
     project(":$name").projectDir = new File("$rootDir/tools/$name")
 }
 
+module 'tool-base'
 module 'plugin-base'
 module 'plugin-testlib'
 

@@ -87,7 +87,7 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the {@link java.nio.file.Path} to a folder, that contains
+     * Obtains the {@link Path} to a folder, that contains
      * a generated file from the file descriptor.
      *
      * @param file

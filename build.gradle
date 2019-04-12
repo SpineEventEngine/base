@@ -41,15 +41,16 @@ ext {
 
     projectsToPublish = [
         'base',
+        'tool-base',
         'testlib',
         'mute-logging',
         'errorprone-checks',
 
         // Gradle plugins
+        'plugin-base',
         'javadoc-filter',
         'javadoc-prettifier',
         'proto-js-plugin',
-        'plugin-base',
         'model-compiler',
 
         'plugin-testlib',
