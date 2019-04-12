@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
@@ -50,7 +51,10 @@ class MessageContextTest {
      * Stub implementation of {@link MessageContext}.
      */
     @SuppressWarnings("ReturnOfNull")
+    @Immutable
     private static class StubMessageContext implements MessageContext {
+
+        private static final long serialVersionUID = 0L;
 
         @Override
         public void writeTo(CodedOutputStream output) throws IOException {

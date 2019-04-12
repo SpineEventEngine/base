@@ -748,8 +748,7 @@ message IsOption {
     // The reference to a Java interface.
     //
     // May be an fully-qualified or a simple name. In the latter case, the interface should belong
-    // to the same
-    // Java package as the message class which implements this interface.
+    // to the same Java package as the message class which implements this interface.
     //
     // The framework does not ensure the referenced type exists.
     // If the generation is disabled, the Java type is used as-is. Otherwise, a corresponding Java
