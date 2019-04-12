@@ -152,15 +152,6 @@ public final class SimpleClassName extends StringTypeValue {
         return result;
     }
 
-    // TODO:2019-04-10:dmytro.dashenkov: Invert.
-//    /**
-//     * Obtains the name for a file of the class.
-//     */
-//    public FileName toFileName() {
-//        FileName result = FileName.forType(value());
-//        return result;
-//    }
-
     /**
      * Creates new instance with appended suffix.
      */

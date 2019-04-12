@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2019-04-10:dmytro.dashenkov: Document.
+/**
+ * This package contains tools for working with the structure of a Java project.
+ */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault

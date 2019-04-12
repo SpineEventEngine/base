@@ -18,7 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2019-04-10:dmytro.dashenkov: Document.
+/**
+ * This package contains tools for working with the structure of a project.
+ *
+ * <p>These components consider a project from the file system perspective.
+ */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault

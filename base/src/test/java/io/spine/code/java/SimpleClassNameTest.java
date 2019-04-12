@@ -102,14 +102,4 @@ class SimpleClassNameTest {
                      SimpleClassName.ofMessage(Timestamp.getDescriptor())
                                     .value());
     }
-
-    // TODO:2019-04-11:dmytro.dashenkov: Re-enable.
-//    @Test
-//    @DisplayName("convert to FileName")
-//    void convert_to_file_name() {
-//        SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
-//        assertTrue(className.toFileName()
-//                            .value()
-//                            .contains(Timestamp.class.getSimpleName()));
-//    }
 }

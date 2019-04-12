@@ -244,30 +244,6 @@ public final class ClassName extends StringTypeValue {
         return of(value() + OR_BUILDER_SUFFIX);
     }
 
-    /**
-     * Obtains the name of an enum which represents cases of a {@code oneof} field.
-     *
-     * <p>Such an enum should be nested in this class. The name of the {@code oneof} field is
-     * obtained from the given {@link OneofDeclaration}.
-     *
-     * <p>If this class name is {@code com.acme.cms.Customer} and the {@code oneof} name is
-     * {@code auth_provider}, the resulting class name would be
-     * {@code com.acme.cms.Customer.AuthProviderCase}.
-     *
-     * <p>The resulting class name is always {@linkplain #toDotted() dotted}.
-     *
-     * @param oneof
-     *         the declaration of the {@code oneof} field
-     * @return the case enum FQN
-     */
-    // TODO:2019-04-10:dmytro.dashenkov: Revert.
-//    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
-//        ClassName dotted = this.toDotted();
-//        FieldName oneofName = FieldName.from(oneof.name());
-//        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
-//        return of(enumName);
-//    }
-
     private static ClassName construct(FileDescriptor file,
                                        String typeName,
                                        @Nullable Descriptor enclosing) {
@@ -288,37 +264,6 @@ public final class ClassName extends StringTypeValue {
         return SimpleClassName.create(result);
     }
 
-    /**
-     * Converts a possibly nested class name into a nested name.
-     *
-     * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
-     */
-    // TODO:2019-04-10:dmytro.dashenkov: Invert.
-//    public NestedClassName toNested() {
-//        return NestedClassName.create(this);
-//    }
-
-    // TODO:2019-04-10:dmytro.dashenkov: Invert.
-//    /**
-//     * Resolves the file which contains the declaration of the associated class.
-//     *
-//     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
-//     * file starting at the top level package.
-//     *
-//     * <p>In the simplest case, the file name is the same as the simple class name. However, if
-//     * the class is nested, then the file name coincides with the simple name of the top-level
-//     * class.
-//     *
-//     * @return the file in which the Java class is declared
-//     */
-//    public SourceFile resolveFile() {
-//        Directory directory = getPackage().toDirectory();
-//        SimpleClassName topLevelClass = topLevelClass();
-//        FileName javaFile = FileName.forType(topLevelClass.value());
-//        SourceFile sourceFile = directory.resolve(javaFile);
-//        return sourceFile;
-//    }
-//
     public PackageName getPackage() {
         String fullName = value();
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);

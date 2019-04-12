@@ -63,6 +63,20 @@ public final class SourceFile extends AbstractSourceFile {
         return classFile;
     }
 
+    /**
+     * Resolves the file which contains the declaration of the given class.
+     *
+     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
+     * file starting at the top level package.
+     *
+     * <p>In the simplest case, the file name is the same as the simple class name. However, if
+     * the class is nested, then the file name coincides with the simple name of the top-level
+     * class.
+     *
+     * @param javaClass
+     *         the name of the class to resolve
+     * @return the file in which the Java class is declared
+     */
     public static SourceFile whichDeclares(ClassName javaClass) {
         checkNotNull(javaClass);
         Directory directory = Directory.of(javaClass.getPackage());

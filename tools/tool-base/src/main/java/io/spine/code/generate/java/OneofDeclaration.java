@@ -61,6 +61,19 @@ public final class OneofDeclaration {
         return FieldName.of(oneof.getName());
     }
 
+    /**
+     * Obtains the name of an enum which represents cases of the {@code oneof} field.
+     *
+     * <p>Such an enum should be nested in the declaring message class.
+     *
+     * <p>If the declaring message class name is {@code com.acme.cms.Customer} and the {@code oneof}
+     * name is {@code auth_provider}, the resulting class name would be
+     * {@code com.acme.cms.Customer.AuthProviderCase}.
+     *
+     * <p>The resulting class name is always {@linkplain ClassName#toDotted() dotted}.
+     *
+     * @return the case enum FQN
+     */
     public ClassName javaCaseEnum() {
         ClassName declaringClassName = declaringType.javaClassName();
         ClassName dotted = declaringClassName.toDotted();

@@ -48,7 +48,7 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Creates an instance of the root directory named {@code "java"}.
+     * Creates an instance of the root directory named {@code "proto"}.
      */
     public static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);

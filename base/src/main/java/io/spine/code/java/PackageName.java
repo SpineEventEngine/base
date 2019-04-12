@@ -94,16 +94,6 @@ public final class PackageName extends StringTypeValue {
         return javaPackage;
     }
 
-    // TODO:2019-04-10:dmytro.dashenkov: Invert.
-//    /**
-//     * Obtains file system folder path for the package.
-//     */
-//    public Directory toDirectory() {
-//        String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-//        Directory result = Directory.at(Paths.get(packageDir));
-//        return result;
-//    }
-
     /**
      * Always returns {@code false}.
      *
