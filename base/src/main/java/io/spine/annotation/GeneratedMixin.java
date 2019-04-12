@@ -40,9 +40,9 @@ import java.lang.annotation.Target;
  *    <li>Add {@code default} methods. Presumably bodies of these methods would call accessor
  *    methods declared earlier.
  *    <li>Mark corresponding proto messages using the {@code (is).java_type} option (if for
- *    one message), or {@code (every_is).java_type} file if the interface is common for all the
- *    message declared in the file. This will instruct Spine Model Compiler to make the generated
- *    code implement this interface.
+ *    one message), or {@code (every_is).java_type} option for a file if the interface is common
+ *    for all the message declared in this file. These options instruct Spine Model Compiler to
+ *    make the generated code implement this interface.
  * </ol>
  *
  * <p>The annotation should <em>NOT</em> be used on interfaces that do not provide default methods,
