@@ -130,7 +130,7 @@ public final class DefaultJavaProject extends DefaultProject {
     public static final class GeneratedRoot extends JavaCodeRoot {
 
         @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-        private static final String SPINE_DIR = "io/spine";
+        private static final String SPINE_DIR = "spine";
         private static final String GRPC_DIR = "grpc";
         private static final String RESOURCES_DIR = "resources";
 
