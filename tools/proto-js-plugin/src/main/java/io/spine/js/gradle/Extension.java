@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toList;
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
  * task to configure when it will be executed during the build lifecycle.
  */
-@SuppressWarnings({"PublicField", "WeakerAccess"} /* Expose fields as a Gradle extension */)
+@SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
 public class Extension extends GradleExtension {
 
     /**
