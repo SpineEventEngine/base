@@ -165,6 +165,14 @@ subprojects {
         }
     }
 
+    protobuf {
+        generatedFilesBaseDir = generatedRootDir
+
+        protoc {
+            artifact = deps.build.protoc
+        }
+    }
+
     test {
         useJUnitPlatform {
             includeEngines 'junit-jupiter'
