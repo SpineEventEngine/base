@@ -22,6 +22,7 @@ group = 'io.spine.tools'
 
 dependencies {
     compile project(':base')
+    implementation deps.gen.javaPoet
 
     testImplementation project(':testlib')
 }

@@ -29,6 +29,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.generate.Indent;
 import io.spine.code.generate.java.NestedClassName;
+import io.spine.code.generate.java.VBuilderClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.structure.java.FileName;
 import io.spine.logging.Logging;
@@ -67,7 +68,7 @@ final class VBuilderCode implements Logging {
         this.targetDir = checkNotNull(targetDir);
         this.indent = checkNotNull(indent);
         this.type = checkNotNull(type);
-        this.vbClass = type.validatingBuilderClass();
+        this.vbClass = VBuilderClassName.of(type);
         this.classBuilder = TypeSpec.classBuilder(vbClass.value());
         this.javaPackage = type.javaPackage()
                                .value();

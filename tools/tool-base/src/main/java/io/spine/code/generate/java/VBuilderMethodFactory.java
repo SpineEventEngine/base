@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method.vbuilder;
+package io.spine.code.generate.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
@@ -49,7 +49,7 @@ public final class VBuilderMethodFactory implements MethodFactory {
         if (!messageType.hasVBuilder()) {
             return ImmutableList.of();
         }
-        SimpleClassName vBuilderClass = messageType.validatingBuilderClass();
+        SimpleClassName vBuilderClass = VBuilderClassName.of(messageType);
         PackageName packageName = messageType.javaPackage();
         ClassName vBuilder = ClassName.get(packageName.value(), vBuilderClass.value());
         return ImmutableList.of(newVBuilderSpec(vBuilder), newToVBuilderSpec(vBuilder));

@@ -19,18 +19,18 @@
  */
 syntax = "proto3";
 
-package spine.test.tools.method.vbuilder;
+package spine.test.code.generate.uuid;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.tools.method.vbuilder";
+option java_package="io.spine.test.code.generate.uuid";
 option java_multiple_files = true;
-option java_outer_classname = "MessagesWithVBuildersProto";
+option java_outer_classname = "UuidMessageProto";
 
-// This file defines test environment for `VBuilderMethodFactoryTest`.
+// Only for usage in `UuidMethodFactoryTest` class.
 
-// An example Protobuf message.
-message VBMFTExampleMessage {
-    int32 id = 1;
+// A message with a single `uuid` field.
+message UuidMessage {
+    string uuid = 1;
 }

@@ -24,13 +24,13 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.generate.java.UuidMethodFactory;
+import io.spine.code.generate.java.VBuilderMethodFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.method.uuid.UuidMethodFactory;
-import io.spine.tools.protoc.method.vbuilder.VBuilderMethodFactory;
 
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;

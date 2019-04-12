@@ -28,6 +28,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.code.generate.java.FieldName;
 import io.spine.code.generate.java.OneofDeclaration;
+import io.spine.code.generate.java.VBuilderClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
@@ -102,12 +103,16 @@ final class VBuilderMethods {
 
     private ClassName validatingBuilderClass() {
         return ClassName.get(type.javaPackage().value(),
-                             type.validatingBuilderClass().value());
+                             vBuilderClassName().value());
+    }
+
+    private SimpleClassName vBuilderClassName() {
+        return VBuilderClassName.of(type);
     }
 
     private MethodSpec mergeFromMethod() {
         String methodName = "mergeFrom";
-        SimpleClassName vBuilderClass = type.validatingBuilderClass();
+        SimpleClassName vBuilderClass = vBuilderClassName();
         ClassName className = ClassName.bestGuess(vBuilderClass.toString());
         ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
@@ -227,8 +232,7 @@ final class VBuilderMethods {
                     .setFieldType(fieldType)
                     .setFieldIndex(index)
                     // The name of the Validating Builder class.
-                    .setJavaClass(type.validatingBuilderClass()
-                                      .value())
+                    .setJavaClass(vBuilderClassName().value())
                     .setJavaPackage(type.javaPackage()
                                         .value())
                     .setGenericClassName(messageClass())

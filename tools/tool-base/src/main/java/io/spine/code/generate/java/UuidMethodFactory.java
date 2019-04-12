@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method.uuid;
+package io.spine.code.generate.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;

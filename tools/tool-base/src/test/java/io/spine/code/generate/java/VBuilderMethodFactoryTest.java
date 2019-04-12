@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method.vbuilder;
+package io.spine.code.generate.java;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.option.EntityOption;
-import io.spine.test.tools.method.vbuilder.VBMFTExampleMessage;
-import io.spine.test.tools.method.vbuilder.rejections.Rejections;
+import io.spine.test.code.generate.vbuilder.VBMFTExampleMessage;
+import io.spine.test.code.generate.vbuilder.rejections.Rejections;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -90,10 +90,10 @@ final class VBuilderMethodFactoryTest {
             assertThat(newMethods.get(0)
                                  .value())
                     .isEqualTo("/**\n" +
-                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder}.\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder}.\n" +
                                        " */\n" +
-                                       "public static final io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder vBuilder() {\n" +
-                                       "  return io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
+                                       "public static final io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder vBuilder() {\n" +
+                                       "  return io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
                                        "}\n");
         }
 
@@ -106,10 +106,10 @@ final class VBuilderMethodFactoryTest {
             assertThat(newMethods.get(1)
                                  .value())
                     .isEqualTo("/**\n" +
-                                       " * Creates a new instance of a {@link io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder} with the current state.\n" +
+                                       " * Creates a new instance of a {@link io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder} with the current state.\n" +
                                        " */\n" +
-                                       "public final io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder toVBuilder() {\n" +
-                                       "  io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder result = io.spine.test.tools.method.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
+                                       "public final io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder toVBuilder() {\n" +
+                                       "  io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder result = io.spine.test.code.generate.vbuilder.VBMFTExampleMessageVBuilder.newBuilder();\n" +
                                        "  result.setOriginalState(this);\n" +
                                        "  return result;\n" +
                                        "}\n");

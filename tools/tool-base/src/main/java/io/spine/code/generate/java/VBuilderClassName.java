@@ -18,9 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.code.generate.java;
 
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.ClassNameNotation;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -51,7 +54,7 @@ public final class VBuilderClassName {
      */
     public static SimpleClassName of(MessageType type) {
         checkNotNull(type);
-        checkArgument(type.isCustom(), "Validating Builder is not available for `%s`", type.name());
+        checkArgument(type.hasVBuilder(), "Validating Builder is not available for `%s`", type.name());
 
         VBuilderClassName name = new VBuilderClassName(type);
         return name.toSimple();
