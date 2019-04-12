@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  *
  * <p>In order to generate a class which implements a custom interface:
  * <ol>
- *    <li>Create the interface and annotate it using this annotation.
+ *    <li>Create the interface and mark it with this annotation.
  *    <li>Declare methods of interest following the Protobuf convention for the accessor methods.
  *    For example, if a message has a property named {@code foo_bar}, the method to declare would
  *    be {@code getFooBar()}.
