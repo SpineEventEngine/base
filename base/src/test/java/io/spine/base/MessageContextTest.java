@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
@@ -29,7 +30,6 @@ import com.google.protobuf.UnknownFieldSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +50,13 @@ class MessageContextTest {
      * Stub implementation of {@link MessageContext}.
      */
     @SuppressWarnings("ReturnOfNull")
+    @Immutable
     private static class StubMessageContext implements MessageContext {
 
+        private static final long serialVersionUID = 0L;
+
         @Override
-        public void writeTo(CodedOutputStream output) throws IOException {
+        public void writeTo(CodedOutputStream output) {
         }
 
         @Override
@@ -78,7 +81,7 @@ class MessageContextTest {
         }
 
         @Override
-        public void writeTo(OutputStream output) throws IOException {
+        public void writeTo(OutputStream output) {
         }
 
         @Override

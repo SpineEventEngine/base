@@ -20,10 +20,11 @@
 
 package io.spine.base;
 
-import com.google.protobuf.Message;
+import com.google.errorprone.annotations.Immutable;
 
 /**
  * Base interface for message contexts.
  */
-public interface MessageContext extends Message {
+@Immutable
+public interface MessageContext extends SerializableMessage {
 }
