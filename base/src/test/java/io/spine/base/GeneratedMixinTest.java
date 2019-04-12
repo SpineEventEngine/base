@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -57,6 +58,12 @@ class GeneratedMixinTest {
     @DisplayName("be `Documented`")
     void documented() {
         assertThat(annotation(Documented.class)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("be `Inherited`")
+    void inherited() {
+        assertThat(annotation(Inherited.class)).isNotNull();
     }
 
     private static <A extends Annotation> A annotation(Class<A> annotationClass) {
