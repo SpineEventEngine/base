@@ -30,6 +30,7 @@ import io.spine.code.proto.DescriptorReference;
 import io.spine.code.structure.java.DefaultJavaProject;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.ProtobufDependencies;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
@@ -55,6 +56,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.structure.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
+import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
 import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.TaskName.writePluginConfiguration;
@@ -76,10 +78,6 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
 
-    private static final String PROTOBUF_GROUP = "com.google.protobuf";
-    private static final String PROTOBUF_GRADLE_PLUGIN = PROTOBUF_GROUP;
-    private static final String PROTOC = "protoc";
-
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
 
@@ -94,7 +92,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getPluginManager()
-               .withPlugin(PROTOBUF_GRADLE_PLUGIN, plugin -> applyTo(project));
+               .withPlugin(ProtobufDependencies.gradlePlugin().value(), plugin -> applyTo(project));
     }
 
     private void applyTo(Project project) {
@@ -109,15 +107,11 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         DefaultJavaProject defaultProject = at(project.getProjectDir());
         protobuf.setGeneratedFilesBaseDir(defaultProject.generated()
                                                         .toString());
-        protobuf.protoc(closure(
-                (ExecutableLocator protocLocator) -> protocLocator.setArtifact(
-                        Artifact.newBuilder()
-                                .setGroup(PROTOBUF_GROUP)
-                                .setName(PROTOC)
-                                .setVersion(VERSIONS.protobuf())
-                                .build()
-                                .notation())
-        ));
+        String version = VERSIONS.protobuf();
+        protobuf.protoc(closure((ExecutableLocator protocLocator) ->
+                                        protocLocator.setArtifact(protobufCompiler()
+                                                                          .ofVersion(version)
+                                                                          .notation())));
         protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
