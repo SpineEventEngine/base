@@ -32,6 +32,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A utility for loading resource files from classpath.
  */
+// TODO:2019-04-13:dmytro.dashenkov: Substitute with `Resource`.
+@Deprecated
 public final class ResourceFiles {
 
     /**
