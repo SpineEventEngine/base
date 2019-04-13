@@ -24,7 +24,7 @@ import io.spine.io.Resource;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
-import static org.gradle.internal.impldep.com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A Gradle project plugin implemented in a {@code .gradle} script.
