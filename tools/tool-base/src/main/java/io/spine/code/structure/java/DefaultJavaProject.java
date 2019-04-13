@@ -112,15 +112,15 @@ public final class DefaultJavaProject extends DefaultProject {
         /**
          * A root for the main proto code.
          */
-        public io.spine.code.proto.Directory mainProto() {
-            return io.spine.code.proto.Directory.rootIn(getMain());
+        public io.spine.code.structure.proto.Directory mainProto() {
+            return io.spine.code.structure.proto.Directory.rootIn(getMain());
         }
 
         /**
          * A root for the test proto code.
          */
-        public io.spine.code.proto.Directory testProto() {
-            return io.spine.code.proto.Directory.rootIn(getTest());
+        public io.spine.code.structure.proto.Directory testProto() {
+            return io.spine.code.structure.proto.Directory.rootIn(getTest());
         }
     }
 
