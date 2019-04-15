@@ -34,6 +34,12 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
+/**
+ * A resource file in the classpath.
+ *
+ * <p>The {@code Thread.currentThread().getContextClassLoader()} is used to load the resource from
+ * the classpath.
+ */
 public final class Resource {
 
     private final String path;
@@ -42,17 +48,38 @@ public final class Resource {
         this.path = path;
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param path
+     *         the path to the resource file, relative to the classpath.
+     */
     public static Resource file(String path) {
         checkNotEmptyOrBlank(path);
         return new Resource(path);
     }
 
+    /**
+     * Obtains a {@link URL} of the resolved resource.
+     *
+     * <p>If the resource cannot be resolved (i.e. file does not exist), throws
+     * an {@code IllegalStateException}.
+     *
+     * @return the resource URL
+     */
     public URL locate() {
         URL resource = classLoader().getResource(path);
         checkFound(resource);
         return resource;
     }
 
+    /**
+     * Obtains all the resource files by this path.
+     *
+     * <p>If there are no such files, throws an {@code IllegalStateException}.
+     *
+     * @return the URLs to the resolved resource files
+     */
     public Iterable<URL> locateAll() {
         Enumeration<URL> resources = getResourceEnumeration();
         UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
@@ -72,6 +99,15 @@ public final class Resource {
         }
     }
 
+    /**
+     * Obtains a new {@link InputStream} to the resource.
+     *
+     * <p>The caller is responsible for closing the stream and handling I/O errors.
+     *
+     * <p>Throws an {@code IllegalStateException} if the resource cannot be resolved.
+     *
+     * @return new {@link InputStream}
+     */
     public InputStream open() {
         InputStream stream = classLoader().getResourceAsStream(path);
         checkFound(stream);
