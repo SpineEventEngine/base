@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
-import io.spine.io.ResourceFiles;
+import io.spine.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,14 +32,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Streams.stream;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -58,8 +56,8 @@ public final class DescriptorReference {
      * <p>There may be multiple `desc.ref` files present in one project.
      */
     @VisibleForTesting
-    @SuppressWarnings("DuplicateStringLiteralInspection") /* Different semantics. */
     static final String FILE_NAME = "desc.ref";
+    private static final Resource FILE_IN_CLASSPATH = Resource.file(FILE_NAME);
 
     @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
                                                        platform-dependent issues in `desc.ref`.*/
@@ -90,8 +88,8 @@ public final class DescriptorReference {
      *
      * @return an iterator over application resources
      */
-    static Iterator<ResourceReference> loadAll() {
-        return loadFromResources(ResourceFiles.loadAll(FILE_NAME));
+    static Iterator<Resource> loadAll() {
+        return loadFromResources(FILE_IN_CLASSPATH.locateAll());
     }
 
     /**
@@ -103,18 +101,19 @@ public final class DescriptorReference {
      *         resources} iterator
      */
     @VisibleForTesting
-    static Iterator<ResourceReference> loadFromResources(Iterator<URL> resources) {
-        return stream(resources)
+    static Iterator<Resource> loadFromResources(Collection<URL> resources) {
+        return resources
+                .stream()
                 .map(DescriptorReference::readCatalog)
                 .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog)
                                                  .stream())
                 .distinct()
-                .map(ResourceReference::new)
+                .map(Resource::file)
                 .iterator();
     }
 
-    private static String readCatalog(URL resourceUrl) {
-        try (InputStream catalogStream = resourceUrl.openStream()) {
+    private static String readCatalog(URL resource) {
+        try (InputStream catalogStream = resource.openStream()) {
             byte[] catalogBytes = toByteArray(catalogStream);
             String catalog = new String(catalogBytes, UTF_8);
             return catalog;
@@ -181,52 +180,7 @@ public final class DescriptorReference {
 
     /** Obtains a {@code ResourceReference} that is described by this descriptor reference. */
     @VisibleForTesting
-    ResourceReference asResource() {
-        return new ResourceReference(reference);
-    }
-
-    /**
-     * A reference to an application resource.
-     */
-    public static final class ResourceReference {
-
-        private final String resourceName;
-
-        private ResourceReference(String resourceName) {
-            this.resourceName = resourceName;
-        }
-
-        /**
-         * Opens an {@code InputStream} for this resource.
-         *
-         * @return the resource stream or {@code Optional.empty()} if the resource does not exist
-         */
-        public Optional<InputStream> openStream() {
-            InputStream result = DescriptorReference.class.getClassLoader()
-                                                          .getResourceAsStream(resourceName);
-            return Optional.ofNullable(result);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(resourceName);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            ResourceReference reference = (ResourceReference) o;
-            return Objects.equals(resourceName, reference.resourceName);
-        }
-
-        @Override
-        public String toString() {
-            return resourceName;
-        }
+    Resource asResource() {
+        return Resource.file(reference);
     }
 }

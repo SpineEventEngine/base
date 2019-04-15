@@ -20,6 +20,7 @@
 
 package io.spine.io;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
@@ -60,6 +61,16 @@ public final class Resource {
     }
 
     /**
+     * Checks if the resource with such a name exists in the classpath.
+     *
+     * @return {@code true} if the resource is present, {@code false} otherwise
+     */
+    public boolean exists() {
+        URL resource = classLoader().getResource(path);
+        return resource != null;
+    }
+
+    /**
      * Obtains a {@link URL} of the resolved resource.
      *
      * <p>If the resource cannot be resolved (i.e. file does not exist), throws
@@ -76,11 +87,13 @@ public final class Resource {
     /**
      * Obtains all the resource files by this path.
      *
+     * <p>The order in which the URLs are obtained is not defined.
+     *
      * <p>If there are no such files, throws an {@code IllegalStateException}.
      *
      * @return the URLs to the resolved resource files
      */
-    public Iterable<URL> locateAll() {
+    public ImmutableList<URL> locateAll() {
         Enumeration<URL> resources = getResourceEnumeration();
         UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
         ImmutableList<URL> result = ImmutableList.copyOf(iterator);
@@ -121,5 +134,27 @@ public final class Resource {
     private static ClassLoader classLoader() {
         return Thread.currentThread()
                      .getContextClassLoader();
+    }
+
+    @Override
+    public String toString() {
+        return path;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Resource)) {
+            return false;
+        }
+        Resource resource = (Resource) o;
+        return Objects.equal(path, resource.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(path);
     }
 }
