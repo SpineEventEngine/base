@@ -25,7 +25,7 @@ import com.google.common.base.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A dependency on a third-party module.
+ * A third-party dependency of a project.
  */
 public final class ThirdPartyDependency implements Dependency {
 

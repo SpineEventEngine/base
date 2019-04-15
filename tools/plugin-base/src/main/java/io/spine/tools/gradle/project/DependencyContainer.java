@@ -32,7 +32,7 @@ import static org.gradle.api.plugins.JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAM
  * <p>Typically, represented by a {@link org.gradle.api.artifacts.dsl.DependencyHandler} of
  * the project.
  */
-public interface DependencyTarget {
+public interface DependencyContainer {
 
     /**
      * Adds a new dependency within a given configuration.
