@@ -18,25 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.java;
+package io.spine.code.gen.js;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("GeneratedBySpine should")
-class GeneratedBySpineTest {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        GeneratedBySpine annotation = GeneratedBySpine.instance();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(FieldName.class);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with generated code.
+    @Test
+    @DisplayName("create CamelCase name from Protobuf field")
+    void convertToCamelCase() {
+        FieldDescriptor typeUrlDescriptor = Any.getDescriptor()
+                                               .findFieldByName("type_url");
+        FieldName fieldName = FieldName.from(typeUrlDescriptor);
+        assertEquals("TypeUrl", fieldName.value());
     }
 }

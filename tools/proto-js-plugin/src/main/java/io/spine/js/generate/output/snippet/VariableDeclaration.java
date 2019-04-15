@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.output.snippet;
 
-import io.spine.code.generate.js.TypeName;
+import io.spine.code.gen.js.TypeName;
 import io.spine.js.generate.output.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;

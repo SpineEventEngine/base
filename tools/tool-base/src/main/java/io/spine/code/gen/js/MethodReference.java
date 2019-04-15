@@ -18,43 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.java;
+package io.spine.code.gen.js;
 
-import io.spine.code.AbstractFieldName;
+import io.spine.value.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.Character.toUpperCase;
+import static java.lang.String.format;
 
 /**
- * A name of a field declared in a Java class.
+ * A reference to a method of a Protobuf type.
+ *
+ * <p>The reference allows to identify a method in code
+ * since it includes a type name and a method name.
  */
-public final class FieldName extends AbstractFieldName {
+public final class MethodReference extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
-    private static final FieldName SERIAL_VERSION_UID = new FieldName("serialVersionUID");
 
-    private FieldName(String value) {
+    private MethodReference(String value) {
         super(value);
     }
 
     /**
-     * Creates Java field name that corresponds to the passed Proto field name.
+     * Obtains the reference to the instance method of the specified type.
      */
-    public static FieldName from(io.spine.code.proto.FieldName protoField) {
-        checkNotNull(protoField);
-        String fieldName = protoField.javaCase();
-        FieldName result = new FieldName(fieldName);
-        return result;
+    public static MethodReference onType(TypeName typeName, String methodName) {
+        String value = format("%s.%s", typeName, methodName);
+        return new MethodReference(value);
     }
 
-    /** Obtains this name starting with a capital letter. */
-    public String capitalize() {
-        String name = value();
-        String result = toUpperCase(name.charAt(0)) + name.substring(1);
-        return result;
+    /**
+     * Obtains the reference to the static method of the specified type.
+     */
+    public static MethodReference onPrototype(TypeName typeName, String methodName) {
+        String value = format("%s.prototype.%s", typeName, methodName);
+        return new MethodReference(value);
     }
 
-    public static FieldName serialVersionUID() {
-        return SERIAL_VERSION_UID;
+    /**
+     * Obtains the reference to the constructor of the specified type.
+     */
+    public static MethodReference constructor(TypeName typeName) {
+        return new MethodReference(typeName.value());
     }
 }

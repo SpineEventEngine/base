@@ -23,10 +23,12 @@
  * code.
  */
 
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.generate.java;
+package io.spine.code.gen.js;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.java;
+package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.OneofDescriptor;
@@ -77,8 +77,8 @@ public final class OneofDeclaration {
     public ClassName javaCaseEnum() {
         ClassName declaringClassName = declaringType.javaClassName();
         ClassName dotted = declaringClassName.toDotted();
-        io.spine.code.generate.java.FieldName oneofName =
-                io.spine.code.generate.java.FieldName.from(name());
+        io.spine.code.gen.java.FieldName oneofName =
+                io.spine.code.gen.java.FieldName.from(name());
         String enumName = format("%s.%sCase", dotted.value(), oneofName.capitalize());
         return ClassName.of(enumName);
     }

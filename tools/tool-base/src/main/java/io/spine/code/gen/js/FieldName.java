@@ -18,46 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.js;
+package io.spine.code.gen.js;
 
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.value.StringTypeValue;
 
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A reference to a method of a Protobuf type.
+ * A name of the generated Protobuf message field in JavaScript.
  *
- * <p>The reference allows to identify a method in code
- * since it includes a type name and a method name.
+ * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
+ * {@code CamelCase}.
  */
-public final class MethodReference extends StringTypeValue {
+public final class FieldName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    private MethodReference(String value) {
+    private FieldName(String value) {
         super(value);
     }
 
-    /**
-     * Obtains the reference to the instance method of the specified type.
-     */
-    public static MethodReference onType(TypeName typeName, String methodName) {
-        String value = format("%s.%s", typeName, methodName);
-        return new MethodReference(value);
-    }
-
-    /**
-     * Obtains the reference to the static method of the specified type.
-     */
-    public static MethodReference onPrototype(TypeName typeName, String methodName) {
-        String value = format("%s.prototype.%s", typeName, methodName);
-        return new MethodReference(value);
-    }
-
-    /**
-     * Obtains the reference to the constructor of the specified type.
-     */
-    public static MethodReference constructor(TypeName typeName) {
-        return new MethodReference(typeName.value());
+    public static FieldName from(FieldDescriptor fieldDescriptor) {
+        checkNotNull(fieldDescriptor);
+        FieldDescriptorProto proto = fieldDescriptor.toProto();
+        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
+                                                              .toCamelCase();
+        return new FieldName(capitalizedName);
     }
 }

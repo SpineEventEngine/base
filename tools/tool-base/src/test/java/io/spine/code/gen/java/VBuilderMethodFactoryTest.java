@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.java;
+package io.spine.code.gen.java;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;

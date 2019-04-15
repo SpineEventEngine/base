@@ -22,7 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.generate.Indent;
+import io.spine.code.gen.Indent;
 import io.spine.code.structure.java.FileName;
 import io.spine.test.tools.validation.builder.TheOuterProto;
 import io.spine.test.tools.validation.builder.VbtMap;

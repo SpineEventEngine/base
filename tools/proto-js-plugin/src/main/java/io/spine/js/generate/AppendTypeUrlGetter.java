@@ -22,8 +22,8 @@ package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.generate.js.MethodReference;
-import io.spine.code.generate.js.TypeName;
+import io.spine.code.gen.js.MethodReference;
+import io.spine.code.gen.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.code.structure.js.Directory;

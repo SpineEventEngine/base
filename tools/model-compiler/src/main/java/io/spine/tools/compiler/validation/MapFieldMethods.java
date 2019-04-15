@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.generate.java.FieldName;
+import io.spine.code.gen.java.FieldName;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.MapFieldType;

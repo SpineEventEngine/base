@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.java;
+package io.spine.code.gen.java;
 
 import io.spine.test.code.generate.uuid.UuidMessage;
 import io.spine.tools.protoc.method.GeneratedMethod;

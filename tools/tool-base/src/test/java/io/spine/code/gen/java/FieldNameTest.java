@@ -18,14 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains tools for generating and working with source code.
- */
+package io.spine.code.gen.java;
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.generate;
+import com.google.common.testing.NullPointerTester;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+@DisplayName("FieldName should")
+class FieldNameTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .setDefault(io.spine.code.proto.FieldName.class,
+                            io.spine.code.proto.FieldName.of("value"))
+                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
+    }
+}

@@ -21,7 +21,7 @@
 package io.spine.js.generate.field;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.code.generate.js.FieldName;
+import io.spine.code.gen.js.FieldName;
 import io.spine.js.generate.field.parser.FieldParser;
 
 /**

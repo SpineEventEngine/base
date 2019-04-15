@@ -18,33 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.js;
+package io.spine.code.gen.java;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.value.StringTypeValue;
+import io.spine.code.AbstractFieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Character.toUpperCase;
 
 /**
- * A name of the generated Protobuf message field in JavaScript.
- *
- * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
- * {@code CamelCase}.
+ * A name of a field declared in a Java class.
  */
-public final class FieldName extends StringTypeValue {
+public final class FieldName extends AbstractFieldName {
 
     private static final long serialVersionUID = 0L;
+    private static final FieldName SERIAL_VERSION_UID = new FieldName("serialVersionUID");
 
     private FieldName(String value) {
         super(value);
     }
 
-    public static FieldName from(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
-                                                              .toCamelCase();
-        return new FieldName(capitalizedName);
+    /**
+     * Creates Java field name that corresponds to the passed Proto field name.
+     */
+    public static FieldName from(io.spine.code.proto.FieldName protoField) {
+        checkNotNull(protoField);
+        String fieldName = protoField.javaCase();
+        FieldName result = new FieldName(fieldName);
+        return result;
+    }
+
+    /** Obtains this name starting with a capital letter. */
+    public String capitalize() {
+        String name = value();
+        String result = toUpperCase(name.charAt(0)) + name.substring(1);
+        return result;
+    }
+
+    public static FieldName serialVersionUID() {
+        return SERIAL_VERSION_UID;
     }
 }

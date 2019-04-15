@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.generate.js;
+package io.spine.code.gen.js;
 
 import com.google.protobuf.Any;
 import org.junit.jupiter.api.DisplayName;
