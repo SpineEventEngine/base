@@ -22,7 +22,6 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
 
 import java.io.Serializable;
 
@@ -33,7 +32,6 @@ import java.io.Serializable;
  * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
  * message interfaces. See the known subtypes for more details.
  */
-@Internal
 @Immutable
 public interface SerializableMessage extends Message, Serializable {
 }
