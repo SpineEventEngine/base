@@ -42,6 +42,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.ConfigurationName.COMPILE;
 import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
 import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
@@ -66,22 +67,30 @@ class ProjectDependencyContainerTest {
     @DisplayName("add a given dependency")
     void addDependency() {
         ProjectDependencyContainer container = ProjectDependencyContainer.from(project);
+        Artifact dependency = artifact();
+        container.depend(IMPLEMENTATION, dependency.notation());
 
-        Artifact dependency = Artifact
-                .newBuilder()
-                .useSpineToolsGroup()
-                .setName("test-artifact")
-                .setVersion("42.0")
-                .build();
-        String notation = dependency.notation();
-        container.depend(IMPLEMENTATION, notation);
+        checkDependency(IMPLEMENTATION, dependency);
+    }
 
-        DependencySet dependencies = project.getConfigurations()
-                                            .getByName(IMPLEMENTATION.value())
-                                            .getDependencies();
-        assertThat(dependencies).hasSize(1);
-        Artifact actualDependency = Artifact.from(getOnlyElement(dependencies));
-        assertThat(actualDependency).isEqualTo(dependency);
+    @Test
+    @DisplayName("add an implementation dependency")
+    void implementation() {
+        ProjectDependencyContainer container = ProjectDependencyContainer.from(project);
+        Artifact dependency = artifact();
+        container.implementation(dependency.notation());
+
+        checkDependency(IMPLEMENTATION, dependency);
+    }
+
+    @Test
+    @DisplayName("add a compile dependency")
+    void compile() {
+        ProjectDependencyContainer container = ProjectDependencyContainer.from(project);
+        Artifact dependency = artifact();
+        container.compile(dependency);
+
+        checkDependency(COMPILE, dependency);
     }
 
     @Test
@@ -95,11 +104,30 @@ class ProjectDependencyContainerTest {
         checkExcluded(TEST_RUNTIME_CLASSPATH, unwanted);
     }
 
+    private void checkDependency(ConfigurationName configuration, Artifact dependency) {
+        DependencySet dependencies = project.getConfigurations()
+                                            .getByName(configuration.value())
+                                            .getDependencies();
+        assertThat(dependencies).hasSize(1);
+        Artifact actualDependency = Artifact.from(getOnlyElement(dependencies));
+        assertThat(actualDependency).isEqualTo(dependency);
+    }
+
     private void checkExcluded(ConfigurationName fromConfiguration, Dependency unwanted) {
         Set<ExcludeRule> runtimeExclusionRules = project.getConfigurations()
                                                         .getByName(fromConfiguration.value())
                                                         .getExcludeRules();
         ExcludeRule excludeRule = new DefaultExcludeRule(unwanted.groupId(), unwanted.name());
         assertThat(runtimeExclusionRules).containsExactly(excludeRule);
+    }
+
+    private static Artifact artifact() {
+        Artifact artifact = Artifact
+                .newBuilder()
+                .useSpineToolsGroup()
+                .setName("test-artifact")
+                .setVersion("42.0")
+                .build();
+        return artifact;
     }
 }
