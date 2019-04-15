@@ -23,14 +23,14 @@ package io.spine.tools.gradle;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A project dependency specification.
+ * A Maven-style dependency specification.
  *
  * <p>Consists of a group ID and a name. Does not specify a concrete artifact.
  */
 public interface Dependency {
 
     /**
-     * Obtains the group ID of this dependency.
+     * Obtains the Maven group ID of this dependency.
      */
     String groupId();
 

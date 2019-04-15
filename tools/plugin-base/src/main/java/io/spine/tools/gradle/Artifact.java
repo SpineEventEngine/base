@@ -26,7 +26,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A remote artifact specification.
+ * A Maven-style remote artifact specification.
  *
  * <p>An artifact must have a group, a name, and a version. Also, it may have a classifier and
  * an extension.
