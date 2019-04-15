@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.testing;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.project.DependencyContainer;
 
@@ -37,7 +38,7 @@ public final class MemoizingDependencyContainer implements DependencyContainer {
     private final Set<Dependency> exclusions = newHashSet();
 
     @Override
-    public void depend(String configuration, String notation) {
+    public void depend(ConfigurationName configuration, String notation) {
         dependencies.add(notation);
     }
 

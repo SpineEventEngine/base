@@ -160,7 +160,7 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
 
     private GradleTask createCopyPluginJarTask(Project project) {
         Configuration fetch = project.getConfigurations()
-                                     .maybeCreate(FETCH.getValue());
+                                     .maybeCreate(FETCH.value());
         Artifact protocPluginArtifact = Artifact
                 .newBuilder()
                 .useSpineToolsGroup()

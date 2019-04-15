@@ -21,10 +21,11 @@
 package io.spine.tools.gradle.project;
 
 import io.spine.tools.gradle.Artifact;
+import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 
-import static org.gradle.api.plugins.JavaPlugin.COMPILE_CONFIGURATION_NAME;
-import static org.gradle.api.plugins.JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME;
+import static io.spine.tools.gradle.ConfigurationName.COMPILE;
+import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
 
 /**
  * A container of dependencies of a certain project.
@@ -42,7 +43,7 @@ public interface DependencyContainer {
      * @param notation
      *         the dependency string, e.g. {@code "io.spine:spine-base:1.0.0"}
      */
-    void depend(String configurationName, String notation);
+    void depend(ConfigurationName configurationName, String notation);
 
     /**
      * Excludes the given dependency from the project.
@@ -69,22 +70,18 @@ public interface DependencyContainer {
      * define Protobuf dependencies without re-generating the Java/JS sources from the upstream
      * Protobuf definitions.
      *
-     * @see #depend(String, String)
+     * @see #depend(ConfigurationName, String)
      */
     default void compile(String notation) {
-        @SuppressWarnings("deprecation")
-        // Required in order to add Protobuf dependencies.
-        // See issue https://github.com/google/protobuf-gradle-plugin/issues/242.
-        String configurationName = COMPILE_CONFIGURATION_NAME;
-        depend(configurationName, notation);
+        depend(COMPILE, notation);
     }
 
     /**
      * Adds a new dependency within the {@code implementation} configuration.
      *
-     * @see #depend(String, String)
+     * @see #depend(ConfigurationName, String)
      */
     default void implementation(String notation) {
-        depend(IMPLEMENTATION_CONFIGURATION_NAME, notation);
+        depend(IMPLEMENTATION, notation);
     }
 }

@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.project;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -57,16 +58,16 @@ public final class ProjectDependencyContainer implements DependencyContainer {
     }
 
     @Override
-    public void depend(String configurationName, String notation) {
-        dependencies.add(configurationName, notation);
+    public void depend(ConfigurationName configurationName, String notation) {
+        dependencies.add(configurationName.value(), notation);
     }
 
     @Override
     public void exclude(Dependency dependency) {
-        Configuration mainConfig = configurations.getByName(RUNTIME_CLASSPATH.getValue());
+        Configuration mainConfig = configurations.getByName(RUNTIME_CLASSPATH.value());
         exclude(mainConfig, dependency);
 
-        Configuration testConfig = configurations.getByName(TEST_RUNTIME_CLASSPATH.getValue());
+        Configuration testConfig = configurations.getByName(TEST_RUNTIME_CLASSPATH.value());
         exclude(testConfig, dependency);
     }
 
