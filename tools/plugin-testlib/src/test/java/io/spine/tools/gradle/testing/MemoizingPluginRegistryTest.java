@@ -20,45 +20,35 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.collect.ImmutableSet;
+import io.spine.io.Resource;
 import io.spine.tools.gradle.GradlePlugin;
 import io.spine.tools.gradle.PluginScript;
-import io.spine.tools.gradle.project.PluginTarget;
+import org.gradle.api.plugins.JavaPlugin;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import static com.google.common.truth.Truth.assertThat;
 
-import static com.google.common.collect.Sets.newHashSet;
+class MemoizingPluginRegistryTest {
 
-/**
- * A test implementation of {@link PluginTarget}.
- *
- * <p>Memoizes the applied plugins.
- */
-public final class MemoizingPluginRegistry implements PluginTarget {
-
-    private final Set<GradlePlugin> plugins = newHashSet();
-    private final Set<PluginScript> pluginScripts = newHashSet();
-
-    @Override
-    public void apply(GradlePlugin plugin) {
-        plugins.add(plugin);
+    @Test
+    @DisplayName("memoize the given plugin")
+    void memoizePlugin() {
+        GradlePlugin plugin = GradlePlugin.implementedIn(JavaPlugin.class);
+        MemoizingPluginRegistry registry = new MemoizingPluginRegistry();
+        registry.apply(plugin);
+        assertThat(registry.isApplied(plugin)).isTrue();
+        assertThat(registry.plugins()).containsExactly(plugin);
+        assertThat(registry.pluginScripts()).isEmpty();
     }
 
-    @Override
-    public void apply(PluginScript pluginScript) {
-        pluginScripts.add(pluginScript);
-    }
-
-    @Override
-    public boolean isApplied(GradlePlugin plugin) {
-        return plugins.contains(plugin);
-    }
-
-    public ImmutableSet<GradlePlugin> plugins() {
-        return ImmutableSet.copyOf(plugins);
-    }
-
-    public ImmutableSet<PluginScript> pluginScripts() {
-        return ImmutableSet.copyOf(pluginScripts);
+    @Test
+    @DisplayName("memoize the given plugin script")
+    void memoizePluginScript() {
+        PluginScript script = PluginScript.declaredIn(Resource.file(BuildGradle.FILE_NAME));
+        MemoizingPluginRegistry registry = new MemoizingPluginRegistry();
+        registry.apply(script);
+        assertThat(registry.pluginScripts()).containsExactly(script);
+        assertThat(registry.plugins()).isEmpty();
     }
 }

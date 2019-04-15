@@ -20,39 +20,38 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.gradle.GeneratedSourceRoot;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.File;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Creates {@link #FILE_NAME} file in the root of the test project, copying it from resources.
- */
-final class BuildGradle {
+@DisplayName("MemoizingDirectoryStructure should")
+class MemoizingDirectoryStructureTest {
 
-    /**
-     * The name of the build file.
-     */
-    @VisibleForTesting
-    static final String FILE_NAME = "build.gradle";
+    private Project project;
 
-    private final Path testProjectRoot;
-
-    BuildGradle(Path root) {
-        testProjectRoot = root;
+    @BeforeEach
+    void setUp(@TempDir File projectDir) {
+        project = ProjectBuilder
+                .builder()
+                .withProjectDir(projectDir)
+                .build();
     }
 
-    void createFile() throws IOException {
-        Path resultingPath = testProjectRoot.resolve(FILE_NAME);
+    @Test
+    @DisplayName("memoize given directory")
+    void memoizeDirs() {
+        MemoizingDirectoryStructure structure = new MemoizingDirectoryStructure();
+        GeneratedSourceRoot sourceRoot = GeneratedSourceRoot.of(project);
+        structure.markCodeGenRoot(sourceRoot);
 
-        InputStream fileContent = getClass().getClassLoader()
-                                            .getResourceAsStream(FILE_NAME);
-        Files.createDirectories(resultingPath.getParent());
-        checkNotNull(fileContent);
-        Files.copy(fileContent, resultingPath);
+        assertThat(structure.javaSourceDirs()).contains(sourceRoot.getPath());
     }
 }
