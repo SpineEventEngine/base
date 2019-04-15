@@ -79,7 +79,7 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile whichDeclares(ClassName javaClass) {
         checkNotNull(javaClass);
-        Directory directory = Directory.of(javaClass.getPackage());
+        Directory directory = Directory.of(javaClass.packageName());
         SimpleClassName topLevelClass = javaClass.topLevelClass();
         FileName javaFile = FileName.forType(topLevelClass.value());
         SourceFile sourceFile = directory.resolve(javaFile);

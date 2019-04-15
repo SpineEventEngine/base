@@ -264,7 +264,10 @@ public final class ClassName extends StringTypeValue {
         return SimpleClassName.create(result);
     }
 
-    public PackageName getPackage() {
+    /**
+     * Obtains the name of the package of this class.
+     */
+    public PackageName packageName() {
         String fullName = value();
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
@@ -272,6 +275,12 @@ public final class ClassName extends StringTypeValue {
         return PackageName.of(result);
     }
 
+    /**
+     * Obtains the simple name of the top level class.
+     *
+     * <p>If this class is top level, returns the simple name of this class. If this class is
+     * nested, returns the name of the declaring top level class.
+     */
     public SimpleClassName topLevelClass() {
         String qualifiedClassName = afterDot(value());
         int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
