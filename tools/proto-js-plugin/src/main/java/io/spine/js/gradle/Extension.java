@@ -22,9 +22,9 @@ package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import io.spine.code.structure.DefaultProject;
-import io.spine.code.structure.js.DefaultJsProject;
-import io.spine.code.structure.js.Directory;
+import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.Directory;
 import io.spine.js.generate.resolve.DirectoryPattern;
 import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;

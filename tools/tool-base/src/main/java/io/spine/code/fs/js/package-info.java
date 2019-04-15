@@ -19,12 +19,12 @@
  */
 
 /**
- * This package contains tools for working with the structure of a Java project.
+ * This package contains tools for working with the structure of a JavaScript project.
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.structure.proto;
+package io.spine.code.fs.js;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

@@ -18,34 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.js;
+/**
+ * This package contains tools for working with the structure of a Java project.
+ */
 
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.fs.java;
 
-import java.util.List;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@DisplayName("DirectoryReference should")
-class DirectoryReferenceTest {
-
-    @Test
-    @DisplayName("not be empty")
-    void notEmpty() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> DirectoryReference.of("")
-        );
-    }
-
-    @Test
-    @DisplayName("provide names it consists from")
-    void provideDirectoryNames() {
-        DirectoryReference reference = DirectoryReference.of("a/b/c");
-        List<String> expected = ImmutableList.of("a", "b", "c");
-        assertThat(reference.elements()).containsAllIn(expected);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,14 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.code.fs.proto;
+
+import io.spine.code.AbstractDirectory;
+import io.spine.code.SourceCodeDirectory;
+
+import java.nio.file.Path;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * This package contains tools for working with the structure of a Java project.
+ * A proto source code directory.
  */
+public final class Directory extends SourceCodeDirectory {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.structure.java;
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
+    private static final String ROOT_NAME = "proto";
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private Directory(Path path) {
+        super(path);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Creates a new instance.
+     */
+    static Directory at(Path path) {
+        checkNotNull(path);
+        return new Directory(path);
+    }
+
+    /**
+     * Creates an instance of the root directory named {@code "proto"}.
+     */
+    public static Directory rootIn(AbstractDirectory parent) {
+        checkNotNull(parent);
+        Path path = parent.getPath()
+                          .resolve(ROOT_NAME);
+        return at(path);
+    }
+}

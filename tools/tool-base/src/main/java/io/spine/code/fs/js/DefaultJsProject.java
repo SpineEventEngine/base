@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.js;
+package io.spine.code.fs.js;
 
-import io.spine.code.structure.DefaultProject;
+import io.spine.code.fs.DefaultProject;
 
 import java.io.File;
 import java.nio.file.Path;

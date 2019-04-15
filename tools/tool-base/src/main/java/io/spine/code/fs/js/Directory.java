@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.proto;
+package io.spine.code.fs.js;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
@@ -28,32 +28,50 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A proto source code directory.
+ * A folder with JavaScript source files.
+ *
+ * @author Dmytro Kuzmin
  */
 public final class Directory extends SourceCodeDirectory {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
+    private static final String ROOT_NAME = "js";
 
     private Directory(Path path) {
         super(path);
     }
 
     /**
-     * Creates a new instance.
+     * Creates a new instance at the specified location.
      */
-    static Directory at(Path path) {
+    public static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
 
     /**
-     * Creates an instance of the root directory named {@code "proto"}.
+     * Creates an instance of the root directory named {@code "js"}.
      */
-    public static Directory rootIn(AbstractDirectory parent) {
+    static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
         Path path = parent.getPath()
                           .resolve(ROOT_NAME);
         return at(path);
+    }
+
+    /**
+     * Obtains the source code path for the passed file name.
+     */
+    public Path resolve(FileName fileName) {
+        checkNotNull(fileName);
+        Path result = getPath().resolve(fileName.value());
+        return result;
+    }
+
+    /**
+     * Obtains the source code path for the passed library file.
+     */
+    public Path resolve(LibraryFile libraryFile) {
+        checkNotNull(libraryFile);
+        return resolve(libraryFile.fileName());
     }
 }

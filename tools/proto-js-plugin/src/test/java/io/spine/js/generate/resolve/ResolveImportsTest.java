@@ -22,7 +22,7 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
-import io.spine.code.structure.js.Directory;
+import io.spine.code.fs.js.Directory;
 import io.spine.js.generate.given.GivenProject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

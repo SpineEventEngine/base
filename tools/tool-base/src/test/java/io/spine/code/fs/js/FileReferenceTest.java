@@ -18,57 +18,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.js;
+package io.spine.code.fs.js;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FileName should")
-class FileNameTest {
-
-    private final FileDescriptor file = Any.getDescriptor()
-                                           .getFile();
+@DisplayName("FileReference should")
+class FileReferenceTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(FileName.class);
+        new NullPointerTester().testAllPublicStaticMethods(FileReference.class);
     }
 
     @Test
-    @DisplayName("not accept names without extension")
-    void notAcceptNameWithoutExtension() {
+    @DisplayName("not be an empty string")
+    void notAcceptEmptyString() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> FileName.of("no-extension")
+                () -> FileReference.of("")
         );
     }
 
     @Test
-    @DisplayName("replace `.proto` extension with predefined suffix")
-    void appendSuffix() {
-        FileName fileName = FileName.from(file);
-        String expected = "google/protobuf/any_pb.js";
-        assertEquals(expected, fileName.value());
+    @DisplayName("obtain file name skipping the path")
+    void obtainFileName() {
+        FileReference fileReference = FileReference.of("./../../foo/nested.js");
+        String fileName = fileReference.fileName();
+        assertThat(fileName).isEqualTo("nested.js");
     }
 
     @Test
-    @DisplayName("return path elements")
-    void returnPathElements() {
-        FileName fileName = FileName.from(file);
-        List<String> pathElements = fileName.pathElements();
-        assertThat(pathElements).contains("google");
-        assertThat(pathElements).contains("protobuf");
-        assertThat(pathElements).contains("any_pb.js");
+    @DisplayName("obtain the directory skipping relative path")
+    void directorySkipRelative() {
+        FileReference fileReference = FileReference.of("./../../foo/bar/f.js");
+        assertEquals("foo/bar", fileReference.directory()
+                                             .value());
     }
 }

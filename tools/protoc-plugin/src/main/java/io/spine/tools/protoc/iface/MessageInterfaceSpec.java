@@ -26,8 +26,8 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.fs.java.SourceFile;
 import io.spine.code.gen.java.GeneratedBySpine;
-import io.spine.code.structure.java.SourceFile;
 import io.spine.option.IsOption;
 import io.spine.type.Type;
 

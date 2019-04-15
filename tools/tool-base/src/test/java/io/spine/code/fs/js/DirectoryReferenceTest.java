@@ -18,30 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.js;
+package io.spine.code.fs.js;
 
-/**
- * The enumeration of project files provided by the Spine framework.
- */
-public enum LibraryFile {
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * The index file exposing data about generated Protobuf types.
-     */
-    INDEX("index.js");
+import java.util.List;
 
-    private final FileName fileName;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    LibraryFile(String fileName) {
-        this.fileName = FileName.of(fileName);
+@DisplayName("DirectoryReference should")
+class DirectoryReferenceTest {
+
+    @Test
+    @DisplayName("not be empty")
+    void notEmpty() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> DirectoryReference.of("")
+        );
     }
 
-    public FileName fileName() {
-        return fileName;
-    }
-
-    @Override
-    public String toString() {
-        return fileName.value();
+    @Test
+    @DisplayName("provide names it consists from")
+    void provideDirectoryNames() {
+        DirectoryReference reference = DirectoryReference.of("a/b/c");
+        List<String> expected = ImmutableList.of("a", "b", "c");
+        assertThat(reference.elements()).containsAllIn(expected);
     }
 }

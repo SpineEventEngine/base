@@ -20,9 +20,9 @@
 
 package io.spine.js.generate.given;
 
+import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.code.structure.js.DefaultJsProject;
-import io.spine.code.structure.js.Directory;
 import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;

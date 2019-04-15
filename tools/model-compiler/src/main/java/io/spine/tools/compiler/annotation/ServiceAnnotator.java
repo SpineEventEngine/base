@@ -23,12 +23,12 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.ClassName;
-import io.spine.code.structure.java.SourceFile;
 
 import java.nio.file.Path;
 
-import static io.spine.code.structure.java.SourceFile.forService;
+import static io.spine.code.fs.java.SourceFile.forService;
 
 /**
  * An annotator for {@code gRPC} services.

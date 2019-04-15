@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.java;
+package io.spine.code.fs.java;
 
 import io.spine.code.SourceCodeDirectory;
-import io.spine.code.structure.DefaultProject;
+import io.spine.code.fs.DefaultProject;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -112,15 +112,15 @@ public final class DefaultJavaProject extends DefaultProject {
         /**
          * A root for the main proto code.
          */
-        public io.spine.code.structure.proto.Directory mainProto() {
-            return io.spine.code.structure.proto.Directory.rootIn(getMain());
+        public io.spine.code.fs.proto.Directory mainProto() {
+            return io.spine.code.fs.proto.Directory.rootIn(getMain());
         }
 
         /**
          * A root for the test proto code.
          */
-        public io.spine.code.structure.proto.Directory testProto() {
-            return io.spine.code.structure.proto.Directory.rootIn(getTest());
+        public io.spine.code.fs.proto.Directory testProto() {
+            return io.spine.code.fs.proto.Directory.rootIn(getTest());
         }
     }
 

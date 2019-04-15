@@ -18,16 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.code.fs.js;
+
 /**
- * This package contains tools for working with the structure of a project.
- *
- * <p>These components consider a project from the file system perspective.
+ * The enumeration of project files provided by the Spine framework.
  */
+public enum LibraryFile {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.structure;
+    /**
+     * The index file exposing data about generated Protobuf types.
+     */
+    INDEX("index.js");
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final FileName fileName;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    LibraryFile(String fileName) {
+        this.fileName = FileName.of(fileName);
+    }
+
+    public FileName fileName() {
+        return fileName;
+    }
+
+    @Override
+    public String toString() {
+        return fileName.value();
+    }
+}

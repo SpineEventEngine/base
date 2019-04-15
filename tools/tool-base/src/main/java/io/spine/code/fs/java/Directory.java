@@ -18,60 +18,70 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.structure.js;
+package io.spine.code.fs.java;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
+import io.spine.code.java.PackageName;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
 
 /**
- * A folder with JavaScript source files.
- *
- * @author Dmytro Kuzmin
+ * A folder with Java source files.
  */
 public final class Directory extends SourceCodeDirectory {
 
-    private static final String ROOT_NAME = "js";
+    private static final String ROOT_NAME = "java";
 
     private Directory(Path path) {
         super(path);
     }
 
     /**
-     * Creates a new instance at the specified location.
+     * Creates a new instance.
      */
-    public static Directory at(Path path) {
+    static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
 
     /**
-     * Creates an instance of the root directory named {@code "js"}.
+     * Creates an instance of the root directory named {@code "java"}.
      */
-    static Directory rootIn(AbstractDirectory parent) {
+    public static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
         Path path = parent.getPath()
                           .resolve(ROOT_NAME);
         return at(path);
     }
 
+    public static Directory of(PackageName packageName) {
+        checkNotNull(packageName);
+        String packagePath = packageName.value()
+                                        .replace(DOT_SEPARATOR, File.separatorChar);
+        Path path = Paths.get(packagePath);
+        return at(path);
+    }
+
     /**
-     * Obtains the source code path for the passed file name.
+     * Obtains the source code file for the passed name.
      */
-    public Path resolve(FileName fileName) {
-        checkNotNull(fileName);
-        Path result = getPath().resolve(fileName.value());
+    public SourceFile resolve(FileName fileName) {
+        Path filePath = getPath().resolve(fileName.value());
+        SourceFile result = SourceFile.of(filePath);
         return result;
     }
 
     /**
-     * Obtains the source code path for the passed library file.
+     * Obtains the source code path for the passed file.
      */
-    public Path resolve(LibraryFile libraryFile) {
-        checkNotNull(libraryFile);
-        return resolve(libraryFile.fileName());
+    public Path resolve(Path file) {
+        Path result = getPath().resolve(file);
+        return result;
     }
 }

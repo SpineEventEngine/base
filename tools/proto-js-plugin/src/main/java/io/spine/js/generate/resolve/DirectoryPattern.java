@@ -22,8 +22,8 @@ package io.spine.js.generate.resolve;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import io.spine.code.structure.js.DirectoryReference;
-import io.spine.code.structure.js.FileReference;
+import io.spine.code.fs.js.DirectoryReference;
+import io.spine.code.fs.js.FileReference;
 
 import java.util.List;
 import java.util.Objects;

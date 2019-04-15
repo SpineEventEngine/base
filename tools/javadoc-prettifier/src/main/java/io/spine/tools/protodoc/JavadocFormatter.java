@@ -21,7 +21,7 @@
 package io.spine.tools.protodoc;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.structure.java.FileName;
+import io.spine.code.fs.java.FileName;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
