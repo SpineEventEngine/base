@@ -43,8 +43,6 @@ import java.util.Optional;
  * <li>{@code Message.newBuilder(prototype)} -&gt;
  * {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
  * </ul>
- *
- * @author Dmytro Kuzmin
  */
 @Internal
 public class NewBuilderFixer implements Fixer<MethodInvocationTree> {

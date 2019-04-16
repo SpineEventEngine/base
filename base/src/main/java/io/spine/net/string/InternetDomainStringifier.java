@@ -24,8 +24,6 @@ import io.spine.net.InternetDomain;
 
 /**
  * Default stringifier for {@code InternetDomain}.
- *
- * @author Alexander Yevsyukov
  */
 final class InternetDomainStringifier extends NetStringifier<InternetDomain> {
 

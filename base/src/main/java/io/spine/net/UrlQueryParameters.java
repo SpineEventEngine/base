@@ -28,8 +28,6 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * The utility class, which helps performing URL query parameters parsing and String conversion.
- *
- * @author Mikhail Mikhaylov
  */
 final class UrlQueryParameters {
 

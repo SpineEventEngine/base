@@ -65,8 +65,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>Other directories (like source code directory) may also be present in the project, but their
  * location is currently not standardized and thus is not described by this class.
- *
- * @author Dmytro Kuzmin
  */
 public final class DefaultJsProject extends DefaultProject {
 

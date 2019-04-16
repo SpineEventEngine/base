@@ -31,8 +31,6 @@ import static com.google.common.collect.Lists.newLinkedList;
 
 /**
  * A utility class for working with the Gradle project hierarchy.
- *
- * @author Dmytro Dashenkov
  */
 public final class ProjectHierarchy {
 

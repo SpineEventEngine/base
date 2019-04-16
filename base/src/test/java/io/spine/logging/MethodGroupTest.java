@@ -39,8 +39,6 @@ import static io.spine.testing.logging.LogTruth.assertThat;
 /**
  * Abstract base for testing groups of logging methods that accept the same number of
  * arguments.
- *
- * @author Alexander Yevsyukov
  */
 abstract class MethodGroupTest<M> {
 

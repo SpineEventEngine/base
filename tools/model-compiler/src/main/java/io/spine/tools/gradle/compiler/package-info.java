@@ -20,8 +20,6 @@
 
 /**
  * Spine Gradle plugins for code generation and build-time Protobuf model validation.
- *
- * @author Alex Tymchenko
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

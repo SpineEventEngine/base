@@ -27,9 +27,6 @@ import io.spine.net.Uri.Schema;
 
 /**
  * Parses given URL to {@link Uri} instance.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
  */
 @SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
 final class UrlParser {

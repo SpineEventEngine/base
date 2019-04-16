@@ -26,8 +26,6 @@ import java.util.List;
 
 /**
  * Performs conversion of URLs to String.
- *
- * @author Mikhail Mikhaylov
  */
 final class UrlPrinter {
 

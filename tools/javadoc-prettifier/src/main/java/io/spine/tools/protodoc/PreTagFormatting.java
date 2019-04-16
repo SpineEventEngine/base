@@ -30,8 +30,6 @@ import static java.util.regex.Pattern.compile;
  *
  * <p>The action removes the tags inserted by the Protobuf compiler,
  * i.e. the first opening tag and the last closing tag.
- *
- * @author Dmytro Grankin
  */
 class PreTagFormatting implements FormattingAction {
 

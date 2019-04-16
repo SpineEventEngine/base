@@ -38,8 +38,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a {@code .properties} file.
- *
- * @author Alexander Yevsyukov
  */
 public class PropertyFile extends AbstractSourceFile {
 

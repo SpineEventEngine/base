@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A folder with JavaScript source files.
- *
- * @author Dmytro Kuzmin
  */
 public final class Directory extends SourceCodeDirectory {
 

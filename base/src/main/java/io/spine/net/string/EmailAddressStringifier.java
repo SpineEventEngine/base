@@ -24,8 +24,6 @@ import io.spine.net.EmailAddress;
 
 /**
  * The default stringifier for {@link EmailAddress}.
- *
- * @author Alexander Yevsyukov
  */
 final class EmailAddressStringifier extends NetStringifier<EmailAddress> {
 

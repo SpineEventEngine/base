@@ -34,8 +34,6 @@ import static io.spine.tools.compiler.check.given.ProjectTasks.obtainCompilerArg
 /**
  * A test helper providing various {@code assert...} methods related to the {@link Project}
  * configurations, tasks and their arguments.
- *
- * @author Dmytro Kuzmin
  */
 public class ProjectConfigurations {
 

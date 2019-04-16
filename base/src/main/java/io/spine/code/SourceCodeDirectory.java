@@ -26,8 +26,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A directory with source code files.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class SourceCodeDirectory extends AbstractDirectory {
 

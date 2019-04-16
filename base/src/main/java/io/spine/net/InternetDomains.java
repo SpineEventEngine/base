@@ -31,8 +31,6 @@ import static io.spine.net.Patterns.HOST_NAME_PATTERN;
 
 /**
  * Utility class for working with {@link InternetDomain}s.
- *
- * @author Alexander Yevsyukov
  */
 public final class InternetDomains {
 

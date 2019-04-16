@@ -41,7 +41,6 @@ import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @author Dmytro Kuzmin
  * @see io.spine.tools.gradle.compiler.ErrorProneChecksExtension
  * @see io.spine.tools.gradle.compiler.Extension#getSpineCheckSeverity(Project)
  */

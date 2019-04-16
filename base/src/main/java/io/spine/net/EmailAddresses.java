@@ -31,8 +31,6 @@ import static io.spine.net.Patterns.EMAIL_ADDRESS;
 
 /**
  * Utility class for working with {@link EmailAddress}es.
- *
- * @author Alexander Yevsyukov
  */
 public final class EmailAddresses {
 

@@ -30,8 +30,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * A {@code FileVisitor} for formatting files.
- *
- * @author Dmytro Grankin
  */
 class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 

@@ -37,15 +37,10 @@ import java.util.Optional;
  * <pre>
  * {@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
  * </pre>
- *
- * @author Dmytro Kuzmin
  */
 @Internal
 public class NewBuilderForTypeFixer implements Fixer<MethodInvocationTree> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         FixGenerator generator = FixGenerator.createFor(tree, state);

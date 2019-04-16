@@ -26,8 +26,6 @@ import io.spine.code.proto.FileName;
  * Test proto file names.
  *
  * See {@code resources/annotator-plugin-test/src/main/proto/} directory for the files.
- *
- * @author Dmytro Grankin
  */
 public class GivenProtoFile {
 

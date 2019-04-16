@@ -37,7 +37,6 @@ import static com.google.errorprone.matchers.Matchers.instanceMethod;
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
  * tracks down the cases where the {@code message.toBuilder()} statement is used.
  *
- * @author Dmytro Kuzmin
  * @see Message#toBuilder()
  */
 @Internal
@@ -48,18 +47,12 @@ public class ToBuilderMatcher implements BugPatternMatcher<MethodInvocationTree>
     private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new ToBuilderFixer();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;

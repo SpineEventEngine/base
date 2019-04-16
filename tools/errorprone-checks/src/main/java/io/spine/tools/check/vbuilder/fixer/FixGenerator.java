@@ -48,7 +48,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * {@link com.google.errorprone.bugpatterns.BugChecker} context, where the code scanners can provide
  * proper {@link MethodInvocationTree} and {@link VisitorState} for its initialization.
  *
- * @author Dmytro Kuzmin
  * @see io.spine.tools.check.vbuilder.UseValidatingBuilder
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
