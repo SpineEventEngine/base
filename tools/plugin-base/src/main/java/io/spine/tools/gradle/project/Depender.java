@@ -28,7 +28,7 @@ import static io.spine.tools.gradle.ConfigurationName.COMPILE;
 import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
 
 /**
- * A container of dependencies of a certain project.
+ * Manages the dependencies of a Gradle project.
  *
  * <p>Typically, represented by a {@link org.gradle.api.artifacts.dsl.DependencyHandler} of
  * the project.
