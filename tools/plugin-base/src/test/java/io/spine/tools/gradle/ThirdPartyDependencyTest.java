@@ -26,10 +26,10 @@ import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.gradle.given.ThirdPartyDependencyTextEnv.BASE;
-import static io.spine.tools.gradle.given.ThirdPartyDependencyTextEnv.EXAMPLE;
-import static io.spine.tools.gradle.given.ThirdPartyDependencyTextEnv.EXAMPLE_GROUP;
-import static io.spine.tools.gradle.given.ThirdPartyDependencyTextEnv.SPINE_GROUP;
+import static io.spine.tools.gradle.given.ThirdPartyDependencyTestEnv.BASE;
+import static io.spine.tools.gradle.given.ThirdPartyDependencyTestEnv.EXAMPLE;
+import static io.spine.tools.gradle.given.ThirdPartyDependencyTestEnv.EXAMPLE_GROUP;
+import static io.spine.tools.gradle.given.ThirdPartyDependencyTestEnv.SPINE_GROUP;
 import static java.lang.String.format;
 
 class ThirdPartyDependencyTest {

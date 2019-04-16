@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.given;
 
-public final class ThirdPartyDependencyTextEnv {
+public final class ThirdPartyDependencyTestEnv {
 
     public static final String EXAMPLE_GROUP = "org.example";
     public static final String EXAMPLE = "sample-dependency";
@@ -31,6 +31,6 @@ public final class ThirdPartyDependencyTextEnv {
     /**
      * Prevents the utility class instantiation.
      */
-    private ThirdPartyDependencyTextEnv() {
+    private ThirdPartyDependencyTestEnv() {
     }
 }
