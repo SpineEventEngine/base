@@ -33,7 +33,7 @@ import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
  * <p>Typically, represented by a {@link org.gradle.api.artifacts.dsl.DependencyHandler} of
  * the project.
  */
-public interface DependencyContainer {
+public interface Depender {
 
     /**
      * Adds a new dependency within a given configuration.

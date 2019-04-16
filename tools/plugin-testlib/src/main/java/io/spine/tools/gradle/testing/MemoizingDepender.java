@@ -23,16 +23,16 @@ package io.spine.tools.gradle.testing;
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
-import io.spine.tools.gradle.project.DependencyContainer;
+import io.spine.tools.gradle.project.Depender;
 
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
- * A memoizing test-only implementation of {@link DependencyContainer}.
+ * A memoizing test-only implementation of {@link Depender}.
  */
-public final class MemoizingDependencyContainer implements DependencyContainer {
+public final class MemoizingDepender implements Depender {
 
     private final Set<String> dependencies = newHashSet();
     private final Set<Dependency> exclusions = newHashSet();

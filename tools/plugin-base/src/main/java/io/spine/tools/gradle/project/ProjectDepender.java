@@ -35,26 +35,26 @@ import static org.gradle.api.artifacts.ExcludeRule.GROUP_KEY;
 import static org.gradle.api.artifacts.ExcludeRule.MODULE_KEY;
 
 /**
- * A {@link DependencyContainer} implemented on top of a {@link DependencyHandler} of a project.
+ * A {@link Depender} implemented on top of a {@link DependencyHandler} of a project.
  */
-public final class ProjectDependencyContainer implements DependencyContainer {
+public final class ProjectDepender implements Depender {
 
     private final DependencyHandler dependencies;
     private final ConfigurationContainer configurations;
 
-    private ProjectDependencyContainer(DependencyHandler dependencies,
-                                       ConfigurationContainer configurations) {
+    private ProjectDepender(DependencyHandler dependencies,
+                            ConfigurationContainer configurations) {
         this.dependencies = dependencies;
         this.configurations = configurations;
     }
 
     /**
-     * Creates a new instance of {@code ProjectDependencyContainer} for the given project.
+     * Creates a new instance of {@code ProjectDepender} for the given project.
      */
-    public static ProjectDependencyContainer from(Project project) {
+    public static ProjectDepender from(Project project) {
         checkNotNull(project);
-        return new ProjectDependencyContainer(project.getDependencies(),
-                                              project.getConfigurations());
+        return new ProjectDepender(project.getDependencies(),
+                                   project.getConfigurations());
     }
 
     @Override
