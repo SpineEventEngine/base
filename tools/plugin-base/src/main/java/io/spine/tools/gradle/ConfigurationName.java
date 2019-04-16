@@ -32,8 +32,6 @@ import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURA
  *
  * <p>See <a href="https://docs.gradle.org/current/userguide/managing_dependency_configurations.html">
  * the Gradle doc</a> on dependency configurations for more info.
- *
- * @author Dmytro Dashenkov
  */
 public enum ConfigurationName {
 
