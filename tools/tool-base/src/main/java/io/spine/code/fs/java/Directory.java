@@ -60,6 +60,15 @@ public final class Directory extends SourceCodeDirectory {
         return at(path);
     }
 
+    /**
+     * Obtains the {@code Directory} which corresponds to the given Java package.
+     *
+     * <p>The path of the directory is relative and starts at
+     *
+     * @param packageName
+     *         the name of the package
+     * @return the directory
+     */
     public static Directory of(PackageName packageName) {
         checkNotNull(packageName);
         String packagePath = packageName.value()

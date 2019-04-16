@@ -20,6 +20,16 @@
 
 package io.spine.code.java;
 
+import io.spine.annotation.Internal;
+
+/**
+ * Tools working with the Java class names.
+ *
+ * <p>A Java class name may be represented with several types: {@code ClassName},
+ * {@code NestedClassName}, {@code SimpleClassName}, etc. This utility handles the common string
+ * processing problems for those types.
+ */
+@Internal
 public final class ClassNameNotation {
 
     /**
@@ -35,6 +45,13 @@ public final class ClassNameNotation {
     private ClassNameNotation() {
     }
 
+    /**
+     * Obtain the part of the name after the last {@link #DOT_SEPARATOR .} (dot) symbol.
+     *
+     * @param fullName
+     *         a full class name
+     * @return the last part of the name
+     */
     public static String afterDot(String fullName) {
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         return fullName.substring(lastDotIndex + 1);

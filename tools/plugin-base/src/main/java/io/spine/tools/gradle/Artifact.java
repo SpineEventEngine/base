@@ -60,6 +60,13 @@ public final class Artifact {
         this.extension = builder.extension;
     }
 
+    /**
+     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency}
+     *
+     * @param dependency
+     *         the Gradle dependency
+     * @return new instance of {@code Artifact}
+     */
     public static Artifact from(Dependency dependency) {
         return newBuilder()
                 .setGroup(checkNotNull(dependency.getGroup()))
