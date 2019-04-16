@@ -7,7 +7,7 @@ option java_multiple_files = false;
 
 // Normally we do not specify the `java_outer_classname` option because we are not generating
 // multiple Java classes for rejections.
-// Buf if the option is set, it should be handled.
+// But if the option is set, it should be handled.
 option java_outer_classname = "OuterClassForRejections";
 
 message Rejection5Separate {
