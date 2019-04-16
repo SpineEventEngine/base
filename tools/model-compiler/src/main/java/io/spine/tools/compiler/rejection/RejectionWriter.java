@@ -29,7 +29,9 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.FieldName;
+import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.type.RejectionType;
@@ -199,6 +201,14 @@ public class RejectionWriter implements Logging {
     }
 
     private static ClassName toJavaPoetName(io.spine.code.java.ClassName className) {
-        return ClassName.bestGuess(className.canonicalName());
+        PackageName packageName = className.packageName();
+        SimpleClassName topLevel = className.topLevelClass();
+        String[] nestingChain = NestedClassName.from(className)
+                                               .split()
+                                               .stream()
+                                               .skip(1)
+                                               .map(SimpleClassName::value)
+                                               .toArray(String[]::new);
+        return ClassName.get(packageName.value(), topLevel.value(), nestingChain);
     }
 }
