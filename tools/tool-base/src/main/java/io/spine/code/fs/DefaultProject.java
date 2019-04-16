@@ -34,8 +34,6 @@ import java.nio.file.Path;
  * <p>The {@code DefaultProject} helps resolving names of the directories and files under the
  * project directory. It is expected that for most projects, the default values of paths remain
  * unchanged.
- *
- * @author Alexander Yevsyukov
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Only stores common elements of subclasses.
