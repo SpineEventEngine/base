@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.project;
 
 import io.spine.tools.gradle.GeneratedSourceRoot;
-import io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet;
+import io.spine.tools.gradle.GeneratedSourceSet;
 import org.gradle.api.Project;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.plugins.JavaPlugin;

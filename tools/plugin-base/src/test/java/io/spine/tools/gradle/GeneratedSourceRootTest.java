@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,10 +36,10 @@ import java.util.function.Supplier;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.GeneratedSourceRoot.GENERATED;
-import static io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet.GRPC;
-import static io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet.JAVA;
-import static io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet.RESOURCES;
-import static io.spine.tools.gradle.GeneratedSourceRoot.GeneratedSourceSet.SPINE;
+import static io.spine.tools.gradle.GeneratedSourceSet.GRPC;
+import static io.spine.tools.gradle.GeneratedSourceSet.JAVA;
+import static io.spine.tools.gradle.GeneratedSourceSet.RESOURCES;
+import static io.spine.tools.gradle.GeneratedSourceSet.SPINE;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("GeneratedSourceRoot should")
