@@ -23,6 +23,7 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldName;
 import io.spine.type.MessageType;
 
@@ -68,18 +69,15 @@ public final class OneofDeclaration {
      *
      * <p>If the declaring message class name is {@code com.acme.cms.Customer} and the {@code oneof}
      * name is {@code auth_provider}, the resulting class name would be
-     * {@code com.acme.cms.Customer.AuthProviderCase}.
-     *
-     * <p>The resulting class name is always {@linkplain ClassName#toDotted() dotted}.
+     * {@code com.acme.cms.Customer$AuthProviderCase}.
      *
      * @return the case enum FQN
      */
     public ClassName javaCaseEnum() {
         ClassName declaringClassName = declaringType.javaClassName();
-        ClassName dotted = declaringClassName.toDotted();
         io.spine.code.gen.java.FieldName oneofName =
                 io.spine.code.gen.java.FieldName.from(name());
-        String enumName = format("%s.%sCase", dotted.value(), oneofName.capitalize());
-        return ClassName.of(enumName);
+        SimpleClassName enumName = SimpleClassName.create(format("%sCase", oneofName.capitalize()));
+        return declaringClassName.withNested(enumName);
     }
 }

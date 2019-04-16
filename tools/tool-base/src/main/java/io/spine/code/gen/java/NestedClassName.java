@@ -23,12 +23,10 @@ package io.spine.code.gen.java;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.ClassNameNotation;
 import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
 
 /**
  * A name of a potentially nested class with outer class names separated with dots.
@@ -39,7 +37,9 @@ public final class NestedClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    private static final Splitter nameSplitter = Splitter.on(DOT_SEPARATOR)
+    private static final char NESTED_CLASS_SEPARATOR = '.';
+
+    private static final Splitter nameSplitter = Splitter.on(NESTED_CLASS_SEPARATOR)
                                                          .omitEmptyStrings();
 
     private NestedClassName(String value) {
@@ -47,12 +47,11 @@ public final class NestedClassName extends StringTypeValue {
     }
 
     /**
-     * Creates a new instance by fully-qualified name.
+     * Creates a new instance by the fully-qualified name.
      */
     public static NestedClassName from(ClassName className) {
-        String nameWithOuter = ClassNameNotation.afterDot(className.value());
-        String dotted = ClassName.toDotted(nameWithOuter);
-        return new NestedClassName(dotted);
+        String nameWithOuter = className.withoutPackage();
+        return new NestedClassName(nameWithOuter);
     }
 
     /**
@@ -62,7 +61,7 @@ public final class NestedClassName extends StringTypeValue {
      * list would be {@code ["Container", "Job", "Builder"]}.
      *
      * <p>If this class name is just a {@link SimpleClassName}, then the only entry of the resulting
-     * list is that simple name.
+     * list is that simple name.VBuilderCodeTest.java:130
      *
      * @return this name split into simple class names
      */

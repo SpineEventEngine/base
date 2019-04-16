@@ -34,7 +34,6 @@ import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
-import io.spine.value.StringTypeValue;
 
 import java.util.Collection;
 
@@ -207,10 +206,8 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
      */
     private String defaultInstanceExpression() {
         Descriptor containingType = field.getContainingType();
-        StringTypeValue messageClassName =
-                io.spine.code.java.ClassName.from(containingType)
-                                            .toDotted();
-        return messageClassName.value() + ".getDefaultInstance()";
+        String messageClassName = io.spine.code.java.ClassName.from(containingType).canonicalName();
+        return messageClassName + ".getDefaultInstance()";
     }
 
     /**

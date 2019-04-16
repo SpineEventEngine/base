@@ -207,8 +207,7 @@ final class VBuilderMethods {
 
     private ClassName messageClass() {
         String fullyQualifiedDotted = type.javaClassName()
-                                          .toDotted()
-                                          .value();
+                                          .canonicalName();
         return ClassName.bestGuess(fullyQualifiedDotted);
     }
 

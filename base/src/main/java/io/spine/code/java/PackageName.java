@@ -65,10 +65,17 @@ public final class PackageName extends StringTypeValue {
     }
 
     /**
-     * Obtains Java package delimiter.
+     * Obtains Java package delimiter as a {@code String}.
      */
     public static String delimiter() {
         return DELIMITER;
+    }
+
+    /**
+     * Obtains Java package delimiter as a single {@code char}.
+     */
+    public static char delimiterChar() {
+        return DELIMITER_CHAR;
     }
 
     /**

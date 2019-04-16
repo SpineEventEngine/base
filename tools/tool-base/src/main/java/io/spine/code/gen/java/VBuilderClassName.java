@@ -22,14 +22,13 @@ package io.spine.code.gen.java;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.ClassNameNotation;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
 import static io.spine.type.MessageType.VBUILDER_SUFFIX;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Obtains a simple class name for a Validating Builder of a message.
@@ -57,24 +56,27 @@ public final class VBuilderClassName {
         checkArgument(type.hasVBuilder(), "Validating Builder is not available for `%s`", type.name());
 
         VBuilderClassName name = new VBuilderClassName(type);
-        return name.toSimple();
+        return name.concatenateNested();
     }
 
     private VBuilderClassName(MessageType type) {
         this.type = type;
     }
 
-    private SimpleClassName toSimple() {
+    private SimpleClassName concatenateNested() {
         ClassName className = type.javaClassName();
-        SimpleClassName topLevelName;
+        SimpleClassName result;
         if (type.isTopLevel()) {
-            topLevelName = className.toSimple();
+            result = className.toSimple();
         } else {
             // Nested: either with outer class, or with enclosing message, or both.
-            String nestedName = ClassNameNotation.afterDot(className.value());
-            String mergedNames = nestedName.replace(String.valueOf(OUTER_CLASS_DELIMITER), "");
-            topLevelName = SimpleClassName.create(mergedNames);
+            NestedClassName nestedClassName = NestedClassName.from(className);
+            String mergedNames = nestedClassName.split()
+                                                .stream()
+                                                .map(SimpleClassName::value)
+                                                .collect(joining());
+            result = SimpleClassName.create(mergedNames);
         }
-        return topLevelName.with(VBUILDER_SUFFIX);
+        return result.with(VBUILDER_SUFFIX);
     }
 }

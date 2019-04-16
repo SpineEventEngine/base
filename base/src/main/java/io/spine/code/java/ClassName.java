@@ -28,6 +28,8 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.BinaryName;
+import org.checkerframework.checker.signature.qual.ClassGetName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
@@ -35,8 +37,6 @@ import java.util.Deque;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
-import static io.spine.code.java.ClassNameNotation.afterDot;
 import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -49,18 +49,19 @@ public final class ClassName extends StringTypeValue {
     private static final long serialVersionUID = 0L;
 
     /**
+     * Separates class name from package.
+     */
+    private static final char DOT_SEPARATOR = '.';
+
+    /**
      * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
-    public static final char OUTER_CLASS_DELIMITER = '$';
+    private static final char OUTER_CLASS_DELIMITER = '$';
 
     private static final String GRPC_POSTFIX = "Grpc";
 
-    private ClassName(String value) {
+    private ClassName(@BinaryName String value) {
         super(checkNotNull(value));
-    }
-
-    private ClassName(Class cls) {
-        this(cls.getName());
     }
 
     /**
@@ -71,7 +72,8 @@ public final class ClassName extends StringTypeValue {
      * @return new instance
      */
     public static ClassName of(Class cls) {
-        return new ClassName(checkNotNull(cls));
+        checkNotNull(cls);
+        return new ClassName(cls.getName());
     }
 
     /**
@@ -102,6 +104,19 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
+     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
+     *
+     * @param file
+     *         the file from which the outer class is generated
+     * @return new instance of {@code ClassName}
+     */
+    public static ClassName outerClass(FileDescriptor file) {
+        PackageName packageName = PackageName.resolve(file.toProto());
+        SimpleClassName simpleName = SimpleClassName.outerOf(file);
+        return of(packageName, simpleName);
+    }
+
+    /**
      * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
      *
      * <p>The resulting class name is the name of the Java class which represents the given Protobuf
@@ -115,19 +130,6 @@ public final class ClassName extends StringTypeValue {
         checkNotNull(messageType);
         return construct(messageType.getFile(), messageType.getName(),
                          messageType.getContainingType());
-    }
-
-    /**
-     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
-     *
-     * @param file
-     *         the file from which the outer class is generated
-     * @return new instance of {@code ClassName}
-     */
-    public static ClassName outerClass(FileDescriptor file) {
-        PackageName packageName = PackageName.resolve(file.toProto());
-        SimpleClassName simpleName = SimpleClassName.outerOf(file);
-        return of(packageName, simpleName);
     }
 
     /**
@@ -214,14 +216,31 @@ public final class ClassName extends StringTypeValue {
     /**
      * Converts the name which may be a nested class name with {@link #OUTER_CLASS_DELIMITER}
      * to the name separated with dots.
+     *
+     * @see Class#getCanonicalName()
      */
-    public ClassName toDotted() {
+    public String canonicalName() {
         String withDots = toDotted(value());
-        return of(withDots);
+        return withDots;
     }
 
     /**
-     * Replaces {@link #OUTER_CLASS_DELIMITER} with {@link ClassNameNotation#DOT_SEPARATOR}.
+     * Obtains the binary of the class.
+     *
+     * <p>Not that the retrieved value may not adhere to the JDK binary name specification.
+     * The actual returned value is obtained from {@link Class#getName()}. In most cases,
+     * the {@code Class.getName()} and the JDK-spec binary name coincide.
+     *
+     * @return the name with the {@link #OUTER_CLASS_DELIMITER}s between nested classed if any
+     * @implSpec This method returns the same value as does the {@code value()} method. Use
+     *         this method for more clarity in the client code.
+     */
+    public @ClassGetName String binaryName() {
+        return value();
+    }
+
+    /**
+     * Replaces {@link #OUTER_CLASS_DELIMITER} with {@link #DOT_SEPARATOR}.
      */
     @Internal
     public static String toDotted(String outerDelimited) {
@@ -236,7 +255,7 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
      * {@code com.acme.cms.CustomerOrBuilder}.
      *
-     * <p>If this class name is {@linkplain #toDotted() dotted}, then the resulting name is dotted.
+     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is dotted.
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
@@ -259,9 +278,33 @@ public final class ClassName extends StringTypeValue {
      * classes, the most nested name will be returned.
      */
     public SimpleClassName toSimple() {
-        String fullName = toDotted().value();
+        String fullName = canonicalName();
         String result = afterDot(fullName);
         return SimpleClassName.create(result);
+    }
+
+    /**
+     * Obtains this class name without the package qualifier.
+     *
+     * <p>The result is always {@linkplain #canonicalName() dotted}.
+     *
+     * @return this name without the package
+     */
+    @Internal
+    public String withoutPackage() {
+        return afterDot(canonicalName());
+    }
+
+    /**
+     * Obtain the part of the name after the last {@link #DOT_SEPARATOR .} (dot) symbol.
+     *
+     * @param fullName
+     *         a full class name
+     * @return the last part of the name
+     */
+    private static String afterDot(String fullName) {
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        return fullName.substring(lastDotIndex + 1);
     }
 
     /**

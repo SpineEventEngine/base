@@ -29,7 +29,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.java.ClassNameNotation.DOT_SEPARATOR;
 
 /**
  * A folder with Java source files.
@@ -72,7 +71,7 @@ public final class Directory extends SourceCodeDirectory {
     public static Directory of(PackageName packageName) {
         checkNotNull(packageName);
         String packagePath = packageName.value()
-                                        .replace(DOT_SEPARATOR, File.separatorChar);
+                                        .replace(PackageName.delimiterChar(), File.separatorChar);
         Path path = Paths.get(packagePath);
         return at(path);
     }
