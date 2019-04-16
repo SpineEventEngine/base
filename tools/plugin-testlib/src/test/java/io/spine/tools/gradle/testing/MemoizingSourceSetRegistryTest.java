@@ -20,28 +20,38 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.GeneratedSourceRoot;
-import io.spine.tools.gradle.project.DirectoryStructure;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Path;
-import java.util.Set;
+import java.io.File;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * A memoizing test-only implementation of {@link DirectoryStructure}.
- */
-public final class MemoizingDirectoryStructure implements DirectoryStructure {
+@DisplayName("MemoizingSourceSetRegistry should")
+class MemoizingSourceSetRegistryTest {
 
-    private final Set<Path> javaSourceDirs = newHashSet();
+    private Project project;
 
-    @Override
-    public void markCodeGenRoot(GeneratedSourceRoot directory) {
-        javaSourceDirs.add(directory.getPath());
+    @BeforeEach
+    void setUp(@TempDir File projectDir) {
+        project = ProjectBuilder
+                .builder()
+                .withProjectDir(projectDir)
+                .build();
     }
 
-    public ImmutableSet<Path> javaSourceDirs() {
-        return ImmutableSet.copyOf(javaSourceDirs);
+    @Test
+    @DisplayName("memoize given directory")
+    void memoizeDirs() {
+        MemoizingSourceSetRegistry structure = new MemoizingSourceSetRegistry();
+        GeneratedSourceRoot sourceRoot = GeneratedSourceRoot.of(project);
+        structure.register(sourceRoot);
+
+        assertThat(structure.javaSourceDirs()).contains(sourceRoot.getPath());
     }
 }

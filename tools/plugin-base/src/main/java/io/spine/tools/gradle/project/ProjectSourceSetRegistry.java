@@ -29,29 +29,29 @@ import org.gradle.api.tasks.SourceSetContainer;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link DirectoryStructure} implementation based on source sets.
+ * A {@link SourceSetRegistry} implementation based on source sets of a Gradle project.
  *
- * <p>{@code SourceSetStructure} does not try to resolve any files or find the current project
- * source sets unless {@link #markCodeGenRoot} is called.
+ * <p>{@code ProjectSourceSetRegistry} does not try to resolve any files or find the current project
+ * source sets unless {@link #register} is called.
  */
-public final class SourceSetStructure implements DirectoryStructure {
+public final class ProjectSourceSetRegistry implements SourceSetRegistry {
 
     private final Project project;
 
-    private SourceSetStructure(Project project) {
+    private ProjectSourceSetRegistry(Project project) {
         this.project = project;
     }
 
     /**
-     * Creates a new instance of {@code SourceSetStructure} for the given project.
+     * Creates a new instance of {@code ProjectSourceSetRegistry} for the given project.
      */
-    public static SourceSetStructure of(Project project) {
+    public static ProjectSourceSetRegistry of(Project project) {
         checkNotNull(project);
-        return new SourceSetStructure(project);
+        return new ProjectSourceSetRegistry(project);
     }
 
     @Override
-    public void markCodeGenRoot(GeneratedSourceRoot rootDirectory) {
+    public void register(GeneratedSourceRoot rootDirectory) {
         checkNotNull(rootDirectory);
 
         SourceSetContainer sourceSets = sourceSets();

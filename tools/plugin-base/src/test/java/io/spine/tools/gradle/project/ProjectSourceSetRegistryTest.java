@@ -42,8 +42,8 @@ import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("SourceSetStructure should")
-class SourceSetStructureTest {
+@DisplayName("ProjectSourceSetRegistry should")
+class ProjectSourceSetRegistryTest {
 
     private Project project;
 
@@ -71,8 +71,8 @@ class SourceSetStructureTest {
 
     private void checkMarks(String sourceSetName) {
         GeneratedSourceRoot root = GeneratedSourceRoot.of(project);
-        SourceSetStructure structure = SourceSetStructure.of(project);
-        structure.markCodeGenRoot(root);
+        ProjectSourceSetRegistry structure = ProjectSourceSetRegistry.of(project);
+        structure.register(root);
 
         SourceSet sourceSet = sourceSet(sourceSetName);
         SourceDirectorySet javaDirs = sourceSet.getJava();

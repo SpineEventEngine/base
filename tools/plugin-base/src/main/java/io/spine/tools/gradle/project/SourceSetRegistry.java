@@ -18,40 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.testing;
+package io.spine.tools.gradle.project;
 
 import io.spine.tools.gradle.GeneratedSourceRoot;
-import org.gradle.api.Project;
-import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
+/**
+ * A description of the project source files layout on the file system.
+ *
+ * <p>Typically represented by the project {@link org.gradle.api.tasks.SourceSetContainer}.
+ */
+public interface SourceSetRegistry {
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("MemoizingDirectoryStructure should")
-class MemoizingDirectoryStructureTest {
-
-    private Project project;
-
-    @BeforeEach
-    void setUp(@TempDir File projectDir) {
-        project = ProjectBuilder
-                .builder()
-                .withProjectDir(projectDir)
-                .build();
-    }
-
-    @Test
-    @DisplayName("memoize given directory")
-    void memoizeDirs() {
-        MemoizingDirectoryStructure structure = new MemoizingDirectoryStructure();
-        GeneratedSourceRoot sourceRoot = GeneratedSourceRoot.of(project);
-        structure.markCodeGenRoot(sourceRoot);
-
-        assertThat(structure.javaSourceDirs()).contains(sourceRoot.getPath());
-    }
+    /**
+     * Marks the given directory as a generated code root dir.
+     *
+     * @param directory
+     *         the directory to mark
+     */
+    void register(GeneratedSourceRoot directory);
 }
