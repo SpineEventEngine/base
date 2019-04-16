@@ -24,8 +24,6 @@ import io.spine.value.StringTypeValue;
 
 /**
  * A field in a programming language.
- *
- * @author Alexander Yevsyukov
  */
 public class AbstractFieldName extends StringTypeValue {
 

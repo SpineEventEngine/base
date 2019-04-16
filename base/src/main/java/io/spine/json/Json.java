@@ -39,8 +39,6 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utilities for working with Json.
- *
- * @author Alexander Yevsyukov
  */
 public final class Json {
 

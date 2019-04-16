@@ -34,9 +34,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A utility class for writing to {@code .properties} file.
- *
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 public class PropertiesWriter {
 

@@ -45,8 +45,6 @@ import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
  *
  * <p>The class manages dependencies of the given {@link Configuration} for the given
  * {@link Project}.
- *
- * @author Dmytro Kuzmin
  */
 public class DependencyConfigurer {
 

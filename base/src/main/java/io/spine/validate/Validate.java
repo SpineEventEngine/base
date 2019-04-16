@@ -34,8 +34,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * This class provides general validation routines.
- *
- * @author Alexander Yevsyukov
  */
 public final class Validate {
 

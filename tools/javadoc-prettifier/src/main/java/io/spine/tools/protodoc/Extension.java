@@ -31,8 +31,6 @@ import static java.lang.String.format;
 
 /**
  * The extension for {@link ProtoJavadocPlugin}.
- *
- * @author Dmytro Grankin
  */
 @SuppressWarnings("unused") // Implicitly used during a Gradle build.
 public class Extension implements Logging {

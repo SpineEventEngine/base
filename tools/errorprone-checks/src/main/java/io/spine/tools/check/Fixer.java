@@ -31,7 +31,6 @@ import java.util.Optional;
  * Generates a {@link Fix} to be displayed to the user given the errored expression.
  *
  * @param <T> the expression {@code Tree}
- * @author Dmytro Kuzmin
  * @see com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Optional)
  */
 @Internal

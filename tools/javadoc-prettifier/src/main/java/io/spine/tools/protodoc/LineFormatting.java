@@ -30,8 +30,6 @@ import static java.lang.System.lineSeparator;
 
 /**
  * A {@link FormattingAction}, that formats lines independently from each other.
- *
- * @author Dmytro Grankin
  */
 abstract class LineFormatting implements FormattingAction {
 

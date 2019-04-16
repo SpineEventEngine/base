@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that classes in a hierarchy have own logs.
- *
- * @author Alexander Yevsyukov
  */
 @DisplayName("Logging interface should work in a class hierarchy")
 class LoggingHierarchyTest {

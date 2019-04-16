@@ -29,7 +29,6 @@ import io.spine.annotation.Internal;
  * {@link com.google.errorprone.BugPattern}.
  *
  * @param <T> the expression {@code Tree}
- * @author Dmytro Kuzmin
  */
 @Internal
 public interface BugPatternMatcher<T extends Tree> {

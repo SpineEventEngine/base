@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for working with {@link EntityOption}s.
- *
- * @author Alexander Yevsyukov
  */
 @Internal
 public final class EntityOptions {

@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for working with time information.
- *
- * @author Alexander Yevsyukov
  */
 public final class Time {
 

@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Utility class for working with {@link Url}.
  *
  * <p>Provides conversion and validation operations.
- *
- * @author Mikhail Mikhaylov
  */
 public final class Urls {
 

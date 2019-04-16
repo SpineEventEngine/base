@@ -24,8 +24,6 @@ import io.spine.net.Url;
 
 /**
  * The default stringifier for {@code Url}.
- *
- * @author Alexander Yevsyukov
  */
 final class UrlStringifier extends NetStringifier<Url> {
 

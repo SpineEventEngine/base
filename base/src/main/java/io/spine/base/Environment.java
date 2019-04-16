@@ -27,9 +27,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides information about the environment (current platform used, etc).
- *
- * @author Alexander Litus
- * @author Alexander Yevsyukov
  */
 @SPI
 @SuppressWarnings("AccessOfSystemProperties") // OK as we need system properties for this class.
