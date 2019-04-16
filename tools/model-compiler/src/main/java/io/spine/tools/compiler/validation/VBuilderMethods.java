@@ -195,7 +195,7 @@ final class VBuilderMethods {
     private static MethodSpec methodGetCase(OneofDeclaration oneof) {
         String methodName = AccessorTemplates.caseGetter()
                                              .format(FieldName.from(oneof.name()));
-        ClassName returnType = ClassName.bestGuess(oneof.javaCaseEnum().value());
+        ClassName returnType = ClassName.bestGuess(oneof.javaCaseEnum().canonicalName());
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)

@@ -93,7 +93,7 @@ class VBuilderMethodsTest {
         OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor, messageType);
         ClassName expectedReturnType = declaration.javaCaseEnum();
         assertThat(getDescription.returnType.toString())
-                .isEqualTo(expectedReturnType.toString());
+                .isEqualTo(expectedReturnType.canonicalName());
         assertThat(getDescription.modifiers).containsExactly(PUBLIC);
         assertThat(getDescription.parameters).isEmpty();
     }
