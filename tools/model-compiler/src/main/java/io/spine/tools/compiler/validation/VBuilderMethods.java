@@ -75,7 +75,7 @@ final class VBuilderMethods {
     ImmutableList<MethodSpec> all() {
         return ImmutableList.<MethodSpec>builder()
                 .add(privateConstructor())
-                .add(newBuilderMethod())
+                .add(methodNewBuilder())
                 .addAll(fieldMethods())
                 .addAll(oneofMethods())
                 .add(mergeFromMethod())
@@ -90,7 +90,7 @@ final class VBuilderMethods {
         return result;
     }
 
-    private MethodSpec newBuilderMethod() {
+    private MethodSpec methodNewBuilder() {
         ClassName vbClass = validatingBuilderClass();
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
@@ -188,11 +188,11 @@ final class VBuilderMethods {
     private List<MethodSpec> oneofMethods() {
         return OneofDeclaration.allFromType(type)
                                .stream()
-                               .map(VBuilderMethods::getCaseMethod)
+                               .map(VBuilderMethods::methodGetCase)
                                .collect(toImmutableList());
     }
 
-    private static MethodSpec getCaseMethod(OneofDeclaration oneof) {
+    private static MethodSpec methodGetCase(OneofDeclaration oneof) {
         String methodName = AccessorTemplates.caseGetter()
                                              .format(FieldName.from(oneof.name()));
         ClassName returnType = ClassName.bestGuess(oneof.javaCaseEnum().value());
