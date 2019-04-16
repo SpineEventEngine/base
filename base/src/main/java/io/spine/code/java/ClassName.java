@@ -292,7 +292,7 @@ public final class ClassName extends StringTypeValue {
      */
     @Internal
     public String withoutPackage() {
-        return afterDot(canonicalName());
+        return toDotted(afterDot(value()));
     }
 
     /**
