@@ -25,7 +25,9 @@ import com.google.common.base.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A third-party dependency of a project.
+ * A third-party dependency of a client project.
+ *
+ * <p>Such a dependency may be declared by the user or by one of our Gradle plugins.
  */
 public final class ThirdPartyDependency implements Dependency {
 
