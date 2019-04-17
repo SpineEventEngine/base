@@ -225,9 +225,9 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
-     * Obtains the binary of the class.
+     * Obtains the binary name of the class.
      *
-     * <p>Not that the retrieved value may not adhere to the JDK binary name specification.
+     * <p>Note that the retrieved value may not adhere to the JDK binary name specification.
      * The actual returned value is obtained from {@link Class#getName()}. In most cases,
      * the {@code Class.getName()} and the JDK-spec binary name coincide.
      *
