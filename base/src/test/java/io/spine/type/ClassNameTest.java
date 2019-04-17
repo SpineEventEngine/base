@@ -26,11 +26,13 @@ import com.google.protobuf.StringValue;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.net.Uri;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -47,12 +49,21 @@ class ClassNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
-    void pass_null_tolerance_check() {
+    void passNullToleranceCheck() {
         Descriptors.Descriptor descriptor = StringValue.getDescriptor();
         new NullPointerTester()
                 .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
                 .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
                                                                              .toProto()))
                 .testAllPublicStaticMethods(ClassName.class);
+    }
+
+    @Test
+    @DisplayName("provide binary name and canonical name")
+    void provideBinaryAndCanonical() {
+        Class<Uri.Protocol> cls = Uri.Protocol.class;
+        ClassName className = ClassName.of(cls);
+        assertThat(className.binaryName()).isEqualTo(cls.getName());
+        assertThat(className.canonicalName()).isEqualTo(cls.getCanonicalName());
     }
 }
