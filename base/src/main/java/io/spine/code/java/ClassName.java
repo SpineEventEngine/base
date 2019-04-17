@@ -44,6 +44,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A value object holding a fully-qualified Java class name.
  */
 @Immutable
+@SuppressWarnings("ClassWithTooManyMethods")
 public final class ClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
