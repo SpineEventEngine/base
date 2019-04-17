@@ -23,7 +23,7 @@ import java.nio.file.Files
 group 'io.spine.tools'
 
 dependencies {
-    implementation project(':base')
+    implementation project(':tool-base')
     implementation project(':protoc-api')
     implementation deps.gen.javaPoet
 
@@ -42,7 +42,7 @@ protobuf {
 }
 
 jar {
-    dependsOn project(':protoc-api').jar
+    dependsOn project(':protoc-api').jar, project(':tool-base').jar
     
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'

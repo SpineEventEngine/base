@@ -23,8 +23,9 @@ package io.spine.tools.compiler.validation;
 import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.gen.java.OneofDeclaration;
+import io.spine.code.gen.java.VBuilderClassName;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +58,7 @@ class VBuilderMethodsTest {
         MethodSpec newBuilder = methodWithName("newBuilder");
         assertThat(newBuilder.modifiers).containsAllOf(PUBLIC, STATIC);
         assertThat(newBuilder.returnType.toString())
-                .endsWith(messageType.validatingBuilderClass()
-                                     .value());
+                .endsWith(VBuilderClassName.of(messageType).value());
         assertThat(newBuilder.parameters).isEmpty();
     }
 
@@ -76,8 +76,7 @@ class VBuilderMethodsTest {
     void setters() {
         MethodSpec getDescription = methodWithName("setDescription");
         assertThat(getDescription.returnType.toString())
-                .endsWith(messageType.validatingBuilderClass()
-                                     .value());
+                .endsWith(VBuilderClassName.of(messageType).value());
         assertThat(getDescription.modifiers).containsExactly(PUBLIC);
         assertThat(getDescription.parameters).hasSize(1);
         assertThat(getDescription.parameters.get(0).type).isEqualTo(TypeName.get(String.class));
@@ -91,11 +90,10 @@ class VBuilderMethodsTest {
                 .descriptor()
                 .getOneofs()
                 .get(0);
-        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor);
-        ClassName expectedReturnType = messageType.javaClassName()
-                                                  .oneofCaseEnum(declaration);
+        OneofDeclaration declaration = new OneofDeclaration(oneofDescriptor, messageType);
+        ClassName expectedReturnType = declaration.javaCaseEnum();
         assertThat(getDescription.returnType.toString())
-                .isEqualTo(expectedReturnType.toString());
+                .isEqualTo(expectedReturnType.canonicalName());
         assertThat(getDescription.modifiers).containsExactly(PUBLIC);
         assertThat(getDescription.parameters).isEmpty();
     }

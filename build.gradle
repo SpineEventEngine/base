@@ -41,16 +41,16 @@ ext {
 
     projectsToPublish = [
         'base',
+        'tool-base',
         'testlib',
         'mute-logging',
         'errorprone-checks',
 
         // Gradle plugins
+        'plugin-base',
         'javadoc-filter',
         'javadoc-prettifier',
         'proto-js-plugin',
-        'plugin-base',
-        'reflections-plugin',
         'model-compiler',
 
         'plugin-testlib',
@@ -164,6 +164,14 @@ subprojects {
         test {
             java.srcDirs generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir
             resources.srcDirs "$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"
+        }
+    }
+
+    protobuf {
+        generatedFilesBaseDir = generatedRootDir
+
+        protoc {
+            artifact = deps.build.protoc
         }
     }
 

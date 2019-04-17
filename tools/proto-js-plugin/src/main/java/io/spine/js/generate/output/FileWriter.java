@@ -24,9 +24,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
-import io.spine.code.js.LibraryFile;
+import io.spine.code.fs.js.Directory;
+import io.spine.code.fs.js.FileName;
+import io.spine.code.fs.js.LibraryFile;
 
 import java.io.IOException;
 import java.nio.file.Files;

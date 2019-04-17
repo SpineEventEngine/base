@@ -55,8 +55,8 @@ class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
     }
 
     @Test
-    @DisplayName("traverse hierarcy in bf ordering")
-    void traverse_hierarchy_in_bf_ordering() {
+    @DisplayName("traverse hierarchy in bf ordering")
+    void traverseHierarchyInBfOrdering() {
         Project root = mock(Project.class);
         Project sub1 = mock(Project.class);
         Project sub2 = mock(Project.class);
@@ -86,7 +86,7 @@ class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
 
     @Test
     @DisplayName("not accept non root projects")
-    void not_accept_non_root_projects() {
+    void notAcceptNonRootProjects() {
         Project project = mock(Project.class);
         when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
         assertThrows(IllegalArgumentException.class,

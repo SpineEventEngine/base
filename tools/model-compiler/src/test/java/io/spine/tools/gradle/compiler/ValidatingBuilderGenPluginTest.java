@@ -30,6 +30,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -62,7 +63,7 @@ class ValidatingBuilderGenPluginTest {
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+    void setUp(@TempDir Path tempDirPath) {
         testProjectDir = tempDirPath.toFile();
     }
 

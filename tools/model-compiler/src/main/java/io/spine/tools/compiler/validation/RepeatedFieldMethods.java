@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.java.FieldName;
+import io.spine.code.gen.java.FieldName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.AccessorTemplate;

@@ -27,8 +27,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
-import io.spine.code.generate.Indent;
+import io.spine.code.gen.Indent;
+import io.spine.code.gen.java.FieldName;
+import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.type.RejectionType;
@@ -38,7 +41,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
@@ -191,15 +193,22 @@ public class RejectionWriter implements Logging {
 
     private static FieldSpec serialVersionUID() {
         return FieldSpec.builder(long.class,
-                                 io.spine.code.java.FieldName.serialVersionUID()
-                                                             .value(),
+                                 FieldName.serialVersionUID()
+                                          .value(),
                                  PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
     }
 
     private static ClassName toJavaPoetName(io.spine.code.java.ClassName className) {
-        String noDelimiterName = className.value().replace(OUTER_CLASS_DELIMITER, '.');
-        return ClassName.bestGuess(noDelimiterName);
+        PackageName packageName = className.packageName();
+        SimpleClassName topLevel = className.topLevelClass();
+        String[] nestingChain = NestedClassName.from(className)
+                                               .split()
+                                               .stream()
+                                               .skip(1)
+                                               .map(SimpleClassName::value)
+                                               .toArray(String[]::new);
+        return ClassName.get(packageName.value(), topLevel.value(), nestingChain);
     }
 }

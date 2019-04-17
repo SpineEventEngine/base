@@ -29,12 +29,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.code.java.SimpleClassName;
-import io.spine.code.java.VBuilderClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
@@ -44,7 +41,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
@@ -191,19 +187,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Obtains the name of a Validating Builder class for the type.
-     *
-     * @throws java.lang.IllegalStateException
-     *         if the message type does not have a corresponding
-     *         a Validating Builder class, for example, because it's a Google Protobuf message
-     */
-    public SimpleClassName validatingBuilderClass() {
-        checkState(hasVBuilder(), "No validating builder class available for the type `%s`.", this);
-        SimpleClassName result = VBuilderClassName.of(this);
-        return result;
-    }
-
-    /**
      * Obtains all nested declarations that match the passed predicate.
      */
     public ImmutableList<MessageType> nestedTypesThat(Predicate<DescriptorProto> predicate) {
@@ -250,19 +233,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                             .map(field -> new FieldDeclaration(field, this))
                             .collect(toImmutableList());
         return result;
-    }
-
-    /**
-     * Obtains {@code oneof} fields declared in the message type.
-     */
-    public ImmutableList<OneofDeclaration> oneofs() {
-        ImmutableList<OneofDeclaration> result =
-                descriptor().getOneofs()
-                            .stream()
-                            .map(OneofDeclaration::new)
-                            .collect(toImmutableList());
-        return result;
-
     }
 
     /**

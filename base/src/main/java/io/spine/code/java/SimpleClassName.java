@@ -52,7 +52,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @param value cannot be null or empty, no other checking is performed
      * @return new instance
      */
-    static SimpleClassName create(@ClassGetSimpleName String value) {
+    public static SimpleClassName create(@ClassGetSimpleName String value) {
         checkNotNull(value);
         checkArgument(!value.isEmpty(), "Simple class name cannot be empty.");
         return new SimpleClassName(value);
@@ -149,14 +149,6 @@ public final class SimpleClassName extends StringTypeValue {
     public static SimpleClassName ofMessage(Descriptor descriptor) {
         checkNotNull(descriptor);
         SimpleClassName result = create(descriptor.getName());
-        return result;
-    }
-
-    /**
-     * Obtains the name for a file of the class.
-     */
-    public FileName toFileName() {
-        FileName result = FileName.forType(value());
         return result;
     }
 

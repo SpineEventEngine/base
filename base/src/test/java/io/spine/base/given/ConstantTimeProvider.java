@@ -25,8 +25,6 @@ import io.spine.base.Time;
 
 /**
  * The provider of the current time with value that does not change.
- *
- * @author Mykhailo Drachuk
  */
 public class ConstantTimeProvider implements Time.Provider {
 

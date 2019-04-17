@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utility class for working with {@link Schema}.
- *
- * @author Mikhail Mikhaylov
  */
 final class Schemas {
 

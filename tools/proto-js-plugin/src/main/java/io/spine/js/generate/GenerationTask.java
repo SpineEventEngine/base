@@ -20,8 +20,8 @@
 
 package io.spine.js.generate;
 
-import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
+import io.spine.code.fs.js.Directory;
+import io.spine.code.fs.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceFile;

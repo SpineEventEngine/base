@@ -28,8 +28,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation class for testing traversal of annotated packages.
- *
- * @author Alexander Yevsyukov
  */
 @Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.RUNTIME)

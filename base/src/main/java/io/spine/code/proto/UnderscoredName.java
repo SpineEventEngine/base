@@ -24,8 +24,6 @@ import java.util.List;
 
 /**
  * A common interface for Protobuf names done with underscores.
- *
- * @author Alexander Yevsyukov
  */
 public interface UnderscoredName {
 

@@ -40,15 +40,10 @@ import java.util.Optional;
  * <pre>
  * {@code message.toBuilder()} -&gt; {@code MessageVBuilder.newBuilder().mergeFrom(message)}
  * </pre>
- *
- * @author Dmytro Kuzmin
  */
 @Internal
 public class ToBuilderFixer implements Fixer<MethodInvocationTree> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         ExpressionTree expression = tree.getMethodSelect();

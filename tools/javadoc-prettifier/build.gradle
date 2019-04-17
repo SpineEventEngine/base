@@ -31,4 +31,5 @@ dependencies {
 
 test.dependsOn(publishToMavenLocal,
                project(':base').publishToMavenLocal,
+               project(':tool-base').publishToMavenLocal,
                project(':plugin-base').publishToMavenLocal)

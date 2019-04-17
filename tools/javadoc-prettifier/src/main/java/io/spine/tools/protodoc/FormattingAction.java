@@ -22,8 +22,6 @@ package io.spine.tools.protodoc;
 
 /**
  * A formatting action, that formats a {@code String}.
- *
- * @author Dmytro Grankin
  */
 interface FormattingAction {
 

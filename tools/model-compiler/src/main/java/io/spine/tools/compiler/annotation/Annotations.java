@@ -23,7 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
-import io.spine.code.generate.GeneratedBySpine;
+import io.spine.code.gen.java.GeneratedBySpine;
 
 import javax.annotation.Generated;
 

@@ -65,7 +65,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("create task dependant on all tasks of given name")
-    void create_task_dependant_on_all_tasks_of_given_name() {
+    void createTaskDependantOnAllTasksOfGivenName() {
         Project subProject = ProjectBuilder.builder()
                                            .withParent(project)
                                            .build();
@@ -87,7 +87,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("create task and insert before other")
-    void create_task_and_insert_before_other() {
+    void createTaskAndInsertBeforeOther() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         plugin.newTask(verifyModel, NoOp.action())
               .insertBeforeTask(classes)
@@ -102,7 +102,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("create task and insert after other")
-    void create_task_and_insert_after_other() {
+    void createTaskAndInsertAfterOther() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         plugin.newTask(verifyModel, NoOp.action())
               .insertAfterTask(compileJava)
@@ -118,7 +118,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("ignore task dependency if no such task found")
-    void ignore_task_dependency_if_no_such_task_found() {
+    void ignoreTaskDependencyIfNoSuchTaskFound() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         plugin.newTask(generateTestProto, NoOp.action())
               .insertAfterAllTasks(generateProto)
@@ -132,7 +132,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("not allow tasks without any connection to task graph")
-    void not_allow_tasks_without_any_connection_to_task_graph() {
+    void notAllowTasksWithoutAnyConnectionToTaskGraph() {
         GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(findValidationRules,
                                                                  NoOp.action());
         assertThrows(IllegalStateException.class,
@@ -141,7 +141,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("return build task description")
-    void return_build_task_description() {
+    void returnBuildTaskDescription() {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         GradleTask desc = plugin.newTask(preClean, NoOp.action())
                                 .insertBeforeTask(clean)
@@ -152,7 +152,7 @@ class SpinePluginBuilderTest {
 
     @Test
     @DisplayName("create task with given inputs")
-    void create_task_with_given_inputs() throws IOException {
+    void createTaskWithGivenInputs() throws IOException {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         File input = new File(".").getAbsoluteFile();
         plugin.newTask(preClean, NoOp.action())

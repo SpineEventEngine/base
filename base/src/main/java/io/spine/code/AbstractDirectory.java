@@ -24,8 +24,6 @@ import java.nio.file.Path;
 
 /**
  * A directory in a programming project.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class AbstractDirectory extends FsObject {
 

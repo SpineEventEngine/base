@@ -23,7 +23,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.code.proto.DescriptorReference.ResourceReference;
+import io.spine.io.Resource;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
 
@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -125,7 +124,7 @@ public final class FileDescriptors {
      *         contained in the loaded files
      */
     static Set<FileDescriptorProto> load() {
-        Iterator<ResourceReference> resources = DescriptorReference.loadAll();
+        Iterator<Resource> resources = DescriptorReference.loadAll();
         Set<FileDescriptorProto> files = stream(resources)
                 .map(FileDescriptors::loadFrom)
                 .flatMap(set -> set.getFileList().stream())
@@ -162,18 +161,15 @@ public final class FileDescriptors {
     /**
      * Reads an instance of {@link FileDescriptorSet} from the given {@link URL}.
      */
-    private static FileDescriptorSet loadFrom(ResourceReference resource) {
+    private static FileDescriptorSet loadFrom(Resource resource) {
         checkNotNull(resource);
-        Optional<InputStream> foundResource = resource.openStream();
-        FileDescriptorSet descriptorSet =
-                foundResource.map(stream -> loadFrom(stream, resource))
-                             .orElse(FileDescriptorSet.getDefaultInstance());
-        return descriptorSet;
+        return resource.exists()
+               ? doLoadFrom(resource)
+               : FileDescriptorSet.getDefaultInstance();
     }
 
-    private static FileDescriptorSet loadFrom(InputStream resourceStream,
-                                              ResourceReference resource) {
-        try (InputStream stream = resourceStream) {
+    private static FileDescriptorSet doLoadFrom(Resource resource) {
+        try (InputStream stream = resource.open()) {
             FileDescriptorSet parsed = FileDescriptorSets.parse(stream);
             return parsed;
         } catch (IOException e) {

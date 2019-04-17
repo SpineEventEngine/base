@@ -22,6 +22,8 @@ package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.fs.java.SourceFile;
+import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.TypeSet;
@@ -78,7 +80,8 @@ final class PatternAnnotator extends Annotator {
     }
 
     private void annotate(ClassName targetClass) {
-        rewriteSource(targetClass.resolveFile(), new NestedTypeDeclarationAnnotation(targetClass));
+        rewriteSource(SourceFile.whichDeclares(targetClass),
+                      new NestedTypeDeclarationAnnotation(targetClass));
     }
 
     /**
@@ -116,8 +119,7 @@ final class PatternAnnotator extends Annotator {
             if (root.getQualifiedName().equals(targetClass.value())) {
                 return root;
             } else {
-                ImmutableList<SimpleClassName> names = targetClass.toNested()
-                                                                  .split();
+                ImmutableList<SimpleClassName> names = NestedClassName.from(targetClass).split();
                 checkState(!names.isEmpty(), "Invalid class name %s.", targetClass);
                 SimpleClassName rootName = names.get(0);
                 checkArgument(root.getName()

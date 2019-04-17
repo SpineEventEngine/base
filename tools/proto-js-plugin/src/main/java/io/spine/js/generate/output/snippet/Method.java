@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.output.snippet;
 
-import io.spine.code.js.MethodReference;
+import io.spine.code.gen.js.MethodReference;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;

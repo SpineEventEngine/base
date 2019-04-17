@@ -21,8 +21,8 @@
 package io.spine.js.generate.given;
 
 import com.google.protobuf.Any;
-import io.spine.code.js.MethodReference;
-import io.spine.code.js.TypeName;
+import io.spine.code.gen.js.MethodReference;
+import io.spine.code.gen.js.TypeName;
 
 public final class GivenMethod {
 

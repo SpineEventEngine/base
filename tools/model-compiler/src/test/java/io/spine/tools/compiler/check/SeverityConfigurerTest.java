@@ -42,8 +42,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.
- *
- * @author Dmytro Kuzmin
  */
 @DisplayName("SeverityConfigurer should")
 class SeverityConfigurerTest {

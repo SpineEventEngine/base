@@ -24,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Task;
 
 import static com.google.common.truth.Truth.assertAbout;
+import static io.spine.tools.gradle.testing.TaskSubject.tasks;
 
 /**
  * Assertions for Gradle Subjects.
@@ -40,6 +41,6 @@ public class GradleTruth {
      * Creates a subject for the passed task.
      */
     public static TaskSubject assertThat(@Nullable Task task) {
-        return assertAbout(TaskSubject.tasks()).that(task);
+        return assertAbout(tasks()).that(task);
     }
 }

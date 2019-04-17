@@ -23,9 +23,6 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.value.StringTypeValue;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -68,10 +65,17 @@ public final class PackageName extends StringTypeValue {
     }
 
     /**
-     * Obtains Java package delimiter.
+     * Obtains Java package delimiter as a {@code String}.
      */
     public static String delimiter() {
         return DELIMITER;
+    }
+
+    /**
+     * Obtains Java package delimiter as a single {@code char}.
+     */
+    public static char delimiterChar() {
+        return DELIMITER_CHAR;
     }
 
     /**
@@ -95,15 +99,6 @@ public final class PackageName extends StringTypeValue {
             javaPackage = file.getPackage();
         }
         return javaPackage;
-    }
-
-    /**
-     * Obtains file system folder path for the package.
-     */
-    public Directory toDirectory() {
-        String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        Directory result = Directory.at(Paths.get(packageDir));
-        return result;
     }
 
     /**

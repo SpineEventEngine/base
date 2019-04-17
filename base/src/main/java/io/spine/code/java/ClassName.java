@@ -26,9 +26,10 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.BinaryName;
+import org.checkerframework.checker.signature.qual.ClassGetName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
@@ -42,31 +43,26 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A value object holding a fully-qualified Java class name.
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 @Immutable
+@SuppressWarnings("ClassWithTooManyMethods")
 public final class ClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
     /**
-     * Separates nested class name from the name of the outer class in a fully-qualified name.
+     * Separates class name from package.
      */
-    public static final char OUTER_CLASS_DELIMITER = '$';
+    private static final char DOT_SEPARATOR = '.';
 
     /**
-     * Separates class name from package, and outer class name with nested when such a class is
-     * referenced as a parameter.
+     * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
-    static final char DOT_SEPARATOR = '.';
+    private static final char OUTER_CLASS_DELIMITER = '$';
 
     private static final String GRPC_POSTFIX = "Grpc";
 
-    private ClassName(String value) {
+    private ClassName(@BinaryName String value) {
         super(checkNotNull(value));
-    }
-
-    private ClassName(Class cls) {
-        this(cls.getName());
     }
 
     /**
@@ -77,7 +73,8 @@ public final class ClassName extends StringTypeValue {
      * @return new instance
      */
     public static ClassName of(Class cls) {
-        return new ClassName(checkNotNull(cls));
+        checkNotNull(cls);
+        return new ClassName(cls.getName());
     }
 
     /**
@@ -108,6 +105,19 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
+     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
+     *
+     * @param file
+     *         the file from which the outer class is generated
+     * @return new instance of {@code ClassName}
+     */
+    public static ClassName outerClass(FileDescriptor file) {
+        PackageName packageName = PackageName.resolve(file.toProto());
+        SimpleClassName simpleName = SimpleClassName.outerOf(file);
+        return of(packageName, simpleName);
+    }
+
+    /**
      * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
      *
      * <p>The resulting class name is the name of the Java class which represents the given Protobuf
@@ -121,19 +131,6 @@ public final class ClassName extends StringTypeValue {
         checkNotNull(messageType);
         return construct(messageType.getFile(), messageType.getName(),
                          messageType.getContainingType());
-    }
-
-    /**
-     * Obtains a {@code ClassName} for the outer class of the given Protobuf file.
-     *
-     * @param file
-     *         the file from which the outer class is generated
-     * @return new instance of {@code ClassName}
-     */
-    public static ClassName outerClass(FileDescriptor file) {
-        PackageName packageName = PackageName.resolve(file.toProto());
-        SimpleClassName simpleName = SimpleClassName.outerOf(file);
-        return of(packageName, simpleName);
     }
 
     /**
@@ -220,10 +217,27 @@ public final class ClassName extends StringTypeValue {
     /**
      * Converts the name which may be a nested class name with {@link #OUTER_CLASS_DELIMITER}
      * to the name separated with dots.
+     *
+     * @see Class#getCanonicalName()
      */
-    public ClassName toDotted() {
+    public String canonicalName() {
         String withDots = toDotted(value());
-        return of(withDots);
+        return withDots;
+    }
+
+    /**
+     * Obtains the binary name of the class.
+     *
+     * <p>Note that the retrieved value may not adhere to the JDK binary name specification.
+     * The actual returned value is obtained from {@link Class#getName()}. In most cases,
+     * the {@code Class.getName()} and the JDK-spec binary name coincide.
+     *
+     * @return the name with the {@link #OUTER_CLASS_DELIMITER}s between nested classed if any
+     * @implSpec This method returns the same value as does the {@code value()} method. Use
+     *         this method for more clarity in the client code.
+     */
+    public @ClassGetName String binaryName() {
+        return value();
     }
 
     /**
@@ -242,35 +256,12 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
      * {@code com.acme.cms.CustomerOrBuilder}.
      *
-     * <p>If this class name is {@linkplain #toDotted() dotted}, then the resulting name is dotted.
+     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is dotted.
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
-    }
-
-    /**
-     * Obtains the name of an enum which represents cases of a {@code oneof} field.
-     *
-     * <p>Such an enum should be nested in this class. The name of the {@code oneof} field is
-     * obtained from the given {@link OneofDeclaration}.
-     *
-     * <p>If this class name is {@code com.acme.cms.Customer} and the {@code oneof} name is
-     * {@code auth_provider}, the resulting class name would be
-     * {@code com.acme.cms.Customer.AuthProviderCase}.
-     *
-     * <p>The resulting class name is always {@linkplain #toDotted() dotted}.
-     *
-     * @param oneof
-     *         the declaration of the {@code oneof} field
-     * @return the case enum FQN
-     */
-    public ClassName oneofCaseEnum(OneofDeclaration oneof) {
-        ClassName dotted = this.toDotted();
-        FieldName oneofName = FieldName.from(oneof.name());
-        String enumName = String.format("%s.%sCase", dotted.value(), oneofName.capitalize());
-        return of(enumName);
     }
 
     private static ClassName construct(FileDescriptor file,
@@ -288,46 +279,39 @@ public final class ClassName extends StringTypeValue {
      * classes, the most nested name will be returned.
      */
     public SimpleClassName toSimple() {
-        String fullName = toDotted().value();
+        String fullName = canonicalName();
         String result = afterDot(fullName);
         return SimpleClassName.create(result);
     }
 
-    static String afterDot(String fullName) {
+    /**
+     * Obtains this class name without the package qualifier.
+     *
+     * <p>The result is always {@linkplain #canonicalName() dotted}.
+     *
+     * @return this name without the package
+     */
+    @Internal
+    public String withoutPackage() {
+        return toDotted(afterDot(value()));
+    }
+
+    /**
+     * Obtain the part of the name after the last {@link #DOT_SEPARATOR .} (dot) symbol.
+     *
+     * @param fullName
+     *         a full class name
+     * @return the last part of the name
+     */
+    private static String afterDot(String fullName) {
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         return fullName.substring(lastDotIndex + 1);
     }
 
     /**
-     * Converts a possibly nested class name into a nested name.
-     *
-     * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
+     * Obtains the name of the package of this class.
      */
-    public NestedClassName toNested() {
-        return NestedClassName.create(this);
-    }
-
-    /**
-     * Resolves the file which contains the declaration of the associated class.
-     *
-     * <p>The resulting {@code SourceFile} represents a <strong>relative</strong> path to the Java
-     * file starting at the top level package.
-     *
-     * <p>In the simplest case, the file name is the same as the simple class name. However, if
-     * the class is nested, then the file name coincides with the simple name of the top-level
-     * class.
-     *
-     * @return the file in which the Java class is declared
-     */
-    public SourceFile resolveFile() {
-        Directory directory = getPackage().toDirectory();
-        SimpleClassName topLevelClass = topLevelClass();
-        FileName javaFile = FileName.forType(topLevelClass.value());
-        SourceFile sourceFile = directory.resolve(javaFile);
-        return sourceFile;
-    }
-
-    private PackageName getPackage() {
+    public PackageName packageName() {
         String fullName = value();
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
@@ -335,7 +319,13 @@ public final class ClassName extends StringTypeValue {
         return PackageName.of(result);
     }
 
-    private SimpleClassName topLevelClass() {
+    /**
+     * Obtains the simple name of the top level class.
+     *
+     * <p>If this class is top level, returns the simple name of this class. If this class is
+     * nested, returns the name of the declaring top level class.
+     */
+    public SimpleClassName topLevelClass() {
         String qualifiedClassName = afterDot(value());
         int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
         String topLevelClassName = delimiterIndex >= 0

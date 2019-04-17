@@ -28,8 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
- *
- * @author Dmytro Kuzmin
  */
 public class PreprocessorConfigurer {
 

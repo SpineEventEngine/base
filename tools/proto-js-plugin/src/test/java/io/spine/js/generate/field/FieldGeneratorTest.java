@@ -21,7 +21,7 @@
 package io.spine.js.generate.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.js.FieldName;
+import io.spine.code.gen.js.FieldName;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;

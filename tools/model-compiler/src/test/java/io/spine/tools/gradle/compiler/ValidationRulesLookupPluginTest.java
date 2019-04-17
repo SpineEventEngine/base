@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.java.DefaultJavaProject;
+import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.properties.PropertyFile;
 import io.spine.tools.gradle.testing.GradleProject;
 import io.spine.validate.rule.ValidationRules;

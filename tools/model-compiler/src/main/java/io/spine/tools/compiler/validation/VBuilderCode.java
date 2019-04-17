@@ -27,8 +27,10 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.generate.Indent;
-import io.spine.code.java.FileName;
+import io.spine.code.fs.java.FileName;
+import io.spine.code.gen.Indent;
+import io.spine.code.gen.java.NestedClassName;
+import io.spine.code.gen.java.VBuilderClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;
@@ -66,7 +68,7 @@ final class VBuilderCode implements Logging {
         this.targetDir = checkNotNull(targetDir);
         this.indent = checkNotNull(indent);
         this.type = checkNotNull(type);
-        this.vbClass = type.validatingBuilderClass();
+        this.vbClass = VBuilderClassName.of(type);
         this.classBuilder = TypeSpec.classBuilder(vbClass.value());
         this.javaPackage = type.javaPackage()
                                .value();
@@ -105,9 +107,8 @@ final class VBuilderCode implements Logging {
     }
 
     private ClassName messageClass() {
-        return ClassName.get(javaPackage, type.javaClassName()
-                                              .toNested()
-                                              .value());
+        return ClassName.get(javaPackage, NestedClassName.from(type.javaClassName())
+                                                         .value());
     }
 
     private ClassName builderClass() {

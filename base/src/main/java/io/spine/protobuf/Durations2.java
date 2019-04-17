@@ -44,16 +44,29 @@ import static io.spine.util.Math2.safeMultiply;
  * <p>Use {@code import static io.spine.protobuf.Durations2.*} for compact initialization
  * like this:
  * <pre>
- *      Duration d = add(hours(2), minutes(30));
+ *     {@code
+ *     Duration d = add(hours(2), minutes(30));
+ *     }
  * </pre>
  *
- * @author Alexander Yevsyukov
  * @see com.google.protobuf.util.Durations Durations
  */
 @SuppressWarnings({"UtilityClass", "ClassWithTooManyMethods"})
 public final class Durations2 {
 
     public static final Duration ZERO = fromMillis(0L);
+
+    /** The count of seconds in one minute. */
+    @SuppressWarnings("NumericCastThatLosesPrecision")
+    private static final int SECONDS_PER_MINUTE = (int) TimeUnit.MINUTES.toSeconds(1);
+
+    /** The count of minutes in one hour. */
+    @SuppressWarnings("NumericCastThatLosesPrecision")
+    private static final int MINUTES_PER_HOUR = (int) TimeUnit.HOURS.toMinutes(1);
+
+    /** The count of milliseconds in one second. */
+    @SuppressWarnings("NumericCastThatLosesPrecision")
+    private static final int MILLIS_PER_SECOND = (int) TimeUnit.SECONDS.toMillis(1);
 
     /** Prevent instantiation of this utility class. */
     private Durations2() {
@@ -62,22 +75,24 @@ public final class Durations2 {
     /**
      * Obtains an instance of {@code Duration} representing the passed number of minutes.
      *
-     * @param minutes the number of minutes, positive or negative.
+     * @param minutes
+     *         the number of minutes, positive or negative.
      * @return a non-null {@code Duration}
      */
     public static Duration fromMinutes(long minutes) {
-        Duration duration = fromSeconds(safeMultiply(minutes, Constants.SECONDS_PER_MINUTE));
+        Duration duration = fromSeconds(safeMultiply(minutes, SECONDS_PER_MINUTE));
         return duration;
     }
 
     /**
      * Obtains an instance of {@code Duration} representing the passed number of hours.
      *
-     * @param hours the number of hours, positive or negative
+     * @param hours
+     *         the number of hours, positive or negative
      * @return a non-null {@code Duration}
      */
     public static Duration fromHours(long hours) {
-        Duration duration = fromMinutes(safeMultiply(hours, Constants.MINUTES_PER_HOUR));
+        Duration duration = fromMinutes(safeMultiply(hours, MINUTES_PER_HOUR));
         return duration;
     }
 
@@ -86,10 +101,12 @@ public final class Durations2 {
      * Methods for brief computations with Durations like
      *       add(hours(2), minutes(30));
      ******************************************************/
+
     /**
      * Obtains an instance of {@code Duration} representing the passed number of nanoseconds.
      *
-     * @param nanos the number of nanoseconds, positive or negative
+     * @param nanos
+     *         the number of nanoseconds, positive or negative
      * @return a non-null {@code Duration}
      */
     public static Duration nanos(long nanos) {
@@ -100,7 +117,8 @@ public final class Durations2 {
     /**
      * Obtains an instance of {@code Duration} representing the passed number of milliseconds.
      *
-     * @param milliseconds the number of milliseconds, positive or negative
+     * @param milliseconds
+     *         the number of milliseconds, positive or negative
      * @return a non-null {@code Duration}
      */
     public static Duration milliseconds(long milliseconds) {
@@ -110,7 +128,8 @@ public final class Durations2 {
     /**
      * Obtains an instance of {@code Duration} representing the passed number of seconds.
      *
-     * @param seconds the number of seconds, positive or negative
+     * @param seconds
+     *         the number of seconds, positive or negative
      * @return a non-null {@code Duration}
      */
     public static Duration seconds(long seconds) {
@@ -136,17 +155,20 @@ public final class Durations2 {
     /**
      * Adds two durations one of which or both can be {@code null}.
      *
-     * <p>This method supplements the {@linkplain com.google.protobuf.util.Durations#add(com.google.protobuf.Duration, com.google.protobuf.Duration) utility}
-     * from Protobuf Utils for accepting {@code null}s.
+     * <p>This method supplements
+     * the {@linkplain com.google.protobuf.util.Durations#add(Duration, Duration) utility} from
+     * Protobuf Utils for accepting {@code null}s.
      *
-     * @param d1 a duration to add, could be {@code null}
-     * @param d2 another duration to add, could be {@code null}
+     * @param d1
+     *         a duration to add, could be {@code null}
+     * @param d2
+     *         another duration to add, could be {@code null}
      * @return <ul>
-     * <li>sum of two durations if both of them are {@code non-null}
-     * <li>another {@code non-null} value, if one is {@code null}
-     * <li>{@link #ZERO} if both values are {@code null}
-     * </ul>
-     * @see com.google.protobuf.util.Durations#add(com.google.protobuf.Duration, com.google.protobuf.Duration)
+     *             <li>sum of two durations if both of them are {@code non-null}
+     *             <li>another {@code non-null} value, if one is {@code null}
+     *             <li>{@link #ZERO} if both values are {@code null}
+     *         </ul>
+     * @see com.google.protobuf.util.Durations#add(Duration, Duration)
      */
     public static Duration add(@Nullable Duration d1, @Nullable Duration d2) {
         if (d1 == null && d2 == null) {
@@ -184,33 +206,35 @@ public final class Durations2 {
     public static long toSeconds(Duration duration) {
         checkNotNull(duration);
         long millis = toMillis(duration);
-        long seconds = floorDiv(millis, Constants.MILLIS_PER_SECOND);
+        long seconds = floorDiv(millis, MILLIS_PER_SECOND);
         return seconds;
     }
 
     /**
      * Converts passed duration to long value of minutes.
      *
-     * @param duration a duration to convert
+     * @param duration
+     *         a duration to convert
      * @return duration in minutes
      */
     public static long toMinutes(Duration duration) {
         checkNotNull(duration);
         long millis = toMillis(duration);
-        long result = (millis / Constants.MILLIS_PER_SECOND) / Constants.SECONDS_PER_MINUTE;
+        long result = (millis / MILLIS_PER_SECOND) / SECONDS_PER_MINUTE;
         return result;
     }
 
     /**
      * Returns the number of hours in the passed duration.
      *
-     * @param value duration
+     * @param value
+     *         duration
      * @return number of hours
      */
     public static long getHours(Duration value) {
         checkNotNull(value);
         long hours = toMinutes(value);
-        long result = hours / Constants.MINUTES_PER_HOUR;
+        long result = hours / MINUTES_PER_HOUR;
         return result;
     }
 
@@ -218,13 +242,14 @@ public final class Durations2 {
      * Returns the only remainder of minutes from the passed duration subtracting
      * the amount of full hours.
      *
-     * @param value duration
+     * @param value
+     *         duration
      * @return number of minutes
      */
     public static int getMinutes(Duration value) {
         checkNotNull(value);
         long allMinutes = toMinutes(value);
-        long remainder = allMinutes % Constants.MINUTES_PER_HOUR;
+        long remainder = allMinutes % MINUTES_PER_HOUR;
         int result = Long.valueOf(remainder)
                          .intValue();
         return result;
@@ -312,7 +337,8 @@ public final class Durations2 {
      * <p>Unlike {@link com.google.protobuf.util.Durations#parse(String) its Protobuf counterpart}
      * this method does not throw a checked exception.
      *
-     * @throws IllegalArgumentException if the string is not of required format
+     * @throws IllegalArgumentException
+     *         if the string is not of required format
      */
     public static Duration parse(String str) {
         checkNotNull(str);
@@ -337,6 +363,7 @@ public final class Durations2 {
         private static final long serialVersionUID = 0L;
 
         private static final JtConverter INSTANCE = new JtConverter();
+
         @Override
         protected Duration doForward(java.time.Duration duration) {
             Duration.Builder result = Duration
@@ -362,24 +389,5 @@ public final class Durations2 {
             return INSTANCE;
         }
 
-    }
-
-    /**
-     * Time unit constants.
-     */
-    @SuppressWarnings("NumericCastThatLosesPrecision")
-    private static class Constants {
-
-        /** The count of seconds in one minute. */
-        static final int SECONDS_PER_MINUTE = (int) TimeUnit.MINUTES.toSeconds(1);
-
-        /** The count of minutes in one hour. */
-        static final int MINUTES_PER_HOUR = (int) TimeUnit.HOURS.toMinutes(1);
-
-        /** The count of milliseconds in one second. */
-        static final int MILLIS_PER_SECOND = (int) TimeUnit.SECONDS.toMillis(1);
-
-        private Constants() {
-        }
     }
 }

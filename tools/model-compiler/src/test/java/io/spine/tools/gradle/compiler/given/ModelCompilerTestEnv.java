@@ -32,8 +32,6 @@ import static io.spine.tools.gradle.TaskName.generateTestProto;
 
 /**
  * A helper class for the test data generation.
- *
- * @author Dmytro Grankin
  */
 @SuppressWarnings("UtilityClass")
 public class ModelCompilerTestEnv {

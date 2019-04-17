@@ -98,6 +98,6 @@ public abstract class ProtoPlugin extends SpinePlugin {
 
     private static Configuration configuration(Project project, ConfigurationName name) {
         return project.getConfigurations()
-                      .getByName(name.getValue());
+                      .getByName(name.value());
     }
 }

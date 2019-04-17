@@ -28,8 +28,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.code.java.DefaultJavaProject;
-import io.spine.code.java.SourceFile;
+import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.code.fs.java.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
@@ -56,9 +56,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.code.java.SourceFile.forMessage;
-import static io.spine.code.java.SourceFile.forOuterClassOf;
-import static io.spine.code.java.SourceFile.forService;
+import static io.spine.code.fs.java.SourceFile.forMessage;
+import static io.spine.code.fs.java.SourceFile.forOuterClassOf;
+import static io.spine.code.fs.java.SourceFile.forService;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.INTERNAL_ALL_SERVICE;
@@ -285,7 +285,6 @@ class ProtoAnnotatorPluginTest {
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
                             .addProtoFile(protoFileName.value())
-                            .enableDebug()
                             .build();
     }
 

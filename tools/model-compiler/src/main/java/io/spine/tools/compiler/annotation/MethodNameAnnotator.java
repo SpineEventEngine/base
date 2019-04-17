@@ -23,6 +23,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
 import io.spine.type.Type;
@@ -63,7 +64,7 @@ final class MethodNameAnnotator extends Annotator {
                          .map(TypeSet::allTypes)
                          .flatMap(ImmutableSet::stream)
                          .map(Type::javaClassName)
-                         .map(ClassName::resolveFile)
+                         .map(SourceFile::whichDeclares)
                          .forEach(file -> rewriteSource(file, visitor));
         }
     }

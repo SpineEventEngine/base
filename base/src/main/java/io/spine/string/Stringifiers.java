@@ -164,7 +164,7 @@ public final class Stringifiers {
      * <p>This stringifier is automatically registered in the
      * {@link StringifierRegistry StringifierRegistry}.
      *
-     * @see com.google.protobuf.util.Durations#toString(com.google.protobuf.Duration) Durations.toString(Duration)
+     * @see com.google.protobuf.util.Durations#toString(Duration) Durations.toString(Duration)
      * @see com.google.protobuf.util.Durations#parse(String) Durations.parse(String)
      */
     public static Stringifier<Duration> forDuration() {
@@ -174,7 +174,7 @@ public final class Stringifiers {
     /**
      * Obtains a stringifier that coverts a Timestamp into to RFC 3339 date string format.
      *
-     * @see com.google.protobuf.util.Timestamps#toString(com.google.protobuf.Timestamp) Timestamps.toString(Timestamp)
+     * @see com.google.protobuf.util.Timestamps#toString(Timestamp) Timestamps.toString(Timestamp)
      * @see com.google.protobuf.util.Timestamps#parse(String) Timestamps.parse(String)
      */
     public static Stringifier<Timestamp> forTimestamp() {

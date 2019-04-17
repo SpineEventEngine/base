@@ -33,8 +33,6 @@ import java.util.TreeSet;
  *
  * <p>Such a trick simplifies the resulting {@code .properties} file navigation
  * and makes any potential debugging easier.
- *
- * @author Alex Tymchenko
  */
 @SuppressWarnings("ClassExtendsConcreteCollection")
 // It's the best (and still readable) way for customization.

@@ -22,6 +22,8 @@ package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
 
+import static org.gradle.api.plugins.JavaPlugin.COMPILE_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME;
 
@@ -30,8 +32,6 @@ import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURA
  *
  * <p>See <a href="https://docs.gradle.org/current/userguide/managing_dependency_configurations.html">
  * the Gradle doc</a> on dependency configurations for more info.
- *
- * @author Dmytro Dashenkov
  */
 public enum ConfigurationName {
 
@@ -39,6 +39,11 @@ public enum ConfigurationName {
      * The {@code classpath} configuration.
      */
     CLASSPATH("classpath"),
+
+    /**
+     * The {@code implementation} configuration.
+     */
+    IMPLEMENTATION(IMPLEMENTATION_CONFIGURATION_NAME),
 
     /**
      * The {@code runtimeClasspath} configuration.
@@ -53,7 +58,15 @@ public enum ConfigurationName {
     /**
      * A custom configuration for downloading artifacts from repositories.
      */
-    FETCH("fetch");
+    FETCH("fetch"),
+
+    /**
+     * The {@code compile} configuration.
+     */
+    @SuppressWarnings("deprecation")
+    // Required in order to add Protobuf dependencies.
+    // See issue https://github.com/google/protobuf-gradle-plugin/issues/242.
+    COMPILE(COMPILE_CONFIGURATION_NAME);
 
     private final String value;
 
@@ -61,7 +74,7 @@ public enum ConfigurationName {
         this.value = value;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 

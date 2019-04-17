@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.code.java.FieldName;
+import io.spine.code.gen.java.FieldName;
 
 import javax.lang.model.element.Modifier;
 

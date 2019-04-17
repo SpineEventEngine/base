@@ -30,9 +30,10 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.code.java.FileName;
+import io.spine.code.fs.java.Directory;
+import io.spine.code.fs.java.FileName;
+import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.PackageName;
-import io.spine.code.java.SourceFile;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -421,8 +422,7 @@ final class InterfaceGeneratorTest {
 
     private static SourceFile sourceWithPackage(String typeName) {
         FileName fileName = FileName.forType(typeName);
-        return PACKAGE_NAME.toDirectory()
-                           .resolve(fileName);
+        return Directory.of(PACKAGE_NAME).resolve(fileName);
     }
 
     private static boolean haveSamePath(File generatedFile, SourceFile anotherFile) {
@@ -436,8 +436,8 @@ final class InterfaceGeneratorTest {
 
     private static void assertPackage(File generatedFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
-        assertTrue(generatedFilePath.startsWith(PACKAGE_NAME.toDirectory()
-                                                            .getPath()));
+        Directory directory = Directory.of(PACKAGE_NAME);
+        assertTrue(generatedFilePath.startsWith(directory.getPath()));
     }
 
     private static void assertGeneratedInterface(Class<?> interfaceClass, File file) {

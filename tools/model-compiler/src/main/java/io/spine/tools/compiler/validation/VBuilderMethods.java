@@ -26,10 +26,11 @@ import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.code.java.FieldName;
+import io.spine.code.gen.java.FieldName;
+import io.spine.code.gen.java.OneofDeclaration;
+import io.spine.code.gen.java.VBuilderClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.OneofDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.AccessorTemplates;
 import io.spine.tools.compiler.field.type.FieldType;
@@ -74,7 +75,7 @@ final class VBuilderMethods {
     ImmutableList<MethodSpec> all() {
         return ImmutableList.<MethodSpec>builder()
                 .add(privateConstructor())
-                .add(newBuilderMethod())
+                .add(methodNewBuilder())
                 .addAll(fieldMethods())
                 .addAll(oneofMethods())
                 .add(mergeFromMethod())
@@ -89,7 +90,7 @@ final class VBuilderMethods {
         return result;
     }
 
-    private MethodSpec newBuilderMethod() {
+    private MethodSpec methodNewBuilder() {
         ClassName vbClass = validatingBuilderClass();
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
@@ -102,12 +103,16 @@ final class VBuilderMethods {
 
     private ClassName validatingBuilderClass() {
         return ClassName.get(type.javaPackage().value(),
-                             type.validatingBuilderClass().value());
+                             vBuilderClassName().value());
+    }
+
+    private SimpleClassName vBuilderClassName() {
+        return VBuilderClassName.of(type);
     }
 
     private MethodSpec mergeFromMethod() {
         String methodName = "mergeFrom";
-        SimpleClassName vBuilderClass = type.validatingBuilderClass();
+        SimpleClassName vBuilderClass = vBuilderClassName();
         ClassName className = ClassName.bestGuess(vBuilderClass.toString());
         ClassName messageClass = messageClass();
         MethodSpec mergeFrom = MethodSpec
@@ -181,18 +186,16 @@ final class VBuilderMethods {
     }
 
     private List<MethodSpec> oneofMethods() {
-        return type.oneofs()
-                   .stream()
-                   .map(this::getCaseMethod)
-                   .collect(toImmutableList());
+        return OneofDeclaration.allFromType(type)
+                               .stream()
+                               .map(VBuilderMethods::methodGetCase)
+                               .collect(toImmutableList());
     }
 
-    private MethodSpec getCaseMethod(OneofDeclaration oneof) {
+    private static MethodSpec methodGetCase(OneofDeclaration oneof) {
         String methodName = AccessorTemplates.caseGetter()
                                              .format(FieldName.from(oneof.name()));
-        ClassName returnType = ClassName.bestGuess(type.javaClassName()
-                                                       .oneofCaseEnum(oneof)
-                                                       .value());
+        ClassName returnType = ClassName.bestGuess(oneof.javaCaseEnum().canonicalName());
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(PUBLIC)
@@ -204,8 +207,7 @@ final class VBuilderMethods {
 
     private ClassName messageClass() {
         String fullyQualifiedDotted = type.javaClassName()
-                                          .toDotted()
-                                          .value();
+                                          .canonicalName();
         return ClassName.bestGuess(fullyQualifiedDotted);
     }
 
@@ -229,8 +231,7 @@ final class VBuilderMethods {
                     .setFieldType(fieldType)
                     .setFieldIndex(index)
                     // The name of the Validating Builder class.
-                    .setJavaClass(type.validatingBuilderClass()
-                                      .value())
+                    .setJavaClass(vBuilderClassName().value())
                     .setJavaPackage(type.javaPackage()
                                         .value())
                     .setGenericClassName(messageClass())

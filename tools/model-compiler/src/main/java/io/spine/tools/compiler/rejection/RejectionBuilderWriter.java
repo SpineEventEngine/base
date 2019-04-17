@@ -209,7 +209,7 @@ final class RejectionBuilderWriter {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.primarySetterTemplate()
-                                     .format(io.spine.code.java.FieldName.from(fieldName));
+                                     .format(io.spine.code.gen.java.FieldName.from(fieldName));
         @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)

@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.js.Directory;
+import io.spine.code.fs.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 

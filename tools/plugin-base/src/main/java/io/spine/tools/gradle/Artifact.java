@@ -20,13 +20,15 @@
 
 package io.spine.tools.gradle;
 
+import com.google.common.base.Objects;
 import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.gradle.api.artifacts.Dependency;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A remote artifact specification.
+ * A Maven-style remote artifact specification.
  *
  * <p>An artifact must have a group, a name, and a version. Also, it may have a classifier and
  * an extension.
@@ -56,6 +58,21 @@ public final class Artifact {
         this.version = builder.version;
         this.classifier = builder.classifier;
         this.extension = builder.extension;
+    }
+
+    /**
+     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency}
+     *
+     * @param dependency
+     *         the Gradle dependency
+     * @return new instance of {@code Artifact}
+     */
+    public static Artifact from(Dependency dependency) {
+        return newBuilder()
+                .setGroup(checkNotNull(dependency.getGroup()))
+                .setName(checkNotNull(dependency.getName()))
+                .setVersion(checkNotNull(dependency.getVersion()))
+                .build();
     }
 
     /**
@@ -95,6 +112,27 @@ public final class Artifact {
     @Override
     public String toString() {
         return notation();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Artifact)) {
+            return false;
+        }
+        Artifact artifact = (Artifact) o;
+        return Objects.equal(group, artifact.group) &&
+                Objects.equal(name, artifact.name) &&
+                Objects.equal(version, artifact.version) &&
+                Objects.equal(classifier, artifact.classifier) &&
+                Objects.equal(extension, artifact.extension);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(group, name, version, classifier, extension);
     }
 
     /**

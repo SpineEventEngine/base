@@ -20,10 +20,9 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
-import io.spine.code.proto.DescriptorReference.ResourceReference;
+import io.spine.io.Resource;
 import io.spine.util.Exceptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -134,25 +133,24 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("return an empty iterator upon missing `desc.ref` file")
     void onMissingDescRef() {
-        Iterator<URL> emptyIterator = emptyIterator();
-        Iterator<ResourceReference> result = DescriptorReference.loadFromResources(emptyIterator);
+        Iterator<Resource> result = DescriptorReference.loadFromResources(emptyList());
         assertFalse(result.hasNext());
     }
 
     private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {
         Path descRef = path.resolve(DescriptorReference.FILE_NAME);
-        Iterator<ResourceReference> existingDescriptors = loadFromResources(asIterator(descRef));
-        List<ResourceReference> result = newArrayList(existingDescriptors);
+        Iterator<Resource> existingDescriptors = loadFromResources(asList(descRef));
+        List<Resource> result = newArrayList(existingDescriptors);
         assertEquals(expected.length, result.size());
         for (DescriptorReference reference : expected) {
             assertTrue(result.contains(reference.asResource()));
         }
     }
 
-    private static UnmodifiableIterator<URL> asIterator(Path descRef) {
+    private static ImmutableList<URL> asList(Path descRef) {
         try {
-            return Iterators.singletonIterator(descRef.toUri()
-                                                      .toURL());
+            return ImmutableList.of(descRef.toUri()
+                                           .toURL());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

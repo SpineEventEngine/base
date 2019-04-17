@@ -22,8 +22,6 @@ package io.spine.base;
 
 /**
  * This exception is thrown when one type cannot be converted to another.
- *
- * @author Illia Shepilov
  */
 public class ConversionException extends Exception {
 

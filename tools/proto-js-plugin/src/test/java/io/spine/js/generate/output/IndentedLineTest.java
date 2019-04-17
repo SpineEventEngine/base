@@ -20,8 +20,8 @@
 
 package io.spine.js.generate.output;
 
-import io.spine.code.generate.Indent;
-import io.spine.code.generate.IndentLevel;
+import io.spine.code.gen.Indent;
+import io.spine.code.gen.IndentLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

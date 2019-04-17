@@ -45,8 +45,6 @@ import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
  *
  * <p>The class manages dependencies of the given {@link Configuration} for the given
  * {@link Project}.
- *
- * @author Dmytro Kuzmin
  */
 public class DependencyConfigurer {
 
@@ -116,7 +114,7 @@ public class DependencyConfigurer {
         ScriptHandler buildscript = project.getRootProject()
                                            .getBuildscript();
         ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration classpath = configurations.findByName(CLASSPATH.getValue());
+        Configuration classpath = configurations.findByName(CLASSPATH.value());
 
         if (classpath == null) {
             return Optional.empty();

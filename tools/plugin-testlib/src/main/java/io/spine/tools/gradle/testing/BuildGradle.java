@@ -20,6 +20,8 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -32,7 +34,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class BuildGradle {
 
-    private static final String FILE_NAME = "build.gradle";
+    /**
+     * The name of the build file.
+     */
+    @VisibleForTesting
+    static final String FILE_NAME = "build.gradle";
 
     private final Path testProjectRoot;
 
