@@ -29,25 +29,25 @@ import org.gradle.api.tasks.SourceSetContainer;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link SourceSetRegistry} implementation based on source sets of a Gradle project.
+ * A {@link SourceSuperset} implementation based on source sets of a Gradle project.
  *
- * <p>{@code ProjectSourceSetRegistry} does not try to resolve any files or find the current project
+ * <p>{@code ProjectSourceSuperset} does not try to resolve any files or find the current project
  * source sets unless {@link #register} is called.
  */
-public final class ProjectSourceSetRegistry implements SourceSetRegistry {
+public final class ProjectSourceSuperset implements SourceSuperset {
 
     private final Project project;
 
-    private ProjectSourceSetRegistry(Project project) {
+    private ProjectSourceSuperset(Project project) {
         this.project = project;
     }
 
     /**
-     * Creates a new instance of {@code ProjectSourceSetRegistry} for the given project.
+     * Creates a new instance of {@code ProjectSourceSuperset} for the given project.
      */
-    public static ProjectSourceSetRegistry of(Project project) {
+    public static ProjectSourceSuperset of(Project project) {
         checkNotNull(project);
-        return new ProjectSourceSetRegistry(project);
+        return new ProjectSourceSuperset(project);
     }
 
     @Override

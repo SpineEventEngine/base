@@ -18,22 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.project;
+package io.spine.tools.gradle.testing;
 
+import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.GeneratedSourceRoot;
+import io.spine.tools.gradle.project.SourceSuperset;
+
+import java.nio.file.Path;
+import java.util.Set;
+
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
- * A description of the project source files layout on the file system.
- *
- * <p>Typically represented by the project {@link org.gradle.api.tasks.SourceSetContainer}.
+ * A memoizing test-only implementation of {@link SourceSuperset}.
  */
-public interface SourceSetRegistry {
+public final class MemoizingSourceSuperset implements SourceSuperset {
 
-    /**
-     * Marks the given directory as a generated code root dir.
-     *
-     * @param directory
-     *         the directory to mark
-     */
-    void register(GeneratedSourceRoot directory);
+    private final Set<Path> javaSourceDirs = newHashSet();
+
+    @Override
+    public void register(GeneratedSourceRoot directory) {
+        javaSourceDirs.add(directory.getPath());
+    }
+
+    public ImmutableSet<Path> javaSourceDirs() {
+        return ImmutableSet.copyOf(javaSourceDirs);
+    }
 }
