@@ -23,7 +23,7 @@ package io.spine.tools.gradle.project;
 import io.spine.tools.gradle.GeneratedSourceRoot;
 
 /**
- * A description of the project source files layout on the file system.
+ * A set of source sets of a project.
  *
  * <p>Typically represented by the project {@link org.gradle.api.tasks.SourceSetContainer}.
  */
