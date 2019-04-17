@@ -30,14 +30,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("MemoizingDepender should")
-class MemoizingDependerTest {
+@DisplayName("MemoizingDependant should")
+class MemoizingDependantTest {
 
-    private MemoizingDepender container;
+    private MemoizingDependant container;
 
     @BeforeEach
     void setUp() {
-        container = new MemoizingDepender();
+        container = new MemoizingDependant();
     }
 
     @Test

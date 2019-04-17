@@ -48,8 +48,8 @@ import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("ProjectDepender should")
-class ProjectDependerTest {
+@DisplayName("DependantProject should")
+class ProjectDependantTest {
 
     private Project project;
 
@@ -66,7 +66,7 @@ class ProjectDependerTest {
     @Test
     @DisplayName("add a given dependency")
     void addDependency() {
-        ProjectDepender container = ProjectDepender.from(project);
+        DependantProject container = DependantProject.from(project);
         Artifact dependency = artifact();
         container.depend(IMPLEMENTATION, dependency.notation());
 
@@ -76,7 +76,7 @@ class ProjectDependerTest {
     @Test
     @DisplayName("add an implementation dependency")
     void implementation() {
-        ProjectDepender container = ProjectDepender.from(project);
+        DependantProject container = DependantProject.from(project);
         Artifact dependency = artifact();
         container.implementation(dependency.notation());
 
@@ -86,7 +86,7 @@ class ProjectDependerTest {
     @Test
     @DisplayName("add a compile dependency")
     void compile() {
-        ProjectDepender container = ProjectDepender.from(project);
+        DependantProject container = DependantProject.from(project);
         Artifact dependency = artifact();
         container.compile(dependency);
 
@@ -96,7 +96,7 @@ class ProjectDependerTest {
     @Test
     @DisplayName("exclude dependencies")
     void excludeDependencies() {
-        ProjectDepender container = ProjectDepender.from(project);
+        DependantProject container = DependantProject.from(project);
         Dependency unwanted = new ThirdPartyDependency("org.example.system", "system-core");
         container.exclude(unwanted);
 
