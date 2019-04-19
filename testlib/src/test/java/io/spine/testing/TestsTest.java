@@ -36,7 +36,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
@@ -47,6 +49,7 @@ import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_N
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.repeat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -380,5 +383,16 @@ class TestsTest extends UtilityClassTest<Tests> {
                     () -> assertInDelta(expectedValue, actualValue, DELTA)
             );
         }
+    }
+
+    @Test
+    @DisplayName("repeat an action a number of times")
+    void repeating() {
+        int expected = TestValues.random(10);
+        AtomicInteger counter = new AtomicInteger(0);
+        repeat(expected, counter::incrementAndGet);
+
+        assertThat(counter.get())
+                .isEqualTo(expected);
     }
 }
