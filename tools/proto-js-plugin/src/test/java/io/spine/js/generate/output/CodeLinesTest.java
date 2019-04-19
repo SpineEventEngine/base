@@ -54,7 +54,6 @@ class CodeLinesTest {
     private static final String VALUE = "someValue";
     private static final String CONDITION = VALUE + " > 0";
     private static final String CUSTOM_BLOCK = "for (let i in values)";
-    private static final String MAP_NAME = "mapName";
 
     private CodeLines jsOutput;
 

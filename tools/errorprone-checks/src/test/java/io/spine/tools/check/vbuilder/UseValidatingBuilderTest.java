@@ -67,8 +67,8 @@ class UseValidatingBuilderTest {
     void recognizePositiveCases() {
         Predicate<CharSequence> predicate =
                 Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
-        compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test);
-        compilationTestHelper.addSourceFile("UseValidatingBuilderPositives.java")
+        compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test)
+                             .addSourceFile("UseValidatingBuilderPositives.java")
                              .doTest();
     }
 

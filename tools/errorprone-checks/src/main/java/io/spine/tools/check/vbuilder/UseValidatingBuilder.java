@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.errorprone.BugPattern.Category.JDK;
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
@@ -71,7 +70,6 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 @AutoService(BugChecker.class)
 @BugPattern(
         name = "UseValidatingBuilder",
-        category = JDK,
         summary = UseValidatingBuilder.SUMMARY,
         severity = WARNING,
         linkType = CUSTOM,

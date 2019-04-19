@@ -48,6 +48,7 @@ class RangeConstraintTest {
         assertEquals(expected, result.upperBoundType());
     }
 
+    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<Arguments> validRanges() {
         return Stream.of(
                 Arguments.of("[1..2]", BoundType.CLOSED),
@@ -64,6 +65,7 @@ class RangeConstraintTest {
         assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
     }
 
+    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static ImmutableSet<Arguments> badRanges() {
         return argumentsFrom(
                 "{3..5]",
@@ -92,6 +94,7 @@ class RangeConstraintTest {
                      () -> RangeConstraint.rangeFromOption(emptyRange));
     }
 
+    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Set<Arguments> emptyRanges() {
         int right = 0;
         int left = right + 1;

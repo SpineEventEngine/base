@@ -114,6 +114,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
         }
     }
 
+    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<ComplexRequiredFields> validComplexMessages() {
         ComplexRequiredFields message = ComplexRequiredFields
                 .newBuilder()
@@ -192,6 +193,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
         }
     }
 
+    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<ComplexRequiredFields> invalidComplexMessages() {
         ComplexRequiredFields.FifthField.Builder fifthFieldValue =
                 ComplexRequiredFields.FifthField.newBuilder()

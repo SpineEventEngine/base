@@ -42,7 +42,6 @@ import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
 import static io.spine.testing.Prescription.PRESCRIBED_DRUG_FIELD_NUMBER;
 import static io.spine.testing.Prescription.PRESCRIBED_ON_FIELD_NUMBER;
-import static io.spine.testing.Prescription.getDefaultInstance;
 import static io.spine.testing.PrescriptionHistory.PRESCRIPTION_RECEIVER_FIELD_NUMBER;
 import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_NUMBER;
 import static io.spine.testing.Tests.assertInDelta;
@@ -211,7 +210,7 @@ class TestsTest extends UtilityClassTest<Tests> {
             @DisplayName("not match absent repeated primitive fields")
             @Test
             void notMatchAbsentRepeatedPrimitiveFields() {
-                Prescription emptyPrescription = getDefaultInstance();
+                Prescription emptyPrescription = Prescription.getDefaultInstance();
                 FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
                                                                      PRESCRIBED_DRUG_FIELD_NUMBER);
                 assertThrows(AssertionError.class,

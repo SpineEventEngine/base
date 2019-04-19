@@ -109,7 +109,7 @@ class MemoizingStreamTest {
         stream.flushTo(outputCollector);
         byte[] actualBytes = outputCollector.toByteArray();
 
-        assertThat(actualBytes).asList().containsAllIn(asList(expected));
+        assertThat(actualBytes).asList().containsAtLeastElementsIn(asList(expected));
     }
 
     private static byte[] randomBytes(int count) {

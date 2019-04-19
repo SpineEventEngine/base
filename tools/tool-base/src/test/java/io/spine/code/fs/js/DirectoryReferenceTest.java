@@ -20,11 +20,8 @@
 
 package io.spine.code.fs.js;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,7 +42,6 @@ class DirectoryReferenceTest {
     @DisplayName("provide names it consists from")
     void provideDirectoryNames() {
         DirectoryReference reference = DirectoryReference.of("a/b/c");
-        List<String> expected = ImmutableList.of("a", "b", "c");
-        assertThat(reference.elements()).containsAllIn(expected);
+        assertThat(reference.elements()).containsAtLeast("a", "b", "c");
     }
 }

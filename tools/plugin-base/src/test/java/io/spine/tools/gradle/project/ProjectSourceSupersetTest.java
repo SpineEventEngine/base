@@ -77,12 +77,9 @@ class ProjectSourceSupersetTest {
         SourceSet sourceSet = sourceSet(sourceSetName);
         SourceDirectorySet javaDirs = sourceSet.getJava();
         GeneratedSourceSet generatedSourceSet = root.sourceSet(sourceSetName);
-        assertThat(javaDirs.getSrcDirs()).containsAllOf(generatedSourceSet.java()
-                                                                          .toFile(),
-                                                        generatedSourceSet.grpc()
-                                                                          .toFile(),
-                                                        generatedSourceSet.spine()
-                                                                          .toFile());
+        assertThat(javaDirs.getSrcDirs()).containsAtLeast(generatedSourceSet.java().toFile(),
+                                                          generatedSourceSet.grpc().toFile(),
+                                                          generatedSourceSet.spine().toFile());
         assertThat(sourceSet.getResources().getSrcDirs())
                 .contains(generatedSourceSet.resources().toFile());
     }
