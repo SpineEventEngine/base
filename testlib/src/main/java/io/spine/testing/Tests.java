@@ -30,6 +30,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
@@ -250,5 +251,15 @@ public final class Tests {
     public static void assertInDelta(long expectedValue, long actualValue, long delta) {
         long actualDelta = abs(expectedValue - actualValue);
         assertTrue(actualDelta <= delta);
+    }
+
+    /**
+     * Repeats the passed action the {@code count} number of times.
+     */
+    public static void repeat(int count, Runnable action) {
+        checkNotNull(action);
+        for (int i = 0; i < count; i++) {
+             action.run();
+        }
     }
 }
