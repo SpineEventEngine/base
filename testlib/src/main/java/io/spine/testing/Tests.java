@@ -254,7 +254,7 @@ public final class Tests {
     }
 
     /**
-     * Repeats the passed action the {@code 'count'} number of times.
+     * Repeats the passed action the {@code count} number of times.
      */
     public static void repeat(int count, Runnable action) {
         checkNotNull(action);
