@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.string.Diags.backtick;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
@@ -95,7 +96,7 @@ public final class ViolationText {
     private static void appendPrefix(StringBuilder target, String prefix) {
         if (!prefix.isEmpty()) {
             target.append("At ")
-                  .append(prefix)
+                  .append(backtick(prefix))
                   .append(": ");
         }
     }
