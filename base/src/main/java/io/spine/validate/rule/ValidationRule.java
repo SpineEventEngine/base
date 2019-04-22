@@ -56,12 +56,13 @@ final class ValidationRule {
      *
      * <p>Must be used only in {@link ValidationRules}.
      *
-     * @param typeName    the type name of the validation rule
-     * @param targetPaths the paths to the validation rule targets
+     * @param descriptor
+     *         the message descriptor of the validation rule
+     * @param targetPaths
+     *         the paths to the validation rule targets
      */
-    ValidationRule(String typeName, Iterable<String> targetPaths) {
-        this.descriptor = TypeName.of(typeName)
-                                  .messageDescriptor();
+    ValidationRule(Descriptor descriptor, Iterable<String> targetPaths) {
+        this.descriptor = descriptor;
         this.targets = constructTargets(descriptor, targetPaths);
     }
 
@@ -78,9 +79,8 @@ final class ValidationRule {
         return targets;
     }
 
-    private static
-    ImmutableCollection<FieldDescriptor> constructTargets(Descriptor ruleDescriptor,
-                                                          Iterable<String> targetPaths) {
+    private static ImmutableCollection<FieldDescriptor>
+    constructTargets(Descriptor ruleDescriptor, Iterable<String> targetPaths) {
         ImmutableCollection.Builder<FieldDescriptor> targets = ImmutableSet.builder();
         for (String targetPath : targetPaths) {
             FieldDescriptor target = getTargetDescriptor(targetPath);
@@ -93,7 +93,8 @@ final class ValidationRule {
     /**
      * Obtains rule target descriptor by the specified path.
      *
-     * @param targetPath the path to a validation rule target
+     * @param targetPath
+     *         the path to a validation rule target
      * @return the field descriptor
      */
     private static FieldDescriptor getTargetDescriptor(String targetPath) {
@@ -130,8 +131,10 @@ final class ValidationRule {
      *
      * <p>A field is considered present if the target has the field with the same name and type.
      *
-     * @param rule   the validation rule descriptor
-     * @param target the target of the validation rule
+     * @param rule
+     *         the validation rule descriptor
+     * @param target
+     *         the target of the validation rule
      */
     private static void checkRuleFields(Descriptor rule, FieldDescriptor target) {
         for (FieldDescriptor ruleField : rule.getFields()) {

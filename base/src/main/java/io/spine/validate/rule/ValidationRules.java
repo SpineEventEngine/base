@@ -23,10 +23,20 @@ package io.spine.validate.rule;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
-import io.spine.io.PropertyFiles;
+import com.google.protobuf.DescriptorProtos;
+import io.spine.annotation.Internal;
+import io.spine.logging.Logging;
+import io.spine.type.KnownTypes;
+import io.spine.type.MessageType;
+import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Properties;
+import java.util.function.Predicate;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A collection of {@linkplain ValidationRule validation rules} known to the application.
@@ -34,9 +44,9 @@ import java.util.Properties;
  * <p>During initialization of this class, definitions of validation rules are verified.
  * If an invalid validation rule was found, a runtime exception will be thrown.
  */
-public final class ValidationRules {
+public final class ValidationRules implements Serializable {
 
-    private static final String RESOURCE_NAME = "validation_rules.properties";
+    private static final long serialVersionUID = 0L;
 
     /**
      * An instance of {@link Splitter} for the string option values.
@@ -46,10 +56,45 @@ public final class ValidationRules {
      */
     private static final Splitter optionSplitter = Splitter.on(',');
 
-    private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
+    @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
+    private final transient ImmutableSet<ValidationRule> rules;
 
-    /** Prevent instantiation of this class. */
     private ValidationRules() {
+        this(rulesFor(KnownTypes.instance()));
+    }
+
+    private ValidationRules(ImmutableSet<ValidationRule> rules) {
+        this.rules = checkNotNull(rules);
+    }
+
+    private static ImmutableSet<ValidationRule> rulesFor(KnownTypes knownTypes) {
+        ImmutableSet<MessageType> types = checkNotNull(knownTypes)
+                .asTypeSet()
+                .messageTypes();
+        return rulesFor(types);
+    }
+
+    private static ImmutableSet<ValidationRule> rulesFor(ImmutableSet<MessageType> types) {
+        return checkNotNull(types)
+                .stream()
+                .filter(new IsValidationRule())
+                .map(ValidationRules::toValidationRule)
+                .collect(toImmutableSet());
+    }
+
+    private static ValidationRule toValidationRule(MessageType type) {
+        checkNotNull(type);
+        ValidationOf validationOf = new ValidationOf();
+        String ruleTargets = validationOf
+                .valueFrom(type.toProto())
+                .orElseThrow(() -> newIllegalArgumentException(type.name()
+                                                                   .value()));
+        Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargets);
+        return new ValidationRule(type.descriptor(), parsedPaths);
+    }
+
+    private Object readResolve() {
+        return new ValidationRules();
     }
 
     /**
@@ -58,61 +103,51 @@ public final class ValidationRules {
      * @return the immutable collection of validation rules
      */
     static ImmutableCollection<ValidationRule> all() {
-        return rules;
+        return Holder.instance.rules;
     }
 
-    public static String fileName() {
-        return RESOURCE_NAME;
+    @Internal
+    public static void updateFrom(ImmutableSet<MessageType> types) {
+        Holder.updateFrom(types);
     }
 
-    /**
-     * {@code Builder} assembles the validation rules from the {@linkplain #fileName() properties}
-     * files.
-     *
-     * <p>All the files from the classpath will be taken into an account.
-     *
-     * <p>Duplicate keys from the files will be ignored,
-     * i.e. only the first duplicate element will be added to the result.
-     */
-    private static class Builder {
+    private static class Holder {
 
-        /**
-         * Properties to process.
-         *
-         * <p>Properties must contain the list of validation rules and the targets for the rules.
-         */
-        private final Iterable<Properties> properties;
+        private static final Logger log = Logging.get(Holder.class);
 
-        /**
-         * The validation rules collection to be assembled.
-         */
-        private final ImmutableCollection.Builder<ValidationRule> rules;
+        private static ValidationRules instance = new ValidationRules();
 
-        private Builder() {
-            this.properties = PropertyFiles.loadAllProperties(RESOURCE_NAME);
-            this.rules = ImmutableSet.builder();
+        /** Prevents instantiation from outside. */
+        private Holder() {
         }
 
-        private ImmutableCollection<ValidationRule> build() {
-            for (Properties props : this.properties) {
-                put(props);
-            }
-            return rules.build();
+        private static void updateFrom(ImmutableSet<MessageType> types) {
+            checkNotNull(types);
+            log.debug("Updating validation rules from types {}.", types);
+            ImmutableSet<ValidationRule> rules = ImmutableSet
+                    .<ValidationRule>builder()
+                    .addAll(instance.rules)
+                    .addAll(rulesFor(types))
+                    .build();
+            instance = new ValidationRules(rules);
+        }
+    }
+
+    private static class IsValidationRule implements Predicate<MessageType>, Logging {
+
+        @Override
+        public boolean test(MessageType input) {
+            checkNotNull(input);
+            DescriptorProtos.DescriptorProto proto = input.toProto();
+            boolean result = new ValidationOf().valueFrom(proto)
+                                               .isPresent();
+            _debug("[IsValidationRule] Tested {} with the result of {}.", proto.getName(), result);
+            return result;
         }
 
-        /**
-         * Puts the validation rules obtained from the specified properties to the collection.
-         *
-         * @param properties the properties to process
-         * @throws IllegalStateException if an entry from the properties contains invalid data
-         */
-        private void put(Properties properties) {
-            for (String validationRuleType : properties.stringPropertyNames()) {
-                String ruleTargetPaths = properties.getProperty(validationRuleType);
-                Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargetPaths);
-                ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
-                rules.add(rule);
-            }
+        @Override
+        public String toString() {
+            return "IsValidationRule predicate over DescriptorProto";
         }
     }
 }
