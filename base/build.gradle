@@ -28,6 +28,9 @@ apply from: deps.scripts.testArtifacts
 apply from: deps.scripts.runBuild
 
 dependencies {
+    annotationProcessor deps.build.autoService.processor
+    compileOnly deps.build.autoService.annotations
+    
     // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
     // ErrorProne Annotations is part of our API. 
     api deps.build.errorProneAnnotations
