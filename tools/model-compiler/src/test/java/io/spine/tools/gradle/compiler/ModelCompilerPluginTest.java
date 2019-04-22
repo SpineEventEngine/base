@@ -34,8 +34,6 @@ import static io.spine.tools.gradle.TaskName.annotateTestProto;
 import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.TaskName.compileTestJava;
-import static io.spine.tools.gradle.TaskName.findTestValidationRules;
-import static io.spine.tools.gradle.TaskName.findValidationRules;
 import static io.spine.tools.gradle.TaskName.generateRejections;
 import static io.spine.tools.gradle.TaskName.generateTestRejections;
 import static io.spine.tools.gradle.TaskName.generateTestValidatingBuilders;
@@ -43,8 +41,6 @@ import static io.spine.tools.gradle.TaskName.generateValidatingBuilders;
 import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.TaskName.preClean;
-import static io.spine.tools.gradle.TaskName.processResources;
-import static io.spine.tools.gradle.TaskName.processTestResources;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
@@ -76,7 +72,8 @@ class ModelCompilerPluginTest {
 
         @Test
         void preClean() {
-            assertThat(task(clean)).dependsOn(task(preClean)).isTrue();
+            assertThat(task(clean)).dependsOn(task(preClean))
+                                   .isTrue();
         }
 
         @Test
@@ -90,20 +87,6 @@ class ModelCompilerPluginTest {
         void generateTestRejections() {
             assertDependencies(
                     generateTestRejections, mergeTestDescriptorSet, compileTestJava
-            );
-        }
-
-        @Test
-        void findValidationRules() {
-            assertDependencies(
-                    findValidationRules, mergeDescriptorSet, processResources
-            );
-        }
-
-        @Test
-        void findTestValidationRules() {
-            assertDependencies(
-                    findTestValidationRules, mergeTestDescriptorSet, processTestResources
             );
         }
 

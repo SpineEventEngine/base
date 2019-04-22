@@ -57,7 +57,6 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new RejectionGenPlugin(),
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),
-                  new ValidationRulesLookupPlugin(),
                   new ProtocConfigurationPlugin(),
                   new ErrorProneChecksPlugin())
               .forEach(plugin -> apply(plugin, project));

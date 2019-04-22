@@ -74,16 +74,6 @@ public enum TaskName {
     generateTestValidatingBuilders,
 
     /**
-     * Collects external validation constraints in the {@code main} scope.
-     */
-    findValidationRules,
-
-    /**
-     * Collects external validation constraints in the {@code test} scope.
-     */
-    findTestValidationRules,
-
-    /**
      * The name of the class path scan task added to the Gradle lifecycle.
      */
     scanClassPath,
