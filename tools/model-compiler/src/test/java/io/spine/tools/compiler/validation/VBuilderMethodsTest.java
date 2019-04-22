@@ -56,7 +56,7 @@ class VBuilderMethodsTest {
     @DisplayName("`newBuilder` method")
     void newBuilder() {
         MethodSpec newBuilder = methodWithName("newBuilder");
-        assertThat(newBuilder.modifiers).containsAllOf(PUBLIC, STATIC);
+        assertThat(newBuilder.modifiers).containsAtLeast(PUBLIC, STATIC);
         assertThat(newBuilder.returnType.toString())
                 .endsWith(VBuilderClassName.of(messageType).value());
         assertThat(newBuilder.parameters).isEmpty();

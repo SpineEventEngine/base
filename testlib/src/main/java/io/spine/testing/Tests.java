@@ -214,7 +214,7 @@ public final class Tests {
                                         .collect(toImmutableList());
 
         // Assert that the passed field mask contains the field of this message type.
-        assertThat(fieldNames).containsAllIn(paths);
+        assertThat(fieldNames).containsAtLeastElementsIn(paths);
 
         for (FieldDescriptor field : fields) {
             boolean maskHasSuchField = paths.contains(field.getName());

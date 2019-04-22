@@ -157,7 +157,7 @@ class ExtensionTest {
     @DisplayName("include predefined Spine modules")
     void includePredefinedModules() {
         List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).containsAllIn(Extension.predefinedModules());
+        assertThat(modules).containsAtLeastElementsIn(Extension.predefinedModules());
     }
 
     @Test
@@ -167,7 +167,7 @@ class ExtensionTest {
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, emptyList());
         List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).containsAllIn(Extension.predefinedModules());
+        assertThat(modules).containsAtLeastElementsIn(Extension.predefinedModules());
         assertThat(modules).contains(new ExternalModule(moduleName, emptyList()));
     }
 

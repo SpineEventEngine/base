@@ -128,7 +128,7 @@ class KnownTypesTest {
         Set<TypeUrl> packageTypes = knownTypes.allFromPackage(packageName);
 
         IterableSubject assertTypes = assertThat(packageTypes);
-        assertTypes.containsAllIn(ImmutableSet.of(taskId, taskName, task));
+        assertTypes.containsAtLeast(taskId, taskName, task);
     }
 
     @Test
@@ -200,7 +200,7 @@ class KnownTypesTest {
 
         private void assertContainsAll(TypeRef typeRef) {
             ImmutableSet<MessageType> types = knownTypes.allMatching(typeRef);
-            assertThat(types).containsAllIn(packageTypes);
+            assertThat(types).containsAtLeastElementsIn(packageTypes);
         }
     }
 }

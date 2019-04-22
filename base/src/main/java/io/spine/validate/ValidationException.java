@@ -47,7 +47,7 @@ public final class ValidationException extends RuntimeException {
     }
 
     @Override
-    public String toString() {
+    public String getMessage() {
         return getClass().getSimpleName() + ": " + ViolationText.ofAll(constraintViolations);
     }
 }

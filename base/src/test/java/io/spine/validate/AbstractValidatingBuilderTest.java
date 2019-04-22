@@ -165,7 +165,7 @@ class AbstractValidatingBuilderTest {
 
                 List<String> list = convertToList(str, String.class);
 
-                assertThat(list).containsAllIn(items);
+                assertThat(list).containsAtLeastElementsIn(items);
             }
 
             @Test
@@ -178,7 +178,7 @@ class AbstractValidatingBuilderTest {
 
                 List<Timestamp> list = convertToList(str, Timestamp.class);
 
-                assertThat(list).containsAllIn(times);
+                assertThat(list).containsAtLeastElementsIn(times);
             }
         }
 

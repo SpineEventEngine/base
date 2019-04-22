@@ -72,6 +72,6 @@ public class ProjectConfigurations {
     }
 
     private static void assertHasAllArgs(List<String> compilerArgs, String[] args) {
-        assertThat(compilerArgs).containsAllIn(args);
+        assertThat(compilerArgs).containsAtLeastElementsIn(args);
     }
 }

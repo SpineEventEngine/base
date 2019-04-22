@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.Internal;
@@ -36,6 +37,7 @@ import java.util.Set;
  *     <li>{@code (max)}, {@code (min)}, {@code (range)}, and {@code (digits)} for number fields.
  * </ul>
  */
+@AutoService(ValidatingOptionFactory.class)
 @Internal
 @Immutable
 public final class PrimitiveValidatingOptionFactory implements ValidatingOptionFactory {

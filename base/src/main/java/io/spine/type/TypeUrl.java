@@ -42,7 +42,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.Internal.getDefaultInstance;
+import static io.spine.protobuf.Messages.defaultInstance;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -180,7 +180,7 @@ public final class TypeUrl implements Serializable {
      * Obtains the type URL for the passed message class.
      */
     public static TypeUrl of(Class<? extends Message> cls) {
-        Message defaultInstance = getDefaultInstance(cls);
+        Message defaultInstance = defaultInstance(cls);
         TypeUrl result = of(defaultInstance);
         return result;
     }

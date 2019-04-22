@@ -24,29 +24,17 @@ repositories {
     maven { url = repos.sonatypeSnapshots }
 }
 
-ext {
-    autoServiceVersion = '1.0-rc4'
-}
-
 dependencies {
+    annotationProcessor deps.build.autoService.processor
+    compileOnly deps.build.autoService.annotations
+    
     implementation project(':base')
     implementation project(':plugin-base')
 
     implementation deps.build.errorProneCore
     implementation deps.build.errorProneAnnotations
 
-    compileOnly ("com.google.auto.service:auto-service:$autoServiceVersion") {
-
-        // Exclude com.google.auto:auto-common because of the version conflict:
-        // 0.8 is used by `auto-service` and 0.10 is used by `error_prone_core`.
-        exclude group: 'com.google.auto'
-    }
-
-    testImplementation (deps.build.errorProneTestHelpers) {
-        // Exclude com.google.auto:auto-common because of the version conflict:
-        // 0.9 is used by `error_prone_test_helpers` and 0.10 is used by `error_prone_core`.
-        exclude group: 'com.google.auto' 
-    }
+    testImplementation deps.build.errorProneTestHelpers
 }
 
 def getResolvedArtifactFor(final dependency) {

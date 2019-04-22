@@ -30,13 +30,9 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.MessageFile.COMMANDS;
-import static io.spine.base.MessageFile.EVENTS;
-import static io.spine.base.MessageFile.REJECTIONS;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedInterfaces should")
@@ -95,9 +91,5 @@ final class GeneratedInterfacesTest {
                                                   .equals(byPattern.getValue()))
                 .map(ConfigByPattern::getPattern)
                 .anyMatch(patternPredicate);
-    }
-
-    private static void assertHasInterface(Class<?> interfaceClass, String actualValue) {
-        assertEquals(ClassName.of(interfaceClass), ClassName.of(actualValue));
     }
 }
