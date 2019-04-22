@@ -97,7 +97,6 @@ class NumberTextTest {
         assertEquals(expected, text.toString());
     }
 
-    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<Arguments> textNumbers() {
         return Stream.of(
                 Arguments.of(0.0d, "0.0"),
@@ -121,7 +120,6 @@ class NumberTextTest {
         assertThrows(IllegalStateException.class, () -> new NumberText("1.0.0"));
     }
 
-    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<Arguments> malformedNumbers() {
         return Stream.of(
                 Arguments.of("1,0,0"),
