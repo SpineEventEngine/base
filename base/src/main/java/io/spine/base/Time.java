@@ -25,6 +25,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
 import java.time.Instant;
+import java.time.ZoneId;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -94,7 +95,20 @@ public final class Time {
      */
     @Internal
     public interface Provider {
+
+        /**
+         * Obtains the current time in UTC.
+         */
         Timestamp currentTime();
+
+        /**
+         * Obtains the current time zone ID.
+         *
+         * @implSpec The default implementation uses the {@link ZoneId#systemDefault()} zone.
+         */
+        default ZoneId currentZone() {
+            return ZoneId.systemDefault();
+        }
     }
 
     /**
