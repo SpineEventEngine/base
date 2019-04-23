@@ -20,12 +20,12 @@
 
 package io.spine.validate.rule;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.type.TypeName;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -62,8 +62,8 @@ final class ValidationRule {
      *         the paths to the validation rule targets
      */
     ValidationRule(Descriptor descriptor, Iterable<String> targetPaths) {
-        this.descriptor = descriptor;
-        this.targets = constructTargets(descriptor, targetPaths);
+        this.descriptor = checkNotNull(descriptor);
+        this.targets = constructTargets(descriptor, checkNotNull(targetPaths));
     }
 
     Descriptor getDescriptor() {
@@ -81,7 +81,7 @@ final class ValidationRule {
 
     private static ImmutableCollection<FieldDescriptor>
     constructTargets(Descriptor ruleDescriptor, Iterable<String> targetPaths) {
-        ImmutableCollection.Builder<FieldDescriptor> targets = ImmutableSet.builder();
+        ImmutableSet.Builder<FieldDescriptor> targets = ImmutableSet.builder();
         for (String targetPath : targetPaths) {
             FieldDescriptor target = getTargetDescriptor(targetPath);
             checkRuleFields(ruleDescriptor, target);
