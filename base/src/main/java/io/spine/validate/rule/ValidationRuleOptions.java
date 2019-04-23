@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -107,12 +109,10 @@ public final class ValidationRuleOptions implements Serializable {
         static void updateFrom(Iterable<ValidationRule> validationRules) {
             checkNotNull(validationRules);
             log.debug("Updating validation rule options from rules {}.", validationRules);
-            ImmutableMap<FieldContext, FieldOptions> options = ImmutableMap
-                    .<FieldContext, FieldOptions>builder()
-                    .putAll(instance.options)
-                    .putAll(new Builder().buildFrom(validationRules))
-                    .build();
-            instance = new ValidationRuleOptions(options);
+            Map<FieldContext, FieldOptions> options = new HashMap<>();
+            options.putAll(instance.options);
+            options.putAll(new Builder().buildFrom(validationRules));
+            instance = new ValidationRuleOptions(ImmutableMap.copyOf(options));
         }
     }
 

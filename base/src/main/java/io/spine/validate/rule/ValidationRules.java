@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -148,12 +150,10 @@ public final class ValidationRules implements Serializable {
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
             log.debug("Updating validation rules from types {}.", types);
-            ImmutableSet<ValidationRule> rules = ImmutableSet
-                    .<ValidationRule>builder()
-                    .addAll(instance.rules)
-                    .addAll(rulesFor(types))
-                    .build();
-            instance = new ValidationRules(rules);
+            Set<ValidationRule> rules = new HashSet<>();
+            rules.addAll(instance.rules);
+            rules.addAll(rulesFor(types));
+            instance = new ValidationRules(ImmutableSet.copyOf(rules));
             ValidationRuleOptions.Holder.updateFrom(instance.rules);
         }
     }
