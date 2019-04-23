@@ -49,7 +49,7 @@ final class ValidationRule {
     /**
      * Descriptors for the target fields of the validation rule.
      */
-    private final ImmutableCollection<FieldDescriptor> targets;
+    private final ImmutableSet<FieldDescriptor> targets;
 
     /**
      * Creates a new instance.
@@ -75,11 +75,11 @@ final class ValidationRule {
      *
      * @return an immutable collection of the targets
      */
-    ImmutableCollection<FieldDescriptor> getTargets() {
+    ImmutableSet<FieldDescriptor> getTargets() {
         return targets;
     }
 
-    private static ImmutableCollection<FieldDescriptor>
+    private static ImmutableSet<FieldDescriptor>
     constructTargets(Descriptor ruleDescriptor, Iterable<String> targetPaths) {
         ImmutableSet.Builder<FieldDescriptor> targets = ImmutableSet.builder();
         for (String targetPath : targetPaths) {
