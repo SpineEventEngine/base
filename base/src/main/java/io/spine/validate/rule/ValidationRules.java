@@ -21,7 +21,6 @@
 package io.spine.validate.rule;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos;
 import io.spine.annotation.Internal;
@@ -67,6 +66,26 @@ public final class ValidationRules implements Serializable {
         this.rules = checkNotNull(rules);
     }
 
+    /**
+     * Obtains validation rules known to the application.
+     *
+     * @return the immutable collection of validation rules
+     */
+    static ImmutableSet<ValidationRule> all() {
+        return Holder.instance.rules;
+    }
+
+    /**
+     * Extends validation rules with some more rules from the {@code types}.
+     */
+    @Internal
+    public static void updateFrom(ImmutableSet<MessageType> types) {
+        Holder.updateFrom(types);
+    }
+
+    /**
+     * Builds validation rules for known Protobuf types.
+     */
     private static ImmutableSet<ValidationRule> rulesFor(KnownTypes knownTypes) {
         ImmutableSet<MessageType> types = checkNotNull(knownTypes)
                 .asTypeSet()
@@ -74,6 +93,9 @@ public final class ValidationRules implements Serializable {
         return rulesFor(types);
     }
 
+    /**
+     * Builds validation rules for supplied message types.
+     */
     private static ImmutableSet<ValidationRule> rulesFor(ImmutableSet<MessageType> types) {
         return checkNotNull(types)
                 .stream()
@@ -82,6 +104,9 @@ public final class ValidationRules implements Serializable {
                 .collect(toImmutableSet());
     }
 
+    /**
+     * Builds a validation rule from the supplied message type.
+     */
     private static ValidationRule toValidationRule(MessageType type) {
         checkNotNull(type);
         ValidationOf validationOf = new ValidationOf();
@@ -93,34 +118,32 @@ public final class ValidationRules implements Serializable {
         return new ValidationRule(type.descriptor(), parsedPaths);
     }
 
+    /**
+     * Re-creates de-serialized instance.
+     */
     private Object readResolve() {
         return new ValidationRules();
     }
 
     /**
-     * Obtains validation rules known to the application.
-     *
-     * @return the immutable collection of validation rules
+     * A holder of the {@link ValidationRules} instance.
      */
-    static ImmutableCollection<ValidationRule> all() {
-        return Holder.instance.rules;
-    }
-
-    @Internal
-    public static void updateFrom(ImmutableSet<MessageType> types) {
-        Holder.updateFrom(types);
-    }
-
     private static class Holder {
 
         private static final Logger log = Logging.get(Holder.class);
 
+        /** The singleton instance. */
         private static ValidationRules instance = new ValidationRules();
 
         /** Prevents instantiation from outside. */
         private Holder() {
         }
 
+        /**
+         * Extends validation rules with some more rules from the supplied {@code types}.
+         *
+         * <p>Triggers validation rule options update.
+         */
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
             log.debug("Updating validation rules from types {}.", types);
@@ -133,6 +156,9 @@ public final class ValidationRules implements Serializable {
         }
     }
 
+    /**
+     * Determines if a {@link MessageType} contains a validation rule.
+     */
     private static class IsValidationRule implements Predicate<MessageType>, Logging {
 
         @Override
