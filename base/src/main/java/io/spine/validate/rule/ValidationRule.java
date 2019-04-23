@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE;
@@ -168,11 +169,15 @@ final class ValidationRule {
 
         ValidationRule other = (ValidationRule) o;
 
-        return descriptor.equals(other.descriptor);
+        return typeUrl().equals(other.typeUrl());
     }
 
     @Override
     public int hashCode() {
-        return descriptor.hashCode();
+        return typeUrl().hashCode();
+    }
+
+    private TypeUrl typeUrl() {
+        return TypeUrl.from(descriptor);
     }
 }
