@@ -62,7 +62,6 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
         super(UrlPrinter.class);
     }
 
-    @SuppressWarnings("UnusedMethod") // Used as a JUnit test data factory.
     private static Stream<Arguments> recordAndResult() {
         return Stream.of(
                 Arguments.of(
