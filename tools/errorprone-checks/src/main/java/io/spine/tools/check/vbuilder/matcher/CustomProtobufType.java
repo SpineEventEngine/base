@@ -36,13 +36,15 @@ import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
  * A predicate which matches custom (i.e. non-Google) Protobuf types.
  *
  * <p>Any Java class which descends from {@link Message} and does not belong to {@code com.google}
- * package or its subpackage matched this predicate.
+ * or {@code google} package or its subpackage matches this predicate.
  */
 final class CustomProtobufType implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
     private static final String GOOGLE_PACKAGE = "com.google";
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Encapsulated package name.
+    private static final String PROTOBUF_STYLE_GOOGLE_PACKAGE = "google";
     private static final TypePredicate IS_MESSAGE = isDescendantOf(Message.class.getName());
 
     /**
@@ -83,7 +85,8 @@ final class CustomProtobufType implements TypePredicate {
             Symbol.TypeSymbol typeSymbol = type.asElement();
             String typeFqn = typeSymbol.getQualifiedName()
                                        .toString();
-            return !typeFqn.startsWith(GOOGLE_PACKAGE);
+            return !typeFqn.startsWith(GOOGLE_PACKAGE)
+                && !typeFqn.startsWith(PROTOBUF_STYLE_GOOGLE_PACKAGE);
         }
     }
 }
