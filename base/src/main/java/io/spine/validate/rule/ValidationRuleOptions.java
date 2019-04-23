@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
 /**
  * Provides option value for a field mentioned in a validation rule.
@@ -109,9 +109,13 @@ public final class ValidationRuleOptions implements Serializable {
         static void updateFrom(Iterable<ValidationRule> validationRules) {
             checkNotNull(validationRules);
             log.debug("Updating validation rule options from rules {}.", validationRules);
-            Map<FieldContext, FieldOptions> options = new HashMap<>();
-            options.putAll(instance.options);
-            options.putAll(new Builder().buildFrom(validationRules));
+            ImmutableMap<FieldContext, FieldOptions> currentOptions = instance.options;
+            ImmutableMap<FieldContext, FieldOptions> newOptions = new Builder()
+                    .buildFrom(validationRules);
+            Map<FieldContext, FieldOptions> options =
+                    newHashMapWithExpectedSize(currentOptions.size() + newOptions.size());
+            options.putAll(currentOptions);
+            options.putAll(newOptions);
             instance = new ValidationRuleOptions(ImmutableMap.copyOf(options));
         }
     }

@@ -31,12 +31,12 @@ import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -150,9 +150,12 @@ public final class ValidationRules implements Serializable {
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
             log.debug("Updating validation rules from types {}.", types);
-            Set<ValidationRule> rules = new HashSet<>();
-            rules.addAll(instance.rules);
-            rules.addAll(rulesFor(types));
+            ImmutableSet<ValidationRule> currentRules = instance.rules;
+            ImmutableSet<ValidationRule> newRules = rulesFor(types);
+            Set<ValidationRule> rules =
+                    newHashSetWithExpectedSize(currentRules.size() + newRules.size());
+            rules.addAll(currentRules);
+            rules.addAll(newRules);
             instance = new ValidationRules(ImmutableSet.copyOf(rules));
             ValidationRuleOptions.Holder.updateFrom(instance.rules);
         }
