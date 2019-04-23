@@ -142,7 +142,8 @@ public final class ValidationRules implements Serializable {
         /**
          * Extends validation rules with some more rules from the supplied {@code types}.
          *
-         * <p>Triggers validation rule options update.
+         * <p>Triggers validation rule options
+         * {@link ValidationRuleOptions.Holder#updateFrom(Iterable) update}.
          */
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
@@ -153,6 +154,7 @@ public final class ValidationRules implements Serializable {
                     .addAll(rulesFor(types))
                     .build();
             instance = new ValidationRules(rules);
+            ValidationRuleOptions.Holder.updateFrom(instance.rules);
         }
     }
 

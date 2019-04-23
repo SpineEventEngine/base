@@ -25,24 +25,35 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
+import io.spine.logging.Logging;
+import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides option value for a field mentioned in a validation rule.
  */
-public final class ValidationRuleOptions {
+public final class ValidationRuleOptions implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * A map from a field context to the options extracted from a validation rule.
      */
-    private static final Map<FieldContext, FieldOptions> options = new Builder().build();
+    private final ImmutableMap<FieldContext, FieldOptions> options;
 
-    /** Prevent instantiation of this utility class. */
     private ValidationRuleOptions() {
+        this(new Builder().build());
+    }
+
+    private ValidationRuleOptions(ImmutableMap<FieldContext, FieldOptions> options) {
+        this.options = options;
     }
 
     /**
@@ -57,8 +68,9 @@ public final class ValidationRuleOptions {
      * @return the {@code Optional} of option value
      *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
-    public static <T> Optional<T> getOptionValue(FieldContext fieldContext,
-                                                 GeneratedExtension<FieldOptions, T> option) {
+    public static <T> Optional<T>
+    getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
+        ImmutableMap<FieldContext, FieldOptions> options = Holder.instance.options;
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
@@ -71,6 +83,40 @@ public final class ValidationRuleOptions {
     }
 
     /**
+     * A holder of the {@link ValidationRuleOptions} instance.
+     *
+     * @apiNote This class is package-private for allowing rule options update being
+     *         triggered whenever {@link ValidationRules} are updated.
+     */
+    @Internal
+    static class Holder {
+
+        private static final Logger log = Logging.get(Holder.class);
+
+        /** The singleton instance. */
+        private static ValidationRuleOptions instance = new ValidationRuleOptions();
+
+        /** Prevents instantiation from outside. */
+        private Holder() {
+        }
+
+        /**
+         * Extends validation rule options with some more options from the supplied
+         * {@code validationRules}.
+         */
+        static void updateFrom(Iterable<ValidationRule> validationRules) {
+            checkNotNull(validationRules);
+            log.debug("Updating validation rule options from rules {}.", validationRules);
+            ImmutableMap<FieldContext, FieldOptions> options = ImmutableMap
+                    .<FieldContext, FieldOptions>builder()
+                    .putAll(instance.options)
+                    .putAll(new Builder().buildFrom(validationRules))
+                    .build();
+            instance = new ValidationRuleOptions(options);
+        }
+    }
+
+    /**
      * Assembles {@linkplain #options}.
      */
     private static class Builder {
@@ -79,7 +125,12 @@ public final class ValidationRuleOptions {
                 ImmutableMap.builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            for (ValidationRule rule : ValidationRules.all()) {
+            return buildFrom(ValidationRules.all());
+        }
+
+        private ImmutableMap<FieldContext, FieldOptions>
+        buildFrom(Iterable<ValidationRule> validationRules) {
+            for (ValidationRule rule : validationRules) {
                 putAll(rule);
             }
             return state.build();
