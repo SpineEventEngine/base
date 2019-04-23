@@ -261,6 +261,8 @@ public class KnownTypes implements Serializable {
         /**
          * Extends the known types with some more types.
          *
+         * <p>Triggers validation rules {@link ValidationRules#updateFrom(ImmutableSet) update}.
+         *
          * <p>This method should never be called in a client code. The sole purpose of extending
          * the known types is for running compile-time checks on the user types.
          *
