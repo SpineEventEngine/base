@@ -26,7 +26,6 @@ package io.spine.tools.gradle;
  */
 public final class ProtobufDependencies {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
     private static final String GROUP_ID = "com.google.protobuf";
     private static final String PROTOBUF_LITE = "protobuf-lite";
     private static final String PROTOC = "protoc";
