@@ -705,19 +705,12 @@ message EntityOption {
 
     // The level of visibility of the entity to queries.
     enum Visibility {
-        option allow_alias = true;
 
         // Default visibility is different for different types of entities:
         //  - for projections, "FULL" is default;
         //  - for aggregates and process managers, "NONE" is default.
         //
         DEFAULT = 0;
-
-        // Same as "DEFAULT".
-        //
-        // This alias is kept for backward compatibility.
-        //
-        VISIBILITY_UNKNOWN = 0;
 
         // The entity is not visible to queries.
         NONE = 1;
