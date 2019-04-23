@@ -22,22 +22,14 @@ package io.spine.tools.check.vbuilder.matcher;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
-import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
-import com.google.errorprone.predicates.TypePredicate;
-import com.google.errorprone.suppliers.Supplier;
-import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.tools.javac.code.Type;
 import io.spine.annotation.Internal;
-import io.spine.protobuf.Messages;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
 import io.spine.tools.check.vbuilder.fixer.NewBuilderFixer;
 
-import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
-import static com.google.errorprone.suppliers.Suppliers.typeFromClass;
-import static com.google.errorprone.util.ASTHelpers.isSubtype;
+import static io.spine.protobuf.Messages.METHOD_NEW_BUILDER;
 
 /**
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
@@ -49,7 +41,8 @@ import static com.google.errorprone.util.ASTHelpers.isSubtype;
 @Internal
 public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
-    private final Matcher<ExpressionTree> matcher = matcher();
+    private final Matcher<ExpressionTree> matcher =
+            CustomProtobufType.callingStaticMethod(METHOD_NEW_BUILDER);
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderFixer();
 
     @Override
@@ -61,17 +54,5 @@ public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;
-    }
-
-    private static Matcher<ExpressionTree> matcher() {
-        TypePredicate messageSubtype = (type, state) -> {
-            Supplier<Type> typeSupplier = typeFromClass(Message.class);
-            Type messageClassAsType = typeSupplier.get(state);
-            boolean isMessageSubclass = isSubtype(type, messageClassAsType, state);
-            return isMessageSubclass;
-        };
-        MethodNameMatcher matcher = staticMethod().onClass(messageSubtype)
-                                                  .named(Messages.METHOD_NEW_BUILDER);
-        return matcher;
     }
 }
