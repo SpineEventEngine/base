@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -125,8 +126,7 @@ public final class ValidationRuleOptions implements Serializable {
      */
     private static class Builder {
 
-        private final ImmutableMap.Builder<FieldContext, FieldOptions> state =
-                ImmutableMap.builder();
+        private final Map<FieldContext, FieldOptions> state = new HashMap<>();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
             return buildFrom(ValidationRules.all());
@@ -137,7 +137,7 @@ public final class ValidationRuleOptions implements Serializable {
             for (ValidationRule rule : validationRules) {
                 putAll(rule);
             }
-            return state.build();
+            return ImmutableMap.copyOf(state);
         }
 
         private void putAll(ValidationRule rule) {
