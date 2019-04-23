@@ -22,7 +22,6 @@ package io.spine.tools.check.vbuilder.matcher;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
-import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
 import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
@@ -30,8 +29,6 @@ import io.spine.annotation.Internal;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
 import io.spine.tools.check.vbuilder.fixer.NewBuilderForTypeFixer;
-
-import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
 /**
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
@@ -42,32 +39,21 @@ import static com.google.errorprone.matchers.Matchers.instanceMethod;
 @Internal
 public class NewBuilderForTypeMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
     private static final String METHOD_NAME = "newBuilderForType";
 
-    private final Matcher<ExpressionTree> matcher = matcher();
+    private final Matcher<ExpressionTree> matcher =
+            CustomProtobufType.callingInstanceMethod(METHOD_NAME);
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderForTypeFixer();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;
-    }
-
-    private static Matcher<ExpressionTree> matcher() {
-        String messageClassName = Message.class.getName();
-        MethodNameMatcher matcher = instanceMethod().onDescendantOf(messageClassName)
-                                                    .named(METHOD_NAME);
-        return matcher;
     }
 }

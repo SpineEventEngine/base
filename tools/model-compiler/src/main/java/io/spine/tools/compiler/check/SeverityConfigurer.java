@@ -113,7 +113,6 @@ public class SeverityConfigurer {
      * <p>Uses default severity set in the {@code modelCompiler} extension if set and not
      * overridden by the more specific {@code spineErrorProneChecks} extension.
      */
-    @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
     private void configureUseValidatingBuilder(@Nullable Severity defaultSeverity) {
         Severity severity = getUseValidatingBuilder(project);
         if (severity == null) {
