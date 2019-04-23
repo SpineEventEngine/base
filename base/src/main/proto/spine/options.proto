@@ -708,7 +708,7 @@ message EntityOption {
 
         // Default visibility is different for different types of entities:
         //  - for projections, "FULL" is default;
-        //  - for aggregates and process managers, "NONE" is default.
+        //  - for aggregates, process managers, and other entities, "NONE" is default.
         //
         DEFAULT = 0;
 
