@@ -27,10 +27,12 @@ import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
+import io.spine.code.java.ClassName;
 
 import static com.google.errorprone.matchers.method.MethodMatchers.instanceMethod;
 import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
 import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
+import static io.spine.code.GooglePackage.notInGooglePackage;
 
 /**
  * A predicate which matches custom (i.e. non-Google) Protobuf types.
@@ -42,9 +44,6 @@ final class CustomProtobufType implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
-    private static final String GOOGLE_PACKAGE = "com.google";
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Encapsulated package name.
-    private static final String PROTOBUF_STYLE_GOOGLE_PACKAGE = "google";
     private static final TypePredicate IS_MESSAGE = isDescendantOf(Message.class.getName());
 
     /**
@@ -85,8 +84,7 @@ final class CustomProtobufType implements TypePredicate {
             Symbol.TypeSymbol typeSymbol = type.asElement();
             String typeFqn = typeSymbol.getQualifiedName()
                                        .toString();
-            return !typeFqn.startsWith(GOOGLE_PACKAGE)
-                && !typeFqn.startsWith(PROTOBUF_STYLE_GOOGLE_PACKAGE);
+            return notInGooglePackage(ClassName.of(typeFqn));
         }
     }
 }

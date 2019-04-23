@@ -42,6 +42,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Streams.stream;
+import static io.spine.code.GooglePackage.notInGooglePackage;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -213,15 +214,10 @@ public final class FileDescriptors {
 
         PREDICATE;
 
-        /** The constant of the company name prefix used in Google proto types. */
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Encapsulated package name.
-        private static final String GOOGLE_PACKAGE = "google";
-
         @Override
         public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
-            boolean result = !file.getPackage()
-                                  .startsWith(GOOGLE_PACKAGE);
+            boolean result = notInGooglePackage(file);
             _debug("[IsNotGoogleProto] Tested {} with package {}. The result is {}.",
                    file.getName(), file.getPackage(), result);
             return result;
