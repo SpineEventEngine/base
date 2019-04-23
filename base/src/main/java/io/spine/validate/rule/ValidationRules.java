@@ -175,7 +175,7 @@ public final class ValidationRules implements Serializable {
 
         @Override
         public String toString() {
-            return "IsValidationRule predicate over DescriptorProto";
+            return "IsValidationRule predicate over MessageType";
         }
     }
 }
