@@ -25,10 +25,13 @@ import com.google.common.truth.Subject;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time.SystemTimeProvider;
 import io.spine.base.given.ConstantTimeProvider;
+import io.spine.base.given.FakeTimeProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.time.ZoneId;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.subtract;
@@ -88,10 +91,24 @@ class TimeTest {
     }
 
     @Test
-    @DisplayName("obtain system time event if TimeProvider is set")
+    @DisplayName("obtain system time even if TimeProvider is set")
     void gettingSystemTime() {
         setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
         assertNotEquals(0, systemTime());
+    }
+
+    @Test
+    @DisplayName("obtain current time zone")
+    void timeZone() {
+        ZoneId zoneId = Time.currentTimeZone();
+        assertThat(zoneId).isEqualTo(ZoneId.systemDefault());
+    }
+
+    @Test
+    @DisplayName("obtain the time zone from the provider")
+    void customTimeZone() {
+        setProvider(new FakeTimeProvider());
+        assertThat(Time.currentTimeZone()).isEqualTo(FakeTimeProvider.ZONE);
     }
 }

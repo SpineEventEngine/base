@@ -25,6 +25,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
 import java.time.Instant;
+import java.time.ZoneId;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -66,12 +67,23 @@ public final class Time {
     }
 
     /**
+     * Obtains the current time zone ID.
+     *
+     * @return the {@link ZoneId} of the current time zone
+     */
+    public static ZoneId currentTimeZone() {
+        return timeProvider.get()
+                           .currentZone();
+    }
+
+    /**
      * Sets provider of the current time.
      *
      * <p>The most common scenario for using this method is test cases of code that deals
      * with current time.
      *
-     * @param provider the provider to set
+     * @param provider
+     *         the provider to set
      */
     @Internal
     @VisibleForTesting
@@ -94,7 +106,20 @@ public final class Time {
      */
     @Internal
     public interface Provider {
+
+        /**
+         * Obtains the current time in UTC.
+         */
         Timestamp currentTime();
+
+        /**
+         * Obtains the current time zone ID.
+         *
+         * @implSpec The default implementation uses the {@link ZoneId#systemDefault()} zone.
+         */
+        default ZoneId currentZone() {
+            return ZoneId.systemDefault();
+        }
     }
 
     /**

@@ -706,8 +706,11 @@ message EntityOption {
     // The level of visibility of the entity to queries.
     enum Visibility {
 
-        // Reserved for errors.
-        VISIBILITY_UNKNOWN = 0;
+        // Default visibility is different for different types of entities:
+        //  - for projections, "FULL" is default;
+        //  - for aggregates, process managers, and other entities, "NONE" is default.
+        //
+        DEFAULT = 0;
 
         // The entity is not visible to queries.
         NONE = 1;
@@ -724,7 +727,7 @@ message EntityOption {
 
     // The visibility of the entity.
     //
-    // If not defined, the value of this option is `FULL`.
+    // If not defined, the value of this option is `DEFAULT`.
     //
     Visibility visibility = 2;
 }
