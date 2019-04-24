@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rule;
+package io.spine.validate.constraint;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldOptions;

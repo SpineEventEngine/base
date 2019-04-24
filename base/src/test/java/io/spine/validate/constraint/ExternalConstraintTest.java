@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rule;
+package io.spine.validate.constraint;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
-import io.spine.test.validate.rule.AMessage;
-import io.spine.test.validate.rule.AValidationRule;
+import io.spine.test.validate.constraint.AMessage;
+import io.spine.test.validate.constraint.AnExternalConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,6 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("ExternalMessageConstraint should")
 final class ExternalConstraintTest {
+
+    private static final String PACKAGE = "spine.test.validate.constraint";
+    private static final String VALIDATED_FIELD = PACKAGE + ".AMessage.field";
 
     @DisplayName("not allow null")
     @Nested
@@ -51,34 +54,33 @@ final class ExternalConstraintTest {
         @Test
         void paths() {
             assertThrows(NullPointerException.class, () ->
-                    new ExternalMessageConstraint(AValidationRule.getDescriptor(), null));
+                    new ExternalMessageConstraint(AnExternalConstraint.getDescriptor(), null));
         }
     }
 
     @Test
     @DisplayName("build field descriptors")
     void buildFieldDescriptors() {
-        String fieldName = "spine.test.validate.rule.AMessage.field";
-        Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
+        Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
         ExternalMessageConstraint rule =
-                new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName));
+                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD));
         assertThat(descriptor).isEqualTo(rule.getDescriptor());
         ImmutableList<Descriptors.FieldDescriptor> targets = rule.getTargets()
                                                                  .asList();
         assertThat(targets).isNotEmpty();
         Descriptors.FieldDescriptor fieldDescriptor = targets.get(0);
-        assertThat(fieldDescriptor.getFullName()).isEqualTo(fieldName);
+        assertThat(fieldDescriptor.getFullName()).isEqualTo(VALIDATED_FIELD);
     }
 
     @Test
     @DisplayName("build same validation rules")
     void buildSameRules() {
-        String fieldName = "spine.test.validate.rule.AMessage.field";
-        Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
+        String fieldName = PACKAGE + ".AMessage.field";
+        Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
         ExternalMessageConstraint rule =
-                new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName));
-        assertThat(rule)
-                .isEqualTo(new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
+                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD));
+        assertThat(rule).isEqualTo(
+                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD)));
     }
 
     @DisplayName("throw IllegalStateException")
@@ -90,15 +92,15 @@ final class ExternalConstraintTest {
         @ValueSource(strings = {"", "  ", "package-without-class"})
         void forInvalidPath(String invalidPath) {
             assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(AValidationRule.getDescriptor(),
+                    new ExternalMessageConstraint(AnExternalConstraint.getDescriptor(),
                                                   ImmutableList.of(invalidPath)));
         }
 
         @DisplayName("for a non-existing field path")
         @Test
         void forNonExistingField() {
-            String fieldName = "spine.test.validate.rule.AMessage.non_existing";
-            Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
+            String fieldName = PACKAGE + ".AMessage.non_existing";
+            Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
             assertThrows(IllegalStateException.class, () ->
                     new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
         }
@@ -106,8 +108,8 @@ final class ExternalConstraintTest {
         @DisplayName("for a non-message field path")
         @Test
         void forNonMessageField() {
-            String fieldName = "spine.test.validate.rule.AMessage.non_message_field";
-            Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
+            String fieldName = PACKAGE + ".AMessage.non_message_field";
+            Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
             assertThrows(IllegalStateException.class, () ->
                     new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
         }
@@ -115,10 +117,9 @@ final class ExternalConstraintTest {
         @DisplayName("for a fields that are present in the validation rule but do not present in the target")
         @Test
         void forFieldsThatDoNotExistInRule() {
-            String fieldName = "spine.test.validate.rule.AMessage.field";
             Descriptors.Descriptor descriptor = AMessage.getDescriptor();
             assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
+                    new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD)));
         }
     }
 }

@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rule;
+package io.spine.validate.constraint;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.test.validate.rule.AValidationRule;
+import io.spine.test.validate.constraint.AnExternalConstraint;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ final class ExternalConstraintsTest {
     @DisplayName("update rules from types")
     @Test
     void updateRulesFromTypes() {
-        MessageType ruleType = new MessageType(AValidationRule.getDescriptor());
+        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
         ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
         assertThat(ExternalConstraints.all()).hasSize(1);
     }

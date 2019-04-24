@@ -33,7 +33,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
 import io.spine.type.ref.TypeRef;
-import io.spine.validate.rule.ExternalConstraints;
+import io.spine.validate.constraint.ExternalConstraints;
 import org.slf4j.Logger;
 
 import java.io.Serializable;

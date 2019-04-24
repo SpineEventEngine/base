@@ -17,34 +17,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.validate.rule;
+package spine.test.validate.constraint;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import io.spine.code.proto.MessageOption;
-import io.spine.option.OptionsProto;
+import "spine/options.proto";
 
-import java.util.Optional;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "TestConstraintsProto";
+option java_package = "io.spine.test.validate.constraint";
 
-/**
- * An external constraint for a field.
- *
- * <p>Contains information about constraint of another field, described by the option value.
- */
-final class ConstraintOf extends MessageOption<String> {
+message AnExternalConstraint {
+    option (validation_of) = "spine.test.validate.constraint.AMessage.field";
 
-    ConstraintOf() {
-        super(OptionsProto.validationOf);
-    }
+    string name = 1 [(required) = true];
+    int32 age = 2 [(min).value = "1"];
+    string surname = 3 [(required) = true];
+}
 
-    /**
-     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
-     */
-    public Optional<String> valueFrom(DescriptorProto message) {
-        MessageOptions options = message.getOptions();
-        return options.hasExtension(extension())
-               ? Optional.of(options.getExtension(extension()))
-               : Optional.empty();
-    }
+message AMessage {
+
+    AField field = 1 [(valid) = true];
+
+    string non_message_field = 2;
+}
+
+message AField {
+
+    string name = 1;
+    int32 age = 2;
+    string surname = 3;
+    string address = 4;
 }

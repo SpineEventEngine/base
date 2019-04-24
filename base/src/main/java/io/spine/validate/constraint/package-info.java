@@ -25,7 +25,7 @@
 @Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.validate.rule;
+package io.spine.validate.constraint;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Internal;

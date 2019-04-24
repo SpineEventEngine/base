@@ -18,18 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rule;
+package io.spine.validate.constraint;
 
 import com.google.common.truth.OptionalSubject;
 import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
-import io.spine.test.validate.rule.AField;
-import io.spine.test.validate.rule.AMessage;
+import io.spine.test.validate.constraint.AField;
+import io.spine.test.validate.constraint.AMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth8.assertThat;
+import static io.spine.validate.constraint.ExternalConstraintOptions.getOptionValue;
 
 @DisplayName("ExternalConstraintOptions should")
 final class ExternalConstraintOptionsTest {
@@ -44,9 +45,7 @@ final class ExternalConstraintOptionsTest {
                                                       .getFields()
                                                       .get(0);
         FieldContext context = targetContext.forChild(nameField);
-        OptionalSubject subject =
-                assertThat(
-                        ExternalConstraintOptions.getOptionValue(context, OptionsProto.required));
+        OptionalSubject subject = assertThat(getOptionValue(context, OptionsProto.required));
         subject.isPresent();
         subject.hasValue(true);
     }
@@ -62,7 +61,6 @@ final class ExternalConstraintOptionsTest {
                                                          .getFields()
                                                          .get(3);
         FieldContext context = targetContext.forChild(addressField);
-        assertThat(
-                ExternalConstraintOptions.getOptionValue(context, OptionsProto.required)).isEmpty();
+        assertThat(getOptionValue(context, OptionsProto.required)).isEmpty();
     }
 }
