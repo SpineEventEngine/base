@@ -159,7 +159,7 @@ public final class ExternalConstraints implements Serializable {
             constraints.addAll(currentConstraints);
             constraints.addAll(newConstraints);
             instance = new ExternalConstraints(ImmutableSet.copyOf(constraints));
-            ExternalConstraintOptions.Holder.updateFrom(instance.constraints);
+            ExternalConstraintOptions.Holder.updateFrom(newConstraints);
         }
     }
 

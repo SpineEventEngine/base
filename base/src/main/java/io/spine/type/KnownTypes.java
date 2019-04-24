@@ -279,7 +279,7 @@ public class KnownTypes implements Serializable {
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
                 instance = new KnownTypes(newKnownTypes);
-                ExternalConstraints.updateFrom(instance.typeSet.messageTypes());
+                ExternalConstraints.updateFrom(moreKnownTypes.messageTypes());
             } finally {
                 lock.unlock();
             }
