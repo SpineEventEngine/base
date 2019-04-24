@@ -28,14 +28,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ValidationRules should")
-final class ValidationRulesTest {
+@DisplayName("ExternalConstraints should")
+final class ExternalConstraintsTest {
 
     @DisplayName("update rules from types")
     @Test
     void updateRulesFromTypes() {
         MessageType ruleType = new MessageType(AValidationRule.getDescriptor());
-        ValidationRules.updateFrom(ImmutableSet.of(ruleType));
-        assertThat(ValidationRules.all()).hasSize(1);
+        ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
+        assertThat(ExternalConstraints.all()).hasSize(1);
     }
 }

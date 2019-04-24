@@ -33,7 +33,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
 import io.spine.type.ref.TypeRef;
-import io.spine.validate.rule.ValidationRules;
+import io.spine.validate.rule.ExternalConstraints;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
@@ -261,7 +261,8 @@ public class KnownTypes implements Serializable {
         /**
          * Extends the known types with some more types.
          *
-         * <p>Triggers validation rules {@link ValidationRules#updateFrom(ImmutableSet) update}.
+         * <p>Triggers external constraints
+         * {@link ExternalConstraints#updateFrom(ImmutableSet) update}.
          *
          * <p>This method should never be called in a client code. The sole purpose of extending
          * the known types is for running compile-time checks on the user types.
@@ -278,7 +279,7 @@ public class KnownTypes implements Serializable {
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
                 instance = new KnownTypes(newKnownTypes);
-                ValidationRules.updateFrom(instance.typeSet.messageTypes());
+                ExternalConstraints.updateFrom(instance.typeSet.messageTypes());
             } finally {
                 lock.unlock();
             }

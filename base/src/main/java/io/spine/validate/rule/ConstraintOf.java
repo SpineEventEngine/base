@@ -28,13 +28,13 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 
 /**
- * An external validation for a field.
+ * An external constraint for a field.
  *
- * <p>Contains information about validation of another field, described by the option value.
+ * <p>Contains information about constraint of another field, described by the option value.
  */
-final class ValidationOf extends MessageOption<String> {
+final class ConstraintOf extends MessageOption<String> {
 
-    ValidationOf() {
+    ConstraintOf() {
         super(OptionsProto.validationOf);
     }
 

@@ -40,12 +40,13 @@ import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * A collection of {@linkplain ValidationRule validation rules} known to the application.
+ * A collection of {@linkplain ExternalMessageConstraint external constrains} known to
+ * the application.
  *
- * <p>During initialization of this class, definitions of validation rules are verified.
- * If an invalid validation rule was found, a runtime exception will be thrown.
+ * <p>During initialization of this class, definitions of external constraints are verified.
+ * If an invalid constraint was found, a runtime exception will be thrown.
  */
-public final class ValidationRules implements Serializable {
+public final class ExternalConstraints implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -58,27 +59,27 @@ public final class ValidationRules implements Serializable {
     private static final Splitter optionSplitter = Splitter.on(',');
 
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
-    private final transient ImmutableSet<ValidationRule> rules;
+    private final transient ImmutableSet<ExternalMessageConstraint> constraints;
 
-    private ValidationRules() {
-        this(rulesFor(KnownTypes.instance()));
+    private ExternalConstraints() {
+        this(constraintsFor(KnownTypes.instance()));
     }
 
-    private ValidationRules(ImmutableSet<ValidationRule> rules) {
-        this.rules = checkNotNull(rules);
+    private ExternalConstraints(ImmutableSet<ExternalMessageConstraint> constraints) {
+        this.constraints = checkNotNull(constraints);
     }
 
     /**
-     * Obtains validation rules known to the application.
+     * Obtains external constraints known to the application.
      *
-     * @return the immutable collection of validation rules
+     * @return the immutable collection of external constraints
      */
-    static ImmutableSet<ValidationRule> all() {
-        return Holder.instance.rules;
+    static ImmutableSet<ExternalMessageConstraint> all() {
+        return Holder.instance.constraints;
     }
 
     /**
-     * Extends validation rules with some more rules from the {@code types}.
+     * Extends external constraints with some more constraints from the {@code types}.
      */
     @Internal
     public static void updateFrom(ImmutableSet<MessageType> types) {
@@ -86,99 +87,101 @@ public final class ValidationRules implements Serializable {
     }
 
     /**
-     * Builds validation rules for known Protobuf types.
+     * Builds external constraints for known Protobuf types.
      */
-    private static ImmutableSet<ValidationRule> rulesFor(KnownTypes knownTypes) {
+    private static ImmutableSet<ExternalMessageConstraint> constraintsFor(KnownTypes knownTypes) {
         ImmutableSet<MessageType> types = checkNotNull(knownTypes)
                 .asTypeSet()
                 .messageTypes();
-        return rulesFor(types);
+        return constraintsFor(types);
     }
 
     /**
-     * Builds validation rules for supplied message types.
+     * Builds external constraints for supplied message types.
      */
-    private static ImmutableSet<ValidationRule> rulesFor(ImmutableSet<MessageType> types) {
+    private static ImmutableSet<ExternalMessageConstraint>
+    constraintsFor(ImmutableSet<MessageType> types) {
         return checkNotNull(types)
                 .stream()
-                .filter(new IsValidationRule())
-                .map(ValidationRules::toValidationRule)
+                .filter(new HasExternalConstraint())
+                .map(ExternalConstraints::toConstraint)
                 .collect(toImmutableSet());
     }
 
     /**
-     * Builds a validation rule from the supplied message type.
+     * Builds an external constraint from the supplied message type.
      */
-    private static ValidationRule toValidationRule(MessageType type) {
+    private static ExternalMessageConstraint toConstraint(MessageType type) {
         checkNotNull(type);
-        ValidationOf validationOf = new ValidationOf();
-        String ruleTargets = validationOf
+        ConstraintOf constraintOf = new ConstraintOf();
+        String constraintTargets = constraintOf
                 .valueFrom(type.toProto())
                 .orElseThrow(() -> newIllegalArgumentException(type.name()
                                                                    .value()));
-        Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargets);
-        return new ValidationRule(type.descriptor(), parsedPaths);
+        Collection<String> parsedPaths = optionSplitter.splitToList(constraintTargets);
+        return new ExternalMessageConstraint(type.descriptor(), parsedPaths);
     }
 
     /**
      * Re-creates de-serialized instance.
      */
     private Object readResolve() {
-        return new ValidationRules();
+        return new ExternalConstraints();
     }
 
     /**
-     * A holder of the {@link ValidationRules} instance.
+     * A holder of the {@link ExternalConstraints} instance.
      */
     private static class Holder {
 
         private static final Logger log = Logging.get(Holder.class);
 
         /** The singleton instance. */
-        private static ValidationRules instance = new ValidationRules();
+        private static ExternalConstraints instance = new ExternalConstraints();
 
         /** Prevents instantiation from outside. */
         private Holder() {
         }
 
         /**
-         * Extends validation rules with some more rules from the supplied {@code types}.
+         * Extends external constraints with some more constraints from the supplied {@code types}.
          *
-         * <p>Triggers validation rule options
-         * {@link ValidationRuleOptions.Holder#updateFrom(Iterable) update}.
+         * <p>Triggers external constraint options
+         * {@link ExternalConstraintOptions.Holder#updateFrom(Iterable) update}.
          */
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
-            log.debug("Updating validation rules from types {}.", types);
-            ImmutableSet<ValidationRule> currentRules = instance.rules;
-            ImmutableSet<ValidationRule> newRules = rulesFor(types);
-            Set<ValidationRule> rules =
-                    newHashSetWithExpectedSize(currentRules.size() + newRules.size());
-            rules.addAll(currentRules);
-            rules.addAll(newRules);
-            instance = new ValidationRules(ImmutableSet.copyOf(rules));
-            ValidationRuleOptions.Holder.updateFrom(instance.rules);
+            log.debug("Updating external constraints from types {}.", types);
+            ImmutableSet<ExternalMessageConstraint> currentConstraints = instance.constraints;
+            ImmutableSet<ExternalMessageConstraint> newConstraints = constraintsFor(types);
+            Set<ExternalMessageConstraint> constraints =
+                    newHashSetWithExpectedSize(currentConstraints.size() + newConstraints.size());
+            constraints.addAll(currentConstraints);
+            constraints.addAll(newConstraints);
+            instance = new ExternalConstraints(ImmutableSet.copyOf(constraints));
+            ExternalConstraintOptions.Holder.updateFrom(instance.constraints);
         }
     }
 
     /**
-     * Determines if a {@link MessageType} contains a validation rule.
+     * Determines if a {@link MessageType} contains an external constraint.
      */
-    private static class IsValidationRule implements Predicate<MessageType>, Logging {
+    private static class HasExternalConstraint implements Predicate<MessageType>, Logging {
 
         @Override
         public boolean test(MessageType input) {
             checkNotNull(input);
             DescriptorProtos.DescriptorProto proto = input.toProto();
-            boolean result = new ValidationOf().valueFrom(proto)
+            boolean result = new ConstraintOf().valueFrom(proto)
                                                .isPresent();
-            _debug("[IsValidationRule] Tested {} with the result of {}.", proto.getName(), result);
+            _debug("[HasExternalConstraint] Tested {} with the result of {}.",
+                   proto.getName(), result);
             return result;
         }
 
         @Override
         public String toString() {
-            return "IsValidationRule predicate over MessageType";
+            return "HasExternalConstraint predicate over MessageType";
         }
     }
 }

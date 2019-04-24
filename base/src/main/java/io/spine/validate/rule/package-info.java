@@ -19,7 +19,7 @@
  */
 
 /**
- * This package defines classes and interfaces for working with {@code Message} validation rules.
+ * This package defines classes and interfaces for working with {@code Message} constraints.
  */
 
 @Internal

@@ -33,8 +33,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ValidationRule should")
-final class ValidationRuleTest {
+@DisplayName("ExternalMessageConstraint should")
+final class ExternalConstraintTest {
 
     @DisplayName("not allow null")
     @Nested
@@ -43,15 +43,15 @@ final class ValidationRuleTest {
         @DisplayName("descriptor")
         @Test
         void descriptor() {
-            assertThrows(NullPointerException.class,
-                         () -> new ValidationRule(null, ImmutableList.of()));
+            assertThrows(NullPointerException.class, () ->
+                    new ExternalMessageConstraint(null, ImmutableList.of()));
         }
 
         @DisplayName("target paths")
         @Test
         void paths() {
-            assertThrows(NullPointerException.class,
-                         () -> new ValidationRule(AValidationRule.getDescriptor(), null));
+            assertThrows(NullPointerException.class, () ->
+                    new ExternalMessageConstraint(AValidationRule.getDescriptor(), null));
         }
     }
 
@@ -60,7 +60,8 @@ final class ValidationRuleTest {
     void buildFieldDescriptors() {
         String fieldName = "spine.test.validate.rule.AMessage.field";
         Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
-        ValidationRule rule = new ValidationRule(descriptor, ImmutableList.of(fieldName));
+        ExternalMessageConstraint rule =
+                new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName));
         assertThat(descriptor).isEqualTo(rule.getDescriptor());
         ImmutableList<Descriptors.FieldDescriptor> targets = rule.getTargets()
                                                                  .asList();
@@ -74,8 +75,10 @@ final class ValidationRuleTest {
     void buildSameRules() {
         String fieldName = "spine.test.validate.rule.AMessage.field";
         Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
-        ValidationRule rule = new ValidationRule(descriptor, ImmutableList.of(fieldName));
-        assertThat(rule).isEqualTo(new ValidationRule(descriptor, ImmutableList.of(fieldName)));
+        ExternalMessageConstraint rule =
+                new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName));
+        assertThat(rule)
+                .isEqualTo(new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
     }
 
     @DisplayName("throw IllegalStateException")
@@ -86,8 +89,8 @@ final class ValidationRuleTest {
         @ParameterizedTest(name = "\"{0}\"")
         @ValueSource(strings = {"", "  ", "package-without-class"})
         void forInvalidPath(String invalidPath) {
-            assertThrows(IllegalStateException.class,
-                         () -> new ValidationRule(AValidationRule.getDescriptor(),
+            assertThrows(IllegalStateException.class, () ->
+                    new ExternalMessageConstraint(AValidationRule.getDescriptor(),
                                                   ImmutableList.of(invalidPath)));
         }
 
@@ -96,8 +99,8 @@ final class ValidationRuleTest {
         void forNonExistingField() {
             String fieldName = "spine.test.validate.rule.AMessage.non_existing";
             Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
-            assertThrows(IllegalStateException.class,
-                         () -> new ValidationRule(descriptor, ImmutableList.of(fieldName)));
+            assertThrows(IllegalStateException.class, () ->
+                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
         }
 
         @DisplayName("for a non-message field path")
@@ -105,8 +108,8 @@ final class ValidationRuleTest {
         void forNonMessageField() {
             String fieldName = "spine.test.validate.rule.AMessage.non_message_field";
             Descriptors.Descriptor descriptor = AValidationRule.getDescriptor();
-            assertThrows(IllegalStateException.class,
-                         () -> new ValidationRule(descriptor, ImmutableList.of(fieldName)));
+            assertThrows(IllegalStateException.class, () ->
+                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
         }
 
         @DisplayName("for a fields that are present in the validation rule but do not present in the target")
@@ -114,8 +117,8 @@ final class ValidationRuleTest {
         void forFieldsThatDoNotExistInRule() {
             String fieldName = "spine.test.validate.rule.AMessage.field";
             Descriptors.Descriptor descriptor = AMessage.getDescriptor();
-            assertThrows(IllegalStateException.class,
-                         () -> new ValidationRule(descriptor, ImmutableList.of(fieldName)));
+            assertThrows(IllegalStateException.class, () ->
+                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
         }
     }
 }

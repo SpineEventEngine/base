@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth8.assertThat;
 
-@DisplayName("ValidationRuleOptions should")
-final class ValidationRuleOptionsTest {
+@DisplayName("ExternalConstraintOptions should")
+final class ExternalConstraintOptionsTest {
 
     @DisplayName("retrieve option value from context")
     @Test
@@ -45,7 +45,8 @@ final class ValidationRuleOptionsTest {
                                                       .get(0);
         FieldContext context = targetContext.forChild(nameField);
         OptionalSubject subject =
-                assertThat(ValidationRuleOptions.getOptionValue(context, OptionsProto.required));
+                assertThat(
+                        ExternalConstraintOptions.getOptionValue(context, OptionsProto.required));
         subject.isPresent();
         subject.hasValue(true);
     }
@@ -61,6 +62,7 @@ final class ValidationRuleOptionsTest {
                                                          .getFields()
                                                          .get(3);
         FieldContext context = targetContext.forChild(addressField);
-        assertThat(ValidationRuleOptions.getOptionValue(context, OptionsProto.required)).isEmpty();
+        assertThat(
+                ExternalConstraintOptions.getOptionValue(context, OptionsProto.required)).isEmpty();
     }
 }

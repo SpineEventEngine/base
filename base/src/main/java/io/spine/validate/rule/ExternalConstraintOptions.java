@@ -40,22 +40,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
 /**
- * Provides option value for a field mentioned in a validation rule.
+ * Provides option value for a field mentioned in an {@link ExternalMessageConstraint}.
  */
-public final class ValidationRuleOptions implements Serializable {
+public final class ExternalConstraintOptions implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
     /**
-     * A map from a field context to the options extracted from a validation rule.
+     * A map from a field context to the options extracted from an external message constraint.
      */
     private final ImmutableMap<FieldContext, FieldOptions> options;
 
-    private ValidationRuleOptions() {
+    private ExternalConstraintOptions() {
         this(new Builder().build());
     }
 
-    private ValidationRuleOptions(ImmutableMap<FieldContext, FieldOptions> options) {
+    private ExternalConstraintOptions(ImmutableMap<FieldContext, FieldOptions> options) {
         this.options = options;
     }
 
@@ -68,8 +68,8 @@ public final class ValidationRuleOptions implements Serializable {
      *         the option to obtain
      * @param <T>
      *         the type of the option value
-     * @return the {@code Optional} of option value
-     *         or {@code Optional.empty()} if there is not option for the field descriptor
+     * @return the {@code Optional} of option value or {@code Optional.empty()}
+     *         if there is not option for the field descriptor
      */
     public static <T> Optional<T>
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
@@ -78,7 +78,7 @@ public final class ValidationRuleOptions implements Serializable {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
                 T optionValue = fieldOptions.getExtension(option);
-                // A option is set explicitly if it was found in validation rules.
+                // A option is set explicitly if it was found in external constraints.
                 return Optional.of(optionValue);
             }
         }
@@ -86,10 +86,10 @@ public final class ValidationRuleOptions implements Serializable {
     }
 
     /**
-     * A holder of the {@link ValidationRuleOptions} instance.
+     * A holder of the {@link ExternalConstraintOptions} instance.
      *
-     * @apiNote This class is package-private for allowing rule options update being
-     *         triggered whenever {@link ValidationRules} are updated.
+     * @apiNote This class is package-private for allowing constraints options update being
+     *         triggered whenever {@link ExternalConstraints} are updated.
      */
     @Internal
     static class Holder {
@@ -97,27 +97,28 @@ public final class ValidationRuleOptions implements Serializable {
         private static final Logger log = Logging.get(Holder.class);
 
         /** The singleton instance. */
-        private static ValidationRuleOptions instance = new ValidationRuleOptions();
+        private static ExternalConstraintOptions instance = new ExternalConstraintOptions();
 
         /** Prevents instantiation from outside. */
         private Holder() {
         }
 
         /**
-         * Extends validation rule options with some more options from the supplied
-         * {@code validationRules}.
+         * Extends external constraint options with some more options from the supplied
+         * {@code externalConstraints}.
          */
-        static void updateFrom(Iterable<ValidationRule> validationRules) {
-            checkNotNull(validationRules);
-            log.debug("Updating validation rule options from rules {}.", validationRules);
+        static void updateFrom(Iterable<ExternalMessageConstraint> externalConstraints) {
+            checkNotNull(externalConstraints);
+            log.debug("Updating external constraint options from constraints {}.",
+                      externalConstraints);
             ImmutableMap<FieldContext, FieldOptions> currentOptions = instance.options;
             ImmutableMap<FieldContext, FieldOptions> newOptions = new Builder()
-                    .buildFrom(validationRules);
+                    .buildFrom(externalConstraints);
             Map<FieldContext, FieldOptions> options =
                     newHashMapWithExpectedSize(currentOptions.size() + newOptions.size());
             options.putAll(currentOptions);
             options.putAll(newOptions);
-            instance = new ValidationRuleOptions(ImmutableMap.copyOf(options));
+            instance = new ExternalConstraintOptions(ImmutableMap.copyOf(options));
         }
     }
 
@@ -129,32 +130,32 @@ public final class ValidationRuleOptions implements Serializable {
         private final Map<FieldContext, FieldOptions> state = new HashMap<>();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            return buildFrom(ValidationRules.all());
+            return buildFrom(ExternalConstraints.all());
         }
 
         private ImmutableMap<FieldContext, FieldOptions>
-        buildFrom(Iterable<ValidationRule> validationRules) {
-            for (ValidationRule rule : validationRules) {
-                putAll(rule);
+        buildFrom(Iterable<ExternalMessageConstraint> constraints) {
+            for (ExternalMessageConstraint constraint : constraints) {
+                putAll(constraint);
             }
             return ImmutableMap.copyOf(state);
         }
 
-        private void putAll(ValidationRule rule) {
-            Descriptor ruleDescriptor = rule.getDescriptor();
-            Collection<FieldDescriptor> targets = rule.getTargets();
+        private void putAll(ExternalMessageConstraint constraint) {
+            Descriptor constraintDescriptor = constraint.getDescriptor();
+            Collection<FieldDescriptor> targets = constraint.getTargets();
             for (FieldDescriptor target : targets) {
-                put(ruleDescriptor, target);
+                put(constraintDescriptor, target);
             }
         }
 
-        private void put(Descriptor rule, FieldDescriptor target) {
+        private void put(Descriptor constraint, FieldDescriptor target) {
             Descriptor targetType = target.getMessageType();
-            for (FieldDescriptor ruleField : rule.getFields()) {
-                FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
+            for (FieldDescriptor constraintField : constraint.getFields()) {
+                FieldDescriptor subTarget = targetType.findFieldByName(constraintField.getName());
                 FieldContext targetContext = FieldContext.create(target);
                 FieldContext subTargetContext = targetContext.forChild(subTarget);
-                state.put(subTargetContext, ruleField.getOptions());
+                state.put(subTargetContext, constraintField.getOptions());
             }
         }
     }
