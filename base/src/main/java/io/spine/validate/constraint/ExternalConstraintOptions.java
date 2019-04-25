@@ -69,7 +69,7 @@ public final class ExternalConstraintOptions implements Serializable {
      * @param <T>
      *         the type of the option value
      * @return the {@code Optional} of option value or {@code Optional.empty()}
-     *         if there is not option for the field descriptor
+     *         if there is no such an option for the field descriptor
      */
     public static <T> Optional<T>
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {

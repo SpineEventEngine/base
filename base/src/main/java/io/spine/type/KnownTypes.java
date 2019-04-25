@@ -117,7 +117,7 @@ public class KnownTypes implements Serializable {
      * to be used to parse {@link Message Message} from {@link Any}.
      *
      * @param type
-     *         {@link Any} type url
+     *         {@link Any} type URL
      * @return Java class name
      * @throws UnknownTypeException
      *         if there is no such type known to the application
@@ -148,8 +148,7 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Assembles the known types into a
-     * {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
+     * Assembles the known types into a {@link JsonFormat.TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
@@ -188,7 +187,7 @@ public class KnownTypes implements Serializable {
      * Shows if the given {@link TypeUrl} is known the system.
      *
      * @param typeUrl
-     *         the {@link TypeUrl} to look up
+     *         the {@code TypeUrl} to look up
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {

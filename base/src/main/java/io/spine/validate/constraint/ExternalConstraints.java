@@ -43,8 +43,9 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * A collection of {@linkplain ExternalMessageConstraint external constrains} known to
  * the application.
  *
- * <p>During initialization of this class, definitions of external constraints are verified.
- * If an invalid constraint was found, a runtime exception will be thrown.
+ * <p>During initialization of this class, definitions of external constraints are verified to
+ * conform the {@link io.spine.option.OptionsProto#validationOf constaint} contract.
+ * If an invalid constraint is found, a runtime exception is thrown.
  */
 public final class ExternalConstraints implements Serializable {
 
