@@ -18,19 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.constraint;
+package io.spine.validate;
 
 import com.google.common.truth.OptionalSubject;
 import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
-import io.spine.test.validate.constraint.AField;
-import io.spine.test.validate.constraint.AMessage;
+import io.spine.test.validate.AField;
+import io.spine.test.validate.AMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth8.assertThat;
-import static io.spine.validate.constraint.ExternalConstraintOptions.getOptionValue;
+import static io.spine.validate.ExternalConstraintOptions.getOptionValue;
 
 @DisplayName("ExternalConstraintOptions should")
 final class ExternalConstraintOptionsTest {

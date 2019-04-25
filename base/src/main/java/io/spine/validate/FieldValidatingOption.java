@@ -28,7 +28,7 @@ import io.spine.code.proto.FieldOption;
 
 import java.util.Optional;
 
-import static io.spine.validate.constraint.ExternalConstraintOptions.getOptionValue;
+import static io.spine.validate.ExternalConstraintOptions.getOptionValue;
 import static java.lang.String.format;
 
 /**

@@ -19,17 +19,17 @@
  */
 syntax = "proto3";
 
-package spine.test.validate.constraint;
+package spine.test.validate;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "TestConstraintsProto";
-option java_package = "io.spine.test.validate.constraint";
+option java_package = "io.spine.test.validate";
 
 message AnExternalConstraint {
-    option (constraint_for) = "spine.test.validate.constraint.AMessage.field";
+    option (constraint_for) = "spine.test.validate.AMessage.field";
 
     string name = 1 [(required) = true];
     int32 age = 2 [(min).value = "1"];

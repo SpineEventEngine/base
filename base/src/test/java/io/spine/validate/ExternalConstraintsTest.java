@@ -18,33 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.constraint;
+package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import io.spine.code.proto.MessageOption;
-import io.spine.option.OptionsProto;
+import com.google.common.collect.ImmutableSet;
+import io.spine.test.validate.AnExternalConstraint;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * An external constraint for a field.
- *
- * <p>Contains information about constraint of another field, described by the option value.
- */
-final class ConstraintFor extends MessageOption<String> {
+@DisplayName("ExternalConstraints should")
+final class ExternalConstraintsTest {
 
-    ConstraintFor() {
-        super(OptionsProto.constraintFor);
-    }
-
-    /**
-     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
-     */
-    public Optional<String> valueFrom(DescriptorProto message) {
-        MessageOptions options = message.getOptions();
-        return options.hasExtension(extension())
-               ? Optional.of(options.getExtension(extension()))
-               : Optional.empty();
+    @DisplayName("update rules from types")
+    @Test
+    void updateRulesFromTypes() {
+        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
+        ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
+        assertThat(ExternalConstraints.all()).hasSize(1);
     }
 }

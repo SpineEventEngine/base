@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.constraint;
+package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
-import io.spine.test.validate.constraint.AMessage;
-import io.spine.test.validate.constraint.AnExternalConstraint;
+import io.spine.test.validate.AMessage;
+import io.spine.test.validate.AnExternalConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("ExternalMessageConstraint should")
 final class ExternalConstraintTest {
 
-    private static final String PACKAGE = "spine.test.validate.constraint";
+    private static final String PACKAGE = "spine.test.validate";
     private static final String VALIDATED_FIELD = PACKAGE + ".AMessage.field";
 
     @DisplayName("not allow null")

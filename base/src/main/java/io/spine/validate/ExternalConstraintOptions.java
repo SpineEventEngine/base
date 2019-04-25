@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.constraint;
+package io.spine.validate;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
@@ -42,7 +42,7 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 /**
  * Provides option value for a field mentioned in an {@link ExternalMessageConstraint}.
  */
-public final class ExternalConstraintOptions implements Serializable {
+final class ExternalConstraintOptions implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
