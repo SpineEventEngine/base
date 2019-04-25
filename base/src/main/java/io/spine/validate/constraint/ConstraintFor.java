@@ -32,10 +32,10 @@ import java.util.Optional;
  *
  * <p>Contains information about constraint of another field, described by the option value.
  */
-final class ConstraintOf extends MessageOption<String> {
+final class ConstraintFor extends MessageOption<String> {
 
-    ConstraintOf() {
-        super(OptionsProto.validationOf);
+    ConstraintFor() {
+        super(OptionsProto.constraintFor);
     }
 
     /**

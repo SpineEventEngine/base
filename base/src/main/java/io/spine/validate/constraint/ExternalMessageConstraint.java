@@ -31,7 +31,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * An external message {@linkplain io.spine.option.OptionsProto#validationOf constraint}.
+ * An external message {@linkplain io.spine.option.OptionsProto#constraintFor constraint}.
  *
  * <p>Contains descriptors related to a particular external constraint.
  */

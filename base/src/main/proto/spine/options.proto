@@ -328,7 +328,8 @@ extend google.protobuf.MessageOptions {
     //     // in the scope of the `RenameTask` command.
     //     //
     //     message RequireTaskNames {
-    //          option (validation_of) = "spine.example.RenameTask.change";
+    //          option (constraint_for) = "spine.example.RenameTask.change";
+    //
     //          string previous_value = 1 [(required) = true];
     //          string new_value = 2 [(required) = true];
     //     }
@@ -339,15 +340,16 @@ extend google.protobuf.MessageOptions {
     //       constraint will not be applied.
     //
     // External validation constraints can be applied to fields of several types.
-    // To do so, separate fully-qualified references to these fields with with comma.
+    // To do so, separate fully-qualified references to these fields with comma.
     //
     // Example: External validation constraints for multiple fields.
     //
     //     // External validation constraint for requiring a new value in renaming commands.
     //     message RequireNewName {
-    //         option (validation_of) = "spine.example.RenameTask.change,"
+    //         option (constraint_for) = "spine.example.RenameTask.change,"
     //                                  "spine.example.RenameProject.change,";
     //                                  "spine.example.UpdateComment.text_change;
+    //
     //         string new_value = 1 [(required) = true];
     //     }
     //
@@ -355,7 +357,7 @@ extend google.protobuf.MessageOptions {
     //       Spine Model Compiler does not check such an “overwriting”.
     //       See the issue: https://github.com/SpineEventEngine/base/issues/318.
     //
-    string validation_of = 73904;
+    string constraint_for = 73904;
 
     // Reserved 73905 to 73910 for future validation options.
 

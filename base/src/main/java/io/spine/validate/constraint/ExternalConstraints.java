@@ -44,7 +44,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * the application.
  *
  * <p>During initialization of this class, definitions of external constraints are verified to
- * conform the {@link io.spine.option.OptionsProto#validationOf constaint} contract.
+ * conform the {@link io.spine.option.OptionsProto#constraintFor constaint} contract.
  * If an invalid constraint is found, a runtime exception is thrown.
  */
 public final class ExternalConstraints implements Serializable {
@@ -114,8 +114,8 @@ public final class ExternalConstraints implements Serializable {
      */
     private static ExternalMessageConstraint toConstraint(MessageType type) {
         checkNotNull(type);
-        ConstraintOf constraintOf = new ConstraintOf();
-        String constraintTargets = constraintOf
+        ConstraintFor constraintFor = new ConstraintFor();
+        String constraintTargets = constraintFor
                 .valueFrom(type.toProto())
                 .orElseThrow(() -> newIllegalArgumentException(type.name()
                                                                    .value()));
@@ -173,8 +173,8 @@ public final class ExternalConstraints implements Serializable {
         public boolean test(MessageType input) {
             checkNotNull(input);
             DescriptorProtos.DescriptorProto proto = input.toProto();
-            boolean result = new ConstraintOf().valueFrom(proto)
-                                               .isPresent();
+            boolean result = new ConstraintFor().valueFrom(proto)
+                                                .isPresent();
             _debug("[HasExternalConstraint] Tested {} with the result of {}.",
                    proto.getName(), result);
             return result;

@@ -29,7 +29,7 @@ option java_outer_classname = "TestConstraintsProto";
 option java_package = "io.spine.test.validate.constraint";
 
 message AnExternalConstraint {
-    option (validation_of) = "spine.test.validate.constraint.AMessage.field";
+    option (constraint_for) = "spine.test.validate.constraint.AMessage.field";
 
     string name = 1 [(required) = true];
     int32 age = 2 [(min).value = "1"];

@@ -31,7 +31,7 @@ option java_package = "io.spine.test.validate";
 // Messages for testing validation rules.
 
 message AValidationRule {
-    option (validation_of) = "spine.test.validate.FirstRuleTarget.can_be_valid,"
+    option (constraint_for) = "spine.test.validate.FirstRuleTarget.can_be_valid,"
                              "spine.test.validate.SecondRuleTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
