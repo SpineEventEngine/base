@@ -71,7 +71,7 @@ final class ExternalConstraintOptions implements Serializable {
      * @return the {@code Optional} of option value or {@code Optional.empty()}
      *         if there is no such an option for the field descriptor
      */
-    public static <T> Optional<T>
+    static <T> Optional<T>
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
         ImmutableMap<FieldContext, FieldOptions> options = Holder.instance.options;
         for (FieldContext context : options.keySet()) {

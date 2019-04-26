@@ -41,7 +41,7 @@ final class ConstraintFor extends MessageOption<String> {
     /**
      * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
      */
-    public Optional<String> valueFrom(DescriptorProto message) {
+    Optional<String> valueFrom(DescriptorProto message) {
         MessageOptions options = message.getOptions();
         return options.hasExtension(extension())
                ? Optional.of(options.getExtension(extension()))
