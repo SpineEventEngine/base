@@ -37,8 +37,8 @@ import static io.spine.code.GooglePackage.notInGooglePackage;
 /**
  * A predicate which matches custom (i.e. non-Google) Protobuf types.
  *
- * <p>Any Java class which descends from {@link Message} and does not belong to {@code com.google}
- * or {@code google} package or its subpackage matches this predicate.
+ * <p>Any {@code final} Java class which descends from {@link Message} and does not belong
+ * to {@code com.google} or {@code google} package or its subpackage matches this predicate.
  */
 final class CustomProtobufType implements TypePredicate {
 
@@ -78,13 +78,15 @@ final class CustomProtobufType implements TypePredicate {
 
     @Override
     public boolean apply(Type type, VisitorState state) {
-        if (!IS_MESSAGE.apply(type, state)) {
-            return false;
-        } else {
-            Symbol.TypeSymbol typeSymbol = type.asElement();
-            String typeFqn = typeSymbol.getQualifiedName()
-                                       .toString();
-            return notInGooglePackage(ClassName.of(typeFqn));
-        }
+        return type.isFinal()
+            && IS_MESSAGE.apply(type, state)
+            && notGoogle(type);
+    }
+
+    private static boolean notGoogle(Type type) {
+        Symbol.TypeSymbol typeSymbol = type.asElement();
+        String typeFqn = typeSymbol.getQualifiedName()
+                                   .toString();
+        return notInGooglePackage(ClassName.of(typeFqn));
     }
 }
