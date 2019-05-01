@@ -40,10 +40,9 @@ class VariousValidMessageUsages {
     }
 
     /**
-     * Usage or {@code toBuilder()} methods with generic types is allowed, since there is no
+     * Usage of {@code toBuilder()} methods with generic types is allowed, since there is no
      * abstract base with the {@code toVBuilder()} method.
      */
-    @SuppressWarnings("unused")
     <T extends Message> Message generic(T value) {
         return value.toBuilder()
                     .build();
