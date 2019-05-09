@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.java.ClassName;
-import io.spine.option.OptionExtensionRegistry;
+import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;

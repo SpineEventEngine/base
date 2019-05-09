@@ -134,4 +134,23 @@ public interface ValidatingOptionFactory {
     default Set<FieldValidatingOption<?, String>> forString() {
         return ImmutableSet.of();
     }
+
+    /**
+     * Obtains all the options declared by this factory.
+     *
+     * @return the set of all additional options
+     */
+    default Set<FieldValidatingOption<?, ?>> all() {
+        return ImmutableSet.<FieldValidatingOption<?, ?>>builder()
+                .addAll(forBoolean())
+                .addAll(forByteString())
+                .addAll(forDouble())
+                .addAll(forEnum())
+                .addAll(forFloat())
+                .addAll(forInt())
+                .addAll(forLong())
+                .addAll(forMessage())
+                .addAll(forString())
+                .build();
+    }
 }

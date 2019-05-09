@@ -18,10 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
 import io.spine.annotation.Internal;
+import io.spine.option.OptionsProto;
+import io.spine.validate.ValidatingOptionFactory;
+import io.spine.validate.ValidatingOptionsLoader;
 
 /**
  * A registry that contains all of Protobuf option extensions.
@@ -57,6 +62,26 @@ public final class OptionExtensionRegistry {
     private static ExtensionRegistry optionExtensions() {
         ExtensionRegistry registry = ExtensionRegistry.newInstance();
         OptionsProto.registerAllExtensions(registry);
+        registerCustomOptions(registry);
         return registry;
+    }
+
+    private static void registerCustomOptions(ExtensionRegistry target) {
+        ImmutableSet<ValidatingOptionFactory> implementations =
+                ValidatingOptionsLoader.INSTANCE.implementations();
+        implementations.stream()
+                       .flatMap(factory -> factory.all().stream())
+                       .map(AbstractOption::extension)
+                       .filter(extension -> isExtensionRegistered(target, extension))
+                       .forEach(target::add);
+    }
+
+    private static boolean isExtensionRegistered(ExtensionRegistry registry,
+                                                 Extension<?, ?> extension) {
+        String name = extension.getDescriptor()
+                               .getFullName();
+        boolean mutableAbsent = registry.findMutableExtensionByName(name) == null;
+        boolean immutableAbsent = registry.findImmutableExtensionByName(name) == null;
+        return mutableAbsent && immutableAbsent;
     }
 }
