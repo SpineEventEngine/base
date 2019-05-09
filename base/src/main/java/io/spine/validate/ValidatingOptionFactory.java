@@ -45,7 +45,7 @@ public interface ValidatingOptionFactory {
 
     /**
      * Obtains additional options for {@code bool} fields validation.
-     * 
+     *
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
@@ -141,7 +141,8 @@ public interface ValidatingOptionFactory {
      * @return the set of all additional options
      */
     default Set<FieldValidatingOption<?, ?>> all() {
-        return ImmutableSet.<FieldValidatingOption<?, ?>>builder()
+        return ImmutableSet
+                .<FieldValidatingOption<?, ?>>builder()
                 .addAll(forBoolean())
                 .addAll(forByteString())
                 .addAll(forDouble())
