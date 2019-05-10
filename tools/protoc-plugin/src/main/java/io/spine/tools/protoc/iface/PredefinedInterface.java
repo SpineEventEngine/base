@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.iface;
 
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.TypeParameters;
 
 /**
  * An interface which already exists.
@@ -28,10 +29,10 @@ import io.spine.code.java.ClassName;
 final class PredefinedInterface implements MessageInterface {
 
     private final ClassName name;
-    private final MessageInterfaceParameters parameters;
+    private final TypeParameters parameters;
 
     PredefinedInterface(ClassName name,
-                        MessageInterfaceParameters parameters) {
+                        TypeParameters parameters) {
         this.name = name;
         this.parameters = parameters;
     }
@@ -42,7 +43,7 @@ final class PredefinedInterface implements MessageInterface {
     }
 
     @Override
-    public MessageInterfaceParameters parameters() {
+    public TypeParameters parameters() {
         return parameters;
     }
 }

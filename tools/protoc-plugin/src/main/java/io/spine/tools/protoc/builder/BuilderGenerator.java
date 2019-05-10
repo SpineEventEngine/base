@@ -18,25 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc.builder;
 
-import io.spine.tools.protoc.TypeParameters;
+import com.google.common.collect.ImmutableSet;
+import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.type.MessageType;
+import io.spine.type.Type;
 
-/**
- * An interface to be implemented by the Protobuf message.
- *
- * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
- * generated code.
- */
-public interface MessageInterface {
+import java.util.Collection;
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
+import static io.spine.tools.protoc.builder.BuilderImplements.implementValidatingBuilder;
+
+public final class BuilderGenerator extends SpineProtoGenerator {
 
     /**
-     * Obtains the generic params of the interface.
+     * Prevents direct instantiation.
      */
-    TypeParameters parameters();
+    private BuilderGenerator() {
+    }
+
+    public static BuilderGenerator instance() {
+        return new BuilderGenerator();
+    }
+
+    @Override
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        if (type instanceof MessageType) {
+            CompilerOutput insertionPoint = implementValidatingBuilder((MessageType) type);
+            return ImmutableSet.of(insertionPoint);
+        } else {
+            return ImmutableSet.of();
+        }
+    }
 }

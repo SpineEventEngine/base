@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.type.Type;
 
 /**
@@ -29,7 +30,7 @@ import io.spine.type.Type;
  * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
 @Immutable
-interface MessageInterfaceParameter {
+public interface TypeParameter {
 
     /**
      * Obtains a parameter value based on who is the message interface descendant.

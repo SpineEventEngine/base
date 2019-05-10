@@ -18,22 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.builder;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * The message interface parameter whose value is the target {@code Message} itself.
- *
- * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
- * parameter will be {@code ProjectId}.
- */
-@Immutable
-final class IdentityParameter implements MessageInterfaceParameter {
-
-    @Override
-    public String valueFor(Type<?, ?> type) {
-        return type.simpleJavaClassName().value();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

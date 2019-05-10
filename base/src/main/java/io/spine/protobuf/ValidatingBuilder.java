@@ -18,25 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.protobuf;
 
-import io.spine.tools.protoc.TypeParameters;
+import com.google.protobuf.Message;
+import io.spine.validate.Validate;
+import io.spine.validate.ValidationException;
 
-/**
- * An interface to be implemented by the Protobuf message.
- *
- * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
- * generated code.
- */
-public interface MessageInterface {
+public interface ValidatingBuilder<M extends Message> {
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
+    M build();
 
-    /**
-     * Obtains the generic params of the interface.
-     */
-    TypeParameters parameters();
+    default M vBuild() throws ValidationException {
+        M message = build();
+        Validate.checkValid(message);
+        return message;
+    }
 }
