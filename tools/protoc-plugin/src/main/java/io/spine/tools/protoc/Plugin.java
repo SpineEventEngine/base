@@ -60,9 +60,11 @@ public final class Plugin {
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
         SpineProtocConfig config = readConfig(request);
-        SpineProtoGenerator generator = InterfaceGenerator
-                .instance(config)
-                .linkWith(MethodGenerator.instance(config));
+        CompositeGenerator generator = CompositeGenerator
+                .builder()
+                .add(InterfaceGenerator.instance(config))
+                .add(MethodGenerator.instance(config))
+                .build();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }
