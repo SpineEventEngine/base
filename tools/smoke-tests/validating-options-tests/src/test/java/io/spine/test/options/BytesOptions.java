@@ -18,18 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.test.options;
 
-final def SPINE_VERSION = '1.0.0-SNAPSHOT'
+import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.ByteString;
+import io.spine.validate.FieldValidatingOption;
+import io.spine.validate.ValidatingOptionFactory;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import java.util.Set;
 
-    versionToPublish = SPINE_VERSION
+@AutoService(ValidatingOptionFactory.class)
+@Immutable
+public final class BytesOptions implements ValidatingOptionFactory {
+
+    @Override
+    public Set<FieldValidatingOption<?, ByteString>> forByteString() {
+        return ImmutableSet.of(new Direction());
+    }
 }

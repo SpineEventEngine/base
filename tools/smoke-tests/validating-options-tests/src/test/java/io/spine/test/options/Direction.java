@@ -18,18 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.test.options;
+
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
+import io.spine.validate.Constraint;
+import io.spine.validate.FieldValidatingOption;
+import io.spine.validate.FieldValue;
+
+import static io.spine.test.options.BytesDirectionOptionProto.direction;
+
 /**
- * The versions of the libraries used.
+ * A custom validation option for {@code bytes}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>This option is used for testing the custom options loading. The constraint produced by this
+ * option cannot be violated.
  */
+public final class Direction extends FieldValidatingOption<BytesDirection, ByteString> {
 
-final def SPINE_VERSION = '1.0.0-SNAPSHOT'
+    private static final Constraint<FieldValue<ByteString>> NO_OP_CONSTRAINT =
+            byteString -> ImmutableList.of();
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    Direction() {
+        super(direction);
+    }
 
-    versionToPublish = SPINE_VERSION
+    @Override
+    public Constraint<FieldValue<ByteString>> constraintFor(FieldValue<ByteString> value) {
+        return NO_OP_CONSTRAINT;
+    }
 }

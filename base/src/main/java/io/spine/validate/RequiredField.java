@@ -52,8 +52,8 @@ final class RequiredField implements ValidatingOption<String, Descriptor, Messag
         String result = message.getOptions()
                                .getExtension(requiredField);
         return result == null || result.isEmpty()
-               ? Optional.empty() :
-               Optional.of(result);
+               ? Optional.empty()
+               : Optional.of(result);
     }
 
     @Override

@@ -21,22 +21,26 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.annotation.Internal;
 
 import java.util.ServiceLoader;
+
+import static java.util.ServiceLoader.load;
 
 /**
  * Loads the implementations of {@link ValidatingOptionFactory} using a {@link ServiceLoader}.
  *
  * <p>Caches the loaded results and never reloads the services.
  */
-enum ValidatingOptionsLoader {
+@Internal
+public enum ValidatingOptionsLoader {
 
     INSTANCE;
 
     private final ImmutableSet<ValidatingOptionFactory> implementations;
 
     ValidatingOptionsLoader() {
-        ServiceLoader<ValidatingOptionFactory> loader = ServiceLoader.load(ValidatingOptionFactory.class);
+        ServiceLoader<ValidatingOptionFactory> loader = load(ValidatingOptionFactory.class);
         this.implementations = ImmutableSet.copyOf(loader);
     }
 
@@ -49,7 +53,7 @@ enum ValidatingOptionsLoader {
      * @implNote The implementations are actually loaded when the enum instance is created.
      *         This method only accesses the loaded services.
      */
-    ImmutableSet<ValidatingOptionFactory> implementations() {
+    public ImmutableSet<ValidatingOptionFactory> implementations() {
         return implementations;
     }
 }
