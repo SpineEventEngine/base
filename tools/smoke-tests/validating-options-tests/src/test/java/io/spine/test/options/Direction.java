@@ -28,6 +28,12 @@ import io.spine.validate.FieldValue;
 
 import static io.spine.test.options.BytesDirectionOptionProto.direction;
 
+/**
+ * A custom validation option for {@code bytes}.
+ *
+ * <p>This option is used for testing the custom options loading. The constraint produced by this
+ * option cannot be violated.
+ */
 public final class Direction extends FieldValidatingOption<BytesDirection, ByteString> {
 
     private static final Constraint<FieldValue<ByteString>> NO_OP_CONSTRAINT =
