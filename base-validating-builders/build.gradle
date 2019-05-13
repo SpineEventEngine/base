@@ -92,20 +92,17 @@ dependencies {
 }
 
 modelCompiler {
-    mainProtoSrcDir = "$projectDir/../base/src/main/proto"
+    generateValidatingBuilders = false
 }
 
 sourceSets {
     main.java.srcDirs "$projectDir/generated/main/spine"
-    main.proto.srcDirs = [modelCompiler.mainProtoSrcDir]
+    main.proto.srcDirs = ["$projectDir/../base/src/main/proto"]
 }
 
 protobuf {
     generateProtoTasks {
         all().each {
-            it.builtins {
-                remove java
-            }
             it.plugins {
                 remove grpc
             }
@@ -113,14 +110,14 @@ protobuf {
     }
 }
 
-ext.buildersDir = "$projectDir/builders"
+ext.compiledProtoDir = "$projectDir/builders"
 
 task copyCompiledClasses(type: Copy) {
     from sourceSets.main.java.outputDir
-    into buildersDir
+    into compiledProtoDir
 
     include {
-        it.isDirectory() || it.name.endsWith('VBuilder.class')
+        it.isDirectory() || it.name.endsWith('.class')
     }
 
     dependsOn compileJava
@@ -142,11 +139,11 @@ build.doLast {
 }
 
 task cleanGenerated(type: Delete) {
-    delete files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", buildersDir)
+    delete files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", compiledProtoDir)
 }
 
 clean.dependsOn cleanGenerated
 
 idea.module {
-    generatedSourceDirs += buildersDir
+    generatedSourceDirs += compiledProtoDir
 }
