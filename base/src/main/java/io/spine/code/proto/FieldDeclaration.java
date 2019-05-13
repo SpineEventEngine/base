@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Message;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
@@ -38,6 +39,7 @@ import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
+import io.spine.validate.Validate;
 
 import java.util.List;
 import java.util.Optional;
@@ -100,6 +102,20 @@ public final class FieldDeclaration implements Logging {
 
     public int fieldNumber() {
         return field.getNumber();
+    }
+
+    /**
+     * Checks if the given value is the default value for this field.
+     *
+     * @param fieldValue
+     *         the value of the field
+     * @return {@code true} if the given value is default for this field, {@code false} otherwise
+     */
+    public boolean isDefault(Object fieldValue) {
+        checkNotNull(fieldValue);
+        return isMessage()
+               ? Validate.isDefault((Message) fieldValue)
+               : fieldValue.equals(field.getDefaultValue());
     }
 
     /**
@@ -253,8 +269,18 @@ public final class FieldDeclaration implements Logging {
     }
 
     /** Returns the name of the type of this field. */
-    public String typeName(){
-        return field.getType().name();
+    public String typeName() {
+        if (isMessage()) {
+            return field.getMessageType()
+                        .getFullName();
+        } else if (isEnum()) {
+            return field.getEnumType()
+                        .getFullName();
+        } else {
+            return field.getType()
+                        .name()
+                        .toLowerCase();
+        }
     }
 
     private boolean isEntityField() {
