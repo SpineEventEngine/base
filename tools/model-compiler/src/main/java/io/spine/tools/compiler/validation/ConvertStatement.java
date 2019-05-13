@@ -25,7 +25,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A statement to convert a {@linkplain String raw} value.
@@ -38,7 +38,7 @@ final class ConvertStatement {
     private final TypeName type;
 
     private ConvertStatement(String variableName, TypeName type) {
-        this.variableName = checkNameNotEmptyOrBlank(variableName);
+        this.variableName = checkNotEmptyOrBlank(variableName);
         this.type = checkNotNull(type);
     }
 

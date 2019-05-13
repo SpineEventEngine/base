@@ -36,6 +36,7 @@ public final class BuilderGenerator extends SpineProtoGenerator {
      * Prevents direct instantiation.
      */
     private BuilderGenerator() {
+        super();
     }
 
     public static BuilderGenerator instance() {
