@@ -22,8 +22,10 @@ package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;
+import io.spine.protobuf.ValidatingBuilder;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
@@ -45,13 +47,14 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(TempDirectory.class)
@@ -62,6 +65,7 @@ final class PluginTest {
     private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
+    private static final String TEST_MESSAGE_TYPE_PARAMETER = "<EnhancedWithCodeGeneration>";
 
     private Path testPluginConfig;
 
@@ -87,12 +91,7 @@ final class PluginTest {
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
-
-        assertEquals(2, response.getFileCount());
-        CodeGeneratorResponse.File messageInterface = response.getFile(0);
-        CodeGeneratorResponse.File messageMethod = response.getFile(1);
-        assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
-        assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
+        checkGenerated(response);
     }
 
     @DisplayName("generate UUID message")
@@ -110,7 +109,7 @@ final class PluginTest {
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
-        List<CodeGeneratorResponse.File> messageMethods =
+        List<File> messageMethods =
                 filterMethods(response, InsertionPoint.class_scope);
         assertEquals(1, messageMethods.size());
     }
@@ -133,12 +132,7 @@ final class PluginTest {
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
-
-        assertEquals(2, response.getFileCount());
-        CodeGeneratorResponse.File messageInterface = response.getFile(0);
-        CodeGeneratorResponse.File messageMethod = response.getFile(1);
-        assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
-        assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
+        checkGenerated(response);
     }
 
     @Test
@@ -158,22 +152,16 @@ final class PluginTest {
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
-
-        assertEquals(2, response.getFileCount());
-        CodeGeneratorResponse.File messageInterface = response.getFile(0);
-        CodeGeneratorResponse.File messageMethod = response.getFile(1);
-        assertEquals(TestInterface.class.getName() + ',', messageInterface.getContent());
-        assertEquals(TestMethodFactory.TEST_METHOD.value(), messageMethod.getContent());
+        checkGenerated(response);
     }
 
-    private static List<CodeGeneratorResponse.File> filterMethods(CodeGeneratorResponse response,
-                                                                  InsertionPoint insertionPoint) {
+    private static List<File> filterMethods(CodeGeneratorResponse response,
+                                            InsertionPoint insertionPoint) {
         return response
                 .getFileList()
                 .stream()
-                .filter(file -> file.getInsertionPoint()
-                                    .contains(insertionPoint.getDefinition()))
-                .collect(Collectors.toList());
+                .filter(file -> file.getInsertionPoint().contains(insertionPoint.getDefinition()))
+                .collect(toList());
     }
 
     @SuppressWarnings("ZeroLengthArrayAllocation")
@@ -202,5 +190,22 @@ final class PluginTest {
             System.setIn(oldIn);
             System.setOut(oldOut);
         }
+    }
+
+    private static void checkGenerated(CodeGeneratorResponse response) {
+        List<File> responseFiles = response.getFileList();
+        assertThat(responseFiles).hasSize(3);
+        List<String> fileContents = contentsOf(responseFiles);
+        assertThat(fileContents).containsExactly(
+                TestInterface.class.getName() + ',',
+                TestMethodFactory.TEST_METHOD.value(),
+                ValidatingBuilder.class.getName() + TEST_MESSAGE_TYPE_PARAMETER + ','
+        );
+    }
+
+    private static List<String> contentsOf(List<File> files) {
+        return files.stream()
+                    .map(File::getContent)
+                    .collect(toList());
     }
 }

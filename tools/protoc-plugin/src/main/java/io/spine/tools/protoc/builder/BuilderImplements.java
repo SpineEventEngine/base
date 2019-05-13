@@ -51,7 +51,7 @@ final class BuilderImplements extends AbstractCompilerOutput {
 
     private static String mixinFor(MessageType type) {
         String generic = TypeParameters.of(new IdentityParameter())
-                                 .asStringFor(type);
-        return format(INTERFACE_NAME_TEMPLATE, ValidatingBuilder.class, generic);
+                                       .asStringFor(type);
+        return format(INTERFACE_NAME_TEMPLATE, ValidatingBuilder.class.getName(), generic);
     }
 }
