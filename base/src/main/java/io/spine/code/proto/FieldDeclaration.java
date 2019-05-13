@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -95,6 +96,10 @@ public final class FieldDeclaration implements Logging {
      */
     public MessageType declaringType() {
         return declaringMessage;
+    }
+
+    public int fieldNumber() {
+        return field.getNumber();
     }
 
     /**
@@ -311,10 +316,28 @@ public final class FieldDeclaration implements Logging {
     }
 
     private int fieldIndex() {
-        FieldDescriptorProto fproto = this.field.toProto();
+        FieldDescriptorProto proto = this.field.toProto();
         return declaringMessage.descriptor()
                                .toProto()
                                .getFieldList()
-                               .indexOf(fproto);
+                               .indexOf(proto);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FieldDeclaration)) {
+            return false;
+        }
+        FieldDeclaration that = (FieldDeclaration) o;
+        return Objects.equal(declaringMessage, that.declaringMessage) &&
+                Objects.equal(field.getFullName(), that.field.getFullName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(declaringMessage, field.getFullName());
     }
 }
