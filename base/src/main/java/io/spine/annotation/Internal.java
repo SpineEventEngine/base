@@ -27,11 +27,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element (class, method, package etc.) which is internal to Spine,
- * not part of the public API, and should not be used by users of the framework.
+ * Annotates a program element (class, method, package, etc.) which is internal to Spine and is
+ * not a part of the public API, and thus should not be used by users of the framework.
  *
  * <p>If you plan to implement an extension of the framework, which is going to be
- * wired into the framework, you may use the internal parts. Please consult with the Spine
+ * wired into the framework, you may use the internal parts. Consult with the Spine
  * team, as the internal APIs do not have the same stability API guarantee as public ones.
  *
  * <p>See {@link SPI} annotation if you plan to write an extension of the framework.

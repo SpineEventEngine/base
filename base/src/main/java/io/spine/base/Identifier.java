@@ -151,7 +151,7 @@ public final class Identifier<I> {
      * <p>Consider using {@code Message}-based IDs if you want to have typed IDs in your code,
      * and/or if you need to have IDs with some structure inside.
      *
-     * <p>Examples of such structural IDs are:
+     * <p>Examples of such structural IDs are the following:
      * <ul>
      *   <li>EAN value used in bar codes
      *   <li>ISBN
@@ -268,7 +268,7 @@ public final class Identifier<I> {
      * @param <I>
      *         the type of the ID
      * @return <ul>
-     *         <li>for classes implementing {@link Message} — a Json form;
+     *         <li>for classes implementing {@link Message} — a JSON form;
      *           <li>for {@code String}, {@code Long}, {@code Integer} —
      *               the result of {@link Object#toString()};
      *           <li>for {@code null} ID — the {@link #NULL_ID};

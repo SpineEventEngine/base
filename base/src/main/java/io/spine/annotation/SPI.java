@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element (class, method, package etc.) as an element of
+ * Annotates a program element (class, method, package, etc.) as an element of
  * Service Provider Interface (SPI).
  *
  * <p>SPI is used to enable framework extension and replaceable components
