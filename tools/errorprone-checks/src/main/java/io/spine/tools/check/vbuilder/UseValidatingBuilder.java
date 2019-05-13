@@ -25,29 +25,14 @@ import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
-import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.matchers.Description;
-import com.google.errorprone.matchers.Matcher;
-import com.google.protobuf.Message;
-import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
-import io.spine.tools.check.BugPatternMatcher;
-import io.spine.tools.check.Fixer;
-import io.spine.tools.check.vbuilder.matcher.NewBuilderForTypeMatcher;
-import io.spine.tools.check.vbuilder.matcher.NewBuilderMatcher;
-import io.spine.tools.check.vbuilder.matcher.ToBuilderMatcher;
 import io.spine.validate.ValidatingBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
-import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
  * A custom Error Prone check that matches the usages of the ordinary
@@ -76,6 +61,7 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
         link = UseValidatingBuilder.LINK
 )
 @Internal
+@Deprecated
 public class UseValidatingBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     static final String SUMMARY = "Prefer using Spine Validating Builders instead of the " +
@@ -86,43 +72,8 @@ public class UseValidatingBuilder extends BugChecker implements MethodInvocation
 
     private static final long serialVersionUID = 0L;
 
-    private static final List<BugPatternMatcher<MethodInvocationTree>> matchers = matchers();
-
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        for (BugPatternMatcher<MethodInvocationTree> matcher : matchers) {
-            if (matcher.matches(tree, state) && !isInVBuilderOrMessage(state)) {
-                Fixer<MethodInvocationTree> fixer = matcher.getFixer();
-                Optional<Fix> fix = fixer.createFix(tree, state);
-                Description description = describeMatch(tree, fix);
-                return description;
-            }
-        }
         return NO_MATCH;
-    }
-
-    private static boolean isInVBuilderOrMessage(VisitorState state) {
-        ClassTree enclosingClass = state.findEnclosing(ClassTree.class);
-        boolean isInVBuilder = vBuilderMatcher().matches(enclosingClass, state);
-        boolean isInMessage = messageMatcher().matches(enclosingClass, state);
-        return isInVBuilder || isInMessage;
-    }
-
-    private static Matcher<Tree> vBuilderMatcher() {
-        Matcher<Tree> matcher = isSubtypeOf(ValidatingBuilder.class);
-        return matcher;
-    }
-
-    private static Matcher<Tree> messageMatcher() {
-        Matcher<Tree> matcher = isSubtypeOf(Message.class);
-        return matcher;
-    }
-
-    private static List<BugPatternMatcher<MethodInvocationTree>> matchers() {
-        List<BugPatternMatcher<MethodInvocationTree>> matchers = new ArrayList<>();
-        matchers.add(new NewBuilderMatcher());
-        matchers.add(new NewBuilderForTypeMatcher());
-        matchers.add(new ToBuilderMatcher());
-        return matchers;
     }
 }

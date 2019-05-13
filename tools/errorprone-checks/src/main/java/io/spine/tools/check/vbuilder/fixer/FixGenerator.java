@@ -50,8 +50,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * @see io.spine.tools.check.vbuilder.UseValidatingBuilder
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-// Method names where introducing constant doesn't seem reasonable.
 class FixGenerator {
 
     private final MethodInvocationTree tree;
