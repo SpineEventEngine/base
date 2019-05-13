@@ -24,8 +24,9 @@ import com.google.protobuf.Message;
 import io.spine.validate.Validate;
 import io.spine.validate.ValidationException;
 
-public interface ValidatingBuilder<M extends Message> {
+public interface ValidatingBuilder<M extends Message> extends Message.Builder {
 
+    @Override
     M build();
 
     default M vBuild() throws ValidationException {
