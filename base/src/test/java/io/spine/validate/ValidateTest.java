@@ -52,35 +52,35 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("not consider zero as a positive")
-    void check_positive_if_zero() {
+    void checkPositiveIfZero() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(0));
     }
 
     @Test
     @DisplayName("throw if not a positive")
-    void check_positive_if_negative() {
+    void checkPositiveIfNegative() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-1));
     }
 
     @Test
     @DisplayName("throw if not positive and display a message")
-    void check_positive_with_message() {
+    void checkPositiveWithMessage() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-1, "negativeInteger"));
     }
 
     @Test
     @DisplayName("throw if long value is not positive")
-    void throw_exception_if_long_value_is_not_positive() {
+    void throwExceptionIfLongValueIsNotPositive() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-2L, "negativeLong"));
     }
 
     @Test
     @DisplayName("verify that message is not in default state")
-    void verify_that_message_is_not_in_default_state() {
+    void verifyThatMessageIsNotInDefaultState() {
         Message msg = toMessage("check_if_message_is_not_in_default_state");
 
         assertTrue(isNotDefault(msg));
@@ -89,14 +89,14 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("throw if checked value out of bounds")
-    void throw_exception_if_checked_value_out_of_bounds() {
+    void throwExceptionIfCheckedValueOutOfBounds() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkBounds(10, "checked value", -5, 9));
     }
 
     @Test
     @DisplayName("verify that message is in default state")
-    void verify_that_message_is_in_default_state() {
+    void verifyThatMessageIsInDefaultState() {
         Message nonDefault = newUuidValue();
 
         assertTrue(isDefault(StringValue.getDefaultInstance()));
@@ -105,7 +105,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check that message is in default state")
-    void check_if_message_is_in_default() {
+    void checkIfMessageIsInDefault() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class,
                      () -> checkDefault(nonDefault));
@@ -113,7 +113,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check that message is in default state with a parametrized error message")
-    void check_a_message_is_default_with_parametrized_error_message() {
+    void checkAMessageIsDefaultWithParametrizedErrorMessage() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class,
                      () -> checkDefault(nonDefault,
@@ -124,7 +124,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("return default value on check")
-    void return_default_value_on_check() {
+    void returnDefaultValueOnCheck() {
         Message defaultValue = StringValue.getDefaultInstance();
         assertEquals(defaultValue, checkDefault(defaultValue));
         assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
@@ -132,14 +132,14 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check if message is not in default state")
-    void check_if_message_is_in_not_in_default_state_throwing_exception_if_not() {
+    void checkIfMessageIsInNotInDefaultStateThrowingExceptionIfNot() {
         assertThrows(IllegalStateException.class,
                      () -> checkNotDefault(StringValue.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("return non-default value on check")
-    void return_non_default_value_on_check() {
+    void returnNonDefaultValueOnCheck() {
         StringValue nonDefault = newUuidValue();
         assertEquals(nonDefault, checkNotDefault(nonDefault));
         assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
@@ -147,34 +147,34 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("throw if checked string is null")
-    void throw_exception_if_checked_string_is_null() {
+    void throwExceptionIfCheckedStringIsNull() {
         assertThrows(NullPointerException.class,
                      () -> checkNotEmptyOrBlank(Tests.nullRef(), ""));
     }
 
     @Test
     @DisplayName("throw if checked string is empty")
-    void throw_exception_if_checked_string_is_empty() {
+    void throwExceptionIfCheckedStringIsEmpty() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkNotEmptyOrBlank("", ""));
     }
 
     @Test
     @DisplayName("throw if checked string is blank")
-    void throw_exception_if_checked_string_is_blank() {
+    void throwExceptionIfCheckedStringIsBlank() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkNotEmptyOrBlank("   ", ""));
     }
 
     @Test
     @DisplayName("not throw if checked strign is not empty or blank")
-    public void do_not_throw_exception_if_checked_string_is_valid() {
+    public void doNotThrowExceptionIfCheckedStringIsValid() {
         checkNotEmptyOrBlank("valid_string", "");
     }
 
     @Test
     @DisplayName("format message from constraint violation")
-    void format_message_from_constraint_violation() {
+    void formatMessageFromConstraintViolation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .setMsgFormat("test %s test %s")
                                                            .addParam("1")
@@ -185,5 +185,4 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
         assertEquals("test 1 test 2", formatted);
     }
-
 }
