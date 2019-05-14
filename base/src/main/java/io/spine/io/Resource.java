@@ -73,7 +73,7 @@ public final class Resource {
     /**
      * Obtains a {@link URL} of the resolved resource.
      *
-     * <p>If the resource cannot be resolved (i.e. file does not exist), throws
+     * <p>If the resource cannot be resolved (i.e. the file does not exist), throws
      * an {@code IllegalStateException}.
      *
      * @return the resource URL

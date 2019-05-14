@@ -38,7 +38,7 @@ import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Utilities for working with Json.
+ * Utilities for working with JSON.
  */
 public final class Json {
 
@@ -58,7 +58,7 @@ public final class Json {
      * Converts passed message into Json representation.
      *
      * @param message the message object
-     * @return Json string
+     * @return JSON string
      */
     public static String toJson(Message message) {
         String result = toJson(message, PRINTER);
@@ -66,12 +66,12 @@ public final class Json {
     }
 
     /**
-     * Converts the passed message into compact Json representation.
+     * Converts the passed message into compact JSON representation.
      *
-     * <p>The resulted Json does not contain the line separators.
+     * <p>The resulted JSON does not contain the line separators.
      *
      * @param message the {@code Message} object
-     * @return the converted message to Json
+     * @return the converted message to JSON
      */
     public static String toCompactJson(Message message) {
         String result = toJson(message, COMPACT_PRINTER);
