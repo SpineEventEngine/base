@@ -31,7 +31,6 @@ import java.util.Optional;
  * Generates a {@link Fix} to be displayed to the user given the errored expression.
  *
  * @param <T> the expression {@code Tree}
- * @see com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Optional)
  */
 @Internal
 public interface Fixer<T extends Tree> {
@@ -45,7 +44,7 @@ public interface Fixer<T extends Tree> {
      *
      * @param tree  the errored expression {@code Tree}
      * @param state the current {@code VisitorState}
-     * @return the {@code Optional} containing the {@code Fix} or {@link Optional#EMPTY} if no fix
+     * @return the {@code Optional} containing the {@code Fix} or {@link Optional#empty()} if no fix
      *         can be created
      */
     Optional<Fix> createFix(T tree, VisitorState state);
