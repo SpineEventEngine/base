@@ -27,8 +27,9 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 
 /**
- * An option that, for a message representing a state of the entity, defines its kind (of which
- * there are four: Aggregate, Projection, Process Manager and Entity) and its visibility to queries.
+ * An option for a message representing a state of the entity which defines its kind and visibility
+ * to queries. There are four kids of options, namely, Aggregate, Projection, Process Manager,
+ * ~~~~~~ and Entity).
  */
 public final class EntityStateOption extends MessageOption<EntityOption> {
 
@@ -40,8 +41,8 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
      * Obtains the value of the {@code entity} option from the specified message.
      *
      * @param message
-     *         message to obtain the option value from
-     * @return either an {@code Optional} containing the value of the {@code entity} option,
+     *         the message to obtain the option value from
+     * @return either an {@code Optional} containing the value of the {@code entity} option
      *         or an empty {@code Optional}.
      * @apiNote This method is just a shorthand for
      *      <pre>

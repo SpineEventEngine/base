@@ -42,7 +42,7 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
     /**
      * The separator is an underscore or a digit.
      *
-     * <p>A digit, instead of an underscore, should be kept in a word.
+     * <p>A digit instead of an underscore should be kept in a word.
      * So, the second group is not just {@code (\\d)}.
      */
     private static final String WORD_SEPARATOR = "(_)|((?<=\\d)|(?=\\d))";
