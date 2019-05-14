@@ -21,50 +21,53 @@
 package io.spine.tools.check.vbuilder;
 
 import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.Empty;
 import io.spine.base.FieldPath;
-import io.spine.base.FieldPathVBuilder;
-import io.spine.validate.AbstractValidatingBuilder;
-
-import static io.spine.base.ErrorVBuilder.newBuilder;
+import io.spine.protobuf.ValidatingBuilder;
 
 /**
- * Contains statements for which the {@link UseValidatingBuilder} bug pattern should
+ * Contains statements for which the {@link UseVBuild} bug pattern should
  * generate no warning.
  */
-abstract class UseValidatingBuilderNegatives {
+abstract class UseVBuildNegatives {
 
-    /** This method calls generated VBuilder. */
+    /** This method calls the generated vBuild() method. */
     void callOnVBuilder() {
-        FieldPathVBuilder.newBuilder();
-    }
-
-    /** This method calls statically imported method of generated VBuilder. */
-    void callOnVBuilderStaticImported() {
-        newBuilder();
+        FieldPath.newBuilder()
+                 .vBuild();
     }
 
     /** This method is annotated suppressing the warning. */
-    @SuppressWarnings("UseValidatingBuilder")
+    @SuppressWarnings("UseVBuild")
     void callUnderWarningSuppressed() {
-        FieldPath.newBuilder();
+        FieldPath.newBuilder()
+                 .build();
     }
 
-    class SomeBuilder extends AbstractValidatingBuilder {
+    /** This method calls buildPartial() to explititly state that the message is not validated. */
+    void callBuildPartial() {
+        FieldPath.newBuilder().buildPartial();
+    }
 
-        /**
-         * This method contains a call from a method, which is inside a class derived
-         * from {@code AbstractValidatingBuilder}.
-         */
-        void callInsideVBuilder() {
-            FieldPath.newBuilder();
+    abstract class SomeBuilder implements ValidatingBuilder<Empty> {
+
+        /** The call to builder is made inside a builder class. */
+        void callInsideBuilder() {
+            FieldPath.newBuilder()
+                     .build();
         }
+
+        /** Added to satisfy the compiler. Does not affect the ErrorProne checks. */
+        @Override
+        public abstract SomeBuilder clone();
     }
 
     abstract class SomeMessage extends AbstractMessage {
 
         /** The call to builder is made inside a message class. */
         void callInsideMessage() {
-            FieldPath.newBuilder();
+            FieldPath.newBuilder()
+                     .build();
         }
     }
 }

@@ -18,16 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder;
+package io.spine.tools.check.vbuild;
 
-import com.google.common.base.Predicates;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Predicate;
+import static com.google.common.base.Predicates.contains;
+import static io.spine.tools.check.vbuild.UseVBuild.NAME;
+import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
+import static java.util.regex.Pattern.LITERAL;
+import static java.util.regex.Pattern.compile;
 
 /**
  * This test requires configuring "-Xbootclasspath..." option with the path to the
@@ -50,32 +52,29 @@ import java.util.function.Predicate;
  * <a href="https://github.com/google/error-prone/wiki/Writing-a-check#testing-a-bugchecker">
  * guide</a> to testing the custom checks.
  */
-@DisplayName("UseValidatingBuilder should")
-@Disabled("Until https://github.com/SpineEventEngine/base/issues/263 is resolved")
-class UseValidatingBuilderTest {
+@DisplayName("UseVBuild check should")
+class UseVBuildTest {
 
     private CompilationTestHelper compilationTestHelper;
 
     @BeforeEach
     void setUp() {
         compilationTestHelper =
-                CompilationTestHelper.newInstance(UseValidatingBuilder.class, getClass());
+                CompilationTestHelper.newInstance(UseVBuild.class, getClass());
     }
 
     @Test
     @DisplayName("recognize positive cases")
     void recognizePositiveCases() {
-        Predicate<CharSequence> predicate =
-                Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
-        compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test)
-                             .addSourceFile("UseValidatingBuilderPositives.java")
+        compilationTestHelper.expectErrorMessage(NAME, contains(compile(SUMMARY, LITERAL)))
+                             .addSourceFile("UseVBuildPositives.java")
                              .doTest();
     }
 
     @Test
     @DisplayName("recognize negative cases")
     void recognizeNegativeCases() {
-        compilationTestHelper.addSourceFile("UseValidatingBuilderNegatives.java")
+        compilationTestHelper.addSourceFile("UseVBuildNegatives.java")
                              .doTest();
     }
 }

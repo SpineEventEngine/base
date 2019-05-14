@@ -23,10 +23,14 @@ package io.spine.tools.check.vbuild;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
+import com.google.protobuf.MessageOrBuilder;
+import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
+
+import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
@@ -42,13 +46,21 @@ enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
     @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
     private static final String BUILD_METHOD_NAME = "build";
 
-    private final Matcher<ExpressionTree> matcher =
+    @SuppressWarnings("ImmutableEnumChecker")
+    private static final Matcher<ExpressionTree> builderBuild =
             GeneratedValidatingBuilder.callingInstanceMethod(BUILD_METHOD_NAME);
+    private static final Matcher<ClassTree> messageOrBuilder = isSubtypeOf(MessageOrBuilder.class);
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean matches = matcher.matches(tree, state);
+        boolean matches = builderBuild.matches(tree, state)
+                      && !notInMessageOrBuilder(state);
         return matches;
+    }
+
+    private static boolean notInMessageOrBuilder(VisitorState state) {
+        ClassTree enclosingClass = state.findEnclosing(ClassTree.class);
+        return messageOrBuilder.matches(enclosingClass, state);
     }
 
     @Override

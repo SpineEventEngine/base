@@ -32,7 +32,7 @@ import com.sun.source.tree.MethodInvocationTree;
 import io.spine.tools.check.BugPatternMatcher;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
+import static com.google.errorprone.BugPattern.LinkType.NONE;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
 
@@ -42,12 +42,13 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
         name = "UseVBuild",
         summary = UseVBuild.SUMMARY,
         severity = WARNING,
-        linkType = CUSTOM
+        linkType = NONE
 )
 public class UseVBuild extends BugChecker implements MethodInvocationTreeMatcher {
 
     private static final long serialVersionUID = 0L;
 
+    static final String NAME = UseVBuild.class.getSimpleName();
     static final String SUMMARY = "Prefer using vBuild() instead of the build().";
 
     @Override

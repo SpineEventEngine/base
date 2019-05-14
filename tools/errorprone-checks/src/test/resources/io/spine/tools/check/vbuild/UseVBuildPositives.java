@@ -20,55 +20,21 @@
 
 package io.spine.tools.check.vbuilder;
 
-import io.spine.base.FieldPath;
 import io.spine.base.Error;
 
-import static io.spine.base.FieldPath.newBuilder;
-
 /**
- * Contains statements for which the {@link UseValidatingBuilder} bug pattern should return a match.
+ * Contains statements for which the {@link UseVBuild} bug pattern should return a match.
  *
  * <p>Comments in this file should not be modified as they serve as indicator for the
  * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-class UseValidatingBuilderPositives {
+class UseVBuildPositives {
 
     Error value = Error.getDefaultInstance();
 
     void callNewBuilder() {
 
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        Error.newBuilder();
-    }
-
-    void callNewBuilderWithArg() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        Error.newBuilder(value);
-    }
-
-    void callNewBuilderForType() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        value.newBuilderForType();
-    }
-
-    void callToBuilder() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        value.toBuilder();
-    }
-
-    void callNewBuilderStaticImported() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        newBuilder();
-    }
-
-    void callNewBuilderWithArgStaticImported() {
-        FieldPath defaultInstance = FieldPath.getDefaultInstance();
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        newBuilder(defaultInstance);
+        // BUG: Diagnostic matches: UseVBuild
+        Error.newBuilder().build();
     }
 }
