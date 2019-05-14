@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -45,6 +44,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.DescriptorProtos.DescriptorProto.FIELD_FIELD_NUMBER;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
@@ -54,7 +54,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Declaration of a Protobuf message field.
  */
-// TODO:2019-05-14:dmytro.dashenkov: delete unused methods.
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
@@ -332,7 +331,7 @@ public final class FieldDeclaration implements Logging {
     private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
         locationPath.addAll(declaringMessage.path());
-        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
+        locationPath.add(FIELD_FIELD_NUMBER);
         int fieldIndex = fieldIndex();
         locationPath.add(fieldIndex);
         return locationPath;
