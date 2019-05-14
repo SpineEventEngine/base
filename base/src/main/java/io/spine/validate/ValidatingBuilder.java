@@ -42,11 +42,7 @@ import static io.spine.validate.AbstractValidatingBuilder.getNewBuilderMethod;
  *
  * @param <T> the type of the message to build
  * @param <B> the type of the message builder
- *
- * @deprecated Use {@link io.spine.protobuf.ValidatingBuilder#vBuild()} instead.
  */
-@Deprecated
-@SuppressWarnings("DeprecatedIsStillUsed") // To be removed gradually.
 public interface ValidatingBuilder<T extends Message, B extends Message.Builder> {
 
     /**

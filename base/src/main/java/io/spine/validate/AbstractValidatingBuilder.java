@@ -49,8 +49,6 @@ import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
  */
-@Deprecated
-@SuppressWarnings("DeprecatedIsStillUsed") // To be removed gradually.
 public abstract class AbstractValidatingBuilder<T extends Message, B extends Message.Builder>
         implements ValidatingBuilder<T, B>, Logging {
 

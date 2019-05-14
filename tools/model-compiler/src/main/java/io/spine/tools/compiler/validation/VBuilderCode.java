@@ -103,7 +103,6 @@ final class VBuilderCode implements Logging {
         Collection<MethodSpec> methods = methodsOf(type);
         classBuilder.addModifiers(PUBLIC, FINAL)
                     .superclass(superClass)
-                    .addAnnotation(Deprecated.class)
                     .addMethods(methods);
         return classBuilder;
     }
