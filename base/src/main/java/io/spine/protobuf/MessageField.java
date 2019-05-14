@@ -63,8 +63,8 @@ public abstract class MessageField implements Serializable {
      * @param index the zero-based index of the field
      */
     protected MessageField(int index) {
-        String message = "Message field index must be a positive value, encountered: ";
-        checkArgument(index >= 0, message + index);
+        String message = "Message field index must be a positive value, encountered: %s.";
+        checkArgument(index >= 0, message, index);
         this.index = index;
     }
 
