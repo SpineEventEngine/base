@@ -21,15 +21,17 @@
 package io.spine.tools.check.vbuild;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
+import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.matchers.Description;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.tools.check.BugPatternMatcher;
-import io.spine.tools.check.Fixer;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
@@ -53,10 +55,14 @@ public class UseVBuild extends BugChecker implements MethodInvocationTreeMatcher
         BugPatternMatcher<MethodInvocationTree> matcher = BuildMatcher.INSTANCE;
         boolean matches = matcher.matches(tree, state);
         if (matches) {
-            Fixer<MethodInvocationTree> fixer = matcher.getFixer();
+            ImmutableList<Fix> fixes = matcher
+                    .fixers()
+                    .stream()
+                    .map(fixer -> fixer.suggestFix(tree))
+                    .collect(toImmutableList());
             Description description = Description
                     .builder(tree, UseVBuild.class.getSimpleName(), null, WARNING, SUMMARY)
-                    .addFix(fixer.createFix(tree, state))
+                    .addAllFixes(fixes)
                     .build();
             return description;
         } else {

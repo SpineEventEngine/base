@@ -20,6 +20,7 @@
 
 package io.spine.tools.check.vbuild;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
 import com.sun.source.tree.ExpressionTree;
@@ -42,7 +43,7 @@ enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
     private static final String BUILD_METHOD_NAME = "build";
 
     private final Matcher<ExpressionTree> matcher =
-            CustomProtobufType.callingInstanceMethod(BUILD_METHOD_NAME);
+            GeneratedValidatingBuilder.callingInstanceMethod(BUILD_METHOD_NAME);
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
@@ -51,7 +52,7 @@ enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
     }
 
     @Override
-    public Fixer<MethodInvocationTree> getFixer() {
-        return BuildFixer.INSTANCE;
+    public ImmutableList<Fixer<MethodInvocationTree>> fixers() {
+        return ImmutableList.copyOf(BuildWarningFixer.values());
     }
 }

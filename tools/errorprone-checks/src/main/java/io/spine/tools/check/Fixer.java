@@ -20,7 +20,6 @@
 
 package io.spine.tools.check;
 
-import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
@@ -43,9 +42,8 @@ public interface Fixer<T extends Tree> {
      * implementations where the tree and the state are provided by the Error Prone code scanners.
      *
      * @param tree  the errored expression {@code Tree}
-     * @param state the current {@code VisitorState}
      * @return the {@code Optional} containing the {@code Fix} or {@link Optional#empty()} if no fix
      *         can be created
      */
-    Optional<Fix> createFix(T tree, VisitorState state);
+    Fix suggestFix(T tree);
 }

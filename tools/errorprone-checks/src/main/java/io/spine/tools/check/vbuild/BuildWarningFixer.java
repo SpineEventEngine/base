@@ -20,32 +20,34 @@
 
 package io.spine.tools.check.vbuild;
 
-import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
+import com.google.errorprone.fixes.SuggestedFix;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.tools.check.Fixer;
 
-import java.util.Optional;
-
 /**
- * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
- * pattern cases where the {@code message.newBuilderForType()} statement is used.
+ * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuild.UseVBuild} bug
+ * pattern cases where the {@code builder.build()} statement is used.
  *
  * <p>Suggests the fix as follows:
- *
  * <pre>
- * {@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
+ * {@code builder.build()} -&gt; {@code builder.vBuild()}
  * </pre>
  */
-enum BuildFixer implements Fixer<MethodInvocationTree> {
+enum BuildWarningFixer implements Fixer<MethodInvocationTree> {
 
-    INSTANCE;
+    TO_V_BUILD("vBuild"),
+    TO_BUILD_PARTIAL("buildPartial");
+
+    private final String replacement;
+
+    BuildWarningFixer(String replacement) {
+        this.replacement = replacement;
+    }
 
     @Override
-    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        FixGenerator generator = FixGenerator.createFor(tree);
-        Fix fix = generator.vBuildCall();
-        Optional<Fix> result = Optional.of(fix);
-        return result;
+    public Fix suggestFix(MethodInvocationTree tree) {
+        Fix fix = SuggestedFix.replace(tree.getMethodSelect(), replacement);
+        return fix;
     }
 }
