@@ -278,7 +278,7 @@ public final class Validate {
                 .stream()
                 .map(FieldDeclaration::new)
                 .filter(Validate::isNonOverridable)
-                .filter(diff::changed)
+                .filter(diff::contains)
                 .filter(field -> {
                     Object fieldValue = previous.getField(
                             field.descriptor());

@@ -37,39 +37,42 @@ import static com.google.common.collect.Sets.symmetricDifference;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Symmetric difference between two messages of the same type.
+ * Difference between two messages of the same type.
+ *
+ * <p>For two messages {@code A} and {@code B}, their diff includes all the fields which are present
+ * in {@code A} and not in {@code B}, all the fields which are present in {@code B} and not in
+ * {@code A}, and all the fields which are present in both messages but have different values.
  *
  * @see com.google.common.collect.Sets#symmetricDifference(Set, Set) Sets.symmetricDifference(..)
  */
 @Internal
 public final class Diff {
 
-    private final ImmutableSet<FieldDeclaration> changedFields;
+    private final ImmutableSet<FieldDeclaration> fields;
 
-    private Diff(ImmutableSet<FieldDeclaration> changedFields) {
-        this.changedFields = changedFields;
+    private Diff(ImmutableSet<FieldDeclaration> fields) {
+        this.fields = fields;
     }
 
     /**
      * Calculates the difference between the given two messages.
      *
-     * @param previous
-     *         the previous state of the message
-     * @param current
-     *         the current state of the message
+     * @param a
+     *         one message
+     * @param b
+     *         the other message
      * @param <M>
      *         the type of the messages
      * @return difference between the messages
      * @throws IllegalArgumentException
      *         if the types of the messages are not the same
      */
-    public static <M extends Message> Diff between(M previous, M current) {
-        checkNotNull(previous);
-        checkNotNull(current);
-        checkArgument(previous.getClass()
-                              .equals(current.getClass()));
+    public static <M extends Message> Diff between(M a, M b) {
+        checkNotNull(a);
+        checkNotNull(b);
+        checkArgument(a.getClass().equals(b.getClass()));
         ImmutableSet<FieldDeclaration> fields =
-                symmetricDifference(decompose(previous), decompose(current))
+                symmetricDifference(decompose(a), decompose(b))
                         .stream()
                         .map(tuple -> tuple.declaration)
                         .collect(toImmutableSet());
@@ -95,8 +98,8 @@ public final class Diff {
      * @return {@code true} if the field has different values in the two given messages,
      *         {@code false} otherwise
      */
-    public boolean changed(FieldDeclaration field) {
-        return changedFields.contains(field);
+    public boolean contains(FieldDeclaration field) {
+        return fields.contains(field);
     }
 
     /**
