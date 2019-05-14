@@ -18,8 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2019-05-13:dmytro.dashenkov: Fix comments in the utility classes in this package.
-
 /**
  * This package contains the custom Error Prone check to detect usage of ordinary {@code build()}
  * method for the Protobuf messages and advice using the {@code vBuild()} method added by Spine.

@@ -33,11 +33,8 @@ import io.spine.tools.check.Fixer;
 import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
- * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
- * tracks down the cases where the {@code Message.newBuilder()} or the
- * {@code Message.newBuilder(prototype)} statement is used.
- *
- * <p>Both normally called and static-imported methods are handled.
+ * A matcher for the {@link io.spine.tools.check.vbuild.UseVBuild} bug pattern which tracks down
+ * the cases where the {@code builder.build()} statement is used.
  */
 enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
 

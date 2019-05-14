@@ -29,10 +29,8 @@ import io.spine.tools.check.Fixer;
  * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuild.UseVBuild} bug
  * pattern cases where the {@code builder.build()} statement is used.
  *
- * <p>Suggests the fix as follows:
- * <pre>
- * {@code builder.build()} -&gt; {@code builder.vBuild()}
- * </pre>
+ * <p>Suggests to replace the call to {@code build()} with a call to {@code vBuild()} or
+ * {@code buildPartial()}.
  */
 enum BuildWarningFixer implements Fixer<MethodInvocationTree> {
 

@@ -23,7 +23,6 @@ package io.spine.tools.check.vbuild;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.predicates.TypePredicate;
-import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.tools.javac.code.Type;
 import io.spine.protobuf.ValidatingBuilder;
@@ -32,10 +31,10 @@ import static com.google.errorprone.matchers.method.MethodMatchers.instanceMetho
 import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
 
 /**
- * A predicate which matches custom (i.e. non-Google) Protobuf types.
+ * A predicate which matches builders of custom (i.e. non-Google) Protobuf messages.
  *
- * <p>Any {@code final} Java class which descends from {@link Message} and does not belong
- * to {@code com.google} or {@code google} package or its subpackage matches this predicate.
+ * <p>Any Java class which descends from {@link io.spine.validate.ValidatingBuilder} matches this
+ * predicate.
  */
 final class GeneratedValidatingBuilder implements TypePredicate {
 
@@ -54,7 +53,8 @@ final class GeneratedValidatingBuilder implements TypePredicate {
      * Obtains an instance method invocation matcher for the methods in custom Protobuf types and
      * with the given name.
      *
-     * @param methodName the method name to match
+     * @param methodName
+     *         the method name to match
      */
     static Matcher<ExpressionTree> callingInstanceMethod(String methodName) {
         return instanceMethod()
