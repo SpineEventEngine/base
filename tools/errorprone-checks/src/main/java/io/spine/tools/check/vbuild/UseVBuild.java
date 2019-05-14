@@ -36,6 +36,15 @@ import static com.google.errorprone.BugPattern.LinkType.NONE;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
 
+/**
+ * An ErrorProne check which warns users to prefer
+ * {@link io.spine.protobuf.ValidatingBuilder#vBuild()} over
+ * {@link io.spine.protobuf.ValidatingBuilder#build()}.
+ *
+ * <p>Unlink {@code build()}, {@code vBuild()} ensures that the constructed message is valid. This
+ * is what the user wants in most cases. If, however, for some reason, the validation is unwanted,
+ * the user in encouraged to use {@code buildPartial()} in order to make the intent explicit.
+ */
 // TODO:2019-05-13:dmytro.dashenkov: Add a link to documentation.
 @AutoService(BugChecker.class)
 @BugPattern(
