@@ -21,15 +21,50 @@
 package io.spine.protobuf;
 
 import com.google.protobuf.Message;
+import io.spine.annotation.GeneratedMixin;
+import io.spine.validate.NotValidated;
 import io.spine.validate.Validate;
+import io.spine.validate.Validated;
 import io.spine.validate.ValidationException;
 
+/**
+ * A message builder which calls validation.
+ *
+ * @param <M>
+ *         the type of the message to build
+ */
+@GeneratedMixin
 public interface ValidatingBuilder<M extends Message> extends Message.Builder {
 
+    /**
+     * Constructs the message with the given fields.
+     *
+     * <p>Users should not call this method directly. Instead, call {@link #vBuild()} for
+     * a validated message or {@link #buildPartial()} to skip message validation.
+     */
     @Override
-    M build();
+    @NotValidated M build();
 
-    default M vBuild() throws ValidationException {
+    /**
+     * Constructs the message with the given fields without validation.
+     *
+     * <p>Users should prefer {@link #vBuild()} over this method. However, in cases, when validation
+     * is not required, call this method instead of {@link #build()}.
+     *
+     * @return the build message, potentially invalid
+     */
+    @Override
+    @NotValidated M buildPartial();
+
+    /**
+     * Constructs the message and {@linkplain Validate validates} it according to the constraints
+     * declared in Protobuf.
+     *
+     * @return the built message
+     * @throws ValidationException
+     *         if the message is invalid
+     */
+    default @Validated M vBuild() throws ValidationException {
         M message = build();
         Validate.checkValid(message);
         return message;

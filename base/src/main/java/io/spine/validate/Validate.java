@@ -256,6 +256,17 @@ public final class Validate {
         }
     }
 
+    /**
+     * Checks that when transitioning a message state from {@code previous} to {@code current},
+     * the {@code set_once} constrains are met.
+     *
+     * @param previous
+     *         the previous state of the message
+     * @param current
+     *         the new state of the message
+     * @param <M>
+     *         the type of the message
+     */
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);
         checkNotNull(current);
@@ -280,8 +291,21 @@ public final class Validate {
         }
     }
 
-    private static boolean isNonOverridable(FieldDeclaration field)
-            throws ValidationException {
+    /**
+     * Checks if the given field, once set, may not be changed.
+     *
+     * <p>This property is defined by the {@code (set_once)} option. If the option is set to
+     * {@code true} on a non-{@code repeated} and non-{@code map} field, this field is
+     * <strong>non-overridable</strong>.
+     *
+     * <p>Logs if the option is set but the field is {@code repeated} or a {@code map}.
+     *
+     * @param field
+     *         the field to check
+     * @return {@code true} if the field is neither {@code repeated} nor {@code map} and is
+     *         {@code (set_once)}
+     */
+    private static boolean isNonOverridable(FieldDeclaration field) {
         checkNotNull(field);
 
         boolean marked = markedSetOnce(field);
@@ -306,14 +330,18 @@ public final class Validate {
         return setOnceValue || requiredByDefault;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+        // Usage in AbstractValidatingBuilder will be removed.
     private static void onSetOnceMisuse(FieldDeclaration field) {
         Logger logger = Logging.get(Validate.class);
         FieldName fieldName = field.name();
-        logger.error("Error found in `%s`. " +
+        logger.error("Error found in `{}`. " +
                      "Repeated and map fields cannot be marked as `(set_once) = true`.",
                      fieldName);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+        // Usage in AbstractValidatingBuilder will be removed.
     private static ConstraintViolation violatedSetOnce(FieldDeclaration declaration) {
         TypeName declaringTypeName = declaration.declaringType().name();
         FieldName fieldName = declaration.name();

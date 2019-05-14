@@ -24,6 +24,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldDeclaration;
 
 import java.util.Map;
@@ -36,8 +37,11 @@ import static com.google.common.collect.Sets.symmetricDifference;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Difference between two messages of the same type.
+ * Symmetric difference between two messages of the same type.
+ *
+ * @see com.google.common.collect.Sets#symmetricDifference(Set, Set) Sets.symmetricDifference(..)
  */
+@Internal
 public final class Diff {
 
     private final ImmutableSet<FieldDeclaration> changedFields;
@@ -95,6 +99,9 @@ public final class Diff {
         return changedFields.contains(field);
     }
 
+    /**
+     * A field declaration and a value of that field.
+     */
     private static final class FieldTuple {
 
         private final FieldDeclaration declaration;
