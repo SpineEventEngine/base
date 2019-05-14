@@ -34,14 +34,15 @@ import io.spine.tools.check.Fixer;
  *
  * <p>Both normally called and static-imported methods are handled.
  */
-final class BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
+enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
+
+    INSTANCE;
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
     private static final String BUILD_METHOD_NAME = "build";
 
     private final Matcher<ExpressionTree> matcher =
             CustomProtobufType.callingInstanceMethod(BUILD_METHOD_NAME);
-    private final Fixer<MethodInvocationTree> fixer = new BuildFixer();
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
@@ -51,6 +52,6 @@ final class BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
-        return fixer;
+        return BuildFixer.INSTANCE;
     }
 }

@@ -28,6 +28,7 @@ import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
 import com.google.errorprone.matchers.Description;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.tools.check.BugPatternMatcher;
+import io.spine.tools.check.Fixer;
 
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
@@ -49,12 +50,13 @@ public class UseVBuild extends BugChecker implements MethodInvocationTreeMatcher
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        BugPatternMatcher<MethodInvocationTree> matcher = new BuildMatcher();
+        BugPatternMatcher<MethodInvocationTree> matcher = BuildMatcher.INSTANCE;
         boolean matches = matcher.matches(tree, state);
         if (matches) {
+            Fixer<MethodInvocationTree> fixer = matcher.getFixer();
             Description description = Description
                     .builder(tree, UseVBuild.class.getSimpleName(), null, WARNING, SUMMARY)
-                    .addFix(matcher.getFixer().createFix(tree, state))
+                    .addFix(fixer.createFix(tree, state))
                     .build();
             return description;
         } else {

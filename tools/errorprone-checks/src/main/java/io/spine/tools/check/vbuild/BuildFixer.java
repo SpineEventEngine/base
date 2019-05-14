@@ -37,7 +37,9 @@ import java.util.Optional;
  * {@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
  * </pre>
  */
-final class BuildFixer implements Fixer<MethodInvocationTree> {
+enum BuildFixer implements Fixer<MethodInvocationTree> {
+
+    INSTANCE;
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
