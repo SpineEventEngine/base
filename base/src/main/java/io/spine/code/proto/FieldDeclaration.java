@@ -54,6 +54,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Declaration of a Protobuf message field.
  */
+// TODO:2019-05-14:dmytro.dashenkov: delete unused methods.
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
@@ -98,10 +99,6 @@ public final class FieldDeclaration implements Logging {
      */
     public MessageType declaringType() {
         return declaringMessage;
-    }
-
-    public int fieldNumber() {
-        return field.getNumber();
     }
 
     /**

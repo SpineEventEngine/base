@@ -33,7 +33,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.symmetricDifference;
-import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -122,14 +121,6 @@ public final class Diff {
         @Override
         public int hashCode() {
             return Objects.hashCode(declaration, value);
-        }
-
-        @Override
-        public String toString() {
-            return format("%s %s = %d",
-                          declaration.typeName(),
-                          declaration.name(),
-                          declaration.fieldNumber());
         }
     }
 }
