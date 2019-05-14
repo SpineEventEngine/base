@@ -42,5 +42,4 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Retention(CLASS)
 @Target({TYPE_USE, TYPE_PARAMETER})
 public @interface NotValidated {
-
 }

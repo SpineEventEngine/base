@@ -44,5 +44,3 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Target({TYPE_USE, TYPE_PARAMETER})
 public @interface Validated {
 }
-
-
