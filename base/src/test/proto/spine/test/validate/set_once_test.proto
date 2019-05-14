@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package spine.test.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.validate";
+option java_outer_classname = "SetOnceTestProto";
+option java_multiple_files = true;
+
+import "spine/people/person_name.proto";
+import "spine/net/url.proto";
+
+message Passport {
+    option (entity).kind = ENTITY;
+
+    string id = 1; // implicitly: (set_once) = false
+
+    people.PersonName name = 2 [(set_once) = false];
+
+    string birthplace = 3 [(set_once) = true];
+
+    // Misuse of `set_once`: should not be used with `repeated` fields.
+    repeated net.Url photo = 4 [(set_once) = true];
+}

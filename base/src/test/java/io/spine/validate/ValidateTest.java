@@ -22,13 +22,21 @@ package io.spine.validate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import io.spine.base.FieldPaths;
+import io.spine.net.Url;
+import io.spine.people.PersonName;
+import io.spine.test.validate.Passport;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeName;
 import io.spine.validate.diags.ViolationText;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkBounds;
@@ -36,6 +44,7 @@ import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkNotDefault;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static io.spine.validate.Validate.checkPositive;
+import static io.spine.validate.Validate.checkValidChange;
 import static io.spine.validate.Validate.isDefault;
 import static io.spine.validate.Validate.isNotDefault;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -168,7 +177,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("not throw if checked strign is not empty or blank")
-    public void doNotThrowExceptionIfCheckedStringIsValid() {
+    void doNotThrowExceptionIfCheckedStringIsValid() {
         checkNotEmptyOrBlank("valid_string", "");
     }
 
@@ -184,5 +193,103 @@ class ValidateTest extends UtilityClassTest<Validate> {
                                         .toString();
 
         assertEquals("test 1 test 2", formatted);
+    }
+
+    @Nested
+    @DisplayName("test message changes upon (set_once) and")
+    class SetOnce {
+
+        private static final String ID = "id";
+        private static final String BIRTHPLACE = "birthplace";
+
+        @Test
+        @DisplayName("throw ValidationException if a (set_once) field is overridden")
+        void reportIllegalChanges() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setBirthplace("Kyiv")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setBirthplace("Kharkiv")
+                    .build();
+            checkViolated(oldValue, newValue, BIRTHPLACE);
+        }
+
+        @Test
+        @DisplayName("throw ValidationException if an entity ID is overridden")
+        void reportIdChanges() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setId("MT 000100010001")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setId("JC 424242424242")
+                    .build();
+            checkViolated(oldValue, newValue, ID);
+        }
+
+        @Test
+        @DisplayName("throw ValidationException with several violations")
+        void reportManyFields() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setId("MT 111")
+                    .setBirthplace("London")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setId("JC 424")
+                    .setBirthplace("Edinburgh")
+                    .build();
+            checkViolated(oldValue, newValue, ID, BIRTHPLACE);
+        }
+
+        @Test
+        @DisplayName("allow overriding repeated fields")
+        void ignoreRepeated() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .addPhoto(Url.newBuilder()
+                                 .setSpec("foo.bar/pic1"))
+                    .build();
+            Passport newValue = Passport.getDefaultInstance();
+            checkValidChange(oldValue, newValue);
+        }
+
+        @Test
+        @DisplayName("allow overriding if (set_once) = false")
+        void ignoreNonSetOnce() {
+            Passport oldValue = Passport.getDefaultInstance();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setName(PersonName
+                                     .newBuilder()
+                                     .setGivenName("John")
+                                     .setFamilyName("Doe"))
+                    .build();
+            checkValidChange(oldValue, newValue);
+        }
+
+        private void checkViolated(Passport oldValue, Passport newValue, String... fields) {
+            ValidationException exception =
+                    assertThrows(ValidationException.class,
+                                 () -> checkValidChange(oldValue, newValue));
+            List<ConstraintViolation> violations = exception.getConstraintViolations();
+            assertThat(violations).hasSize(fields.length);
+
+            for (int i = 0; i < fields.length; i++) {
+                ConstraintViolation violation = violations.get(i);
+                String field = fields[i];
+
+                assertThat(violation.getMsgFormat()).contains("(set_once)");
+
+                String expectedTypeName = TypeName.of(newValue).value();
+                assertThat(violation.getTypeName()).contains(expectedTypeName);
+
+                assertThat(violation.getFieldPath()).isEqualTo(FieldPaths.parse(field));
+            }
+        }
     }
 }
