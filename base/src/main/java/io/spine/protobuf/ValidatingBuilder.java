@@ -28,7 +28,12 @@ import io.spine.validate.Validated;
 import io.spine.validate.ValidationException;
 
 /**
- * A message builder which calls validation.
+ * Implementation base for generated message builders.
+ *
+ * <p>This interface defines a default method {@link #vBuild()} which validates the built message
+ * before returning it to the user. In most cases, the users should use {@code vBuild()} and not
+ * the {@code build()}. If a user specifically needs to skip validation, they should use
+ * {@link #buildPartial()} to make the intent explicit.
  *
  * @param <M>
  *         the type of the message to build
