@@ -32,7 +32,7 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 /**
  * A context-sensitive matcher.
  *
- * <p>If the matching element lies in a {@code Message} class or in {@code Builder} class, it is
+ * <p>If the matching element resides in a {@code Message} class or in {@code Builder} class, it is
  * never matched.
  */
 interface ContextualMatcher<T extends Tree> extends BugPatternMatcher<T> {

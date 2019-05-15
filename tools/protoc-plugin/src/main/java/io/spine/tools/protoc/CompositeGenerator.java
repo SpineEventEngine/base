@@ -31,7 +31,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * A generator which calls several other generators and merges their results.
+ * A generator which calls other generators and merges their results.
  */
 public final class CompositeGenerator extends SpineProtoGenerator {
 
