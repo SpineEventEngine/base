@@ -50,10 +50,10 @@ public interface BugPatternMatcher<T extends Tree> {
     boolean matches(T tree, VisitorState state);
 
     /**
-     * Obtains a {@code Fixer} for the case of the {@link com.google.errorprone.BugPattern}
+     * Obtains {@code Fixer}s for the case of the {@link com.google.errorprone.BugPattern}
      * processed by this class.
      *
-     * @return the {@code Fixer} for the processed bug pattern case
+     * @return {@code Fixer}s for the processed bug pattern case
      */
     ImmutableList<Fixer<T>> fixers();
 }
