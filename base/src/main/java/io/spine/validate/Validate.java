@@ -280,8 +280,7 @@ public final class Validate {
                 .filter(Validate::isNonOverridable)
                 .filter(diff::contains)
                 .filter(field -> {
-                    Object fieldValue = previous.getField(
-                            field.descriptor());
+                    Object fieldValue = previous.getField(field.descriptor());
                     return !field.isDefault(fieldValue);
                 })
                 .map(Validate::violatedSetOnce)

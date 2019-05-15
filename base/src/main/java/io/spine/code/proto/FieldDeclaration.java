@@ -109,9 +109,23 @@ public final class FieldDeclaration implements Logging {
      */
     public boolean isDefault(Object fieldValue) {
         checkNotNull(fieldValue);
-        return isMessage()
-               ? Validate.isDefault((Message) fieldValue)
-               : fieldValue.equals(field.getDefaultValue());
+        if (isMessage()) {
+            if (fieldValue instanceof Message) {
+                Message message = (Message) fieldValue;
+                return Validate.isDefault(message) && sameMessageType(message);
+            } else {
+                return false;
+            }
+        } else {
+            return fieldValue.equals(field.getDefaultValue());
+        }
+    }
+
+    private boolean sameMessageType(Message msg) {
+        String messageClassName = msg.getClass()
+                                     .getName();
+        String fieldClassName = messageClassName();
+        return fieldClassName.equals(messageClassName);
     }
 
     /**
