@@ -24,8 +24,6 @@ import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
 
-import java.util.Optional;
-
 /**
  * Generates a {@link Fix} to be displayed to the user given the errored expression.
  *
@@ -42,8 +40,7 @@ public interface Fixer<T extends Tree> {
      * implementations where the tree and the state are provided by the Error Prone code scanners.
      *
      * @param tree  the errored expression {@code Tree}
-     * @return the {@code Optional} containing the {@code Fix} or {@link Optional#empty()} if no fix
-     *         can be created
+     * @return the {@code Fix} which removes the associated warning
      */
     Fix suggestFix(T tree);
 }
