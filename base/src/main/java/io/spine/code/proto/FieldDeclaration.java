@@ -264,21 +264,6 @@ public final class FieldDeclaration implements Logging {
         return new FieldDeclaration(valueDescriptor);
     }
 
-    /** Returns the name of the type of this field. */
-    public String typeName() {
-        if (isMessage()) {
-            return field.getMessageType()
-                        .getFullName();
-        } else if (isEnum()) {
-            return field.getEnumType()
-                        .getFullName();
-        } else {
-            return field.getType()
-                        .name()
-                        .toLowerCase();
-        }
-    }
-
     private boolean isEntityField() {
         EntityOption entityOption = field.getContainingType()
                                          .getOptions()
