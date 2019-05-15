@@ -92,7 +92,6 @@ final class VBuilderCode implements Logging {
     }
 
     private TypeSpec.Builder defineClass() {
-        @SuppressWarnings("deprecation")
         ClassName baseClass = ClassName.get(AbstractValidatingBuilder.class);
         ClassName messageClass = messageClass();
         ClassName messageBuilderClass = builderClass();

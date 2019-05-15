@@ -31,6 +31,10 @@ import io.spine.type.MessageType;
 
 import static java.lang.String.format;
 
+/**
+ * An insertion point which adds the {@link ValidatingBuilder} interface to the list of implemented
+ * interfaces of the {@code Builder} of the given message type.
+ */
 final class BuilderImplements extends AbstractCompilerOutput {
 
     private static final String INTERFACE_NAME_TEMPLATE = "%s%s,";

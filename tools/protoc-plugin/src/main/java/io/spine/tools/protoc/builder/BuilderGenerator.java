@@ -30,6 +30,10 @@ import java.util.Collection;
 
 import static io.spine.tools.protoc.builder.BuilderImplements.implementValidatingBuilder;
 
+/**
+ * A code generator which makes the generated message builders implement
+ * {@link io.spine.protobuf.ValidatingBuilder}.
+ */
 public final class BuilderGenerator extends SpineProtoGenerator {
 
     /**
@@ -39,6 +43,9 @@ public final class BuilderGenerator extends SpineProtoGenerator {
         super();
     }
 
+    /**
+     * Creates a new instance of the generator.
+     */
     public static BuilderGenerator instance() {
         return new BuilderGenerator();
     }
