@@ -25,6 +25,8 @@ import com.google.protobuf.Empty;
 import io.spine.base.FieldPath;
 import io.spine.protobuf.ValidatingBuilder;
 
+import java.util.function.Supplier;
+
 /**
  * Contains statements for which the {@link UseVBuild} bug pattern should
  * generate no warning.
@@ -46,7 +48,8 @@ abstract class UseVBuildNegatives {
 
     /** This method calls buildPartial() to explititly state that the message is not validated. */
     void callBuildPartial() {
-        FieldPath.newBuilder().buildPartial();
+        FieldPath.newBuilder()
+                 .buildPartial();
     }
 
     abstract class SomeBuilder implements ValidatingBuilder<Empty> {
@@ -55,6 +58,11 @@ abstract class UseVBuildNegatives {
         void callInsideBuilder() {
             FieldPath.newBuilder()
                      .build();
+        }
+
+        void useMethodRefInsimeBuilder() {
+            Supplier<?> sup = FieldPath.newBuilder()::build;
+            sup.get();
         }
 
         /** Added to satisfy the compiler. Does not affect the ErrorProne checks. */
@@ -68,6 +76,11 @@ abstract class UseVBuildNegatives {
         void callInsideMessage() {
             FieldPath.newBuilder()
                      .build();
+        }
+
+        void useMethodRefInsimeMessage() {
+            Supplier<?> sup = FieldPath.newBuilder()::build;
+            sup.get();
         }
     }
 }
