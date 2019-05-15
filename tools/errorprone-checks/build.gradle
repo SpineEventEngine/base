@@ -60,4 +60,4 @@ task configureBootClasspath {
     }
 }
 
-test.dependsOn configureBootClasspath
+test.dependsOn configureBootClasspath, project(':base').getTasksByName('publishToMavenLocal', false)
