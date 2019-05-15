@@ -46,7 +46,7 @@ public abstract class MessageField implements Serializable {
     private static final String GETTER_METHOD_PREFIX = "get";
 
     /**
-     * By convention underscore is used for separating words in field names
+     * By convention underscore it is used for separating words in field names
      * of Protobuf messages.
      */
     private static final char PROPERTY_NAME_SEPARATOR = '_';
@@ -76,7 +76,7 @@ public abstract class MessageField implements Serializable {
     /**
      * Obtains the value of the field from the passed message.
      *
-     * @param message a message to get the field value from
+     * @param message the message to get the field value from
      * @return field value
      * @throws MessageFieldException if the field is not available
      * @see #isFieldAvailable(Message)
@@ -99,7 +99,7 @@ public abstract class MessageField implements Serializable {
     /**
      * Creates an exception for the case of a missing or incompatible field in the passed message.
      *
-     * @param message   a message passed for obtaining value
+     * @param message   the message passed for obtaining value
      * @return new exception instance
      */
     protected abstract MessageFieldException createUnavailableFieldException(Message message);
@@ -107,7 +107,7 @@ public abstract class MessageField implements Serializable {
     /**
      * Verifies if a field is available in the passed message.
      *
-     * @param message a message to check
+     * @param message the message to check
      * @return {@code true} if the field is available, {@code false} otherwise
      */
     protected abstract boolean isFieldAvailable(Message message);
@@ -136,7 +136,7 @@ public abstract class MessageField implements Serializable {
     /**
      * Obtains a field descriptor for a field in the passed message.
      *
-     * @param msg        a message to inspect
+     * @param msg        the message to inspect
      * @param fieldIndex the index of the field
      * @return field descriptor
      */
@@ -172,7 +172,7 @@ public abstract class MessageField implements Serializable {
     /**
      * Obtains Protobuf field name for the passed message.
      *
-     * @param  msg   a message to inspect
+     * @param  msg   the message to inspect
      * @param  index a zero-based index of the field
      * @throws IndexOutOfBoundsException
      *         if the index is greater or equal the number of fields in the passed message
