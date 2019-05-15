@@ -63,8 +63,6 @@ class UseVBuildTest {
     @Test
     @DisplayName("recognize positive cases")
     void recognizePositiveCases() {
-        // TODO:2019-05-15:dmytro.dashenkov: UseVBuildPositives.callAsMethodReference() has an
-        //  unmarked bug in it. See https://github.com/google/error-prone/issues/1283
         compilationTestHelper.expectErrorMessage(NAME, msg -> msg.contains(SUMMARY))
                              .addSourceFile("UseVBuildPositives.java")
                              .doTest();

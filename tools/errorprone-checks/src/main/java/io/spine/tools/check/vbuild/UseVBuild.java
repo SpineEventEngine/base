@@ -25,13 +25,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.bugpatterns.BugChecker.MemberReferenceTreeMatcher;
 import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
 import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.matchers.Description;
+import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.Tree;
 import io.spine.tools.check.BugPatternMatcher;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.errorprone.BugPattern.LinkType.NONE;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
@@ -53,23 +55,33 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
         severity = WARNING,
         linkType = NONE
 )
-public class UseVBuild extends BugChecker implements MethodInvocationTreeMatcher {
+public class UseVBuild
+        extends BugChecker
+        implements MethodInvocationTreeMatcher, MemberReferenceTreeMatcher {
 
     private static final long serialVersionUID = 0L;
 
     static final String NAME = UseVBuild.class.getSimpleName();
     static final String SUMMARY = "Prefer using vBuild() instead of build().";
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in other contexts.
+    static final String BUILD = "build";
+
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        BugPatternMatcher<MethodInvocationTree> matcher = BuildMatcher.INSTANCE;
+        return match(BuildMatcher.INSTANCE, tree, state);
+    }
+
+    @Override
+    public Description matchMemberReference(MemberReferenceTree tree, VisitorState state) {
+        return match(BuildReferenceMatcher.INSTANCE, tree, state);
+    }
+
+    private static <T extends Tree> Description
+    match(BugPatternMatcher<T> matcher, T tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         if (matches) {
-            ImmutableList<Fix> fixes = matcher
-                    .fixers()
-                    .stream()
-                    .map(fixer -> fixer.suggestFix(tree))
-                    .collect(toImmutableList());
+            ImmutableList<Fix> fixes = matcher.fixes(tree);
             Description description = Description
                     .builder(tree, UseVBuild.class.getSimpleName(), null, WARNING, SUMMARY)
                     .addAllFixes(fixes)

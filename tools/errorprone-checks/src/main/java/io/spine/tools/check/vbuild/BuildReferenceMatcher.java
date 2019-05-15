@@ -23,38 +23,42 @@ package io.spine.tools.check.vbuild;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
+import com.google.errorprone.fixes.SuggestedFix;
 import com.google.errorprone.matchers.Matcher;
-import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.MemberReferenceTree;
+import com.sun.source.tree.Tree;
+import io.spine.protobuf.ValidatingBuilder;
 
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 import static io.spine.tools.check.vbuild.UseVBuild.BUILD;
 
 /**
  * A matcher for the {@link io.spine.tools.check.vbuild.UseVBuild} bug pattern which tracks down
- * the cases where the {@code builder.build()} statement is used.
+ * the cases where the {@code builder::build} statement is used.
  */
-enum BuildMatcher implements ContextualMatcher<MethodInvocationTree> {
+enum BuildReferenceMatcher implements ContextualMatcher<MemberReferenceTree> {
 
     INSTANCE;
 
-    @SuppressWarnings("ImmutableEnumChecker")
-    private static final Matcher<ExpressionTree> builderBuild =
-            GeneratedValidatingBuilder.callingInstanceMethod(BUILD);
+    private static final Matcher<Tree> receiverMatcher = isSubtypeOf(ValidatingBuilder.class);
 
     @Override
-    public boolean outsideMessageContextMatches(MethodInvocationTree tree, VisitorState state) {
-        return builderBuild.matches(tree, state);
+    public boolean outsideMessageContextMatches(MemberReferenceTree tree, VisitorState state) {
+        return receiverMatcher.matches(tree.getQualifierExpression(), state)
+                && tree.getName()
+                       .contentEquals(BUILD);
     }
 
     @Override
-    public ImmutableList<Fix> fixes(MethodInvocationTree tree) {
-        ExpressionTree methodTree = tree.getMethodSelect();
+    public ImmutableList<Fix> fixes(MemberReferenceTree tree) {
+        String receiver = tree.getQualifierExpression().toString();
         return Stream.of(BuildMethodAlternative.values())
-                     .map(alt -> alt.replace(methodTree))
+                     .map(BuildMethodAlternative::name)
+                     .map(name -> receiver + "::" + name)
+                     .map(replacement -> SuggestedFix.replace(tree, replacement))
                      .collect(toImmutableList());
-
     }
 }

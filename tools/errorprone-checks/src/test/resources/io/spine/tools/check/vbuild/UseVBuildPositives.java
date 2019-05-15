@@ -42,6 +42,7 @@ class UseVBuildPositives {
     void callAsMethodReference() {
         Error.Builder builder = Error.newBuilder();
 
+        // BUG: Diagnostic matches: UseVBuild
         Supplier<? extends Message> faultySupplier = builder::build;
         faultySupplier.get();
     }

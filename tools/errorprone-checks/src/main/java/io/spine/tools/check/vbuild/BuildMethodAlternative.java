@@ -22,30 +22,22 @@ package io.spine.tools.check.vbuild;
 
 import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.fixes.SuggestedFix;
-import com.sun.source.tree.MethodInvocationTree;
-import io.spine.tools.check.Fixer;
+import com.sun.source.tree.Tree;
 
 /**
- * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuild.UseVBuild} bug
- * pattern cases where the {@code builder.build()} statement is used.
+ * The alternatives to the {@code Builder.build()} method.
  *
- * <p>Suggests to replace the call to {@code build()} with a call to {@code vBuild()} or
- * {@code buildPartial()}.
+ * @see io.spine.protobuf.ValidatingBuilder
  */
-enum BuildWarningFixer implements Fixer<MethodInvocationTree> {
+enum BuildMethodAlternative {
 
-    TO_V_BUILD("vBuild"),
-    TO_BUILD_PARTIAL("buildPartial");
+    vBuild,
+    buildPartial;
 
-    private final String replacement;
-
-    BuildWarningFixer(String replacement) {
-        this.replacement = replacement;
-    }
-
-    @Override
-    public Fix suggestFix(MethodInvocationTree tree) {
-        Fix fix = SuggestedFix.replace(tree.getMethodSelect(), replacement);
-        return fix;
+    /**
+     * Creates a fix which suggests to replace the given tree element with this method.
+     */
+    public Fix replace(Tree tree) {
+        return SuggestedFix.replace(tree, name());
     }
 }
