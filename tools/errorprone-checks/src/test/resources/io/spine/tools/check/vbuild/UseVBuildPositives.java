@@ -20,7 +20,10 @@
 
 package io.spine.tools.check.vbuilder;
 
+import com.google.protobuf.Message;
 import io.spine.base.Error;
+
+import java.util.function.Supplier;
 
 /**
  * Contains statements for which the {@link UseVBuild} bug pattern should return a match.
@@ -30,11 +33,26 @@ import io.spine.base.Error;
  */
 class UseVBuildPositives {
 
-    Error value = Error.getDefaultInstance();
-
-    void callNewBuilder() {
+    void callBuild() {
 
         // BUG: Diagnostic matches: UseVBuild
         Error.newBuilder().build();
+    }
+
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
+
+        Supplier<? extends Message> faultySupplier = builder::build;
+        faultySupplier.get();
+    }
+
+    void callInLambda() {
+        Error.Builder builder = Error.newBuilder();
+
+        Supplier<? extends Message> faultySupplier = () -> {
+            // BUG: Diagnostic matches: UseVBuild
+            return builder.build();
+        };
+        faultySupplier.get();
     }
 }

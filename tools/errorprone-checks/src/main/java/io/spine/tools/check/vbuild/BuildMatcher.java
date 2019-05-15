@@ -50,12 +50,10 @@ enum BuildMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean matches = builderBuild.matches(tree, state)
-                      && !notInMessageOrBuilder(state);
-        return matches;
+        return !inMessageOrBuilder(state) && builderBuild.matches(tree, state);
     }
 
-    private static boolean notInMessageOrBuilder(VisitorState state) {
+    private static boolean inMessageOrBuilder(VisitorState state) {
         ClassTree enclosingClass = state.findEnclosing(ClassTree.class);
         return messageOrBuilder.matches(enclosingClass, state);
     }

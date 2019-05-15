@@ -25,11 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Predicates.contains;
 import static io.spine.tools.check.vbuild.UseVBuild.NAME;
 import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
-import static java.util.regex.Pattern.LITERAL;
-import static java.util.regex.Pattern.compile;
 
 /**
  * This test requires configuring "-Xbootclasspath..." option with the path to the
@@ -66,7 +63,9 @@ class UseVBuildTest {
     @Test
     @DisplayName("recognize positive cases")
     void recognizePositiveCases() {
-        compilationTestHelper.expectErrorMessage(NAME, contains(compile(SUMMARY, LITERAL)))
+        // TODO:2019-05-15:dmytro.dashenkov: UseVBuildPositives.callAsMethodReference() has an
+        //  unmarked bug in it. See https://github.com/google/error-prone/issues/1283
+        compilationTestHelper.expectErrorMessage(NAME, msg -> msg.contains(SUMMARY))
                              .addSourceFile("UseVBuildPositives.java")
                              .doTest();
     }

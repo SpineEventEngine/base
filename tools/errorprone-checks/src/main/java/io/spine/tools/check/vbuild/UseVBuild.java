@@ -58,7 +58,7 @@ public class UseVBuild extends BugChecker implements MethodInvocationTreeMatcher
     private static final long serialVersionUID = 0L;
 
     static final String NAME = UseVBuild.class.getSimpleName();
-    static final String SUMMARY = "Prefer using vBuild() instead of the build().";
+    static final String SUMMARY = "Prefer using vBuild() instead of build().";
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
