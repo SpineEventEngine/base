@@ -28,6 +28,7 @@ import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.type.TypeName;
 import io.spine.validate.diags.ViolationText;
 import org.junit.jupiter.api.DisplayName;
@@ -195,6 +196,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
         assertEquals("test 1 test 2", formatted);
     }
 
+    @MuteLogging
     @Nested
     @DisplayName("test message changes upon (set_once) and")
     class SetOnce {
