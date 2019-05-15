@@ -22,6 +22,7 @@ package io.spine.tools.check.vbuild;
 
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,6 +50,7 @@ import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
  * <a href="https://github.com/google/error-prone/wiki/Writing-a-check#testing-a-bugchecker">
  * guide</a> to testing the custom checks.
  */
+@Disabled
 @DisplayName("UseVBuild check should")
 class UseVBuildTest {
 
