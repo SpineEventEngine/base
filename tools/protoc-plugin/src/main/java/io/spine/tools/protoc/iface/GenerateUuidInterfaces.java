@@ -22,6 +22,8 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.IdentityParameter;
+import io.spine.tools.protoc.TypeParameters;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
@@ -50,7 +52,7 @@ final class GenerateUuidInterfaces extends InterfaceGenerationTask {
     }
 
     @Override
-    MessageInterfaceParameters interfaceParameters() {
-        return MessageInterfaceParameters.of(new IdentityParameter());
+    TypeParameters interfaceParameters() {
+        return TypeParameters.of(new IdentityParameter());
     }
 }

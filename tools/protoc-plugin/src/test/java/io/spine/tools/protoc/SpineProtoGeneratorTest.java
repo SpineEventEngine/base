@@ -47,7 +47,6 @@ import java.util.Collection;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(TempDirectory.class)
@@ -61,18 +60,6 @@ final class SpineProtoGeneratorTest {
     @BeforeEach
     void setUp(@TempDirectory.TempDir Path tempDirPath) {
         testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
-    }
-
-    @DisplayName("link with another generator")
-    @Test
-    void linkAnotherGenerator() {
-        TestGenerator generator = new TestGenerator();
-        TestGenerator secondGenerator = new TestGenerator();
-
-        SpineProtoGenerator sameGenerator = generator.linkWith(secondGenerator);
-        assertSame(generator, sameGenerator);
-        assertSame(secondGenerator, generator.linkedGenerator());
-        assertNull(secondGenerator.linkedGenerator());
     }
 
     @DisplayName("process valid CodeGeneratorRequest")
@@ -102,13 +89,9 @@ final class SpineProtoGeneratorTest {
                 .setContent("public void test(){}")
                 .setInsertionPoint(InsertionPoint.class_scope.forType(type))
                 .build();
-        TestGenerator firstGenerator =
-                new TestGenerator(ImmutableList.of(new TestCompilerOutput(firstFile)));
-        TestGenerator secondGenerator =
-                new TestGenerator(ImmutableList.of(new TestCompilerOutput(secondFile)));
-
-        CodeGeneratorResponse result = firstGenerator.linkWith(secondGenerator)
-                                                     .process(request);
+        TestGenerator firstGenerator = new TestGenerator(new TestCompilerOutput(firstFile),
+                                                         new TestCompilerOutput(secondFile));
+        CodeGeneratorResponse result = firstGenerator.process(request);
         assertEquals(2, result.getFileCount());
         assertSame(firstFile, result.getFile(0));
         assertSame(secondFile, result.getFile(1));
@@ -124,7 +107,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(methods, testPluginConfig).toString())
+                .setParameter(protocConfig(methods, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String firstMethod = "public void test1(){}";
@@ -162,7 +145,7 @@ final class SpineProtoGeneratorTest {
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(methods, testPluginConfig).toString())
+                .setParameter(protocConfig(methods, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String method = "public void test1(){}";
@@ -209,6 +192,10 @@ final class SpineProtoGeneratorTest {
 
         private TestGenerator() {
             this(ImmutableList.of());
+        }
+
+        private TestGenerator(CompilerOutput... outputs) {
+            this(ImmutableList.copyOf(outputs));
         }
 
         private TestGenerator(ImmutableList<CompilerOutput> outputs) {
