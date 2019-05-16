@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains the test suite for the Spine validating builder code generation.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.test.protobuf;
