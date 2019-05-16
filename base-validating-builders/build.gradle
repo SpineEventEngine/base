@@ -110,7 +110,7 @@ protobuf {
     }
 }
 
-ext.compiledProtoDir = "$projectDir/builders"
+ext.compiledProtoDir = "$projectDir/compiledProto"
 
 task copyCompiledClasses(type: Copy) {
     from sourceSets.main.java.outputDir
