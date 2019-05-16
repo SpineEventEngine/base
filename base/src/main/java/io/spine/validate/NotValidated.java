@@ -18,34 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder.fixer;
+package io.spine.validate;
 
-import com.google.errorprone.VisitorState;
-import com.google.errorprone.fixes.Fix;
-import com.sun.source.tree.MethodInvocationTree;
-import io.spine.annotation.Internal;
-import io.spine.tools.check.Fixer;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import java.util.Optional;
+import static java.lang.annotation.ElementType.TYPE_PARAMETER;
+import static java.lang.annotation.ElementType.TYPE_USE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
- * pattern cases where the {@code message.newBuilderForType()} statement is used.
+ * Marks a message which may not be valid.
  *
- * <p>Suggests the fix as follows:
+ * <p>By default, all the messages should be validated. In some cases, users may choose not to
+ * validate certain parts of model at a certain point. For example, to group them into a bigger
+ * message which is going to be validated later.
  *
- * <pre>
- * {@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
- * </pre>
+ * @see io.spine.protobuf.ValidatingBuilder
+ * @see Validated
  */
-@Internal
-public class NewBuilderForTypeFixer implements Fixer<MethodInvocationTree> {
-
-    @Override
-    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        FixGenerator generator = FixGenerator.createFor(tree, state);
-        Fix fix = generator.newVBuilderCall();
-        Optional<Fix> result = Optional.of(fix);
-        return result;
-    }
+@Documented
+@Retention(CLASS)
+@Target({TYPE_USE, TYPE_PARAMETER})
+public @interface NotValidated {
 }

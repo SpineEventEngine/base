@@ -18,41 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc.builder;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.IdentityParameter;
-import io.spine.tools.protoc.TypeParameters;
-import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.type.MessageType;
+import io.spine.type.Type;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Collection;
+
+import static io.spine.tools.protoc.builder.BuilderImplements.implementValidatingBuilder;
 
 /**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
+ * A code generator which makes the generated message builders implement
+ * {@link io.spine.protobuf.ValidatingBuilder}.
  */
-final class GenerateUuidInterfaces extends InterfaceGenerationTask {
+public final class BuilderGenerator extends SpineProtoGenerator {
 
-    GenerateUuidInterfaces(UuidConfig config) {
-        super(config.getValue());
+    /**
+     * Prevents direct instantiation.
+     */
+    private BuilderGenerator() {
+        super();
     }
 
     /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} Protobuf type implement configured
-     * interface.
-     **/
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return generateInterfacesFor(type);
+     * Creates a new instance of the generator.
+     */
+    public static BuilderGenerator instance() {
+        return new BuilderGenerator();
     }
 
     @Override
-    TypeParameters interfaceParameters() {
-        return TypeParameters.of(new IdentityParameter());
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        if (type instanceof MessageType) {
+            CompilerOutput insertionPoint = implementValidatingBuilder((MessageType) type);
+            return ImmutableSet.of(insertionPoint);
+        } else {
+            return ImmutableSet.of();
+        }
     }
 }

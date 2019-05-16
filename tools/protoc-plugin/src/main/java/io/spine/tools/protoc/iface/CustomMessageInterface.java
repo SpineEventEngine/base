@@ -25,6 +25,7 @@ import com.squareup.javapoet.JavaFile;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.tools.protoc.TypeParameters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -71,7 +72,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
      * Generic params are currently not supported for user-defined message interfaces.
      */
     @Override
-    public MessageInterfaceParameters parameters() {
-        return MessageInterfaceParameters.empty();
+    public TypeParameters parameters() {
+        return TypeParameters.empty();
     }
 }

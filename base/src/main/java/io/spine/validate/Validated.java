@@ -18,25 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.validate;
 
-import io.spine.tools.protoc.TypeParameters;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE_PARAMETER;
+import static java.lang.annotation.ElementType.TYPE_USE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * An interface to be implemented by the Protobuf message.
+ * Marks a message which is guaranteed to be valid.
  *
- * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
- * generated code.
+ * <p>In most cases this annotation is implied. However, sometimes users may want to state
+ * explicitly that the message is validated. For example, if a method marked as {@link NotValidated}
+ * is overridden with a version which returns only valid messages, that version should be marked
+ * with this annotation.
+ *
+ * @see io.spine.protobuf.ValidatingBuilder
+ * @see NotValidated
  */
-public interface MessageInterface {
-
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
-
-    /**
-     * Obtains the generic params of the interface.
-     */
-    TypeParameters parameters();
+@Documented
+@Retention(CLASS)
+@Target({TYPE_USE, TYPE_PARAMETER})
+public @interface Validated {
 }

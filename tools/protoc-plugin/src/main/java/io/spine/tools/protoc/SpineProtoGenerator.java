@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -32,7 +31,6 @@ import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.type.Type;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +40,6 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
@@ -84,8 +81,6 @@ import static java.util.stream.Collectors.toSet;
  */
 public abstract class SpineProtoGenerator {
 
-    private @Nullable SpineProtoGenerator linkedGenerator;
-
     protected SpineProtoGenerator() {
     }
 
@@ -120,21 +115,6 @@ public abstract class SpineProtoGenerator {
         TypeSet typeSet = TypeSet.from(requestedFiles);
         CodeGeneratorResponse response = process(typeSet);
         return response;
-    }
-
-    /**
-     * Links current proto generator with a next one and returns the current one.
-     *
-     * <p>A linked generator is activate prior to the current in the generation chain.
-     *
-     * <p>All generated files are than merged into one response.
-     *
-     * @see #process(TypeSet)
-     */
-    public final SpineProtoGenerator linkWith(SpineProtoGenerator nextGenerator) {
-        checkNotNull(nextGenerator);
-        this.linkedGenerator = nextGenerator;
-        return this;
     }
 
     /**
@@ -182,17 +162,12 @@ public abstract class SpineProtoGenerator {
      * Generates code for the supplied types.
      */
     private Set<CompilerOutput> generate(TypeSet types) {
-        Set<CompilerOutput> result = newHashSet();
-        if (linkedGenerator != null) {
-            result.addAll(linkedGenerator.generate(types));
-        }
-        Set<CompilerOutput> rawOutput = types.allTypes()
-                                             .stream()
-                                             .map(this::generate)
-                                             .flatMap(Collection::stream)
-                                             .collect(toSet());
-        result.addAll(rawOutput);
-        return result;
+        return types.allTypes()
+                    .stream()
+                    .map(this::generate)
+                    .flatMap(Collection::stream)
+                    .collect(toSet());
+
     }
 
     /**
@@ -237,10 +212,5 @@ public abstract class SpineProtoGenerator {
         return left.toBuilder()
                    .setContent(left.getContent() + right.getContent())
                    .build();
-    }
-
-    @VisibleForTesting
-    @Nullable SpineProtoGenerator linkedGenerator() {
-        return linkedGenerator;
     }
 }
