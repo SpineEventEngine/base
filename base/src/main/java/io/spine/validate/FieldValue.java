@@ -40,9 +40,9 @@ import static java.lang.String.format;
  * A field value to validate.
  *
  * <p>The exact type of the value is unknown since it is set
- * by a user using a generated validating builder.
+ * by a user who applies a generated validating builder.
  *
- * <p>Map fields are considered in a special way and only values are validated.
+ * <p>Map fields are considered in a special way, and only values are validated.
  * Keys don't require validation since they are of primitive types.
  *
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
@@ -57,7 +57,7 @@ public final class FieldValue<T> {
      * in a list.
      *
      * <p>For singular fields, a list contains a single value.
-     * For repeated fields, a list contains all of the values.
+     * For repeated fields, a list contains all values.
      * For a map fields, a list contains a list of values, since the map values are being validated,
      * not the keys.
      */
@@ -80,7 +80,7 @@ public final class FieldValue<T> {
      *         the context of the field
      * @return a new instance
      */
-    // Object to T is always safe, since validating builders only receive `T`s.
+    // Object to T is always safe since validating builders only receive `T`s.
     @SuppressWarnings("unchecked")
     static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
@@ -102,14 +102,14 @@ public final class FieldValue<T> {
      * common ancestors between all the possible value types ({@code Map} for Protobuf {@code map}
      * fields, {@code List} for {@code repeated} fields, and {@code T} for plain values).
      *
-     * Casting to {@code T} is safe, because the {@code FieldValue} is always created by the
+     * Casting to {@code T} is safe because the {@code FieldValue} is always created by the
      * {@linkplain io.spine.validate.ValidatingBuilder validating builder} implementors, and the
      * raw value always corresponds to one of the Protobuf field types.
      *
      * @return a properly typed {@code FieldValue} instance.
      */
     @SuppressWarnings({
-            "unchecked", // Raw value is always of a correct type, see javadoc.
+            "unchecked", // Raw value is always of a correct type, see Javadoc for details.
             "ChainOfInstanceofChecks" // No common ancestors.
     })
     private static <T> FieldValue<T> resolveType(FieldDeclaration field,
@@ -173,7 +173,7 @@ public final class FieldValue<T> {
      * Casts this value to a more accurately typed {@code FieldValue}.
      */
     @SuppressWarnings("unchecked"
-            /* Casting is safe, since {@link JavaType}, that is being checked by
+            /* Casting is safe since {@link JavaType}, that is being checked by
             * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
             * is always going to be fitting validator.
             */
