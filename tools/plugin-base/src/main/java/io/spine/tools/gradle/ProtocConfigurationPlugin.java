@@ -195,10 +195,13 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         configureDescriptorSetGeneration(protocTask, descriptor);
     }
 
+    /** Obtains the merged descriptor set file of the {@code main} module. */
     protected abstract File getMainDescriptorSet(Project project);
 
+    /** Obtains the merged descriptor set file of the {@code test} module. */
     protected abstract File getTestDescriptorSet(Project project);
 
+    /** Allows subclasses to specify additional descriptor set generations. */
     protected abstract void configureDescriptorSetGeneration(GenerateProtoTask task,
                                                              File descriptor);
 

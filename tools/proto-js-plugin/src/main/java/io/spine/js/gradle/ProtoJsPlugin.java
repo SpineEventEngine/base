@@ -90,6 +90,9 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
         Task task = newTask.getTask();
         extension.setGenerateParsersTask(task);
+
+        ProtocConfigurationPluginForJs configPlugin = new ProtocConfigurationPluginForJs();
+        configPlugin.apply(project);
     }
 
     /**
