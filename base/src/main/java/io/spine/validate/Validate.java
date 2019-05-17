@@ -190,7 +190,7 @@ public final class Validate {
     }
 
     /**
-     * Ensures that the passed string is not {@code null}, empty or blank string.
+     * Ensures that the passed string is not {@code null}, empty, or blank string.
      *
      * @param stringToCheck the string to check
      * @param fieldName     the name of the string field
