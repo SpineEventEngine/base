@@ -53,7 +53,7 @@ sourceSets {
 
 jar {
     // See `base-validating-builders/README.md`.
-    from "$rootDir/base-validating-builders/builders"
+    from "$rootDir/base-validating-builders/compiled-proto"
 }
 
 build.doLast {

@@ -18,25 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.TypeParameters;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.type.Type;
 
 /**
- * An interface to be implemented by the Protobuf message.
+ * The message interface parameter whose value is the target {@code Message} itself.
  *
- * <p>Should extend the {@link com.google.protobuf.Message} itself for convenient usage in the
- * generated code.
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
+ * parameter will be {@code ProjectId}.
  */
-public interface MessageInterface {
+@Immutable
+public final class IdentityParameter implements TypeParameter {
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
-
-    /**
-     * Obtains the generic params of the interface.
-     */
-    TypeParameters parameters();
+    @Override
+    public String valueFor(Type<?, ?> type) {
+        return type.simpleJavaClassName().value();
+    }
 }

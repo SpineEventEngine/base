@@ -20,11 +20,11 @@
 
 package io.spine.tools.protoc.iface;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -33,9 +33,6 @@ import io.spine.type.Type;
  * message class to implement a given interface.
  */
 final class MessageImplements extends AbstractCompilerOutput {
-
-    @VisibleForTesting
-    static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
 
     private MessageImplements(File file) {
         super(file);
@@ -74,8 +71,8 @@ final class MessageImplements extends AbstractCompilerOutput {
 
     private static String initGenericParams(MessageInterface messageInterface,
                                             Type<?, ?> type) {
-        MessageInterfaceParameters parameters = messageInterface.parameters();
-        String result = parameters.getAsStringFor(type);
+        TypeParameters parameters = messageInterface.parameters();
+        String result = parameters.asStringFor(type);
         return result;
     }
 }

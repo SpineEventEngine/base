@@ -18,37 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.type.Type;
 
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.joining;
 
 /**
  * The generic parameters of the {@link MessageInterface}.
  *
  * <p>Contrary to the type information contained in a {@link Class} instance, the
- * {@code MessageInterfaceParameter} carries the logic on how to initialize itself based on the
+ * {@code TypeParameter} carries the logic on how to initialize itself based on the
  * message interface descendant.
  */
 @Immutable
-final class MessageInterfaceParameters {
+public final class TypeParameters {
 
-    private final ImmutableList<MessageInterfaceParameter> params;
+    private final ImmutableList<TypeParameter> params;
 
-    private MessageInterfaceParameters(ImmutableList<MessageInterfaceParameter> params) {
+    private TypeParameters(ImmutableList<TypeParameter> params) {
         this.params = params;
     }
 
-    static MessageInterfaceParameters of(MessageInterfaceParameter... parameters) {
-        ImmutableList<MessageInterfaceParameter> params = ImmutableList.copyOf(parameters);
-        return new MessageInterfaceParameters(params);
+    public static TypeParameters of(TypeParameter... parameters) {
+        ImmutableList<TypeParameter> params = ImmutableList.copyOf(parameters);
+        return new TypeParameters(params);
     }
 
-    static MessageInterfaceParameters empty() {
-        return new MessageInterfaceParameters(ImmutableList.of());
+    public static TypeParameters empty() {
+        return new TypeParameters(ImmutableList.of());
     }
 
     /**
@@ -58,7 +59,7 @@ final class MessageInterfaceParameters {
      *
      * <p>Example output: {@code <ProjectId, String>}.
      */
-    String getAsStringFor(Type<?, ?> type) {
+    public String asStringFor(Type<?, ?> type) {
         if (params.isEmpty()) {
             return "";
         }
@@ -69,6 +70,6 @@ final class MessageInterfaceParameters {
     private String initParams(Type<?, ?> type) {
         return params.stream()
                      .map(param -> param.valueFor(type))
-                     .collect(Collectors.joining(", "));
+                     .collect(joining(", "));
     }
 }

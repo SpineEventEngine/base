@@ -18,57 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder;
+package io.spine.tools.check.vbuild;
 
-import io.spine.base.FieldPath;
+import com.google.protobuf.Message;
 import io.spine.base.Error;
 
-import static io.spine.base.FieldPath.newBuilder;
+import java.util.function.Supplier;
 
 /**
- * Contains statements for which the {@link UseValidatingBuilder} bug pattern should return a match.
+ * Contains statements for which the {@link UseVBuild} bug pattern should return a match.
  *
  * <p>Comments in this file should not be modified as they serve as indicator for the
  * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-class UseValidatingBuilderPositives {
+class UseVBuildPositives {
 
-    Error value = Error.getDefaultInstance();
+    void callBuild() {
 
-    void callNewBuilder() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        Error.newBuilder();
+        // BUG: Diagnostic matches: UseVBuild
+        Error.newBuilder().build();
     }
 
-    void callNewBuilderWithArg() {
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
 
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        Error.newBuilder(value);
+        // BUG: Diagnostic matches: UseVBuild
+        Supplier<? extends Message> faultySupplier = builder::build;
+        faultySupplier.get();
     }
 
-    void callNewBuilderForType() {
+    void callInLambda() {
+        Error.Builder builder = Error.newBuilder();
 
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        value.newBuilderForType();
-    }
-
-    void callToBuilder() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        value.toBuilder();
-    }
-
-    void callNewBuilderStaticImported() {
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        newBuilder();
-    }
-
-    void callNewBuilderWithArgStaticImported() {
-        FieldPath defaultInstance = FieldPath.getDefaultInstance();
-
-        // BUG: Diagnostic matches: UseValidatingBuilderError
-        newBuilder(defaultInstance);
+        Supplier<? extends Message> faultySupplier = () -> {
+            // BUG: Diagnostic matches: UseVBuild
+            return builder.build();
+        };
+        faultySupplier.get();
     }
 }
