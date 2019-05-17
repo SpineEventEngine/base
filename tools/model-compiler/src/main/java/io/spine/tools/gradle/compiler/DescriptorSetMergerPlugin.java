@@ -33,8 +33,8 @@ import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
 
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
+import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static io.spine.tools.gradle.TaskName.generateProto;
 import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
@@ -88,8 +88,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private static ConfigurationName configurationName(boolean tests) {
         return tests
-               ? TEST_RUNTIME_CLASSPATH
-               : RUNTIME_CLASSPATH;
+               ? testRuntimeClasspath
+               : runtimeClasspath;
     }
 
     private static TaskName taskName(boolean tests) {
