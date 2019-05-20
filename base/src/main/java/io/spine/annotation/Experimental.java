@@ -30,12 +30,11 @@ import java.lang.annotation.Target;
  * Indicates a public API that can change at any time and has no guarantee of API stability and
  * backward-compatibility.
  *
- * <p>Usage guidelines:
+ * <p>Here are the usage guidelines for this annotation:
  * <ol>
- * <li>This annotation is used only on public API. Internal interfaces should not use it.</li>
- * <li>This annotation should only be added to new APIs. Adding it to an existing API is
- * considered API-breaking.</li>
- * <li>Removing this annotation from an API gives it stable status.</li>
+ * <li>use only on public API. Internal interfaces should not use it.</li>
+ * <li>should be added only to new APIs. Adding it to an existing API is considered API-breaking.</li>
+ * <li>removing this annotation from an API gives it a stable status.</li>
  * </ol>
  */
 @Retention(RetentionPolicy.SOURCE)
