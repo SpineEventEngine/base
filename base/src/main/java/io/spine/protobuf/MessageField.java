@@ -46,7 +46,7 @@ public abstract class MessageField implements Serializable {
     private static final String GETTER_METHOD_PREFIX = "get";
 
     /**
-     * By convention underscore it is used for separating words in field names
+     * By convention, the underscore character is used for separating words in field names
      * of Protobuf messages.
      */
     private static final char PROPERTY_NAME_SEPARATOR = '_';
