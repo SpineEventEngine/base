@@ -21,6 +21,8 @@
 package io.spine.base;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
@@ -377,6 +379,11 @@ public final class Identifier<I> {
             <I> I defaultValue(Class<I> idClass) {
                 return (I) "";
             }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.STRING == field.getJavaType();
+            }
         },
 
         INTEGER {
@@ -404,6 +411,11 @@ public final class Identifier<I> {
             <I> I defaultValue(Class<I> idClass) {
                 return (I) Integer.valueOf(0);
             }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.INT == field.getJavaType();
+            }
         },
 
         LONG {
@@ -430,6 +442,11 @@ public final class Identifier<I> {
             @Override
             <I> I defaultValue(Class<I> idClass) {
                 return (I) Long.valueOf(0);
+            }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.LONG == field.getJavaType();
             }
         },
 
@@ -474,6 +491,17 @@ public final class Identifier<I> {
                 Message result = defaultInstance(msgClass);
                 return (I) result;
             }
+
+            /**
+             * Returns {@code true} if the passed field is message.
+             *
+             * <p>It does not necessarily mean that the type of identifiers matches.
+             * Obtaining the class of the field is needed in this case.
+             */
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.MESSAGE == field.getJavaType();
+            }
         };
 
         private static <I> Type getType(I id) {
@@ -499,6 +527,8 @@ public final class Identifier<I> {
         abstract Object fromMessage(Message message);
 
         abstract <I> I defaultValue(Class<I> idClass);
+
+        abstract boolean matchField(FieldDescriptor field);
 
         <I> Any pack(I id) {
             Message msg = toMessage(id);

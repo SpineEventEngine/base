@@ -23,6 +23,7 @@ package io.spine.base;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
@@ -506,5 +507,42 @@ class IdentifierTest {
     @DisplayName("declare ID_PROPERTY_SUFFIX")
     void idPropSuffix() {
         assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
+    }
+
+    @Nested
+    @DisplayName("recognize field descriptor")
+    class FieldDescr {
+
+        @Test
+        @DisplayName("Integer")
+        void intField() {
+            assertTrue(Type.INTEGER.matchField(field(1)));
+        }
+
+        @Test
+        @DisplayName("Long")
+        void longField() {
+            assertTrue(Type.LONG.matchField(field(3)));
+        }
+
+        @Test
+        @DisplayName("String")
+        void stringField() {
+            assertTrue(Type.STRING.matchField(field(0)));
+        }
+
+        @Test
+        @DisplayName("Message")
+        void messgeField() {
+            assertTrue(Type.MESSAGE.matchField(field(2)));
+        }
+
+        FieldDescriptor field(int index) {
+            FieldDescriptor field =
+                    SeveralFieldsId.getDescriptor()
+                                   .getFields()
+                                   .get(index);
+            return field;
+        }
     }
 }
