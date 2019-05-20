@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * A constraint that, when applied to a message, checks whether the specified combination of fields
- * have non-default values.
+ * has non-default values.
  */
 final class RequiredFieldConstraint implements Constraint<MessageValue> {
 

@@ -24,7 +24,7 @@ import com.google.common.collect.Range;
 import io.spine.option.MaxOption;
 
 /**
- * A constraint that, when applied, checks whether a numeric field value exceeds a max value.
+ * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
 final class MaxConstraint<V extends Number & Comparable> extends RangedConstraint<V, MaxOption> {
 

@@ -35,12 +35,12 @@ import java.lang.annotation.Target;
  * <ol>
  *    <li>Create the interface and mark it with this annotation.
  *    <li>Declare methods of interest following the Protobuf convention for the accessor methods.
- *    For example, if a message has a property named {@code foo_bar}, the method to declare would
+ *    For example, if a message has a property named {@code foo_bar}, the method to declare will
  *    be {@code getFooBar()}.
- *    <li>Add {@code default} methods. Presumably bodies of these methods would call accessor
+ *    <li>Add {@code default} methods. Presumably bodies of these methods will call accessor
  *    methods declared earlier.
  *    <li>Mark corresponding proto messages using the {@code (is).java_type} option (if for
- *    one message), or {@code (every_is).java_type} option for a file if the interface is common
+ *    one message), or {@code (every_is).java_type} option for a file, if the interface is common
  *    for all the message declared in this file. These options instruct Spine Model Compiler to
  *    make the generated code implement this interface.
  * </ol>

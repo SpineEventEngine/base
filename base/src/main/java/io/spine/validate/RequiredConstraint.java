@@ -32,7 +32,7 @@ import java.util.Optional;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
 /**
- * A constraint that, when applied to a field, checks for whether the field is set to a non-default
+ * A constraint that, when applied to a field, checks whether the field is set to a non-default
  * value.
  *
  * @param <T>

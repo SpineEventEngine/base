@@ -178,6 +178,25 @@ public final class Validate {
     }
 
     /**
+     * Ensures the truth of an expression involving one parameter to the calling method.
+     *
+     * @param expression         a boolean expression with the parameter we check
+     * @param errorMessageFormat the format of the error message, which has {@code %s} placeholder
+     *                           for the parameter name
+     * @param parameterName      the name of the parameter
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    public static void checkParameter(boolean expression,
+                                      String errorMessageFormat,
+                                      String parameterName) {
+        checkNotNull(errorMessageFormat);
+        checkNotNull(parameterName);
+        if (!expression) {
+            throw newIllegalArgumentException(errorMessageFormat, parameterName);
+        }
+    }
+
+    /**
      * Ensures that the passed string is not {@code null}, empty or blank string.
      *
      * @param stringToCheck the string to check

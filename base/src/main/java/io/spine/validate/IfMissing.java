@@ -38,7 +38,7 @@ final class IfMissing extends FieldOption<IfMissingOption> {
     }
 
     /**
-     * Returns the option value from the specified field, or a default value, if field does not
+     * Returns the option value from the specified field or a default value, if the field does not
      * have its own option value.
      */
     IfMissingOption valueOrDefault(FieldDescriptor field) {
