@@ -21,6 +21,8 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.protobuf.gradle.GenerateProtoTask;
+import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
@@ -93,6 +95,13 @@ public final class ProtocConfigurationPluginForJava extends ProtocConfigurationP
     @Override
     protected File getTestDescriptorSet(Project project) {
         return Extension.getTestDescriptorSet(project);
+    }
+
+    @Override
+    protected Path generatedFilesBaseDir(Project project) {
+        DefaultJavaProject javaProject = DefaultJavaProject.at(project.getProjectDir());
+        GeneratedRoot result = javaProject.generated();
+        return result.getPath();
     }
 
     @Override

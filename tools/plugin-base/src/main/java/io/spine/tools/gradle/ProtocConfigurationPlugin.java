@@ -26,7 +26,6 @@ import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
-import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.tools.groovy.GStrings;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -87,9 +86,8 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private void configureProtobuf(Project project, ProtobufConfigurator protobuf) {
-        DefaultJavaProject defaultProject = at(project.getProjectDir());
-        protobuf.setGeneratedFilesBaseDir(defaultProject.generated()
-                                                        .toString());
+        Path generatedFilesBaseDir = generatedFilesBaseDir(project);
+        protobuf.setGeneratedFilesBaseDir(generatedFilesBaseDir.toString());
         String version = VERSIONS.protobuf();
         protobuf.protoc(closure((ExecutableLocator protocLocator) ->
                                         protocLocator.setArtifact(protobufCompiler()
@@ -194,6 +192,9 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
         configureDescriptorSetGeneration(protocTask, descriptor);
     }
+
+    /** Obtains the location of the {@code generated} directory of the specified project. */
+    protected abstract Path generatedFilesBaseDir(Project project);
 
     /** Obtains the merged descriptor set file of the {@code main} module. */
     protected abstract File getMainDescriptorSet(Project project);

@@ -80,6 +80,8 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
+        ProtocConfigurationPluginForJs configPlugin = new ProtocConfigurationPluginForJs();
+        configPlugin.apply(project);
         Extension extension = project.getExtensions()
                                      .create(EXTENSION_NAME, Extension.class);
 
@@ -90,9 +92,6 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
         Task task = newTask.getTask();
         extension.setGenerateParsersTask(task);
-
-        ProtocConfigurationPluginForJs configPlugin = new ProtocConfigurationPluginForJs();
-        configPlugin.apply(project);
     }
 
     /**

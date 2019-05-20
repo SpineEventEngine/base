@@ -21,11 +21,13 @@
 package io.spine.js.gradle;
 
 import com.google.protobuf.gradle.GenerateProtoTask;
+import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for JavaScript
@@ -46,6 +48,13 @@ public final class ProtocConfigurationPluginForJs extends ProtocConfigurationPlu
     @Override
     protected File getTestDescriptorSet(Project project) {
         return Extension.getTestDescriptorSet(project);
+    }
+
+    @Override
+    protected Path generatedFilesBaseDir(Project project) {
+        DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
+        DefaultJsProject.GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
+        return generatedProtoRoot.getPath();
     }
 
     @Override
