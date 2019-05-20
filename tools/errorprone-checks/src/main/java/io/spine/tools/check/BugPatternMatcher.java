@@ -20,7 +20,9 @@
 
 package io.spine.tools.check;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.VisitorState;
+import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
 
@@ -49,10 +51,10 @@ public interface BugPatternMatcher<T extends Tree> {
     boolean matches(T tree, VisitorState state);
 
     /**
-     * Obtains a {@code Fixer} for the case of the {@link com.google.errorprone.BugPattern}
+     * Obtains {@code Fix}es for the case of the {@link com.google.errorprone.BugPattern}
      * processed by this class.
      *
-     * @return the {@code Fixer} for the processed bug pattern case
+     * @return {@code Fix}es for the processed bug pattern case
      */
-    Fixer<T> getFixer();
+    ImmutableList<Fix> fixes(T tree);
 }
