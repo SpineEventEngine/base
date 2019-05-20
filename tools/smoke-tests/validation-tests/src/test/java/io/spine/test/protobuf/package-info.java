@@ -19,12 +19,12 @@
  */
 
 /**
- * This package contains the {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for the
- * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
+ * Contains the test suite for the Spine validating builder code generation.
  */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.check.vbuilder.matcher;
+package io.spine.test.protobuf;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

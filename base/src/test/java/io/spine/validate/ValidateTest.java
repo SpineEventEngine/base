@@ -22,13 +22,22 @@ package io.spine.validate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import io.spine.base.FieldPaths;
+import io.spine.net.Url;
+import io.spine.people.PersonName;
+import io.spine.test.validate.Passport;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.type.TypeName;
 import io.spine.validate.diags.ViolationText;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkBounds;
@@ -36,6 +45,7 @@ import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkNotDefault;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static io.spine.validate.Validate.checkPositive;
+import static io.spine.validate.Validate.checkValidChange;
 import static io.spine.validate.Validate.isDefault;
 import static io.spine.validate.Validate.isNotDefault;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,35 +62,35 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("not consider zero as a positive")
-    void check_positive_if_zero() {
+    void checkPositiveIfZero() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(0));
     }
 
     @Test
     @DisplayName("throw if not a positive")
-    void check_positive_if_negative() {
+    void checkPositiveIfNegative() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-1));
     }
 
     @Test
     @DisplayName("throw if not positive and display a message")
-    void check_positive_with_message() {
+    void checkPositiveWithMessage() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-1, "negativeInteger"));
     }
 
     @Test
     @DisplayName("throw if long value is not positive")
-    void throw_exception_if_long_value_is_not_positive() {
+    void throwExceptionIfLongValueIsNotPositive() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkPositive(-2L, "negativeLong"));
     }
 
     @Test
     @DisplayName("verify that message is not in default state")
-    void verify_that_message_is_not_in_default_state() {
+    void verifyThatMessageIsNotInDefaultState() {
         Message msg = toMessage("check_if_message_is_not_in_default_state");
 
         assertTrue(isNotDefault(msg));
@@ -89,14 +99,14 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("throw if checked value out of bounds")
-    void throw_exception_if_checked_value_out_of_bounds() {
+    void throwExceptionIfCheckedValueOutOfBounds() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkBounds(10, "checked value", -5, 9));
     }
 
     @Test
     @DisplayName("verify that message is in default state")
-    void verify_that_message_is_in_default_state() {
+    void verifyThatMessageIsInDefaultState() {
         Message nonDefault = newUuidValue();
 
         assertTrue(isDefault(StringValue.getDefaultInstance()));
@@ -105,7 +115,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check that message is in default state")
-    void check_if_message_is_in_default() {
+    void checkIfMessageIsInDefault() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class,
                      () -> checkDefault(nonDefault));
@@ -113,7 +123,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check that message is in default state with a parametrized error message")
-    void check_a_message_is_default_with_parametrized_error_message() {
+    void checkAMessageIsDefaultWithParametrizedErrorMessage() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class,
                      () -> checkDefault(nonDefault,
@@ -124,7 +134,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("return default value on check")
-    void return_default_value_on_check() {
+    void returnDefaultValueOnCheck() {
         Message defaultValue = StringValue.getDefaultInstance();
         assertEquals(defaultValue, checkDefault(defaultValue));
         assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
@@ -132,14 +142,14 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("check if message is not in default state")
-    void check_if_message_is_in_not_in_default_state_throwing_exception_if_not() {
+    void checkIfMessageIsInNotInDefaultStateThrowingExceptionIfNot() {
         assertThrows(IllegalStateException.class,
                      () -> checkNotDefault(StringValue.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("return non-default value on check")
-    void return_non_default_value_on_check() {
+    void returnNonDefaultValueOnCheck() {
         StringValue nonDefault = newUuidValue();
         assertEquals(nonDefault, checkNotDefault(nonDefault));
         assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
@@ -147,34 +157,34 @@ class ValidateTest extends UtilityClassTest<Validate> {
 
     @Test
     @DisplayName("throw if checked string is null")
-    void throw_exception_if_checked_string_is_null() {
+    void throwExceptionIfCheckedStringIsNull() {
         assertThrows(NullPointerException.class,
                      () -> checkNotEmptyOrBlank(Tests.nullRef(), ""));
     }
 
     @Test
     @DisplayName("throw if checked string is empty")
-    void throw_exception_if_checked_string_is_empty() {
+    void throwExceptionIfCheckedStringIsEmpty() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkNotEmptyOrBlank("", ""));
     }
 
     @Test
     @DisplayName("throw if checked string is blank")
-    void throw_exception_if_checked_string_is_blank() {
+    void throwExceptionIfCheckedStringIsBlank() {
         assertThrows(IllegalArgumentException.class,
                      () -> checkNotEmptyOrBlank("   ", ""));
     }
 
     @Test
     @DisplayName("not throw if checked strign is not empty or blank")
-    public void do_not_throw_exception_if_checked_string_is_valid() {
+    void doNotThrowExceptionIfCheckedStringIsValid() {
         checkNotEmptyOrBlank("valid_string", "");
     }
 
     @Test
     @DisplayName("format message from constraint violation")
-    void format_message_from_constraint_violation() {
+    void formatMessageFromConstraintViolation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .setMsgFormat("test %s test %s")
                                                            .addParam("1")
@@ -186,4 +196,102 @@ class ValidateTest extends UtilityClassTest<Validate> {
         assertEquals("test 1 test 2", formatted);
     }
 
+    @MuteLogging
+    @Nested
+    @DisplayName("test message changes upon (set_once) and")
+    class SetOnce {
+
+        private static final String ID = "id";
+        private static final String BIRTHPLACE = "birthplace";
+
+        @Test
+        @DisplayName("throw ValidationException if a (set_once) field is overridden")
+        void reportIllegalChanges() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setBirthplace("Kyiv")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setBirthplace("Kharkiv")
+                    .build();
+            checkViolated(oldValue, newValue, BIRTHPLACE);
+        }
+
+        @Test
+        @DisplayName("throw ValidationException if an entity ID is overridden")
+        void reportIdChanges() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setId("MT 000100010001")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setId("JC 424242424242")
+                    .build();
+            checkViolated(oldValue, newValue, ID);
+        }
+
+        @Test
+        @DisplayName("throw ValidationException with several violations")
+        void reportManyFields() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .setId("MT 111")
+                    .setBirthplace("London")
+                    .build();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setId("JC 424")
+                    .setBirthplace("Edinburgh")
+                    .build();
+            checkViolated(oldValue, newValue, ID, BIRTHPLACE);
+        }
+
+        @Test
+        @DisplayName("allow overriding repeated fields")
+        void ignoreRepeated() {
+            Passport oldValue = Passport
+                    .newBuilder()
+                    .addPhoto(Url.newBuilder()
+                                 .setSpec("foo.bar/pic1"))
+                    .build();
+            Passport newValue = Passport.getDefaultInstance();
+            checkValidChange(oldValue, newValue);
+        }
+
+        @Test
+        @DisplayName("allow overriding if (set_once) = false")
+        void ignoreNonSetOnce() {
+            Passport oldValue = Passport.getDefaultInstance();
+            Passport newValue = Passport
+                    .newBuilder()
+                    .setName(PersonName
+                                     .newBuilder()
+                                     .setGivenName("John")
+                                     .setFamilyName("Doe"))
+                    .build();
+            checkValidChange(oldValue, newValue);
+        }
+
+        private void checkViolated(Passport oldValue, Passport newValue, String... fields) {
+            ValidationException exception =
+                    assertThrows(ValidationException.class,
+                                 () -> checkValidChange(oldValue, newValue));
+            List<ConstraintViolation> violations = exception.getConstraintViolations();
+            assertThat(violations).hasSize(fields.length);
+
+            for (int i = 0; i < fields.length; i++) {
+                ConstraintViolation violation = violations.get(i);
+                String field = fields[i];
+
+                assertThat(violation.getMsgFormat()).contains("(set_once)");
+
+                String expectedTypeName = TypeName.of(newValue).value();
+                assertThat(violation.getTypeName()).contains(expectedTypeName);
+
+                assertThat(violation.getFieldPath()).isEqualTo(FieldPaths.parse(field));
+            }
+        }
+    }
 }
