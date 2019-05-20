@@ -21,6 +21,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Int32Value;
@@ -31,8 +32,10 @@ import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.TypeConverter;
 import io.spine.string.StringifierRegistry;
+import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -317,6 +320,40 @@ public final class Identifier<I> {
     private Any pack() {
         Any result = type.pack(value);
         return result;
+    }
+
+    /**
+     * Finds a field matching the passed class of identifiers in the passed message type.
+     *
+     * @param idClass
+     *          the class of identifiers
+     * @param message
+     *          the descriptor of the message type in which to find a field
+     * @param <I>
+     *          the type of identifiers
+     * @return the descriptor of the matching field or
+     *         empty {@code Optional} if there is no such a field
+     */
+    public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
+        Type idType = toType(idClass);
+        Optional<FieldDescriptor> found =
+                message.getFields()
+                       .stream()
+                       .filter(f -> {
+                           if (!idType.matchField(f)) {
+                               return false;
+                           }
+                           if (idType == Type.MESSAGE) {
+                               @SuppressWarnings("unchecked") // safe since it's Message type.
+                               TypeUrl messageType = TypeUrl.of(
+                                       (Class<? extends Message>) idClass);
+                               TypeUrl fieldType = TypeUrl.from(message);
+                               return fieldType.equals(messageType);
+                           }
+                           return true;
+                       })
+                       .findFirst();
+        return found;
     }
 
     @Override
