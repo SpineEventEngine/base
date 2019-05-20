@@ -28,7 +28,7 @@ import com.google.common.collect.Range;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A constraint that checks whether a value fits the ranged described by expressions like:
+ * A constraint that checks whether a value fits the ranged described by expressions such as
  * {@code int32 value = 5 [(range) = "[3..5)]}, describing a value that is at least 3 and less
  * than 5.
  *
