@@ -44,6 +44,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
+import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -73,8 +74,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getPluginManager()
-               .withPlugin(ProtobufDependencies.gradlePlugin()
-                                               .value(), plugin -> applyTo(project));
+               .withPlugin(gradlePlugin().value(), plugin -> applyTo(project));
     }
 
     private void applyTo(Project project) {
@@ -118,14 +118,14 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        plugins.create(ProtocPlugin.GRPC.name,
+        plugins.create(ProtocPlugin.grpc.name(),
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
                                                               .setName(GRPC_PLUGIN_NAME)
                                                               .setVersion(VERSIONS.grpc())
                                                               .build()
                                                               .notation()));
-        plugins.create(ProtocPlugin.SPINE.name, locator -> {
+        plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
             boolean windows = current().isWindows();
             String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
             locator.setArtifact(Artifact.newBuilder()
@@ -215,20 +215,8 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     protected enum ProtocPlugin {
-
-        GRPC("grpc"),
-        SPINE("spineProtoc");
-
-        @SuppressWarnings("PMD.SingularField") /* Accessed from the outer class. */
-        private final String name;
-
-        ProtocPlugin(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
+        grpc,
+        spineProtoc
     }
 
     /**

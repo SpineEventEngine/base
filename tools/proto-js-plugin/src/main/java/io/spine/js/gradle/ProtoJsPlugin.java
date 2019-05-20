@@ -80,7 +80,7 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
-        ProtocConfigurationPluginForJs configPlugin = new ProtocConfigurationPluginForJs();
+        JsProtocConfigurationPlugin configPlugin = new JsProtocConfigurationPlugin();
         configPlugin.apply(project);
         Extension extension = project.getExtensions()
                                      .create(EXTENSION_NAME, Extension.class);

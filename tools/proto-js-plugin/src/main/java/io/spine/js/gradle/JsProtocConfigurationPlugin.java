@@ -33,7 +33,7 @@ import java.nio.file.Path;
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for JavaScript
  * projects.
  */
-public final class ProtocConfigurationPluginForJs extends ProtocConfigurationPlugin {
+public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
     @Override
     protected void configureDescriptorSetGeneration(GenerateProtoTask task, File descriptor) {

@@ -48,7 +48,7 @@ import static io.spine.tools.gradle.TaskName.writeTestPluginConfiguration;
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
  * projects.
  */
-public final class ProtocConfigurationPluginForJava extends ProtocConfigurationPlugin {
+public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
     @Override
     protected void configureDescriptorSetGeneration(GenerateProtoTask protocTask,
@@ -81,9 +81,9 @@ public final class ProtocConfigurationPluginForJava extends ProtocConfigurationP
         Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
         protocTask.dependsOn(dependency, writeConfig);
         protocTask.getPlugins()
-                  .create(ProtocPlugin.GRPC.getName());
+                  .create(ProtocPlugin.grpc.name());
         protocTask.getPlugins()
-                  .create(ProtocPlugin.SPINE.getName(),
+                  .create(ProtocPlugin.spineProtoc.name(),
                           options -> {
                               options.setOutputSubDir("java");
                               String option = spineProtocConfigPath.toString();
