@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates a public API that can change at any time, and has no guarantee of API stability and
+ * Indicates a public API that can change at any time and has no guarantee of API stability and
  * backward-compatibility.
  *
  * <p>Usage guidelines:
@@ -49,7 +49,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Experimental {
     /**
-     * Context information such as links to discussion thread, tracking issue etc.
+     * Context information such as links to discussion thread, tracking issue, etc.
      */
     String value() default "";
 }
