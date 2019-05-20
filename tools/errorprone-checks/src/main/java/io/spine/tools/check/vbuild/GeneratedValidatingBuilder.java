@@ -18,75 +18,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder.matcher;
+package io.spine.tools.check.vbuild;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.predicates.TypePredicate;
-import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
-import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
-import io.spine.code.java.ClassName;
+import io.spine.protobuf.ValidatingBuilder;
 
 import static com.google.errorprone.matchers.method.MethodMatchers.instanceMethod;
-import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
 import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
-import static io.spine.code.GooglePackage.notInGooglePackage;
 
 /**
- * A predicate which matches custom (i.e. non-Google) Protobuf types.
+ * A predicate which matches builders of custom (i.e. non-Google) Protobuf messages.
  *
- * <p>Any {@code final} Java class which descends from {@link Message} and does not belong
- * to {@code com.google} or {@code google} package or its subpackage matches this predicate.
+ * <p>Any Java class which descends from {@link io.spine.validate.ValidatingBuilder} matches this
+ * predicate.
  */
-final class CustomProtobufType implements TypePredicate {
+final class GeneratedValidatingBuilder implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
-    private static final TypePredicate IS_MESSAGE = isDescendantOf(Message.class.getName());
+    private static final TypePredicate IS_MESSAGE_BUILDER =
+            isDescendantOf(ValidatingBuilder.class.getName());
 
     /**
      * Prevents direct instantiation.
      */
-    private CustomProtobufType() {
-    }
-
-    /**
-     * Obtains a static method invocation matcher for the methods in custom Protobuf types and with
-     * the given name.
-     *
-     * @param methodName the method name to match
-     */
-    static Matcher<ExpressionTree> callingStaticMethod(String methodName) {
-        return staticMethod()
-                .onClass(new CustomProtobufType())
-                .named(methodName);
+    private GeneratedValidatingBuilder() {
     }
 
     /**
      * Obtains an instance method invocation matcher for the methods in custom Protobuf types and
      * with the given name.
      *
-     * @param methodName the method name to match
+     * @param methodName
+     *         the method name to match
      */
     static Matcher<ExpressionTree> callingInstanceMethod(String methodName) {
         return instanceMethod()
-                .onClass(new CustomProtobufType())
+                .onClass(new GeneratedValidatingBuilder())
                 .named(methodName);
     }
 
     @Override
     public boolean apply(Type type, VisitorState state) {
-        return type.isFinal()
-            && IS_MESSAGE.apply(type, state)
-            && notGoogle(type);
-    }
-
-    private static boolean notGoogle(Type type) {
-        Symbol.TypeSymbol typeSymbol = type.asElement();
-        String typeFqn = typeSymbol.getQualifiedName()
-                                   .toString();
-        return notInGooglePackage(ClassName.of(typeFqn));
+        return IS_MESSAGE_BUILDER.apply(type, state);
     }
 }

@@ -18,22 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.check.vbuild;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import com.google.errorprone.fixes.Fix;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.sun.source.tree.Tree;
 
 /**
- * The message interface parameter whose value is the target {@code Message} itself.
+ * The alternatives to the {@code Builder.build()} method.
  *
- * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
- * parameter will be {@code ProjectId}.
+ * @see io.spine.protobuf.ValidatingBuilder
  */
-@Immutable
-final class IdentityParameter implements MessageInterfaceParameter {
+enum BuildMethodAlternative {
 
-    @Override
-    public String valueFor(Type<?, ?> type) {
-        return type.simpleJavaClassName().value();
+    vBuild,
+    buildPartial;
+
+    /**
+     * Creates a fix which suggests to replace the given tree element with this method.
+     */
+    public Fix replace(Tree tree) {
+        return SuggestedFix.replace(tree, name());
     }
 }

@@ -49,7 +49,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.iface.MessageImplements.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
@@ -62,6 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("InterfaceGenerator should")
 final class InterfaceGeneratorTest {
 
+    private static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PROTO_PACKAGE = "spine.tools.protoc.iface.";
 
     private static final PackageName PACKAGE_NAME =
