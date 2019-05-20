@@ -18,32 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.builders;
-
-import com.google.protobuf.Message;
-import io.spine.validate.ValidatingBuilder;
-import org.junit.jupiter.api.BeforeEach;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * Abstract base for testing default VBuilders.
- *
- * @param <T> the type of the message produced by the builder
- * @param <B> the type of the validating builder
+ * This package contains the custom Error Prone check to detect usage of ordinary {@code build()}
+ * method for the Protobuf messages and advice using the {@code vBuild()} method added by Spine.
  */
-abstract class BuilderTest<T extends Message, B extends ValidatingBuilder<T, ?>> {
 
-    private B builder;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check.vbuild;
 
-    @BeforeEach
-    void setUp() {
-        builder = createBuilder();
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    abstract B createBuilder();
-
-    protected B builder() {
-        return checkNotNull(builder, "builder is not initialized");
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
