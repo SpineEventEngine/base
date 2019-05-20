@@ -72,7 +72,7 @@ public abstract class ThrowableMessage extends Throwable {
     }
 
     /**
-     * Initializes the ID of the entity, which has thrown the message.
+     * Initializes the ID of the entity that has thrown the message.
      *
      * <p>This internal API method can be called only once. It is supposed to be used by
      * the framework and must not be called by the user's code.
@@ -94,7 +94,7 @@ public abstract class ThrowableMessage extends Throwable {
     }
 
     /**
-     * Obtains ID of the entity which has thrown the message.
+     * Obtains ID of the entity that has thrown the message.
      */
     public synchronized Optional<Any> producerId() {
         return Optional.ofNullable(producerId);
