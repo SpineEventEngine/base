@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * An external validation for a field.
  *
- * <p>Contains information about validation of another field, described by the option value.
+ * <p>Contains information about validation of another field described by the option value.
  */
 final class ValidationOf extends MessageOption<String> {
 

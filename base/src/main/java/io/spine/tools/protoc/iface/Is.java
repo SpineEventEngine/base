@@ -28,7 +28,7 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 
 /**
- * For a given message, declares whether the message is of the specified Java type, and whether
+ * For a given message, declares if the message is of the specified Java type and
  * the generation of marker interfaces is enabled.
  */
 @SuppressWarnings("NewClassNamingConvention")
