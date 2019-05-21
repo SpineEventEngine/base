@@ -41,7 +41,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
      * Creates a new instance of {@code ServiceType} from the given service descriptor.
      *
      * @param descriptor
-     *         service descriptor
+     *         the service descriptor
      * @return new instance of {@code ServiceType}
      */
     public static ServiceType of(ServiceDescriptor descriptor) {
