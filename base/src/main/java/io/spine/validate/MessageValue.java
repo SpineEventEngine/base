@@ -119,7 +119,7 @@ final class MessageValue {
      * @return a value of the populated field
      *         or {@code Optional.empty()} if the field was not populated
      * @throws IllegalArgumentException
-     *         if the if the message doesn't declares this oneof
+     *         if the if the message doesn't declare this oneof
      */
     Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
         checkArgument(oneofDescriptors().contains(oneof));

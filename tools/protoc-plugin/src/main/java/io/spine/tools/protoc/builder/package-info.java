@@ -18,25 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.builder;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * The generic parameter of the {@link MessageInterface}.
- *
- * <p>Parameter value is presented as {@code String} for usage in the generated code.
- */
-@Immutable
-interface MessageInterfaceParameter {
-
-    /**
-     * Obtains a parameter value based on who is the message interface descendant.
-     *
-     * @param descendant
-     *         the {@code Message} class implementing the interface
-     * @return the value of the generic parameter
-     */
-    String valueFor(Type<?, ?> descendant);
-}
+import javax.annotation.ParametersAreNonnullByDefault;

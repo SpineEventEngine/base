@@ -18,42 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder.fixer;
+package io.spine.tools.check.vbuild;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
+import com.google.errorprone.matchers.Matcher;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
-import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
-import io.spine.annotation.Internal;
-import io.spine.tools.check.Fixer;
 
-import java.util.Optional;
+import java.util.stream.Stream;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.tools.check.vbuild.UseVBuild.BUILD;
 
 /**
- * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
- * pattern cases where the {@code message.toBuilder()} statement is used.
- *
- * <p>Suggests the fix as follows:
- *
- * <pre>
- * {@code message.toBuilder()} -&gt; {@code MessageVBuilder.newBuilder().mergeFrom(message)}
- * </pre>
+ * A matcher for the {@link io.spine.tools.check.vbuild.UseVBuild} bug pattern which tracks down
+ * the cases where the {@code builder.build()} statement is used.
  */
-@Internal
-public class ToBuilderFixer implements Fixer<MethodInvocationTree> {
+enum BuildMatcher implements ContextualMatcher<MethodInvocationTree> {
+
+    INSTANCE;
+
+    @SuppressWarnings("ImmutableEnumChecker")
+    private static final Matcher<ExpressionTree> builderBuild =
+            GeneratedValidatingBuilder.callingInstanceMethod(BUILD);
 
     @Override
-    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        ExpressionTree expression = tree.getMethodSelect();
-        JCFieldAccess fieldAccess = (JCFieldAccess) expression;
-        JCExpression invokedOn = fieldAccess.selected;
-        String invokedOnString = invokedOn.toString();
+    public boolean outsideMessageContextMatches(MethodInvocationTree tree, VisitorState state) {
+        return builderBuild.matches(tree, state);
+    }
 
-        FixGenerator generator = FixGenerator.createFor(tree, state);
-        Fix fix = generator.mergeFromCall(invokedOnString);
-        Optional<Fix> result = Optional.of(fix);
-        return result;
+    @Override
+    public ImmutableList<Fix> fixes(MethodInvocationTree tree) {
+        ExpressionTree methodTree = tree.getMethodSelect();
+        return Stream.of(BuildMethodAlternative.values())
+                     .map(alt -> alt.replace(methodTree))
+                     .collect(toImmutableList());
+
     }
 }

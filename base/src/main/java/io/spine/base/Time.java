@@ -57,7 +57,7 @@ public final class Time {
     /**
      * Obtains system time.
      *
-     * <p>Unlike {@link #currentTime()} this method <strong>always</strong> uses
+     * <p>Unlike {@link #currentTime()}, this method <strong>always</strong> uses
      * system time millis.
      *
      * @return current system time
