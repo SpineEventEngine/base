@@ -335,6 +335,8 @@ public final class Identifier<I> {
      *         empty {@code Optional} if there is no such a field
      */
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
+        checkNotNull(idClass);
+        checkNotNull(message);
         Type idType = toType(idClass);
         Optional<FieldDescriptor> found =
                 message.getFields()

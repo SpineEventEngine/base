@@ -383,6 +383,7 @@ class IdentifierTest {
     void nullCheck() {
         new NullPointerTester()
                 .setDefault(Any.class, AnyPacker.pack(StringValue.of(TEST_ID)))
+                .setDefault(Descriptor.class, Any.getDescriptor())
                 .testAllPublicStaticMethods(Identifier.class);
     }
 
