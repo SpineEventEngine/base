@@ -127,11 +127,11 @@ public final class FieldValue<T> {
         }
     }
 
-    FieldValidator<?> createValidator() {
+    public FieldValidator<?> createValidator() {
         return createValidator(false);
     }
 
-    FieldValidator<?> createValidatorAssumingRequired() {
+    public FieldValidator<?> createValidatorAssumingRequired() {
         return createValidator(true);
     }
 

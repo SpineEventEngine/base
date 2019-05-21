@@ -20,6 +20,9 @@
 
 package io.spine.validate;
 
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.ValidatingOptionFactory;
+
 import java.util.Set;
 
 import static java.lang.Math.abs;

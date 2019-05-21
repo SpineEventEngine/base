@@ -44,7 +44,7 @@ public abstract class FieldValidatorTest<V> {
      * validated separately.
      *
      * <p>The proto description of this field looks as follows:
-     * {@code repeated T field_name = 42 [(required) = true, (valid) = true];}, where {@code T} is
+     * {@code repeated T field_name = 42 [(required) = true, (validate) = true];}, where {@code T} is
      * the type parameter of the tested {@link io.spine.validate.FieldValidator}.
      *
      * @param values
@@ -71,7 +71,7 @@ public abstract class FieldValidatorTest<V> {
      * Creates a {@link FieldValidator} for a repeated validated but not required field.
      *
      * <p>The proto description of this field looks as follows:
-     * {@code repeated T field_name = 42 [(valid) = true];}, where {@code T} is the type parameter
+     * {@code repeated T field_name = 42 [(validate) = true];}, where {@code T} is the type parameter
      * of the tested {@link FieldValidator}.
      *
      * @param values
