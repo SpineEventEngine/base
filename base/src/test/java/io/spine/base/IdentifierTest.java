@@ -22,7 +22,10 @@ package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
+import com.google.common.truth.OptionalSubject;
+import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
@@ -31,6 +34,7 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier.Type;
 import io.spine.protobuf.AnyPacker;
+import io.spine.test.identifiers.IdWithPrimitiveFields;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
 import io.spine.test.identifiers.TimestampFieldId;
@@ -42,6 +46,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
+import static io.spine.base.Identifier.findField;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
@@ -259,14 +264,16 @@ class IdentifierTest {
 
         @Test
         @DisplayName("Integer")
-        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types explicitly.
+        @SuppressWarnings("UnnecessaryBoxing")
+            // OK as we want to show types explicitly.
         void ofInteger() {
             assertEquals("10", Identifier.toString(Integer.valueOf(10)));
         }
 
         @Test
         @DisplayName("Long")
-        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types explicitly.
+        @SuppressWarnings("UnnecessaryBoxing")
+            // OK as we want to show types explicitly.
         void ofLong() {
             assertEquals("100000", Identifier.toString(Long.valueOf(100_000)));
         }
@@ -431,6 +438,7 @@ class IdentifierTest {
             assertDoesNotThrow(() -> Identifier.checkSupported(StringValue.class));
         }
     }
+
     @Test
     @DisplayName("throw IllegalArgumentException for unsupported class")
     void checkNotSupported() {
@@ -446,7 +454,8 @@ class IdentifierTest {
 
         @Test
         @DisplayName("value")
-        @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
+        @SuppressWarnings("UnnecessaryBoxing")
+            // We want to make the unsupported type obvious.
         void value() {
             assertThrows(
                     IllegalArgumentException.class,
@@ -489,7 +498,8 @@ class IdentifierTest {
 
     @Test
     @DisplayName("reject packing unsupported type")
-    @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
+    @SuppressWarnings("UnnecessaryBoxing")
+        // We want to make the unsupported type obvious.
     void noPackingForUnsupported() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -543,6 +553,51 @@ class IdentifierTest {
                                    .getFields()
                                    .get(index);
             return field;
+        }
+    }
+
+    @Nested
+    @DisplayName("find field by type")
+    class FindingField {
+
+        @Test
+        @DisplayName("Integer")
+        void intType() {
+            assertFound(Integer.class, SeveralFieldsId.getDescriptor());
+            assertNotFound(Integer.class, TimestampFieldId.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("Long")
+        void longType() {
+            assertFound(Long.class, SeveralFieldsId.getDescriptor());
+            assertNotFound(Long.class, TimestampFieldId.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("String")
+        void stringType() {
+            assertFound(String.class, SeveralFieldsId.getDescriptor());
+            assertNotFound(String.class, NestedMessageId.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("Message")
+        void messageType() {
+            assertFound(StringValue.class, SeveralFieldsId.getDescriptor());
+            assertNotFound(StringValue.class, IdWithPrimitiveFields.getDescriptor());
+        }
+
+        <I> void assertFound(Class<I> idClass, Descriptor message) {
+            assertField(idClass, message).isPresent();
+        }
+
+        <I> void assertNotFound(Class<I> idClass, Descriptor message) {
+            assertField(idClass, message).isEmpty();
+        }
+
+        private <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
+            return Truth8.assertThat(findField(idClass, message));
         }
     }
 }

@@ -323,7 +323,7 @@ public final class Identifier<I> {
     }
 
     /**
-     * Finds a field matching the passed class of identifiers in the passed message type.
+     * Finds the first ID field of the specified type in the passed message type.
      *
      * @param idClass
      *          the class of identifiers
@@ -347,7 +347,7 @@ public final class Identifier<I> {
                                @SuppressWarnings("unchecked") // safe since it's Message type.
                                TypeUrl messageType = TypeUrl.of(
                                        (Class<? extends Message>) idClass);
-                               TypeUrl fieldType = TypeUrl.from(message);
+                               TypeUrl fieldType = TypeUrl.from(f.getMessageType());
                                return fieldType.equals(messageType);
                            }
                            return true;
