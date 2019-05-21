@@ -18,39 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
-
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
-
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * This package contains the options and the option factories used for message validation.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.validate.option;
 
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

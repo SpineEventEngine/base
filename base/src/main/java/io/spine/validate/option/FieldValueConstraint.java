@@ -18,39 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.FieldValue;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A rule that limits a set of values that a Protobuf field can have.
+ *
+ * @param <T>
+ *         a type of value of the field that this constraint is applied to
+ * @param <V>
+ *         a type of value that describes the constraints
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public abstract class FieldValueConstraint<T, V> implements Constraint<FieldValue<T>> {
+
+    private final V optionValue;
 
     /**
-     * Creates a new validator instance.
+     * Creates a new instance of this constraint.
      *
-     * @param fieldValue
-     *         the value to validate
+     * @param optionValue
+     *         a value that describes the field constraints
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    protected FieldValueConstraint(V optionValue) {
+        checkNotNull(optionValue);
+        this.optionValue = optionValue;
     }
 
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    /** Returns a value that describes the constraint.*/
+    public V optionValue() {
+        return optionValue;
     }
 }

@@ -18,39 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import io.spine.option.OptionsProto;
+import io.spine.validate.FieldValue;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A validating option that limits a numeric field to be in the specified range.
+ *
+ * @param <V>
+ *         a value that this option is applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    private Range() {
+        super(OptionsProto.range);
+    }
+
+    /** Creates a new instance of this option. */
+    static <V extends Number & Comparable> Range<V> create() {
+        return new Range<>();
     }
 
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> value) {
+        return new RangeConstraint<>(optionValue(value));
     }
 }

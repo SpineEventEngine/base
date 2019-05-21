@@ -18,39 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import io.spine.option.OptionsProto;
+import io.spine.validate.FieldValue;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option that can be applied to {@code repeated} Protobuf fields to specify that values
+ * represented by that {@code repeated} field should not contain duplicates.
+ *
+ * @param <T>
+ *         type of value that this option is applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
+
+    private Distinct() {
+        super(OptionsProto.distinct);
+    }
 
     /**
-     * Creates a new validator instance.
+     * Returns a new instance of this option.
      *
-     * @param fieldValue
-     *         the value to validate
+     * @param <T>
+     *         type of fields that can be checked against this option
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    public static <T> Distinct<T> create() {
+        return new Distinct<>();
     }
 
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
+        return new DistinctConstraint<>(optionValue(fieldValue));
     }
 }

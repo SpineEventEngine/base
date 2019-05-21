@@ -18,39 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A special case of {@code Required} option that assumes that the option is present regardless
+ * of the actual field declaration.
+ *
+ * @param <T>
+ *         type of value that this option is applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class AlwaysRequired<T> extends Required<T> {
 
     /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
+     * Creates a new instance of this option.
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    AlwaysRequired() {
+        super();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For {@code AlwaysRequired}, validation happens every time.
+     * @param value
+     */
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public boolean shouldValidate(FieldDescriptor value) {
+        checkUsage(value);
+        return true;
     }
 }

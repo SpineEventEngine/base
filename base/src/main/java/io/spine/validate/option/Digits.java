@@ -18,39 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import io.spine.option.DigitsOption;
+import io.spine.option.OptionsProto;
+import io.spine.validate.FieldValue;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option that imposes a constraint on a numeric field, checking whether the amount
+ * of digits in both whole and decimal parts of the numeric field exceeds the specified maximum.
+ *
+ * @param <N>
+ *         numeric value that this option is applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class Digits<N extends Number & Comparable> extends FieldValidatingOption<DigitsOption, N> {
+
+    private Digits() {
+        super(OptionsProto.digits);
+    }
 
     /**
-     * Creates a new validator instance.
+     * Creates a new instance of this option.
      *
-     * @param fieldValue
-     *         the value to validate
+     * @param <V>
+     *         type of value that a field marked with this option has
+     * @return new instance of this option
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    public static <V extends Number & Comparable> Digits<V> create() {
+        return new Digits<>();
     }
 
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public Constraint<FieldValue<N>> constraintFor(FieldValue<N> fieldValue) {
+        return new DigitsConstraint<>(optionValue(fieldValue));
     }
 }

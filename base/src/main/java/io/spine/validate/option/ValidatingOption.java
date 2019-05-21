@@ -18,39 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.protobuf.Descriptors.GenericDescriptor;
+import io.spine.code.proto.Option;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option that validates a Protobuf entity.
+ *
+ * @param <T>
+ *         data type that this option holds, e.g.
+ *         {@linkplain io.spine.option.OptionsProto.required required option} would hold a {@code
+ *         Boolean}
+ * @param <K>
+ *         kind of entity that this option is applied to
+ * @param <V>
+ *         kind of value that constraints produced by this option are applied to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+interface ValidatingOption<T, K extends GenericDescriptor, V> extends Option<T, K> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
-    }
+    Constraint<V> constraintFor(V value);
 }

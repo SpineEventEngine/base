@@ -18,39 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.IfMissingOption;
+import io.spine.option.OptionsProto;
 
-import java.util.Set;
+import java.util.Optional;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A field option that defines custom error message if a field is {@code required} but missing.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public final class IfMissing extends FieldOption<IfMissingOption> {
+
+    /** Creates a new instance of this option. */
+    public IfMissing() {
+        super(OptionsProto.ifMissing);
+    }
 
     /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
+     * Returns the option value from the specified field or a default value, if the field does not
+     * have its own option value.
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public IfMissingOption valueOrDefault(FieldDescriptor field) {
+        Optional<IfMissingOption> option = valueFrom(field);
+        return option.orElse(IfMissingOption.getDefaultInstance());
     }
 }

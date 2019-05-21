@@ -18,39 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.common.collect.ImmutableList;
+import io.spine.validate.ConstraintViolation;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A rule that limits the set of possible values for {@code T} and produces
+ * {@code ConstraintViolations} upon finding values of {@code T} which do not fit into the
+ * set limits.
+ *
+ * @param <T>
+ *         a type of values that this constraint is applicable to
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public interface Constraint<T> {
 
     /**
-     * Creates a new validator instance.
+     * Checks the specified value against this constraint.
      *
-     * @param fieldValue
-     *         the value to validate
+     * <p>If the value has breaks the rules imposed by this constraint, {@code ConstraintViolations}
+     * are produced and returned.
+     *
+     * @param value
+     *         value that is being checked against this constraint
+     * @return violations of this constraint
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
-    }
+    ImmutableList<ConstraintViolation> check(T value);
 }

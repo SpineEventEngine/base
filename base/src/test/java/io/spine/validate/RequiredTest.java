@@ -30,6 +30,7 @@ import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.RequiredStringFieldValue;
 import io.spine.testing.logging.MuteLogging;
+import io.spine.validate.option.RequiredConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

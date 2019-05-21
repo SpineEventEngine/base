@@ -18,39 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import io.spine.option.OptionsProto;
+import io.spine.option.PatternOption;
+import io.spine.validate.FieldValue;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option defining a pattern that a field value has to match.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class Pattern extends FieldValidatingOption<PatternOption, String> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    private Pattern() {
+        super(OptionsProto.pattern);
+    }
+
+    /** Returns a new instance of this option. */
+    public static Pattern create() {
+        return new Pattern();
     }
 
     @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public Constraint<FieldValue<String>> constraintFor(FieldValue<String> fieldValue) {
+        return new PatternConstraint(optionValue(fieldValue));
     }
 }

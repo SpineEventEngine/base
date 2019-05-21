@@ -18,39 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.common.collect.Range;
+import io.spine.option.MaxOption;
+import io.spine.validate.ComparableNumber;
+import io.spine.validate.NumberText;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class MaxConstraint<V extends Number & Comparable> extends RangedConstraint<V, MaxOption> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    MaxConstraint(MaxOption optionValue) {
+        super(optionValue, maxRange(optionValue));
     }
 
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    private static Range<ComparableNumber> maxRange(MaxOption option) {
+        boolean inclusive = !option.getExclusive();
+        NumberText maxValue = new NumberText(option.getValue());
+        return inclusive
+               ? Range.atMost(maxValue.toNumber())
+               : Range.lessThan(maxValue.toNumber());
     }
 }

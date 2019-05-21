@@ -38,7 +38,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * A value of a {@link Message} to validate.
  */
-final class MessageValue {
+public final class MessageValue {
 
     private final Message message;
     private final Descriptor descriptor;
@@ -59,7 +59,7 @@ final class MessageValue {
      *         the message itself
      * @return a new instance
      */
-    static MessageValue nestedIn(FieldContext messageContext, Message message) {
+    public static MessageValue nestedIn(FieldContext messageContext, Message message) {
         return new MessageValue(message, messageContext);
     }
 
@@ -70,16 +70,12 @@ final class MessageValue {
      *         the message that is <b>not</b> a part of another message
      * @return a new instance
      */
-    static MessageValue atTopLevel(Message message) {
+    public static MessageValue atTopLevel(Message message) {
         return new MessageValue(message, FieldContext.empty());
     }
 
-    Descriptor descriptor(){
-        return descriptor;
-    }
-
-    MessageType declaration() {
-        return new MessageType(descriptor());
+    public MessageType declaration() {
+        return new MessageType(descriptor);
     }
 
     /**
@@ -106,7 +102,7 @@ final class MessageValue {
      * @return a value of the field
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
-    Optional<FieldValue<?>> valueOf(String fieldName) {
+    public Optional<FieldValue<?>> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
         return valueOfNullable(field);
     }
@@ -121,7 +117,7 @@ final class MessageValue {
      * @throws IllegalArgumentException
      *         if the if the message doesn't declare this oneof
      */
-    Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
+    public Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
         checkArgument(oneofDescriptors().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);

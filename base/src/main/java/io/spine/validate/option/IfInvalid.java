@@ -18,39 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.IfInvalidOption;
+import io.spine.option.OptionsProto;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option which provides custom error messages if applied to a field being validated.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public final class IfInvalid extends FieldOption<IfInvalidOption> {
+
+    /** Creates a new instance of this option. */
+    public IfInvalid() {
+        super(OptionsProto.ifInvalid);
+    }
 
     /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
+     * Returns the option value from the specified field or a default value, if the field does not
+     * have its own option value.
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
-    }
-
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    public IfInvalidOption valueOrDefault(FieldDescriptor field){
+        return valueFrom(field).orElse(IfInvalidOption.getDefaultInstance());
     }
 }

@@ -18,39 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldOption;
+import io.spine.option.OptionsProto;
 
-import java.util.Set;
+import java.util.Optional;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * An option that indicates that a field value cannot be changed.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+public final class SetOnce extends FieldOption<Boolean> {
 
     /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
+     * Specifies the extension that corresponds to this option.
      */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    private SetOnce() {
+        super(OptionsProto.setOnce);
     }
 
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    /** Obtains a value of the {@code set_once} option from the given field. */
+    public static Optional<Boolean> from(FieldDescriptor field){
+        return new SetOnce().valueFrom(field);
     }
 }

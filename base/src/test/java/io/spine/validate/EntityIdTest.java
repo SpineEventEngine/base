@@ -29,6 +29,7 @@ import io.spine.test.validate.command.EntityIdLongFieldValue;
 import io.spine.test.validate.command.EntityIdMsgFieldValue;
 import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
+import io.spine.validate.option.RequiredConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

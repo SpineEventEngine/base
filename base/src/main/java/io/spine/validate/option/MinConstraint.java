@@ -18,39 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
+import com.google.common.collect.Range;
+import io.spine.option.MinOption;
+import io.spine.validate.ComparableNumber;
+import io.spine.validate.NumberText;
 
 /**
- * Validates fields of type {@link EnumValueDescriptor}.
+ * A constraint that, when applied to a numeric field, checks whether the value of that field is
+ * greater than (or equal to, if specified by the value of the respective option) a min value.
  */
-class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
+final class MinConstraint<V extends Number & Comparable> extends RangedConstraint<V, MinOption> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValue
-     *         the value to validate
-     */
-    EnumFieldValidator(FieldValue<EnumValueDescriptor> fieldValue) {
-        super(fieldValue, false);
+    MinConstraint(MinOption optionValue) {
+        super(optionValue, minRange(optionValue));
     }
 
-    @Override
-    protected boolean isNotSet(EnumValueDescriptor value) {
-        int intValue = value.getNumber();
-        boolean result = intValue <= 0;
-        return result;
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?, EnumValueDescriptor>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
+    private static Range<ComparableNumber> minRange(MinOption option) {
+        boolean inclusive = !option.getExclusive();
+        NumberText minValue = new NumberText(option.getValue());
+        return inclusive
+               ? Range.atLeast(minValue.toNumber())
+               : Range.greaterThan(minValue.toNumber());
     }
 }
