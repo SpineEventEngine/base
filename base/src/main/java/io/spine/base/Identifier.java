@@ -46,6 +46,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Wrapper of an identifier value.
  */
+@SuppressWarnings("ClassWithTooManyMethods")
 @Internal
 public final class Identifier<I> {
 
@@ -134,7 +135,7 @@ public final class Identifier<I> {
     }
 
     private static <I> IllegalArgumentException unsupported(I id) {
-        return newIllegalArgumentException("ID of unsupported type encountered: %s.", id);
+        return newIllegalArgumentException("ID of unsupported type encountered: `%s`.", id);
     }
 
     private static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
@@ -341,21 +342,21 @@ public final class Identifier<I> {
         Optional<FieldDescriptor> found =
                 message.getFields()
                        .stream()
-                       .filter(f -> {
-                           if (!idType.matchField(f)) {
-                               return false;
-                           }
-                           if (idType == Type.MESSAGE) {
-                               @SuppressWarnings("unchecked") // safe since it's Message type.
-                               TypeUrl messageType = TypeUrl.of(
-                                       (Class<? extends Message>) idClass);
-                               TypeUrl fieldType = TypeUrl.from(f.getMessageType());
-                               return fieldType.equals(messageType);
-                           }
-                           return true;
-                       })
+                       .filter(idType::matchField)
+                       .filter(f -> idType != Type.MESSAGE || sameType(idClass, f))
                        .findFirst();
         return found;
+    }
+
+    /**
+     * Verifies if the class of identifiers and the type of the field represent the same type.
+     */
+    private static <I> boolean sameType(Class<I> idClass, FieldDescriptor f) {
+        @SuppressWarnings("unchecked") // safe since it's Message type.
+                TypeUrl messageType = TypeUrl.of(
+                (Class<? extends Message>) idClass);
+        TypeUrl fieldType = TypeUrl.from(f.getMessageType());
+        return fieldType.equals(messageType);
     }
 
     @Override
