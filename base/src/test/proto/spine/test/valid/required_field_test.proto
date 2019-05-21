@@ -19,18 +19,29 @@
  */
 syntax = "proto3";
 
-package spine.test.validate;
+package spine.test.validation;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "MessageValidatorTestOneofProto";
-option java_package = "io.spine.test.validate.oneof";
+option java_outer_classname = "RequiredFieldTestProto";
+option java_package = "io.spine.test.validate.requiredfield";
 
-// `oneof` declarations for `OneofTest`.
+// `oneof` declarations for `MessageValidatorTest`.
 
-message OneofWithRequiredFields {
+message EveryFieldRequired {
+
+    option (required_field) = "first & second & third";
+
+    string first = 1;
+
+    string second = 2;
+
+    string third = 3;
+}
+
+message OneofRequired {
 
     option (required_field) = "first | second";
 
@@ -40,39 +51,49 @@ message OneofWithRequiredFields {
     }
 }
 
-message OneofWithOptionalFields {
-    oneof fields {
-        string first = 1;
-        string second = 2;
-    }
-}
+// Currently () syntax is not supported.
+// The message is here because the test that validates the behavior is disabled.
+// Remove the comment when the https://github.com/SpineEventEngine/base/issues/381 is resolved.
+message OneofFieldAndOtherFieldRequired {
 
-message OneofAndOtherAreRequired {
-
-    option (required_field) = "first | second";
+    option (required_field) = "(first | second) & third";
 
     oneof fields {
         string first = 1;
         string second = 2;
     }
 
-    string third = 3 [(required) = true];
+    string third = 3;
 }
 
-message OneofWithValidation {
-
+message EveryFieldOptional {
     oneof fields {
-        string no_validation = 1;
-        string with_validation = 2 [(validate) = true, (pattern).regex = "^[A-Za-z0-9+]+$"];
+        string first = 1;
+        string second = 2;
     }
+
+    string third = 3;
 }
 
-message RequiredOneofWithValidation {
+// Currently () syntax is not supported.
+// The message is here because the test that validates the behavior is disabled.
+// Remove the comment when the https://github.com/SpineEventEngine/base/issues/381 is resolved.
+message ComplexRequiredFields {
 
-    option (required_field) = "raw_value | valid_value";
+    option (required_field) = "(first | second) & (third | fourth) & fifth";
+
+    repeated string first = 1;
+
+    map<string,string> second = 2;
 
     oneof fields {
-        int32 raw_value = 1;
-        int32 valid_value = 2 [(validate) = true, (min).value = "1"];
+        string third = 3;
+        string fourth = 4;
+    }
+
+    FifthField fifth = 5;
+
+    message FifthField {
+        string value = 1;
     }
 }

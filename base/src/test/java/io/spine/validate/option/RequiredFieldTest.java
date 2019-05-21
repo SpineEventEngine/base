@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
 import io.spine.test.validate.requiredfield.ComplexRequiredFields;
 import io.spine.test.validate.requiredfield.EveryFieldOptional;
 import io.spine.test.validate.requiredfield.EveryFieldRequired;
 import io.spine.test.validate.requiredfield.OneofFieldAndOtherFieldRequired;
 import io.spine.test.validate.requiredfield.OneofRequired;
+import io.spine.validate.MessageValidatorTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

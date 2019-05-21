@@ -19,28 +19,20 @@
  */
 syntax = "proto3";
 
-package spine.test.validate;
+package spine.test.validation;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ValidationTestAltFieldsProto";
-option java_package = "io.spine.test.validate.altfields";
+option java_outer_classname = "FieldValueTestProto";
+option java_package = "io.spine.test.validate.field";
 
 
-message PersonName {
-    option (required_field) = "first_name | honorific_prefix & last_name";
+// The declarations for `FieldValueTest`.
 
-    string honorific_prefix = 1;
-    string first_name = 2;
-    string last_name = 3;
-    string honorific_suffix = 4;
-}
-
-message MessageWithMissingField {
-    option (required_field) = "name | else";
-
-    string name = 1;
-    bool present = 2;
+message Message {
+    map<string, string> map = 1;
+    repeated string repeated = 2;
+    string scalar = 3;
 }

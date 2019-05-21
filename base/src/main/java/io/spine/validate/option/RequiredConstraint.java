@@ -20,7 +20,6 @@
 
 package io.spine.validate.option;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
@@ -42,8 +41,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
  */
 final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
 
-    @VisibleForTesting
-    static final String ERROR_MESSAGE = "Value must be set.";
+    private static final String ERROR_MESSAGE = "Value must be set.";
     /**
      * Types for which field presence of the field value can be checked.
      */

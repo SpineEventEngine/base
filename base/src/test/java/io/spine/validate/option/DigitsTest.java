@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
 import com.google.protobuf.Message;
 import io.spine.test.validate.DigitsCountNumberFieldValue;
+import io.spine.validate.MessageValidatorTest;
 import io.spine.validate.given.MessageValidatorTestEnv;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

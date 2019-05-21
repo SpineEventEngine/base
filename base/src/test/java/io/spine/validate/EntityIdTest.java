@@ -29,7 +29,6 @@ import io.spine.test.validate.command.EntityIdLongFieldValue;
 import io.spine.test.validate.command.EntityIdMsgFieldValue;
 import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
-import io.spine.validate.option.RequiredConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -110,7 +109,7 @@ class EntityIdTest extends MessageValidatorTest {
         @DisplayName("provide one valid violation if is not valid")
         void provideOneValidViolationIfEntityIdInCommandIsNotValid() {
             EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
-            assertSingleViolation(msg, RequiredConstraint.ERROR_MESSAGE, VALUE);
+            assertSingleViolation(msg, VALUE);
         }
     }
 

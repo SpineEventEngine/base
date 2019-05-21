@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
 import com.google.protobuf.StringValue;
 import io.spine.test.validate.CustomMessageWithNoRequiredOption;
@@ -30,7 +30,7 @@ import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.RequiredStringFieldValue;
 import io.spine.testing.logging.MuteLogging;
-import io.spine.validate.option.RequiredConstraint;
+import io.spine.validate.MessageValidatorTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -157,7 +157,7 @@ class RequiredTest extends MessageValidatorTest {
     @DisplayName("provide one valid violation if required field is NOT set")
     void provideOneValidViolationIfRequiredFieldIsNOTSet() {
         RequiredStringFieldValue invalidMsg = RequiredStringFieldValue.getDefaultInstance();
-        assertSingleViolation(invalidMsg, RequiredConstraint.ERROR_MESSAGE, VALUE);
+        assertSingleViolation(invalidMsg, VALUE);
     }
 
     @Test

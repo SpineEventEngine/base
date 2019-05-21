@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.option;
 
 import com.google.protobuf.StringValue;
 import io.spine.test.validate.PatternStringFieldValue;
+import io.spine.validate.MessageValidatorTest;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
