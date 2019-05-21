@@ -138,8 +138,8 @@ public final class TypeName extends StringTypeValue {
      * Returns a message {@link Class} corresponding to the Protobuf message type represented
      * by this type URL.
      *
-     * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
-     * a {@code Message} and not an enum.
+     * <p>This is a convenience method. Use it only when you are sure that the {@link TypeUrl}
+     * represents a {@code Message} and is not an enum.
      *
      * @throws IllegalStateException if the type URL represents an enum
      */
@@ -160,7 +160,7 @@ public final class TypeName extends StringTypeValue {
 
     /**
      * Obtains the message descriptor for the type or throws an exception if this type is name
-     * represents an enum.
+     * and it represents an enum.
      */
     public Descriptor messageDescriptor() {
         Descriptor result = (Descriptor) genericDescriptor();
