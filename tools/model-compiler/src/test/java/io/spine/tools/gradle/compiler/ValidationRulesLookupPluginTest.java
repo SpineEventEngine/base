@@ -25,7 +25,6 @@ import io.spine.code.properties.PropertyFile;
 import io.spine.tools.gradle.testing.GradleProject;
 import io.spine.validate.rule.ValidationRules;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +40,6 @@ import java.util.Map;
 import static io.spine.tools.gradle.TaskName.findValidationRules;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled
 @ExtendWith(TempDirectory.class)
 @DisplayName("ValidationRulesLookupPlugin should")
 class ValidationRulesLookupPluginTest {
