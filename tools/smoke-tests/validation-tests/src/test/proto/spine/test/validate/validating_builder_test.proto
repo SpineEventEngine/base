@@ -20,7 +20,7 @@
 
 syntax = "proto3";
 
-package spine.test.validate.msg;
+package spine.test.vbuilder.msg;
 
 import "spine/options.proto";
 
