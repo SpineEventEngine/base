@@ -23,6 +23,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
+import com.google.protobuf.gradle.GenerateProtoTask.PluginOptions;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
@@ -40,6 +41,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Optional;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static io.spine.tools.gradle.TaskName.clean;

@@ -125,18 +125,25 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
      */
     @OverridingMethodsMustInvokeSuper
     protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
-            boolean windows = current().isWindows();
-            String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
-            locator.setArtifact(Artifact.newBuilder()
-                                        .useSpineToolsGroup()
-                                        .setName(SPINE_PLUGIN_NAME)
-                                        .setVersion(VERSIONS.spineBase())
-                                        .setClassifier(SCRIPT_CLASSIFIER)
-                                        .setExtension(scriptExt)
-                                        .build()
-                                        .notation());
-        });
+        if (!spineProtocIsPresent(plugins)) {
+            plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
+                boolean windows = current().isWindows();
+                String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
+                locator.setArtifact(Artifact.newBuilder()
+                                            .useSpineToolsGroup()
+                                            .setName(SPINE_PLUGIN_NAME)
+                                            .setVersion(VERSIONS.spineBase())
+                                            .setClassifier(SCRIPT_CLASSIFIER)
+                                            .setExtension(scriptExt)
+                                            .build()
+                                            .notation());
+            });
+        }
+    }
+
+    private static boolean
+    spineProtocIsPresent(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        return plugins.findByName(ProtocPlugin.spineProtoc.name()) != null;
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
@@ -155,13 +162,20 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
         Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
-        GradleTask copyPluginJar = newTask(TaskName.copyPluginJar, action)
-                .allowNoDependencies()
-                .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
-                .withOutputFiles(project.fileTree(spineDirectory(project)))
-                .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
-                .applyNowTo(project);
-        return copyPluginJar;
+
+        Task copyPluginJarTask = project.getTasks()
+                           .findByPath(TaskName.copyPluginJar.name());
+        if (copyPluginJarTask == null ){
+            GradleTask copyPluginJarBuilder = newTask(TaskName.copyPluginJar, action)
+                    .allowNoDependencies()
+                    .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                    .withOutputFiles(project.fileTree(spineDirectory(project)))
+                    .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
+                    .applyNowTo(project);
+            return copyPluginJarBuilder;
+        } else {
+            return GradleTask.from(copyPluginJarTask);
+        }
     }
 
     private static File spineDirectory(Project project) {
