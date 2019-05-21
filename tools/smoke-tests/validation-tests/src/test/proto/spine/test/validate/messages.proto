@@ -43,16 +43,16 @@ message AValidationRule {
 
 message RuleTargetAggregate {
 
-    FirstRuleTarget first = 1 [(valid) = true];
-    SecondRuleTarget second = 2 [(valid) = true];
+    FirstRuleTarget first = 1 [(validate) = true];
+    SecondRuleTarget second = 2 [(validate) = true];
 }
 
 message FirstRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(validate) = true];
 }
 
 message SecondRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(validate) = true];
 }
 
 // A message which is always invalid according to its constraints.

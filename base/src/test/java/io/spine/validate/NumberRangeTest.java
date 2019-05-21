@@ -149,7 +149,7 @@ class NumberRangeTest extends MessageValidatorTest {
                               .setValue(value)
                               .build();
         validate(msg);
-        assertIsValid(valid);
+        assertIsValid(validate);
     }
 
     private void maxNumberTest(double value, boolean inclusive, boolean valid) {
@@ -163,6 +163,6 @@ class NumberRangeTest extends MessageValidatorTest {
                               .setValue(value)
                               .build();
         validate(msg);
-        assertIsValid(valid);
+        assertIsValid(validate);
     }
 }

@@ -48,12 +48,12 @@ message VbtProject {
     //
     // This field is both required and validated.
     //
-    repeated VbtTask task = 1 [(valid) = true, (required) = true];
+    repeated VbtTask task = 1 [(validate) = true, (required) = true];
 
     // The emails of the project subscribers.
     //
     // This field is validated but not required.
-    repeated string subscriber_email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+    repeated string subscriber_email = 2 [(validate) = true, (pattern).regex = ".+@.+\\..+"];
 
     // The members of the project.
     //
@@ -71,13 +71,13 @@ message VbtProject {
     //
     // This field is required but never validated.
     //
-    map<string, VbtMember> role = 5 [(required) = true, (valid) = true];
+    map<string, VbtMember> role = 5 [(required) = true, (validate) = true];
 
     // A map of the task IDs to the task attachments.
     //
     // This field validated but not required.
     //
-    map<string, VbtAttachment> attachment = 6 [(valid) = true, (required) = false];
+    map<string, VbtAttachment> attachment = 6 [(validate) = true, (required) = false];
 
     // The map of the task IDs to the time when the task was deleted.
     //
@@ -128,5 +128,5 @@ message VbtAttachment {
 
     string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
 
-    spine.net.Url url = 3 [(required) = true, (valid) = true];
+    spine.net.Url url = 3 [(required) = true, (validate) = true];
 }

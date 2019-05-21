@@ -30,6 +30,6 @@ final class Valid extends FieldOption<Boolean> {
 
     /** Creates a new instance of this option. */
     Valid() {
-        super(OptionsProto.valid);
+        super(OptionsProto.validate);
     }
 }

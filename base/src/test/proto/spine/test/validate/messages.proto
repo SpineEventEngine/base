@@ -142,7 +142,7 @@ message PatternStringFieldValue {
 // Messages for "valid" option tests.
 
 message EnclosedMessageFieldValue {
-    PatternStringFieldValue outer_msg_field = 1 [(valid) = true];
+    PatternStringFieldValue outer_msg_field = 1 [(validate) = true];
 }
 
 message EnclosedMessageWithoutAnnotationFieldValue {
@@ -150,7 +150,7 @@ message EnclosedMessageWithoutAnnotationFieldValue {
 }
 
 message EnclosedMessageFieldValueWithCustomInvalidMessage {
-    PatternStringFieldValue outer_msg_field = 1 [(valid) = true, (if_invalid).msg_format = "Custom error"];
+    PatternStringFieldValue outer_msg_field = 1 [(validate) = true, (if_invalid).msg_format = "Custom error"];
 }
 
 message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage {
@@ -158,7 +158,7 @@ message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMes
 }
 
 message EnclosedMessageWithRequiredString {
-    RequiredStringFieldValue outer_msg_field = 1 [(valid) = true];
+    RequiredStringFieldValue outer_msg_field = 1 [(validate) = true];
 }
 
 // Messages for testing validation of repeated fields.
@@ -168,7 +168,7 @@ message MessageWithRepeatedUnchekedStringField {
 }
 
 message MessageWithRepeatedValidatedStringField {
-    repeated string validated = 1 [(valid) = true, (pattern).regex = "\\w+"];
+    repeated string validated = 1 [(validate) = true, (pattern).regex = "\\w+"];
 }
 
 message MessegeWithRepeatedRequiredStringField {
@@ -176,7 +176,7 @@ message MessegeWithRepeatedRequiredStringField {
 }
 
 message MessageWithRepeatedRequiredValidatedStringField {
-    repeated string bound = 1 [(valid) = true, (required) = true, (pattern).regex = "\\w+"];
+    repeated string bound = 1 [(validate) = true, (required) = true, (pattern).regex = "\\w+"];
 }
 
 message MessageWithRepeatedUnchekedMessageField {
@@ -184,7 +184,7 @@ message MessageWithRepeatedUnchekedMessageField {
 }
 
 message MessageWithRepeatedValidatedMessageField {
-    repeated InvalidMessage validated = 1 [(valid) = true];
+    repeated InvalidMessage validated = 1 [(validate) = true];
 }
 
 message MessegeWithRepeatedRequiredMessageField {
@@ -192,7 +192,7 @@ message MessegeWithRepeatedRequiredMessageField {
 }
 
 message MessageWithRepeatedRequiredValidatedMessageField {
-    repeated InvalidMessage bound = 1 [(valid) = true, (required) = true];
+    repeated InvalidMessage bound = 1 [(validate) = true, (required) = true];
 }
 
 message MessageWithMapStringField {
