@@ -35,7 +35,7 @@ import java.util.TreeSet;
  * and makes any potential debugging easier.
  */
 @SuppressWarnings("ClassExtendsConcreteCollection")
-// It's the best (and still readable) way for customization.
+// It's the best and still readable way for customization.
 final class SortedProperties extends Properties {
 
     // Generated automatically.

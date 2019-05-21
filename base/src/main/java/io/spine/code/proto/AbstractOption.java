@@ -28,7 +28,7 @@ import java.util.Optional;
 
 /**
  * An abstract base for all types of Protobuf options: {@link FieldOption}, {@link MessageOption},
- * {@link FileOption} and a Service Option.
+ * {@link FileOption}, and a Service Option.
  *
  * @param <T>
  *         the type of value held by this option

@@ -256,7 +256,8 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
      * {@code com.acme.cms.CustomerOrBuilder}.
      *
-     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is dotted.
+     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is
+     * dotted.
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
