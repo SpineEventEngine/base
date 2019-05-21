@@ -29,7 +29,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
- * A constraint that, when applied to a string field, checks whether that field matches the
+ * A constraint, which when applied to a string field, checks whether that field matches the
  * specified pattern.
  */
 final class PatternConstraint extends FieldValueConstraint<String, PatternOption> {

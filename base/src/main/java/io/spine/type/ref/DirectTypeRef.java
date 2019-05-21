@@ -79,7 +79,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
     /**
      * Attempts to find a package name in the passed type reference.
      *
-     * <p>Assumes that package names start from a lowercase letter.
+     * <p>Assumes that package names start with a lowercase letter.
      *
      * @return the package name, if found, or {@code null} otherwise
      */
@@ -100,7 +100,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
     /**
      * Compose a potentially nested type name from the passed parts.
      *
-     * <p>Assumes that a type name starts from an upper-case letter.
+     * <p>Assumes that a type name starts with an uppercase letter.
      */
     private static String toNestedName(List<String> parts) {
         List<String> types =
@@ -126,7 +126,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
     }
 
     /**
-     * Creates a new instance reference a type with the same nested name, but in another package.
+     * Creates a new instance reference a type with the same nested name but in another package.
      */
     public DirectTypeRef withPackage(PackageName anotherPackage) {
         checkNotNull(anotherPackage);
@@ -148,7 +148,7 @@ public final class DirectTypeRef extends AbstractTypeRef {
     /**
      * Obtains the name of a type inside its package.
      *
-     * <p>For a type nested inside another type(s) it would contain all type names in the
+     * <p>For a type nested inside another type(s) it will contain all type names in the
      * nesting hierarchy.
      *
      * <p>For a top level type the returned value would be equal to {@link #simpleTypeName}.

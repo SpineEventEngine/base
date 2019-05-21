@@ -25,7 +25,7 @@ import io.spine.option.OptionsProto;
 
 /**
  * An option that imposes a constraint on a numeric field, checking whether the amount
- * of digits in both whole and decimal parts of the numeric field exceed the specified maximum.
+ * of digits in both whole and decimal parts of the numeric field exceeds the specified maximum.
  *
  * @param <N>
  *         numeric value that this option is applied to

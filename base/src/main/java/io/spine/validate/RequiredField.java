@@ -29,7 +29,7 @@ import static io.spine.option.OptionsProto.requiredField;
 /**
  * A message option that defines a combination of required fields for the message.
  *
- * The fields are separated with a {@code |} symbol, and combined with a {@code &} symbol.
+ * The fields are separated with a {@code |} symbol and combined with a {@code &} symbol.
  *
  * Example:
  * <pre>

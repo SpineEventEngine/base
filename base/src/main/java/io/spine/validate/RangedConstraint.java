@@ -35,7 +35,7 @@ import static java.lang.String.format;
 /**
  * A constraint that puts a numeric field value into a range.
  *
- * <p>A field violates this constraint of its value is out of the range.
+ * <p>A field which violates this constraint of its value is out of the range.
  *
  * @param <V>
  *         numeric value that the option is applied to

@@ -59,8 +59,8 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
      * If the specified parameter is {@code false}, a returned option checks the actual value.
      *
      * @param strict
-     *         whether to assume a field to be required regardless of the actual Protobuf
-     *         option value
+     *         specifies if a field is assumed to be a required one regardless of the actual
+     *         Protobuf option value
      * @param <T>
      *         type of value that the returned option is applied to
      * @return a new instance of the {@code Required} option

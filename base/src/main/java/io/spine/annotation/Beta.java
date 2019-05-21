@@ -27,13 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Signifies that a public API is subject to incompatible changes, or even removal,
+ * Signifies that a public API is subject to incompatible changes, or even removal
  * in a future release.
  *
  * <p>An API bearing this annotation is exempt from any compatibility guarantees made by its
  * containing library. Note that the presence of this annotation implies nothing about the
  * quality of the API in question, only the fact that it is not "API-frozen."
- * It is generally safe for applications to depend on beta APIs, at the cost of some extra work
+ * It is generally safe for applications to depend on beta APIs at the cost of some extra work
  * during upgrades.
  */
 @Retention(RetentionPolicy.SOURCE)
@@ -47,7 +47,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Beta {
     /**
-     * Context information such as links to discussion thread, tracking issue etc.
+     * Context information such as links to discussion thread, tracking issue, etc.
      */
     String value() default "";
 }

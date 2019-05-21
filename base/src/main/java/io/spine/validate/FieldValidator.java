@@ -134,7 +134,7 @@ public abstract class FieldValidator<V> implements Logging {
      * <ol>
      *     <li>check the field to be set if it is {@code required};
      *     <li>validate the field as an Entity ID if required;
-     *     <li>performs type-specific validation according to validation options.
+     *     <li>perform type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
@@ -242,7 +242,7 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     /**
-     * Returns a validation error message, which may have formatting placeholders
+     * Returns a validation error message which may have formatting placeholders
      *
      * <p>A custom message is returned if it is present in the option. Otherwise,
      * default message is returned.
