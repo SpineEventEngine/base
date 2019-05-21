@@ -19,7 +19,7 @@
  */
 syntax = "proto3";
 
-package spine.test.validate;
+package spine.test.validation;
 
 import "spine/options.proto";
 
@@ -31,8 +31,8 @@ option java_package = "io.spine.test.validate";
 // Messages for testing validation rules.
 
 message AValidationRule {
-    option (validation_of) = "spine.test.validate.FirstRuleTarget.can_be_valid,"
-                             "spine.test.validate.SecondRuleTarget.can_be_valid";
+    option (validation_of) = "spine.test.validation.FirstRuleTarget.can_be_valid,"
+                             "spine.test.validation.SecondRuleTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
     // The field index intentionally doesn't match the index in `AlwaysInvalid`
@@ -43,16 +43,16 @@ message AValidationRule {
 
 message RuleTargetAggregate {
 
-    FirstRuleTarget first = 1 [(valid) = true];
-    SecondRuleTarget second = 2 [(valid) = true];
+    FirstRuleTarget first = 1 [(validate) = true];
+    SecondRuleTarget second = 2 [(validate) = true];
 }
 
 message FirstRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(validate) = true];
 }
 
 message SecondRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(valid) = true];
+    AlwaysInvalid can_be_valid = 1 [(validate) = true];
 }
 
 // A message which is always invalid according to its constraints.

@@ -26,6 +26,9 @@ import com.google.protobuf.Message;
 import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
 import io.spine.type.TypeName;
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.Valid;
+import io.spine.validate.option.ValidatingOptionFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -53,7 +56,7 @@ final class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected ImmutableList<ConstraintViolation> validate() {
+    public ImmutableList<ConstraintViolation> validate() {
         boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();
