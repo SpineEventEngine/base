@@ -214,6 +214,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                          .contains(SourceScope.test.name());
     }
 
+    /** Names of tasks related to the Protobuf compiler ({@code protoc}) task. */
     protected enum ProtocPlugin {
         grpc,
         spineProtoc
