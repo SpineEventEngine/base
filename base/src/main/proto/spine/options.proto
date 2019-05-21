@@ -133,7 +133,7 @@ extend google.protobuf.FieldOptions {
     //
     //   3. Each item of a repeated field satisfies validation constraints.
     //
-    bool valid = 73821;
+    bool validate = 73821;
 
     // See `IfInvalidOption`.
     IfInvalidOption if_invalid = 73822;
@@ -321,7 +321,7 @@ extend google.protobuf.MessageOptions {
     //          // The value of `change.new_value` is the new name of the task.
     //          // It cannot be empty either.
     //          //
-    //          StringChange change = 1 [(valid) = true];
+    //          StringChange change = 1 [(validate) = true];
     //     }
     //
     //     // External validation constraint for both fields of the `StringChange` message
@@ -333,7 +333,7 @@ extend google.protobuf.MessageOptions {
     //          string new_value = 2 [(required) = true];
     //     }
     //
-    // NOTE: A target field for an external validation constraint must be have the option `(valid)`
+    // NOTE: A target field for an external validation constraint must be have the option `(validate)`
     //       set to `true`. See the definition of the `RenameTask.change` field in the example
     //       above. If there is no such option defined, or it is set to `false`, the external
     //       constraint will not be applied.
@@ -637,7 +637,7 @@ message PatternOption {
 // Example: Using the `(if_invalid)` option.
 //
 //     message Holder {
-//         MyMessage field = 1 [(valid) = true, (if_invalid).msg_format = "The field is invalid."];
+//         MyMessage field = 1 [(validate) = true, (if_invalid).msg_format = "The field is invalid."];
 //    }
 //
 message IfInvalidOption {

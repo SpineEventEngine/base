@@ -28,6 +28,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
 import io.spine.protobuf.Diff;
 import io.spine.type.TypeName;
+import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
