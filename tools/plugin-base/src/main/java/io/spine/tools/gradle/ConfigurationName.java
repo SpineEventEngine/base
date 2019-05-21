@@ -22,10 +22,15 @@ package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
 
+import static org.gradle.api.plugins.JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.COMPILE_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CLASSPATH_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME;
+import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_ONLY_CONFIGURATION_NAME;
 
 /**
  * The names of Gradle configurations used by the Spine model compiler plugin.
@@ -39,6 +44,36 @@ public enum ConfigurationName {
      * The {@code classpath} configuration.
      */
     CLASSPATH("classpath"),
+
+    /**
+     * The {@code compileOnly} configuration.
+     */
+    COMPILE_ONLY(COMPILE_ONLY_CONFIGURATION_NAME),
+
+    /**
+     * The {@code compileClasspath} configuration.
+     */
+    COMPILE_CLASSPATH(COMPILE_CLASSPATH_CONFIGURATION_NAME),
+
+    /**
+     * The {@code runtimeOnly} configuration.
+     */
+    RUNTIME_ONLY(RUNTIME_CLASSPATH_CONFIGURATION_NAME),
+
+    /**
+     * The {@code testImplementation} configuration.
+     */
+    TEST_IMPLEMENTATION(TEST_IMPLEMENTATION_CONFIGURATION_NAME),
+
+    /**
+     * The {@code testCompilerClasspath} configuration.
+     */
+    TEST_COMPILE_CLASSPATH(TEST_COMPILE_CLASSPATH_CONFIGURATION_NAME),
+
+    /**
+     * The {@code testRuntimeOnly} configuration.
+     */
+    TEST_RUNTIME_ONLY(TEST_RUNTIME_ONLY_CONFIGURATION_NAME),
 
     /**
      * The {@code implementation} configuration.

@@ -24,7 +24,7 @@ import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
 /**
- * An option that defines a pattern that a field value has to match.
+ * An option defining a pattern that a field value has to match.
  */
 final class Pattern extends FieldValidatingOption<PatternOption, String> {
 

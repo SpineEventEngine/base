@@ -26,7 +26,7 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
 
 /**
- * An option that, if applied to a field that is being validated, provides custom error messages.
+ * An option which provides custom error messages if applied to a field being validated.
  */
 final class IfInvalid extends FieldOption<IfInvalidOption> {
 
@@ -36,7 +36,7 @@ final class IfInvalid extends FieldOption<IfInvalidOption> {
     }
 
     /**
-     * Returns the option value from the specified field, or a default value, if field does not
+     * Returns the option value from the specified field or a default value, if the field does not
      * have its own option value.
      */
     IfInvalidOption valueOrDefault(FieldDescriptor field){

@@ -21,11 +21,12 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.common.base.Objects;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Message;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
@@ -37,11 +38,13 @@ import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
+import io.spine.validate.Validate;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.DescriptorProtos.DescriptorProto.FIELD_FIELD_NUMBER;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
@@ -95,6 +98,34 @@ public final class FieldDeclaration implements Logging {
      */
     public MessageType declaringType() {
         return declaringMessage;
+    }
+
+    /**
+     * Checks if the given value is the default value for this field.
+     *
+     * @param fieldValue
+     *         the value of the field
+     * @return {@code true} if the given value is default for this field, {@code false} otherwise
+     */
+    public boolean isDefault(Object fieldValue) {
+        checkNotNull(fieldValue);
+        if (isMessage()) {
+            if (fieldValue instanceof Message) {
+                Message message = (Message) fieldValue;
+                return Validate.isDefault(message) && sameMessageType(message);
+            } else {
+                return false;
+            }
+        } else {
+            return fieldValue.equals(field.getDefaultValue());
+        }
+    }
+
+    private boolean sameMessageType(Message msg) {
+        String messageClassName = msg.getClass()
+                                     .getName();
+        String fieldClassName = messageClassName();
+        return fieldClassName.equals(messageClassName);
     }
 
     /**
@@ -247,11 +278,6 @@ public final class FieldDeclaration implements Logging {
         return new FieldDeclaration(valueDescriptor);
     }
 
-    /** Returns the name of the type of this field. */
-    public String typeName(){
-        return field.getType().name();
-    }
-
     private boolean isEntityField() {
         EntityOption entityOption = field.getContainingType()
                                          .getOptions()
@@ -304,17 +330,35 @@ public final class FieldDeclaration implements Logging {
     private LocationPath fieldPath() {
         LocationPath locationPath = new LocationPath();
         locationPath.addAll(declaringMessage.path());
-        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
+        locationPath.add(FIELD_FIELD_NUMBER);
         int fieldIndex = fieldIndex();
         locationPath.add(fieldIndex);
         return locationPath;
     }
 
     private int fieldIndex() {
-        FieldDescriptorProto fproto = this.field.toProto();
+        FieldDescriptorProto proto = this.field.toProto();
         return declaringMessage.descriptor()
                                .toProto()
                                .getFieldList()
-                               .indexOf(fproto);
+                               .indexOf(proto);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FieldDeclaration)) {
+            return false;
+        }
+        FieldDeclaration that = (FieldDeclaration) o;
+        return Objects.equal(declaringMessage, that.declaringMessage) &&
+                Objects.equal(field.getFullName(), that.field.getFullName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(declaringMessage, field.getFullName());
     }
 }

@@ -26,7 +26,7 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Provides information about the environment (current platform used, etc).
+ * Provides information about the environment (current platform used, etc.).
  */
 @SPI
 @SuppressWarnings("AccessOfSystemProperties") // OK as we need system properties for this class.
