@@ -35,7 +35,7 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
  *
  * @see ProtocConfigurationPlugin
  */
-final class DependencyVersions {
+public final class DependencyVersions {
 
     private static final String RESOURCE_NAME = "/versions.properties";
 
@@ -87,7 +87,7 @@ final class DependencyVersions {
     /**
      * Obtains the version of gRPC.
      */
-    String grpc() {
+    public String grpc() {
         return grpc;
     }
 

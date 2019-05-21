@@ -20,14 +20,18 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
+import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
+import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -49,6 +53,9 @@ import static io.spine.tools.gradle.TaskName.writeTestPluginConfiguration;
  * projects.
  */
 public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
+
+    private static final String GRPC_GROUP = "io.grpc";
+    private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
 
     @Override
     protected void configureDescriptorSetGeneration(GenerateProtoTask protocTask,
@@ -90,6 +97,19 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                               String encodedOption = base64Encoded(option);
                               options.option(encodedOption);
                           });
+    }
+
+    @OverridingMethodsMustInvokeSuper
+    @Override
+    protected final void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        super.configureProtocPlugins(plugins);
+        plugins.create(ProtocPlugin.grpc.name(),
+                       locator -> locator.setArtifact(Artifact.newBuilder()
+                                                              .setGroup(GRPC_GROUP)
+                                                              .setName(GRPC_PLUGIN_NAME)
+                                                              .setVersion(VERSIONS.grpc())
+                                                              .build()
+                                                              .notation()));
     }
 
     @Override

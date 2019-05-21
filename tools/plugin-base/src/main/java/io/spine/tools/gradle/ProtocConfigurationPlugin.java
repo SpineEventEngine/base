@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
@@ -60,16 +61,13 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
 
-    private static final String GRPC_GROUP = "io.grpc";
-    private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
-
     protected static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
     private static final String JAR_EXTENSION = "jar";
     private static final String SH_EXTENSION = "sh";
     private static final String BAT_EXTENSION = "bat";
     private static final String SCRIPT_CLASSIFIER = "script";
 
-    private static final DependencyVersions VERSIONS = DependencyVersions.load();
+    protected static final DependencyVersions VERSIONS = DependencyVersions.load();
 
     @Override
     public void apply(Project project) {
@@ -93,7 +91,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                                         protocLocator.setArtifact(protobufCompiler()
                                                                           .ofVersion(version)
                                                                           .notation())));
-        protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
+        protobuf.plugins(closure(this::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
                 (GenerateProtoTaskCollection tasks) -> configureProtocTasks(tasks, copyPluginJar)
@@ -116,15 +114,17 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         }
     }
 
-    private static void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        plugins.create(ProtocPlugin.grpc.name(),
-                       locator -> locator.setArtifact(Artifact.newBuilder()
-                                                              .setGroup(GRPC_GROUP)
-                                                              .setName(GRPC_PLUGIN_NAME)
-                                                              .setVersion(VERSIONS.grpc())
-                                                              .build()
-                                                              .notation()));
+    /**
+     * Adds plugins related to the {@code protoc}.
+     *
+     * @param plugins
+     *         container of all plugins
+     * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
+     *         which
+     *         is a required plugin
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
             boolean windows = current().isWindows();
             String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
