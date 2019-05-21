@@ -25,7 +25,7 @@ import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 
 /**
- * An option that, for a specified file, specified whether marker interfaces should be generated and
+ * An option for a specified file which defines if marker interfaces should be generated and
  * the Java type of the message.
  *
  * @see Is Is option

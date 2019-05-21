@@ -221,7 +221,7 @@ public final class TypeUrl implements Serializable {
      * Returns a message {@link Class} corresponding to the Protobuf message type represented
      * by this type URL.
      *
-     * <p>This is a convenience method. Use it only when sure that the {@code TypeUrl} represents
+     * <p>This is a convenience method. Use it only when you are sure the {@code TypeUrl} represents
      * a message (i.e. not an enum).
      *
      * @throws IllegalStateException if the type URL represents an enum
