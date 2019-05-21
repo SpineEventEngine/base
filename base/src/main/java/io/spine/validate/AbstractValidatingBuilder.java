@@ -258,7 +258,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param newValue
      *         the new value of the field
      * @throws ValidationException
-     *         if the value of the  field that is {@code (set_once) = true} is being changed
+     *         if the value of the field that is {@code (set_once) = true} is being changed
      */
     @SuppressWarnings("unused") // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field, Object newValue)

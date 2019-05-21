@@ -20,6 +20,8 @@
 
 package io.spine.tools.protoc.iface;
 
+import io.spine.tools.protoc.TypeParameters;
+
 /**
  * An interface to be implemented by the Protobuf message.
  *
@@ -36,5 +38,5 @@ public interface MessageInterface {
     /**
      * Obtains the generic params of the interface.
      */
-    MessageInterfaceParameters parameters();
+    TypeParameters parameters();
 }

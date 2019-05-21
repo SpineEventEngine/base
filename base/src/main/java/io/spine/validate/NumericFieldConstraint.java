@@ -44,7 +44,7 @@ public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
     }
 
     /**
-     * Whether the actual value of the field satisfies this constraint.
+     * Checks if the actual value of the field satisfies this constraint.
      *
      * @param value
      *         a value of the field.

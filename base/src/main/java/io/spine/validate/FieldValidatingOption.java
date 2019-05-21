@@ -92,7 +92,7 @@ public abstract class FieldValidatingOption<T, F>
      *         descriptor of the field
      * @param context
      *         context of the field
-     * @return an {@code Optional} with an option value, if such exists, otherwise an empty
+     * @return an {@code Optional} with an option value if such exists, otherwise an empty
      *         {@code Optional}
      * @apiNote Use this in favour of {@link
      *         FieldOption#optionsFrom(com.google.protobuf.Descriptors.FieldDescriptor)

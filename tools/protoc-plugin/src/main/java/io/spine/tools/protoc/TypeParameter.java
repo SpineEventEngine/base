@@ -18,14 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.iface.MessageInterface;
+import io.spine.type.Type;
+
 /**
- * This package contains classes for generating {@link com.google.errorprone.fixes.Fix} for the
- * different cases of the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
+ * The generic parameter of the {@link MessageInterface}.
+ *
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.check.vbuilder.fixer;
+@Immutable
+public interface TypeParameter {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains a parameter value based on who is the message interface descendant.
+     *
+     * @param descendant
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
+     */
+    String valueFor(Type<?, ?> descendant);
+}

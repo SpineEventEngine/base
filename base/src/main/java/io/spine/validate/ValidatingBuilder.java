@@ -97,7 +97,7 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      * Clears the state of this builder.
      *
      * <p>In particular, the state of the message being built is reset to the default.
-     * Also the original state (if it {@linkplain #setOriginalState(Message) has been set}
+     * Also, the original state (if it {@linkplain #setOriginalState(Message) has been set}
      * previously) is cleared.
      */
     @Internal
