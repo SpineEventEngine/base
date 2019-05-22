@@ -182,14 +182,13 @@ public final class FieldDeclaration implements Logging {
      * <p>An entity ID satisfies the following conditions:
      * <ul>
      *     <li>Declared as the first field.
-     *     <li>Named {@code id} or the name ends with {@code _id}.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
     public boolean isEntityId() {
-        return isFirstField() && matchesIdName() && isEntityField();
+        return isFirstField() && isEntityField();
     }
 
     /**
@@ -284,11 +283,6 @@ public final class FieldDeclaration implements Logging {
                                          .getExtension(OptionsProto.entity);
         EntityOption.Kind entityKind = entityOption.getKind();
         return entityKind.getNumber() > 0;
-    }
-
-    private boolean matchesIdName() {
-        String name = field.getName();
-        return "id".equals(name) || name.endsWith("_id");
     }
 
     /**
