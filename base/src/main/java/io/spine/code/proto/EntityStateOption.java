@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
@@ -30,6 +31,7 @@ import java.util.Optional;
  * An option that, for a message representing a state of the entity, defines its kind (of which
  * there are four: Aggregate, Projection, Process Manager and Entity) and its visibility to queries.
  */
+@Immutable
 public final class EntityStateOption extends MessageOption<EntityOption> {
 
     private EntityStateOption() {

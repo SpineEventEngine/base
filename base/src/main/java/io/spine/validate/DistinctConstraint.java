@@ -22,6 +22,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.base.FieldPath;
 import io.spine.type.TypeName;
 
@@ -37,7 +39,8 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * @param <T>
  *         type of values that this constraint is applicable to
  */
-final class DistinctConstraint<T> extends FieldValueConstraint<T, Boolean> {
+@Immutable
+final class DistinctConstraint<@ImmutableTypeParameter T> extends FieldValueConstraint<T, Boolean> {
 
     DistinctConstraint(Boolean optionValue) {
         super(optionValue);

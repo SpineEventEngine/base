@@ -21,13 +21,17 @@
 package io.spine.validate;
 
 import com.google.common.collect.Range;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.MinOption;
 
 /**
  * A constraint that, when applied to a numeric field, checks whether the value of that field is
  * greater than (or equal to, if specified by the value of the respective option) a min value.
  */
-final class MinConstraint<V extends Number & Comparable> extends RangedConstraint<V, MinOption> {
+@Immutable
+final class MinConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+        extends RangedConstraint<V, MinOption> {
 
     MinConstraint(MinOption optionValue) {
         super(optionValue, minRange(optionValue));

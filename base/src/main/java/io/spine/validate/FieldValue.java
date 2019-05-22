@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -48,7 +50,8 @@ import static java.lang.String.format;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
  *         Protobuf Maps</a>
  */
-public final class FieldValue<T> {
+@Immutable
+public final class FieldValue<@ImmutableTypeParameter T> {
 
     /**
      * Actual field values.
@@ -61,12 +64,12 @@ public final class FieldValue<T> {
      * For a map fields, a list contains a list of values, since the map values are being validated,
      * not the keys.
      */
-    private final List<T> values;
+    private final ImmutableList<T> values;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
     private FieldValue(List<T> values, FieldContext context, FieldDeclaration declaration) {
-        this.values = values;
+        this.values = ImmutableList.copyOf(values);
         this.context = context;
         this.declaration = declaration;
     }
@@ -82,7 +85,7 @@ public final class FieldValue<T> {
      */
     // Object to T is always safe since validating builders only receive `T`s.
     @SuppressWarnings("unchecked")
-    static <T> FieldValue<T> of(Object rawValue, FieldContext context) {
+    static <@ImmutableTypeParameter T> FieldValue<T> of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
         T value = rawValue instanceof ProtocolMessageEnum
@@ -112,7 +115,7 @@ public final class FieldValue<T> {
             "unchecked", // Raw value is always of a correct type, see Javadoc for details.
             "ChainOfInstanceofChecks" // No common ancestors.
     })
-    private static <T> FieldValue<T> resolveType(FieldDeclaration field,
+    private static <@ImmutableTypeParameter T> FieldValue<T> resolveType(FieldDeclaration field,
                                                  FieldContext context,
                                                  T value) {
         if (value instanceof List) {

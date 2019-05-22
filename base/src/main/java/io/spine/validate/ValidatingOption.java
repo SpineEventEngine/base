@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import io.spine.code.proto.Option;
 
@@ -35,7 +37,11 @@ import io.spine.code.proto.Option;
  * @param <V>
  *         kind of value that constraints produced by this option are applied to
  */
-interface ValidatingOption<T, K extends GenericDescriptor, V> extends Option<T, K> {
+@Immutable
+interface ValidatingOption<@ImmutableTypeParameter T,
+                           @ImmutableTypeParameter K extends GenericDescriptor,
+                           @ImmutableTypeParameter V>
+        extends Option<T, K> {
 
     Constraint<V> constraintFor(V value);
 }

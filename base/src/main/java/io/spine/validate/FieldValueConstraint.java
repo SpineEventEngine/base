@@ -20,6 +20,9 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -30,7 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         a type of value that describes the constraints
  */
-public abstract class FieldValueConstraint<T, V> implements Constraint<FieldValue<T>> {
+@Immutable
+public abstract class FieldValueConstraint<@ImmutableTypeParameter T, @ImmutableTypeParameter V>
+        implements Constraint<FieldValue<T>> {
 
     private final V optionValue;
 

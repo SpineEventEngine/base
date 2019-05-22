@@ -23,6 +23,8 @@ package io.spine.validate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.base.FieldPath;
 import io.spine.option.IfMissingOption;
 import io.spine.type.TypeName;
@@ -38,7 +40,8 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
  * @param <T>
  *         type of the value that the constrained field holds
  */
-final class RequiredConstraint<T> implements Constraint<FieldValue<T>> {
+@Immutable
+final class RequiredConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
 
     @VisibleForTesting
     static final String ERROR_MESSAGE = "Value must be set.";

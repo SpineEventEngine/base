@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -76,6 +77,7 @@ public abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field is required regardless
      *         of the {@code required} Protobuf option value
      */
+    @SuppressWarnings("Immutable") // message field values are immutable
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
@@ -204,6 +206,7 @@ public abstract class FieldValidator<V> implements Logging {
     /**
      * Returns {@code true} if the field has required attribute or validation is strict.
      */
+    @SuppressWarnings("Immutable") // message field values are immutable
     protected boolean isRequiredField() {
         Required<V> requiredOption = Required.create(assumeRequired);
         boolean required = requiredOption.valueFrom(descriptor())
@@ -277,6 +280,7 @@ public abstract class FieldValidator<V> implements Logging {
      *
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
+    @SuppressWarnings("Immutable") // message field values are immutable
     private boolean isRequiredEntityId() {
         Required<V> requiredOption = Required.create(assumeRequired);
         Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(descriptor());
@@ -323,7 +327,8 @@ public abstract class FieldValidator<V> implements Logging {
         return declaration;
     }
 
-    private static <V> ImmutableSet<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
+    private static <@ImmutableTypeParameter V>
+    ImmutableSet<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
         return ImmutableSet.of(Distinct.create(),
                                Required.create(strict));
     }

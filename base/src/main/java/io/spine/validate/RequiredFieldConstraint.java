@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.type.TypeName;
 
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
  * A constraint that, when applied to a message, checks whether the specified combination of fields
  * has non-default values.
  */
+@Immutable
 final class RequiredFieldConstraint implements Constraint<MessageValue> {
 
     /**
@@ -51,37 +53,101 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
 
     private final String optionValue;
 
-    private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-
     RequiredFieldConstraint(String optionValue) {
         this.optionValue = optionValue;
     }
 
     @Override
     public ImmutableList<ConstraintViolation> check(MessageValue value) {
-        return matches(value) ? ImmutableList.of() : violations.build();
+        if (optionValue.isEmpty()) {
+            return ImmutableList.of();
+        }
+
+        Check check = new Check(value);
+        return check.perform();
     }
 
-    private boolean matches(MessageValue messageField) {
-        if (optionValue.isEmpty()) {
-            return true;
+    /**
+     * Method object for validating a value.
+     */
+    private class Check {
+
+        private final MessageValue value;
+        private final ImmutableList<RequiredFieldAlternatives> alternatives = parse(optionValue);
+        private final ImmutableList.Builder<ConstraintViolation> violations =
+                ImmutableList.builder();
+
+        private Check(MessageValue value) {
+            this.value = value;
         }
-        ImmutableList<RequiredFieldAlternatives> alternatives = parse(this.optionValue);
-        if (!alternativeFound(alternatives, messageField)) {
-            String msgFormat =
-                    "None of the fields match the `required_field` definition: `%s`.";
-            TypeName typeName = messageField.declaration()
-                                            .name();
-            ConstraintViolation requiredFieldNotFound = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat(msgFormat)
-                    .addParam(this.optionValue)
-                    .setTypeName(typeName.value())
-                    .build();
-            violations.add(requiredFieldNotFound);
+
+        ImmutableList<ConstraintViolation> perform() {
+            if (!alternativeFound()) {
+                String msgFormat =
+                        "None of the fields match the `required_field` definition: `%s`.";
+                TypeName typeName = value.declaration()
+                                         .name();
+                ConstraintViolation requiredFieldNotFound = ConstraintViolation
+                        .newBuilder()
+                        .setMsgFormat(msgFormat)
+                        .addParam(optionValue)
+                        .setTypeName(typeName.value())
+                        .build();
+                violations.add(requiredFieldNotFound);
+
+            }
+            return violations.build();
+        }
+
+        private boolean alternativeFound() {
+            for (RequiredFieldAlternatives alternative : alternatives) {
+                boolean found = checkFields(alternative.fieldNames);
+                if (found) {
+                    return true;
+                }
+            }
             return false;
         }
-        return true;
+
+        private boolean checkFields(Iterable<String> fieldNames) {
+            for (String fieldName : fieldNames) {
+                if (!checkField(fieldName)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private boolean checkField(String fieldName) {
+            Optional<FieldValue<?>> fieldValue = value.valueOf(fieldName);
+            if (!fieldValue.isPresent()) {
+                ConstraintViolation notFound = ConstraintViolation
+                        .newBuilder()
+                        .setMsgFormat("Field named `%s` is not found.")
+                        .addParam(fieldName)
+                        .build();
+                violations.add(notFound);
+                return false;
+            }
+            FieldValidator<?> fieldValidator = fieldValue.get()
+                                                         .createValidatorAssumingRequired();
+            List<ConstraintViolation> violations = fieldValidator.validate();
+            // Do not add violations to the results because we have options.
+            // The violation would be that none of the field or combinations is defined.
+
+            return violations.isEmpty();
+        }
+
+        private ImmutableList<RequiredFieldAlternatives> parse(String expression) {
+            ImmutableList.Builder<RequiredFieldAlternatives> alternatives = ImmutableList.builder();
+            String whiteSpaceRemoved = WHITESPACE.matcher(expression)
+                                                 .replaceAll("");
+            Iterable<String> parts = orSplitter.split(whiteSpaceRemoved);
+            for (String part : parts) {
+                alternatives.add(RequiredFieldAlternatives.ofCombination(part));
+            }
+            return alternatives.build();
+        }
     }
 
     /**
@@ -103,56 +169,5 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
             Iterable<String> parts = andSplitter.split(expression);
             return ofCombination(ImmutableList.copyOf(parts));
         }
-    }
-
-    private static ImmutableList<RequiredFieldAlternatives> parse(String expression) {
-        ImmutableList.Builder<RequiredFieldAlternatives> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = WHITESPACE.matcher(expression)
-                                             .replaceAll("");
-        Iterable<String> parts = orSplitter.split(whiteSpaceRemoved);
-        for (String part : parts) {
-            alternatives.add(RequiredFieldAlternatives.ofCombination(part));
-        }
-        return alternatives.build();
-    }
-
-    private boolean alternativeFound(Iterable<RequiredFieldAlternatives> alternatives,
-                                     MessageValue message) {
-        for (RequiredFieldAlternatives alternative : alternatives) {
-            boolean found = checkFields(alternative.fieldNames, message);
-            if (found) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkField(String fieldName, MessageValue message) {
-        Optional<FieldValue<?>> fieldValue = message.valueOf(fieldName);
-        if (!fieldValue.isPresent()) {
-            ConstraintViolation notFound = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat("Field named `%s` is not found.")
-                    .addParam(fieldName)
-                    .build();
-            violations.add(notFound);
-            return false;
-        }
-        FieldValidator<?> fieldValidator = fieldValue.get()
-                                                     .createValidatorAssumingRequired();
-        List<ConstraintViolation> violations = fieldValidator.validate();
-        // Do not add violations to the results because we have options.
-        // The violation would be that none of the field or combinations is defined.
-
-        return violations.isEmpty();
-    }
-
-    private boolean checkFields(Iterable<String> fieldNames, MessageValue message) {
-        for (String fieldName : fieldNames) {
-            if (!checkField(fieldName, message)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

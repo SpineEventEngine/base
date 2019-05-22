@@ -20,12 +20,14 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.OptionsProto;
 
 /**
  * An option that indicates that the fields internal field should be included into the validation.
  */
+@Immutable
 final class Valid extends FieldOption<Boolean> {
 
     /** Creates a new instance of this option. */

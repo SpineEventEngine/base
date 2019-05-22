@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.DigitsOption;
 import io.spine.option.OptionsProto;
 
@@ -30,7 +32,9 @@ import io.spine.option.OptionsProto;
  * @param <N>
  *         numeric value that this option is applied to
  */
-final class Digits<N extends Number & Comparable> extends FieldValidatingOption<DigitsOption, N> {
+@Immutable
+final class Digits<@ImmutableTypeParameter N extends Number & Comparable>
+        extends FieldValidatingOption<DigitsOption, N> {
 
     private Digits() {
         super(OptionsProto.digits);
@@ -43,7 +47,7 @@ final class Digits<N extends Number & Comparable> extends FieldValidatingOption<
      *         type of value that a field marked with this option has
      * @return new instance of this option
      */
-    public static <V extends Number & Comparable> Digits<V> create() {
+    public static <@ImmutableTypeParameter V extends Number & Comparable> Digits<V> create() {
         return new Digits<>();
     }
 

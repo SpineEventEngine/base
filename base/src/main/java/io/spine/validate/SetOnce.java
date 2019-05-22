@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.OptionsProto;
@@ -29,6 +30,7 @@ import java.util.Optional;
 /**
  * An option that indicates that a field value cannot be changed.
  */
+@Immutable
 final class SetOnce extends FieldOption<Boolean> {
 
     /**

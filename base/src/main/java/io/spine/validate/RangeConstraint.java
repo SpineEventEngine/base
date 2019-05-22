@@ -24,6 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -35,7 +37,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @param <V>
  *         numeric value that this constraint is applied to
  */
-final class RangeConstraint<V extends Number & Comparable> extends RangedConstraint<V, String> {
+@Immutable
+final class RangeConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+        extends RangedConstraint<V, String> {
 
     private static final Splitter RANGE_SPLITTER = Splitter.on("..");
 

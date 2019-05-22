@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.io.Files2;
 import io.spine.io.Resource;
 
@@ -48,6 +49,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * <p>Multiple reference files may be present at runtime of an application. The files may be merged
  * by appending if a "fat" JAR artifact is required.
  */
+@Immutable
 public final class DescriptorReference {
 
     /**

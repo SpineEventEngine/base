@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
@@ -38,6 +39,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * A value of a {@link Message} to validate.
  */
+@Immutable
 final class MessageValue {
 
     private final Message message;
@@ -147,6 +149,7 @@ final class MessageValue {
 
     private FieldValue<?> valueOf(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
+        @SuppressWarnings("Immutable") // field values are immutable
         FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
         return value;
     }

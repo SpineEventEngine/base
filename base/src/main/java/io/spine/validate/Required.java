@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.logging.Logging;
@@ -36,7 +38,9 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  *
  * <p>If a {@code required} field is missing, an error is produced.
  */
-public class Required<T> extends FieldValidatingOption<Boolean, T> implements Logging {
+@Immutable
+public class Required<@ImmutableTypeParameter T>
+        extends FieldValidatingOption<Boolean, T> implements Logging {
 
     private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING
@@ -65,7 +69,7 @@ public class Required<T> extends FieldValidatingOption<Boolean, T> implements Lo
      *         type of value that the returned option is applied to
      * @return a new instance of the {@code Required} option
      */
-    static <T> Required<T> create(boolean strict) {
+    static <@ImmutableTypeParameter T> Required<T> create(boolean strict) {
         return strict
                ? new AlwaysRequired<>()
                : new Required<>();

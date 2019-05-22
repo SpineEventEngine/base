@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.base.Objects;
+import com.google.errorprone.annotations.Immutable;
 
 /**
  * A number that can be compared to another number.
@@ -29,9 +30,11 @@ import com.google.common.base.Objects;
  * precision beyond that of {@code Double} is required, instances of this class
  * yield incorrect comparison results.
  */
+@Immutable
 final class ComparableNumber extends Number implements Comparable<Number> {
 
     private static final long serialVersionUID = 0L;
+    @SuppressWarnings("Immutable") // effectively
     private final Number value;
 
     /** Creates a new instance from the specified number. */

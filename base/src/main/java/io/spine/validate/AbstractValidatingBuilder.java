@@ -161,6 +161,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     @Override
+    @SuppressWarnings("Immutable") // message field values are immutable
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);

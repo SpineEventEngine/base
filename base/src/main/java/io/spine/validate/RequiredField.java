@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 
 import java.util.Optional;
@@ -45,6 +46,7 @@ import static io.spine.option.OptionsProto.requiredField;
  * The {@code PersonName} message is valid against the {@code RequiredField} either if it has a
  * non-default family name, or both honorific prefix and a family name.
  */
+@Immutable
 final class RequiredField implements ValidatingOption<String, Descriptor, MessageValue> {
 
     @Override

@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 
 /**
  * A constraint that is applicable to numeric fields only.
@@ -28,7 +30,9 @@ import com.google.common.collect.ImmutableList;
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
-public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
+@Immutable
+public abstract class NumericFieldConstraint<@ImmutableTypeParameter V extends Number & Comparable,
+                                             @ImmutableTypeParameter T>
         extends FieldValueConstraint<V, T> {
 
     NumericFieldConstraint(T optionValue) {

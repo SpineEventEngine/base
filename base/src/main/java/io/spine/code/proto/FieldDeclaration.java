@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -54,6 +55,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Declaration of a Protobuf message field.
  */
+@Immutable
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
@@ -278,9 +280,10 @@ public final class FieldDeclaration implements Logging {
     }
 
     private boolean isEntityField() {
-        EntityOption entityOption = field.getContainingType()
-                                         .getOptions()
-                                         .getExtension(OptionsProto.entity);
+        EntityOption entityOption =
+                field.getContainingType()
+                     .getOptions()
+                     .getExtension(OptionsProto.entity);
         EntityOption.Kind entityKind = entityOption.getKind();
         return entityKind.getNumber() > 0;
     }
