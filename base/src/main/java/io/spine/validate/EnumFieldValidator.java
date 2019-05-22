@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.ValidatingOptionFactory;
 
 import java.util.Set;
 

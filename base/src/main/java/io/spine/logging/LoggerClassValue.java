@@ -87,7 +87,7 @@ class LoggerClassValue extends ClassValue<Logger> {
      * Obtains or creates a logger for the passed class.
      *
      * @implNote If the code is executed under the {@linkplain Environment#isTests() tests},
-     *           returned instance is new instance of a {@link SubstituteLogger},
+     *           returned instance is a new instance of a {@link SubstituteLogger},
      *           which redirects to a {@code Logger} obtained from
      *           {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      */

@@ -65,8 +65,8 @@ public final class FileSet implements Logging {
     /**
      * All the files of this set.
      *
-     * <p>Each file is identified by its {@linkplain FileDescriptor#getFullName() full name}
-     * (otherwise, the Protobuf imports would not work).
+     * <p>Each file is identified by its {@linkplain FileDescriptor#getFullName() full name}.
+     * Otherwise, the Protobuf imports will not work.
      */
     private final Map<FileName, FileDescriptor> files;
 
@@ -162,7 +162,7 @@ public final class FileSet implements Logging {
     /**
      * Constructs a new {@code FileSet} out of the given file descriptors.
      *
-     * <p>The file descriptors are linked in order to obtain normal {@code FileDescriptor}s out
+     * <p>The file descriptors are linked to obtain normal {@code FileDescriptor}s out
      * of {@code FileDescriptorProto}s.
      *
      * @param protoDescriptors
@@ -175,7 +175,7 @@ public final class FileSet implements Logging {
     }
 
     /**
-     * Obtains message declarations, that match the specified {@link java.util.function.Predicate}.
+     * Obtains message declarations that match the specified {@link java.util.function.Predicate}.
      *
      * @param predicate the predicate to test a message
      * @return the message declarations
@@ -274,7 +274,7 @@ public final class FileSet implements Logging {
     }
 
     /**
-     * Returns an Optional containing the first file that matches the name, if such an file exists.
+     * Returns an Optional containing the first file that matches the name, if such file exists.
      */
     public Optional<FileDescriptor> tryFind(FileName fileName) {
         if (files.containsKey(fileName)) {
