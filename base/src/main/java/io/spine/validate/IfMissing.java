@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.IfMissingOption;
@@ -30,6 +31,7 @@ import java.util.Optional;
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
  */
+@Immutable
 final class IfMissing extends FieldOption<IfMissingOption> {
 
     /** Creates a new instance of this option. */

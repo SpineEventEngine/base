@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Validates fields of type {@link String}.
  */
-class StringFieldValidator extends FieldValidator<String> {
+final class StringFieldValidator extends FieldValidator<String> {
 
     /**
      * Creates a new validator instance.

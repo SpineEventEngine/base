@@ -20,12 +20,14 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
 /**
  * An option defining a pattern that a field value has to match.
  */
+@Immutable
 final class Pattern extends FieldValidatingOption<PatternOption, String> {
 
     private Pattern() {
