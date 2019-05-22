@@ -18,22 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.gradle;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
-import io.spine.code.fs.java.DefaultJavaProject;
-import io.spine.code.proto.DescriptorReference;
-import io.spine.tools.gradle.Artifact;
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.ProtobufDependencies;
-import io.spine.tools.gradle.SourceScope;
-import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.gradle.TaskName;
 import io.spine.tools.groovy.GStrings;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -42,57 +35,44 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.Collection;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ConfigurationName.FETCH;
+import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
-import static io.spine.tools.gradle.TaskName.clean;
-import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
-import static io.spine.tools.gradle.TaskName.writePluginConfiguration;
-import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
-import static io.spine.tools.gradle.TaskName.writeTestPluginConfiguration;
-import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
-import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
- * The Gradle plugin which configures Protobuf compilation.
+ * An abstract base for Gradle plugins that configure Protobuf compilation.
  *
- * <p>This plugin requires {@code com.google.protobuf} plugin. If it is not applied, the plugin
- * performs no action.
+ * <p>Any extending plugin requires {@code com.google.protobuf} plugin. If it is not applied,
+ * no action is performed.
  */
-public class ProtocConfigurationPlugin extends SpinePlugin {
+public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
 
-    private static final String GRPC_GROUP = "io.grpc";
-    private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
-
-    private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+    protected static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
     private static final String JAR_EXTENSION = "jar";
     private static final String SH_EXTENSION = "sh";
     private static final String BAT_EXTENSION = "bat";
     private static final String SCRIPT_CLASSIFIER = "script";
 
-    private static final DependencyVersions VERSIONS = DependencyVersions.load();
+    protected static final DependencyVersions VERSIONS = DependencyVersions.load();
 
     @Override
     public void apply(Project project) {
         project.getPluginManager()
-               .withPlugin(ProtobufDependencies.gradlePlugin().value(), plugin -> applyTo(project));
+               .withPlugin(gradlePlugin().value(), plugin -> applyTo(project));
     }
 
     private void applyTo(Project project) {
@@ -104,15 +84,14 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
     }
 
     private void configureProtobuf(Project project, ProtobufConfigurator protobuf) {
-        DefaultJavaProject defaultProject = at(project.getProjectDir());
-        protobuf.setGeneratedFilesBaseDir(defaultProject.generated()
-                                                        .toString());
+        Path generatedFilesBaseDir = generatedFilesBaseDir(project);
+        protobuf.setGeneratedFilesBaseDir(generatedFilesBaseDir.toString());
         String version = VERSIONS.protobuf();
         protobuf.protoc(closure((ExecutableLocator protocLocator) ->
                                         protocLocator.setArtifact(protobufCompiler()
                                                                           .ofVersion(version)
                                                                           .notation())));
-        protobuf.plugins(closure(ProtocConfigurationPlugin::configureProtocPlugins));
+        protobuf.plugins(closure(this::configureProtocPlugins));
         GradleTask copyPluginJar = createCopyPluginJarTask(project);
         protobuf.generateProtoTasks(closure(
                 (GenerateProtoTaskCollection tasks) -> configureProtocTasks(tasks, copyPluginJar)
@@ -135,27 +114,36 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         }
     }
 
-    private static void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        plugins.create(ProtocPlugin.GRPC.name,
-                       locator -> locator.setArtifact(Artifact.newBuilder()
-                                                              .setGroup(GRPC_GROUP)
-                                                              .setName(GRPC_PLUGIN_NAME)
-                                                              .setVersion(VERSIONS.grpc())
-                                                              .build()
-                                                              .notation()));
-        plugins.create(ProtocPlugin.SPINE.name, locator -> {
-            boolean windows = current().isWindows();
-            String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
-            locator.setArtifact(Artifact.newBuilder()
-                                        .useSpineToolsGroup()
-                                        .setName(SPINE_PLUGIN_NAME)
-                                        .setVersion(VERSIONS.spineBase())
-                                        .setClassifier(SCRIPT_CLASSIFIER)
-                                        .setExtension(scriptExt)
-                                        .build()
-                                        .notation());
-        });
+    /**
+     * Adds plugins related to the {@code protoc}.
+     *
+     * @param plugins
+     *         container of all plugins
+     * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
+     *         which
+     *         is a required plugin
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        if (!spineProtocIsPresent(plugins)) {
+            plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
+                boolean windows = current().isWindows();
+                String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
+                locator.setArtifact(Artifact.newBuilder()
+                                            .useSpineToolsGroup()
+                                            .setName(SPINE_PLUGIN_NAME)
+                                            .setVersion(VERSIONS.spineBase())
+                                            .setClassifier(SCRIPT_CLASSIFIER)
+                                            .setExtension(scriptExt)
+                                            .build()
+                                            .notation());
+            });
+        }
+    }
+
+    private static boolean
+    spineProtocIsPresent(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        return plugins.findByName(ProtocPlugin.spineProtoc.name()) != null;
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
@@ -174,13 +162,20 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         checkNotNull(protocPluginDependency,
                      "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
         Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
-        GradleTask copyPluginJar = newTask(TaskName.copyPluginJar, action)
-                .allowNoDependencies()
-                .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
-                .withOutputFiles(project.fileTree(spineDirectory(project)))
-                .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
-                .applyNowTo(project);
-        return copyPluginJar;
+
+        Task copyPluginJarTask = project.getTasks()
+                           .findByPath(TaskName.copyPluginJar.name());
+        if (copyPluginJarTask == null ){
+            GradleTask copyPluginJarBuilder = newTask(TaskName.copyPluginJar, action)
+                    .allowNoDependencies()
+                    .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                    .withOutputFiles(project.fileTree(spineDirectory(project)))
+                    .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
+                    .applyNowTo(project);
+            return copyPluginJarBuilder;
+        } else {
+            return GradleTask.from(copyPluginJarTask);
+        }
     }
 
     private static File spineDirectory(Project project) {
@@ -201,109 +196,42 @@ public class ProtocConfigurationPlugin extends SpinePlugin {
         boolean tests = isTestsTask(protocTask);
         Project project = protocTask.getProject();
         File descriptor;
-        TaskName writeRefName;
-        if (tests) {
-            descriptor = getTestDescriptorSet(project);
-            writeRefName = writeTestDescriptorReference;
-        } else {
-            descriptor = getMainDescriptorSet(project);
-            writeRefName = writeDescriptorReference;
-        }
+        descriptor = tests
+                     ? getTestDescriptorSet(project)
+                     : getMainDescriptorSet(project);
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
         options.setPath(GStrings.fromPlain(descriptor.getPath()));
         options.setIncludeImports(true);
         options.setIncludeSourceInfo(true);
 
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
-        Path resourceDirectory = descriptor.toPath()
-                                           .getParent();
-        javaConvention.getSourceSets()
-                      .getByName(sourceScope.name())
-                      .getResources()
-                      .srcDir(resourceDirectory);
-        GradleTask writeRef = newTask(writeRefName, task -> {
-            DescriptorReference reference = DescriptorReference.toOneFile(descriptor);
-            reference.writeTo(resourceDirectory);
-        }).allowNoDependencies()
-          .applyNowTo(project);
-        protocTask.finalizedBy(writeRef.getTask());
+        configureDescriptorSetGeneration(protocTask, descriptor);
     }
 
-    private void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
-        Path spineProtocConfigPath = spineProtocConfigPath(protocTask);
-        Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
-        protocTask.dependsOn(dependency, writeConfig);
-        protocTask.getPlugins()
-                  .create(ProtocPlugin.GRPC.name);
-        protocTask.getPlugins()
-                  .create(ProtocPlugin.SPINE.name,
-                          options -> {
-                              options.setOutputSubDir("java");
-                              String option = spineProtocConfigPath.toString();
-                              String encodedOption = base64Encoded(option);
-                              options.option(encodedOption);
-                          });
-    }
+    /** Obtains the location of the {@code generated} directory of the specified project. */
+    protected abstract Path generatedFilesBaseDir(Project project);
 
-    private static String base64Encoded(String value) {
-        Base64.Encoder encoder = Base64.getEncoder();
-        byte[] valueBytes = value.getBytes(UTF_8);
-        String result = encoder.encodeToString(valueBytes);
-        return result;
-    }
+    /** Obtains the merged descriptor set file of the {@code main} module. */
+    protected abstract File getMainDescriptorSet(Project project);
 
-    /**
-     * Creates a new {@code writeSpineProtocConfig} task that is expected to run after the
-     * {@code clean} task.
-     */
-    private Task newWriteSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
-        return newTask(spineProtocConfigWriteTaskName(protocTask), task -> {
-            ProtocPluginConfiguration configuration = ProtocPluginConfiguration
-                    .forProject(protocTask.getProject());
-            configuration.writeTo(configPath);
-        }).allowNoDependencies()
-          .applyNowTo(protocTask.getProject())
-          .getTask()
-          .mustRunAfter(clean.value());
-    }
+    /** Obtains the merged descriptor set file of the {@code test} module. */
+    protected abstract File getTestDescriptorSet(Project project);
 
-    private static TaskName spineProtocConfigWriteTaskName(GenerateProtoTask protoTask) {
-        return isTestsTask(protoTask) ?
-               writeTestPluginConfiguration :
-               writePluginConfiguration;
-    }
+    /** Allows subclasses to specify additional descriptor set generations. */
+    protected abstract void configureDescriptorSetGeneration(GenerateProtoTask task,
+                                                             File descriptor);
 
-    private static Path spineProtocConfigPath(GenerateProtoTask protocTask) {
-        Project project = protocTask.getProject();
-        File buildDir = project.getBuildDir();
-        Path spinePluginTmpDir = Paths.get(buildDir.getAbsolutePath(),
-                                           "tmp",
-                                           SPINE_PLUGIN_NAME);
-        Path protocConfigPath = isTestsTask(protocTask) ?
-                                spinePluginTmpDir.resolve("test-config.pb") :
-                                spinePluginTmpDir.resolve("config.pb");
-        return protocConfigPath;
-    }
+    protected abstract void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency);
 
-    private static boolean isTestsTask(GenerateProtoTask protocTask) {
+    protected static boolean isTestsTask(GenerateProtoTask protocTask) {
         return protocTask.getSourceSet()
                          .getName()
                          .contains(SourceScope.test.name());
     }
 
-    private enum ProtocPlugin {
-
-        GRPC("grpc"),
-        SPINE("spineProtoc");
-
-        @SuppressWarnings("PMD.SingularField") /* Accessed from the outer class. */
-        private final String name;
-
-        ProtocPlugin(String name) {
-            this.name = name;
-        }
+    /** Names of tasks related to the Protobuf compiler ({@code protoc}) task. */
+    protected enum ProtocPlugin {
+        grpc,
+        spineProtoc
     }
 
     /**
