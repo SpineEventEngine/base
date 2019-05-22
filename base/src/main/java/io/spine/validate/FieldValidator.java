@@ -33,6 +33,13 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
+import io.spine.validate.option.Distinct;
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.IfInvalid;
+import io.spine.validate.option.IfMissing;
+import io.spine.validate.option.Required;
+import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.option.ValidatingOptionsLoader;
 
 import java.util.List;
 import java.util.Optional;
@@ -141,7 +148,7 @@ public abstract class FieldValidator<V> implements Logging {
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
      */
-    protected ImmutableList<ConstraintViolation> validate() {
+    public ImmutableList<ConstraintViolation> validate() {
         if (isRequiredId()) {
             validateEntityId();
         }

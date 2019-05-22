@@ -85,7 +85,7 @@ final class UrlParser {
      *
      * <ul>
      *     <li>If no suitable protocol found, saves UNDEFINED value.
-     *     <li>If some value is fount, but the schema is unknown, saves raw value.
+     *     <li>If some value is found but the schema is unknown, saves raw value.
      * </ul>
      */
     private void parseProtocol() {

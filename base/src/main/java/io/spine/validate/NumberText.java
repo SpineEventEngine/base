@@ -34,7 +34,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A number that is described with a {@code String} of characters.
  */
 @Immutable
-final class NumberText {
+public final class NumberText {
 
     private static final String DECIMAL_DELIMITER = ".";
     private static final Splitter DECIMAL_SPLIT = Splitter.on(DECIMAL_DELIMITER);
@@ -44,7 +44,7 @@ final class NumberText {
     private final Number value;
 
     /** Creates a new instance that is equal to the specified number. */
-    NumberText(Number number) {
+    public NumberText(Number number) {
         this.text = String.valueOf(number);
         this.value = number;
     }
@@ -56,7 +56,7 @@ final class NumberText {
      * @param text
      *         a string representation of a number
      */
-    NumberText(String text) {
+    public NumberText(String text) {
         this.text = checkNotEmptyOrBlank(text).trim();
         this.value = parseNumber(this.text);
     }
@@ -81,7 +81,7 @@ final class NumberText {
      * @return whether this instance of a number is of the same {@code Number} subtype as
      *         the specified one.
      */
-    boolean isOfSameType(NumberText anotherNumber) {
+    public boolean isOfSameType(NumberText anotherNumber) {
         Class<? extends Number> classOfThisNumber = value.getClass();
         Class<? extends Number> classOfAnotherNumber = anotherNumber.value.getClass();
         return classOfThisNumber.equals(classOfAnotherNumber);
@@ -122,7 +122,7 @@ final class NumberText {
         }
     }
 
-    ComparableNumber toNumber() {
+    public ComparableNumber toNumber() {
         return new ComparableNumber(this.value);
     }
 

@@ -22,9 +22,9 @@ package io.spine.test.options;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
-import io.spine.validate.Constraint;
-import io.spine.validate.FieldValidatingOption;
 import io.spine.validate.FieldValue;
+import io.spine.validate.option.Constraint;
+import io.spine.validate.option.FieldValidatingOption;
 
 import static io.spine.test.options.BytesDirectionOptionProto.direction;
 

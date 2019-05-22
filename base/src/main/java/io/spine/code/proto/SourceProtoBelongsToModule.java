@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A predicate determining if the given {@code .proto} source belongs to the specified module
+ * A predicate determining if the given {@code .proto} source belongs to the specified module.
  */
 public class SourceProtoBelongsToModule extends ProtoBelongsToModule {
 

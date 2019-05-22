@@ -34,6 +34,7 @@ import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import io.spine.type.TypeName;
+import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;

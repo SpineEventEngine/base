@@ -130,11 +130,11 @@ public final class FieldValue<@ImmutableTypeParameter T> {
         }
     }
 
-    FieldValidator<?> createValidator() {
+    public FieldValidator<?> createValidator() {
         return createValidator(false);
     }
 
-    FieldValidator<?> createValidatorAssumingRequired() {
+    public FieldValidator<?> createValidatorAssumingRequired() {
         return createValidator(true);
     }
 

@@ -31,20 +31,20 @@ import com.google.errorprone.annotations.Immutable;
  * yield incorrect comparison results.
  */
 @Immutable
-final class ComparableNumber extends Number implements Comparable<Number> {
+public final class ComparableNumber extends Number implements Comparable<Number> {
 
     private static final long serialVersionUID = 0L;
     @SuppressWarnings("Immutable") // effectively
     private final Number value;
 
     /** Creates a new instance from the specified number. */
-    ComparableNumber(Number value) {
+    public ComparableNumber(Number value) {
         super();
         this.value = value;
     }
 
     /** Converts this number to its textual representation. */
-    NumberText toText() {
+    public NumberText toText() {
         return new NumberText(value);
     }
 

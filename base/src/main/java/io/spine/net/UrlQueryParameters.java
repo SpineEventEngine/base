@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * The utility class, which helps performing URL query parameters parsing and String conversion.
+ * The utility class which helps performing URL query parameters parsing and String conversion.
  */
 final class UrlQueryParameters {
 

@@ -99,7 +99,7 @@ public final class DescriptorReference {
      *
      * @param resources
      *         {@code URL}s that contain referenced to descriptor sets
-     * @return an {@code Iterator} of referenced to resources, described by the given {@code
+     * @return an {@code Iterator} of referenced to resources described by the given {@code
      *         resources} iterator
      */
     @VisibleForTesting
@@ -154,13 +154,13 @@ public final class DescriptorReference {
      *
      * <p>Preserves all of the existing content of the {@code desc.ref} file.
      *
-     * <p>If the specified directory does not contain a {@code desc.ref} file, it gets
+     * <p>If the specified directory does not contain a {@code desc.ref} file, it is
      * created.
      *
-     * <p>If one of the directories in the specified {@code Path} does ont exist, it gets created.
+     * <p>If one of the directories in the specified {@code Path} does ont exist, it is created.
      *
      * @param directory
-     *         directory that contains a desired {@code desc.ref} file
+     *         the directory that contains a desired {@code desc.ref} file
      * @param newline
      *         a newline symbol that gets written after the reference text
      */
