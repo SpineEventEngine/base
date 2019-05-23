@@ -42,7 +42,7 @@ enum BuildMatcher implements ContextualMatcher<MethodInvocationTree> {
 
     @SuppressWarnings("ImmutableEnumChecker")
     private static final Matcher<ExpressionTree> builderBuild =
-            GeneratedValidatingBuilder.callingInstanceMethod(BUILD);
+            GeneratedValidatingBuilderWhich.callsInstanceMethod(BUILD);
 
     @Override
     public boolean outsideMessageContextMatches(MethodInvocationTree tree, VisitorState state) {
