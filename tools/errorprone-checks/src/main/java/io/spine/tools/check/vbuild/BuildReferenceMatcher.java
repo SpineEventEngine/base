@@ -57,8 +57,12 @@ enum BuildReferenceMatcher implements ContextualMatcher<MemberReferenceTree> {
         String receiver = tree.getQualifierExpression().toString();
         return Stream.of(BuildMethodAlternative.values())
                      .map(BuildMethodAlternative::name)
-                     .map(name -> receiver + "::" + name)
+                     .map(name -> methodReference(receiver, name))
                      .map(replacement -> SuggestedFix.replace(tree, replacement))
                      .collect(toImmutableList());
+    }
+
+    private static String methodReference(String receiver, String methodName) {
+        return receiver + "::" + methodName;
     }
 }

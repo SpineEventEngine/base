@@ -55,6 +55,5 @@ enum BuildMatcher implements ContextualMatcher<MethodInvocationTree> {
         return Stream.of(BuildMethodAlternative.values())
                      .map(alt -> alt.replace(methodTree))
                      .collect(toImmutableList());
-
     }
 }
