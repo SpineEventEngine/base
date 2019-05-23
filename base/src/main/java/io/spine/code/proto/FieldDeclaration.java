@@ -185,12 +185,13 @@ public final class FieldDeclaration implements Logging {
      * <ul>
      *     <li>Declared as the first field.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
+     *     <li>Is not a map or a repeated field.
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
     public boolean isEntityId() {
-        return isFirstField() && isEntityField();
+        return isFirstField() && isEntityField() && isNotCollection();
     }
 
     /**
