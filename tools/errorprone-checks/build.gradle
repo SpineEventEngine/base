@@ -55,5 +55,6 @@ afterEvaluate {
 
     test {
         jvmArgs "-Xbootclasspath/p:$javacPath"
+        dependsOn rootProject.subprojects*.publishToMavenLocal
     }
 }
