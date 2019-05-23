@@ -32,6 +32,15 @@ import static com.google.errorprone.BugPattern.SeverityLevel.ERROR;
 import static com.google.errorprone.matchers.Matchers.allOf;
 import static com.google.errorprone.matchers.Matchers.not;
 
+/**
+ * An ErrorProne check which ensures that the values returned from methods are not accidentally
+ * ignored.
+ *
+ * <p>This check is a substitute for {@link CheckReturnValue}. The difference is that this check
+ * ignores invocations of mutating methods on message builders.
+ *
+ * <p>The check may be suppressed in the same ways as {@link CheckReturnValue}.
+ */
 @AutoService(BugChecker.class)
 @BugPattern(
         name = "HandleMethodResult",
@@ -44,7 +53,8 @@ public final class HandleMethodResult extends CheckReturnValue {
 
     private static final long serialVersionUID = 0L;
 
-    static final String SUMMARY = "";
+    static final String SUMMARY =
+            "Ignored return value of method that is annotated with @CheckReturnValue";
 
     @Override
     public Matcher<ExpressionTree> specializedMatcher() {

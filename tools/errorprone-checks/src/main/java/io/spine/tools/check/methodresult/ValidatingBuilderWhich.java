@@ -23,6 +23,7 @@ package io.spine.tools.check.methodresult;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.predicates.TypePredicate;
+import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.tools.javac.code.Type;
 
@@ -32,19 +33,18 @@ import static com.google.errorprone.matchers.method.MethodMatchers.instanceMetho
 import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
 
 /**
- * A predicate which matches builders of custom (i.e. non-Google) Protobuf messages.
+ * A predicate which matches builders Protobuf messages.
  *
- * <p>Any Java class which descends from {@link io.spine.validate.ValidatingBuilder} matches this
- * predicate.
+ * <p>Any Java class which descends from {@link Message.Builder} matches this predicate.
  */
-public final class ValidatingBuilderWhich implements TypePredicate {
+final class ValidatingBuilderWhich implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
     private static final Pattern SIDE_EFFECT_METHOD_NAME = Pattern.compile("(set|add|put|merge).+");
 
     private static final TypePredicate IS_MESSAGE_BUILDER =
-            isDescendantOf(io.spine.protobuf.ValidatingBuilder.class.getName());
+            isDescendantOf(Message.Builder.class.getName());
 
     /**
      * Prevents direct instantiation.
@@ -57,7 +57,7 @@ public final class ValidatingBuilderWhich implements TypePredicate {
      *
      * <p>Matches methods starting from {@code set}, {@code add}, {@code put}, or {@code merge}.
      */
-    public static Matcher<ExpressionTree> callsSetterMethod() {
+    static Matcher<ExpressionTree> callsSetterMethod() {
         return instanceMethod()
                 .onClass(new ValidatingBuilderWhich())
                 .withNameMatching(SIDE_EFFECT_METHOD_NAME);
