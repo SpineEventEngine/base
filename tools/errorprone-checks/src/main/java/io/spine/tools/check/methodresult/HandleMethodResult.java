@@ -49,11 +49,11 @@ public final class HandleMethodResult extends CheckReturnValue {
     @Override
     public Matcher<ExpressionTree> specializedMatcher() {
         Matcher<ExpressionTree> checkReturnValue = super.specializedMatcher();
-        Matcher<ExpressionTree> builderUnMatcher = not(builderMatcher());
-        return allOf(checkReturnValue, builderUnMatcher);
+        Matcher<ExpressionTree> notBuilderSetter = not(builderSetter());
+        return allOf(checkReturnValue, notBuilderSetter);
     }
 
-    private static Matcher<ExpressionTree> builderMatcher() {
+    private static Matcher<ExpressionTree> builderSetter() {
         return ValidatingBuilderWhich.callsSetterMethod();
     }
 }
