@@ -50,12 +50,10 @@ def getResolvedArtifactFor(final dependency) {
     return path
 }
 
-task configureBootClasspath {
-    doLast {
-        final def javacPath = getResolvedArtifactFor("javac")
+afterEvaluate {
+    final def javacPath = getResolvedArtifactFor("javac")
 
-        test {
-            jvmArgs "-Xbootclasspath/p:$javacPath"
-        }
+    test {
+        jvmArgs "-Xbootclasspath/p:$javacPath"
     }
 }
