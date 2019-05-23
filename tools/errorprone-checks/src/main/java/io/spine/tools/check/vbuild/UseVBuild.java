@@ -35,7 +35,9 @@ import com.sun.source.tree.Tree;
 import io.spine.tools.check.BugPatternMatcher;
 
 import static com.google.errorprone.BugPattern.LinkType.NONE;
+import static com.google.errorprone.BugPattern.ProvidesFix.REQUIRES_HUMAN_ATTENTION;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
+import static com.google.errorprone.BugPattern.StandardTags.FRAGILE_CODE;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
 
 /**
@@ -53,9 +55,11 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
         name = "UseVBuild",
         summary = UseVBuild.SUMMARY,
         severity = WARNING,
-        linkType = NONE
+        linkType = NONE,
+        providesFix = REQUIRES_HUMAN_ATTENTION,
+        tags = FRAGILE_CODE
 )
-public class UseVBuild
+public final class UseVBuild
         extends BugChecker
         implements MethodInvocationTreeMatcher, MemberReferenceTreeMatcher {
 

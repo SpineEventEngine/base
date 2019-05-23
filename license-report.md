@@ -14,6 +14,9 @@
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -339,7 +342,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:26 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:44 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -870,7 +873,7 @@ This report was generated on **Tue May 21 18:17:26 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:27 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:44 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -887,6 +890,9 @@ This report was generated on **Tue May 21 18:17:27 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
@@ -1216,7 +1222,7 @@ This report was generated on **Tue May 21 18:17:27 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:45 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1239,6 +1245,9 @@ This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
      * **POM License: Apache License 2.0** - [http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)
@@ -1692,7 +1701,7 @@ This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:45 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1715,6 +1724,9 @@ This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
      * **POM License: Apache License 2.0** - [http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)
@@ -2184,7 +2196,8 @@ This report was generated on **Tue May 21 18:17:28 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:46 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+
 
 
     
@@ -2203,6 +2216,9 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
@@ -2596,7 +2612,8 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:46 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+
 
 
     
@@ -2616,6 +2633,9 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
@@ -3071,7 +3091,8 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:46 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+
 
 
     
@@ -3096,6 +3117,9 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
      * **POM License: Apache License 2.0** - [http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)
@@ -3621,7 +3645,7 @@ This report was generated on **Tue May 21 18:17:29 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:47 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3644,6 +3668,9 @@ This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
      * **POM License: Apache License 2.0** - [http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)
@@ -4097,7 +4124,8 @@ This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:47 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+
 
 
     
@@ -4113,6 +4141,9 @@ This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
@@ -4430,7 +4461,7 @@ This report was generated on **Tue May 21 18:17:30 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:48 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4447,6 +4478,9 @@ This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
@@ -4847,7 +4881,7 @@ This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:48 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4869,6 +4903,9 @@ This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -5260,7 +5297,8 @@ This report was generated on **Tue May 21 18:17:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:49 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+
 
 
     
@@ -5278,6 +5316,9 @@ This report was generated on **Tue May 21 18:17:32 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** error_prone_annotations **Version:** 2.3.3
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -5605,4 +5646,4 @@ This report was generated on **Tue May 21 18:17:32 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue May 21 18:17:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 23 16:48:49 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
