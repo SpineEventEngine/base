@@ -22,7 +22,6 @@ package io.spine.tools.check.methodresult;
 
 import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.CheckReturnValue;
 import com.google.errorprone.matchers.Matcher;
@@ -39,8 +38,7 @@ import static com.google.errorprone.matchers.Matchers.not;
         altNames = {"CheckReturnValue", "ResultOfMethodCallIgnored", "ReturnValueIgnored"},
         summary = HandleMethodResult.SUMMARY,
         severity = ERROR,
-        linkType = NONE,
-        suppressionAnnotations = {SuppressWarnings.class, CanIgnoreReturnValue.class}
+        linkType = NONE
 )
 public final class HandleMethodResult extends CheckReturnValue {
 
