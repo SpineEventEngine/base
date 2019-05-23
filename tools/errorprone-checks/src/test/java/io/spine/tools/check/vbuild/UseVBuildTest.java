@@ -29,27 +29,6 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.check.vbuild.UseVBuild.NAME;
 import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
 
-/**
- * This test requires configuring "-Xbootclasspath..." option with the path to the
- * {@code com.google.errorprone.javac} jar.
- *
- * <p>In Gradle it's done automatically via the separate task (see the {@code build.gradle} of this
- * module).
- *
- * <p>To run the test in Idea you need to add the VM options manually in the "Edit configurations"
- * tab. Typically, the {@code javac} jar can be found in the Gradle Caches directory in the
- * "modules-2/files-2.1/com.google.errorprone/javac/" folder or its subfolders.
- *
- * <p>After you acquired the path to the existing {@code javac} jar, add the following VM Option:
- * <pre>
- *  -Xbootclasspath/p:`javacPath`
- * </pre>
- * where the `javacPath` is the path to your {@code javac} jar.
- *
- * <p>For the information about how this test suite works, see the Error Prone
- * <a href="https://github.com/google/error-prone/wiki/Writing-a-check#testing-a-bugchecker">
- * guide</a> to testing the custom checks.
- */
 @Disabled
 @DisplayName("UseVBuild check should")
 class UseVBuildTest {
