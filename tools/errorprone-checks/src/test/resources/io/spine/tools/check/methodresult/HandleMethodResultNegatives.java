@@ -21,6 +21,9 @@
 package io.spine.tools.check.vbuild;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.Value;
 import io.spine.base.FieldPath;
 
 /**
@@ -29,11 +32,29 @@ import io.spine.base.FieldPath;
  */
 abstract class HandleMethodResultNegatives {
 
-    FieldPath callOnVBuilder() {
+    Timestamp callSet() {
+        Timestamp.Builder builder = Timestamp.newBuilder();
+        builder.setNanos(42);
+        return builder.build();
+    }
+
+    FieldPath callAdd() {
         FieldPath.Builder builder = FieldPath.newBuilder();
         builder.addFieldName("foo")
                .addFieldName("bar");
         return builder.vBuild();
+    }
+
+    Struct callPut() {
+        Struct.Builder builder = Struct.newBuilder();
+        builder.putFields("foo", Value.getDefaultInstance());
+        return builder.build();
+    }
+
+    Struct callMerge() {
+        Struct.Builder builder = Struct.newBuilder();
+        builder.mergeFrom(Struct.getDefaultInstance());
+        return builder.build();
     }
 
     @SuppressWarnings("HandleMethodResult")
