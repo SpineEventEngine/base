@@ -20,6 +20,8 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
 
@@ -30,7 +32,8 @@ import io.spine.validate.FieldValue;
  * @param <T>
  *         type of value that this option is applied to
  */
-public final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
+@Immutable
+public final class Distinct<@ImmutableTypeParameter T> extends FieldValidatingOption<Boolean, T> {
 
     private Distinct() {
         super(OptionsProto.distinct);
@@ -42,7 +45,7 @@ public final class Distinct<T> extends FieldValidatingOption<Boolean, T> {
      * @param <T>
      *         type of fields that can be checked against this option
      */
-    public static <T> Distinct<T> create() {
+    public static <@ImmutableTypeParameter T> Distinct<T> create() {
         return new Distinct<>();
     }
 

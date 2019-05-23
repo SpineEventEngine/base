@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.MessageFile;
@@ -35,6 +36,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A name of a Protobuf source code file.
  */
+@Immutable
 public class FileName extends AbstractFileName<FileName> implements UnderscoredName {
 
     private static final long serialVersionUID = 0L;

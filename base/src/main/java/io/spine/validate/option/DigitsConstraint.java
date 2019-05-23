@@ -22,6 +22,8 @@ package io.spine.validate.option;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.base.FieldPath;
 import io.spine.option.DigitsOption;
 import io.spine.type.TypeName;
@@ -37,7 +39,8 @@ import static io.spine.validate.FieldValidator.errorMsgFormat;
  * @param <V>
  *         a numeric value the digits of which are being controlled for length
  */
-final class DigitsConstraint<V extends Number & Comparable>
+@Immutable
+final class DigitsConstraint<@ImmutableTypeParameter V extends Number & Comparable>
         extends NumericFieldConstraint<V, DigitsOption> {
 
     private static final Splitter DOT_SPLITTER = Splitter.on(".");

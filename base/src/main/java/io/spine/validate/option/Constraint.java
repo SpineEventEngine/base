@@ -21,6 +21,8 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.validate.ConstraintViolation;
 
 /**
@@ -31,7 +33,8 @@ import io.spine.validate.ConstraintViolation;
  * @param <T>
  *         a type of values that this constraint is applicable to
  */
-public interface Constraint<T> {
+@Immutable
+public interface Constraint<@ImmutableTypeParameter T> {
 
     /**
      * Checks the specified value against this constraint.

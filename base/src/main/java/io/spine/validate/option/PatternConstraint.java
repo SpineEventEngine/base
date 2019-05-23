@@ -21,6 +21,7 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.base.FieldPath;
 import io.spine.option.PatternOption;
 import io.spine.type.TypeName;
@@ -34,6 +35,7 @@ import static io.spine.validate.FieldValidator.errorMsgFormat;
  * A constraint, which when applied to a string field, checks whether that field matches the
  * specified pattern.
  */
+@Immutable
 final class PatternConstraint extends FieldValueConstraint<String, PatternOption> {
 
     PatternConstraint(PatternOption optionValue) {

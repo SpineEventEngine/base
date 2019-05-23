@@ -24,6 +24,8 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.base.FieldPath;
 import io.spine.type.TypeName;
 import io.spine.validate.ComparableNumber;
@@ -46,7 +48,9 @@ import static java.lang.String.format;
  * @param <T>
  *         value of the option
  */
-abstract class RangedConstraint<V extends Number & Comparable, T>
+@Immutable
+abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Comparable,
+                                @ImmutableTypeParameter T>
         extends NumericFieldConstraint<V, T> {
 
     private static final String OR_EQUAL_TO = "or equal to";

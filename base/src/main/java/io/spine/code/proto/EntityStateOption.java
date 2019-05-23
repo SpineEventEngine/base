@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
@@ -31,6 +32,7 @@ import java.util.Optional;
  * to queries. There are four kids of options, namely, Aggregate, Projection, Process Manager,
  * ~~~~~~ and Entity).
  */
+@Immutable
 public final class EntityStateOption extends MessageOption<EntityOption> {
 
     private EntityStateOption() {

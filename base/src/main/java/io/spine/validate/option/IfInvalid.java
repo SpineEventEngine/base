@@ -20,6 +20,7 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldOption;
 import io.spine.option.IfInvalidOption;
@@ -28,6 +29,7 @@ import io.spine.option.OptionsProto;
 /**
  * An option which provides custom error messages if applied to a field being validated.
  */
+@Immutable
 public final class IfInvalid extends FieldOption<IfInvalidOption> {
 
     /** Creates a new instance of this option. */

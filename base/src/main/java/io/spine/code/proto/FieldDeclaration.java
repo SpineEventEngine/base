@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -54,6 +55,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Declaration of a Protobuf message field.
  */
+@Immutable
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
@@ -182,14 +184,13 @@ public final class FieldDeclaration implements Logging {
      * <p>An entity ID satisfies the following conditions:
      * <ul>
      *     <li>Declared as the first field.
-     *     <li>Named {@code id} or the name ends with {@code _id}.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
     public boolean isEntityId() {
-        return isFirstField() && matchesIdName() && isEntityField();
+        return isFirstField() && isEntityField();
     }
 
     /**
@@ -279,16 +280,12 @@ public final class FieldDeclaration implements Logging {
     }
 
     private boolean isEntityField() {
-        EntityOption entityOption = field.getContainingType()
-                                         .getOptions()
-                                         .getExtension(OptionsProto.entity);
+        EntityOption entityOption =
+                field.getContainingType()
+                     .getOptions()
+                     .getExtension(OptionsProto.entity);
         EntityOption.Kind entityKind = entityOption.getKind();
         return entityKind.getNumber() > 0;
-    }
-
-    private boolean matchesIdName() {
-        String name = field.getName();
-        return "id".equals(name) || name.endsWith("_id");
     }
 
     /**

@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collection;
 
@@ -32,12 +33,14 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A number that is described with a {@code String} of characters.
  */
+@Immutable
 public final class NumberText {
 
     private static final String DECIMAL_DELIMITER = ".";
     private static final Splitter DECIMAL_SPLIT = Splitter.on(DECIMAL_DELIMITER);
 
     private final String text;
+    @SuppressWarnings("Immutable") // effectively
     private final Number value;
 
     /** Creates a new instance that is equal to the specified number. */

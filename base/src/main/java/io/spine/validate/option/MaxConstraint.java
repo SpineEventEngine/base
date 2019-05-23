@@ -21,6 +21,8 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.Range;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.MaxOption;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.NumberText;
@@ -28,7 +30,9 @@ import io.spine.validate.NumberText;
 /**
  * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
-final class MaxConstraint<V extends Number & Comparable> extends RangedConstraint<V, MaxOption> {
+@Immutable
+final class MaxConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+        extends RangedConstraint<V, MaxOption> {
 
     MaxConstraint(MaxOption optionValue) {
         super(optionValue, maxRange(optionValue));

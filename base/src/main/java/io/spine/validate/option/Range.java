@@ -20,6 +20,8 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
 
@@ -29,14 +31,16 @@ import io.spine.validate.FieldValue;
  * @param <V>
  *         a value that this option is applied to
  */
-final class Range<V extends Number & Comparable> extends FieldValidatingOption<String, V> {
+@Immutable
+final class Range<@ImmutableTypeParameter V extends Number & Comparable>
+        extends FieldValidatingOption<String, V> {
 
     private Range() {
         super(OptionsProto.range);
     }
 
     /** Creates a new instance of this option. */
-    static <V extends Number & Comparable> Range<V> create() {
+    static <@ImmutableTypeParameter V extends Number & Comparable> Range<V> create() {
         return new Range<>();
     }
 
