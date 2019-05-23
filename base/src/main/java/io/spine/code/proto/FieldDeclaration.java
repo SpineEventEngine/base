@@ -191,7 +191,7 @@ public final class FieldDeclaration implements Logging {
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
     public boolean isEntityId() {
-        return isFirstField() && isEntityField() && !isNotCollection();
+        return isFirstField() && isEntityField() && isNotCollection();
     }
 
     /**
