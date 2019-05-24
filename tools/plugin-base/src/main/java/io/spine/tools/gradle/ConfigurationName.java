@@ -91,6 +91,13 @@ public enum ConfigurationName {
     TEST_RUNTIME_CLASSPATH(TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME),
 
     /**
+     * The {@code protobuf} configuration.
+     */
+    @SuppressWarnings("DuplicateStringLiteralInspection"
+                      /* Different context from an existing test usage */)
+    PROTOBUF("protobuf"),
+
+    /**
      * A custom configuration for downloading artifacts from repositories.
      */
     FETCH("fetch"),
