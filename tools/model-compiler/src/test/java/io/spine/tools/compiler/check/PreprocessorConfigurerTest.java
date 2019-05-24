@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
+import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -36,41 +36,40 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @DisplayName("PreprocessorConfigurer should")
 class PreprocessorConfigurerTest {
 
-    private Project project;
     private ConfigurationContainer projectConfigs;
     private Configuration preprocessorConfig;
     private PreprocessorConfigurer configurer;
 
     @BeforeEach
     void setUp() {
-        project = newProject();
+        Project project = newProject();
         projectConfigs = project.getConfigurations();
-        preprocessorConfig = projectConfigs.getByName(PREPROCESSOR_CONFIG_NAME);
+        preprocessorConfig = projectConfigs.getByName(annotationProcessor.value());
         configurer = PreprocessorConfigurer.initFor(project);
     }
 
     @Test
     @DisplayName("pass null tolerance check")
-    void pass_null_tolerance_check() {
+    void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 
     @Test
     @DisplayName("return annotation processor config if it exists")
-    void return_annotation_processor_config_if_it_exists() {
+    void returnAnnotationProcessorConfigIfItExists() {
         Configuration returnedConfig = configurer.setupPreprocessorConfig();
         assertEquals(preprocessorConfig, returnedConfig);
     }
 
     @Test
     @DisplayName("create and return annotation processor config if it does not exist")
-    void create_and_return_annotation_processor_config_if_it_does_not_exist() {
+    void createAndReturnAnnotationProcessorConfigIfItDoesNotExist() {
         projectConfigs.remove(preprocessorConfig);
-        assertNull(projectConfigs.findByName(PREPROCESSOR_CONFIG_NAME));
+        assertNull(projectConfigs.findByName(annotationProcessor.value()));
 
         Configuration preprocessorConfig = configurer.setupPreprocessorConfig();
-        Configuration foundConfig = projectConfigs.findByName(PREPROCESSOR_CONFIG_NAME);
+        Configuration foundConfig = projectConfigs.findByName(annotationProcessor.value());
         assertEquals(preprocessorConfig, foundConfig);
     }
 }

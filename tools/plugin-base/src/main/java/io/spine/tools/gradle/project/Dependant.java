@@ -24,8 +24,8 @@ import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 
-import static io.spine.tools.gradle.ConfigurationName.COMPILE;
-import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
+import static io.spine.tools.gradle.ConfigurationName.compile;
+import static io.spine.tools.gradle.ConfigurationName.implementation;
 
 /**
  * Manages the dependencies of a Gradle project.
@@ -72,8 +72,9 @@ public interface Dependant {
      *
      * @see #depend(ConfigurationName, String)
      */
+    @SuppressWarnings("deprecation") // See the doc.
     default void compile(String notation) {
-        depend(COMPILE, notation);
+        depend(compile, notation);
     }
 
     /**
@@ -82,6 +83,6 @@ public interface Dependant {
      * @see #depend(ConfigurationName, String)
      */
     default void implementation(String notation) {
-        depend(IMPLEMENTATION, notation);
+        depend(implementation, notation);
     }
 }
