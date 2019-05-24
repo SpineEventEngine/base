@@ -131,6 +131,11 @@ public enum ConfigurationName {
     testRuntimeClasspath,
 
     /**
+     * {@code protobuf} extension block exposed by the Gradle Protobuf plugin.
+     */
+    protobuf,
+
+    /**
      * A Spine-specific configuration used to download and resolve artifacts.
      */
     @Internal
