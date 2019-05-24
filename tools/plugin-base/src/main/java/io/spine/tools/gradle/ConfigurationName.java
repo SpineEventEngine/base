@@ -131,7 +131,10 @@ public enum ConfigurationName {
     testRuntimeClasspath,
 
     /**
-     * {@code protobuf} extension block exposed by the Gradle Protobuf plugin.
+     * Configuration that allows to compile {@code .proto} files form the dependencies.
+     *
+     * <p>Users should use {@code compile} when adding Protobuf dependencies to other strictly
+     * Protobuf modules.
      */
     protobuf,
 
