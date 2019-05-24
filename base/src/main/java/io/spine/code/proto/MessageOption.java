@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
@@ -30,7 +32,9 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @param <V>
  *         type of the option value
  */
-public class MessageOption<V> extends AbstractOption<V, Descriptor, MessageOptions> {
+@Immutable
+public class MessageOption<@ImmutableTypeParameter V>
+        extends AbstractOption<V, Descriptor, MessageOptions> {
 
     /** Creates a new instance of the option based on the specified extension. */
     protected MessageOption(GeneratedExtension<MessageOptions, V> extension) {

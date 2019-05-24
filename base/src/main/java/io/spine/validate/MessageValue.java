@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
@@ -38,7 +39,8 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * A value of a {@link Message} to validate.
  */
-final class MessageValue {
+@Immutable
+public final class MessageValue {
 
     private final Message message;
     private final Descriptor descriptor;
@@ -59,7 +61,7 @@ final class MessageValue {
      *         the message itself
      * @return a new instance
      */
-    static MessageValue nestedIn(FieldContext messageContext, Message message) {
+    public static MessageValue nestedIn(FieldContext messageContext, Message message) {
         return new MessageValue(message, messageContext);
     }
 
@@ -70,16 +72,12 @@ final class MessageValue {
      *         the message that is <b>not</b> a part of another message
      * @return a new instance
      */
-    static MessageValue atTopLevel(Message message) {
+    public static MessageValue atTopLevel(Message message) {
         return new MessageValue(message, FieldContext.empty());
     }
 
-    Descriptor descriptor(){
-        return descriptor;
-    }
-
-    MessageType declaration() {
-        return new MessageType(descriptor());
+    public MessageType declaration() {
+        return new MessageType(descriptor);
     }
 
     /**
@@ -106,7 +104,7 @@ final class MessageValue {
      * @return a value of the field
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
-    Optional<FieldValue<?>> valueOf(String fieldName) {
+    public Optional<FieldValue<?>> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
         return valueOfNullable(field);
     }
@@ -119,9 +117,9 @@ final class MessageValue {
      * @return a value of the populated field
      *         or {@code Optional.empty()} if the field was not populated
      * @throws IllegalArgumentException
-     *         if the if the message doesn't declares this oneof
+     *         if the if the message doesn't declare this oneof
      */
-    Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
+    public Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
         checkArgument(oneofDescriptors().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
@@ -147,6 +145,7 @@ final class MessageValue {
 
     private FieldValue<?> valueOf(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
+        @SuppressWarnings("Immutable") // field values are immutable
         FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
         return value;
     }

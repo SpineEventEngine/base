@@ -28,6 +28,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
 import io.spine.protobuf.Diff;
 import io.spine.type.TypeName;
+import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
@@ -175,6 +176,25 @@ public final class Validate {
             throw newIllegalStateException("The message is not in the default state: %s", typeName);
         }
         return object;
+    }
+
+    /**
+     * Ensures the truth of an expression involving one parameter to the calling method.
+     *
+     * @param expression         a boolean expression with the parameter we check
+     * @param errorMessageFormat the format of the error message, which has {@code %s} placeholder
+     *                           for the parameter name
+     * @param parameterName      the name of the parameter
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    public static void checkParameter(boolean expression,
+                                      String errorMessageFormat,
+                                      String parameterName) {
+        checkNotNull(errorMessageFormat);
+        checkNotNull(parameterName);
+        if (!expression) {
+            throw newIllegalArgumentException(errorMessageFormat, parameterName);
+        }
     }
 
     /**

@@ -54,7 +54,7 @@ public final class ViolationText {
     }
 
     /**
-     * Creates text with diagnostics for the passed violations, starting each of them from
+     * Creates text with diagnostics for the passed violations; each diagnostics message starts with
      * a new line.
      */
     public static String ofAll(Collection<ConstraintViolation> violations) {

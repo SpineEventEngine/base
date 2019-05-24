@@ -20,7 +20,10 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.truth.Truth;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
@@ -39,6 +42,7 @@ import io.spine.test.validate.MessageWithMapIntField;
 import io.spine.test.validate.MessageWithMapLongField;
 import io.spine.test.validate.MessageWithMapMessageField;
 import io.spine.test.validate.MessageWithMapStringField;
+import io.spine.test.validate.Planet;
 import io.spine.test.validate.RequiredByteStringFieldValue;
 import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
@@ -46,244 +50,243 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
-@DisplayName("FieldValidatorFactory should")
+@DisplayName("FieldValidatorFactory should create field validator for a field of type")
 class FieldValidatingOptionsTest {
 
     @Test
-    @DisplayName("create message field validator")
-    void create_message_field_validator() {
+    @DisplayName("Message")
+    void messageField() {
         FieldDescriptor field = RequiredMsgFieldValue.getDescriptor()
                                                      .getFields()
                                                      .get(0);
 
-        FieldValidator validator = create(field,
-                                          StringValue.getDefaultInstance());
+        FieldValidator validator = create(field, StringValue.getDefaultInstance());
 
-        assertThat(validator, instanceOf(MessageFieldValidator.class));
+        assertType(validator, MessageFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create integer field validator")
-    void create_integer_field_validator() {
+    @DisplayName("int")
+    void intField() {
         FieldDescriptor field = Int32Value.getDescriptor()
                                           .getFields()
                                           .get(0);
 
         FieldValidator validator = create(field, 0);
 
-        assertThat(validator, instanceOf(IntegerFieldValidator.class));
+        assertType(validator, IntegerFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create long field validator")
-    void create_long_field_validator() {
+    @DisplayName("long")
+    void longField() {
         FieldDescriptor field = Int64Value.getDescriptor()
                                           .getFields()
                                           .get(0);
 
         FieldValidator validator = create(field, 0);
 
-        assertThat(validator, instanceOf(LongFieldValidator.class));
+        assertType(validator, LongFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create float field validator")
-    void create_float_field_validator() {
+    @DisplayName("float")
+    void floatField() {
         FieldDescriptor field = FloatValue.getDescriptor()
                                           .getFields()
                                           .get(0);
 
         FieldValidator validator = create(field, 0);
 
-        assertThat(validator, instanceOf(FloatFieldValidator.class));
+        assertType(validator, FloatFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create double field validator")
-    void create_double_field_validator() {
+    @DisplayName("double")
+    void doubleField() {
         FieldDescriptor field = DoubleValue.getDescriptor()
                                            .getFields()
                                            .get(0);
 
         FieldValidator validator = create(field, 0);
 
-        assertThat(validator, instanceOf(DoubleFieldValidator.class));
+        assertType(validator, DoubleFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create String field validator")
-    void create_String_field_validator() {
+    @DisplayName("String")
+    void stringField() {
         FieldDescriptor field = StringValue.getDescriptor()
                                            .getFields()
                                            .get(0);
 
         FieldValidator validator = create(field, "");
 
-        assertThat(validator, instanceOf(StringFieldValidator.class));
+        assertType(validator, StringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create ByteString field validator")
-    void create_ByteString_field_validator() {
+    @DisplayName("ByteString")
+    void byteStringField() {
         FieldDescriptor field = RequiredByteStringFieldValue.getDescriptor()
                                                             .getFields()
                                                             .get(0);
 
-        FieldValidator validator = create(field, new Object());
+        FieldValidator validator = create(field, ByteString.EMPTY);
 
-        assertThat(validator, instanceOf(ByteStringFieldValidator.class));
+        assertType(validator, ByteStringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create Enum field validator")
-    void create_Enum_field_validator() {
+    @DisplayName("enum")
+    void enumField() {
         FieldDescriptor field = RequiredEnumFieldValue.getDescriptor()
                                                       .getFields()
                                                       .get(0);
 
-        FieldValidator validator = create(field, new Object());
+        FieldValidator validator = create(field, Planet.MERCURY);
 
-        assertThat(validator, instanceOf(EnumFieldValidator.class));
+        assertType(validator, EnumFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create Boolean field validator")
-    void create_Boolean_field_validator() {
+    @DisplayName("boolean")
+    void booleanField() {
         FieldDescriptor field = BoolValue.getDescriptor()
                                          .getFields()
                                          .get(0);
 
-        FieldValidator validator = create(field, new Object());
+        FieldValidator validator = create(field, BoolValue.of(true));
 
-        assertThat(validator, instanceOf(BooleanFieldValidator.class));
+        assertType(validator, BooleanFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for repeated field")
-    void create_field_validator_for_repeated_field() {
+    @DisplayName("repeated")
+    void repeatedField() {
         FieldDescriptor field = FieldMask.getDescriptor()
                                          .getFields()
                                          .get(0);
 
-        FieldValidator<?> validator = create(field, emptyList());
+        FieldValidator<?> validator = create(field, ImmutableList.<String>of());
 
-        assertThat(validator, instanceOf(StringFieldValidator.class));
+        assertType(validator, StringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for map String field")
-    void create_field_validator_for_map_String_field() {
+    @DisplayName("map of String")
+    void mapField() {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
                                                          .getFields()
                                                          .get(0);
         FieldValidator<?> validator = create(field, ImmutableMap.of("key", "value"));
 
-        assertThat(validator, instanceOf(StringFieldValidator.class));
+        assertType(validator, StringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for empty map field")
-    void create_field_validator_for_empty_map_field() {
+    @DisplayName("empty map")
+    void emptyMapField() {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
                                                          .getFields()
                                                          .get(0);
-        FieldValidator<?> validator = create(field, emptyMap());
+        FieldValidator<?> validator = create(field, ImmutableMap.<String, String>of());
 
-        assertThat(validator, instanceOf(StringFieldValidator.class));
+        assertType(validator, StringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for bytes map field")
-    void create_field_validator_for_bytes_map_field() {
+    @DisplayName("bytes map")
+    void bytesMapField() {
         FieldDescriptor field = MessageWithMapByteStringField.getDescriptor()
                                                              .getFields()
                                                              .get(0);
         FieldValidator<?> validator = create(field,
                                              ImmutableMap.of("key", ByteString.EMPTY));
 
-        assertThat(validator, instanceOf(ByteStringFieldValidator.class));
+        assertType(validator, ByteStringFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for Message map field")
-    void create_field_validator_for_Message_map_field() {
+    @DisplayName("Message map")
+    void messageMapField() {
         FieldDescriptor field = MessageWithMapMessageField.getDescriptor()
                                                           .getFields()
                                                           .get(0);
         FieldValidator<?> validator = create(field,
                                              ImmutableMap.of("key", Any.getDefaultInstance()));
 
-        assertThat(validator, instanceOf(MessageFieldValidator.class));
+        assertType(validator, MessageFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for int map field")
-    void create_field_validator_for_int_map_field() {
+    @DisplayName("int map")
+    void integerMapField() {
         FieldDescriptor field = MessageWithMapIntField.getDescriptor()
                                                       .getFields()
                                                       .get(0);
-        FieldValidator<?> validator = create(field,
-                                             ImmutableMap.of("key", 0));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", 0));
 
-        assertThat(validator, instanceOf(IntegerFieldValidator.class));
+        assertType(validator, IntegerFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for long map field")
-    void create_field_validator_for_long_map_field() {
+    @DisplayName("long map")
+    void longMapField() {
         FieldDescriptor field = MessageWithMapLongField.getDescriptor()
                                                        .getFields()
                                                        .get(0);
-        FieldValidator<?> validator = create(field,
-                                             ImmutableMap.of("key", 1L));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", 1L));
 
-        assertThat(validator, instanceOf(LongFieldValidator.class));
+        assertType(validator, LongFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for float map field")
-    void create_field_validator_for_float_map_field() {
+    @DisplayName("float map")
+    void floatMapField() {
         FieldDescriptor field = MessageWithMapFloatField.getDescriptor()
                                                         .getFields()
                                                         .get(0);
-        FieldValidator<?> validator = create(field,
-                                             ImmutableMap.of("key", 0.0f));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", 0.0f));
 
-        assertThat(validator, instanceOf(FloatFieldValidator.class));
+        assertType(validator, FloatFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for double map field")
-    void create_field_validator_for_double_map_field() {
+    @DisplayName("double map")
+    void doubleMapField() {
         FieldDescriptor field = MessageWithMapDoubleField.getDescriptor()
                                                          .getFields()
                                                          .get(0);
-        FieldValidator<?> validator = create(field,
-                                             ImmutableMap.of("key", 0.0));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", 0.0));
 
-        assertThat(validator, instanceOf(DoubleFieldValidator.class));
+        assertType(validator, DoubleFieldValidator.class);
     }
 
     @Test
-    @DisplayName("create field validator for bool map field")
-    void create_field_validator_for_bool_map_field() {
+    @DisplayName("bool map")
+    void boolMap() {
         FieldDescriptor field = MessageWithMapBoolField.getDescriptor()
                                                        .getFields()
                                                        .get(0);
-        FieldValidator<?> validator = create(field,
-                                             ImmutableMap.of("key", true));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", true));
 
         assertThat(validator, instanceOf(BooleanFieldValidator.class));
     }
 
-    private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
+    @SuppressWarnings("Immutable")
+    private static <@ImmutableTypeParameter T>
+    FieldValidator<?> create(FieldDescriptor fieldDescriptor, T value) {
         FieldContext context = FieldContext.create(fieldDescriptor);
         FieldValue wrappedValue = FieldValue.of(value, context);
         return wrappedValue.createValidator();
+    }
+
+    private static
+    void assertType(FieldValidator validator, Class<? extends FieldValidator> expectedClass) {
+        Truth.assertThat(validator).isInstanceOf(expectedClass);
     }
 }

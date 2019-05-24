@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 
 import java.util.Optional;
@@ -30,11 +32,13 @@ import java.util.Optional;
  * @param <T>
  *         the type of a value held by this option
  * @param <K>
- *         the type of object which holds the option, such as “field”, “message”, or “file”
+ *         the type of object which holds the option such as “field”, “message”, or “file”
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
  *         Custom Options</a>
  */
-public interface Option<T, K extends GenericDescriptor> {
+@Immutable
+public interface Option<@ImmutableTypeParameter T,
+                        @ImmutableTypeParameter K extends GenericDescriptor> {
 
     /**
      * Obtains the value of this option for the specified object that holds it.

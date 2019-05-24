@@ -109,7 +109,7 @@ class EntityIdTest extends MessageValidatorTest {
         @DisplayName("provide one valid violation if is not valid")
         void provideOneValidViolationIfEntityIdInCommandIsNotValid() {
             EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
-            assertSingleViolation(msg, RequiredConstraint.ERROR_MESSAGE, VALUE);
+            assertSingleViolation(msg, VALUE);
         }
     }
 

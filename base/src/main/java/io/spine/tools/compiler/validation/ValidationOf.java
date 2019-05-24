@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.code.proto.MessageOption;
@@ -30,8 +31,9 @@ import java.util.Optional;
 /**
  * An external validation for a field.
  *
- * <p>Contains information about validation of another field, described by the option value.
+ * <p>Contains information about validation of another field described by the option value.
  */
+@Immutable
 final class ValidationOf extends MessageOption<String> {
 
     ValidationOf() {

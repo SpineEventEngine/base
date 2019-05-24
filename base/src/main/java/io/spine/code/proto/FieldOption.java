@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
@@ -30,7 +32,9 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @param <F>
  *         value of this option
  */
-public class FieldOption<F> extends AbstractOption<F, FieldDescriptor, FieldOptions> {
+@Immutable
+public class FieldOption<@ImmutableTypeParameter F>
+        extends AbstractOption<F, FieldDescriptor, FieldOptions> {
 
     /**
      * Creates an instance with the

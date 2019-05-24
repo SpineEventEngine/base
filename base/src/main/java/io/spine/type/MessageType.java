@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -48,6 +49,7 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 /**
  * A message type as declared in a proto file.
  */
+@Immutable
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
@@ -63,7 +65,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Collects all message types, including nested, declared in the passed file.
+     * Collects all message types, including nested one, declared in the passed file.
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);

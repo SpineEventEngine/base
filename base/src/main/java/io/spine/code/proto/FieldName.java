@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.base.FieldPath;
 import io.spine.code.AbstractFieldName;
@@ -35,6 +36,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A name of a message field.
  */
+@Immutable
 public final class FieldName extends AbstractFieldName implements UnderscoredName {
 
     private static final long serialVersionUID = 0L;
@@ -42,7 +44,7 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
     /**
      * The separator is an underscore or a digit.
      *
-     * <p>A digit, instead of an underscore, should be kept in a word.
+     * <p>A digit instead of an underscore should be kept in a word.
      * So, the second group is not just {@code (\\d)}.
      */
     private static final String WORD_SEPARATOR = "(_)|((?<=\\d)|(?=\\d))";

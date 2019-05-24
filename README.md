@@ -31,11 +31,10 @@ The repository also contains:
 * [Test utilities](tools/plugin-testlib) for Spine plugins.
 * [Integration tests](tools/smoke-tests) for all Spine tools.
 
-### On Coverage
+### Notes on Coverage
 
-Currently the coverage stats reflect the hits gathered from unit tests. 
-
-However, Gradle plugins, that are a significant part of this repository, are covered with integration tests. During each of those a standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include the coverage of such tests into the repository coverage report easily. 
-
-Therefore the current coverage percentage shown is significantly lower than a real one.
-
+Currently the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
+a significant part of this repository - are covered with integration tests. During each of those, a 
+standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include 
+the coverage of such tests into the repository coverage report easily. Therefore, current coverage 
+percentage shown is significantly lower than a real one.

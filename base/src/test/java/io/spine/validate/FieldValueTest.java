@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Syntax;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
-import static com.google.protobuf.Syntax.SYNTAX_PROTO2;
+import static com.google.protobuf.Syntax.SYNTAX_PROTO3;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.given.GivenField.mapContext;
 import static io.spine.validate.given.GivenField.repeatedContext;
@@ -53,15 +52,16 @@ class FieldValueTest {
         @Test
         void map() {
             Map<String, String> map = ImmutableMap.of(newUuid(), newUuid(), newUuid(), newUuid());
-            FieldValue fieldValue = FieldValue.of(map, mapContext());
+            FieldValue<ImmutableMap<String, String>> fieldValue = FieldValue.of(map, mapContext());
             assertConversion(map.values(), fieldValue);
         }
 
         @DisplayName("a repeated field")
         @Test
         void repeated() {
-            List<String> repeated = Lists.newArrayList(newUuid(), newUuid());
-            FieldValue fieldValue = FieldValue.of(repeated, repeatedContext());
+            List<String> repeated = ImmutableList.of(newUuid(), newUuid());
+            FieldValue<ImmutableList<String>> fieldValue =
+                    FieldValue.of(repeated, repeatedContext());
             assertConversion(repeated, fieldValue);
         }
 
@@ -69,7 +69,7 @@ class FieldValueTest {
         @Test
         void scalar() {
             String scalar = newUuid();
-            FieldValue fieldValue = FieldValue.of(scalar, scalarContext());
+            FieldValue<String> fieldValue = FieldValue.of(scalar, scalarContext());
             assertConversion(singletonList(scalar), fieldValue);
         }
     }
@@ -81,14 +81,16 @@ class FieldValueTest {
         @DisplayName("a map")
         @Test
         void map() {
-            FieldValue mapValue = FieldValue.of(ImmutableMap.of(), mapContext());
+            FieldValue<ImmutableMap<String, String>> mapValue =
+                    FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
             assertEquals(STRING, mapValue.javaType());
         }
 
         @DisplayName("a repeated")
         @Test
         void repeated() {
-            FieldValue mapValue = FieldValue.of(ImmutableList.of(), repeatedContext());
+            FieldValue<ImmutableList<String>> mapValue =
+                    FieldValue.of(ImmutableList.<String>of(), repeatedContext());
             assertEquals(STRING, mapValue.javaType());
         }
     }
@@ -96,8 +98,8 @@ class FieldValueTest {
     @DisplayName("handle Enum value")
     @Test
     void enumValue() {
-        Syntax rawValue = SYNTAX_PROTO2;
-        FieldValue enumValue = FieldValue.of(rawValue, scalarContext());
+        Syntax rawValue = SYNTAX_PROTO3;
+        FieldValue<Syntax> enumValue = FieldValue.of(rawValue, scalarContext());
         List<EnumValueDescriptor> expectedValues = singletonList(rawValue.getValueDescriptor());
         assertConversion(expectedValues, enumValue);
     }

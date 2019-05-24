@@ -22,7 +22,7 @@ package io.spine.protobuf;
 
 import com.google.protobuf.Message;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.validate.NotValidated;
+import io.spine.validate.NonValidated;
 import io.spine.validate.Validate;
 import io.spine.validate.Validated;
 import io.spine.validate.ValidationException;
@@ -48,7 +48,7 @@ public interface ValidatingBuilder<M extends Message> extends Message.Builder {
      * a validated message or {@link #buildPartial()} to skip message validation.
      */
     @Override
-    @NotValidated M build();
+    @NonValidated M build();
 
     /**
      * Constructs the message with the given fields without validation.
@@ -59,7 +59,7 @@ public interface ValidatingBuilder<M extends Message> extends Message.Builder {
      * @return the build message, potentially invalid
      */
     @Override
-    @NotValidated M buildPartial();
+    @NonValidated M buildPartial();
 
     /**
      * Constructs the message and {@linkplain Validate validates} it according to the constraints
