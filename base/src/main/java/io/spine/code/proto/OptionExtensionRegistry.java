@@ -25,8 +25,8 @@ import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
 import io.spine.annotation.Internal;
 import io.spine.option.OptionsProto;
-import io.spine.validate.ValidatingOptionFactory;
-import io.spine.validate.ValidatingOptionsLoader;
+import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.option.ValidatingOptionsLoader;
 
 /**
  * A registry that contains all of Protobuf option extensions.

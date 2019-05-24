@@ -19,7 +19,7 @@
  */
 
 /**
- * Common data types and utilities for the Spine Event Engine.
+ * Common data types and utilities for Spine Event Engine.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

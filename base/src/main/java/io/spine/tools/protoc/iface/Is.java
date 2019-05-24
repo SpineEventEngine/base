@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc.iface;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.MessageOption;
 import io.spine.option.IsOption;
@@ -28,9 +29,10 @@ import io.spine.option.OptionsProto;
 import java.util.Optional;
 
 /**
- * For a given message, declares whether the message is of the specified Java type, and whether
+ * For a given message, declares if the message is of the specified Java type and
  * the generation of marker interfaces is enabled.
  */
+@Immutable
 @SuppressWarnings("NewClassNamingConvention")
 final class Is extends MessageOption<IsOption> {
 

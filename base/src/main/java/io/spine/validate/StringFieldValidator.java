@@ -20,12 +20,15 @@
 
 package io.spine.validate;
 
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.ValidatingOptionFactory;
+
 import java.util.Set;
 
 /**
  * Validates fields of type {@link String}.
  */
-class StringFieldValidator extends FieldValidator<String> {
+final class StringFieldValidator extends FieldValidator<String> {
 
     /**
      * Creates a new validator instance.
@@ -33,7 +36,7 @@ class StringFieldValidator extends FieldValidator<String> {
      * @param fieldValue
      *         the value to validate
      * @param assumeRequired
-     *         if {@code true} the validator would assume that the field is required even
+     *         if {@code true}, the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
     StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {

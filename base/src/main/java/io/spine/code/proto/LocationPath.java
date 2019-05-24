@@ -42,7 +42,7 @@ import static java.lang.String.format;
  * Encapsulates a {@linkplain Location#getPathList() location path}.
  *
  * <p>A location path represents {@linkplain Location#getPathList() list of
- * integers}, that used to identify a {@linkplain Location location} in a ".proto" file.
+ * integers} that used to identify a {@linkplain Location location} in a ".proto" file.
  */
 public final class LocationPath {
 

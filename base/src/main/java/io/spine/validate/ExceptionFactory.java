@@ -89,8 +89,8 @@ public abstract class ExceptionFactory<E extends Exception,
     protected abstract Map<String, Value> getMessageTypeAttribute(Message message);
 
     /**
-     * Defines the way to create an instance of exception, basing on the source {@code Message},
-     * exception text and a generated {@code Error}.
+     * Defines the way to create an instance of exception basing on the source {@code Message},
+     * exception text, and a generated {@code Error}.
      */
     protected abstract E createException(String exceptionMsg, M message, Error error);
 
@@ -134,7 +134,7 @@ public abstract class ExceptionFactory<E extends Exception,
     }
 
     /**
-     * Creates an exception instance for an invalid message, which has fields that
+     * Creates an exception instance for an invalid message which has fields that
      * violate validation constraint(s).
      */
     public E newException() {

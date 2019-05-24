@@ -32,12 +32,12 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * Marks a message which is guaranteed to be valid.
  *
  * <p>In most cases this annotation is implied. However, sometimes users may want to state
- * explicitly that the message is validated. For example, if a method marked as {@link NotValidated}
+ * explicitly that the message is validated. For example, if a method marked as {@link NonValidated}
  * is overridden with a version which returns only valid messages, that version should be marked
  * with this annotation.
  *
  * @see io.spine.protobuf.ValidatingBuilder
- * @see NotValidated
+ * @see NonValidated
  */
 @Documented
 @Retention(CLASS)

@@ -88,7 +88,7 @@ public final class SimpleClassName extends StringTypeValue {
      * Obtains an outer class name declared in the passed file.
      *
      * @param  file the descriptor of the proto file
-     * @return the value declared in the file options, or
+     * @return the value declared in the file options or
      *         {@linkplain Optional#empty() empty Optional} if the option is not set
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptor file) {
@@ -153,7 +153,7 @@ public final class SimpleClassName extends StringTypeValue {
     }
 
     /**
-     * Creates new instance with appended suffix.
+     * Creates a new instance with appended suffix.
      */
     public SimpleClassName with(String suffix) {
         checkNotEmptyOrBlank(suffix);

@@ -38,10 +38,10 @@ public final class FieldContext {
     /**
      * Descriptors of fields in the nesting hierarchy.
      *
-     * <p>The list starts from the top-most field, and ends with the descriptor
+     * <p>The list starts from the top-most field and ends with the descriptor
      * of the target field.
      *
-     * <p>Suppose, we have the following declarations:
+     * <p>Suppose we have the following declarations:
      * <pre>{@code
      * message User {
      *     UserId id = 1;

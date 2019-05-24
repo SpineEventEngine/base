@@ -46,6 +46,7 @@ message SeveralFieldsId {
     string string = 1;
     int32 number = 2;
     google.protobuf.StringValue message = 3;
+    int64 long_number = 4;
 }
 
 message IdWithPrimitiveFields {

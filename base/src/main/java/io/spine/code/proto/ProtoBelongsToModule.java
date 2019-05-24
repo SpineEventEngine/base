@@ -30,7 +30,7 @@ import java.util.function.Predicate;
  * A predicate determining if a Protobuf file belongs to the specified module.
  *
  * <p>The descendants of this class are supposed to work with different
- * types of files, e.g. an original {@code .proto} file, a compiled {@code .java} etc.
+ * types of files, e.g. an original {@code .proto} file, a compiled {@code .java}, etc.
  */
 public abstract class ProtoBelongsToModule implements Predicate<SourceFile>, Logging {
 

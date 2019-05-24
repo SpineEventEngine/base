@@ -55,7 +55,7 @@ public final class Exceptions {
      *   }
      * }</pre>
      *
-     * @param message a message for exception
+     * @param message the message for exception
      * @return nothing ever
      * @throws UnsupportedOperationException always
      */
@@ -113,7 +113,7 @@ public final class Exceptions {
      * @return nothing ever
      * @throws UnsupportedOperationException always
      */
-    @SuppressWarnings("NewExceptionWithoutArguments") // No message necessary for this case.
+    @SuppressWarnings("NewExceptionWithoutArguments") // No message is necessary for this case.
     public static UnsupportedOperationException unsupported() {
         throw new UnsupportedOperationException();
     }

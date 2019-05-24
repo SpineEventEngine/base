@@ -44,7 +44,7 @@ public final class PackageName extends StringTypeValue {
      * Creates instance for the passed package name.
      *
      * @param value
-     *         package name, which cannot be empty or blank
+     *         the package name, which cannot be empty or blank
      * @return new instance
      */
     public static PackageName of(String value) {

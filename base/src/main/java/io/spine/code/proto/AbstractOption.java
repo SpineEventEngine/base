@@ -20,6 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
@@ -28,7 +30,7 @@ import java.util.Optional;
 
 /**
  * An abstract base for all types of Protobuf options: {@link FieldOption}, {@link MessageOption},
- * {@link FileOption} and a Service Option.
+ * {@link FileOption}, and a Service Option.
  *
  * @param <T>
  *         the type of value held by this option
@@ -37,9 +39,13 @@ import java.util.Optional;
  * @param <E>
  *         the type of object that holds all options of {@code K}
  */
-public abstract class AbstractOption<T, K extends GenericDescriptor, E extends ExtendableMessage<E>>
+@Immutable
+public abstract class AbstractOption<@ImmutableTypeParameter T,
+                                     @ImmutableTypeParameter K extends GenericDescriptor,
+                                     @ImmutableTypeParameter E extends ExtendableMessage<E>>
         implements Option<T, K> {
 
+    @SuppressWarnings("Immutable") // effectively
     private final GeneratedExtension<E, T> extension;
 
     /** Creates a new instance of the option using the specified extension. */

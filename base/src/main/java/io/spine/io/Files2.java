@@ -33,10 +33,11 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Additional utilities for working with files.
  *
- * <p>These utilities are specific to Spine work with code files in code generation, project
- * structure analysis, and other tasks that are not covered by well-known file management libraries.
+ * <p>These utilities are specific to enable Spine working with code files in code generation,
+ * project structure analysis, and other tasks that are not covered by well-known file management
+ * libraries.
  *
- * <p>For more file-related utilities please see:
+ * <p>For more file-related utilities, please see:
  * <ul>
  *     <li>{@link java.nio.file.Files Files} from NIO
  *     <li>{@link java.nio.file.Paths Paths} from NIO2
@@ -60,7 +61,7 @@ public final class Files2 {
      * <p>If the passed {@code File} points to the existing directory, an
      * {@link IllegalArgumentException} is thrown.
      *
-     * <p>In case of any I/O issues the respective exceptions are rethrown as
+     * <p>In case of any I/O issues, the respective exceptions are rethrown as
      * {@link IllegalStateException}.
      *
      * @param file
@@ -108,7 +109,7 @@ public final class Files2 {
      * <p>If any I/O errors occur, an {@link IllegalStateException} is thrown.
      *
      * @param pathToFile
-     *         path to the file to check
+     *         the path to the file to check
      * @return {@code true} if and only if the file represented by the specified path did not exist
      *         and was successfully created
      * @throws IllegalArgumentException
