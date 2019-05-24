@@ -21,6 +21,8 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.FieldValue;
 
@@ -30,7 +32,9 @@ import io.spine.validate.FieldValue;
  * @param <V>
  *         a type of values that this constraint is applicable to.
  */
-public abstract class NumericFieldConstraint<V extends Number & Comparable, T>
+@Immutable
+public abstract class NumericFieldConstraint<@ImmutableTypeParameter V extends Number & Comparable,
+                                             @ImmutableTypeParameter T>
         extends FieldValueConstraint<V, T> {
 
     NumericFieldConstraint(T optionValue) {

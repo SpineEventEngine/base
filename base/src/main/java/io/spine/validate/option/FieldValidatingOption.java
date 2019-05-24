@@ -20,6 +20,8 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
@@ -42,7 +44,8 @@ import static java.lang.String.format;
  * @param <F>
  *         type of field that this option is applied to
  */
-public abstract class FieldValidatingOption<T, F>
+@Immutable
+public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @ImmutableTypeParameter F>
         extends FieldOption<T>
         implements ValidatingOption<T, FieldDescriptor, FieldValue<F>> {
 

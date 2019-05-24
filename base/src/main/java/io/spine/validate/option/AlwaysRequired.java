@@ -20,6 +20,8 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
@@ -29,7 +31,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
  * @param <T>
  *         type of value that this option is applied to
  */
-final class AlwaysRequired<T> extends Required<T> {
+@Immutable
+final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
 
     /**
      * Creates a new instance of this option.

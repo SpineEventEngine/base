@@ -20,6 +20,8 @@
 
 package io.spine.validate.option;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
@@ -30,19 +32,21 @@ import io.spine.validate.FieldValue;
  * @param <V>
  *         numeric value type that this option is applied to
  */
-final class Max<V extends Number & Comparable> extends FieldValidatingOption<MaxOption, V> {
+@Immutable
+final class Max<@ImmutableTypeParameter V extends Number & Comparable>
+        extends FieldValidatingOption<MaxOption, V> {
 
     private Max() {
         super(OptionsProto.max);
     }
 
     /** Returns a new instance of this option. */
-    static <V extends Number & Comparable> Max<V> create() {
+    static <@ImmutableTypeParameter V extends Number & Comparable> Max<V> create() {
         return new Max<>();
     }
 
     @Override
     public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
-        return new MaxConstraint<V>(optionValue(fieldValue));
+        return new MaxConstraint<>(optionValue(fieldValue));
     }
 }
