@@ -44,7 +44,6 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
-import static io.spine.tools.gradle.ConfigurationName.FETCH;
 import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
@@ -148,7 +147,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
     private GradleTask createCopyPluginJarTask(Project project) {
         Configuration fetch = project.getConfigurations()
-                                     .maybeCreate(FETCH.value());
+                                     .maybeCreate(ConfigurationName.fetch.name());
         Artifact protocPluginArtifact = Artifact
                 .newBuilder()
                 .useSpineToolsGroup()

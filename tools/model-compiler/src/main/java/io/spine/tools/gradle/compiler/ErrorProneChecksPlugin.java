@@ -65,7 +65,7 @@ import org.gradle.api.artifacts.Configuration;
  *
  * @see io.spine.validate.ValidatingBuilder
  */
-public class ErrorProneChecksPlugin extends SpinePlugin {
+public final class ErrorProneChecksPlugin extends SpinePlugin {
 
     private static final String EXTENSION_NAME = "spineErrorProneChecks";
 

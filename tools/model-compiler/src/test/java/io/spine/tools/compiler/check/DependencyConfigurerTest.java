@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
-import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,7 +49,7 @@ class DependencyConfigurerTest {
 
     private static final String STUB_VERSION = "versionStub";
 
-    private Configuration preprocessor;
+    private Configuration annotationProcessorConfig;
     private DependencyConfigurer helper;
     private DependencyConfigurer helperMock;
 
@@ -57,21 +57,21 @@ class DependencyConfigurerTest {
     void setUp() {
         Project project = newProject();
         ConfigurationContainer configs = project.getConfigurations();
-        preprocessor = configs.getByName(PREPROCESSOR_CONFIG_NAME);
-        helper = DependencyConfigurer.createFor(project, preprocessor);
+        annotationProcessorConfig = configs.getByName(annotationProcessor.value());
+        helper = DependencyConfigurer.createFor(project, annotationProcessorConfig);
         helperMock = spy(helper);
     }
 
     @Test
     @DisplayName("pass null tolerance check")
-    void pass_null_tolerance_check() {
+    void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(helper);
     }
 
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
-    void add_spine_check_dependency_to_annotation_processor_config() {
+    void addSpineCheckDependencyToAnnotationProcessorConfig() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
         when(helperMock.isChecksVersionResolvable(any())).thenReturn(true);
 
@@ -83,7 +83,7 @@ class DependencyConfigurerTest {
 
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
-    void not_add_spine_check_dependency_if_it_is_not_resolvable() {
+    void notAddSpineCheckDependencyIfItIsNotResolvable() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
         when(helperMock.isChecksVersionResolvable(any())).thenReturn(false);
 
@@ -95,7 +95,7 @@ class DependencyConfigurerTest {
 
     @Test
     @DisplayName("not add spine check dependency if model compiler dependency not available")
-    void not_add_spine_check_dependency_if_model_compiler_dependency_not_available() {
+    void notAddSpineCheckDependencyIfModelCompilerDependencyNotAvailable() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.empty());
 
         helperMock.addErrorProneChecksDependency();
@@ -105,7 +105,7 @@ class DependencyConfigurerTest {
     }
 
     private boolean hasErrorProneChecksDependency() {
-        DependencySet dependencies = preprocessor.getDependencies();
+        DependencySet dependencies = annotationProcessorConfig.getDependencies();
         for (Dependency dependency : dependencies) {
             if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
                     SPINE_CHECKER_MODULE.equals(dependency.getName())) {

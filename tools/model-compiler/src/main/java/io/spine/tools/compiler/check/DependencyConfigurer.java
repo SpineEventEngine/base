@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
-import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
+import static io.spine.tools.gradle.ConfigurationName.classpath;
 
 /**
  * Class which helps managing dependencies related to the Spine Error Prone Checks module and the
@@ -114,13 +114,11 @@ public class DependencyConfigurer {
         ScriptHandler buildscript = project.getRootProject()
                                            .getBuildscript();
         ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration classpath = configurations.findByName(CLASSPATH.value());
-
-        if (classpath == null) {
+        Configuration classpathConfig = configurations.findByName(classpath.value());
+        if (classpathConfig == null) {
             return Optional.empty();
         }
-
-        DependencySet classpathDependencies = classpath.getDependencies();
+        DependencySet classpathDependencies = classpathConfig.getDependencies();
         Optional<String> version = Optional.empty();
         for (Dependency dependency : classpathDependencies) {
             if (MODEL_COMPILER_PLUGIN_NAME.equals(dependency.getName())) {
@@ -152,7 +150,7 @@ public class DependencyConfigurer {
     private static void dependOnErrorProneChecks(String version, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
                     SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version,
-                    PREPROCESSOR_CONFIG_NAME);
+                    annotationProcessor.value());
         DependencySet dependencies = configuration.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
                 SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version);
