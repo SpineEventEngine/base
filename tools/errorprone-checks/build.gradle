@@ -50,11 +50,12 @@ def getResolvedArtifactFor(final dependency) {
     return path
 }
 
+test.dependsOn project(':base').getTasksByName('reBuildProtobuf', false)
+
 afterEvaluate {
     final def javacPath = getResolvedArtifactFor("javac")
 
     test {
         jvmArgs "-Xbootclasspath/p:$javacPath"
-        dependsOn rootProject.subprojects*.publishToMavenLocal
     }
 }
