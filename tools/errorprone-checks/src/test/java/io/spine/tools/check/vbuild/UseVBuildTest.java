@@ -43,14 +43,14 @@ class UseVBuildTest {
     @DisplayName("recognize positive cases")
     void recognizePositiveCases() {
         compilationTestHelper.expectErrorMessage(NAME, msg -> msg.contains(SUMMARY))
-                             .addSourceFile("UseVBuildPositives.java")
+                             .addSourceFile("given/UseVBuildPositives.java")
                              .doTest();
     }
 
     @Test
     @DisplayName("recognize negative cases")
     void recognizeNegativeCases() {
-        compilationTestHelper.addSourceFile("UseVBuildNegatives.java")
+        compilationTestHelper.addSourceFile("given/UseVBuildNegatives.java")
                              .doTest();
     }
 }

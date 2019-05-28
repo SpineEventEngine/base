@@ -43,14 +43,14 @@ class HandleMethodResultTest {
     void recognizePositiveCases() {
         compilationTestHelper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
                                                  msg -> msg.contains(SUMMARY))
-                             .addSourceFile("HandleMethodResultPositives.java")
+                             .addSourceFile("given/HandleMethodResultPositives.java")
                              .doTest();
     }
 
     @Test
     @DisplayName("match negative cases")
     void recognizeNegativeCases() {
-        compilationTestHelper.addSourceFile("HandleMethodResultNegatives.java")
+        compilationTestHelper.addSourceFile("given/HandleMethodResultNegatives.java")
                              .doTest();
     }
 }
