@@ -56,7 +56,7 @@ jar {
     from "$rootDir/base-validating-builders/compiled-proto"
 }
 
-task reBuildProtobuf {
+task rebuildProtobuf {
 
     dependsOn(rootProject.subprojects*.getTasksByName('publishToMavenLocal', false))
     
@@ -65,4 +65,4 @@ task reBuildProtobuf {
     }
 }
 
-build.finalizedBy reBuildProtobuf
+build.finalizedBy rebuildProtobuf
