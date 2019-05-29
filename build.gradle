@@ -249,6 +249,7 @@ idea {
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
 apply from: deps.scripts.runBuild
+apply from: deps.scripts.generatePom
 
 apply from: deps.scripts.repoLicenseReport
 
