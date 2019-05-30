@@ -48,13 +48,13 @@ import static java.util.stream.Collectors.toList;
  * Provides nesting information for packages {@linkplain Package#getPackages() known}
  * to the caller's {@code ClassLoader}
  *
- * <p>Java does not support true nesting of packages. Package merely form namespaces for classes.
+ * <p>Java does not support true nesting of packages. Package merely forms namespaces for classes.
  * Still, the package naming pattern, storage of source code files in a file system, and
  * directory-like representation of package nesting in modern IDEs suggest that there is some form
  * of nesting, at least in terms of naming.
  *
  * <p>This class implements a {@linkplain Graph#isDirected() directed} {@link Graph} with nodes
- * representing Java packages, and edges representing child -&gt; parent relationships:
+ * representing Java packages and edges representing child -&gt; parent relationships:
  *
  * <pre>
  *     java.util.concurrent.atomic -&gt; java.util.concurrent
