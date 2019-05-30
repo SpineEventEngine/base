@@ -18,33 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test.tools.check;
+/**
+ * Contains the ErrorProne checker which tests that a method result is not ignored.
+ */
 
-import com.google.protobuf.Empty;
-import com.google.protobuf.Message;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check.methodresult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("UseValidatingBuilder check should")
-class VariousValidMessageUsages {
-
-    @Test
-    @DisplayName("pass")
-    void pass() {
-        assertTrue(true, "This class must compile in order for the test to pass.");
-        Empty empty = Empty.getDefaultInstance();
-        assertEquals(generic(empty), empty);
-    }
-
-    /**
-     * Usage of {@code toBuilder()} methods with generic types is allowed, since there is no
-     * abstract base with the {@code toVBuilder()} method.
-     */
-    <T extends Message> Message generic(T value) {
-        return value.toBuilder()
-                    .build();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

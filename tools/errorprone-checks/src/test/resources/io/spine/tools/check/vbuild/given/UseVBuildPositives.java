@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuild;
+package io.spine.tools.check.vbuild.given;
 
 import com.google.protobuf.Message;
 import io.spine.base.Error;

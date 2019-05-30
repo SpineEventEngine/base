@@ -19,13 +19,14 @@
  */
 
 /**
- * Contains test classes of for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} check
- * tests.
+ * This package declares a number of classes which are analyzed by the check in tests.
+ *
+ * <p>See the test resources of this module.
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.test.tools.check;
+package io.spine.tools.check.vbuild.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
