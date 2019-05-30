@@ -60,7 +60,6 @@ sourceSets {
  * a version is found, the older version is excluded.
  */
 jar {
-
     // See `base-validating-builders/README.md`
     final compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
     final compiledProtos = fileTree(compiledProtoPath)
