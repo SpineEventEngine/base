@@ -26,7 +26,7 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Provides information about the environment (current platform used, etc).
+ * Provides information about the environment (current platform used, etc.).
  */
 @SPI
 @SuppressWarnings("AccessOfSystemProperties") // OK as we need system properties for this class.
@@ -37,7 +37,7 @@ public final class Environment {
     /**
      * The key name of the system property which tells if a code runs under a testing framework.
      *
-     * <p>If your testing framework is not among supported by {@link #isTests()},
+     * <p>If your testing framework is not among the supported by {@link #isTests()},
      * set this property to {@code true} before running tests.
      */
     public static final String ENV_KEY_TESTS = "io.spine.tests";

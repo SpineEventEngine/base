@@ -24,6 +24,7 @@ dependencies {
 
     implementation project(':base')
     implementation project(':plugin-base')
+    implementation deps.build.gradlePlugins.protobuf
 
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')

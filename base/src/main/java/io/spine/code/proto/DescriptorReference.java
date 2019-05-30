@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.io.Files2;
 import io.spine.io.Resource;
 
@@ -48,6 +49,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * <p>Multiple reference files may be present at runtime of an application. The files may be merged
  * by appending if a "fat" JAR artifact is required.
  */
+@Immutable
 public final class DescriptorReference {
 
     /**
@@ -97,7 +99,7 @@ public final class DescriptorReference {
      *
      * @param resources
      *         {@code URL}s that contain referenced to descriptor sets
-     * @return an {@code Iterator} of referenced to resources, described by the given {@code
+     * @return an {@code Iterator} of referenced to resources described by the given {@code
      *         resources} iterator
      */
     @VisibleForTesting
@@ -152,13 +154,13 @@ public final class DescriptorReference {
      *
      * <p>Preserves all of the existing content of the {@code desc.ref} file.
      *
-     * <p>If the specified directory does not contain a {@code desc.ref} file, it gets
+     * <p>If the specified directory does not contain a {@code desc.ref} file, it is
      * created.
      *
-     * <p>If one of the directories in the specified {@code Path} does ont exist, it gets created.
+     * <p>If one of the directories in the specified {@code Path} does ont exist, it is created.
      *
      * @param directory
-     *         directory that contains a desired {@code desc.ref} file
+     *         the directory that contains a desired {@code desc.ref} file
      * @param newline
      *         a newline symbol that gets written after the reference text
      */

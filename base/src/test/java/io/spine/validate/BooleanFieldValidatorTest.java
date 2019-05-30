@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldContext;
 import io.spine.logging.Logging;
 import io.spine.test.validate.RequiredBooleanFieldValue;
+import io.spine.validate.option.Required;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.SubstituteLoggingEvent;

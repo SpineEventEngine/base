@@ -20,12 +20,7 @@
 
 package io.spine.tools.gradle;
 
-import com.google.common.base.MoreObjects;
-
-import static org.gradle.api.plugins.JavaPlugin.COMPILE_CONFIGURATION_NAME;
-import static org.gradle.api.plugins.JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME;
-import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME;
-import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME;
+import io.spine.annotation.Internal;
 
 /**
  * The names of Gradle configurations used by the Spine model compiler plugin.
@@ -36,54 +31,128 @@ import static org.gradle.api.plugins.JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURA
 public enum ConfigurationName {
 
     /**
-     * The {@code classpath} configuration.
+     * The classpath of the Gradle build process.
      */
-    CLASSPATH("classpath"),
+    classpath,
 
     /**
-     * The {@code implementation} configuration.
+     * The annotation processors used during the compilation of this module.
+     *
+     * <p>These dependencies are not accessible to the user at compile-time or at runtime directly.
      */
-    IMPLEMENTATION(IMPLEMENTATION_CONFIGURATION_NAME),
+    annotationProcessor,
 
     /**
-     * The {@code runtimeClasspath} configuration.
+     * The API of a Java library.
+     *
+     * <p>The dependencies are available at compile-time and runtime.
+     *
+     * <p>Dependencies in this configuration are included as compile-time transitive dependencies in
+     * the artifacts of the library.
      */
-    RUNTIME_CLASSPATH(RUNTIME_CLASSPATH_CONFIGURATION_NAME),
+    api,
 
     /**
-     * The {@code testRuntimeClasspath} configuration.
+     * Dependencies on which the Java module relies for implementation.
+     *
+     * <p>The dependencies are available at compile-time and runtime.
+     *
+     * <p>Dependencies in this configuration are included as runtime transitive dependencies in
+     * the artifacts of the module.
      */
-    TEST_RUNTIME_CLASSPATH(TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME),
+    implementation,
 
     /**
-     * A custom configuration for downloading artifacts from repositories.
+     * Dependencies available at compile-time but not at runtime.
+     *
+     * <p>Suitable for annotations with {@link java.lang.annotation.RetentionPolicy#CLASS}.
      */
-    FETCH("fetch"),
+    compileOnly,
+
+    /**
+     * All the dependencies included for the Java module compilation.
+     *
+     * <p>Users cannot add dependencies directly to this configuration. However, this configuration
+     * may be resolved.
+     */
+    compileClasspath,
+
+    /**
+     * Dependencies available at runtime but not at compile-time.
+     *
+     * <p>Suitable for SPI implementations loaded via {@link java.util.ServiceLoader} or other
+     * classpath scanning utilities.
+     */
+    runtimeOnly,
+
+    /**
+     * All the dependencies included for the Java module runtime.
+     *
+     * <p>Users cannot add dependencies directly to this configuration. However, this configuration
+     * may be resolved.
+     */
+    runtimeClasspath,
+
+    /**
+     * The annotation processors used during the compilation of the tests of this module.
+     *
+     * <p>These dependencies are not accessible to the user at compile-time or at runtime directly.
+     */
+    testAnnotationProcessor,
+
+    /**
+     * Dependencies on which the Java module tests rely for implementation.
+     *
+     * <p>The dependencies are available at compile-time of the test code and at the test runtime.
+     */
+    testImplementation,
+
+    /**
+     * All the dependencies included for the Java module tests compilation.
+     *
+     * <p>Users cannot add dependencies directly to this configuration. However, this configuration
+     * may be resolved.
+     */
+    testCompileClasspath,
+
+    /**
+     * Dependencies available at test runtime but not at compile-time.
+     *
+     * <p>For example, JUnit runners may be depended on with this configuration.
+     */
+    testRuntimeOnly,
+
+    /**
+     * All the dependencies included for the Java module test runtime.
+     *
+     * <p>Users cannot add dependencies directly to this configuration. However, this configuration
+     * may be resolved.
+     */
+    testRuntimeClasspath,
+
+    /**
+     * Configuration that allows to compile {@code .proto} files form the dependencies.
+     *
+     * <p>Users should use {@code compile} when adding Protobuf dependencies to other strictly
+     * Protobuf modules.
+     */
+    protobuf,
+
+    /**
+     * A Spine-specific configuration used to download and resolve artifacts.
+     */
+    @Internal
+    fetch,
 
     /**
      * The {@code compile} configuration.
+     *
+     * @deprecated Deprecated since Gradle 5.0. Use {@link #implementation} or {@link #api} instead.
      */
-    @SuppressWarnings("deprecation")
-    // Required in order to add Protobuf dependencies.
-    // See issue https://github.com/google/protobuf-gradle-plugin/issues/242.
-    COMPILE(COMPILE_CONFIGURATION_NAME);
-
-    private final String value;
-
-    ConfigurationName(String value) {
-        this.value = value;
-    }
+    @Deprecated
+    compile;
 
     public String value() {
-        return value;
-    }
-
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // `value` is used in other contexts.
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("value", value)
-                          .toString();
+        return name();
     }
 }

@@ -39,6 +39,7 @@ gradle-app.setting
 
 # Interim compilation of Validating Builders
 /base-validating-builders/builders/**/*.class
+/base-validating-builders/compiled-proto/**/*.class
 
 # Prevent accidental adding of credential files
 credentials.tar

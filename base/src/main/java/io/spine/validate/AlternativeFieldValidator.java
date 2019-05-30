@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import io.spine.logging.Logging;
+import io.spine.validate.option.Constraint;
+import io.spine.validate.option.RequiredField;
 
 import java.util.List;
 

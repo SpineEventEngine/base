@@ -21,6 +21,9 @@
 package io.spine.base;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
@@ -29,8 +32,10 @@ import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.TypeConverter;
 import io.spine.string.StringifierRegistry;
+import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,6 +46,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Wrapper of an identifier value.
  */
+@SuppressWarnings("ClassWithTooManyMethods")
 @Internal
 public final class Identifier<I> {
 
@@ -129,7 +135,7 @@ public final class Identifier<I> {
     }
 
     private static <I> IllegalArgumentException unsupported(I id) {
-        return newIllegalArgumentException("ID of unsupported type encountered: %s.", id);
+        return newIllegalArgumentException("ID of unsupported type encountered: `%s`.", id);
     }
 
     private static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
@@ -151,7 +157,7 @@ public final class Identifier<I> {
      * <p>Consider using {@code Message}-based IDs if you want to have typed IDs in your code,
      * and/or if you need to have IDs with some structure inside.
      *
-     * <p>Examples of such structural IDs are:
+     * <p>Here are the examples of such structural IDs:
      * <ul>
      *   <li>EAN value used in bar codes
      *   <li>ISBN
@@ -177,7 +183,7 @@ public final class Identifier<I> {
      * Wraps the passed ID value into an instance of {@link Any}.
      *
      * <p>The passed value must be of one of the supported types listed below.
-     * The type of the value wrapped into the returned instance is defined by the type
+     * The type of the value wrapped in to the returned instance is defined by the type
      * of the passed value:
      * <ul>
      *   <li>For classes implementing {@link Message} — the value of the message itself
@@ -268,7 +274,7 @@ public final class Identifier<I> {
      * @param <I>
      *         the type of the ID
      * @return <ul>
-     *         <li>for classes implementing {@link Message} — a Json form;
+     *         <li>for classes implementing {@link Message} — a JSON form;
      *           <li>for {@code String}, {@code Long}, {@code Integer} —
      *               the result of {@link Object#toString()};
      *           <li>for {@code null} ID — the {@link #NULL_ID};
@@ -315,6 +321,42 @@ public final class Identifier<I> {
     private Any pack() {
         Any result = type.pack(value);
         return result;
+    }
+
+    /**
+     * Finds the first ID field of the specified type in the passed message type.
+     *
+     * @param idClass
+     *          the class of identifiers
+     * @param message
+     *          the descriptor of the message type in which to find a field
+     * @param <I>
+     *          the type of identifiers
+     * @return the descriptor of the matching field or
+     *         empty {@code Optional} if there is no such a field
+     */
+    public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
+        checkNotNull(idClass);
+        checkNotNull(message);
+        Type idType = toType(idClass);
+        Optional<FieldDescriptor> found =
+                message.getFields()
+                       .stream()
+                       .filter(idType::matchField)
+                       .filter(f -> idType != Type.MESSAGE || sameType(idClass, f))
+                       .findFirst();
+        return found;
+    }
+
+    /**
+     * Verifies if the class of identifiers and the type of the field represent the same type.
+     */
+    private static <I> boolean sameType(Class<I> idClass, FieldDescriptor f) {
+        @SuppressWarnings("unchecked") // safe since it's Message type.
+                TypeUrl messageType = TypeUrl.of(
+                (Class<? extends Message>) idClass);
+        TypeUrl fieldType = TypeUrl.from(f.getMessageType());
+        return fieldType.equals(messageType);
     }
 
     @Override
@@ -377,6 +419,11 @@ public final class Identifier<I> {
             <I> I defaultValue(Class<I> idClass) {
                 return (I) "";
             }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.STRING == field.getJavaType();
+            }
         },
 
         INTEGER {
@@ -404,6 +451,11 @@ public final class Identifier<I> {
             <I> I defaultValue(Class<I> idClass) {
                 return (I) Integer.valueOf(0);
             }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.INT == field.getJavaType();
+            }
         },
 
         LONG {
@@ -430,6 +482,11 @@ public final class Identifier<I> {
             @Override
             <I> I defaultValue(Class<I> idClass) {
                 return (I) Long.valueOf(0);
+            }
+
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.LONG == field.getJavaType();
             }
         },
 
@@ -474,6 +531,17 @@ public final class Identifier<I> {
                 Message result = defaultInstance(msgClass);
                 return (I) result;
             }
+
+            /**
+             * Returns {@code true} if the passed field is message.
+             *
+             * <p>It does not necessarily mean that the type of identifiers matches.
+             * Obtaining the class of the field is needed in this case.
+             */
+            @Override
+            boolean matchField(FieldDescriptor field) {
+                return JavaType.MESSAGE == field.getJavaType();
+            }
         };
 
         private static <I> Type getType(I id) {
@@ -499,6 +567,8 @@ public final class Identifier<I> {
         abstract Object fromMessage(Message message);
 
         abstract <I> I defaultValue(Class<I> idClass);
+
+        abstract boolean matchField(FieldDescriptor field);
 
         <I> Any pack(I id) {
             Message msg = toMessage(id);

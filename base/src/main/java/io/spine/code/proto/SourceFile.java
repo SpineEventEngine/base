@@ -73,13 +73,13 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      *     <li>The file name which ends on
      *         {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”}.
      *     <li>The option {@code java_multiple_files} set to {@code false}.
-     *     <li>Do not have the option {@code java_outer_classname} or have the value, which
-     *         ends with {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)}
-     *         “Rejections”}.
+     *     <li>
      * </ul>
+     * Also such file does not have the option {@code java_outer_classname} or value which ends
+     * with {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”}.
      */
     public boolean isRejections() {
-        // By convention rejections are generated into one file.
+        // By convention, rejections are generated into one file.
         if (descriptor.getOptions()
                       .getJavaMultipleFiles()) {
             return false;

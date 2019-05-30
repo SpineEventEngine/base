@@ -20,15 +20,25 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.logging.Logging;
+import io.spine.protobuf.Diff;
 import io.spine.type.TypeName;
+import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -36,8 +46,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * This class provides general validation routines.
  */
 public final class Validate {
-
-    private static final String MUST_BE_A_POSITIVE_VALUE = "%s must be a positive value";
 
     /** Prevents instantiation of this utility class. */
     private Validate() {
@@ -201,13 +209,9 @@ public final class Validate {
     public static String checkNotEmptyOrBlank(String stringToCheck, String fieldName) {
         checkNotNull(stringToCheck);
         checkNotNull(fieldName);
-        checkParameter(!stringToCheck.isEmpty(),
-                       "Field %s must not be an empty string.", fieldName
-        );
+        checkArgument(!stringToCheck.isEmpty(), "Field %s must not be an empty string.", fieldName);
         String trimmed = stringToCheck.trim();
-        checkParameter(trimmed.length() > 0,
-                       "Field %s must not be a blank string.", fieldName
-        );
+        checkArgument(trimmed.length() > 0, "Field %s must not be a blank string.", fieldName);
         return stringToCheck;
     }
 
@@ -232,7 +236,7 @@ public final class Validate {
      */
     public static void checkPositive(long value, String argumentName) {
         checkNotNull(argumentName);
-        checkParameter(value > 0L, MUST_BE_A_POSITIVE_VALUE, argumentName);
+        checkArgument(value > 0L, "%s must be a positive value", argumentName);
     }
 
     /**
@@ -256,18 +260,6 @@ public final class Validate {
     }
 
     /**
-     * Ensures that the passed name is not empty or blank.
-     *
-     * @param name the name to check
-     * @return the passed value
-     * @throws IllegalArgumentException if the ID string value is empty or blank
-     */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // is OK for this popular field name value
-    public static String checkNameNotEmptyOrBlank(String name) {
-        return checkNotEmptyOrBlank(name, "name");
-    }
-
-    /**
      * Validates the given message according to its definition and throws
      * {@code ValidationException} if any constraints are violated.
      *
@@ -282,5 +274,108 @@ public final class Validate {
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
+    }
+
+    /**
+     * Checks that when transitioning a message state from {@code previous} to {@code current},
+     * the {@code set_once} constrains are met.
+     *
+     * @param previous
+     *         the previous state of the message
+     * @param current
+     *         the new state of the message
+     * @param <M>
+     *         the type of the message
+     */
+    public static <M extends Message> void checkValidChange(M previous, M current) {
+        checkNotNull(previous);
+        checkNotNull(current);
+
+        Diff diff = Diff.between(previous, current);
+        ImmutableSet<ConstraintViolation> setOnceViolations = current
+                .getDescriptorForType()
+                .getFields()
+                .stream()
+                .map(FieldDeclaration::new)
+                .filter(Validate::isNonOverridable)
+                .filter(diff::contains)
+                .filter(field -> {
+                    Object fieldValue = previous.getField(field.descriptor());
+                    return !field.isDefault(fieldValue);
+                })
+                .map(Validate::violatedSetOnce)
+                .collect(toImmutableSet());
+        if (!setOnceViolations.isEmpty()) {
+            throw new ValidationException(setOnceViolations);
+        }
+    }
+
+    /**
+     * Checks if the given field, once set, may not be changed.
+     *
+     * <p>This property is defined by the {@code (set_once)} option. If the option is set to
+     * {@code true} on a non-{@code repeated} and non-{@code map} field, this field is
+     * <strong>non-overridable</strong>.
+     *
+     * <p>Logs if the option is set but the field is {@code repeated} or a {@code map}.
+     *
+     * @param field
+     *         the field to check
+     * @return {@code true} if the field is neither {@code repeated} nor {@code map} and is
+     *         {@code (set_once)}
+     */
+    private static boolean isNonOverridable(FieldDeclaration field) {
+        checkNotNull(field);
+
+        boolean marked = markedSetOnce(field);
+        if (marked) {
+            boolean setOnceInapplicable = field.isCollection();
+            if (setOnceInapplicable) {
+                onSetOnceMisuse(field);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean markedSetOnce(FieldDeclaration declaration) {
+        Optional<Boolean> setOnceDeclaration = SetOnce.from(declaration.descriptor());
+        boolean setOnceValue = setOnceDeclaration.orElse(false);
+        boolean requiredByDefault = declaration.isEntityId()
+                && !setOnceDeclaration.isPresent();
+        return setOnceValue || requiredByDefault;
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+        // Usage in AbstractValidatingBuilder will be removed.
+    private static void onSetOnceMisuse(FieldDeclaration field) {
+        Logger logger = Logging.get(Validate.class);
+        FieldName fieldName = field.name();
+        logger.error("Error found in `{}`. " +
+                     "Repeated and map fields cannot be marked as `(set_once) = true`.",
+                     fieldName);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+        // Usage in AbstractValidatingBuilder will be removed.
+    private static ConstraintViolation violatedSetOnce(FieldDeclaration declaration) {
+        TypeName declaringTypeName = declaration.declaringType().name();
+        FieldName fieldName = declaration.name();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Attempted to change the value of the field `%s.%s` which has " +
+                                      "`(set_once) = true` and is already set.")
+                .addParam(declaringTypeName.value())
+                .addParam(fieldName.value())
+                .setFieldPath(declaration.name()
+                                         .asPath())
+                .setTypeName(declaration.declaringType()
+                                        .name()
+                                        .value())
+                .build();
+        return violation;
     }
 }

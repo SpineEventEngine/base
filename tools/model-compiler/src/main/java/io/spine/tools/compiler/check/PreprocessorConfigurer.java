@@ -20,18 +20,18 @@
 
 package io.spine.tools.compiler.check;
 
+import io.spine.tools.gradle.ConfigurationName;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
  */
 public class PreprocessorConfigurer {
-
-    static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
 
     private final Project project;
 
@@ -60,9 +60,10 @@ public class PreprocessorConfigurer {
      */
     public Configuration setupPreprocessorConfig() {
         ConfigurationContainer configurations = project.getConfigurations();
-        Configuration preprocessorConfig = configurations.findByName(PREPROCESSOR_CONFIG_NAME);
+        ConfigurationName config = annotationProcessor;
+        Configuration preprocessorConfig = configurations.findByName(config.value());
         if (preprocessorConfig == null) {
-            preprocessorConfig = configurations.create(PREPROCESSOR_CONFIG_NAME);
+            preprocessorConfig = configurations.create(config.value());
         }
         return preprocessorConfig;
     }

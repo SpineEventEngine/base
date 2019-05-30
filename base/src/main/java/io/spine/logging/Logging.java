@@ -38,7 +38,7 @@ import static java.lang.String.format;
 /**
  * Utility interface for objects that require logging output.
  *
- * <p>Such an object need to implement this interface and obtain a {@link Logger} instance
+ * <p>Such an object is needed to implement this interface and obtain a {@link Logger} instance
  * associated with the class of the object via {@link #log()} method.
  *
  * <p>In addition to this, this interface provides shortcut methods for the popular
@@ -47,7 +47,7 @@ import static java.lang.String.format;
  * {@link #_trace(String) _trace()}, {@link #_debug(String) _debug()},
  * {@link #_warn(String) _warn()}, {@link #_error(String) _error()}.
  *
- * <p>The interface does not provide shortcut methods for than three arguments
+ * <p>The interface does not provide shortcut methods for more than three arguments
  * because of the {@linkplain Logger#debug(String, Object...) associated performance cost}.
  * If you do need more than three arguments, please use a {@code Logger}
  * instance obtained via {@link #log()}.

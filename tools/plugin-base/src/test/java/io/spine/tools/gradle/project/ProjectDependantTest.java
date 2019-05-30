@@ -42,10 +42,10 @@ import java.util.Set;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.ConfigurationName.COMPILE;
-import static io.spine.tools.gradle.ConfigurationName.IMPLEMENTATION;
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.compile;
+import static io.spine.tools.gradle.ConfigurationName.implementation;
+import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
+import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("DependantProject should")
@@ -68,9 +68,9 @@ class ProjectDependantTest {
     void addDependency() {
         DependantProject container = DependantProject.from(project);
         Artifact dependency = artifact();
-        container.depend(IMPLEMENTATION, dependency.notation());
+        container.depend(implementation, dependency.notation());
 
-        checkDependency(IMPLEMENTATION, dependency);
+        checkDependency(implementation, dependency);
     }
 
     @Test
@@ -80,9 +80,10 @@ class ProjectDependantTest {
         Artifact dependency = artifact();
         container.implementation(dependency.notation());
 
-        checkDependency(IMPLEMENTATION, dependency);
+        checkDependency(implementation, dependency);
     }
 
+    @SuppressWarnings("deprecation") // `compile` configuration.
     @Test
     @DisplayName("add a compile dependency")
     void compile() {
@@ -90,7 +91,7 @@ class ProjectDependantTest {
         Artifact dependency = artifact();
         container.compile(dependency);
 
-        checkDependency(COMPILE, dependency);
+        checkDependency(compile, dependency);
     }
 
     @Test
@@ -100,8 +101,8 @@ class ProjectDependantTest {
         Dependency unwanted = new ThirdPartyDependency("org.example.system", "system-core");
         container.exclude(unwanted);
 
-        checkExcluded(RUNTIME_CLASSPATH, unwanted);
-        checkExcluded(TEST_RUNTIME_CLASSPATH, unwanted);
+        checkExcluded(runtimeClasspath, unwanted);
+        checkExcluded(testRuntimeClasspath, unwanted);
     }
 
     private void checkDependency(ConfigurationName configuration, Artifact dependency) {

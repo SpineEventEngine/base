@@ -1,3 +1,5 @@
+import static com.google.common.io.Files.createParentDirs
+
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -23,6 +25,7 @@ group = 'io.spine.tools'
 dependencies {
     api gradleApi()
     compile project(':tool-base')
+    implementation deps.build.gradlePlugins.protobuf
 
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')
@@ -43,6 +46,35 @@ protobuf {
         }
     }
 }
+
+/**
+ * Prepares the `versions.properties` file and puts it into the resources of this project.
+ *
+ * <p>The file contains versions of dependencies which are configured by
+ * the `ProtocConfigurationPlugin`.
+ */
+task prepareProtocConfigVersions {
+    description = "Prepares the versions.properties file."
+
+    final def file = file("$projectDir/generated/main/resources/versions.properties")
+
+    outputs.file(file)
+
+    final Properties versions = new Properties()
+    versions.setProperty("baseVersion", spineBaseVersion)
+    versions.setProperty("protobufVersion", deps.versions.protobuf)
+    versions.setProperty("gRPCVersion", deps.versions.grpc)
+
+    doLast {
+        createParentDirs(file)
+        file.createNewFile()
+        file.withOutputStream { final stream ->
+            versions.store(stream, "Versions of dependencies of the Model Compiler plugin and the Spine Protoc plugin.")
+        }
+    }
+}
+
+processResources.dependsOn prepareProtocConfigVersions
 
 sourceSets {
     test {
