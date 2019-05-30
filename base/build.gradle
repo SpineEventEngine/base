@@ -55,19 +55,18 @@ sourceSets {
 
 /**
  * The JAR task assembles class files with a respect to the re-built message classes.
- * 
- * The task checks each input file for a newer version in the `base-validating-builders`. If such 
+ *
+ * The task checks each input file for a newer version in the `base-validating-builders`. If such
  * a version is found, the older version is excluded.
  */
 jar {
-    
+
     // See `base-validating-builders/README.md`
     final compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
     final compiledProtos = fileTree(compiledProtoPath)
 
     from compiledProtos
 
-    final compiledProtoDir = file(compiledProtoPath)
     eachFile { final file ->
         final classFile = file.file.toPath()
         final isProto = compiledProtos.filter { it.path.endsWith classFile.toString() }
