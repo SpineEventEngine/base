@@ -33,7 +33,6 @@ buildscript {
         classpath deps.build.checkerAnnotations
         classpath deps.build.errorProneAnnotations
         classpath deps.build.jsr305Annotations
-        classpath deps.build.errorProneAnnotations
         classpath deps.build.gradlePlugins.protobuf
 
         classpath deps.gen.javaPoet
@@ -67,11 +66,11 @@ apply plugin: 'idea'
 
 repositories {
     // This defines the `libs` directory of upstream projects as a local repository.
-    // See `dependencies` section below for definition of the dependency on the JAR
-    // produced by the `base` and `protoc-api` modules.
+    // See `dependencies` section below for definition of the dependency on the JAR produced by 
+    // the `base` module.
     flatDir {
         final def baseRoot = "$projectDir/.."
-        dirs "$baseRoot/base/build/libs/", "$baseRoot/tools/protoc-api/build/libs"
+        dirs "$baseRoot/base/build/libs/"
     }
     mavenLocal()
     jcenter()
@@ -86,7 +85,7 @@ dependencies {
     compileOnly deps.build.jsr305Annotations
     compileOnly deps.build.errorProneAnnotations
 
-    // The below dependencies refer local artifacts.
+    // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.
     compileOnly name: "base-${spineVersion}"
 }
@@ -139,7 +138,7 @@ build.doLast {
 }
 
 task cleanGenerated(type: Delete) {
-    delete files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", compiledProtoDir)
+    delete files("$projectDir/generated", "$projectDir/.spine", compiledProtoDir)
 }
 
 clean.dependsOn cleanGenerated
