@@ -88,7 +88,6 @@ dependencies {
     // The below dependencies refer local artifacts.
     // See `repositories.flatDir` definition above.
     compileOnly name: "base-${spineVersion}"
-    compileOnly name: "protoc-api-${spineVersion}"
 }
 
 modelCompiler {
