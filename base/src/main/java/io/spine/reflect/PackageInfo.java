@@ -43,7 +43,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     /**
      * Java package which this instance analyzes.
      *
-     * @implNote Even though, that {@code Package} objects are not immutable,
+     * @implNote Even though {@code Package} objects are not immutable,
      *           the data we use from them (e.g. {@linkplain Package#getName() name}) is immutable.
      *           That's why it's OK to tell Error Prone that the field is immutable.
      */
@@ -73,7 +73,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     }
 
     /**
-     * Finds an annotation of the specified type, set directly to the package, or via the package
+     * Finds an annotation of the specified type, set directly to the package or via the package
      * nesting hierarchy.
      *
      * <p>Tries to obtain the annotation if it presents directly in this package.
@@ -106,7 +106,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     }
 
     /**
-     * Obtains an annotation of the specified type, if it's <em>directly</em>
+     * Obtains an annotation of the specified type if it's <em>directly</em>
      * present in the package.
      *
      * @param annotationClass the class of the annotations
