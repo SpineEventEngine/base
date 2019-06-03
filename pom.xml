@@ -25,9 +25,166 @@ all modules and does not describe the project structure per-subproject.
 
 <dependencies>
   <dependency>
+    <groupId>com.google.code.findbugs</groupId>
+    <artifactId>jsr305</artifactId>
+    <version>3.0.2</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.errorprone</groupId>
+    <artifactId>error_prone_annotations</artifactId>
+    <version>2.3.3</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.errorprone</groupId>
+    <artifactId>error_prone_type_annotations</artifactId>
+    <version>2.3.3</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>27.1-jre</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-gradle-plugin</artifactId>
+    <version>0.8.8</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <version>3.7.1</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java-util</artifactId>
+    <version>3.7.1</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.squareup</groupId>
+    <artifactId>javapoet</artifactId>
+    <version>1.11.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>javax.annotation-api</artifactId>
+    <version>1.3.1</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.checkerframework</groupId>
+    <artifactId>checker-qual</artifactId>
+    <version>2.8.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.jboss.forge.roaster</groupId>
+    <artifactId>roaster-api</artifactId>
+    <version>2.20.1.Final</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.jboss.forge.roaster</groupId>
+    <artifactId>roaster-jdt</artifactId>
+    <version>2.20.1.Final</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.26</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.errorprone</groupId>
+    <artifactId>error_prone_test_helpers</artifactId>
+    <version>2.3.3</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava-testlib</artifactId>
+    <version>27.1-jre</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.truth</groupId>
+    <artifactId>truth</artifactId>
+    <version>0.44</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.truth.extensions</groupId>
+    <artifactId>truth-java8-extension</artifactId>
+    <version>0.44</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.truth.extensions</groupId>
+    <artifactId>truth-proto-extension</artifactId>
+    <version>0.44</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.spine.tools</groupId>
+    <artifactId>spine-protoc-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apiguardian</groupId>
+    <artifactId>apiguardian-api</artifactId>
+    <version>1.0.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.hamcrest</groupId>
+    <artifactId>hamcrest-all</artifactId>
+    <version>1.3</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.junit-pioneer</groupId>
+    <artifactId>junit-pioneer</artifactId>
+    <version>0.3.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-api</artifactId>
     <version>5.4.2</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.4.2</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-params</artifactId>
+    <version>5.4.2</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>2.12.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-jdk14</artifactId>
+    <version>1.7.26</version>
+    <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>com.google.auto.service</groupId>
@@ -35,84 +192,9 @@ all modules and does not describe the project structure per-subproject.
     <version>1.0-rc5</version>
   </dependency>
   <dependency>
-    <groupId>com.google.protobuf</groupId>
-    <artifactId>protoc</artifactId>
-    <version>3.7.1</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.truth.extensions</groupId>
-    <artifactId>truth-java8-extension</artifactId>
-    <version>0.44</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.errorprone</groupId>
-    <artifactId>error_prone_type_annotations</artifactId>
-    <version>2.3.3</version>
-  </dependency>
-  <dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-api</artifactId>
-    <version>1.7.26</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.protobuf</groupId>
-    <artifactId>protobuf-java</artifactId>
-    <version>3.7.1</version>
-  </dependency>
-  <dependency>
-    <groupId>org.junit-pioneer</groupId>
-    <artifactId>junit-pioneer</artifactId>
-    <version>0.3.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jboss.forge.roaster</groupId>
-    <artifactId>roaster-api</artifactId>
-    <version>2.20.1.Final</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.errorprone</groupId>
-    <artifactId>javac</artifactId>
-    <version>9+181-r4173-1</version>
-  </dependency>
-  <dependency>
     <groupId>com.google.auto.service</groupId>
     <artifactId>auto-service-annotations</artifactId>
     <version>1.0-rc5</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.protobuf</groupId>
-    <artifactId>protobuf-gradle-plugin</artifactId>
-    <version>0.8.8</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava-testlib</artifactId>
-    <version>27.1-jre</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.truth</groupId>
-    <artifactId>truth</artifactId>
-    <version>0.44</version>
-  </dependency>
-  <dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-jdk14</artifactId>
-    <version>1.7.26</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>27.1-jre</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.truth.extensions</groupId>
-    <artifactId>truth-proto-extension</artifactId>
-    <version>0.44</version>
-  </dependency>
-  <dependency>
-    <groupId>javax.annotation</groupId>
-    <artifactId>javax.annotation-api</artifactId>
-    <version>1.3.1</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
@@ -120,69 +202,14 @@ all modules and does not describe the project structure per-subproject.
     <version>2.3.3</version>
   </dependency>
   <dependency>
-    <groupId>org.checkerframework</groupId>
-    <artifactId>checker-qual</artifactId>
-    <version>2.8.0</version>
-  </dependency>
-  <dependency>
-    <groupId>com.squareup</groupId>
-    <artifactId>javapoet</artifactId>
-    <version>1.11.0</version>
-  </dependency>
-  <dependency>
-    <groupId>io.spine.tools</groupId>
-    <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </dependency>
-  <dependency>
     <groupId>com.google.errorprone</groupId>
-    <artifactId>error_prone_test_helpers</artifactId>
-    <version>2.3.3</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.errorprone</groupId>
-    <artifactId>error_prone_annotations</artifactId>
-    <version>2.3.3</version>
+    <artifactId>javac</artifactId>
+    <version>9+181-r4173-1</version>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
-    <artifactId>protobuf-java-util</artifactId>
+    <artifactId>protoc</artifactId>
     <version>3.7.1</version>
-  </dependency>
-  <dependency>
-    <groupId>org.hamcrest</groupId>
-    <artifactId>hamcrest-all</artifactId>
-    <version>1.3</version>
-  </dependency>
-  <dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-core</artifactId>
-    <version>2.12.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-params</artifactId>
-    <version>5.4.2</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jboss.forge.roaster</groupId>
-    <artifactId>roaster-jdt</artifactId>
-    <version>2.20.1.Final</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apiguardian</groupId>
-    <artifactId>apiguardian-api</artifactId>
-    <version>1.0.0</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.code.findbugs</groupId>
-    <artifactId>jsr305</artifactId>
-    <version>3.0.2</version>
-  </dependency>
-  <dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.4.2</version>
   </dependency>
 </dependencies>
 </project>
