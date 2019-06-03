@@ -57,6 +57,13 @@ abstract class HandleMethodResultNegatives {
         return builder.build();
     }
 
+    Struct callRemove() {
+        Struct.Builder builder = Struct.newBuilder();
+        builder.removeFields("foo");
+        builder.removeFields("bar");
+        return builder.build();
+    }
+
     @SuppressWarnings("HandleMethodResult")
     void callUnderWarningSuppressed() {
         checkMe();

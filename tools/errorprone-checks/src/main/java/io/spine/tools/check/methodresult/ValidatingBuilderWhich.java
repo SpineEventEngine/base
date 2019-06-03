@@ -41,7 +41,8 @@ final class ValidatingBuilderWhich implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
-    private static final Pattern SIDE_EFFECT_METHOD_NAME = Pattern.compile("(set|add|put|merge).+");
+    private static final Pattern SIDE_EFFECT_METHOD_NAME =
+            Pattern.compile("(set|add|put|merge|remove).+");
 
     private static final TypePredicate IS_MESSAGE_BUILDER =
             isDescendantOf(Message.Builder.class.getName());
