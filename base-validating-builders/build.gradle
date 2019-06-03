@@ -40,12 +40,10 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-api',
-                   version: deps.versions.roaster) {
+        classpath (deps.build.roasterApi) {
             exclude group: 'com.google.guava'
         }
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-jdt',
-                   version: deps.versions.roaster) {
+        classpath (deps.build.roasterJdt) {
             exclude group: 'com.google.guava'
         }
 
