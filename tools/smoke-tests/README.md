@@ -15,7 +15,7 @@ They also should be run separately from the `main` project build like this:
   
   cd ./tools/smoke-tests
   
-  ../../gradlew check --stacktrace
+  ./gradlew check --stacktrace
 ```
 
 To configure Intellij Idea for recognizing `smoke-tests` module as the actual source code, see 
