@@ -40,11 +40,11 @@ dependencies {
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
+    implementation (deps.build.roasterApi) {
         exclude group: 'com.google.guava'
     }
     
-    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
+    implementation (deps.build.roasterJdt) {
         exclude group: 'com.google.guava'
     }
 
