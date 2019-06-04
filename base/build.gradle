@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.nio.file.Files
+
 group = 'io.spine'
 
 apply plugin: 'java'
@@ -32,7 +34,7 @@ dependencies {
     compileOnly deps.build.autoService.annotations
     
     // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
-    // ErrorProne Annotations is part of our API. 
+    // ErrorProne Annotations is part of our API.
     api deps.build.errorProneAnnotations
 
     testImplementation deps.test.slf4j
@@ -51,18 +53,41 @@ sourceSets {
     }
 }
 
+/**
+ * The JAR task assembles class files with a respect to the re-built message classes.
+ *
+ * The task checks each input file for a newer version in the `base-validating-builders`. If such
+ * a version is found, the older version is excluded.
+ */
 jar {
-    // See `base-validating-builders/README.md`.
-    from "$rootDir/base-validating-builders/compiled-proto"
+    // See `base-validating-builders/README.md`
+    final compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
+    final compiledProtos = fileTree(compiledProtoPath)
+
+    from compiledProtos
+
+    eachFile { final file ->
+        logger.info "Appending $file"
+        final classFile = file.file.toPath()
+        final isProto = compiledProtos.filter { it.path.endsWith file.relativePath.toString() }
+                                      .filter { !Files.isSameFile(it.toPath(), classFile) }
+        if (!isProto.empty) {
+            logger.info "File $classFile is excluded"
+            file.exclude()
+        } else {
+            logger.debug "File $classFile is not excluded"
+        }
+    }
 }
 
 task rebuildProtobuf {
-
     dependsOn(rootProject.subprojects*.getTasksByName('publishToMavenLocal', false))
-    
+
     doLast {
         runBuild("$rootDir/base-validating-builders")
     }
 }
+
+project.getTasksByName('publish', false)*.dependsOn rebuildProtobuf
 
 build.finalizedBy rebuildProtobuf
