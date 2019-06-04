@@ -37,6 +37,7 @@ buildscript { final scriptHandler ->
 apply from: 'version.gradle'
 
 ext {
+    groupId = 'io.spine'
     credentialsPropertyFile = 'credentials.properties'
 
     projectsToPublish = [
