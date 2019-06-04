@@ -67,11 +67,15 @@ jar {
     from compiledProtos
 
     eachFile { final file ->
+        logger.info "Appending $file"
         final classFile = file.file.toPath()
-        final isProto = compiledProtos.filter { it.path.endsWith classFile.toString() }
+        final isProto = compiledProtos.filter { it.path.endsWith file.relativePath.toString() }
                                       .filter { !Files.isSameFile(it.toPath(), classFile) }
         if (!isProto.empty) {
+            logger.info "File $classFile is excluded"
             file.exclude()
+        } else {
+            logger.debug "File $classFile is not excluded"
         }
     }
 }
