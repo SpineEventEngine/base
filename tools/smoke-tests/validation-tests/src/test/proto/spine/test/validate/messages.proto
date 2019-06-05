@@ -42,16 +42,16 @@ message AnExternalConstraint {
 
 message ConstraintTargetAggregate {
 
-    FirstConstraintTarget first = 1 [(validate) = true];
-    SecondConstraintTarget second = 2 [(validate) = true];
+    FirstConstraintTarget first = 1 [(.validate) = true];
+    SecondConstraintTarget second = 2 [(.validate) = true];
 }
 
 message FirstConstraintTarget {
-    AlwaysInvalid can_be_valid = 1 [(validate) = true];
+    AlwaysInvalid can_be_valid = 1 [(.validate) = true];
 }
 
 message SecondConstraintTarget {
-    AlwaysInvalid can_be_valid = 1 [(validate) = true];
+    AlwaysInvalid can_be_valid = 1 [(.validate) = true];
 }
 
 // A message which is always invalid according to its constraints.
