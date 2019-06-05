@@ -42,7 +42,7 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 /**
  * Provides option value for a field mentioned in an {@link ExternalMessageConstraint}.
  */
-final class ExternalConstraintOptions implements Serializable {
+public final class ExternalConstraintOptions implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -71,7 +71,7 @@ final class ExternalConstraintOptions implements Serializable {
      * @return the {@code Optional} of option value or {@code Optional.empty()}
      *         if there is no such an option for the field descriptor
      */
-    static <T> Optional<T>
+    public static <T> Optional<T>
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
         ImmutableMap<FieldContext, FieldOptions> options = Holder.instance.options;
         for (FieldContext context : options.keySet()) {
