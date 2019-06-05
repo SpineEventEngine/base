@@ -88,13 +88,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jboss.forge.roaster</groupId>
     <artifactId>roaster-api</artifactId>
-    <version>2.20.1.Final</version>
+    <version>2.20.8.Final</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>org.jboss.forge.roaster</groupId>
     <artifactId>roaster-jdt</artifactId>
-    <version>2.20.1.Final</version>
+    <version>2.20.8.Final</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
