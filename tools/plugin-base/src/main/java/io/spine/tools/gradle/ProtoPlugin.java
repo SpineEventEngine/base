@@ -30,8 +30,8 @@ import org.gradle.api.artifacts.Configuration;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
+import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 
 /**
  * A plugin performing code-generation based on a {@code .proto} files.
@@ -47,7 +47,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
      */
     protected final Supplier<FileSet> mainProtoFiles(Project project) {
         Supplier<File> descriptorSet = mainDescriptorFile(project);
-        Configuration configuration = configuration(project, RUNTIME_CLASSPATH);
+        Configuration configuration = configuration(project, runtimeClasspath);
         return protoFiles(descriptorSet, configuration);
     }
 
@@ -56,7 +56,7 @@ public abstract class ProtoPlugin extends SpinePlugin {
      */
     protected final Supplier<FileSet> testProtoFiles(Project project) {
         Supplier<File> descriptorSet = testDescriptorFile(project);
-        Configuration configuration = configuration(project, TEST_RUNTIME_CLASSPATH);
+        Configuration configuration = configuration(project, testRuntimeClasspath);
         return protoFiles(descriptorSet, configuration);
     }
 

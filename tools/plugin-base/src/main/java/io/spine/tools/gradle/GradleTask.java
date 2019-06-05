@@ -58,6 +58,13 @@ public final class GradleTask {
         this.project = project;
     }
 
+    /** Creates a new instance from the specified {@code Task}. */
+    public static GradleTask from(Task task) {
+        TaskName taskName = TaskName.valueOf(task.getName());
+        Project project = task.getProject();
+        return new GradleTask(task, taskName, project);
+    }
+
     /** Obtains the Gradle task itself. */
     public Task getTask() {
         return task;

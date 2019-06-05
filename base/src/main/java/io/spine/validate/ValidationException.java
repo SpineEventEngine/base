@@ -25,14 +25,14 @@ import io.spine.validate.diags.ViolationText;
 import java.util.List;
 
 /**
- * An exception, thrown if a {@code Message} does not pass the validation.
+ * An exception that is thrown if a {@code Message} does not pass the validation.
  */
 public final class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
     /**
-     * List of the constraint violations, that were found during the validation.
+     * List of the constraint violations that were found during the validation.
      */
     private final ImmutableList<ConstraintViolation> constraintViolations;
 

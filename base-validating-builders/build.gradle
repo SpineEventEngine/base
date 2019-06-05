@@ -17,6 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 buildscript {
     apply from: "$projectDir/../version.gradle"
     apply from: "$projectDir/../config/gradle/dependencies.gradle"
@@ -32,7 +33,6 @@ buildscript {
         classpath deps.build.checkerAnnotations
         classpath deps.build.errorProneAnnotations
         classpath deps.build.jsr305Annotations
-        classpath deps.build.errorProneAnnotations
         classpath deps.build.gradlePlugins.protobuf
 
         classpath deps.gen.javaPoet
@@ -40,12 +40,10 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-api',
-                   version: deps.versions.roaster) {
+        classpath (deps.build.roasterApi) {
             exclude group: 'com.google.guava'
         }
-        classpath (group: 'org.jboss.forge.roaster', name: 'roaster-jdt',
-                   version: deps.versions.roaster) {
+        classpath (deps.build.roasterJdt) {
             exclude group: 'com.google.guava'
         }
 
@@ -66,11 +64,11 @@ apply plugin: 'idea'
 
 repositories {
     // This defines the `libs` directory of upstream projects as a local repository.
-    // See `dependencies` section below for definition of the dependency on the JAR
-    // produced by the `base` and `protoc-api` modules.
+    // See `dependencies` section below for definition of the dependency on the JAR produced by 
+    // the `base` module.
     flatDir {
         final def baseRoot = "$projectDir/.."
-        dirs "$baseRoot/base/build/libs/", "$baseRoot/tools/protoc-api/build/libs"
+        dirs "$baseRoot/base/build/libs/"
     }
     mavenLocal()
     jcenter()
@@ -85,27 +83,23 @@ dependencies {
     compileOnly deps.build.jsr305Annotations
     compileOnly deps.build.errorProneAnnotations
 
-    // The below dependencies refer local artifacts.
+    // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.
     compileOnly name: "base-${spineVersion}"
-    compileOnly name: "protoc-api-${spineVersion}"
 }
 
 modelCompiler {
-    mainProtoSrcDir = "$projectDir/../base/src/main/proto"
+    generateValidatingBuilders = false
 }
 
 sourceSets {
     main.java.srcDirs "$projectDir/generated/main/spine"
-    main.proto.srcDirs = [modelCompiler.mainProtoSrcDir]
+    main.proto.srcDirs = ["$projectDir/../base/src/main/proto"]
 }
 
 protobuf {
     generateProtoTasks {
         all().each {
-            it.builtins {
-                remove java
-            }
             it.plugins {
                 remove grpc
             }
@@ -113,14 +107,14 @@ protobuf {
     }
 }
 
-ext.buildersDir = "$projectDir/builders"
+ext.compiledProtoDir = "$projectDir/compiled-proto"
 
 task copyCompiledClasses(type: Copy) {
     from sourceSets.main.java.outputDir
-    into buildersDir
+    into compiledProtoDir
 
     include {
-        it.isDirectory() || it.name.endsWith('VBuilder.class')
+        it.isDirectory() || it.name.endsWith('.class')
     }
 
     dependsOn compileJava
@@ -142,11 +136,11 @@ build.doLast {
 }
 
 task cleanGenerated(type: Delete) {
-    delete files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", buildersDir)
+    delete files("$projectDir/generated", "$projectDir/.spine", compiledProtoDir)
 }
 
 clean.dependsOn cleanGenerated
 
 idea.module {
-    generatedSourceDirs += buildersDir
+    generatedSourceDirs += compiledProtoDir
 }

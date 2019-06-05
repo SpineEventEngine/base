@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.spine.option.OptionExtensionRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -27,7 +27,7 @@ repositories {
 dependencies {
     annotationProcessor deps.build.autoService.processor
     compileOnly deps.build.autoService.annotations
-    
+
     implementation project(':base')
     implementation project(':plugin-base')
 
@@ -50,14 +50,12 @@ def getResolvedArtifactFor(final dependency) {
     return path
 }
 
-task configureBootClasspath {
-    doLast {
-        final def javacPath = getResolvedArtifactFor("javac")
+test.dependsOn project(':base').getTasksByName('rebuildProtobuf', false)
 
-        test {
-            jvmArgs "-Xbootclasspath/p:$javacPath"
-        }
+afterEvaluate {
+    final def javacPath = getResolvedArtifactFor("javac")
+
+    test {
+        jvmArgs "-Xbootclasspath/p:$javacPath"
     }
 }
-
-test.dependsOn configureBootClasspath

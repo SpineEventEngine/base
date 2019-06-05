@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
@@ -43,8 +44,8 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Creates {@link MessageInterface} parameters.
      */
-    MessageInterfaceParameters interfaceParameters() {
-        return MessageInterfaceParameters.empty();
+    TypeParameters interfaceParameters() {
+        return TypeParameters.empty();
     }
 
     /**

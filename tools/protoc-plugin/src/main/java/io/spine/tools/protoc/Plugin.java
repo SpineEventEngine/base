@@ -23,7 +23,8 @@ package io.spine.tools.protoc;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.option.OptionExtensionRegistry;
+import io.spine.code.proto.OptionExtensionRegistry;
+import io.spine.tools.protoc.builder.BuilderGenerator;
 import io.spine.tools.protoc.iface.InterfaceGenerator;
 import io.spine.tools.protoc.method.MethodGenerator;
 
@@ -60,9 +61,12 @@ public final class Plugin {
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
         SpineProtocConfig config = readConfig(request);
-        SpineProtoGenerator generator = InterfaceGenerator
-                .instance(config)
-                .linkWith(MethodGenerator.instance(config));
+        CompositeGenerator generator = CompositeGenerator
+                .builder()
+                .add(InterfaceGenerator.instance(config))
+                .add(MethodGenerator.instance(config))
+                .add(BuilderGenerator.instance())
+                .build();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

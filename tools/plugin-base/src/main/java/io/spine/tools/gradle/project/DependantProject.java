@@ -29,8 +29,8 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.ConfigurationName.RUNTIME_CLASSPATH;
-import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME_CLASSPATH;
+import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
+import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static org.gradle.api.artifacts.ExcludeRule.GROUP_KEY;
 import static org.gradle.api.artifacts.ExcludeRule.MODULE_KEY;
 
@@ -64,10 +64,10 @@ public final class DependantProject implements Dependant {
 
     @Override
     public void exclude(Dependency dependency) {
-        Configuration mainConfig = configurations.getByName(RUNTIME_CLASSPATH.value());
+        Configuration mainConfig = configurations.getByName(runtimeClasspath.value());
         exclude(mainConfig, dependency);
 
-        Configuration testConfig = configurations.getByName(TEST_RUNTIME_CLASSPATH.value());
+        Configuration testConfig = configurations.getByName(testRuntimeClasspath.value());
         exclude(testConfig, dependency);
     }
 

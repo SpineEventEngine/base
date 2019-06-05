@@ -40,11 +40,11 @@ dependencies {
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
+    implementation (deps.build.roasterApi) {
         exclude group: 'com.google.guava'
     }
     
-    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
+    implementation (deps.build.roasterJdt) {
         exclude group: 'com.google.guava'
     }
 
@@ -89,35 +89,6 @@ sourceSets {
         resources.srcDirs += "$buildDir/descriptors/test"
     }
 }
-
-/**
- * Prepares the `versions.properties` file and puts it into the resources of this project.
- *
- * <p>The file contains versions of dependencies which are configured by
- * the `ProtocConfigurationPlugin`.
- */
-task prepareProtocConfigVersions {
-    description = "Prepares the versions.properties file."
-    
-    final def file = file("$projectDir/generated/main/resources/versions.properties")
-    
-    outputs.file(file)
-    
-    final Properties versions = new Properties()
-    versions.setProperty("baseVersion", spineBaseVersion)
-    versions.setProperty("protobufVersion", deps.versions.protobuf)
-    versions.setProperty("gRPCVersion", deps.versions.grpc)
-    
-    doLast {
-        createParentDirs(file)
-        file.createNewFile()
-        file.withOutputStream { final stream ->
-            versions.store(stream, "Versions of dependencies of the Model Compiler plugin and the Spine Protoc plugin.")
-        }
-    }
-}
-
-processResources.dependsOn prepareProtocConfigVersions
 
 final def copyPluginJarAction = {
     final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile

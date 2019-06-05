@@ -20,6 +20,9 @@
 
 package io.spine.validate;
 
+import io.spine.validate.option.PrimitiveValidatingOptionFactory;
+import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.option.ValidatingOptionsLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

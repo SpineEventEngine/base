@@ -214,7 +214,7 @@ public final class Durations2 {
      * Converts passed duration to long value of minutes.
      *
      * @param duration
-     *         a duration to convert
+     *         duration to convert
      * @return duration in minutes
      */
     public static long toMinutes(Duration duration) {
@@ -334,7 +334,7 @@ public final class Durations2 {
     /**
      * Parses the string with a duration.
      *
-     * <p>Unlike {@link com.google.protobuf.util.Durations#parse(String) its Protobuf counterpart}
+     * <p>Unlike {@link com.google.protobuf.util.Durations#parse(String) its Protobuf counterpart},
      * this method does not throw a checked exception.
      *
      * @throws IllegalArgumentException

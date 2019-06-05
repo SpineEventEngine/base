@@ -46,15 +46,15 @@ import static io.spine.protobuf.AnyPacker.unpack;
  * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
  * arbitrary {@linkplain Object Java Objects} and vice versa.
  *
- * <p>Currently, the supported types are:
+ * <p>Currently, the supported types are the following:
  * <ul>
- *     <li>{@link Message} - converted via {@link AnyPacker};
+ *     <li>{@link Message} - converted via {@link AnyPacker}.
  *     <li>Java primitives - the passed {@link Any} is unpacked into one of the types
  *         {@code Int32Value, Int64Value, UInt32Value, UInt64Value, FloatValue, DoubleValue,
  *         BoolValue, StringValue, BytesValue} and then transformed into the corresponding Java
- *         type, either a primitive value, or {@code String} of {@link ByteString}. For more info
+ *         type, either a primitive value, or {@code String} of {@link ByteString}. For more info,
  *         see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
- *         the official doc</a>;
+ *         the official document</a>.
  *     <li>{@linkplain Enum Java Enum} types - the passed {@link Any} is unpacked into the {@link
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
  *         EnumValue#getName() name}.

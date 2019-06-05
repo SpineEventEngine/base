@@ -20,10 +20,11 @@
 
 include 'annotator-tests'
 include 'known-types-tests'
-include 'validation-tests'
 include 'model-compiler-tests'
 include 'rejection-tests'
 include 'test-method-factory'
+include 'validating-options-tests'
+include 'validation-tests'
 
 /*
  * Dependency links established with the Gradle included build.

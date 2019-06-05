@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides utility classes for working with Json.
+ * This package provides utility classes for working with JSON.
  */
 
 @CheckReturnValue

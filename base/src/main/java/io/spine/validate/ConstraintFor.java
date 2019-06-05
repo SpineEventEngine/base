@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.code.proto.MessageOption;
@@ -32,6 +33,7 @@ import java.util.Optional;
  *
  * <p>Contains information about constraint of another field, described by the option value.
  */
+@Immutable
 final class ConstraintFor extends MessageOption<String> {
 
     ConstraintFor() {

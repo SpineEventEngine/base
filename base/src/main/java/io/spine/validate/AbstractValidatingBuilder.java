@@ -34,6 +34,7 @@ import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import io.spine.type.TypeName;
+import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Method;
@@ -161,6 +162,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     @Override
+    @SuppressWarnings("Immutable") // message field values are immutable
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
@@ -258,7 +260,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param newValue
      *         the new value of the field
      * @throws ValidationException
-     *         if the value of the  field that is {@code (set_once) = true} is being changed
+     *         if the value of the field that is {@code (set_once) = true} is being changed
      */
     @SuppressWarnings("unused") // Called by all actual validating builder subclasses.
     protected final void validateSetOnce(FieldDescriptor field, Object newValue)
