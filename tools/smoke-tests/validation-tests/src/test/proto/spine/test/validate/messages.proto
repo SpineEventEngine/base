@@ -19,7 +19,7 @@
  */
 syntax = "proto3";
 
-package spine.test.validation;
+package spine.test.validate;
 
 import "spine/options.proto";
 
@@ -31,7 +31,7 @@ option java_package = "io.spine.test.validate";
 // Messages for testing message constraints.
 
 message AnExternalConstraint {
-    option (constraint_for) = "spine.test.validation.FirstConstraintTarget.can_be_valid," "spine.test.validate.SecondConstraintTarget.can_be_valid";
+    option (constraint_for) = "spine.test.validate.FirstConstraintTarget.can_be_valid," "spine.test.validate.SecondConstraintTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
     // The field index intentionally doesn't match the index in `AlwaysInvalid`
