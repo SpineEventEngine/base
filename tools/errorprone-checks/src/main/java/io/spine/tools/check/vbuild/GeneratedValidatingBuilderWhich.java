@@ -36,7 +36,7 @@ import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
  * <p>Any Java class which descends from {@link io.spine.validate.ValidatingBuilder} matches this
  * predicate.
  */
-final class GeneratedValidatingBuilder implements TypePredicate {
+final class GeneratedValidatingBuilderWhich implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
@@ -46,7 +46,7 @@ final class GeneratedValidatingBuilder implements TypePredicate {
     /**
      * Prevents direct instantiation.
      */
-    private GeneratedValidatingBuilder() {
+    private GeneratedValidatingBuilderWhich() {
     }
 
     /**
@@ -56,9 +56,9 @@ final class GeneratedValidatingBuilder implements TypePredicate {
      * @param methodName
      *         the method name to match
      */
-    static Matcher<ExpressionTree> callingInstanceMethod(String methodName) {
+    static Matcher<ExpressionTree> callsInstanceMethod(String methodName) {
         return instanceMethod()
-                .onClass(new GeneratedValidatingBuilder())
+                .onClass(new GeneratedValidatingBuilderWhich())
                 .named(methodName);
     }
 

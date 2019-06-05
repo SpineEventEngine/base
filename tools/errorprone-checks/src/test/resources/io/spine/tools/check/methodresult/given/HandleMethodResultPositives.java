@@ -17,29 +17,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-group = 'io.spine'
 
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency management in
-        sub-projects.
-    */
-    api deps.build.protobuf
-    api deps.test.junit5Api
-    api deps.test.truth
-    api deps.test.guavaTestlib
-    api deps.test.mockito
-    api deps.test.hamcrest
+package io.spine.tools.check.vbuild.given;
 
-    testImplementation deps.test.slf4j
-}
+import io.spine.base.Error;
 
-/*
- * This module declares protobuf messages and uses them in tests, hence the need for the Protobuf
- * compiler
+/**
+ * Contains statements for which the {@link HandleMethodResult} bug pattern should return a match.
+ *
+ * <p>Comments in this file should not be modified as they serve as indicator for the
+ * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-protobuf {
-    protoc {
-        artifact = deps.build.protoc
+class HandleMethodResultPositives {
+
+    void callBuild() {
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().vBuild();
+    }
+
+    void callGetter() {
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().getAttributesCount();
+    }
+
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Runnable faulty = builder::vBuild;
+        faulty.run();
+    }
+
+    void callNonBuilder() {
+        // BUG: Diagnostic matches: HandleMethodResult
+        checkMe();
+    }
+
+    public String checkMe() {
+        return "42";
     }
 }

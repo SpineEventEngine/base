@@ -19,7 +19,6 @@
  */
 
 include 'annotator-tests'
-include 'error-prone-checker-tests'
 include 'known-types-tests'
 include 'model-compiler-tests'
 include 'rejection-tests'

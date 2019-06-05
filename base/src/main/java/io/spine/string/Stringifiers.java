@@ -59,7 +59,7 @@ public final class Stringifiers {
     /**
      * Converts the passed value to the string representation.
      *
-     * <p>This method must be used of the passed object is a generic type.
+     * <p>This method must be used if the passed object is a generic type.
      *
      * @param object  to object to convert
      * @param typeOfT the type of the passed object

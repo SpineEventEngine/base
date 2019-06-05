@@ -17,3 +17,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/**
+ * This package declares a number of classes which are analyzed by the check in tests.
+ *
+ * <p>See the test resources of this module.
+ */
+
+
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check.methodresult.given;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

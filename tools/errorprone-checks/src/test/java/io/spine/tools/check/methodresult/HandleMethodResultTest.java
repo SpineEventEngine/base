@@ -18,39 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuild;
+package io.spine.tools.check.methodresult;
 
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.check.vbuild.UseVBuild.NAME;
-import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
+import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
 
-@DisplayName("UseVBuild check should")
-class UseVBuildTest {
+@DisplayName("HandleMethodResult check should")
+class HandleMethodResultTest {
 
     private CompilationTestHelper compilationTestHelper;
 
     @BeforeEach
     void setUp() {
         compilationTestHelper =
-                CompilationTestHelper.newInstance(UseVBuild.class, getClass());
+                CompilationTestHelper.newInstance(HandleMethodResult.class, getClass());
     }
 
     @Test
-    @DisplayName("recognize positive cases")
+    @DisplayName("match positive cases")
     void recognizePositiveCases() {
-        compilationTestHelper.expectErrorMessage(NAME, msg -> msg.contains(SUMMARY))
-                             .addSourceFile("given/UseVBuildPositives.java")
+        compilationTestHelper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
+                                                 msg -> msg.contains(SUMMARY))
+                             .addSourceFile("given/HandleMethodResultPositives.java")
                              .doTest();
     }
 
     @Test
-    @DisplayName("recognize negative cases")
+    @DisplayName("match negative cases")
     void recognizeNegativeCases() {
-        compilationTestHelper.addSourceFile("given/UseVBuildNegatives.java")
+        compilationTestHelper.addSourceFile("given/HandleMethodResultNegatives.java")
                              .doTest();
     }
 }
