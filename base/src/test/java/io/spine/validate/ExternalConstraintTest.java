@@ -22,8 +22,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors;
-import io.spine.test.validate.AMessage;
-import io.spine.test.validate.AnExternalConstraint;
+import io.spine.test.validation.AMessage;
+import io.spine.test.validation.AnExternalConstraint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("ExternalMessageConstraint should")
 final class ExternalConstraintTest {
 
-    private static final String PACKAGE = "spine.test.validate";
+    private static final String PACKAGE = "spine.test.validation";
     private static final String VALIDATED_FIELD = PACKAGE + ".AMessage.field";
 
     @DisplayName("not allow null")

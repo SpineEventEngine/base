@@ -24,8 +24,8 @@ import com.google.common.truth.OptionalSubject;
 import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
-import io.spine.test.validate.AField;
-import io.spine.test.validate.AMessage;
+import io.spine.test.validation.AField;
+import io.spine.test.validation.AMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

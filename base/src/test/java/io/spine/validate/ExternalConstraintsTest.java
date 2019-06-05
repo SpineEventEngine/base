@@ -21,7 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.test.validate.AnExternalConstraint;
+import io.spine.test.validation.AnExternalConstraint;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
