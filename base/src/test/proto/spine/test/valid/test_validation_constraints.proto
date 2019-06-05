@@ -38,7 +38,7 @@ message AnExternalConstraint {
 
 message AMessage {
 
-    AField field = 1 [(valid) = true];
+    AField field = 1 [(validate) = true];
 
     string non_message_field = 2;
 }
