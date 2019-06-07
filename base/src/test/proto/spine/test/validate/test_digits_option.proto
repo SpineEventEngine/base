@@ -17,25 +17,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.validate;
+package spine.test.validation;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.test.validation.AnExternalConstraint;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import "spine/options.proto";
 
-import static com.google.common.truth.Truth.assertThat;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "TestDigitsOptionProto";
+option java_package = "io.spine.test.validate";
 
-@DisplayName("ExternalConstraints should")
-final class ExternalConstraintsTest {
+// Messages for "digits" option tests.
 
-    @DisplayName("update rules from types")
-    @Test
-    void updateRulesFromTypes() {
-        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
-        ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
-        assertThat(ExternalConstraints.all()).hasSize(2);
-    }
+message DigitsCountNumberFieldValue {
+    double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
+}
+
+message IntegerDigitsExternalConstraint {
+    option (constraint_for) = "spine.test.validation.IntegerDigitsWithExternalConstraint.digits";
+
+    int64 value = 1 [(digits).integer_max = 2];
+}
+
+message IntegerDigits {
+    int64 value = 1 [(digits).integer_max = 3];
+}
+
+message IntegerDigitsWithExternalConstraint {
+    IntegerDigits digits = 1;
 }

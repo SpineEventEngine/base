@@ -127,12 +127,6 @@ message MaxExclusiveNumberFieldValue {
     double value = 1 [(max).value = "64.5", (max).exclusive = true];
 }
 
-// Messages for "digits" option tests.
-
-message DigitsCountNumberFieldValue {
-    double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
-}
-
 // Messages for "pattern" option tests.
 
 message PatternStringFieldValue {
