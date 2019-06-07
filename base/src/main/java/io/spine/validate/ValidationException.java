@@ -36,7 +36,6 @@ public class ValidationException extends RuntimeException {
      */
     private final ImmutableList<ConstraintViolation> constraintViolations;
 
-    @SuppressWarnings("WeakerAccess") // Must be extendable.
     public ValidationException(Iterable<ConstraintViolation> violations) {
         super();
         this.constraintViolations = ImmutableList.copyOf(violations);
