@@ -17,25 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.validate;
+package spine.test.validation;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.test.validation.AnExternalConstraint;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import "spine/options.proto";
 
-import static com.google.common.truth.Truth.assertThat;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "TestRangeOptionProto";
+option java_package = "io.spine.test.validate";
 
-@DisplayName("ExternalConstraints should")
-final class ExternalConstraintsTest {
+// Messages for "range" option tests.
 
-    @DisplayName("update rules from types")
-    @Test
-    void updateRulesFromTypes() {
-        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
-        ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
-        assertThat(ExternalConstraints.all()).hasSize(4);
-    }
+message NumRanges {
+    int32 hour = 1 [(range) = "[0..24)"];
+    uint64 minute = 2 [(range) = "[0..59]"];
+    float degree = 3 [(range) = "[0.0..360.0)"];
+    double angle = 4 [(range) = "(0.0..180.0)"];
+}
+
+message RangesHolder {
+    NumRanges ranges = 1 [(validate) = true];
+}
+
+message HalfRangesConstraint {
+    option (constraint_for) = "spine.test.validation.RangesHolder.ranges";
+
+    int32 hour = 1 [(range) = "[0..12)"];
+    uint64 minute = 2 [(range) = "[0..30]"];
+    float degree = 3 [(range) = "[0.0..180.0)"];
+    double angle = 4 [(range) = "(0.0..90.0)"];
 }
