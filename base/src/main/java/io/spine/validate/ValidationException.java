@@ -50,7 +50,7 @@ public class ValidationException extends RuntimeException {
     /**
      * Provides the violation info as a {@link ValidationError}.
      */
-    public final ValidationError asError() {
+    public final ValidationError asValidationError() {
         return ValidationError
                 .newBuilder()
                 .addAllConstraintViolation(constraintViolations)
