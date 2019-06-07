@@ -37,6 +37,7 @@ buildscript { final scriptHandler ->
 apply from: 'version.gradle'
 
 ext {
+    groupId = 'io.spine'
     credentialsPropertyFile = 'credentials.properties'
 
     projectsToPublish = [
@@ -249,6 +250,7 @@ idea {
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
 apply from: deps.scripts.runBuild
+apply from: deps.scripts.generatePom
 
 apply from: deps.scripts.repoLicenseReport
 
