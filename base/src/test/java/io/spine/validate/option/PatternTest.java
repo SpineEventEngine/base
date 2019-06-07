@@ -22,6 +22,8 @@ package io.spine.validate.option;
 
 import com.google.protobuf.StringValue;
 import io.spine.test.validate.PatternStringFieldValue;
+import io.spine.test.validate.SimpleStringValue;
+import io.spine.test.validate.WithStringValue;
 import io.spine.validate.MessageValidatorTest;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;
@@ -38,18 +40,14 @@ class PatternTest extends MessageValidatorTest {
     @Test
     @DisplayName("find out that string matches to regex pattern")
     void findOutThatStringMatchesToRegexPattern() {
-        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
-                                                             .setEmail("valid.email@mail.com")
-                                                             .build();
+        PatternStringFieldValue msg = patternStringFor("valid.email@mail.com");
         assertValid(msg);
     }
 
     @Test
     @DisplayName("find out that string does not match to regex pattern")
     void findOutThatStringDoesNotMatchToRegexPattern() {
-        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
-                                                             .setEmail("invalid email")
-                                                             .build();
+        PatternStringFieldValue msg = patternStringFor("invalid email");
         assertNotValid(msg);
     }
 
@@ -63,13 +61,33 @@ class PatternTest extends MessageValidatorTest {
     @Test
     @DisplayName("provide one valid violation if string does not match to regex pattern")
     void provideOneValidViolationIfStringDoesNotMatchToRegexPattern() {
-        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
-                                                             .setEmail("invalid email")
-                                                             .build();
+        PatternStringFieldValue msg = patternStringFor("invalid email");
         @Regex
         String regex =
                 "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         String expectedErrMsg = format(MATCH_REGEXP_MSG, regex);
         assertSingleViolation(msg, expectedErrMsg, EMAIL);
+    }
+
+    @Test
+    @DisplayName("find out that string does not match to external regex pattern")
+    void findOutThatStringDoesNotMatchExternalConstraint() {
+        SimpleStringValue stringValue = SimpleStringValue
+                .newBuilder()
+                .setValue("A wordy sentence")
+                .build();
+        WithStringValue msg = WithStringValue
+                .newBuilder()
+                .setStringValue(stringValue)
+                .build();
+        assertValid(stringValue);
+        assertNotValid(msg);
+    }
+
+    private static PatternStringFieldValue patternStringFor(String email) {
+        return PatternStringFieldValue
+                .newBuilder()
+                .setEmail(email)
+                .build();
     }
 }
