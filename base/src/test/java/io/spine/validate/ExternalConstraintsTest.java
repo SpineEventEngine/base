@@ -18,20 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides classes and interfaces for:
- * <ul>
- *     <li>Generating code of Validating Builders.
- *     See {@link io.spine.tools.compiler.validation.VBuilderGenerator}.
- * </ul>
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.validation;
+package io.spine.validate;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import com.google.common.collect.ImmutableSet;
+import io.spine.test.validation.AnExternalConstraint;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("ExternalConstraints should")
+final class ExternalConstraintsTest {
+
+    @DisplayName("update rules from types")
+    @Test
+    void updateRulesFromTypes() {
+        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
+        ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
+        assertThat(ExternalConstraints.all()).hasSize(5);
+    }
+}

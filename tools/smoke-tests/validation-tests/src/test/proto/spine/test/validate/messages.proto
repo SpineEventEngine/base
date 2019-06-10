@@ -19,7 +19,7 @@
  */
 syntax = "proto3";
 
-package spine.test.validation;
+package spine.test.validate;
 
 import "spine/options.proto";
 
@@ -28,11 +28,10 @@ option java_multiple_files = true;
 option java_outer_classname = "ValidationTestMessagesProto";
 option java_package = "io.spine.test.validate";
 
-// Messages for testing validation rules.
+// Messages for testing message constraints.
 
-message AValidationRule {
-    option (validation_of) = "spine.test.validation.FirstRuleTarget.can_be_valid,"
-                             "spine.test.validation.SecondRuleTarget.can_be_valid";
+message AnExternalConstraint {
+    option (constraint_for) = "spine.test.validate.FirstConstraintTarget.can_be_valid," "spine.test.validate.SecondConstraintTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
     // The field index intentionally doesn't match the index in `AlwaysInvalid`
@@ -41,18 +40,18 @@ message AValidationRule {
     string always_invalid_b = 1 [(pattern).regex = "^.{1,}$"];
 }
 
-message RuleTargetAggregate {
+message ConstraintTargetAggregate {
 
-    FirstRuleTarget first = 1 [(validate) = true];
-    SecondRuleTarget second = 2 [(validate) = true];
+    FirstConstraintTarget first = 1 [(.validate) = true];
+    SecondConstraintTarget second = 2 [(.validate) = true];
 }
 
-message FirstRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(validate) = true];
+message FirstConstraintTarget {
+    AlwaysInvalid can_be_valid = 1 [(.validate) = true];
 }
 
-message SecondRuleTarget {
-    AlwaysInvalid can_be_valid = 1 [(validate) = true];
+message SecondConstraintTarget {
+    AlwaysInvalid can_be_valid = 1 [(.validate) = true];
 }
 
 // A message which is always invalid according to its constraints.

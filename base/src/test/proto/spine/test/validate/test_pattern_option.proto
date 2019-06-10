@@ -17,21 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-/**
- * This package provides classes and interfaces for:
- * <ul>
- *     <li>Generating code of Validating Builders.
- *     See {@link io.spine.tools.compiler.validation.VBuilderGenerator}.
- * </ul>
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.validation;
+package spine.test.validation;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import "spine/options.proto";
 
-import javax.annotation.ParametersAreNonnullByDefault;
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "TestPatternOptionProto";
+option java_package = "io.spine.test.validate";
+
+import "google/protobuf/wrappers.proto";
+
+// Messages for "pattern" option tests.
+
+message PatternStringFieldValue {
+    string email = 1 [(pattern).regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"];
+}
+
+message SimpleStringValue {
+    string value = 1 [(pattern).regex = "^[A-Za-z ]+$"];
+}
+
+message WithStringValue {
+    SimpleStringValue string_value = 1 [(validate) = true];
+}
+
+message SimpleStringValueConstraint {
+    option (constraint_for) = "spine.test.validation.WithStringValue.string_value";
+
+    string value = 1 [(pattern).regex = "^[0-9 ]+$"];
+}

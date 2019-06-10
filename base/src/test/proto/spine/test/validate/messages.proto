@@ -28,9 +28,10 @@ option java_multiple_files = true;
 option java_outer_classname = "ValidationTestMessagesProto";
 option java_package = "io.spine.test.validate";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
+
+import "spine/test/validate/test_pattern_option.proto";
 
 // Messages for general validation tests.
 
@@ -125,18 +126,6 @@ message MaxInclusiveNumberFieldValue {
 
 message MaxExclusiveNumberFieldValue {
     double value = 1 [(max).value = "64.5", (max).exclusive = true];
-}
-
-// Messages for "digits" option tests.
-
-message DigitsCountNumberFieldValue {
-    double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
-}
-
-// Messages for "pattern" option tests.
-
-message PatternStringFieldValue {
-    string email = 1 [(pattern).regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"];
 }
 
 // Messages for "valid" option tests.

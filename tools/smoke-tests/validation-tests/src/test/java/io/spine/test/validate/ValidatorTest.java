@@ -44,15 +44,15 @@ class ValidatorTest {
                 .setAlwaysInvalidA(validValue)
                 .setAlwaysInvalidB(validValue)
                 .build();
-        FirstRuleTarget first = FirstRuleTarget
+        FirstConstraintTarget first = FirstConstraintTarget
                 .newBuilder()
                 .setCanBeValid(invalidMessage)
                 .build();
-        SecondRuleTarget second = SecondRuleTarget
+        SecondConstraintTarget second = SecondConstraintTarget
                 .newBuilder()
                 .setCanBeValid(invalidMessage)
                 .build();
-        RuleTargetAggregate aggregateState = RuleTargetAggregate
+        ConstraintTargetAggregate aggregateState = ConstraintTargetAggregate
                 .newBuilder()
                 .setFirst(first)
                 .setSecond(second)
