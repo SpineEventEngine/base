@@ -33,6 +33,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
 import io.spine.type.ref.TypeRef;
+import io.spine.validate.ExternalConstraints;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
@@ -115,9 +116,11 @@ public class KnownTypes implements Serializable {
      * Retrieves a Java class name generated for the Protobuf type by its type URL
      * to be used to parse {@link Message Message} from {@link Any}.
      *
-     * @param type {@link Any} type url
+     * @param type
+     *         {@link Any} type URL
      * @return Java class name
-     * @throws UnknownTypeException if there is no such type known to the application
+     * @throws UnknownTypeException
+     *         if there is no such type known to the application
      */
     public ClassName classNameOf(TypeUrl type) throws UnknownTypeException {
         if (!instance().contains(type)) {
@@ -145,8 +148,7 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Assembles the known types into a
-     * {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
+     * Assembles the known types into a {@link JsonFormat.TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
@@ -157,7 +159,8 @@ public class KnownTypes implements Serializable {
     /**
      * Retrieves all the types that belong to the given package or its subpackages.
      *
-     * @param packageName proto package name
+     * @param packageName
+     *         proto package name
      * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
@@ -183,7 +186,8 @@ public class KnownTypes implements Serializable {
     /**
      * Shows if the given {@link TypeUrl} is known the system.
      *
-     * @param typeUrl the {@link TypeUrl} to look up
+     * @param typeUrl
+     *         the {@code TypeUrl} to look up
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {
@@ -230,7 +234,8 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      *
-     * @apiNote This class is public for allowing extension of known types by the development tools.
+     * @apiNote This class is public for allowing extension of known types by the
+     *         development tools.
      */
     @Internal
     public static final class Holder {
@@ -255,10 +260,14 @@ public class KnownTypes implements Serializable {
         /**
          * Extends the known types with some more types.
          *
+         * <p>Triggers external constraints
+         * {@link ExternalConstraints#updateFrom(ImmutableSet) update}.
+         *
          * <p>This method should never be called in a client code. The sole purpose of extending
          * the known types is for running compile-time checks on the user types.
          *
-         * @throws java.lang.SecurityException if called from the client code
+         * @throws java.lang.SecurityException
+         *         if called from the client code
          */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
@@ -269,6 +278,7 @@ public class KnownTypes implements Serializable {
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
                 instance = new KnownTypes(newKnownTypes);
+                ExternalConstraints.updateFrom(moreKnownTypes.messageTypes());
             } finally {
                 lock.unlock();
             }

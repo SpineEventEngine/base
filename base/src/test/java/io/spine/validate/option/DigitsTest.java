@@ -22,8 +22,11 @@ package io.spine.validate.option;
 
 import com.google.protobuf.Message;
 import io.spine.test.validate.DigitsCountNumberFieldValue;
+import io.spine.test.validate.IntegerDigits;
+import io.spine.test.validate.IntegerDigitsWithExternalConstraint;
 import io.spine.validate.MessageValidatorTest;
 import io.spine.validate.given.MessageValidatorTestEnv;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +90,69 @@ class DigitsTest extends MessageValidatorTest {
         String expectedErrMsg = "Number value is out of bounds, expected: <2 max digits>.<2 max digits>.";
         Message msg = messageFor(INT_DIGIT_COUNT_GREATER_THAN_MAX);
         assertSingleViolation(msg, expectedErrMsg, VALUE);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digit count is less than max in whole number")
+    void findOutThatIntegralDigitCountIsLessThanMaxInWholeNumber() {
+        Message msg = integerDigitsFor(88);
+        assertValid(msg);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digits count is equal to max in whole number")
+    void findOutThatIntegralDigitsCountIsEqualToMaxInWholeNumber() {
+        Message msg = integerDigitsFor(-888);
+        assertValid(msg);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digit count is greater than max in whole number")
+    void findOutThatIntegralDigitCountIsGreaterThanMaxInWholeNumber() {
+        Message msg = integerDigitsFor(8888);
+        assertNotValid(msg);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digit count is less than max with external constraint")
+    void findOutThatIntegralDigitCountIsLessThanMaxWithExternalConstraint() {
+        Message msg = integerDigitsWithExternalConstraintFor(8);
+        assertValid(msg);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digits count is equal to max with external constraint")
+    void findOutThatIntegralDigitsCountIsEqualToMaxWithExternalConstraint() {
+        Message msg = integerDigitsWithExternalConstraintFor(-88);
+        assertValid(msg);
+    }
+
+    @Disabled("See https://github.com/SpineEventEngine/base/issues/432")
+    @Test
+    @DisplayName("find out that integral digit count is greater than max with external constraint")
+    void findOutThatIntegralDigitCountIsGreaterThanMaxWithExternalConstraint() {
+        Message msg = integerDigitsWithExternalConstraintFor(888);
+        assertNotValid(msg);
+    }
+
+    private static IntegerDigitsWithExternalConstraint
+    integerDigitsWithExternalConstraintFor(long value) {
+        return IntegerDigitsWithExternalConstraint
+                .newBuilder()
+                .setDigits(integerDigitsFor(value))
+                .build();
+    }
+
+    private static IntegerDigits integerDigitsFor(long value) {
+        return IntegerDigits
+                .newBuilder()
+                .setValue(value)
+                .build();
     }
 
     private static Message messageFor(double value) {

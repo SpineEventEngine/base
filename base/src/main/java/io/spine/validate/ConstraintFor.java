@@ -18,16 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.validate;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.OptionsProto;
+
+import java.util.Optional;
+
 /**
- * This package defines classes and interfaces for working with {@code Message} validation rules.
+ * An external constraint for a field.
+ *
+ * <p>Contains information about constraint of another field, described by the option value.
  */
+@Immutable
+final class ConstraintFor extends MessageOption<String> {
 
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.validate.rule;
+    ConstraintFor() {
+        super(OptionsProto.constraintFor);
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
+     */
+    Optional<String> valueFrom(DescriptorProto message) {
+        MessageOptions options = message.getOptions();
+        return options.hasExtension(extension())
+               ? Optional.of(options.getExtension(extension()))
+               : Optional.empty();
+    }
+}
