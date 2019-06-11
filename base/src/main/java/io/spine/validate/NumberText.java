@@ -73,12 +73,12 @@ public final class NumberText {
      *
      * <p>Example:
      * <pre>
-     * {@code
-     *   NumberText zeroWithDecimal = new NumberText("0.0");
-     *   NumberText plainZero = new NumberText("0");
+     *     {@code
+     *      NumberText zeroWithDecimal = new NumberText("0.0");
+     *      NumberText plainZero = new NumberText("0");
      *
-     *   zeroWithDecimal.isOfSameType(plainZero); // false
-     * }
+     *      zeroWithDecimal.isOfSameType(plainZero); // false
+     *      }
      *  </pre>
      * the above code is false, since {@code zeroWithDecimal} describes a number that has a decimal
      * part, be it a {@code Double} or a {@code Float}, while {@code plainZero} describes an
