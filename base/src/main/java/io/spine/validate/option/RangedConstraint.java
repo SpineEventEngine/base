@@ -86,12 +86,13 @@ abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Compa
     }
 
     private void checkBoundaryAndValue(NumberText boundary, FieldValue<V> value) {
-        NumberText valueToCheck = new NumberText(value.singleValue());
-        if (!boundary.isOfSameType(valueToCheck)) {
+        ComparableNumber boundaryNumber = boundary.toNumber();
+        V valueNumber = value.singleValue();
+        if (!NumberConversionChecker.canConvert(boundaryNumber, valueNumber)) {
             String errorMessage =
                     "Boundary values must have types consistent with values they bind: " +
                             "boundary %s, value %s";
-            throw newIllegalStateException(errorMessage, boundary, valueToCheck);
+            throw newIllegalStateException(errorMessage, boundary, valueNumber);
         }
     }
 
@@ -175,4 +176,5 @@ abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Compa
                ? OR_EQUAL_TO + " %s"
                : "%s";
     }
+
 }
