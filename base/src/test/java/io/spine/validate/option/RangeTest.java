@@ -23,58 +23,102 @@ package io.spine.validate.option;
 import io.spine.test.validate.NumRanges;
 import io.spine.test.validate.RangesHolder;
 import io.spine.validate.MessageValidatorTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
-@Disabled("See https://github.com/SpineEventEngine/base/issues/436")
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and")
+@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and find out that")
 final class RangeTest extends MessageValidatorTest {
 
-    @DisplayName("find out that hours fit into the defined range")
-    @ParameterizedTest
-    @MethodSource("validHours")
-    void findOutThatHoursFitIntoRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertValid(msg);
+    @Nested
+    @DisplayName("integers")
+    final class Integers {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHours")
+        void fitIntoRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfDayHours")
+        void fitIntoExternalConstraintRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHours")
+        void doNotFitIntoRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfDayHours")
+        void doNotFitIntoExternalConstraintRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges hourRange(int hour) {
+            return validRange().setHour(hour)
+                               .build();
+        }
     }
 
-    @DisplayName("find out that hours fit into the defined external constraint range")
-    @ParameterizedTest
-    @MethodSource("validHalfDayHours")
-    void findOutThatHoursFitIntoExternalConstraintRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertValid(holderOf(msg));
-    }
+    @Nested
+    @DisplayName("longs")
+    final class Longs {
 
-    @DisplayName("find out that hours do not fit into the defined range")
-    @ParameterizedTest
-    @MethodSource("invalidHours")
-    void findOutThatHoursDoNotFitIntoRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertNotValid(msg);
-    }
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validMinutes")
+        void fitIntoRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertValid(msg);
+        }
 
-    @DisplayName("find out that hours do not fit into the defined external constraint range")
-    @ParameterizedTest
-    @MethodSource("invalidHalfDayHours")
-    void findOutThatHoursDoNotFitIntoExternalConstraintRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertNotValid(holderOf(msg));
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfHourMinutes")
+        void fitIntoExternalConstraintRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidMinutes")
+        void doNotFitIntoRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfHourMinutes")
+        void doNotFitIntoExternalConstraintRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges minuteRange(long minute) {
+            return validRange().setMinute(minute)
+                               .build();
+        }
     }
 
     private static RangesHolder holderOf(NumRanges ranges) {
@@ -111,5 +155,25 @@ final class RangeTest extends MessageValidatorTest {
     private static Stream<Integer> validHalfDayHours() {
         return IntStream.range(0, 12)
                         .boxed();
+    }
+
+    private static Stream<Long> invalidHalfHourMinutes() {
+        return LongStream.of(-1, 31, 59, 60, Long.MAX_VALUE, Long.MIN_VALUE)
+                         .boxed();
+    }
+
+    private static Stream<Long> invalidMinutes() {
+        return LongStream.of(-1, 60, 61, Long.MAX_VALUE, Long.MIN_VALUE)
+                         .boxed();
+    }
+
+    private static Stream<Long> validMinutes() {
+        return LongStream.range(0, 59)
+                         .boxed();
+    }
+
+    private static Stream<Long> validHalfHourMinutes() {
+        return LongStream.range(0, 29)
+                         .boxed();
     }
 }
