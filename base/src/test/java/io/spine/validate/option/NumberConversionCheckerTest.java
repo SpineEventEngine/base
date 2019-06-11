@@ -22,6 +22,7 @@ package io.spine.validate.option;
 
 import io.spine.validate.ComparableNumber;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,17 +36,96 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("NumberConversionChecker should tell that")
 final class NumberConversionCheckerTest {
 
-    @DisplayName("it is possible to convert byte to byte")
-    @Test
-    void byteToByte() {
-        assertTrue(NumberConversionChecker.canConvert(Byte.valueOf("1"), Byte.valueOf("2")));
+    @DisplayName("it is possible to convert")
+    @Nested
+    final class PossibleToConvert {
+
+        @DisplayName("to byte")
+        @Test
+        void toByte() {
+            assertTrue(NumberConversionChecker.canConvert(Byte.valueOf("1"), Byte.valueOf("2")));
+        }
+
+        @DisplayName("to short")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#shorts")
+        void toShort(Number shortNumber) {
+            assertTrue(NumberConversionChecker.canConvert(Short.valueOf("1"), shortNumber));
+        }
+
+        @DisplayName("to integer")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#integers")
+        void toInteger(Number integerNumber) {
+            assertTrue(NumberConversionChecker.canConvert(1, integerNumber));
+        }
+
+        @DisplayName("to long")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#longs")
+        void toLong(Number longNumber) {
+            assertTrue(NumberConversionChecker.canConvert(1L, longNumber));
+        }
+
+        @DisplayName("to float")
+        @Test
+        void toFloat() {
+            assertTrue(NumberConversionChecker.canConvert(1.0f, 3.14f));
+        }
+
+        @DisplayName("to double")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#doubles")
+        void toDouble(Number doubleNumber) {
+            assertTrue(NumberConversionChecker.canConvert(1.0d, doubleNumber));
+        }
     }
 
-    @DisplayName("it is not possible to convert non-byte to byte")
-    @ParameterizedTest
-    @MethodSource("nonBytes")
-    void byteToOthers(Number nonByte) {
-        assertFalse(NumberConversionChecker.canConvert(Byte.valueOf("1"), nonByte));
+    @DisplayName("it is not possible to convert")
+    @Nested
+    final class NotPossibleToConvert {
+
+        @DisplayName("it is not possible to convert non-byte to byte")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonBytes")
+        void byteToOthers(Number nonByte) {
+            assertFalse(NumberConversionChecker.canConvert(Byte.valueOf("1"), nonByte));
+        }
+
+        @DisplayName("it is not possible to convert non-short to short")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonShorts")
+        void shortToOthers(Number nonShort) {
+            assertFalse(NumberConversionChecker.canConvert(Short.valueOf("1"), nonShort));
+        }
+
+        @DisplayName("it is not possible to convert non-integer to integer")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonIntegers")
+        void integerToOthers(Number nonInteger) {
+            assertFalse(NumberConversionChecker.canConvert(1, nonInteger));
+        }
+
+        @DisplayName("it is not possible to convert non-long to long")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonLongs")
+        void longToOthers(Number nonLong) {
+            assertFalse(NumberConversionChecker.canConvert(1L, nonLong));
+        }
+
+        @DisplayName("it is not possible to convert non-float to float")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonFloats")
+        void floatToOthers(Number nonFloat) {
+            assertFalse(NumberConversionChecker.canConvert(1.0f, nonFloat));
+        }
+
+        @DisplayName("it is not possible to convert non-double to double")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonDoubles")
+        void doubleToOthers(Number nonDouble) {
+            assertFalse(NumberConversionChecker.canConvert(1.0d, nonDouble));
+        }
     }
 
     @DisplayName("ComparableNumber instances are automatically unwrapped")
@@ -61,9 +141,43 @@ final class NumberConversionCheckerTest {
         assertFalse(NumberConversionChecker.canConvert(BigDecimal.valueOf(1), 1L));
     }
 
-    //TODO:2019-06-11:ysergiichuk: Add tests for Short, Integer, Long, Float and Double conversions
-
     private static Stream<Number> nonBytes() {
-        return Stream.of(Short.valueOf("1"), 2, 3L, 4.0, 5.1f);
+        return Stream.concat(Stream.of(Short.valueOf("1")), nonShorts());
+    }
+
+    private static Stream<Number> nonShorts() {
+        return Stream.concat(Stream.of(2), nonIntegers());
+    }
+
+    private static Stream<Number> nonIntegers() {
+        return Stream.concat(Stream.of(3L), nonLongs());
+    }
+
+    private static Stream<Number> nonLongs() {
+        return Stream.of(4.0, 5.1f);
+    }
+
+    private static Stream<Number> nonFloats() {
+        return Stream.concat(nonDoubles(), Stream.of(4.0));
+    }
+
+    private static Stream<Number> nonDoubles() {
+        return Stream.of(Byte.valueOf("1"), Short.valueOf("1"), 2, 3L);
+    }
+
+    private static Stream<Number> shorts() {
+        return Stream.of(Byte.valueOf("1"), Short.valueOf("2"));
+    }
+
+    private static Stream<Number> integers() {
+        return Stream.concat(shorts(), Stream.of(2));
+    }
+
+    private static Stream<Number> longs() {
+        return Stream.concat(integers(), Stream.of(3L));
+    }
+
+    private static Stream<Number> doubles() {
+        return Stream.of(3.14f, 8.19d);
     }
 }
