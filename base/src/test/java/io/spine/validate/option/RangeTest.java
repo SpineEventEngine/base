@@ -164,6 +164,48 @@ final class RangeTest extends MessageValidatorTest {
         }
     }
 
+    @Nested
+    @DisplayName("doubles")
+    final class Doubles {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validAngles")
+        void fitIntoRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeAngles")
+        void fitIntoExternalConstraintRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidAngles")
+        void doNotFitIntoRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeAngles")
+        void doNotFitIntoExternalConstraintRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges doubleRange(double angle) {
+            return validRange().setAngle(angle)
+                               .build();
+        }
+    }
+
     private static RangesHolder holderOf(NumRanges ranges) {
         return RangesHolder
                 .newBuilder()
@@ -242,5 +284,25 @@ final class RangeTest extends MessageValidatorTest {
         return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
                            .boxed()
                            .map(Float::new);
+    }
+
+    private static Stream<Double> invalidHalfRangeAngles() {
+        return DoubleStream.of(-1.0, 0, 90, 90.1, Double.MAX_VALUE, -Double.MAX_VALUE)
+                           .boxed();
+    }
+
+    private static Stream<Double> invalidAngles() {
+        return DoubleStream.of(-1.0, 0, 180, 180.1, Double.MAX_VALUE, -Double.MAX_VALUE)
+                           .boxed();
+    }
+
+    private static Stream<Double> validAngles() {
+        return DoubleStream.of(0.01, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
+                           .boxed();
+    }
+
+    private static Stream<Double> validHalfRangeAngles() {
+        return DoubleStream.of(0.01, 0.54, 1.23, 31.3, 40, 59.9, 89.9)
+                           .boxed();
     }
 }
