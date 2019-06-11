@@ -20,11 +20,14 @@
 
 package io.spine.validate.option;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.test.validate.Hours;
 import io.spine.test.validate.NumRanges;
 import io.spine.test.validate.RangesHolder;
 import io.spine.validate.MessageValidatorTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -203,6 +206,31 @@ final class RangeTest extends MessageValidatorTest {
         private NumRanges doubleRange(double angle) {
             return validRange().setAngle(angle)
                                .build();
+        }
+    }
+
+    @Nested
+    @DisplayName("repeated option is")
+    final class RepeatedRange {
+
+        @DisplayName("valid")
+        @Test
+        void valid() {
+            Hours hours = Hours
+                    .newBuilder()
+                    .addAllHour(validHours().collect(ImmutableList.toImmutableList()))
+                    .build();
+            assertValid(hours);
+        }
+
+        @DisplayName("invalid")
+        @Test
+        void invalid() {
+            Hours hours = Hours
+                    .newBuilder()
+                    .addAllHour(invalidHours().collect(ImmutableList.toImmutableList()))
+                    .build();
+            assertNotValid(hours);
         }
     }
 
