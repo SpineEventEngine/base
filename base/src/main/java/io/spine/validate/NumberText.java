@@ -22,10 +22,11 @@ package io.spine.validate;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.Internal;
 
 import java.util.Collection;
+import java.util.List;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -34,6 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A number that is described with a {@code String} of characters.
  */
 @Immutable
+@Internal
 public final class NumberText {
 
     private static final String DECIMAL_DELIMITER = ".";
@@ -88,10 +90,9 @@ public final class NumberText {
     }
 
     private static Number parseNumber(String text) {
-        ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
+        List<String> wholeAndDecimal = DECIMAL_SPLIT.splitToList(text);
         hasOnlyWholeAndDecimal(wholeAndDecimal);
-        if (hasDecimalPart(text)) {
+        if (hasDecimalPart(wholeAndDecimal)) {
             return Double.parseDouble(text);
         }
         if (fitsIntoInteger(text)) {
@@ -101,9 +102,7 @@ public final class NumberText {
         }
     }
 
-    private static boolean hasDecimalPart(String text) {
-        ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
+    private static boolean hasDecimalPart(List<String> wholeAndDecimal) {
         boolean hasOnlyWhole = wholeAndDecimal.size() <= 1;
         return !hasOnlyWhole && !wholeAndDecimal.get(1)
                                                 .isEmpty();
