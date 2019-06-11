@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -121,6 +122,48 @@ final class RangeTest extends MessageValidatorTest {
         }
     }
 
+    @Nested
+    @DisplayName("floats")
+    final class Floats {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validDegrees")
+        void fitIntoRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeDegrees")
+        void fitIntoExternalConstraintRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidDegrees")
+        void doNotFitIntoRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeDegrees")
+        void doNotFitIntoExternalConstraintRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges floatRange(float degree) {
+            return validRange().setDegree(degree)
+                               .build();
+        }
+    }
+
     private static RangesHolder holderOf(NumRanges ranges) {
         return RangesHolder
                 .newBuilder()
@@ -175,5 +218,29 @@ final class RangeTest extends MessageValidatorTest {
     private static Stream<Long> validHalfHourMinutes() {
         return LongStream.range(0, 29)
                          .boxed();
+    }
+
+    private static Stream<Float> invalidHalfRangeDegrees() {
+        return DoubleStream.of(-1.0, 180, 180.1, Float.MAX_VALUE, -Float.MAX_VALUE)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> invalidDegrees() {
+        return DoubleStream.of(-1.0, 360, 360.1, Float.MAX_VALUE, -Float.MAX_VALUE)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> validDegrees() {
+        return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 180.1, 359.9)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> validHalfRangeDegrees() {
+        return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
+                           .boxed()
+                           .map(Float::new);
     }
 }
