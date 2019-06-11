@@ -22,12 +22,14 @@ package io.spine.validate;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.Internal;
 
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -38,6 +40,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 @Internal
 public final class NumberText {
 
+    private static final ImmutableList<Class<? extends Number>> SUPPORTED_NUMBERS =
+            ImmutableList.of(Integer.class, Long.class, Double.class, Float.class);
     private static final String DECIMAL_DELIMITER = ".";
     private static final Splitter DECIMAL_SPLIT = Splitter.on(DECIMAL_DELIMITER);
 
@@ -48,7 +52,7 @@ public final class NumberText {
     /** Creates a new instance that is equal to the specified number. */
     public NumberText(Number number) {
         this.text = String.valueOf(number);
-        this.value = number;
+        this.value = checkSupportedNumber(number);
     }
 
     /**
@@ -64,8 +68,8 @@ public final class NumberText {
     }
 
     /**
-     * Returns whether this instance of a number is of the same {@code Number} subtype as
-     * the specified one.
+     * Determines whether this instance of a number represents the same number type as the
+     * supplied one.
      *
      * <p>Example:
      * <pre>
@@ -80,13 +84,45 @@ public final class NumberText {
      * part, be it a {@code Double} or a {@code Float}, while {@code plainZero} describes an
      * arbitrary whole number.
      *
-     * @return whether this instance of a number is of the same {@code Number} subtype as
-     *         the specified one.
+     * @return {@code true} if the instance of a number represents the same number type as the
+     *         supplied one, {@code false} otherwise
      */
     public boolean isOfSameType(NumberText anotherNumber) {
-        Class<? extends Number> classOfThisNumber = value.getClass();
-        Class<? extends Number> classOfAnotherNumber = anotherNumber.value.getClass();
-        return classOfThisNumber.equals(classOfAnotherNumber);
+        return areWholeNumbers(this, anotherNumber) || areFractionalNumbers(this, anotherNumber);
+    }
+
+    /**
+     * Converts current number {@code value} to a {@code ComparableNumber}.
+     */
+    public ComparableNumber toNumber() {
+        return new ComparableNumber(this.value);
+    }
+
+    private static Number checkSupportedNumber(Number value) {
+        Class<? extends Number> numberClass = value.getClass();
+        checkArgument(SUPPORTED_NUMBERS.contains(numberClass),
+                      "NumberText can only represent one of supported types: %s, but was %s",
+                      SUPPORTED_NUMBERS, numberClass);
+        return value;
+    }
+
+    private static boolean areFractionalNumbers(NumberText first, NumberText second) {
+        return !isWholeNumber(first) && !isWholeNumber(second);
+    }
+
+    private static boolean areWholeNumbers(NumberText first, NumberText second) {
+        return isWholeNumber(first) && isWholeNumber(second);
+    }
+
+    /**
+     * Determines if the number text represents a whole number.
+     *
+     * <p>While Protobuf supports only {@code int} and {@code long} values in Java, we assume
+     * that only these values denotes whole numbers.
+     */
+    private static boolean isWholeNumber(NumberText numberText) {
+        Class<? extends Number> classOfNumber = numberText.value.getClass();
+        return Integer.class.equals(classOfNumber) || Long.class.equals(classOfNumber);
     }
 
     private static Number parseNumber(String text) {
@@ -95,11 +131,7 @@ public final class NumberText {
         if (hasDecimalPart(wholeAndDecimal)) {
             return Double.parseDouble(text);
         }
-        if (fitsIntoInteger(text)) {
-            return Integer.parseInt(text);
-        } else {
-            return Long.parseLong(text);
-        }
+        return Long.parseLong(text);
     }
 
     private static boolean hasDecimalPart(List<String> wholeAndDecimal) {
@@ -108,21 +140,12 @@ public final class NumberText {
                                                 .isEmpty();
     }
 
-    private static boolean fitsIntoInteger(String text) {
-        long number = Long.parseLong(text);
-        return Integer.MAX_VALUE >= number;
-    }
-
     private static void hasOnlyWholeAndDecimal(Collection<String> wholeAndDecimal)
             throws IllegalStateException {
         if (wholeAndDecimal.size() > 2) {
             String malformedNumber = String.join("", wholeAndDecimal);
             throw newIllegalStateException("Found malformed number: %s.", malformedNumber);
         }
-    }
-
-    public ComparableNumber toNumber() {
-        return new ComparableNumber(this.value);
     }
 
     @Override

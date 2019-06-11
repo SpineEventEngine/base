@@ -103,7 +103,9 @@ class NumberTextTest {
                 Arguments.of(0, "0"),
                 Arguments.of(-1.0d, "-1.0"),
                 Arguments.of(-1, "-1"),
-                Arguments.of(-1.23456789d, "-1.23456789")
+                Arguments.of(-1.23456789d, "-1.23456789"),
+                Arguments.of(-3L, "-3"),
+                Arguments.of(-2.23456f, "-2.23456")
         );
     }
 
