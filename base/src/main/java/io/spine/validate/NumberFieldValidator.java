@@ -30,7 +30,7 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * @param <V>
  *         the type of the field value
  */
-abstract class NumberFieldValidator<V extends Number & Comparable> extends FieldValidator<V> {
+abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends FieldValidator<V> {
 
     /**
      * Creates a new validator instance.
