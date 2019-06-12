@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * An exception that is thrown if a {@code Message} does not pass the validation.
  */
-public final class ValidationException extends RuntimeException {
+public class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
@@ -42,8 +42,18 @@ public final class ValidationException extends RuntimeException {
     }
 
     @SuppressWarnings("unused" /* part of public API of the exception. */)
-    public List<ConstraintViolation> getConstraintViolations() {
+    public final List<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
+    }
+
+    /**
+     * Provides the violation info as a {@link ValidationError}.
+     */
+    public final ValidationError asValidationError() {
+        return ValidationError
+                .newBuilder()
+                .addAllConstraintViolation(constraintViolations)
+                .build();
     }
 
     @Override

@@ -29,6 +29,7 @@ import io.spine.validate.ConstraintViolation;
 import io.spine.validate.FieldValue;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
@@ -49,12 +50,12 @@ final class PatternConstraint extends FieldValueConstraint<String, PatternOption
         ImmutableList<ConstraintViolation> violations =
                 values.stream()
                       .filter(value -> !value.matches(regex))
-                      .map(value -> newViolation(fieldValue))
+                      .map(value -> newViolation(fieldValue, value))
                       .collect(toImmutableList());
         return violations;
     }
 
-    private ConstraintViolation newViolation(FieldValue<String> fieldValue) {
+    private ConstraintViolation newViolation(FieldValue<String> fieldValue, String rawValue) {
         String msg = errorMsgFormat(optionValue(), optionValue().getMsgFormat());
         FieldPath fieldPath = fieldValue.context()
                                         .fieldPath();
@@ -68,6 +69,7 @@ final class PatternConstraint extends FieldValueConstraint<String, PatternOption
                 .addParam(regex)
                 .setFieldPath(fieldPath)
                 .setTypeName(declaringType.value())
+                .setFieldValue(toAny(rawValue))
                 .build();
         return violation;
     }
