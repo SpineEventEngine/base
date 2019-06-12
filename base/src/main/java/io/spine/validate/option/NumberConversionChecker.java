@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class NumberConversionChecker {
 
-    private static final ImmutableList<ConversionChecker<?>> CASTERS = ImmutableList.of(
+    private static final ImmutableList<ConversionChecker<?>> CHECKERS = ImmutableList.of(
             new ByteChecker(), new ShortChecker(), new IntegerChecker(), new LongChecker(),
             new FloatChecker(), new DoubleChecker()
     );
@@ -45,14 +45,14 @@ final class NumberConversionChecker {
      * Determines if the supplied {@code number} can be safely converted to the {@code
      * anotherNumber}.
      */
-    static boolean canConvert(Number number, Number anotherNumber) {
+    static boolean check(Number number, Number anotherNumber) {
         checkNotNull(number);
         checkNotNull(anotherNumber);
         Number unwrappedNumber = unwrap(number);
         Number unwrappedAnotherNumber = unwrap(anotherNumber);
-        for (ConversionChecker<?> caster : CASTERS) {
+        for (ConversionChecker<?> caster : CHECKERS) {
             if (caster.supports(unwrappedNumber)) {
-                return caster.canCast(unwrappedAnotherNumber);
+                return caster.isConvertible(unwrappedAnotherNumber);
             }
         }
         return false;
@@ -80,7 +80,7 @@ final class NumberConversionChecker {
          * Determines if the supplied {@code number} can be safely converted to the type of
          * the caster.
          */
-        default boolean canCast(Number number) {
+        default boolean isConvertible(Number number) {
             Class<? extends Number> numberClass = number.getClass();
             for (Class<? extends Number> type : convertibleTypes()) {
                 if (type.equals(numberClass)) {
@@ -103,7 +103,7 @@ final class NumberConversionChecker {
         Class<T> casterType();
 
         /**
-         * Returns a list of types to witch {@code T} type can be safely converted.
+         * Returns types which {@code T} type can be safely converted to.
          */
         ImmutableList<Class<? extends Number>> convertibleTypes();
     }
