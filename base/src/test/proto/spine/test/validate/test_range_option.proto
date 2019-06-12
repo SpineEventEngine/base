@@ -49,3 +49,7 @@ message HalfRangesConstraint {
     float degree = 3 [(range) = "[0.0..180.0)"];
     double angle = 4 [(range) = "(0.0..90.0)"];
 }
+
+message Hours {
+    repeated int32 hour = 1 [(range) = "[0..23]"];
+}

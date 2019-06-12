@@ -33,7 +33,7 @@ import io.spine.validate.FieldValue;
  *         numeric value type that this option is applied to
  */
 @Immutable
-final class Min<@ImmutableTypeParameter V extends Number & Comparable>
+final class Min<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends FieldValidatingOption<MinOption, V> {
 
     private Min() {
@@ -41,7 +41,7 @@ final class Min<@ImmutableTypeParameter V extends Number & Comparable>
     }
 
     /** Creates a new instance of this option. */
-    static <@ImmutableTypeParameter V extends Number & Comparable> Min<V> create() {
+    static <@ImmutableTypeParameter V extends Number & Comparable<V>> Min<V> create() {
         return new Min<>();
     }
 

@@ -38,7 +38,7 @@ class ComparableNumberTest {
             String longMaxValue = String.valueOf(Long.MAX_VALUE);
             String doubleMinValue = String.valueOf(Double.MIN_VALUE);
             new EqualsTester()
-                    .addEqualityGroup(new NumberText(1).toNumber(), new NumberText("1").toNumber())
+                    .addEqualityGroup(new NumberText(1L).toNumber(), new NumberText("1").toNumber())
                     .addEqualityGroup(new NumberText(longMaxValue).toNumber(),
                                       new NumberText(Long.MAX_VALUE).toNumber())
                     .addEqualityGroup(new NumberText(doubleMinValue).toNumber(),

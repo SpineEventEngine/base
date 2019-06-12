@@ -31,7 +31,7 @@ import io.spine.validate.NumberText;
  * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
 @Immutable
-final class MaxConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+final class MaxConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends RangedConstraint<V, MaxOption> {
 
     MaxConstraint(MaxOption optionValue) {

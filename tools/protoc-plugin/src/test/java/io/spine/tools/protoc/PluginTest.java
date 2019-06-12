@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -164,12 +165,13 @@ final class PluginTest {
     @Test
     @DisplayName("mark generated message builders with the ValidatingBuilder interface")
     void markBuildersWithInterface() {
+        Descriptors.FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
+        String protocConfigPath =
+                protocConfig(new GeneratedInterfaces(), new GeneratedMethods(), testPluginConfig);
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
+                .addProtoFile(testGeneratorsDescriptor.toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(new GeneratedInterfaces(), new GeneratedMethods(),
-                                           testPluginConfig))
+                .setParameter(protocConfigPath)
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
         File insertionPoint = getOnlyElement(response.getFileList());
@@ -178,7 +180,10 @@ final class PluginTest {
         String expectedPointName = InsertionPoint.builder_implements.forType(type);
         assertThat(insertionPoint.getInsertionPoint()).isEqualTo(expectedPointName);
         SourceFile expectedFile = SourceFile.forType(type);
-        assertThat(insertionPoint.getName()).isEqualTo(expectedFile.toString());
+        @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
+        String expectedFileInsertionPoint = expectedFile.toString()
+                                                        .replaceAll("\\\\", "/");
+        assertThat(insertionPoint.getName()).isEqualTo(expectedFileInsertionPoint);
     }
 
     private static List<File> filterMethods(CodeGeneratorResponse response,
@@ -186,7 +191,8 @@ final class PluginTest {
         return response
                 .getFileList()
                 .stream()
-                .filter(file -> file.getInsertionPoint().contains(insertionPoint.getDefinition()))
+                .filter(file -> file.getInsertionPoint()
+                                    .contains(insertionPoint.getDefinition()))
                 .collect(toList());
     }
 

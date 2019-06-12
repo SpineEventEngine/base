@@ -48,6 +48,11 @@ public final class ComparableNumber extends Number implements Comparable<Number>
         return new NumberText(value);
     }
 
+    /** Returns the actual wrapped number. */
+    public Number value() {
+        return value;
+    }
+
     @Override
     public int compareTo(Number anotherNumber) {
         long thisLong = longValue();

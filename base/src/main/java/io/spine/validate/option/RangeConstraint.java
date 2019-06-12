@@ -40,7 +40,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *         numeric value that this constraint is applied to
  */
 @Immutable
-final class RangeConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+final class RangeConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends RangedConstraint<V, String> {
 
     private static final Splitter RANGE_SPLITTER = Splitter.on("..");

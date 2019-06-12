@@ -20,61 +20,218 @@
 
 package io.spine.validate.option;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.test.validate.Hours;
 import io.spine.test.validate.NumRanges;
 import io.spine.test.validate.RangesHolder;
 import io.spine.validate.MessageValidatorTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
-@Disabled("See https://github.com/SpineEventEngine/base/issues/436")
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and")
+@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and find out that")
 final class RangeTest extends MessageValidatorTest {
 
-    @DisplayName("find out that hours fit into the defined range")
-    @ParameterizedTest
-    @MethodSource("validHours")
-    void findOutThatHoursFitIntoRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertValid(msg);
+    @Nested
+    @DisplayName("integers")
+    final class Integers {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHours")
+        void fitIntoRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfDayHours")
+        void fitIntoExternalConstraintRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHours")
+        void doNotFitIntoRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfDayHours")
+        void doNotFitIntoExternalConstraintRange(int hour) {
+            NumRanges msg = hourRange(hour);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges hourRange(int hour) {
+            return validRange().setHour(hour)
+                               .build();
+        }
     }
 
-    @DisplayName("find out that hours fit into the defined external constraint range")
-    @ParameterizedTest
-    @MethodSource("validHalfDayHours")
-    void findOutThatHoursFitIntoExternalConstraintRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertValid(holderOf(msg));
+    @Nested
+    @DisplayName("longs")
+    final class Longs {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validMinutes")
+        void fitIntoRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfHourMinutes")
+        void fitIntoExternalConstraintRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidMinutes")
+        void doNotFitIntoRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfHourMinutes")
+        void doNotFitIntoExternalConstraintRange(long minute) {
+            NumRanges msg = minuteRange(minute);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges minuteRange(long minute) {
+            return validRange().setMinute(minute)
+                               .build();
+        }
     }
 
-    @DisplayName("find out that hours do not fit into the defined range")
-    @ParameterizedTest
-    @MethodSource("invalidHours")
-    void findOutThatHoursDoNotFitIntoRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertNotValid(msg);
+    @Nested
+    @DisplayName("floats")
+    final class Floats {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validDegrees")
+        void fitIntoRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeDegrees")
+        void fitIntoExternalConstraintRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidDegrees")
+        void doNotFitIntoRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeDegrees")
+        void doNotFitIntoExternalConstraintRange(float degree) {
+            NumRanges msg = floatRange(degree);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges floatRange(float degree) {
+            return validRange().setDegree(degree)
+                               .build();
+        }
     }
 
-    @DisplayName("find out that hours do not fit into the defined external constraint range")
-    @ParameterizedTest
-    @MethodSource("invalidHalfDayHours")
-    void findOutThatHoursDoNotFitIntoExternalConstraintRange(int hour) {
-        NumRanges msg = validRange()
-                .setHour(hour)
-                .build();
-        assertNotValid(holderOf(msg));
+    @Nested
+    @DisplayName("doubles")
+    final class Doubles {
+
+        @DisplayName("fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validAngles")
+        void fitIntoRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertValid(msg);
+        }
+
+        @DisplayName("fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeAngles")
+        void fitIntoExternalConstraintRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertValid(holderOf(msg));
+        }
+
+        @DisplayName("do not fit into the defined range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidAngles")
+        void doNotFitIntoRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertNotValid(msg);
+        }
+
+        @DisplayName("do not fit into the defined external constraint range")
+        @ParameterizedTest
+        @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeAngles")
+        void doNotFitIntoExternalConstraintRange(double angle) {
+            NumRanges msg = doubleRange(angle);
+            assertNotValid(holderOf(msg));
+        }
+
+        private NumRanges doubleRange(double angle) {
+            return validRange().setAngle(angle)
+                               .build();
+        }
+    }
+
+    @Nested
+    @DisplayName("repeated option is")
+    final class RepeatedRange {
+
+        @DisplayName("valid")
+        @Test
+        void valid() {
+            Hours hours = Hours
+                    .newBuilder()
+                    .addAllHour(validHours().collect(ImmutableList.toImmutableList()))
+                    .build();
+            assertValid(hours);
+        }
+
+        @DisplayName("invalid")
+        @Test
+        void invalid() {
+            Hours hours = Hours
+                    .newBuilder()
+                    .addAllHour(invalidHours().collect(ImmutableList.toImmutableList()))
+                    .build();
+            assertNotValid(hours);
+        }
     }
 
     private static RangesHolder holderOf(NumRanges ranges) {
@@ -111,5 +268,69 @@ final class RangeTest extends MessageValidatorTest {
     private static Stream<Integer> validHalfDayHours() {
         return IntStream.range(0, 12)
                         .boxed();
+    }
+
+    private static Stream<Long> invalidHalfHourMinutes() {
+        return LongStream.of(-1, 31, 59, 60, Long.MAX_VALUE, Long.MIN_VALUE)
+                         .boxed();
+    }
+
+    private static Stream<Long> invalidMinutes() {
+        return LongStream.of(-1, 60, 61, Long.MAX_VALUE, Long.MIN_VALUE)
+                         .boxed();
+    }
+
+    private static Stream<Long> validMinutes() {
+        return LongStream.range(0, 59)
+                         .boxed();
+    }
+
+    private static Stream<Long> validHalfHourMinutes() {
+        return LongStream.range(0, 29)
+                         .boxed();
+    }
+
+    private static Stream<Float> invalidHalfRangeDegrees() {
+        return DoubleStream.of(-1.0, 180, 180.1, Float.MAX_VALUE, -Float.MAX_VALUE)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> invalidDegrees() {
+        return DoubleStream.of(-1.0, 360, 360.1, Float.MAX_VALUE, -Float.MAX_VALUE)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> validDegrees() {
+        return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 180.1, 359.9)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Float> validHalfRangeDegrees() {
+        return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
+                           .boxed()
+                           .map(Float::new);
+    }
+
+    private static Stream<Double> invalidHalfRangeAngles() {
+        return DoubleStream.of(-1.0, 0, 90, 90.1, Double.MAX_VALUE, -Double.MAX_VALUE)
+                           .boxed();
+    }
+
+    private static Stream<Double> invalidAngles() {
+        return DoubleStream.of(-1.0, 0, 180, 180.1, Double.MAX_VALUE, -Double.MAX_VALUE)
+                           .boxed();
+    }
+
+    private static Stream<Double> validAngles() {
+        return DoubleStream.of(0.01, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
+                           .boxed();
+    }
+
+    private static Stream<Double> validHalfRangeAngles() {
+        return DoubleStream.of(0.01, 0.54, 1.23, 31.3, 40, 59.9, 89.9)
+                           .boxed();
     }
 }

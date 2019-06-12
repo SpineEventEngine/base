@@ -22,10 +22,11 @@ package io.spine.validate;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.Internal;
 
 import java.util.Collection;
+import java.util.List;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -34,6 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A number that is described with a {@code String} of characters.
  */
 @Immutable
+@Internal
 public final class NumberText {
 
     private static final String DECIMAL_DELIMITER = ".";
@@ -62,17 +64,17 @@ public final class NumberText {
     }
 
     /**
-     * Returns whether this instance of a number is of the same {@code Number} subtype as
+     * Determines whether this instance of a number is of the same {@code Number} subtype as
      * the specified one.
      *
      * <p>Example:
      * <pre>
-     * {@code
-     *   NumberText zeroWithDecimal = new NumberText("0.0");
-     *   NumberText plainZero = new NumberText("0");
+     *     {@code
+     *     NumberText zeroWithDecimal = new NumberText("0.0");
+     *     NumberText plainZero = new NumberText("0");
      *
-     *   zeroWithDecimal.isOfSameType(plainZero); // false
-     * }
+     *     zeroWithDecimal.isOfSameType(plainZero); // false
+     *     }
      *  </pre>
      * the above code is false, since {@code zeroWithDecimal} describes a number that has a decimal
      * part, be it a {@code Double} or a {@code Float}, while {@code plainZero} describes an
@@ -87,31 +89,26 @@ public final class NumberText {
         return classOfThisNumber.equals(classOfAnotherNumber);
     }
 
-    private static Number parseNumber(String text) {
-        ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
-        hasOnlyWholeAndDecimal(wholeAndDecimal);
-        if (hasDecimalPart(text)) {
-            return Double.parseDouble(text);
-        }
-        if (fitsIntoInteger(text)) {
-            return Integer.parseInt(text);
-        } else {
-            return Long.parseLong(text);
-        }
+    /**
+     * Converts current number {@code value} to a {@code ComparableNumber}.
+     */
+    public ComparableNumber toNumber() {
+        return new ComparableNumber(this.value);
     }
 
-    private static boolean hasDecimalPart(String text) {
-        ImmutableList<String> wholeAndDecimal =
-                ImmutableList.copyOf(DECIMAL_SPLIT.split(text));
+    private static Number parseNumber(String text) {
+        List<String> wholeAndDecimal = DECIMAL_SPLIT.splitToList(text);
+        hasOnlyWholeAndDecimal(wholeAndDecimal);
+        if (hasDecimalPart(wholeAndDecimal)) {
+            return Double.parseDouble(text);
+        }
+        return Long.parseLong(text);
+    }
+
+    private static boolean hasDecimalPart(List<String> wholeAndDecimal) {
         boolean hasOnlyWhole = wholeAndDecimal.size() <= 1;
         return !hasOnlyWhole && !wholeAndDecimal.get(1)
                                                 .isEmpty();
-    }
-
-    private static boolean fitsIntoInteger(String text) {
-        long number = Long.parseLong(text);
-        return Integer.MAX_VALUE >= number;
     }
 
     private static void hasOnlyWholeAndDecimal(Collection<String> wholeAndDecimal)
@@ -120,10 +117,6 @@ public final class NumberText {
             String malformedNumber = String.join("", wholeAndDecimal);
             throw newIllegalStateException("Found malformed number: %s.", malformedNumber);
         }
-    }
-
-    public ComparableNumber toNumber() {
-        return new ComparableNumber(this.value);
     }
 
     @Override
