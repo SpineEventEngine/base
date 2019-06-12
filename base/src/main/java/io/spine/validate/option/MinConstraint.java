@@ -32,7 +32,7 @@ import io.spine.validate.NumberText;
  * greater than (or equal to, if specified by the value of the respective option) a min value.
  */
 @Immutable
-final class MinConstraint<@ImmutableTypeParameter V extends Number & Comparable>
+final class MinConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends RangedConstraint<V, MinOption> {
 
     MinConstraint(MinOption optionValue) {

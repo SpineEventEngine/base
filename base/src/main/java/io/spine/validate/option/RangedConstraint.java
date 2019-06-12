@@ -49,7 +49,7 @@ import static java.lang.String.format;
  *         value of the option
  */
 @Immutable
-abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Comparable,
+abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>,
                                 @ImmutableTypeParameter T>
         extends NumericFieldConstraint<V, T> {
 
@@ -88,7 +88,7 @@ abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Compa
     private void checkBoundaryAndValue(NumberText boundary, FieldValue<V> value) {
         ComparableNumber boundaryNumber = boundary.toNumber();
         V valueNumber = value.singleValue();
-        if (!NumberConversionChecker.canConvert(boundaryNumber, valueNumber)) {
+        if (!NumberConversionChecker.check(boundaryNumber, valueNumber)) {
             String errorMessage =
                     "Boundary values must have types consistent with values they bind: " +
                             "boundary %s, value %s";
