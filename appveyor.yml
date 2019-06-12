@@ -1,0 +1,30 @@
+version: "{branch} {build}"
+
+build:
+  verbosity: detailed
+
+# Ensure `config` sub-module is initialized
+before_build:
+  - git submodule update --init --recursive
+
+build_script:
+  - gradlew build --stacktrace
+  - cd tools/smoke-tests
+  - gradlew build --stacktrace
+  - cd ../..
+
+test_script:
+  - gradlew check --stacktrace
+  - cd tools/smoke-tests
+  - gradlew check --stacktrace
+  - cd ../..
+
+cache:
+  - C:\Users\appveyor\.gradle
+
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+
+matrix:
+  fast_finish: true
