@@ -33,7 +33,7 @@ import io.spine.validate.FieldValue;
  *         numeric value type that this option is applied to
  */
 @Immutable
-final class Max<@ImmutableTypeParameter V extends Number & Comparable>
+final class Max<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends FieldValidatingOption<MaxOption, V> {
 
     private Max() {
@@ -41,7 +41,7 @@ final class Max<@ImmutableTypeParameter V extends Number & Comparable>
     }
 
     /** Returns a new instance of this option. */
-    static <@ImmutableTypeParameter V extends Number & Comparable> Max<V> create() {
+    static <@ImmutableTypeParameter V extends Number & Comparable<V>> Max<V> create() {
         return new Max<>();
     }
 

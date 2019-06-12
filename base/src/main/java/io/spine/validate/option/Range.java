@@ -32,7 +32,7 @@ import io.spine.validate.FieldValue;
  *         a value that this option is applied to
  */
 @Immutable
-final class Range<@ImmutableTypeParameter V extends Number & Comparable>
+final class Range<@ImmutableTypeParameter V extends Number & Comparable<V>>
         extends FieldValidatingOption<String, V> {
 
     private Range() {
@@ -40,7 +40,7 @@ final class Range<@ImmutableTypeParameter V extends Number & Comparable>
     }
 
     /** Creates a new instance of this option. */
-    static <@ImmutableTypeParameter V extends Number & Comparable> Range<V> create() {
+    static <@ImmutableTypeParameter V extends Number & Comparable<V>> Range<V> create() {
         return new Range<>();
     }
 
