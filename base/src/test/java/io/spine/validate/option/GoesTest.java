@@ -24,7 +24,6 @@ import com.google.protobuf.util.Timestamps;
 import io.spine.test.validate.Payment;
 import io.spine.test.validate.PaymentId;
 import io.spine.validate.MessageValidatorTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +43,6 @@ final class GoesTest extends MessageValidatorTest {
         assertValid(msg);
     }
 
-    @Disabled
     @DisplayName("(goes).with fields should be filled simultaneously")
     @Test
     void findOutThatGoesWithFieldsShouldBeFilledSimultaneously() {

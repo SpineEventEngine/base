@@ -71,7 +71,13 @@ public class MessageValidator {
         validateAlternativeFields();
         validateOneofFields();
         validateFields();
+        validateGoesWithFields();
         return result.build();
+    }
+
+    private void validateGoesWithFields() {
+        GoesWithValidator goesWithValidator = new GoesWithValidator(message);
+        result.addAll(goesWithValidator.validate());
     }
 
     private void validateAlternativeFields() {
@@ -84,7 +90,6 @@ public class MessageValidator {
      *
      * <p>{@code Oneof} fields are validated {@linkplain #validateOneofFields()
      * separately}.
-     *
      */
     private void validateFields() {
         for (FieldValue value : message.fieldsExceptOneofs()) {
@@ -96,7 +101,6 @@ public class MessageValidator {
 
     /**
      * Validates every {@code Oneof} declaration in the message.
-     *
      */
     private void validateOneofFields() {
         List<OneofDescriptor> oneofDescriptors = message.oneofDescriptors();
