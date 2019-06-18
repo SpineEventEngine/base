@@ -34,7 +34,7 @@ import java.util.Set;
  * <p>Creates options:
  * <ul>
  *     <li>{@code (pattern)} for {@code string} fields;
- *     <li>{@code (max)}, {@code (min)}, {@code (range)}, and {@code (digits)} for number fields.
+ *     <li>{@code (max)}, {@code (min)}, and {@code (range)} for number fields.
  * </ul>
  */
 @AutoService(ValidatingOptionFactory.class)
@@ -45,13 +45,13 @@ public final class PrimitiveValidatingOptionFactory implements ValidatingOptionF
     private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());
     private static final ImmutableSet<FieldValidatingOption<?, Integer>> INT_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+            ImmutableSet.of(Max.create(), Min.create(), Range.create());
     private static final ImmutableSet<FieldValidatingOption<?, Long>> LONG_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+            ImmutableSet.of(Max.create(), Min.create(), Range.create());
     private static final ImmutableSet<FieldValidatingOption<?, Float>> FLOAT_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+            ImmutableSet.of(Max.create(), Min.create(), Range.create());
     private static final ImmutableSet<FieldValidatingOption<?, Double>> DOUBLE_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create(), Digits.create());
+            ImmutableSet.of(Max.create(), Min.create(), Range.create());
 
     @Override
     public Set<FieldValidatingOption<?, String>> forString() {

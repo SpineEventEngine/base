@@ -36,6 +36,6 @@ final class ExternalConstraintsTest {
     void updateRulesFromTypes() {
         MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
         ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
-        assertThat(ExternalConstraints.all()).hasSize(5);
+        assertThat(ExternalConstraints.all()).hasSize(4);
     }
 }

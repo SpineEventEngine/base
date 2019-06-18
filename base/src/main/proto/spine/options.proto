@@ -112,8 +112,7 @@ extend google.protobuf.FieldOptions {
     // A lower boundary to the range of values of a number.
     MinOption min = 73817;
 
-    // See `DigitsOption`.
-    DigitsOption digits = 73818;
+    // 73818 reserved for the (digits) option.
 
     // 73819 reserved for the (when) option.
 
@@ -560,45 +559,6 @@ message MaxOption {
     // The default value is false, i.e. the bound is inclusive.
     //
     bool exclusive = 2;
-
-    // A user-defined validation error format message.
-    string msg_format = 3;
-}
-
-// The field value must be a number with the certain integral/fractional digit count.
-//
-// Is applicable only to numbers.
-// Repeated fields are supported.
-// This option is considered as not set if either `integer_max` or `fraction_max` parameter is not
-// set (is zero).
-//
-// Example: Using the `(digits) constraint.
-//
-//     message Measurement {
-//         double value = 1 [(digits).integer_max = 2, (digits).fraction_max = 2];
-//     }
-//
-message DigitsOption {
-
-    // The default error message format string.
-    //
-    // The format parameters are:
-    //   1) max integral digit count;
-    //   2) max fractional digit count;
-    //
-    option (default_message) = "Number value is out of bounds, expected: <%s max digits>.<%s max digits>.";
-
-    // Maximum count of integral digits of the number (inclusive).
-    //
-    // Must be greater than zero.
-    //
-    uint32 integer_max = 1;
-
-    // Maximum count of fractional digits of the number (inclusive).
-    //
-    // Must be greater than or equal to zero.
-    //
-    uint32 fraction_max = 2;
 
     // A user-defined validation error format message.
     string msg_format = 3;
