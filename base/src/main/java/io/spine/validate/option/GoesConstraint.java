@@ -21,6 +21,7 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
+@Immutable
 public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
 
     private final MessageValue messageValue;
