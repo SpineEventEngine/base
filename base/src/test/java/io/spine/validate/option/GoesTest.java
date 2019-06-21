@@ -22,9 +22,12 @@ package io.spine.validate.option;
 
 import com.google.protobuf.util.Timestamps;
 import io.spine.test.validate.Payment;
+import io.spine.test.validate.PaymentData;
 import io.spine.test.validate.PaymentId;
+import io.spine.test.validate.PaymentWithExternalConstraint;
 import io.spine.test.validate.WithFieldNotFound;
 import io.spine.validate.MessageValidatorTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -86,6 +89,27 @@ final class GoesTest extends MessageValidatorTest {
                 .newBuilder()
                 .setId(newUuid())
                 .setCredits(1444L)
+                .build();
+        assertNotValid(msg);
+    }
+
+    //TODO:2019-06-21:savik: add support for external constraints
+    @Disabled("(goes).with does not support external constraints.")
+    @DisplayName("(goes).with is set as external constraint")
+    @Test
+    void findOutThatGoesWithIsSetAsExternalConstraint() {
+        PaymentId id = PaymentId
+                .newBuilder()
+                .setUuid(newUuid())
+                .build();
+        PaymentData data = PaymentData
+                .newBuilder()
+                .setTimestamp(Timestamps.MAX_VALUE)
+                .build();
+        PaymentWithExternalConstraint msg = PaymentWithExternalConstraint
+                .newBuilder()
+                .setId(id)
+                .setData(data)
                 .build();
         assertNotValid(msg);
     }

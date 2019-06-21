@@ -55,3 +55,23 @@ message WithFieldNotFound {
 
     int64 credits = 2 [(goes).with = "user_id"];
 }
+
+message PaymentData {
+
+    string description = 1;
+
+    google.protobuf.Timestamp timestamp = 2;
+}
+
+message PaymentWithExternalConstraint {
+
+    PaymentId id = 1;
+
+    PaymentData data = 2 [(validate) = true];
+}
+
+message PaymentDataExternalConstraint {
+    option (constraint_for) = "spine.test.validation.PaymentWithExternalConstraint.data";
+
+    google.protobuf.Timestamp timestamp = 1 [(goes).with = "description"];
+}
