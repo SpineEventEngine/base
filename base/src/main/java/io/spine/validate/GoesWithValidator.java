@@ -35,10 +35,16 @@ final class GoesWithValidator {
 
     private final MessageValue messageValue;
 
-    GoesWithValidator(MessageValue value) {
-        messageValue = checkNotNull(value);
+    /**
+     * Creates a {@code (goes)} option validator for the supplied Protobuf message.
+     */
+    GoesWithValidator(MessageValue messageValue) {
+        this.messageValue = checkNotNull(messageValue);
     }
 
+    /**
+     * Validates fields of the messages against {@code (goes)} validation option.
+     */
     @SuppressWarnings({"unchecked", "Immutable"}) // types are effectively immutable and type-safe
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();

@@ -28,9 +28,15 @@ import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
 import io.spine.validate.MessageValue;
 
+/**
+ * An option that defines field bond to another field within the message.
+ *
+ * @param <F>
+ *         type of field that this option is applied to
+ */
 @Immutable
-public final class Goes<@ImmutableTypeParameter T>
-        extends FieldValidatingOption<GoesOption, T> implements Logging {
+public final class Goes<@ImmutableTypeParameter F>
+        extends FieldValidatingOption<GoesOption, F> implements Logging {
 
     private final MessageValue messageValue;
 
@@ -44,7 +50,7 @@ public final class Goes<@ImmutableTypeParameter T>
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> value) {
+    public Constraint<FieldValue<F>> constraintFor(FieldValue<F> value) {
         return new GoesConstraint<>(messageValue, optionValue(value));
     }
 }

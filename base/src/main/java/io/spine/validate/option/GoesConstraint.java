@@ -35,15 +35,24 @@ import java.util.Optional;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
+/**
+ * A constraint which checks whether a field is set only if the specific related field is also set.
+ *
+ * @param <T>
+ *         type of the field value being checked
+ */
 @Immutable
 public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
 
     private final MessageValue messageValue;
     private final GoesOption option;
 
-    public GoesConstraint(MessageValue messageValue, GoesOption optionValue) {
+    /**
+     * Creates a constraint for the supplied {@code message} with a specified {@code goes} option.
+     */
+    GoesConstraint(MessageValue messageValue, GoesOption option) {
         this.messageValue = messageValue;
-        option = optionValue;
+        this.option = option;
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
