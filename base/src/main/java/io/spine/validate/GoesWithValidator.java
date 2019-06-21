@@ -39,7 +39,7 @@ final class GoesWithValidator {
         messageValue = checkNotNull(value);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Immutable"}) // types are effectively immutable and type-safe
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
         Goes<?> goesFieldOption = Goes.create(messageValue);
