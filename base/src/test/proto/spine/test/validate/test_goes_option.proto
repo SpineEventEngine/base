@@ -47,3 +47,11 @@ message PaymentId {
 
     string uuid = 1;
 }
+
+
+message WithFieldNotFound {
+
+    string id = 1;
+
+    int64 credits = 2 [(goes).with = "user_id"];
+}

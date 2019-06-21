@@ -23,6 +23,7 @@ package io.spine.validate.option;
 import com.google.protobuf.util.Timestamps;
 import io.spine.test.validate.Payment;
 import io.spine.test.validate.PaymentId;
+import io.spine.test.validate.WithFieldNotFound;
 import io.spine.validate.MessageValidatorTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,12 +31,12 @@ import org.junit.jupiter.api.Test;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (goes) option and")
+@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (goes) option and find out that ")
 final class GoesTest extends MessageValidatorTest {
 
     @DisplayName("(goes).with fields are both optional")
     @Test
-    void findOutThatGoesWithFieldsAreBothOptional() {
+    void goesWithFieldsAreBothOptional() {
         Payment msg = Payment
                 .newBuilder()
                 .setDescription("Scheduled payment")
@@ -43,9 +44,9 @@ final class GoesTest extends MessageValidatorTest {
         assertValid(msg);
     }
 
-    @DisplayName("(goes).with fields should be filled simultaneously")
+    @DisplayName("(goes).with fields are not filled simultaneously")
     @Test
-    void findOutThatGoesWithFieldsShouldBeFilledSimultaneously() {
+    void goesWithFieldsShouldBeFilledSimultaneously() {
         PaymentId id = PaymentId
                 .newBuilder()
                 .setUuid(newUuid())
@@ -65,7 +66,7 @@ final class GoesTest extends MessageValidatorTest {
 
     @DisplayName("(goes).with fields are filled simultaneously")
     @Test
-    void findOutThatGoesWithFieldsAreFilledSimultaneously() {
+    void goesWithFieldsAreFilledSimultaneously() {
         PaymentId id = PaymentId
                 .newBuilder()
                 .setUuid(newUuid())
@@ -76,5 +77,16 @@ final class GoesTest extends MessageValidatorTest {
                 .setTimestamp(Timestamps.MAX_VALUE)
                 .build();
         assertValid(msg);
+    }
+
+    @DisplayName("(goes).with field is not found")
+    @Test
+    void findOutThatGoesWithFieldIsNotFound() {
+        WithFieldNotFound msg = WithFieldNotFound
+                .newBuilder()
+                .setId(newUuid())
+                .setCredits(1444L)
+                .build();
+        assertNotValid(msg);
     }
 }
