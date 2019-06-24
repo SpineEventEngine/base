@@ -53,7 +53,6 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
 
     private final CodeGenerationTasks codeGenerationTasks;
 
-    /** Prevents singleton class instantiation. */
     private InterfaceGenerator(ImmutableList<CodeGenerationTask> tasks) {
         super();
         this.codeGenerationTasks = new CodeGenerationTasks(tasks);
@@ -76,21 +75,20 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
     }
 
     /**
-     * {@inheritDoc}
+     * Makes a generated message class implement an interface according to specified proto options.
      *
-     * <p>The {@code MessageInterfaceGenerator} implementation performs the message processing
-     * as follows:
+     * <p>The method processes the passed message type as follows:
      * <ol>
-     *     <li>Checks the message declaration matches any built-in interface contract. If it does,
+     *     <li>If the message declaration matches any built-in interface contract,
      *         the message insertion point with the appropriate interface name is generated.
-     *     <li>Checks the message has {@code (is)} option. If it does, the interface name is
+     *     <li>If the message has {@code (is)} option, the interface name is
      *         extracted from it and both the interface and the message insertion point are
      *         generated.
-     *     <li>Checks the message file has {@code (every_is)} option. If it does, the interface
-     *         name is extracted from it and both the interface and the message insertion point are
-     *         generated.
-     *     <li>Otherwise, no compiler response is generated for this message type.
+     *     <li>If the file where the message is declared has the {@code (every_is)} option,
+     *         the interface name is extracted from this option and both the interface and
+     *         the message insertion point are generated.
      * </ol>
+     * Otherwise, no compiler response is generated for this message type.
      */
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
