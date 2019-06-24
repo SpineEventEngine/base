@@ -173,7 +173,7 @@ public abstract class FieldValidator<V> implements Logging {
     private List<ConstraintViolation> optionViolations() {
         List<ConstraintViolation> violations =
                 fieldValidatingOptions.stream()
-                                      .filter(option -> option.shouldValidate(descriptor()))
+                                      .filter(option -> option.shouldValidate(value))
                                       .map(option -> option.constraintFor(value))
                                       .map(constraint -> constraint.check(value))
                                       .flatMap(List::stream)

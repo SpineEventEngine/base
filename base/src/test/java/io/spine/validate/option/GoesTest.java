@@ -27,7 +27,6 @@ import io.spine.test.validate.PaymentId;
 import io.spine.test.validate.PaymentWithExternalConstraint;
 import io.spine.test.validate.WithFieldNotFound;
 import io.spine.validate.MessageValidatorTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -93,8 +92,6 @@ final class GoesTest extends MessageValidatorTest {
         assertNotValid(msg);
     }
 
-    //TODO:2019-06-21:savik: add support for external constraints
-    @Disabled("(goes).with does not support external constraints.")
     @DisplayName("(goes).with is set as external constraint")
     @Test
     void findOutThatGoesWithIsSetAsExternalConstraint() {

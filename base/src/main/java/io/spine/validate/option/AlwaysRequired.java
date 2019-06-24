@@ -22,7 +22,7 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.validate.FieldValue;
 
 /**
  * A special case of {@code Required} option that assumes that the option is present regardless
@@ -45,11 +45,12 @@ final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
      * {@inheritDoc}
      *
      * <p>For {@code AlwaysRequired}, validation happens every time.
+     *
      * @param value
      */
     @Override
-    public boolean shouldValidate(FieldDescriptor value) {
-        checkUsage(value);
+    public boolean shouldValidate(FieldValue<T> value) {
+        checkUsage(value.descriptor());
         return true;
     }
 }

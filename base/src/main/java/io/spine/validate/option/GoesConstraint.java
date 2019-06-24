@@ -59,7 +59,7 @@ public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<Fie
     public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
         ImmutableList<ConstraintViolation> result = getWithField(messageValue, option)
                 .map(withField -> {
-                    if (!value.isDefault() && withFieldIsNotSet(withField)) {
+                    if (!value.isDefault() && fieldValueNotSet(withField)) {
                         ConstraintViolation withFieldNotSet = withFieldNotSetViolation(value);
                         return ImmutableList.of(withFieldNotSet);
                     }
@@ -72,9 +72,9 @@ public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<Fie
         return result;
     }
 
-    private boolean withFieldIsNotSet(FieldDeclaration withField) {
+    private boolean fieldValueNotSet(FieldDeclaration field) {
         return messageValue
-                .valueOf(withField.descriptor())
+                .valueOf(field.descriptor())
                 .map(FieldValue::isDefault)
                 .orElse(false);
     }
