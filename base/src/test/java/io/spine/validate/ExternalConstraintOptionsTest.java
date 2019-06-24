@@ -53,7 +53,6 @@ final class ExternalConstraintOptionsTest {
     @DisplayName("return empty for field without options")
     @Test
     void returnEmptyForNonExistingRuleOptions() {
-
         FieldContext targetContext = FieldContext.create(AMessage.getDescriptor()
                                                                  .getFields()
                                                                  .get(0));
@@ -62,5 +61,18 @@ final class ExternalConstraintOptionsTest {
                                                          .get(3);
         FieldContext context = targetContext.forChild(addressField);
         assertThat(getOptionValue(context, OptionsProto.required)).isEmpty();
+    }
+
+    @DisplayName("not return `default` option value if the option is not present while the field context does match")
+    @Test
+    void notReturnOptionIfItIsNotPresentButContextMatch() {
+        FieldContext targetContext = FieldContext.create(AMessage.getDescriptor()
+                                                                 .getFields()
+                                                                 .get(0));
+        Descriptors.FieldDescriptor nameField = AField.getDescriptor()
+                                                      .getFields()
+                                                      .get(0);
+        FieldContext context = targetContext.forChild(nameField);
+        assertThat(getOptionValue(context, OptionsProto.goes)).isEmpty();
     }
 }
