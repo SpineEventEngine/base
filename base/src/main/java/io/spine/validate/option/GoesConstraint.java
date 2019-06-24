@@ -35,56 +35,74 @@ import java.util.Optional;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
+/**
+ * A constraint which checks whether a field is set only if the specific related field is also set.
+ *
+ * @param <T>
+ *         type of the field value being checked
+ */
 @Immutable
 public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
 
     private final MessageValue messageValue;
     private final GoesOption option;
 
-    public GoesConstraint(MessageValue messageValue, GoesOption optionValue) {
+    /**
+     * Creates a constraint for the supplied {@code message} with a specified {@code goes} option.
+     */
+    GoesConstraint(MessageValue messageValue, GoesOption option) {
         this.messageValue = messageValue;
-        option = optionValue;
+        this.option = option;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
-        ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Optional<FieldDeclaration> withField = getWithField(messageValue, option);
-        if (!withField.isPresent()) {
-            ConstraintViolation fieldNotFound = ConstraintViolation
-                    .newBuilder()
-                    .setMsgFormat("Field named `%s` is not found.")
-                    .addParam(option.getWith())
-                    .setFieldPath(value.context()
-                                       .fieldPath())
-                    .setFieldValue(toAny(value.singleValue()))
-                    .build();
-            violations.add(fieldNotFound);
-        } else {
-            FieldDeclaration declaration = withField.get();
-            Optional<FieldValue<?>> withFieldValue = messageValue.valueOf(declaration.descriptor());
-            if (withFieldValue.isPresent()
-                    && withFieldValue.get()
-                                     .isDefault()
-                    && !value.isDefault()) {
+        ImmutableList<ConstraintViolation> result = getWithField(messageValue, option)
+                .map(withField -> {
+                    if (!value.isDefault() && withFieldIsNotSet(withField)) {
+                        ConstraintViolation withFieldNotSet = withFieldNotSetViolation(value);
+                        return ImmutableList.of(withFieldNotSet);
+                    }
+                    return ImmutableList.<ConstraintViolation>of();
+                })
+                .orElseGet(() -> {
+                    ConstraintViolation fieldNotFound = fieldNotFoundViolation(value);
+                    return ImmutableList.of(fieldNotFound);
+                });
+        return result;
+    }
 
-                String msgFormat = errorMsgFormat(option, option.getMsgFormat());
-                ConstraintViolation withFieldNotSet = ConstraintViolation
-                        .newBuilder()
-                        .setMsgFormat(msgFormat)
-                        .addParam(value.declaration()
-                                       .name()
-                                       .value())
-                        .addParam(option.getWith())
-                        .setFieldPath(value.context()
-                                           .fieldPath())
-                        .setFieldValue(toAny(value.singleValue()))
-                        .build();
-                violations.add(withFieldNotSet);
-            }
-        }
-        return violations.build();
+    private boolean withFieldIsNotSet(FieldDeclaration withField) {
+        return messageValue
+                .valueOf(withField.descriptor())
+                .map(FieldValue::isDefault)
+                .orElse(false);
+    }
+
+    private ConstraintViolation withFieldNotSetViolation(FieldValue<T> value) {
+        String msgFormat = errorMsgFormat(option, option.getMsgFormat());
+        return ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msgFormat)
+                .addParam(value.declaration()
+                               .name()
+                               .value())
+                .addParam(option.getWith())
+                .setFieldPath(value.context()
+                                   .fieldPath())
+                .setFieldValue(toAny(value.singleValue()))
+                .build();
+    }
+
+    private ConstraintViolation fieldNotFoundViolation(FieldValue<T> value) {
+        return ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Field `%s` noted in `(goes).with` option is not found.")
+                .addParam(option.getWith())
+                .setFieldPath(value.context()
+                                   .fieldPath())
+                .setFieldValue(toAny(value.singleValue()))
+                .build();
     }
 
     private static Optional<FieldDeclaration>
