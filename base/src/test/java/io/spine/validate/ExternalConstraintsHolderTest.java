@@ -21,10 +21,12 @@
 package io.spine.validate;
 
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
+@DisplayName("ExternalConstraints$Holder should")
 final class ExternalConstraintsHolderTest extends UtilityClassTest<ExternalConstraints.Holder> {
 
-    ExternalConstraintsHolderTest() {
+    private ExternalConstraintsHolderTest() {
         super(ExternalConstraints.Holder.class);
     }
 }
