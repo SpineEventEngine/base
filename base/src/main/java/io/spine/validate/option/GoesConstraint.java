@@ -32,6 +32,7 @@ import io.spine.validate.MessageValue;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
@@ -57,6 +58,7 @@ public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<Fie
 
     @Override
     public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
+        checkNotNull(value);
         ImmutableList<ConstraintViolation> result = getWithField(messageValue, option)
                 .map(withField -> {
                     if (!value.isDefault() && fieldValueNotSet(withField)) {
