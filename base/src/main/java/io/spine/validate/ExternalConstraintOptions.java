@@ -92,7 +92,7 @@ public final class ExternalConstraintOptions implements Serializable {
      *         triggered whenever {@link ExternalConstraints} are updated.
      */
     @Internal
-    static class Holder {
+    static final class Holder {
 
         private static final Logger log = Logging.get(Holder.class);
 
