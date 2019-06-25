@@ -52,7 +52,8 @@ message ATestMessageWithExternalConstraintOnly {
 }
 
 message ATestMessageConstraint {
-    option (constraint_for) = "spine.test.validation.option.ATestMessageWithConstraint.message," "spine.test.validation.option.ATestMessageWithExternalConstraintOnly.message";
+    option (constraint_for) = "spine.test.validation.option.ATestMessageWithConstraint.message,"
+                              "spine.test.validation.option.ATestMessageWithExternalConstraintOnly.message";
 
     string value = 1 [(max_length) = 5];
 }
