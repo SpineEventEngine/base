@@ -27,7 +27,7 @@ import io.spine.validate.option.Goes;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Validates fields with specified {@code (goes)} option.
+ * Validates the fields with specified {@code (goes)} option.
  *
  * <p>See definition of {@code MessageOptions.goes} in {@code options.proto}.
  */
@@ -43,7 +43,7 @@ final class GoesWithValidator {
     }
 
     /**
-     * Validates fields of the messages against {@code (goes)} validation option.
+     * Validates the fields of the message against {@code (goes)} validation option.
      */
     @SuppressWarnings({"unchecked", "Immutable"}) // types are effectively immutable and type-safe
     ImmutableList<ConstraintViolation> validate() {
