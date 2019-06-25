@@ -18,39 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.option;
+package io.spine.validate;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.validate.FieldValue;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-/**
- * A special case of {@code Required} option that assumes that the option is present regardless
- * of the actual field declaration.
- *
- * @param <T>
- *         type of value that this option is applied to
- */
-@Immutable
-final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
+@DisplayName("ExternalConstraints.Holder should")
+final class ExternalConstraintsHolderTest extends UtilityClassTest<ExternalConstraints.Holder> {
 
-    /**
-     * Creates a new instance of this option.
-     */
-    AlwaysRequired() {
-        super();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>For {@code AlwaysRequired}, validation happens every time.
-     *
-     * @param value
-     */
-    @Override
-    public boolean shouldValidate(FieldValue<T> value) {
-        checkUsage(value.descriptor());
-        return true;
+    private ExternalConstraintsHolderTest() {
+        super(ExternalConstraints.Holder.class);
     }
 }

@@ -81,8 +81,8 @@ public class Required<@ImmutableTypeParameter T>
     }
 
     @Override
-    public boolean shouldValidate(FieldDescriptor value) {
-        return notAssumingRequired(value);
+    public boolean shouldValidate(FieldValue<T> value) {
+        return notAssumingRequired(value.descriptor());
     }
 
     /**

@@ -75,8 +75,8 @@ public final class ExternalConstraintOptions implements Serializable {
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
         ImmutableMap<FieldContext, FieldOptions> options = Holder.instance.options;
         for (FieldContext context : options.keySet()) {
-            if (fieldContext.hasSameTargetAndParent(context)) {
-                FieldOptions fieldOptions = options.get(context);
+            FieldOptions fieldOptions = options.get(context);
+            if (fieldContext.hasSameTargetAndParent(context) && fieldOptions.hasExtension(option)) {
                 T optionValue = fieldOptions.getExtension(option);
                 // A option is set explicitly if it was found in external constraints.
                 return Optional.of(optionValue);
@@ -92,7 +92,7 @@ public final class ExternalConstraintOptions implements Serializable {
      *         triggered whenever {@link ExternalConstraints} are updated.
      */
     @Internal
-    static class Holder {
+    static final class Holder {
 
         private static final Logger log = Logging.get(Holder.class);
 
