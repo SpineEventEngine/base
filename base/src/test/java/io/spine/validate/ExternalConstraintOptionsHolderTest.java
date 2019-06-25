@@ -23,7 +23,7 @@ package io.spine.validate;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 
-@DisplayName("ExternalConstraintOptions$Holder should")
+@DisplayName("ExternalConstraintOptions.Holder should")
 final class ExternalConstraintOptionsHolderTest
         extends UtilityClassTest<ExternalConstraintOptions.Holder> {
 
