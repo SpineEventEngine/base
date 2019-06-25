@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Validates fields with specified {@code (goes)} option.
  *
- * See definition of {@code MessageOptions.goes} in {@code options.proto}.
+ * <p>See definition of {@code MessageOptions.goes} in {@code options.proto}.
  */
 final class GoesWithValidator {
 
