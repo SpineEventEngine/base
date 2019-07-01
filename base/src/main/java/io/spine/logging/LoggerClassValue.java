@@ -55,7 +55,7 @@ class LoggerClassValue extends ClassValue<Logger> {
 
     private LoggerClassValue() {
         super();
-        this.substFactory = Environment.getInstance()
+        this.substFactory = Environment.instance()
                                        .isTests()
                             ? new SubstituteLoggerFactory()
                             : null;

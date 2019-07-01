@@ -46,15 +46,26 @@ public final class Environment {
     private @Nullable Boolean tests;
 
     /** Prevents instantiation of this singleton class from outside. */
-    private Environment() {}
+    private Environment() {
+    }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
         this.tests = copy.tests;
     }
 
-    /** Returns the singleton instance. */
+    /**
+     * Returns the singleton instance.
+     * 
+     * @deprecated please use {@link #instance()}.
+     */
+    @Deprecated
     public static Environment getInstance() {
+        return instance();
+    }
+
+    /** Returns the singleton instance. */
+    public static Environment instance() {
         return INSTANCE;
     }
 

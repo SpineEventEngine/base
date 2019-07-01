@@ -53,14 +53,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @BeforeAll
     static void storeEnvironment() {
-        storedEnvironment = Environment.getInstance()
+        storedEnvironment = Environment.instance()
                                        .createCopy();
     }
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @AfterAll
     static void restoreEnvironment() {
-        Environment.getInstance()
+        Environment.instance()
                    .restoreFrom(storedEnvironment);
     }
 
@@ -68,19 +68,19 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @BeforeEach
     void setUp() {
-        environment = Environment.getInstance();
+        environment = Environment.instance();
     }
 
     @AfterEach
     void cleanUp() {
-        Environment.getInstance()
+        Environment.instance()
                    .reset();
     }
 
     @Test
     @DisplayName("tell that we are under tests if env. variable set to true")
     void environmentVarTrue() {
-        Environment.getInstance()
+        Environment.instance()
                    .setToTests();
 
         assertTrue(environment.isTests());
