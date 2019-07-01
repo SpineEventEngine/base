@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos;
@@ -133,7 +134,9 @@ public final class ExternalConstraints implements Serializable {
     /**
      * A holder of the {@link ExternalConstraints} instance.
      */
-    private static class Holder {
+    @VisibleForTesting
+    @Internal
+    static final class Holder {
 
         private static final Logger log = Logging.get(Holder.class);
 

@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Validates that one of the fields defined by the {@code required_field} option is present.
  *
- * See definition of {@code MessageOptions.required_field} in {@code options.proto}.
+ * <p>See definition of {@code MessageOptions.required_field} in {@code options.proto}.
  */
 final class AlternativeFieldValidator implements Logging {
 

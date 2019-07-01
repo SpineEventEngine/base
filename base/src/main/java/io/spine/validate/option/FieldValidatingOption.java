@@ -115,12 +115,15 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
     }
 
     /**
-     * Returns {@code true} if this option exists for the specified field, {@code false} otherwise.
+     * Returns {@code true} if this option exists for the specified field value,
+     * {@code false} otherwise.
      *
-     * @param field
-     *         the type of the field
+     * @param value
+     *         the value to be validated
      */
-    public boolean shouldValidate(FieldDescriptor field) {
-        return valueFrom(field).isPresent();
+    public boolean shouldValidate(FieldValue<F> value) {
+        Optional<T> externalConstraint =
+                ExternalConstraintOptions.getOptionValue(value.context(), extension());
+        return externalConstraint.isPresent() || valueFrom(value.descriptor()).isPresent();
     }
 }

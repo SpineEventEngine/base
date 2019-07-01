@@ -22,35 +22,35 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.logging.Logging;
+import io.spine.option.GoesOption;
+import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
+import io.spine.validate.MessageValue;
 
 /**
- * A special case of {@code Required} option that assumes that the option is present regardless
- * of the actual field declaration.
+ * An option that defines field bond to another field within the message.
  *
- * @param <T>
- *         type of value that this option is applied to
+ * @param <F>
+ *         type of field that this option is applied to
  */
 @Immutable
-final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
+public final class Goes<@ImmutableTypeParameter F>
+        extends FieldValidatingOption<GoesOption, F> implements Logging {
 
-    /**
-     * Creates a new instance of this option.
-     */
-    AlwaysRequired() {
-        super();
+    private final MessageValue messageValue;
+
+    private Goes(MessageValue messageValue) {
+        super(OptionsProto.goes);
+        this.messageValue = messageValue;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>For {@code AlwaysRequired}, validation happens every time.
-     *
-     * @param value
-     */
+    public static <@ImmutableTypeParameter T> Goes<T> create(MessageValue messageValue) {
+        return new Goes<>(messageValue);
+    }
+
     @Override
-    public boolean shouldValidate(FieldValue<T> value) {
-        checkUsage(value.descriptor());
-        return true;
+    public Constraint<FieldValue<F>> constraintFor(FieldValue<F> value) {
+        return new GoesConstraint<>(messageValue, optionValue(value));
     }
 }

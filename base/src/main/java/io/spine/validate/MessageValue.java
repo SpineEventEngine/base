@@ -91,7 +91,7 @@ public final class MessageValue {
         ImmutableList<FieldValue<?>> values = descriptor.getFields()
                                                         .stream()
                                                         .filter(MessageValue::isNotOneof)
-                                                        .map(this::valueOf)
+                                                        .map(this::valueOfField)
                                                         .collect(toImmutableList());
         return values;
     }
@@ -106,7 +106,19 @@ public final class MessageValue {
      */
     public Optional<FieldValue<?>> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
-        return valueOfNullable(field);
+        return valueOf(field);
+    }
+
+    /**
+     * Obtains the value of the field with the specified field descriptor.
+     *
+     * @param fieldDescriptor
+     *         the field descriptor of the field to obtain
+     * @return a value of the field
+     *         or {@code Optional.empty()} if the message doesn't contain the field
+     */
+    public Optional<FieldValue<?>> valueOf(FieldDescriptor fieldDescriptor) {
+        return valueOfNullable(fieldDescriptor);
     }
 
     /**
@@ -139,11 +151,11 @@ public final class MessageValue {
         if (field == null) {
             return Optional.empty();
         }
-        FieldValue<?> fieldValue = valueOf(field);
+        FieldValue<?> fieldValue = valueOfField(field);
         return Optional.of(fieldValue);
     }
 
-    private FieldValue<?> valueOf(FieldDescriptor field) {
+    private FieldValue<?> valueOfField(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
         @SuppressWarnings("Immutable") // field values are immutable
         FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
