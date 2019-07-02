@@ -34,6 +34,10 @@ buildscript { final scriptHandler ->
     forceConfiguration(scriptHandler)
 }
 
+plugins {
+    id "net.ltgt.apt" version "0.21"
+}
+
 apply from: 'version.gradle'
 
 ext {
@@ -41,6 +45,7 @@ ext {
     credentialsPropertyFile = 'credentials.properties'
 
     projectsToPublish = [
+        'guava',
         'base',
         'tool-base',
         'testlib',
@@ -114,6 +119,7 @@ subprojects {
     apply plugin: 'pmd'
     apply plugin: 'com.google.protobuf'
     apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'net.ltgt.apt'
 
     apply plugin: 'maven-publish'
 

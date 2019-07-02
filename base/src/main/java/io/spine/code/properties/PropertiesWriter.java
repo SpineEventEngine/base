@@ -19,7 +19,7 @@
  */
 package io.spine.code.properties;
 
-import com.google.common.io.Files;
+import io.spine.repackaged.com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

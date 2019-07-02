@@ -20,6 +20,8 @@
 
 rootProject.name = 'spine-base'
 
+include 'guava'
+
 include 'base'
 
 include 'testlib'

@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.io.Files.createParentDirs;
+import static io.spine.repackaged.com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**

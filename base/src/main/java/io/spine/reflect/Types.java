@@ -21,8 +21,8 @@
 package io.spine.reflect;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.reflect.TypeParameter;
-import com.google.common.reflect.TypeToken;
+import io.spine.repackaged.com.google.common.reflect.TypeParameter;
+import io.spine.repackaged.com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;

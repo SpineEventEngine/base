@@ -20,7 +20,7 @@
 
 package io.spine.string;
 
-import com.google.common.primitives.Ints;
+import io.spine.repackaged.com.google.common.primitives.Ints;
 
 /**
  * The {@code Stringifier} for the integer values.
@@ -39,6 +39,7 @@ final class IntegerStringifier extends SerializableStringifier<Integer> {
         return INSTANCE;
     }
 
+    @SuppressWarnings("ConstantConditions") // The used converter never returns `null`.
     @Override
     protected String toString(Integer obj) {
         return Ints.stringConverter()
@@ -46,6 +47,7 @@ final class IntegerStringifier extends SerializableStringifier<Integer> {
                    .convert(obj);
     }
 
+    @SuppressWarnings("ConstantConditions") // The used converter never returns `null`.
     @Override
     protected Integer fromString(String s) {
         return Ints.stringConverter()

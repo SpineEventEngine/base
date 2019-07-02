@@ -21,10 +21,10 @@
 package io.spine.string;
 
 import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.spine.repackaged.com.google.common.escape.Escapers;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -229,10 +229,11 @@ public final class Stringifiers {
      */
     static Escaper createEscaper(char charToEscape) {
         String escapedChar = "\\" + charToEscape;
-        Escaper result = Escapers.builder()
-                                 .addEscape('\"', "\\\"")
-                                 .addEscape(charToEscape, escapedChar)
-                                 .build();
+        Escaper result = Escapers
+                .builder()
+                .addEscape('\"', "\\\"")
+                .addEscape(charToEscape, escapedChar)
+                .build();
         return result;
     }
 }

@@ -32,15 +32,21 @@ apply from: deps.scripts.runBuild
 dependencies {
     annotationProcessor deps.build.autoService.processor
     compileOnly deps.build.autoService.annotations
-    
+
+//    annotationProcessor 'com.google.guava:guava-beta-checker:1.0'
+
     // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
     // ErrorProne Annotations is part of our API.
     api deps.build.errorProneAnnotations
+
+    api "io.spine:spine-guava:$spineVersion"
 
     testImplementation deps.test.slf4j
     testImplementation project(path: ":testlib")
     testImplementation project(path: ":mute-logging")
 }
+
+compileJava.dependsOn project(':guava').publishToMavenLocal
 
 sourceSets {
     main {

@@ -22,8 +22,8 @@ package io.spine.string;
 
 import com.google.common.base.Converter;
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.escape.Escaper;
+import io.spine.repackaged.com.google.common.base.Splitter;
 
 import java.util.Map;
 import java.util.regex.Pattern;

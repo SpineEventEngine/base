@@ -20,9 +20,9 @@
 
 package io.spine.base;
 
-import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
+import io.spine.repackaged.com.google.common.reflect.TypeToken;
 import io.spine.string.Stringifier;
 import io.spine.string.StringifierRegistry;
 

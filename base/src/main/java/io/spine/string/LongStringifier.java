@@ -20,7 +20,7 @@
 
 package io.spine.string;
 
-import com.google.common.primitives.Longs;
+import io.spine.repackaged.com.google.common.primitives.Longs;
 
 /**
  * The {@code Stringifier} for the long values.
@@ -39,6 +39,7 @@ final class LongStringifier extends SerializableStringifier<Long> {
         return INSTANCE;
     }
 
+    @SuppressWarnings("ConstantConditions") // The used converter never returns `null`.
     @Override
     protected String toString(Long obj) {
         return Longs.stringConverter()
@@ -46,6 +47,7 @@ final class LongStringifier extends SerializableStringifier<Long> {
                     .convert(obj);
     }
 
+    @SuppressWarnings("ConstantConditions") // The used converter never returns `null`.
     @Override
     protected Long fromString(String s) {
         return Longs.stringConverter()

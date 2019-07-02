@@ -1,0 +1,66 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+}
+
+group = 'io.spine'
+
+apply plugin: 'java'
+
+shadowJar {
+    classifier = null
+
+    relocate('com.google.common', 'io.spine.repackaged.com.google.common') {
+        include 'com.google.common.escape.Escapers*'
+        include 'com.google.common.escape.ArrayBasedCharEscaper'
+        include 'com.google.common.escape.CharEscaper'
+        include 'com.google.common.escape.UnicodeEscaper'
+        include 'com.google.common.reflect.TypeToken*'
+        include 'com.google.common.reflect.Invokable*'
+        include 'com.google.common.reflect.Parameter'
+        include 'com.google.common.reflect.TypeParameter'
+        include 'com.google.common.reflect.TypeResolver*'
+        include 'com.google.common.base.Splitter*'
+        include 'com.google.common.primitives.Longs*'
+        include 'com.google.common.primitives.Ints*'
+        include 'com.google.common.graph.EndpointPair*'
+        include 'com.google.common.graph.Graph'
+        include 'com.google.common.graph.Network'
+        include 'com.google.common.graph.ElementOrder*'
+        include 'com.google.common.graph.PredecessorsFunction'
+        include 'com.google.common.graph.SuccessorsFunction'
+        include 'com.google.common.graph.GraphBuilder'
+        include 'com.google.common.graph.ImmutableGraph*'
+        include 'com.google.common.graph.MutableGraph'
+        include 'com.google.common.graph.Graphs*'
+        include 'com.google.common.graph.MutableNetwork'
+        include 'com.google.common.graph.MutableValueGraph'
+        include 'com.google.common.graph.NetworkBuilder'
+        include 'com.google.common.graph.Traverser*'
+        include 'com.google.common.graph.ValueGraph'
+        include 'com.google.common.graph.ValueGraphBuilder'
+        include 'com.google.common.graph.ImmutableNetwork*'
+        include 'com.google.common.graph.ImmutableValueGraph*'
+        include 'com.google.common.io.Files*'
+        include 'com.google.common.collect.TreeTraverser*'
+        include 'com.google.common.hash.HashCode*'
+        include 'com.google.common.primitives.UnsignedInts*'
+        include 'com.google.common.hash.HashFunction'
+        include 'com.google.common.hash.Funnel'
+        include 'com.google.common.hash.PrimitiveSink'
+        include 'com.google.common.hash.Hasher'
+        include 'com.google.common.io.ByteProcessor'
+        include 'com.google.common.io.Closer*'
+        include 'com.google.common.io.Closeables'
+        include 'com.google.common.io.LineProcessor'
+        include 'com.google.common.collect.Streams*'
+        include 'com.google.common.math.LongMath*'
+        include 'com.google.common.primitives.UnsignedLongs*'
+    }
+}
+
+jar.finalizedBy shadowJar
+
+dependencies {
+    api deps.build.guava
+    api deps.test.guavaTestlib
+}
