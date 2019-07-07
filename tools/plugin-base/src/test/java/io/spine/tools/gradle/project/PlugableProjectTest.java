@@ -29,9 +29,11 @@ import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
@@ -115,6 +117,43 @@ class PlugableProjectTest {
         assertLoggingEvent.hasArgumentsThat()
                           .asList()
                           .containsExactly(plugin.className());
+    }
+
+    @Nested
+    @DisplayName("log if a plugin is applied twice (Flogger)")
+    class LogOnDuplicate {
+
+        private GradlePlugin plugin;
+
+        @BeforeEach
+        void setUp() {
+            plugin = GradlePlugin.implementedIn(JavaPlugin.class);
+            applyPlugin();
+            setupLogger();
+        }
+
+        @AfterEach
+        void restoreLogger() {
+            //TODO:2019-07-07:alexander.yevsyukov: Implement.
+        }
+
+        @Test
+        void appliedTwice() {
+            plugableProject.apply(plugin);
+            assertTrue(plugableProject.isApplied(plugin));
+
+            //TODO:2019-07-07:alexander.yevsyukov: Implement assertions.
+        }
+
+        private void applyPlugin() {
+            assertFalse(plugableProject.isApplied(plugin));
+            plugableProject.apply(plugin);
+            assertTrue(plugableProject.isApplied(plugin));
+        }
+
+        private void setupLogger() {
+            //TODO:2019-07-07:alexander.yevsyukov: Implement
+        }
     }
 
     @Test
