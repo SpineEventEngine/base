@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Queue;
+import java.util.logging.LogRecord;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
@@ -62,5 +63,10 @@ public final class LogTruth {
     /** Creates a subject for the passed logger. */
     public static Subject<DefaultSubject, Object> assertThat(@Nullable FluentLogger actual) {
         return assert_().that(actual);
+    }
+
+    /** Creates a subject for the passed record. */
+    public static LogRecordSubject assertThat(@Nullable LogRecord record) {
+        return assertAbout(LogRecordSubject.records()).that(record);
     }
 }

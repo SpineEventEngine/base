@@ -20,46 +20,47 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.truth.ComparableSubject;
+import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.ObjectArraySubject;
 import com.google.common.truth.StandardSubjectBuilder;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.event.Level;
-import org.slf4j.event.SubstituteLoggingEvent;
+
+import java.util.logging.LogRecord;
 
 /**
- * Propositions for {@link SubstituteLoggingEvent} subjects.
+ * Propositions for {@link LogRecord} subjects.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection") // method names specific to Slf4J
-public class LogEventSubject extends Subject<LogEventSubject, SubstituteLoggingEvent> {
+@SuppressWarnings("DuplicateStringLiteralInspection") // method names specific to Java Logging
+public class LogRecordSubject extends Subject<LogRecordSubject, LogRecord> {
 
-    private LogEventSubject(FailureMetadata metadata, @Nullable SubstituteLoggingEvent actual) {
+    /** Obtains factory for creating log record subjects for actual values. */
+    public static Subject.Factory<LogRecordSubject, LogRecord> records() {
+        return LogRecordSubject::new;
+    }
+
+    private LogRecordSubject(FailureMetadata metadata, @Nullable LogRecord actual) {
         super(metadata, actual);
     }
 
-    /** Returns a {@code StringSubject} to make assertions about the logging event message. */
+    /** Returns a {@code StringSubject} to make assertions about the log record message. */
     public StringSubject hasMessageThat() {
         StandardSubjectBuilder check = check("getMessage()");
         return check.that(actual().getMessage());
     }
 
     /** Obtains subject for the logging level. */
-    public ComparableSubject<?, Level> hasLevelThat() {
+    public Subject<DefaultSubject, Object> hasLevelThat() {
         StandardSubjectBuilder check = check("getLevel()");
-        return check.that(actual().getLevel());
+        Subject<DefaultSubject, Object> that = check.that(actual().getLevel());
+        return that;
     }
 
     /** Obtains subject for the logging event arguments. */
-    public ObjectArraySubject hasArgumentsThat() {
-        StandardSubjectBuilder check = check("getArgumentArray()");
-        return check.that(actual().getArgumentArray());
-    }
-
-    /** Obtains factory for creating logging event subjects for actual values. */
-    public static Subject.Factory<LogEventSubject, SubstituteLoggingEvent> events() {
-        return (LogEventSubject::new);
+    public ObjectArraySubject hasParametersThat() {
+        StandardSubjectBuilder check = check("getParameters()");
+        return check.that(actual().getParameters());
     }
 }
