@@ -22,7 +22,6 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.logging.Logging;
 import io.spine.option.GoesOption;
 import io.spine.option.OptionsProto;
 import io.spine.validate.FieldValue;
@@ -36,7 +35,7 @@ import io.spine.validate.MessageValue;
  */
 @Immutable
 public final class Goes<@ImmutableTypeParameter F>
-        extends FieldValidatingOption<GoesOption, F> implements Logging {
+        extends FieldValidatingOption<GoesOption, F> {
 
     private final MessageValue messageValue;
 

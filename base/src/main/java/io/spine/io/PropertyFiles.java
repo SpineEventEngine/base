@@ -20,17 +20,9 @@
 
 package io.spine.io;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.logging.Logging;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * Utilities for working with property files.
@@ -51,38 +43,6 @@ public final class PropertyFiles {
      */
     public static Set<Properties> loadAllProperties(String propsFilePath) {
         Resource resource = Resource.file(propsFilePath);
-        return Loader.INSTANCE.loadAllProperties(resource);
-    }
-
-    /**
-     * Performs loading of multiple property files from the specified path.
-     */
-    private static final class Loader implements Logging {
-
-        private static final Loader INSTANCE = new Loader();
-
-        private ImmutableSet<Properties> loadAllProperties(Resource resource) {
-            checkNotNull(resource);
-            if (resource.exists()) {
-                ImmutableSet<Properties> resources = resource.locateAll()
-                                                             .stream()
-                                                             .map(this::loadPropertiesFile)
-                                                             .collect(toImmutableSet());
-                return resources;
-            } else {
-                _error("Failed to load resource: {}", resource);
-                return ImmutableSet.of();
-            }
-        }
-
-        private Properties loadPropertiesFile(URL resourceUrl) {
-            Properties properties = new Properties();
-            try (InputStream inputStream = resourceUrl.openStream()) {
-                properties.load(inputStream);
-            } catch (IOException e) {
-                _error(e, "Failed to load properties file from: %s", resourceUrl);
-            }
-            return properties;
-        }
+        return Loader.instance().loadAllProperties(resource);
     }
 }

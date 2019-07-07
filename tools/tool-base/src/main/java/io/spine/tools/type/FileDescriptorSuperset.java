@@ -81,7 +81,7 @@ public final class FileDescriptorSuperset implements Logging {
 
     public void addFromDependency(File dependencyFile) {
         checkNotNull(dependencyFile);
-        _debug("Loading descriptors from `{}`.", dependencyFile);
+        _debug().log("Loading descriptors from `%s`.", dependencyFile);
         readDependency(dependencyFile)
                 .forEach(this::addFiles);
     }
@@ -119,12 +119,14 @@ public final class FileDescriptorSuperset implements Logging {
 
     private Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
-        ImmutableSet<FileDescriptorSet> result = archive.findByExtension(DESC_EXTENSION)
-                                                        .stream()
-                                                        .map(ArchiveEntry::asDescriptorSet)
-                                                        .collect(toImmutableSet());
+        ImmutableSet<FileDescriptorSet> result =
+                archive.findByExtension(DESC_EXTENSION)
+                       .stream()
+                       .map(ArchiveEntry::asDescriptorSet)
+                       .collect(toImmutableSet());
         if (!result.isEmpty()) {
-            _debug("Found {} descriptor set file(s) in archive `{}`.", result.size(), archiveFile);
+            _debug().log("Found %d descriptor set file(s) in archive `%s`.",
+                         result.size(), archiveFile);
         }
         return result;
     }
@@ -132,7 +134,7 @@ public final class FileDescriptorSuperset implements Logging {
     private FileDescriptorSet read(File file) {
         checkArgument(file.exists(), "File does not exist: `%s`.", file);
         Path path = file.toPath();
-        _debug("Reading descriptors from file `{}`.", file);
+        _debug().log("Reading descriptors from file `%s`.", file);
         try {
             byte[] bytes = Files.readAllBytes(path);
             return FileDescriptorSets.parse(bytes);

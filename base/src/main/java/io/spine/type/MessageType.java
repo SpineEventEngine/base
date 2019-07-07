@@ -284,10 +284,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                 .getFile()
                 .toProto();
         if (!file.hasSourceCodeInfo()) {
-            _warn("Unable to obtain proto source code info. " +
-                  "Please configure the Gradle Protobuf plugin as follows:{}{}",
-                  System.lineSeparator(),
-                  "`task.descriptorSetOptions.includeSourceInfo = true`.");
+            _warn().log("Unable to obtain proto source code info. " +
+                                "Please configure the Gradle Protobuf plugin as follows:%s%s",
+                        System.lineSeparator(),
+                        "`task.descriptorSetOptions.includeSourceInfo = true`.");
             return Optional.empty();
         }
 

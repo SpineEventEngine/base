@@ -20,8 +20,8 @@
 
 package io.spine.code.proto;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.util.function.Predicate;
@@ -32,14 +32,17 @@ import java.util.function.Predicate;
  * <p>The descendants of this class are supposed to work with different
  * types of files, e.g. an original {@code .proto} file, a compiled {@code .java}, etc.
  */
-public abstract class ProtoBelongsToModule implements Predicate<SourceFile>, Logging {
+public abstract class ProtoBelongsToModule implements Predicate<SourceFile> {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     @Override
     public boolean test(SourceFile file) {
         Path filePath = resolve(file);
         boolean exists = filePath.toFile()
                                  .exists();
-        _debug("Checking if the file {} exists, result: {}", filePath, exists);
+        logger.atFinest()
+              .log("Checking if the file %s exists, result: %b.", filePath, exists);
         return exists;
     }
 

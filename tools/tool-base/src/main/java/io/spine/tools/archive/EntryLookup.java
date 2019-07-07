@@ -21,7 +21,7 @@
 package io.spine.tools.archive;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.logging.Logging;
+import com.google.common.flogger.FluentLogger;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -36,8 +36,9 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 /**
  * A process of an entry lookup inside of an archive.
  */
-final class EntryLookup implements Closeable, Logging {
+final class EntryLookup implements Closeable {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private final ZipInputStream stream;
 
     private EntryLookup(ZipInputStream stream) {
@@ -80,7 +81,8 @@ final class EntryLookup implements Closeable, Logging {
              entry = stream.getNextEntry()) {
             String entryName = entry.getName();
             if (entryName.endsWith(fileExtension)) {
-                _debug("Reading ZIP entry `{}`.", entryName);
+                logger.atFinest()
+                      .log("Reading ZIP entry `%s`.", entryName);
                 ArchiveEntry read = readEntry();
                 result.add(read);
             }

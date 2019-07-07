@@ -18,35 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.logging;
 
-import io.spine.validate.option.Constraint;
-import io.spine.validate.option.RequiredField;
-
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.flogger.FluentLogger;
 
 /**
- * Validates that one of the fields defined by the {@code required_field} option is present.
- *
- * <p>See definition of {@code MessageOptions.required_field} in {@code options.proto}.
+ * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
  */
-final class AlternativeFieldValidator {
+final class FloggerClassValue extends ClassValue<FluentLogger> {
 
-    private final MessageValue message;
+    private static final FloggerClassValue INSTANCE = new FloggerClassValue();
 
-    /**
-     * The list builder to accumulate violations.
-     */
-
-    AlternativeFieldValidator(MessageValue message) {
-        this.message = checkNotNull(message);
+    static FluentLogger loggerOf(Class<?> cls) {
+        return INSTANCE.get(cls);
     }
 
-    List<ConstraintViolation> validate() {
-        RequiredField requiredFieldOption = new RequiredField();
-        Constraint<MessageValue> required = requiredFieldOption.constraintFor(message);
-        return required.check(message);
+    /** Prevent instantiation from outside. */
+    private FloggerClassValue() {
+        super();
+    }
+
+    @Override
+    protected FluentLogger computeValue(Class<?> type) {
+        return FluentLogger.forEnclosingClass();
     }
 }

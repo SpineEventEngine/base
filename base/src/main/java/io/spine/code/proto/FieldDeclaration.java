@@ -30,7 +30,6 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
-import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.EnumType;
@@ -57,7 +56,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Immutable
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
-public final class FieldDeclaration implements Logging {
+public final class FieldDeclaration {
 
     private final MessageType declaringMessage;
     private final FieldDescriptor field;

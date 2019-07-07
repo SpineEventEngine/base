@@ -138,6 +138,7 @@ subprojects {
         
         api deps.build.protobuf
         api deps.build.slf4j
+        api deps.build.flogger
 
         implementation deps.build.guava
         implementation deps.build.checkerAnnotations
@@ -148,6 +149,8 @@ subprojects {
         testImplementation deps.test.junit5Api
         testImplementation deps.test.junit5Runner
         testImplementation deps.test.junitPioneer
+
+        runtime deps.runtime.floggerSystemBackend
     }
 
     forceConfiguration(project)

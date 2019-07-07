@@ -28,11 +28,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A predicate determining if the given {@code .proto} source belongs to the specified module.
  */
-public class SourceProtoBelongsToModule extends ProtoBelongsToModule {
+public final class SourceProtoBelongsToModule extends ProtoBelongsToModule {
 
-    /**
-     * An absolute path to the root folder for the {@code .proto} files in the module.
-     */
+    /** An absolute path to the root folder for the {@code .proto} files in the module. */
     private final Path rootPath;
 
     public SourceProtoBelongsToModule(File rootDirectory) {

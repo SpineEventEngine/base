@@ -19,13 +19,12 @@
  */
 package io.spine.code.proto;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.io.Resource;
-import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,6 +51,8 @@ import static java.util.stream.Collectors.toSet;
  */
 @Internal
 public final class FileDescriptors {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
      * The name of the descriptor set file.
@@ -80,6 +81,11 @@ public final class FileDescriptors {
         return parseAndFilter(descriptorSetFile, descriptor -> true);
     }
 
+    @SuppressWarnings("PMD.MethodNamingConventions") // to make it more visible.
+    private static FluentLogger.Api _debug() {
+        return logger.atFine();
+    }
+
     /**
      * Returns descriptors of `.proto` files described in the descriptor set file
      * which match the filter predicate.
@@ -95,12 +101,9 @@ public final class FileDescriptors {
     parseAndFilter(File descriptorSet, Predicate<FileDescriptorProto> filter) {
         checkArgument(descriptorSet.exists(), "File %s does not exist", descriptorSet);
 
-        Logger log = log();
-        if (log.isDebugEnabled()) {
-            log.debug("Looking up for the proto files matching predicate {} under {}",
-                      filter,
-                      descriptorSet);
-        }
+        _debug().log("Looking up for the proto files matching predicate %s under %s",
+                     filter,
+                     descriptorSet);
 
         List<FileDescriptorProto> files;
         try (FileInputStream fis = new FileInputStream(descriptorSet)) {
@@ -114,7 +117,7 @@ public final class FileDescriptors {
                     e, "Cannot get proto file descriptors. Path: %s", descriptorSet
             );
         }
-        log.debug("Found {} files.", files.size());
+        _debug().log("Found %d files.", files.size());
         return files;
     }
 
@@ -210,7 +213,7 @@ public final class FileDescriptors {
     /**
      * Verifies if a package of a file does not start with {@code "google"}.
      */
-    private enum IsNotGoogleProto implements Predicate<FileDescriptorProto>, Logging {
+    private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
 
         PREDICATE;
 
@@ -218,8 +221,8 @@ public final class FileDescriptors {
         public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
             boolean result = notInGooglePackage(file);
-            _debug("[IsNotGoogleProto] Tested {} with package {}. The result is {}.",
-                   file.getName(), file.getPackage(), result);
+            _debug().log("[IsNotGoogleProto] Tested %s with package %s. The result is %b.",
+                       file.getName(), file.getPackage(), result);
             return result;
         }
 
@@ -227,9 +230,5 @@ public final class FileDescriptors {
         public String toString() {
             return IsNotGoogleProto.class.getSimpleName();
         }
-    }
-
-    private static Logger log() {
-        return Logging.get(FileDescriptors.class);
     }
 }

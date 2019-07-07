@@ -21,14 +21,13 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
-import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -94,7 +93,7 @@ public final class ExternalConstraintOptions implements Serializable {
     @Internal
     static final class Holder {
 
-        private static final Logger log = Logging.get(Holder.class);
+        private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
         /** The singleton instance. */
         private static ExternalConstraintOptions instance = new ExternalConstraintOptions();
@@ -109,8 +108,9 @@ public final class ExternalConstraintOptions implements Serializable {
          */
         static void updateFrom(Iterable<ExternalMessageConstraint> externalConstraints) {
             checkNotNull(externalConstraints);
-            log.debug("Updating external constraint options from constraints {}.",
-                      externalConstraints);
+            logger.atFine()
+                  .log("Updating external constraint options from constraints %s.",
+                       externalConstraints);
             ImmutableMap<FieldContext, FieldOptions> currentOptions = instance.options;
             ImmutableMap<FieldContext, FieldOptions> newOptions = new Builder()
                     .buildFrom(externalConstraints);

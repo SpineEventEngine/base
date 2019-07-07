@@ -23,12 +23,11 @@ package io.spine.validate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos;
 import io.spine.annotation.Internal;
-import io.spine.logging.Logging;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
-import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -50,6 +49,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class ExternalConstraints implements Serializable {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final long serialVersionUID = 0L;
 
     /**
@@ -138,7 +138,7 @@ public final class ExternalConstraints implements Serializable {
     @Internal
     static final class Holder {
 
-        private static final Logger log = Logging.get(Holder.class);
+        private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
         /** The singleton instance. */
         private static ExternalConstraints instance = new ExternalConstraints();
@@ -155,7 +155,8 @@ public final class ExternalConstraints implements Serializable {
          */
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
-            log.debug("Updating external constraints from types {}.", types);
+            logger.atFine()
+                  .log("Updating external constraints from types %s.", types);
             ImmutableSet<ExternalMessageConstraint> currentConstraints = instance.constraints;
             ImmutableSet<ExternalMessageConstraint> newConstraints = constraintsFor(types);
             Set<ExternalMessageConstraint> constraints =
@@ -170,7 +171,7 @@ public final class ExternalConstraints implements Serializable {
     /**
      * Determines if a {@link MessageType} contains an external constraint.
      */
-    private static class HasExternalConstraint implements Predicate<MessageType>, Logging {
+    private static class HasExternalConstraint implements Predicate<MessageType> {
 
         @Override
         public boolean test(MessageType input) {
@@ -178,8 +179,9 @@ public final class ExternalConstraints implements Serializable {
             DescriptorProtos.DescriptorProto proto = input.toProto();
             boolean result = new ConstraintFor().valueFrom(proto)
                                                 .isPresent();
-            _debug("[HasExternalConstraint] Tested {} with the result of {}.",
-                   proto.getName(), result);
+            logger.atFine()
+                  .log("[HasExternalConstraint] Tested %s with the result of %s.",
+                       proto.getName(), result);
             return result;
         }
 

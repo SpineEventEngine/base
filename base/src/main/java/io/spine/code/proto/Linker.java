@@ -24,11 +24,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.logging.Logging;
-import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -46,6 +45,7 @@ import static java.util.stream.Collectors.toList;
  */
 final class Linker {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 
     private final List<FileDescriptorProto> input;
@@ -66,14 +66,14 @@ final class Linker {
 
     static FileSet link(Collection<FileDescriptorProto> files) {
         Linker linker = new Linker(files);
-        Logger log = Logging.get(Linker.class);
-        log.debug("Trying to link {} files.", files.size());
+        FluentLogger.Api debug = logger.atFine();
+        debug.log("Trying to link %d files.", files.size());
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
-            throw newIllegalStateException(e, "Unable to link descriptor set files");
+            throw newIllegalStateException(e, "Unable to link descriptor set files.");
         }
-        log.debug("Linking complete. {}", linker);
+        debug.log("Linking complete. %s", linker);
         FileSet result = linker.resolved()
                                .union(linker.partiallyResolved())
                                .union(linker.unresolved());

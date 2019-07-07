@@ -23,15 +23,14 @@ package io.spine.code.proto;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.logging.Logging;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.Collection;
@@ -46,6 +45,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
@@ -58,8 +58,9 @@ import static java.util.stream.Collectors.toSet;
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  */
 @Internal
-public final class FileSet implements Logging {
+public final class FileSet {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final FileDescriptor[] EMPTY = {};
 
     /**
@@ -130,16 +131,16 @@ public final class FileSet implements Logging {
     }
 
     private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
-        Logger log = Logging.get(FileSet.class);
-        log.debug("Failed to find files in the known types set. Looked for {}{}",
+        FluentLogger.Api debug = logger.atFine();
+        debug.log("Failed to find files in the known types set. Looked for %s%s.",
                   lineSeparator(),
                   requestedFiles);
-        log.debug("Could not find files: {}",
+        debug.log("Could not find files: %s.", lazy(() ->
                   requestedFiles
                           .stream()
                           .filter(fileName -> !knownFiles.contains(fileName))
                           .map(FileName::toString)
-                          .collect(joining(", ")));
+                          .collect(joining(", "))));
         throw newIllegalStateException("Some files are not known.");
     }
 

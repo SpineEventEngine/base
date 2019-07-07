@@ -313,7 +313,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
     private void onSetOnceMisuse(FieldDeclaration field) {
         FieldName fieldName = field.name();
-        _error("Error found in `%s`. " +
+        _error().log("Error found in `%s`. " +
                        "Repeated and map fields cannot be marked as `(set_once) = true`.",
                fieldName);
     }

@@ -48,7 +48,7 @@ public final class PlugableProject implements PluginTarget, Logging {
             PluginManager pluginManager = project.getPluginManager();
             pluginManager.apply(plugin.implementationClass());
         } else {
-            _debug("Plugin {} is already applied.", plugin.className());
+            _debug().log("Plugin `%s` is already applied.", plugin.className());
         }
     }
 
@@ -60,7 +60,6 @@ public final class PlugableProject implements PluginTarget, Logging {
     @Override
     public boolean isApplied(GradlePlugin plugin) {
         checkNotNull(plugin);
-
         PluginContainer plugins = project.getPlugins();
         boolean result = plugins.hasPlugin(plugin.implementationClass());
         return result;

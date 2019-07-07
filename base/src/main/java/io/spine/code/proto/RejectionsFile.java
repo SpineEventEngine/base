@@ -48,7 +48,7 @@ public final class RejectionsFile extends SourceFile {
         checkNotNull(file);
         checkArgument(file.isRejections());
 
-        RejectionsFile result = new RejectionsFile(file.getDescriptor());
+        RejectionsFile result = new RejectionsFile(file.descriptor());
         return result;
     }
 
@@ -57,7 +57,7 @@ public final class RejectionsFile extends SourceFile {
      */
     public List<RejectionType> rejectionDeclarations() {
         ImmutableList.Builder<RejectionType> result = ImmutableList.builder();
-        FileDescriptor file = getDescriptor();
+        FileDescriptor file = descriptor();
         for (Descriptor type : file.getMessageTypes()) {
             RejectionType declaration = new RejectionType(type);
             result.add(declaration);

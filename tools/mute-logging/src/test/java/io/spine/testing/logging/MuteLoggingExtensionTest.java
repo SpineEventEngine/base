@@ -113,6 +113,7 @@ class MuteLoggingExtensionTest {
 
     @Test
     @DisplayName("mute Spine Logging tool")
+    @SuppressWarnings("deprecation") // until new muting is implemented
     void muteSpineLogging() throws IOException {
         MuteLoggingExtension extension = new MuteLoggingExtension();
         extension.beforeEach(successfulContext());

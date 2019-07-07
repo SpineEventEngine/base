@@ -20,6 +20,7 @@
 
 package io.spine.logging;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -65,10 +66,77 @@ import static java.lang.String.format;
 })
 public interface Logging {
 
+    // Flogger API
+    //****************
+
+    /**
+     * Obtains {@code FluentLogger} instance for this class.
+     */
+    default FluentLogger logger() {
+        return FloggerClassValue.loggerOf(getClass());
+    }
+
+    /** A convenience method for {@link FluentLogger#atSevere()}. */
+    default FluentLogger.Api _severe() {
+        return logger().atSevere();
+    }
+
+    /** Same as {@link #_severe()}. */
+    default FluentLogger.Api _error() {
+        return _severe();
+    }
+
+    /** A convenience method for {@link FluentLogger#atWarning()}. */
+    default FluentLogger.Api _warn() {
+        return logger().atWarning();
+    }
+
+    /** A convenience method for {@link FluentLogger#atInfo()}. */
+    default FluentLogger.Api _info() {
+        return logger().atInfo();
+    }
+
+    /** A convenience method for {@link FluentLogger#atConfig()}. */
+    default FluentLogger.Api _config() {
+        return logger().atConfig();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFine()}. */
+    default FluentLogger.Api _fine() {
+        return logger().atFine();
+    }
+
+    /** Sames as {@link #_fine()}. */
+    default FluentLogger.Api _debug() {
+        return _fine();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFiner()}. */
+    default FluentLogger.Api _finer() {
+        return logger().atFiner();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFine()}. */
+    default FluentLogger.Api _finest() {
+        return logger().atFinest();
+    }
+
+    /** Same as {@link #_finest()}. */
+    default FluentLogger.Api _trace() {
+        return _finest();
+    }
+
+    //
+    // Slf4J API (BEING DEPRECATED)
+    //****************************************
+
     /**
      * Obtains Logger instance for the passed class.
      * @apiNote The primary purpose of this method is to provide logging in static methods.
+     *
+     * @deprecated use {@link FluentLogger#forEnclosingClass()}
      */
+    @Deprecated
     static Logger get(Class<?> cls) {
         return loggerOf(cls);
     }

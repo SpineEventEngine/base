@@ -123,7 +123,7 @@ public abstract class GenerationTask {
 
         @Override
         protected Path resolve(SourceFile file) {
-            FileName fileName = FileName.from(file.getDescriptor());
+            FileName fileName = FileName.from(file.descriptor());
             Path filePath = generatedRoot.resolve(fileName);
             return filePath;
         }
