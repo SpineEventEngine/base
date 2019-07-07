@@ -19,7 +19,7 @@
  */
 
 /**
- * Contains the test suite for the Spine validating builder code generation.
+ * Contains the test suite for the Spine validating builder aspects of generated messages.
  */
 
 @CheckReturnValue

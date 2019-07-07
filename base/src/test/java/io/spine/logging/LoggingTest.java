@@ -20,6 +20,7 @@
 
 package io.spine.logging;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
 import io.spine.logging.given.LoggingObject;
@@ -42,5 +43,18 @@ class LoggingTest {
 
         assertLogger.isNotNull();
         assertLogger.isInstanceOf(SubstituteLogger.class);
+    }
+
+    @Test
+    @DisplayName("obtain same `FluentLogger` Instance")
+    void fluentLogger() {
+        Logging object = new LoggingObject();
+
+        FluentLogger logger = object.logger();
+
+        assertThat(object.logger())
+             .isSameInstanceAs(logger);
+        assertThat(new LoggingObject().logger())
+             .isSameInstanceAs(logger);
     }
 }

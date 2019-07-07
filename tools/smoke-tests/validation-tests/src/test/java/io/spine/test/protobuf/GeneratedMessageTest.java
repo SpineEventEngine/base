@@ -28,8 +28,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.Validate.checkValid;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ValidatingBuilder should")
-class ValidatingBuilderTest {
+@DisplayName("Generated message should")
+class GeneratedMessageTest {
 
     private final CardNumber.Builder valid = CardNumber
             .newBuilder()
@@ -39,14 +39,14 @@ class ValidatingBuilderTest {
             .setDigits("zazazazazazaz");
 
     @Test
-    @DisplayName("obtain a valid message")
+    @DisplayName("create a valid message using `vBuild()`")
     void obtainValid() {
         CardNumber number = valid.vBuild();
         checkValid(number);
     }
 
     @Test
-    @DisplayName("throw ValidationException if the message is not valid")
+    @DisplayName("throw `ValidationException` if the message is not valid")
     void throwIfInvalid() {
         ValidationException exception = assertThrows(ValidationException.class, invalid::vBuild);
         assertThat(exception.getConstraintViolations()).isNotEmpty();

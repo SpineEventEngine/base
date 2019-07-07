@@ -20,6 +20,7 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.IterableSubject;
 import com.google.common.truth.Subject;
@@ -56,5 +57,10 @@ public final class LogTruth {
     public static IterableSubject assertThat(Queue<SubstituteLoggingEvent> queue) {
         checkNotNull(queue);
         return assert_().that(queue);
+    }
+
+    /** Creates a subject for the passed logger. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable FluentLogger actual) {
+        return assert_().that(actual);
     }
 }
