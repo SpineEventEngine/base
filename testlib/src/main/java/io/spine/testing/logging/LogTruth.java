@@ -75,4 +75,9 @@ public final class LogTruth {
     public static Subject<DefaultSubject, Object> assertThat(@Nullable Level actual) {
         return assert_().that(actual);
     }
+
+    /** Creates a subject for the logging API. */
+    public static Subject<DefaultSubject, Object> assertThat(FluentLogger.Api actual) {
+        return assert_().that(actual);
+    }
 }
