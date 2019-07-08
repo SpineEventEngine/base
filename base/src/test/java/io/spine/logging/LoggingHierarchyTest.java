@@ -27,38 +27,16 @@ import io.spine.logging.given.ChildOne;
 import io.spine.logging.given.ChildTwo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that classes in a hierarchy have own logs.
  */
 @DisplayName("Logging interface should work in a class hierarchy")
 class LoggingHierarchyTest {
-
-    @Test
-    @DisplayName("create a logger for each class in hierarchy")
-    void classHierarchy() {
-        Logger baseLogger = new Base().log();
-        Logger childOneLogger = new ChildOne().log();
-        Logger childTwoLogger = new ChildTwo().log();
-
-        assertNotSame(baseLogger, childOneLogger);
-        assertNotSame(baseLogger, childTwoLogger);
-        assertNotSame(childOneLogger, childTwoLogger);
-
-        assertNotEquals(baseLogger, childOneLogger);
-        assertNotEquals(baseLogger, childTwoLogger);
-        assertNotEquals(childOneLogger, childTwoLogger);
-
-        assertLogger(baseLogger, Base.class);
-        assertLogger(childOneLogger, ChildOne.class);
-        assertLogger(childTwoLogger, ChildTwo.class);
-    }
 
     @Test
     @DisplayName("create a logger for each class in hierarchy")
@@ -78,14 +56,6 @@ class LoggingHierarchyTest {
         assertLogger(baseLogger, Base.class);
         assertLogger(childOneLogger, ChildOne.class);
         assertLogger(childTwoLogger, ChildTwo.class);
-    }
-
-    /**
-     * Asserts that the logger name contains the name of the passed class.
-     */
-    private static void assertLogger(Logger logger, Class<?> cls) {
-        assertTrue(logger.getName()
-                         .contains(cls.getName()));
     }
 
     private static void assertLogger(FluentLogger logger, Class<?> cls) {

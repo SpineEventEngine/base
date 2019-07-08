@@ -62,17 +62,10 @@ final class MethodFactories implements Logging {
             MethodFactory factory = factoryClass.getConstructor()
                                                 .newInstance();
             return factory;
-        } catch (InstantiationException e) {
-            _error("Unable to instantiate MethodFactory {}.", fqn);
-            throw new MethodFactoryInstantiationException(fqn, e);
-        } catch (IllegalAccessException e) {
-            _error("Unable to access MethodFactory {}.", fqn);
-            throw new MethodFactoryInstantiationException(fqn, e);
-        } catch (NoSuchMethodException e) {
-            _error("Unable to get constructor for MethodFactory {}.", fqn);
-            throw new MethodFactoryInstantiationException(fqn, e);
-        } catch (InvocationTargetException e) {
-            _error("Unable to invoke public constructor for MethodFactory {}.", fqn);
+        } catch (InstantiationException | IllegalAccessException
+                | NoSuchMethodException | InvocationTargetException e) {
+            _error().withCause(e)
+                    .log("Unable to create method factory `%s`.", fqn);
             throw new MethodFactoryInstantiationException(fqn, e);
         }
     }
@@ -83,7 +76,7 @@ final class MethodFactories implements Logging {
         if (MethodFactory.class.isAssignableFrom(factory)) {
             return (Class<MethodFactory>) factory;
         }
-        _error("Class {} does not implement io.spine.tools.protoc.method.MethodFactory.", fqn);
+        _error().log("Class `%s` does not implement `%s`.", fqn, MethodFactory.class.getName());
         throw new MethodFactoryInstantiationException(fqn);
     }
 
@@ -92,7 +85,7 @@ final class MethodFactories implements Logging {
             Class<?> factory = externalClassLoader.loadClass(fqn);
             return factory;
         } catch (ClassNotFoundException e) {
-            _error("Unable to resolve MethodFactory {}.", fqn);
+            _error().log("Unable to resolve MethodFactory %s.", fqn);
             throw new MethodFactoryInstantiationException(fqn, e);
         }
     }

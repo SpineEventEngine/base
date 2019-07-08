@@ -86,7 +86,8 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     @Override
     public Collection<MethodSpec> generate() {
-        _debug("The method construction for the {} singular field is started.", javaFieldName);
+        _debug().log("The method construction for the %s singular field is started.",
+                     javaFieldName);
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(setter());
 
@@ -96,12 +97,13 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
         methods.add(getter())
                .add(clearMethod());
-        _debug("The method construction for the {} singular field is finished.", javaFieldName);
+        _debug().log("The method construction for the %s singular field is finished.",
+                     javaFieldName);
         return methods.build();
     }
 
     private MethodSpec setter() {
-        _debug("The setters construction for the singular field is started.");
+        _debug().log("The setters construction for the singular field is started.");
         String methodName = fieldType.primarySetterTemplate().format(javaFieldName);
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
@@ -118,12 +120,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                         .addStatement(setStatement)
                         .addStatement(returnThis())
                         .build();
-        _debug("The setters construction for the singular field is finished.");
+        _debug().log("The setters construction for the singular field is finished.");
         return methodSpec;
     }
 
     private MethodSpec getter() {
-        _debug("The getter construction for the singular field is started.");
+        _debug().log("The getter construction for the singular field is started.");
         String methodName = AccessorTemplates.getter().format(javaFieldName);
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
@@ -131,12 +133,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .returns(fieldTypeName)
                           .addStatement(returnValue(getMessageBuilder() + '.' + methodName + "()"))
                           .build();
-        _debug("The getter construction for the singular method is finished.");
+        _debug().log("The getter construction for the singular method is finished.");
         return methodSpec;
     }
 
     private MethodSpec clearMethod() {
-        _debug("The 'clear..()' method construction for the singular field is started.");
+        _debug().log("The 'clear..()' method construction for the singular field is started.");
         String methodName = clearer().format(javaFieldName);
         String methodBody = callMethod(getMessageBuilder(), methodName);
         MethodSpec methodSpec =
@@ -146,12 +148,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                         .addStatement(methodBody)
                         .addStatement(returnThis())
                         .build();
-        _debug("The 'clear..()' method construction for the singular method is finished.");
+        _debug().log("The `clear..()` method construction for the singular method is finished.");
         return methodSpec;
     }
 
     private MethodSpec rawSetterMethod() {
-        _debug("The raw setters construction is started.");
+        _debug().log("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.primarySetterTemplate().format(javaFieldName);
         String methodName = fieldType.primarySetterTemplate()
                                      .toRaw()
@@ -176,7 +178,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
-        _debug("The raw setters construction is finished.");
+        _debug().log("The raw setters construction is finished.");
         return methodSpec;
     }
 

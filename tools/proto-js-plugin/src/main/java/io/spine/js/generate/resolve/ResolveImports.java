@@ -72,7 +72,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
     protected void generateFor(FileSet fileSet) {
         for (FileDescriptor file : fileSet.files()) {
             FileName fileName = FileName.from(file);
-            _debug("Resolving imports in file {}.", fileName);
+            _debug().log("Resolving imports in file %s.", fileName);
             Path filePath = generatedRoot().resolve(fileName);
             resolveInFile(filePath);
         }

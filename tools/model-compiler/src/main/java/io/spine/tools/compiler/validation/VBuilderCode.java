@@ -81,7 +81,7 @@ final class VBuilderCode implements Logging {
      */
     @CanIgnoreReturnValue
     File write() {
-        _debug("Creating spec. for class: {}", vbClass);
+        _debug().log("Creating spec. for class: %s.", vbClass);
 
         TypeSpec javaClassSpec = defineClass()
                 .addAnnotation(generatedBySpineModelCompiler())
@@ -118,7 +118,7 @@ final class VBuilderCode implements Logging {
 
     @CanIgnoreReturnValue
     private File writeClass(String javaPackage, TypeSpec classToCreate) {
-        _debug("Writing the {} class", vbClass);
+        _debug().log("Writing the %s class.", vbClass);
         try {
             Path dir = targetDir.toPath();
             Files.createDirectories(dir);
@@ -129,12 +129,13 @@ final class VBuilderCode implements Logging {
                     .writeTo(targetDir);
 
             File createdFile = resolve(javaPackage, classToCreate.name);
-            _debug("The {} class created, written to file {}.", vbClass, createdFile);
+            _debug().log("The `%s` class created, written to file %s.", vbClass, createdFile);
             return createdFile;
 
         } catch (IOException e) {
             String exMessage = format("%s was not written.", targetDir);
-            _warn(exMessage, e);
+            _error().withCause(e)
+                    .log(exMessage, targetDir);
             throw newIllegalArgumentException(exMessage, e);
         }
     }

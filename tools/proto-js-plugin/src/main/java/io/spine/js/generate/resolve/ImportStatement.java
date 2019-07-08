@@ -95,7 +95,7 @@ public class ImportStatement implements Logging {
         Path filePath = importedFilePath();
         boolean exists = filePath.toFile()
                                  .exists();
-        _debug("Checking if the imported file {} exists, result: {}", filePath, exists);
+        _debug().log("Checking if the imported file %s exists, result: %b.", filePath, exists);
         return exists;
     }
 
