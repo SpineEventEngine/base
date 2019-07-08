@@ -24,15 +24,11 @@ import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LogContext;
 import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.backend.LogData;
-import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.Subject;
 import io.spine.logging.given.LoggingObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -54,17 +50,6 @@ class LoggingTest {
     void errorLevel() {
         assertThat(Logging.errorLevel())
                 .isEqualTo(Level.SEVERE);
-    }
-
-    @Test
-    @DisplayName("obtain Slf4J `Logger` instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
-
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
     }
 
     @Test
