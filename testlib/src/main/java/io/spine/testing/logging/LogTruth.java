@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Queue;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,5 +69,10 @@ public final class LogTruth {
     /** Creates a subject for the passed record. */
     public static LogRecordSubject assertThat(@Nullable LogRecord record) {
         return assertAbout(LogRecordSubject.records()).that(record);
+    }
+
+    /** Creates a subject for the logging level. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable Level actual) {
+        return assert_().that(actual);
     }
 }

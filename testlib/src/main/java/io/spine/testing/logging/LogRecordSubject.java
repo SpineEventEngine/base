@@ -28,6 +28,7 @@ import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
@@ -56,6 +57,11 @@ public class LogRecordSubject extends Subject<LogRecordSubject, LogRecord> {
         StandardSubjectBuilder check = check("getLevel()");
         Subject<DefaultSubject, Object> that = check.that(actual().getLevel());
         return that;
+    }
+
+    /** Asserts that the level of the record is {@code Level.FINE}. */
+    public void isDebug() {
+        hasLevelThat().isEqualTo(Level.FINE);
     }
 
     /** Obtains subject for the logging event arguments. */

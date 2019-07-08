@@ -29,13 +29,29 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.helpers.SubstituteLogger;
 
+import java.util.logging.Level;
+
 import static io.spine.testing.logging.LogTruth.assertThat;
 
 @DisplayName("Logging interface should")
 class LoggingTest {
 
     @Test
-    @DisplayName("obtain Logger instance")
+    @DisplayName("assume `Level.FINE` for debug")
+    void debugLevel() {
+        assertThat(Logging.debugLevel())
+             .isEqualTo(Level.FINE);
+    }
+
+    @Test
+    @DisplayName("assume `Level.SEVER` for errors")
+    void errorLevel() {
+        assertThat(Logging.errorLevel())
+                .isEqualTo(Level.SEVERE);
+    }
+
+    @Test
+    @DisplayName("obtain Slf4J `Logger` instance")
     void loggerInstance() {
         Logging object = new LoggingObject();
         Logger logger = object.log();

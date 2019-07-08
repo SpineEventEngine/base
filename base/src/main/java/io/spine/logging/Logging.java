@@ -30,6 +30,7 @@ import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.Queue;
+import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.logging.LogMessages.logThrowable;
@@ -65,6 +66,16 @@ import static java.lang.String.format;
            are for logging, and to make them more visible in the real code. */
 })
 public interface Logging {
+
+    /** Returns {@link Level#FINE} as the convention for debug logging. */
+    static Level debugLevel() {
+        return Level.FINE;
+    }
+
+    /** Returns {@link Level#SEVERE} as the convention for logging errors. */
+    static Level errorLevel() {
+        return Level.SEVERE;
+    }
 
     // Flogger API
     //****************

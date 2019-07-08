@@ -26,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
@@ -34,7 +35,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Test fixture for testing loggers based on JDK Logging.
+ */
 public class AssertingHandler extends Handler {
+
+    private static final String FACT_NO_RECORDS = "There were no log records";
 
     private @Nullable List<LogRecord> logRecords = new ArrayList<>();
 
@@ -45,18 +51,54 @@ public class AssertingHandler extends Handler {
         }
     }
 
+    /** Set the level to {@code Level.FINE}. */
+    public void setDebugLevel() {
+        setLevel(Level.FINE);
+    }
+
+    /** Set the level to {@code Level.SEVERE}. */
+    public void setErrorLevel() {
+        setLevel(Level.SEVERE);
+    }
+
     private List<LogRecord> logRecords() {
         return checkNotNull(logRecords, "The handler is already closed.");
     }
 
+    /**
+     * Obtains the subject for asserting text output of the first log record.
+     */
     public StringSubject assertOnlyLog() {
-        assertThat(logRecords)
-                .hasSize(1);
-        LogRecord logRecord = logRecords().get(0);
+        LogRecord logRecord = firstRecord();
+        assertWithMessage(FACT_NO_RECORDS)
+                .that(logRecord)
+                .isNotNull();
         flush();
-        return assertThat(logRecordToString(logRecord));
+        StringSubject subject = assertThat(logRecordToString(logRecord));
+        return subject;
     }
 
+    /**
+     * Obtains the subject for the only log record placed to the log.
+     *
+     * @throws AssertionError if the were no records or more than one log record
+     */
+    public LogRecordSubject assertRecord() {
+        LogRecord logRecord = firstRecord();
+        flush();
+        LogRecordSubject subject = LogTruth.assertThat(logRecord);
+        return subject;
+    }
+
+    private LogRecord firstRecord() {
+        assertThat(logRecords)
+                .hasSize(1);
+        return logRecords().get(0);
+    }
+
+    /**
+     * Asserts that there were no log messages.
+     */
     public void assertNoLogs() {
         assertWithMessage("unexpected log recorded")
                 .that(logRecords)
