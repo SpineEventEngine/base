@@ -20,6 +20,8 @@
 
 package io.spine.logging;
 
+import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import io.spine.logging.given.Base;
 import io.spine.logging.given.ChildOne;
 import io.spine.logging.given.ChildTwo;
@@ -27,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,11 +60,36 @@ class LoggingHierarchyTest {
         assertLogger(childTwoLogger, ChildTwo.class);
     }
 
+    @Test
+    @DisplayName("create a logger for each class in hierarchy")
+    void classHierarchyFlogger() {
+        FluentLogger baseLogger = new Base().logger();
+        FluentLogger childOneLogger = new ChildOne().logger();
+        FluentLogger childTwoLogger = new ChildTwo().logger();
+
+        assertNotSame(baseLogger, childOneLogger);
+        assertNotSame(baseLogger, childTwoLogger);
+        assertNotSame(childOneLogger, childTwoLogger);
+
+        assertNotEquals(baseLogger, childOneLogger);
+        assertNotEquals(baseLogger, childTwoLogger);
+        assertNotEquals(childOneLogger, childTwoLogger);
+
+        assertLogger(baseLogger, Base.class);
+        assertLogger(childOneLogger, ChildOne.class);
+        assertLogger(childTwoLogger, ChildTwo.class);
+    }
+
     /**
      * Asserts that the logger name contains the name of the passed class.
      */
     private static void assertLogger(Logger logger, Class<?> cls) {
         assertTrue(logger.getName()
                          .contains(cls.getName()));
+    }
+
+    private static void assertLogger(FluentLogger logger, Class<?> cls) {
+        assertThat(LoggerConfig.of(logger).getName())
+                .contains(cls.getName());
     }
 }

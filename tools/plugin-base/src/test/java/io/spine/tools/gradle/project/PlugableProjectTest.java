@@ -24,7 +24,6 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.io.Resource;
 import io.spine.logging.Logging;
 import io.spine.testing.logging.AssertingHandler;
-import io.spine.testing.logging.LogEventSubject;
 import io.spine.testing.logging.LogRecordSubject;
 import io.spine.tools.gradle.GradlePlugin;
 import io.spine.tools.gradle.PluginScript;
@@ -33,27 +32,20 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.SubstituteLogger;
 
 import java.nio.file.Path;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.logging.Logger;
 
 import static com.google.common.testing.NullPointerTester.Visibility.PACKAGE;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.logging.LogTruth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.slf4j.event.Level.DEBUG;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("PlugableProject should")
@@ -94,36 +86,7 @@ class PlugableProjectTest {
         assertTrue(plugableProject.isApplied(plugin));
     }
 
-    @Test
-    @DisplayName("log if a plugin is applied twice")
-    @Disabled("until found way for testing Flogger")
-    void logOnDuplicate() {
-        GradlePlugin plugin = GradlePlugin.implementedIn(JavaPlugin.class);
-
-        assertFalse(plugableProject.isApplied(plugin));
-
-        plugableProject.apply(plugin);
-        assertTrue(plugableProject.isApplied(plugin));
-
-        Queue<SubstituteLoggingEvent> log = new ArrayDeque<>();
-        Logging.redirect((SubstituteLogger) plugableProject.log(), log);
-
-        plugableProject.apply(plugin);
-        assertTrue(plugableProject.isApplied(plugin));
-
-        assertThat(log).hasSize(1);
-        SubstituteLoggingEvent loggingEvent = log.poll();
-        LogEventSubject assertLoggingEvent = assertThat(loggingEvent);
-        assertLoggingEvent.isNotNull();
-        assertLoggingEvent.hasLevelThat()
-                          .isEqualTo(DEBUG);
-        assertLoggingEvent.hasArgumentsThat()
-                          .asList()
-                          .containsExactly(plugin.className());
-    }
-
     @Nested
-    @DisplayName("log if a plugin is applied twice (Flogger)")
     class LogOnDuplicate {
 
         private GradlePlugin plugin;
@@ -162,6 +125,7 @@ class PlugableProjectTest {
         }
 
         @Test
+        @DisplayName("log if a plugin is applied twice")
         void appliedTwice() {
             plugableProject.apply(plugin);
             assertTrue(plugableProject.isApplied(plugin));

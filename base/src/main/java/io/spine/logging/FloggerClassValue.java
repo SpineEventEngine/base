@@ -21,13 +21,23 @@
 package io.spine.logging;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.backend.LoggerBackend;
+import com.google.common.flogger.backend.Platform;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
  * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
  */
 final class FloggerClassValue extends ClassValue<FluentLogger> {
-
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final FloggerClassValue INSTANCE = new FloggerClassValue();
+
+    private final Constructor<FluentLogger> constructor;
 
     static FluentLogger loggerOf(Class<?> cls) {
         return INSTANCE.get(cls);
@@ -36,10 +46,37 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
     /** Prevent instantiation from outside. */
     private FloggerClassValue() {
         super();
+        this.constructor = ctor();
+    }
+
+    private static Constructor<FluentLogger> ctor() {
+        Class<LoggerBackend> loggerBackendClass = LoggerBackend.class;
+        try {
+            Constructor<FluentLogger> constructor =
+                    FluentLogger.class.getDeclaredConstructor(loggerBackendClass);
+            constructor.setAccessible(true);
+            return constructor;
+        } catch (NoSuchMethodException e) {
+            logger.atSevere()
+                  .withCause(e)
+                  .log("Unable to find constructor `%s(%s)`.",
+                       FluentLogger.class.getName(), loggerBackendClass.getName());
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     @Override
     protected FluentLogger computeValue(Class<?> type) {
-        return FluentLogger.forEnclosingClass();
+        checkNotNull(type);
+        LoggerBackend backend = Platform.getBackend(type.getName());
+        try {
+            FluentLogger logger = constructor.newInstance(backend);
+            return logger;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            logger.atSevere()
+                  .withCause(e)
+                  .log("Unable to create logger.");
+            throw illegalStateWithCauseOf(e);
+        }
     }
 }
