@@ -20,6 +20,8 @@
 
 package io.spine.code;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,6 +83,7 @@ public abstract class FsObject {
      * @return the passed file if it exists
      * @throws IllegalStateException if the file is missing
      */
+    @CanIgnoreReturnValue
     public static File checkExists(File file) {
         checkNotNull(file);
         checkState(file.exists(), "The file `%s` does not exist.", file);

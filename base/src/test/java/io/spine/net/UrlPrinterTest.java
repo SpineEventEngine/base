@@ -62,6 +62,7 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
         super(UrlPrinter.class);
     }
 
+    @SuppressWarnings("UnusedMethod") // used via annotation `@MethodSource`.
     private static Stream<Arguments> recordAndResult() {
         return Stream.of(
                 Arguments.of(

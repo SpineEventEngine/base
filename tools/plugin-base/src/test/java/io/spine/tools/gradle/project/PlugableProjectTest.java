@@ -23,8 +23,8 @@ package io.spine.tools.gradle.project;
 import com.google.common.testing.NullPointerTester;
 import io.spine.io.Resource;
 import io.spine.logging.Logging;
-import io.spine.testing.logging.AssertingHandler;
 import io.spine.testing.logging.LogRecordSubject;
+import io.spine.testing.logging.LoggingTest;
 import io.spine.tools.gradle.GradlePlugin;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Project;
@@ -40,7 +40,6 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
 import static com.google.common.testing.NullPointerTester.Visibility.PACKAGE;
 import static com.google.common.truth.Truth.assertThat;
@@ -87,16 +86,19 @@ class PlugableProjectTest {
     }
 
     @Nested
-    class LogOnDuplicate {
+    class LogOnDuplicate extends LoggingTest {
 
         private GradlePlugin plugin;
-        private AssertingHandler assertingHandler;
+
+        LogOnDuplicate() {
+            super(PlugableProject.class, Logging.debugLevel());
+        }
 
         @BeforeEach
         void setUp() {
             plugin = GradlePlugin.implementedIn(JavaPlugin.class);
             applyPlugin();
-            setupLogger();
+            addHandler();
         }
 
         private void applyPlugin() {
@@ -105,23 +107,9 @@ class PlugableProjectTest {
             assertTrue(plugableProject.isApplied(plugin));
         }
 
-        private void setupLogger() {
-            assertingHandler = new AssertingHandler();
-            assertingHandler.setDebugLevel();
-
-            Logger jdkLogger = jdkLogger();
-            jdkLogger.setUseParentHandlers(false);
-            jdkLogger.addHandler(assertingHandler);
-            jdkLogger.setLevel(Logging.debugLevel());
-        }
-
-        private Logger jdkLogger() {
-            return Logger.getLogger(PlugableProject.class.getName());
-        }
-
         @AfterEach
         void restoreLogger() {
-            jdkLogger().removeHandler(assertingHandler);
+            removeHandler();
         }
 
         @Test
@@ -130,7 +118,7 @@ class PlugableProjectTest {
             plugableProject.apply(plugin);
             assertTrue(plugableProject.isApplied(plugin));
 
-            LogRecordSubject assertLogRecord = assertingHandler.assertRecord();
+            LogRecordSubject assertLogRecord = handler().assertRecord();
             assertLogRecord.isDebug();
             assertLogRecord.hasMessageThat()
                            .contains(plugin.className().value());
