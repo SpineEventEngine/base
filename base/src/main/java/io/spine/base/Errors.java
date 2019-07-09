@@ -20,6 +20,8 @@
 
 package io.spine.base;
 
+import io.spine.validate.ValidationException;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Throwables.getRootCause;
@@ -32,18 +34,6 @@ public final class Errors {
 
     /** Prevents instantiation of this utility class. */
     private Errors() {
-    }
-
-    private static Error.Builder toErrorBuilder(Throwable throwable) {
-        checkNotNull(throwable);
-        String type = throwable.getClass()
-                               .getName();
-        String message = nullToEmpty(throwable.getMessage());
-        String stacktrace = getStackTraceAsString(throwable);
-        return Error.newBuilder()
-                    .setType(type)
-                    .setMessage(message)
-                    .setStacktrace(stacktrace);
     }
 
     /**
@@ -65,10 +55,6 @@ public final class Errors {
         return error.build();
     }
 
-    private static Error.Builder toBuilderCauseOf(Throwable throwable) {
-        return toErrorBuilder(getRootCause(throwable));
-    }
-
     /**
      * Creates an instance by the root cause of the given {@link Throwable} with
      * the given error code.
@@ -83,5 +69,26 @@ public final class Errors {
     public static Error causeOf(Throwable throwable, int errorCode) {
         Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
         return error.build();
+    }
+
+    private static Error.Builder toBuilderCauseOf(Throwable throwable) {
+        return toErrorBuilder(getRootCause(throwable));
+    }
+
+    private static Error.Builder toErrorBuilder(Throwable throwable) {
+        checkNotNull(throwable);
+        String type = throwable.getClass()
+                               .getName();
+        String message = nullToEmpty(throwable.getMessage());
+        String stacktrace = getStackTraceAsString(throwable);
+        Error.Builder result = Error.newBuilder()
+                                     .setType(type)
+                                     .setMessage(message)
+                                     .setStacktrace(stacktrace);
+        if (throwable instanceof ValidationException) {
+            ValidationException validationException = (ValidationException) throwable;
+            result.setValidationError(validationException.asValidationError());
+        }
+        return result;
     }
 }
