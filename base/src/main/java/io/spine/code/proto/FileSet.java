@@ -42,10 +42,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.flogger.LazyArgs.lazy;
+import static io.spine.code.FsObject.checkExists;
 import static io.spine.code.proto.Linker.link;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
@@ -90,8 +90,7 @@ public final class FileSet {
      * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
-        checkNotNull(descriptorSet);
-        checkState(descriptorSet.exists(), "File %s does not exist.", descriptorSet);
+        checkExists(descriptorSet);
         return doParse(descriptorSet);
     }
 

@@ -87,18 +87,18 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
 
     @Override
     public Collection<MethodSpec> generate() {
-        _debug("The methods construction for the map field {} is started.", javaFieldName);
+        _debug().log("The methods construction for the map field `%s` is started.", javaFieldName);
         List<MethodSpec> methods = methods()
                 .add(getter())
                 .addAll(mapMethods())
                 .addAll(rawMapMethods())
                 .build();
-        _debug("The methods construction for the map field {} is finished.", javaFieldName);
+        _debug().log("The methods construction for the map field `%s` is finished.", javaFieldName);
         return methods;
     }
 
     private MethodSpec getter() {
-        _debug("The getter construction for the map field is started.");
+        _debug().log("The getter construction for the map field is started.");
         String methodName = AccessorTemplates.mapGetter()
                                              .format(javaFieldName);
         String returnStatement = returnValue(callMethod(getMessageBuilder(), methodName));
@@ -108,29 +108,29 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
                           .returns(fieldType.getTypeName())
                           .addStatement(returnStatement)
                           .build();
-        _debug("The getter construction for the map field is finished.");
+        _debug().log("The getter construction for the map field is finished.");
         return methodSpec;
     }
 
     private List<MethodSpec> rawMapMethods() {
-        _debug("The raw methods construction for the map field is started.");
+        _debug().log("The raw methods construction for the map field is started.");
         List<MethodSpec> methods = methods(
                 putRawMethod(),
                 putAllRawMethod()
         );
-        _debug("The raw methods construction for the map field is finished.");
+        _debug().log("The raw methods construction for the map field is finished.");
         return methods;
     }
 
     private List<MethodSpec> mapMethods() {
-        _debug("The methods construction for the map field is started.");
+        _debug().log("The methods construction for the map field is started.");
         List<MethodSpec> methods = methods(
                 putMethod(),
                 clearMethod(),
                 putAllMethod(),
                 removeMethod()
         );
-        _debug("The methods construction for the map field is finished.");
+        _debug().log("The methods construction for the map field is finished.");
         return methods;
     }
 

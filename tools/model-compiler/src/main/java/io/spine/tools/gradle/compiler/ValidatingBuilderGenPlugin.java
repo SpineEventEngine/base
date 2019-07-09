@@ -81,7 +81,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
-        _debug("Preparing to generate validating builders.");
+        _debug().log("Preparing to generate validating builders.");
         Action<Task> mainScopeAction =
                 createAction(project,
                              mainProtoFiles(project),
@@ -95,7 +95,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                         .withInputFiles(module.protoSource())
                         .withOutputFiles(module.validatingBuilders())
                         .applyNowTo(project);
-        _debug("Preparing to generate test validating builders.");
+        _debug().log("Preparing to generate test validating builders.");
         Action<Task> testScopeAction =
                 createAction(project,
                              testProtoFiles(project),
@@ -111,7 +111,7 @@ public class ValidatingBuilderGenPlugin extends ProtoPlugin {
                         .withOutputFiles(module.validatingBuilders())
                         .withOutputFiles(module.testValidatingBuilders())
                         .applyNowTo(project);
-        _debug("Validating builders generation phase initialized with tasks: {}, {}.",
+        _debug().log("Validating builders generation phase initialized with tasks: `%s`, `%s`.",
                generateValidator, generateTestValidator);
     }
 

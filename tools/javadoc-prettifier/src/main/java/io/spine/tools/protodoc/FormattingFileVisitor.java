@@ -31,7 +31,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * A {@code FileVisitor} for formatting files.
  */
-class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
+final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
     private final JavadocFormatter formatter;
 
@@ -42,14 +42,15 @@ class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-        log().debug("Performing formatting for the file: {}", path);
+        _debug().log("Performing formatting for the file: `%s`.", path);
         formatter.format(path);
         return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        log().error("Error walking down the file tree for file: {}", file);
+        _error().withCause(exc)
+                .log("Error walking down the file tree for file: `%s`.", file);
         return FileVisitResult.TERMINATE;
     }
 }

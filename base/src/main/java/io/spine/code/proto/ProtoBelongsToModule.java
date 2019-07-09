@@ -42,7 +42,7 @@ public abstract class ProtoBelongsToModule implements Predicate<SourceFile> {
         boolean exists = filePath.toFile()
                                  .exists();
         logger.atFinest()
-              .log("Checking if the file %s exists, result: %b.", filePath, exists);
+              .log("Checking if the file `%s` exists, result: `%b`.", filePath, exists);
         return exists;
     }
 

@@ -37,10 +37,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Streams.stream;
+import static io.spine.code.FsObject.checkExists;
 import static io.spine.code.GooglePackage.notInGooglePackage;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
@@ -99,9 +99,8 @@ public final class FileDescriptors {
      */
     private static List<FileDescriptorProto>
     parseAndFilter(File descriptorSet, Predicate<FileDescriptorProto> filter) {
-        checkArgument(descriptorSet.exists(), "File %s does not exist", descriptorSet);
-
-        _debug().log("Looking up for the proto files matching predicate %s under %s",
+        checkExists(descriptorSet);
+        _debug().log("Looking up for the proto files matching predicate `%s` under `%s`.",
                      filter,
                      descriptorSet);
 
