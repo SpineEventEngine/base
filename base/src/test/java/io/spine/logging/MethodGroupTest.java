@@ -32,7 +32,6 @@ import org.slf4j.helpers.SubstituteLogger;
 import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.logging.Logging.redirect;
 import static io.spine.testing.TestValues.random;
 import static io.spine.testing.logging.LogTruth.assertThat;
 
@@ -84,12 +83,13 @@ abstract class MethodGroupTest<M> {
         return object;
     }
 
+    @SuppressWarnings("deprecation") // ... and remove the class once deprecated API is removed.
     @BeforeEach
     void redirectLogging() {
         object = new LoggingObject();
         queue = Queues.newArrayDeque();
         SubstituteLogger logger = getLogger();
-        redirect(logger, queue);
+        Logging.redirect(logger, queue);
     }
 
     /**
@@ -98,6 +98,7 @@ abstract class MethodGroupTest<M> {
      * @implNote The cast is safe since we run this code under tests.
      * @see LoggingTest#loggerInstance()
      */
+    @SuppressWarnings("deprecation") // ... and remove the class once deprecated API is removed.
     private SubstituteLogger getLogger() {
         return (SubstituteLogger) object.log();
     }
@@ -139,7 +140,6 @@ abstract class MethodGroupTest<M> {
         }
     }
 
-    @SuppressWarnings("MethodWithMultipleLoops")
     private @Nullable Object[] generateArguments() {
         Object[] result;
 

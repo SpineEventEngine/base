@@ -158,7 +158,10 @@ public interface Logging {
 
     /**
      * Redirects logging to the passed logging event queue.
+     *
+     * @deprecated please use Flogger-based API and {@code AssertingHandler}.
      */
+    @Deprecated
     static void redirect(SubstituteLogger log, Queue<SubstituteLoggingEvent> queue) {
         checkNotNull(log);
         checkNotNull(queue);

@@ -24,6 +24,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.IterableSubject;
 import com.google.common.truth.Subject;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.event.SubstituteLoggingEvent;
@@ -78,7 +79,7 @@ public final class LogTruth {
 
     /** Creates a subject for the logging API. */
     public static
-    Subject<DefaultSubject, Object> assertThat(FluentLogger.@Nullable Api actual) {
+    Subject<DefaultSubject, Object> assertThat(@NullableDecl FluentLogger.Api actual) {
         return assert_().that(actual);
     }
 }
