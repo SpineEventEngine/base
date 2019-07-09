@@ -47,7 +47,8 @@ public final class Errors {
     /**
      * Creates an instance by the root cause of the passed {@link Throwable}.
      *
-     * @param throwable the {@code Throwable} to convert
+     * @param throwable
+     *         the {@code Throwable} to convert
      * @return new instance of {@link Error}
      */
     public static Error causeOf(Throwable throwable) {
@@ -59,10 +60,12 @@ public final class Errors {
      * Creates an instance by the root cause of the given {@link Throwable} with
      * the given error code.
      *
-     * <p>The error code may represent a number in an enum or a native error number
+     * <p>The error code may represent a number in an enum or a native error number.
      *
-     * @param throwable the {@code Throwable} to convert
-     * @param errorCode the error code to include in the resulting {@link Error}
+     * @param throwable
+     *         the {@code Throwable} to convert
+     * @param errorCode
+     *         the error code to include in the resulting {@link Error}
      * @return new instance of {@link Error}
      * @see #causeOf(Throwable) as the recommended overload
      */
@@ -75,16 +78,34 @@ public final class Errors {
         return toErrorBuilder(getRootCause(throwable));
     }
 
+    /**
+     * Converts the given {@code Throwable} into an {@link Error} builder.
+     *
+     * <p>The class FQN of the {@code Throwable} becomes the {@code Error.type}.
+     *
+     * <p>The message of the {@code Throwable} becomes the {@code Error.message}.
+     *
+     * <p>The {@code Error.stacktrace} is populated by dumping the stacktrace of
+     * the {@code Throwable} into a string.
+     *
+     * <p>If the {@code Throwable} is a {@link ValidationException},
+     * the {@code Error.validation_error} is populated from the validation exception.
+     *
+     * @param throwable
+     *         the {@code Throwable} to convert
+     * @return new builder of {@link Error}
+     */
     private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
         String type = throwable.getClass()
-                               .getName();
+                               .getCanonicalName();
         String message = nullToEmpty(throwable.getMessage());
         String stacktrace = getStackTraceAsString(throwable);
-        Error.Builder result = Error.newBuilder()
-                                     .setType(type)
-                                     .setMessage(message)
-                                     .setStacktrace(stacktrace);
+        Error.Builder result = Error
+                .newBuilder()
+                .setType(type)
+                .setMessage(message)
+                .setStacktrace(stacktrace);
         if (throwable instanceof ValidationException) {
             ValidationException validationException = (ValidationException) throwable;
             result.setValidationError(validationException.asValidationError());
