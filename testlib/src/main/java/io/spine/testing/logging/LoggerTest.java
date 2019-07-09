@@ -30,11 +30,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Abstract base for tests of logging.
  */
-public abstract class LoggingTest {
+public abstract class LoggerTest {
 
+    /** The class which performs the log operations. */
     private final Class<?> loggingClass;
-    private final Level level;
+    /** The value of the property used by the logger before the test. */
     private boolean useParentHandler;
+    /** The value the logger has before the tests. */
+    private final Level previousLevel;
+    /** The level to be used during the tests. */
+    private final Level level;
+    /** The handler which remembers log records and perform assertions. */
     private @Nullable AssertingHandler handler;
 
     /**
@@ -43,8 +49,9 @@ public abstract class LoggingTest {
      * @param loggingClass the class which performs the logging operations
      * @param level        the level of logging we are interested in the tests
      */
-    protected LoggingTest(Class<?> loggingClass, Level level) {
+    protected LoggerTest(Class<?> loggingClass, Level level) {
         this.loggingClass = checkNotNull(loggingClass);
+        this.previousLevel = jdkLogger().getLevel();
         this.level = checkNotNull(level);
     }
 
@@ -52,11 +59,22 @@ public abstract class LoggingTest {
         return checkNotNull(handler, "The handler is not available. Please call `addHandler()`.");
     }
 
+    protected final Class<?> loggingClass() {
+        return loggingClass;
+    }
+
     /**
      * Obtains the level of logging assigned for the tests.
      */
     protected final Level level() {
         return level;
+    }
+
+    /**
+     * Obtains the level of the logging set for the logging class before the tests.
+     */
+    protected final Level previousLevel() {
+        return previousLevel;
     }
 
     private Logger jdkLogger() {
@@ -90,10 +108,15 @@ public abstract class LoggingTest {
     /**
      * Removes the handler assigned in {@link #addHandler()} and restores the value
      * of using {@linkplain Logger#getUseParentHandlers() parent handlers}.
+     *
+     * <p>The {@linkplain #handler handler} is not available after this method is called until
+     * it is created and added back by {@link #addHandler()}.
      */
     protected final void removeHandler() {
         Logger jdkLogger = jdkLogger();
         jdkLogger.removeHandler(handler);
         jdkLogger.setUseParentHandlers(useParentHandler);
+        jdkLogger.setLevel(previousLevel);
+        this.handler = null;
     }
 }

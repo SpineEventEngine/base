@@ -24,7 +24,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.io.Resource;
 import io.spine.logging.Logging;
 import io.spine.testing.logging.LogRecordSubject;
-import io.spine.testing.logging.LoggingTest;
+import io.spine.testing.logging.LoggerTest;
 import io.spine.tools.gradle.GradlePlugin;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Project;
@@ -86,7 +86,7 @@ class PlugableProjectTest {
     }
 
     @Nested
-    class LogOnDuplicate extends LoggingTest {
+    class LogOnDuplicate extends LoggerTest {
 
         private GradlePlugin plugin;
 
