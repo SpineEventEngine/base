@@ -58,7 +58,7 @@ final class MutingLoggerTap {
         Formatter formatter = firstHandler.getFormatter();
         this.memoizingStream = new MemoizingStream();
         this.handler = new StreamHandler(memoizingStream, formatter);
-        this.handler.setLevel(handler.getLevel());
+        this.handler.setLevel(firstHandler.getLevel());
 
         // Remember configuration of the logger.
         this.usedParentHandlers = logger.getUseParentHandlers();
