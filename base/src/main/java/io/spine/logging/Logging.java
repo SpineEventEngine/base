@@ -34,7 +34,6 @@ import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.logging.LogMessages.logThrowable;
-import static io.spine.logging.LoggerClassValue.loggerOf;
 import static java.lang.String.format;
 
 /**
@@ -143,7 +142,7 @@ public interface Logging {
      */
     @Deprecated
     static Logger get(Class<?> cls) {
-        return loggerOf(cls);
+        return LoggerClassValue.loggerOf(cls);
     }
 
     /**
@@ -153,7 +152,7 @@ public interface Logging {
      */
     @Deprecated
     default Logger log() {
-        return loggerOf(getClass());
+        return LoggerClassValue.loggerOf(getClass());
     }
 
     /**
@@ -166,24 +165,6 @@ public interface Logging {
         checkNotNull(log);
         checkNotNull(queue);
         log.setDelegate(new EventRecodingLogger(log, queue));
-    }
-
-    /**
-     * Mutes all logging done with this utility.
-     *
-     * <p>To enable the logging back, use {@link #unmute()}.
-     */
-    static void mute() {
-        LoggerClassValue.muteAll();
-    }
-
-    /**
-     * Unmutes the logging done with this utility.
-     *
-     * <p>In case the logging wasn't {@linkplain #mute() muted}, does nothing.
-     */
-    static void unmute() {
-        LoggerClassValue.unmuteAll();
     }
 
     /*

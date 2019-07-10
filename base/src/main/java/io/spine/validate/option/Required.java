@@ -97,7 +97,7 @@ public class Required<@ImmutableTypeParameter T>
     void checkUsage(FieldDescriptor field) {
         ifMissing.valueFrom(field)
                  .ifPresent(ifMissingOption -> _warn().log(
-                         "(if_missing) option is set without (required) = true"
+                         "`(if_missing)` option is set without `(required) = true`."
                  ));
         checkCanBeRequired(field);
     }

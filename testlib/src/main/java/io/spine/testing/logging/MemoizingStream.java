@@ -20,11 +20,9 @@
 
 package io.spine.testing.logging;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 
 /**
  * An {@link OutputStream} which stores its input.
@@ -32,42 +30,30 @@ import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 final class MemoizingStream extends OutputStream {
 
     private static final int ONE_MEBI_BYTE = 1024 * 1024;
-
-    private final List<Byte> memory = newArrayListWithExpectedSize(ONE_MEBI_BYTE);
+    private final ByteArrayOutputStream memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
 
     @Override
     public synchronized void write(int b) {
-        /*
-           According to the `OutputStream` contract, a negative value may represent the end of
-           the stream. The actual data is the lowest 8 bits of the int.
-         */
-        if (b >= 0) {
-            @SuppressWarnings("NumericCastThatLosesPrecision")
-                // Adheres to the OutputStream contract.
-            byte byteValue = (byte) b;
-            memory.add(byteValue);
-        }
+        memory.write(b);
     }
 
     /**
      * Clears the memoized input.
      */
-    synchronized void clear() {
-        memory.clear();
+    synchronized void reset() {
+        memory.reset();
     }
 
     /**
-     * Copies the memoized input into the given stream and {@linkplain #clear() clears} memory.
+     * Copies the memoized input into the given stream and {@linkplain #reset() clears} memory.
      *
      * @param stream the target stream
      * @throws IOException if the target stream throws an {@link IOException} on a write operation
      */
     synchronized void flushTo(OutputStream stream) throws IOException {
-        byte[] buffer = new byte[memory.size()];
-        for (int i = 0; i < memory.size(); i++) {
-            buffer[i] = memory.get(i);
-        }
-        stream.write(buffer);
-        clear();
+        memory.flush();
+        byte[] bytes = memory.toByteArray();
+        stream.write(bytes);
+        reset();
     }
 }

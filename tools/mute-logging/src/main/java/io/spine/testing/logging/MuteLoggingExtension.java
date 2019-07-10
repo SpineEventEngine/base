@@ -20,13 +20,11 @@
 
 package io.spine.testing.logging;
 
-import io.spine.logging.Logging;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Optional;
 
 /**
@@ -40,35 +38,27 @@ import java.util.Optional;
  */
 public final class MuteLoggingExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private final MemoizingStream memoizingStream = new MemoizingStream();
-    private final PrintStream temporaryOutputStream = new PrintStream(memoizingStream);
-    private final ProgramOutput temporaryOutput = ProgramOutput.into(temporaryOutputStream);
+    private static final String ROOT = "";
+    private final MutingLoggerTap loggerTap;
+    /**
+     * Creates new instance of the extension, redirecting to the stream which stores the output
+     * into memory.
+     */
+    public MuteLoggingExtension() {
+        this.loggerTap = new MutingLoggerTap(ROOT);
+    }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        mute();
+        loggerTap.install();
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        unmute(context);
-    }
-
-    private void mute() {
-        Logging.mute();
-        temporaryOutput.install();
-    }
-
-    private void unmute(ExtensionContext context) throws IOException {
-        ProgramOutput standardOutput = ProgramOutput.fromSystem();
-        standardOutput.install();
-        Logging.unmute();
-
         Optional<Throwable> exception = context.getExecutionException();
         if (exception.isPresent()) {
-            memoizingStream.flushTo(standardOutput.err());
-        } else {
-            memoizingStream.clear();
+            loggerTap.flushToSystemErr();
         }
+        loggerTap.restore();
     }
 }

@@ -85,7 +85,7 @@ final class MethodFactories implements Logging {
             Class<?> factory = externalClassLoader.loadClass(fqn);
             return factory;
         } catch (ClassNotFoundException e) {
-            _error().log("Unable to resolve MethodFactory %s.", fqn);
+            _error().log("Unable to resolve `MethodFactory` `%s`.", fqn);
             throw new MethodFactoryInstantiationException(fqn, e);
         }
     }

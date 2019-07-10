@@ -67,7 +67,7 @@ class MemoizingStreamTest {
         byte[] input = randomBytes(4);
 
         stream.write(input);
-        stream.clear();
+        stream.reset();
 
         checkMemoized(stream, EMPTY_BYTES);
     }
@@ -83,8 +83,8 @@ class MemoizingStreamTest {
         checkMemoized(stream, input);
         checkMemoized(stream, EMPTY_BYTES);
 
-        stream.clear();
-        stream.clear();
+        stream.reset();
+        stream.reset();
 
         checkMemoized(stream, EMPTY_BYTES);
     }
