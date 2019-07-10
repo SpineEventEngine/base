@@ -54,5 +54,6 @@ final class MemoizingStream extends OutputStream {
         memory.flush();
         byte[] bytes = memory.toByteArray();
         stream.write(bytes);
+        reset();
     }
 }

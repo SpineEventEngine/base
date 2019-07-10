@@ -100,7 +100,7 @@ class MemoizingStreamTest {
     }
 
     @Test
-    @DisplayName("ignore negative values")
+    @DisplayName("store only lower bits if `int`")
     void negatives() throws IOException {
         stream.write(-1);
         stream.write(-42);
@@ -108,7 +108,7 @@ class MemoizingStreamTest {
         stream.write(0);
         stream.write(MIN_VALUE);
 
-        checkMemoized(new byte[]{(byte) 10, (byte) 0});
+        checkMemoized(new byte[]{(byte)-1, (byte)-42, (byte) 10, (byte) 0, MIN_VALUE});
     }
 
     private void checkMemoized(byte[] expected) throws IOException {
@@ -118,7 +118,7 @@ class MemoizingStreamTest {
 
         assertThat(actualBytes)
                 .asList()
-                .containsAtLeastElementsIn(asList(expected));
+                .containsExactlyElementsIn(asList(expected));
     }
 
     private static byte[] randomBytes(int count) {
