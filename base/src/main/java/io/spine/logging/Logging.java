@@ -33,7 +33,6 @@ import java.util.Queue;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.logging.LogMessages.logThrowable;
 import static java.lang.String.format;
 
 /**
@@ -405,7 +404,7 @@ public interface Logging {
         checkNotNull(params);
         Logger log = log();
         if (log.isWarnEnabled()) {
-            logThrowable(log::warn, t, fmt, params);
+            LogMessages.logThrowable(log::warn, t, fmt, params);
         }
     }
 
@@ -472,7 +471,7 @@ public interface Logging {
         checkNotNull(params);
         Logger log = log();
         if (log.isErrorEnabled()) {
-            logThrowable(log::error, t, fmt, params);
+            LogMessages.logThrowable(log::error, t, fmt, params);
         }
     }
 }

@@ -29,7 +29,10 @@ import java.util.function.BiConsumer;
 /**
  * Utilities internal to this package that are used by {@link Logging} interface default methods
  * and should not be exposed in the public API.
+ *
+ * @deprecated Please use Flogger-based logging API.
  */
+@Deprecated
 final class LogMessages {
 
     /** Prevents instantiation of this utility class. */
