@@ -60,21 +60,31 @@ final class MutingLoggerTap {
     }
 
     /**
-     * Creates a new handler copying configuration from the first handler of the logger.
+     * Creates a new handler copying configuration from the first handler of the logger found in
+     * the nesting chain.
      *
      * @see #replaceHandlers()
      */
     private void createHandler() {
-        Logger logger = logger();
-        Handler firstHandler = logger.getHandlers()[0];
-        Formatter formatter = firstHandler.getFormatter();
+        Handler currentHandler = findHandler();
+        Formatter formatter = currentHandler.getFormatter();
         handler = new StreamHandler(memoizingStream, formatter);
         try {
-            handler.setEncoding(firstHandler.getEncoding());
+            handler.setEncoding(currentHandler.getEncoding());
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
-        handler.setLevel(firstHandler.getLevel());
+        handler.setLevel(currentHandler.getLevel());
+    }
+
+    private Handler findHandler() {
+        Logger logger = logger();
+        while (logger.getHandlers().length == 0) {
+            if (logger.getUseParentHandlers()) {
+                logger = logger.getParent();
+            }
+        }
+        return logger.getHandlers()[0];
     }
 
     /**
@@ -89,18 +99,24 @@ final class MutingLoggerTap {
     private void replaceHandlers() {
         // Remember configuration of the logger.
         Logger logger = logger();
-        this.usedParentHandlers = logger.getUseParentHandlers();
-        this.previousHandlers = ImmutableList.copyOf(logger.getHandlers());
+        usedParentHandlers = logger.getUseParentHandlers();
+        previousHandlers = ImmutableList.copyOf(logger.getHandlers());
         for (Handler handler : previousHandlers) {
             logger.removeHandler(handler);
         }
         logger.addHandler(handler());
+        logger.setUseParentHandlers(false);
     }
 
     /**
-     * Restores the associated logger to the previous state.
+     * Restores the associated logger to the previous state, if the tap was installed.
+     *
+     * <p>Does nothing if the tap was not installed.
      */
     synchronized void remove() {
+        if (handler == null) { // not installed.
+            return;
+        }
         Logger logger = logger();
         logger.removeHandler(handler());
         logger.setUseParentHandlers(usedParentHandlers);
@@ -132,6 +148,6 @@ final class MutingLoggerTap {
     }
 
     private Logger logger() {
-        return Logger.getLogger(this.name);
+        return Logger.getLogger(name);
     }
 }
