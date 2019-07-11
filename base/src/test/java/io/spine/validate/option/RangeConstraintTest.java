@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName("Range constraint should")
 class RangeConstraintTest {
 

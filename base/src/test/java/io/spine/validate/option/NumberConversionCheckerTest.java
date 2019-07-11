@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName("NumberConversionChecker should")
 final class NumberConversionCheckerTest extends UtilityClassTest<NumberConversionChecker> {
 

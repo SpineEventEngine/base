@@ -194,6 +194,7 @@ final class RequiredFieldTest extends MessageValidatorTest {
         }
     }
 
+    @SuppressWarnings("unused") // invoked via `@MethodSource`.
     private static Stream<ComplexRequiredFields> invalidComplexMessages() {
         ComplexRequiredFields.FifthField.Builder fifthFieldValue =
                 ComplexRequiredFields.FifthField.newBuilder()
