@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -53,14 +54,41 @@ final class MutingLoggerTap {
      * Installs the tap on the logger.
      */
     synchronized void install() {
+        memoizingStream = new MemoizingStream();
+        createHandler();
+        replaceHandlers();
+    }
+
+    /**
+     * Creates a new handler copying configuration from the first handler of the logger.
+     *
+     * @see #replaceHandlers()
+     */
+    private void createHandler() {
         Logger logger = logger();
         Handler firstHandler = logger.getHandlers()[0];
         Formatter formatter = firstHandler.getFormatter();
-        this.memoizingStream = new MemoizingStream();
-        this.handler = new StreamHandler(memoizingStream, formatter);
-        this.handler.setLevel(firstHandler.getLevel());
+        handler = new StreamHandler(memoizingStream, formatter);
+        try {
+            handler.setEncoding(firstHandler.getEncoding());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+        handler.setLevel(firstHandler.getLevel());
+    }
 
+    /**
+     * Replaces all handlers of the logger with the {@link #handler() tapping handler}.
+     *
+     * <p>The handlers and the flag for using {@linkplain Logger#getUseParentHandlers()
+     * parent handlers} is remembered and then restored when the tap is
+     * {@linkplain #remove() removed}.
+     *
+     * @see #createHandler()
+     */
+    private void replaceHandlers() {
         // Remember configuration of the logger.
+        Logger logger = logger();
         this.usedParentHandlers = logger.getUseParentHandlers();
         this.previousHandlers = ImmutableList.copyOf(logger.getHandlers());
         for (Handler handler : previousHandlers) {
@@ -72,7 +100,7 @@ final class MutingLoggerTap {
     /**
      * Restores the associated logger to the previous state.
      */
-    synchronized void restore() {
+    synchronized void remove() {
         Logger logger = logger();
         logger.removeHandler(handler());
         logger.setUseParentHandlers(usedParentHandlers);

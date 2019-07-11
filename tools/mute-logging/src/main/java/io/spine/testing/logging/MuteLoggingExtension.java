@@ -59,6 +59,6 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
         if (exception.isPresent()) {
             loggerTap.flushToSystemErr();
         }
-        loggerTap.restore();
+        loggerTap.remove();
     }
 }
