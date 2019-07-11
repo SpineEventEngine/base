@@ -20,6 +20,8 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,10 +33,17 @@ final class MemoizingStream extends OutputStream {
 
     private static final int ONE_MEBI_BYTE = 1024 * 1024;
     private final ByteArrayOutputStream memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
+    private long size;
 
     @Override
     public synchronized void write(int b) {
         memory.write(b);
+        size = size + 1;
+    }
+
+    @VisibleForTesting
+    synchronized long size() {
+        return size;
     }
 
     /**
@@ -42,6 +51,7 @@ final class MemoizingStream extends OutputStream {
      */
     synchronized void reset() {
         memory.reset();
+        size = 0;
     }
 
     /**

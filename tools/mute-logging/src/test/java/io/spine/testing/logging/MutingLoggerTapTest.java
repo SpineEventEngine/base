@@ -26,9 +26,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.TestValues.randomString;
 
 @DisplayName("MutingLoggerTap should")
 class MutingLoggerTapTest extends SystemOutputTest {
@@ -93,6 +96,42 @@ class MutingLoggerTapTest extends SystemOutputTest {
             logger().severe(expectedError);
 
             assertThat(loggingOutput()).doesNotContain(expectedError);
+        }
+
+        @Nested
+        @DisplayName("flush to `OutputStream`")
+        class Flushing {
+
+            private ByteArrayOutputStream stream;
+            private String logMessage;
+            private String errorMessage;
+
+            @BeforeEach
+            void flush() throws IOException {
+                stream = new ByteArrayOutputStream();
+                logMessage = "Testing log flushing. Random suffix: " + randomString();
+                logger().info(logMessage);
+                errorMessage = "Testing error flushing. Random suffix: " + randomString();
+                logger().severe(errorMessage);
+                tap.flushTo(stream);
+            }
+
+            @Test
+            @DisplayName("accumulated output")
+            void ofRegularLogs() {
+                String fo = flushedOutput();
+                assertThat(fo).contains(logMessage);
+            }
+
+            @Test
+            @DisplayName("accumulated error output")
+            void ofErrorLogs() {
+                String fo = flushedOutput();
+                assertThat(fo).contains(errorMessage);
+            }
+            String flushedOutput() {
+                return new String(stream.toByteArray());
+            }
         }
     }
 

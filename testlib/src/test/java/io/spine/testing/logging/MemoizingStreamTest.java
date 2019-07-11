@@ -23,6 +23,7 @@ package io.spine.testing.logging;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -49,6 +50,44 @@ class MemoizingStreamTest {
     @AfterEach
     void closeStream() throws IOException {
         stream.close();
+    }
+
+    @Nested
+    @DisplayName("provide size of the stream")
+    class Size {
+
+        private int size;
+        private byte[] input;
+
+        @BeforeEach
+        void generateInput() {
+            size = random(1000);
+            input = randomBytes(size);
+        }
+
+        @Test
+        @DisplayName("equal to zero")
+        void nothingWritten() {
+            assertThat(stream.size()).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("equal to size of written bytes")
+        void inputWritten() throws IOException {
+            stream.write(input);
+
+            assertThat(stream.size())
+                    .isEqualTo(size);
+        }
+
+        @Test
+        @DisplayName("equal to zero after `reset()`")
+        void clearOnReset() throws IOException {
+            stream.write(input);
+            stream.reset();
+
+            assertThat(stream.size()).isEqualTo(0);
+        }
     }
 
     @Test

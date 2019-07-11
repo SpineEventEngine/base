@@ -20,10 +20,12 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -132,7 +134,12 @@ final class MutingLoggerTap {
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     synchronized void flushToSystemErr() throws IOException {
-        stream().flushTo(System.err);
+        flushTo(System.err);
+    }
+
+    @VisibleForTesting
+    synchronized void flushTo(OutputStream outputStream) throws IOException {
+        stream().flushTo(outputStream);
     }
 
     private Handler handler() {
