@@ -98,6 +98,18 @@ class MutingLoggerTapTest extends SystemOutputTest {
             assertThat(standardLoggingOutput()).doesNotContain(expectedError);
         }
 
+        @Test
+        @DisplayName("redirecting to `MemoizingStream`")
+        void redirection() {
+            assertThat(tap.streamSize()).isEqualTo(0);
+            String msg = randomString();
+            Logger logger = logger();
+
+            logger.info(msg);
+
+            assertThat(tap.streamSize() > 0).isTrue();
+        }
+
         @Nested
         @DisplayName("flush to `OutputStream`")
         class Flushing {

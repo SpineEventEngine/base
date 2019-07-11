@@ -142,6 +142,11 @@ final class MutingLoggerTap {
         stream().flushTo(outputStream);
     }
 
+    @VisibleForTesting
+    synchronized long streamSize() {
+        return stream().size();
+    }
+
     private Handler handler() {
         return checkNotNull(handler);
     }
