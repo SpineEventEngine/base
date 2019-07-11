@@ -25,6 +25,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * An {@link OutputStream} which stores its input.
@@ -32,26 +33,45 @@ import java.io.OutputStream;
 final class MemoizingStream extends OutputStream {
 
     private static final int ONE_MEBI_BYTE = 1024 * 1024;
-    private final ByteArrayOutputStream memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
-    private long size;
+    private final PrintStream delegate;
+    private final ByteArrayOutputStream memory;
+
+    MemoizingStream() {
+        super();
+        memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
+        delegate = new PrintStream(memory, true);
+    }
 
     @Override
-    public synchronized void write(int b) {
-        memory.write(b);
-        size = size + 1;
+    public void write(int b) {
+        delegate.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        delegate.write(b);
+    }
+
+    @Override
+    public void flush() {
+        delegate.flush();
+    }
+
+    @Override
+    public void close() {
+        delegate.close();
     }
 
     @VisibleForTesting
-    synchronized long size() {
-        return size;
+    long size() {
+        return memory.size();
     }
 
     /**
      * Clears the memoized input.
      */
-    synchronized void reset() {
+    void reset() {
         memory.reset();
-        size = 0;
     }
 
     /**
@@ -61,7 +81,6 @@ final class MemoizingStream extends OutputStream {
      * @throws IOException if the target stream throws an {@link IOException} on a write operation
      */
     synchronized void flushTo(OutputStream stream) throws IOException {
-        memory.flush();
         byte[] bytes = memory.toByteArray();
         stream.write(bytes);
         reset();

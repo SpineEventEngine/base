@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -142,7 +143,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
                 assertThat(fo).contains(errorMessage);
             }
             String flushedOutput() {
-                return new String(stream.toByteArray());
+                return new String(stream.toByteArray(), Charset.defaultCharset());
             }
         }
     }
