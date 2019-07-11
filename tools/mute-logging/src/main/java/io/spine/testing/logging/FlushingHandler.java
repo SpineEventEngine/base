@@ -20,51 +20,23 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
 
 /**
- * An {@link OutputStream} which stores its input.
+ * Flushes the output when publishing records.
  */
-final class MemoizingStream extends OutputStream {
+final class FlushingHandler extends StreamHandler {
 
-    private static final int ONE_MEBI_BYTE = 1024 * 1024;
-    private final ByteArrayOutputStream memory;
-
-    MemoizingStream() {
-        super();
-        memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
+    FlushingHandler(OutputStream out, Formatter formatter) {
+        super(out, formatter);
     }
 
     @Override
-    public void write(int b) {
-        memory.write(b);
-    }
-
-    @VisibleForTesting
-    long size() {
-        return memory.size();
-    }
-
-    /**
-     * Clears the memoized input.
-     */
-    void reset() {
-        memory.reset();
-    }
-
-    /**
-     * Copies the memoized input into the given stream and {@linkplain #reset() clears} memory.
-     *
-     * @param stream the target stream
-     * @throws IOException if the target stream throws an {@link IOException} on a write operation
-     */
-    synchronized void flushTo(OutputStream stream) throws IOException {
-        byte[] bytes = memory.toByteArray();
-        stream.write(bytes);
-        reset();
+    public synchronized void publish(LogRecord record) {
+        super.publish(record);
+        flush();
     }
 }

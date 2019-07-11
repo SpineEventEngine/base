@@ -30,7 +30,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -70,7 +69,7 @@ final class MutingLoggerTap {
     private void createHandler() {
         Handler currentHandler = findHandler();
         Formatter formatter = currentHandler.getFormatter();
-        handler = new StreamHandler(memoizingStream, formatter);
+        handler = new FlushingHandler(stream(), formatter);
         try {
             handler.setEncoding(currentHandler.getEncoding());
         } catch (UnsupportedEncodingException e) {
