@@ -25,8 +25,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.Logging;
 import io.spine.testing.TestValues;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,9 +32,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstances;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -44,7 +40,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,31 +47,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("UseOfSystemOutOrSystemErr") // Test std I/O overloading.
 @DisplayName("MuteLogging JUnit Extension should")
-class MuteLoggingExtensionTest {
+class MuteLoggingExtensionTest extends SystemOutputTest {
 
     private MuteLoggingExtension extension;
 
-    private static final PrintStream originalOut = System.out;
-    private static final PrintStream originalErr = System.err;
-    private static final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    private static final ByteArrayOutputStream err = new ByteArrayOutputStream();
-
-    @BeforeAll
-    static void init() {
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-    }
-
-    @AfterAll
-    static void tearDown() {
-        System.setOut(originalOut);
-        System.setErr(originalErr);
-    }
-
     @BeforeEach
     void setUp() {
-        out.reset();
-        err.reset();
+        out().reset();
+        err().reset();
         extension = new MuteLoggingExtension();
     }
 
@@ -101,10 +79,9 @@ class MuteLoggingExtensionTest {
         System.out.flush();
         System.err.flush();
 
-        assertEquals(0, out.size());
-        String actualErrorOutput = new String(err.toByteArray(), UTF_8);
-        assertThat(actualErrorOutput)
-                .contains(errorMessage);
+        assertEquals(0, out().size());
+        String actualErrorOutput = errorOutput();
+        assertThat(actualErrorOutput).contains(errorMessage);
     }
 
     @Test
@@ -117,8 +94,8 @@ class MuteLoggingExtensionTest {
 
         extension.afterEach(successfulContext());
 
-        assertEquals(0, out.size());
-        assertEquals(0, err.size());
+        assertEquals(0, out().size());
+        assertEquals(0, err().size());
     }
 
     private static ExtensionContext successfulContext() {

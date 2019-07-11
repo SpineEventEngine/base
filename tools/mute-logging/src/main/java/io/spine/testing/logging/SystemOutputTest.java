@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Abstract base for tests that need to substitute {@link System#out} and {@link System#err}
  * for analyzing logging output.
  */
-@SuppressWarnings("UseOfSystemOutOrSystemErr") // Test std I/O overloading.
+@SuppressWarnings("UseOfSystemOutOrSystemErr") // Test std I/O substitution.
 public abstract class SystemOutputTest {
 
     private static final PrintStream originalOut = System.out;
@@ -77,7 +77,7 @@ public abstract class SystemOutputTest {
         return toString(err);
     }
 
-    protected static String loggingOutput() {
+    protected static String standardLoggingOutput() {
         return toString(err);
     }
 
