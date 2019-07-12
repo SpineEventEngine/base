@@ -33,7 +33,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("`AssertingHandler` should")
+@DisplayName("AssertingHandler should")
 class AssertingHandlerTest {
 
     private static final Logger logger = Logger.getLogger(AssertingHandlerTest.class.getName());
