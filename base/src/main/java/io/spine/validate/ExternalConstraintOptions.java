@@ -109,7 +109,7 @@ public final class ExternalConstraintOptions implements Serializable {
         static void updateFrom(Iterable<ExternalMessageConstraint> externalConstraints) {
             checkNotNull(externalConstraints);
             logger.atFine()
-                  .log("Updating external constraint options from constraints %s.",
+                  .log("Updating external constraint options from constraints `%s`.",
                        externalConstraints);
             ImmutableMap<FieldContext, FieldOptions> currentOptions = instance.options;
             ImmutableMap<FieldContext, FieldOptions> newOptions = new Builder()
