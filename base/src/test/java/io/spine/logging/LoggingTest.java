@@ -98,7 +98,7 @@ class LoggingTest {
             assertApi(object::_error, Level.SEVERE);
         }
 
-        void assertApi(Supplier<FluentLogger.Api> method,
+        private void assertApi(Supplier<FluentLogger.Api> method,
                             Level expectedLevel) {
             LoggerConfig.of(logger)
                         .setLevel(expectedLevel);
