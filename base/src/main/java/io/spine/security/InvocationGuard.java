@@ -69,7 +69,7 @@ public final class InvocationGuard {
 
     private static SecurityException nonAllowedCaller(@ClassGetName Class callingClass) {
         String msg = format(
-                "The class %s is not allowed to perform this operation.", callingClass
+                "The class `%s` is not allowed to perform this operation.", callingClass.getName()
         );
         throw new SecurityException(msg);
     }

@@ -20,6 +20,8 @@
 
 package io.spine.base;
 
+import io.spine.validate.ValidationException;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Throwables.getRootCause;
@@ -34,18 +36,6 @@ public final class Errors {
     private Errors() {
     }
 
-    private static Error.Builder toErrorBuilder(Throwable throwable) {
-        checkNotNull(throwable);
-        String type = throwable.getClass()
-                               .getName();
-        String message = nullToEmpty(throwable.getMessage());
-        String stacktrace = getStackTraceAsString(throwable);
-        return Error.newBuilder()
-                    .setType(type)
-                    .setMessage(message)
-                    .setStacktrace(stacktrace);
-    }
-
     /**
      * Creates new instance of {@link Error} by the passed {@code Throwable}.
      */
@@ -57,11 +47,30 @@ public final class Errors {
     /**
      * Creates an instance by the root cause of the passed {@link Throwable}.
      *
-     * @param throwable the {@code Throwable} to convert
+     * @param throwable
+     *         the {@code Throwable} to convert
      * @return new instance of {@link Error}
      */
     public static Error causeOf(Throwable throwable) {
         Error.Builder error = toBuilderCauseOf(throwable);
+        return error.build();
+    }
+
+    /**
+     * Creates an instance by the root cause of the given {@link Throwable} with
+     * the given error code.
+     *
+     * <p>The error code may represent a number in an enum or a native error number.
+     *
+     * @param throwable
+     *         the {@code Throwable} to convert
+     * @param errorCode
+     *         the error code to include in the resulting {@link Error}
+     * @return new instance of {@link Error}
+     * @see #causeOf(Throwable) as the recommended overload
+     */
+    public static Error causeOf(Throwable throwable, int errorCode) {
+        Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
         return error.build();
     }
 
@@ -70,18 +79,37 @@ public final class Errors {
     }
 
     /**
-     * Creates an instance by the root cause of the given {@link Throwable} with
-     * the given error code.
+     * Converts the given {@code Throwable} into an {@link Error} builder.
      *
-     * <p>The error code may represent a number in an enum or a native error number
+     * <p>The class FQN of the {@code Throwable} becomes the {@code Error.type}.
      *
-     * @param throwable the {@code Throwable} to convert
-     * @param errorCode the error code to include in the resulting {@link Error}
-     * @return new instance of {@link Error}
-     * @see #causeOf(Throwable) as the recommended overload
+     * <p>The message of the {@code Throwable} becomes the {@code Error.message}.
+     *
+     * <p>The {@code Error.stacktrace} is populated by dumping the stacktrace of
+     * the {@code Throwable} into a string.
+     *
+     * <p>If the {@code Throwable} is a {@link ValidationException},
+     * the {@code Error.validation_error} is populated from the validation exception.
+     *
+     * @param throwable
+     *         the {@code Throwable} to convert
+     * @return new builder of {@link Error}
      */
-    public static Error causeOf(Throwable throwable, int errorCode) {
-        Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
-        return error.build();
+    private static Error.Builder toErrorBuilder(Throwable throwable) {
+        checkNotNull(throwable);
+        String type = throwable.getClass()
+                               .getCanonicalName();
+        String message = nullToEmpty(throwable.getMessage());
+        String stacktrace = getStackTraceAsString(throwable);
+        Error.Builder result = Error
+                .newBuilder()
+                .setType(type)
+                .setMessage(message)
+                .setStacktrace(stacktrace);
+        if (throwable instanceof ValidationException) {
+            ValidationException validationException = (ValidationException) throwable;
+            result.setValidationError(validationException.asValidationError());
+        }
+        return result;
     }
 }

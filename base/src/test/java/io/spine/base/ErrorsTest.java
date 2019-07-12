@@ -20,10 +20,14 @@
 
 package io.spine.base;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.testing.UtilityClassTest;
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Errors.causeOf;
 import static io.spine.base.Errors.fromThrowable;
 import static io.spine.base.Identifier.newUuid;
@@ -38,7 +42,7 @@ class ErrorsTest extends UtilityClassTest<Errors> {
 
     @Test
     @DisplayName("convert cause of throwable to Error")
-    void convert_cause_of_throwable_to_Error() {
+    void convertCauseOfThrowableToError() {
         int errorCode = 404;
         String errorMessage = newUuid();
 
@@ -55,12 +59,23 @@ class ErrorsTest extends UtilityClassTest<Errors> {
 
     @Test
     @DisplayName("convert throwable to Error")
-    void convert_throwable_to_Error() {
+    void convertThrowableToError() {
         String errorMessage = newUuid();
         RuntimeException throwable = new RuntimeException(errorMessage);
 
         Error error = fromThrowable(throwable);
 
         assertEquals(errorMessage, error.getMessage());
+    }
+
+    @Test
+    @DisplayName("convert ValidationException into an error with validation_error")
+    void validation() {
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .build();
+        ValidationException exception = new ValidationException(ImmutableList.of(violation));
+        Error error = fromThrowable(exception);
+        assertThat(error.getValidationError()).isEqualTo(exception.asValidationError());
     }
 }
