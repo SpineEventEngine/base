@@ -156,7 +156,7 @@ public final class ExternalConstraints implements Serializable {
         private static void updateFrom(ImmutableSet<MessageType> types) {
             checkNotNull(types);
             logger.atFine()
-                  .log("Updating external constraints from types %s.", types);
+                  .log("Updating external constraints from types `%s`.", types);
             ImmutableSet<ExternalMessageConstraint> currentConstraints = instance.constraints;
             ImmutableSet<ExternalMessageConstraint> newConstraints = constraintsFor(types);
             Set<ExternalMessageConstraint> constraints =
