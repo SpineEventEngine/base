@@ -40,7 +40,7 @@ public abstract class LoggerTest {
     private final Level previousLevel;
     /** The level to be used during the tests. */
     private final Level level;
-    /** The handler which remembers log records and perform assertions. */
+    /** The handler which remembers log records and performs assertions. */
     private @Nullable AssertingHandler handler;
 
     /**
