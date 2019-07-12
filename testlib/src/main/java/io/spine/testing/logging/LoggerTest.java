@@ -35,6 +35,8 @@ public abstract class LoggerTest {
 
     /** The class which performs the log operations. */
     private final Class<?> loggingClass;
+    /** The helper to set logger configuration. */
+    private final LoggerConfig config;
     /** The value of the property used by the logger before the test. */
     private boolean useParentHandler;
     /** The value the logger had before the tests. */
@@ -54,7 +56,8 @@ public abstract class LoggerTest {
      */
     protected LoggerTest(Class<?> loggingClass, Level level) {
         this.loggingClass = checkNotNull(loggingClass);
-        this.previousLevel = jdkLogger().getLevel();
+        this.config = LoggerConfig.getConfig(this.loggingClass);
+        this.previousLevel = config.getLevel();
         this.level = checkNotNull(level);
     }
 
@@ -91,10 +94,6 @@ public abstract class LoggerTest {
         return previousLevel;
     }
 
-    private Logger jdkLogger() {
-        return Logger.getLogger(loggingClass.getName());
-    }
-
     /**
      * Creates and assigns an {@link AssertingHandler} to the logger of the class.
      *
@@ -112,9 +111,7 @@ public abstract class LoggerTest {
         handler = new AssertingHandler();
         handler.setLevel(level);
 
-        Logger jdkLogger = jdkLogger();
-        useParentHandler = jdkLogger.getUseParentHandlers();
-        LoggerConfig config = LoggerConfig.getConfig(loggingClass);
+        useParentHandler = config.getUseParentHandlers();
         config.setLevel(level);
         config.addHandler(handler);
         config.setUseParentHandlers(false);
@@ -128,10 +125,9 @@ public abstract class LoggerTest {
      * it is created and added back by {@link #addHandler()}.
      */
     protected final void removeHandler() {
-        Logger jdkLogger = jdkLogger();
-        jdkLogger.removeHandler(handler);
-        jdkLogger.setUseParentHandlers(useParentHandler);
-        jdkLogger.setLevel(previousLevel);
-        this.handler = null;
+        config.removeHandler(handler());
+        config.setUseParentHandlers(useParentHandler);
+        config.setLevel(previousLevel);
+        handler = null;
     }
 }
