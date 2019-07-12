@@ -45,7 +45,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.validation.VBuilderMethods.methodsOf;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -134,9 +134,7 @@ final class VBuilderCode implements Logging {
 
         } catch (IOException e) {
             String exMessage = format("`%s` was not written.", targetDir);
-            _error().withCause(e)
-                    .log(exMessage, targetDir);
-            throw newIllegalArgumentException(exMessage, e);
+            throw newIllegalStateException(exMessage, e);
         }
     }
 
