@@ -20,6 +20,7 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.flogger.LoggerConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.logging.Level;
@@ -112,10 +113,11 @@ public abstract class LoggerTest {
         handler.setLevel(level);
 
         Logger jdkLogger = jdkLogger();
-        this.useParentHandler = jdkLogger.getUseParentHandlers();
-        jdkLogger.setUseParentHandlers(false);
-        jdkLogger.addHandler(handler);
-        jdkLogger.setLevel(level);
+        useParentHandler = jdkLogger.getUseParentHandlers();
+        LoggerConfig config = LoggerConfig.getConfig(loggingClass);
+        config.setLevel(level);
+        config.addHandler(handler);
+        config.setUseParentHandlers(false);
     }
 
     /**
