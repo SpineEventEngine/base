@@ -20,7 +20,6 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.flogger.FluentLogger;
 import io.spine.code.gen.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
@@ -41,6 +40,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.RejectionsFile.findAll;
 import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.TaskName.compileTestJava;
@@ -177,17 +177,12 @@ public class RejectionGenPlugin extends ProtoPlugin {
         }
 
         private void logGeneratingForFile(RejectionsFile source) {
-            FluentLogger.Api debug = _debug();
-            if (debug.isEnabled()) {
-                return;
-            }
-            debug.log(
-                    "Generating rejections from file: `%s` " +
-                            "javaPackage: `%s`, javaOuterClassName: `%s`.",
+            _debug().log(
+                    "Generating rejections from the file: `%s` " +
+                            "`javaPackage`: `%s`, `javaOuterClassName`: `%s`.",
                     source.getPath(),
-                    PackageName.resolve(source.descriptor()
-                                              .toProto()),
-                    SimpleClassName.outerOf(source.descriptor())
+                    lazy(() -> PackageName.resolve(source.descriptor().toProto())),
+                    lazy(() -> SimpleClassName.outerOf(source.descriptor()))
             );
         }
 
