@@ -54,7 +54,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
             String expected = "Test non interception.";
             logger().info(expected);
 
-            assertThat(standardLoggingOutput()).contains(expected);
+            assertThat(loggingOutput()).contains(expected);
         }
 
         @Test
@@ -63,7 +63,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
             String expectedError = "Testing error non interception.";
             logger().severe(expectedError);
 
-            assertThat(standardLoggingOutput()).contains(expectedError);
+            assertThat(loggingOutput()).contains(expectedError);
         }
     }
 
@@ -87,7 +87,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
             String expected = "Test interception.";
             logger().info(expected);
 
-            assertThat(standardLoggingOutput()).doesNotContain(expected);
+            assertThat(loggingOutput()).doesNotContain(expected);
         }
 
         @Test
@@ -96,7 +96,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
             String expectedError = "Testing error interception.";
             logger().severe(expectedError);
 
-            assertThat(standardLoggingOutput()).doesNotContain(expectedError);
+            assertThat(loggingOutput()).doesNotContain(expectedError);
         }
 
         @Test

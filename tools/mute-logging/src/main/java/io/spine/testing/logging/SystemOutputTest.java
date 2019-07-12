@@ -61,24 +61,43 @@ public abstract class SystemOutputTest {
         err.reset();
     }
 
+    /**
+     * Obtains the stream which accumulates system output.
+     */
     protected static ByteArrayOutputStream out() {
         return out;
     }
 
+    /**
+     * Obtains the content of the system output accumulated so far.
+     */
     protected static String output() {
         return toString(out);
     }
 
+    /**
+     * Obtains the stream which accumulates system error output.
+     */
     protected static ByteArrayOutputStream err() {
         return err;
     }
 
+    /**
+     * Obtains the content of the system error output accumulated so far.
+     */
     protected static String errorOutput() {
         return toString(err);
     }
 
-    protected static String standardLoggingOutput() {
-        return toString(err);
+    /**
+     * Obtains the logging output accumulated so far.
+     *
+     * @apiNote By default Java Logging writes logging to {@code System.err}.
+     *         This method is an alias to {@link #errorOutput()} so that the code of tests
+     *         does not bring a confusion related to the "error" word in the context of logging.
+     */
+    protected static String loggingOutput() {
+        return errorOutput();
     }
 
     private static String toString(ByteArrayOutputStream stream) {
