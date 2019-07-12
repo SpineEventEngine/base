@@ -96,8 +96,8 @@ public abstract class LoggerTest {
      * Creates and assigns an {@link AssertingHandler} to the logger of the class.
      *
      * <p>The handler will have the {@linkplain #level() level} assigned for the test.
-     * The method also turns off using {@linkplain Logger#setUseParentHandlers(boolean) parent
-     * handlers}
+     * The method also turns off {@linkplain Logger#setUseParentHandlers(boolean) parent
+     * handlers}.
      *
      * @apiNote This method is not annotated {@code @BeforeEach} to allow derived test
      *         suites hook up the logging where appropriate to the test suite. In some cases
