@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -134,5 +135,18 @@ public final class Files2 {
         }
         boolean nonEmpty = file.length() > 0;
         return nonEmpty;
+    }
+
+    /**
+     * Ensures that the passed file exists.
+     *
+     * @return the passed file if it exists
+     * @throws IllegalStateException if the file is missing
+     */
+    @CanIgnoreReturnValue
+    public static File checkExists(File file) {
+        checkNotNull(file);
+        checkState(file.exists(), "The file `%s` does not exist.", file);
+        return file;
     }
 }

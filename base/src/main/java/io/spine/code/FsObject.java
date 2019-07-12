@@ -20,15 +20,11 @@
 
 package io.spine.code;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Abstract base for source code objects on a file system.
@@ -75,18 +71,5 @@ public abstract class FsObject {
         }
         FsObject other = (FsObject) obj;
         return Objects.equals(this.path, other.path);
-    }
-
-    /**
-     * Ensures that the passed file exists.
-     *
-     * @return the passed file if it exists
-     * @throws IllegalStateException if the file is missing
-     */
-    @CanIgnoreReturnValue
-    public static File checkExists(File file) {
-        checkNotNull(file);
-        checkState(file.exists(), "The file `%s` does not exist.", file);
-        return file;
     }
 }
