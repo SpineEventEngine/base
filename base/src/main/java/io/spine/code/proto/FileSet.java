@@ -129,8 +129,8 @@ public final class FileSet {
     }
 
     private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
-        FluentLogger.Api debug = logger.atFine();
-        debug.log("Could not find files: %s.", lazy(() ->
+        logger.atFine()
+              .log("Could not find files: %s.", lazy(() ->
                   requestedFiles
                           .stream()
                           .filter(fileName -> !knownFiles.contains(fileName))
