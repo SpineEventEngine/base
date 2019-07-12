@@ -86,7 +86,8 @@ class MemoizingStreamTest {
             stream.write(input);
             stream.reset();
 
-            assertThat(stream.size()).isEqualTo(0);
+            assertThat(stream.size())
+                    .isEqualTo(0);
         }
     }
 
