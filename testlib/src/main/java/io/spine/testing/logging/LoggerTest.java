@@ -44,7 +44,7 @@ public abstract class LoggerTest {
     private @Nullable AssertingHandler handler;
 
     /**
-     * Creates new test suite.
+     * Creates a new test suite.
      *
      * @param loggingClass the class which performs the logging operations
      * @param level        the level of logging we are interested in the tests
