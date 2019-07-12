@@ -39,6 +39,9 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
 
     private final Constructor<FluentLogger> constructor;
 
+    /**
+     * Obtains the logger instance for the passed class.
+     */
     static FluentLogger loggerOf(Class<?> cls) {
         return INSTANCE.get(cls);
     }
