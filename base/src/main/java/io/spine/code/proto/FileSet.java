@@ -48,7 +48,6 @@ import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
 import static io.spine.io.Files2.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -131,9 +130,6 @@ public final class FileSet {
 
     private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
         FluentLogger.Api debug = logger.atFine();
-        debug.log("Failed to find files in the known types set. Looked for %s%s.",
-                  lineSeparator(),
-                  requestedFiles);
         debug.log("Could not find files: %s.", lazy(() ->
                   requestedFiles
                           .stream()
