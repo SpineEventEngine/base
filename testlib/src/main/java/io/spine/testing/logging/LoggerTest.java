@@ -55,10 +55,21 @@ public abstract class LoggerTest {
         this.level = checkNotNull(level);
     }
 
+    /**
+     * Obtains the instance of {@code AssertingHandler} of this test.
+     *
+     * @throws NullPointerException
+     *          if the handler was not initialized or already removed
+     * @see #addHandler()
+     * @see #removeHandler()
+     */
     protected final AssertingHandler handler() {
         return checkNotNull(handler, "The handler is not available. Please call `addHandler()`.");
     }
 
+    /**
+     * Obtains the class which logging operations of which we test.
+     */
     protected final Class<?> loggingClass() {
         return loggingClass;
     }
