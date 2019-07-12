@@ -125,7 +125,10 @@ public abstract class LoggerTest {
      * it is created and added back by {@link #addHandler()}.
      */
     protected final void removeHandler() {
-        config.removeHandler(handler());
+        if (handler == null) {
+            return;
+        }
+        config.removeHandler(handler);
         config.setUseParentHandlers(useParentHandler);
         config.setLevel(previousLevel);
         handler = null;
