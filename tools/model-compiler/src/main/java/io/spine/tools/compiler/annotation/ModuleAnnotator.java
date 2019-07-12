@@ -97,8 +97,8 @@ public final class ModuleAnnotator {
         @Override
         public void execute(AnnotatorFactory factory) {
             FluentLogger.Api debug = _debug();
-            debug.log("Annotating sources marked as `%s` with `%s`.", protobufOption,
-                      javaAnnotation);
+            debug.log("Annotating sources marked as `%s` with `%s`.",
+                      protobufOption, javaAnnotation);
             debug.log("Annotating by the file option.");
             factory.createFileAnnotator(javaAnnotation, protobufOption)
                    .annotate();
