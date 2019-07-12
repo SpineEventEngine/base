@@ -192,9 +192,9 @@ public class Extension extends GradleExtension {
 
     public static String getMainProtoSrcDir(Project project) {
         Extension extension = extension(project);
-        _debug().log("Extension is %s.", extension);
+        _debug().log("Extension is `%s`.", extension);
         String protoDir = extension.mainProtoSrcDir;
-        _debug().log("modelCompiler.mainProtoSrcDir is %s.", protoDir);
+        _debug().log("`modelCompiler.mainProtoSrcDir` is `%s`.", protoDir);
         return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
@@ -318,15 +318,15 @@ public class Extension extends GradleExtension {
         String singleDir = extension(project).dirToClean;
         if (dirs.size() > 0) {
             logger.atInfo()
-                  .log("Found %d directories to clean: %s.", dirs.size(), dirs);
+                  .log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
         } else if (singleDir != null && !singleDir.isEmpty()) {
-            _debug().log("Found directory to clean: %s.", singleDir);
+            _debug().log("Found directory to clean: `%s`.", singleDir);
             dirsToClean.add(singleDir);
         } else {
             String defaultValue = def(project).generated()
                                               .toString();
-            _debug().log("Default directory to clean: %s.", defaultValue);
+            _debug().log("Default directory to clean: `%s`.", defaultValue);
             dirsToClean.add(defaultValue);
         }
         return ImmutableList.copyOf(dirsToClean);
@@ -334,7 +334,7 @@ public class Extension extends GradleExtension {
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
         Severity result = extension(project).spineCheckSeverity;
-        _debug().log("The severity of Spine-custom Error Prone checks is %s.",
+        _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
                      (result == null ? "unset" : result.name()));
         return result;
     }
@@ -414,7 +414,7 @@ public class Extension extends GradleExtension {
                                 .getCanonicalFile();
         } catch (IOException e) {
             throw newIllegalStateException(
-                    e, "Project directory %s is invalid!", project.getProjectDir()
+                    e, "Unable to obtain project directory `%s`.", project.getProjectDir()
             );
         }
         File spinePath = DefaultJavaProject.at(projectDir)
