@@ -20,9 +20,6 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.flogger.LoggerConfig;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,18 +30,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class LoggerTest {
 
-    /** The class which performs the log operations. */
-    private final Class<?> loggingClass;
-    /** The helper to set logger configuration. */
-    private final LoggerConfig config;
-    /** The value of the property used by the logger before the test. */
-    private boolean useParentHandler;
-    /** The value the logger had before the tests. */
-    private final Level previousLevel;
     /** The level to be used during the tests. */
     private final Level level;
-    /** The handler which remembers log records and performs assertions. */
-    private @Nullable AssertingHandler handler;
+
+    /** The interceptor of the logging operations. */
+    private final Interceptor interceptor;
 
     /**
      * Creates a new test suite.
@@ -55,10 +45,8 @@ public abstract class LoggerTest {
      *         the level of logging in which we are interested in the tests
      */
     protected LoggerTest(Class<?> loggingClass, Level level) {
-        this.loggingClass = checkNotNull(loggingClass);
-        this.config = LoggerConfig.getConfig(this.loggingClass);
-        this.previousLevel = config.getLevel();
         this.level = checkNotNull(level);
+        this.interceptor = new Interceptor(loggingClass);
     }
 
     /**
@@ -70,14 +58,14 @@ public abstract class LoggerTest {
      * @see #removeHandler()
      */
     protected final AssertingHandler handler() {
-        return checkNotNull(handler, "The handler is not available. Please call `addHandler()`.");
+        return interceptor.handler();
     }
 
     /**
      * Obtains the class which logging operations of which we test.
      */
     protected final Class<?> loggingClass() {
-        return loggingClass;
+        return interceptor.loggingClass();
     }
 
     /**
@@ -91,7 +79,7 @@ public abstract class LoggerTest {
      * Obtains the level of the logging set for the logging class before the tests.
      */
     protected final Level previousLevel() {
-        return previousLevel;
+        return interceptor.previousLevel();
     }
 
     /**
@@ -108,13 +96,7 @@ public abstract class LoggerTest {
      * @see #removeHandler()
      */
     protected final void addHandler() {
-        handler = new AssertingHandler();
-        handler.setLevel(level);
-
-        useParentHandler = config.getUseParentHandlers();
-        config.setLevel(level);
-        config.addHandler(handler);
-        config.setUseParentHandlers(false);
+        interceptor.intercept(this.level);
     }
 
     /**
@@ -125,12 +107,6 @@ public abstract class LoggerTest {
      * it is created and added back by {@link #addHandler()}.
      */
     protected final void removeHandler() {
-        if (handler == null) {
-            return;
-        }
-        config.removeHandler(handler);
-        config.setUseParentHandlers(useParentHandler);
-        config.setLevel(previousLevel);
-        handler = null;
+        interceptor.release();
     }
 }
