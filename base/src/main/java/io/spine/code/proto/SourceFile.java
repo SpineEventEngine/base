@@ -110,7 +110,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         for (Descriptor messageType : descriptor.getMessageTypes()) {
             MessageType declaration = new MessageType(messageType);
-            _debug().log("Testing %s to match %s.", declaration, predicate);
+            _debug().log("Testing `%s` to match `%s`.", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);
             }
