@@ -271,7 +271,7 @@ public class KnownTypes implements Serializable {
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
             logger.atFine()
-                  .log("Adding types %s to known types.", moreKnownTypes);
+                  .log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
