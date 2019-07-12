@@ -51,12 +51,12 @@ public class AssertingHandler extends Handler {
         }
     }
 
-    /** Set the level to {@code Level.FINE}. */
+    /** Sets the level to {@code Level.FINE}. */
     public void setDebugLevel() {
         setLevel(Level.FINE);
     }
 
-    /** Set the level to {@code Level.SEVERE}. */
+    /** Sets the level to {@code Level.SEVERE}. */
     public void setErrorLevel() {
         setLevel(Level.SEVERE);
     }
