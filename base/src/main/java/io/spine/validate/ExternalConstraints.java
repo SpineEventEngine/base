@@ -180,7 +180,7 @@ public final class ExternalConstraints implements Serializable {
             boolean result = new ConstraintFor().valueFrom(proto)
                                                 .isPresent();
             logger.atFine()
-                  .log("[HasExternalConstraint] Tested %s with the result of %s.",
+                  .log("[HasExternalConstraint] Tested %s with the result of `%s`.",
                        proto.getName(), result);
             return result;
         }
