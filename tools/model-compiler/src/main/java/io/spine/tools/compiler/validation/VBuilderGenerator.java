@@ -66,7 +66,7 @@ public final class VBuilderGenerator implements Logging {
         this.targetDir = targetDir;
         this.indent = indent;
         _debug().log("Initiating generation of validating builders. " +
-                       "Proto src dir: %s Target dir: %s.", protoSrcDir, targetDir);
+                       "Proto src dir: `%s`. Target dir: `%s`.", protoSrcDir, targetDir);
     }
 
     public void process(FileSet files) {
@@ -94,8 +94,7 @@ public final class VBuilderGenerator implements Logging {
                 code.write();
             } catch (RuntimeException e) {
                 _error().withCause(e)
-                        .log("Cannot generate a validating builder for `%s`.%n" +
-                                       "Error: %s.", messageType, e.toString());
+                        .log("Cannot generate a validating builder for `%s`.", messageType);
             }
         }
         _debug().log("Validating builder generation is finished.");
