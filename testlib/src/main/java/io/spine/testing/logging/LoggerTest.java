@@ -36,7 +36,7 @@ public abstract class LoggerTest {
     private final Class<?> loggingClass;
     /** The value of the property used by the logger before the test. */
     private boolean useParentHandler;
-    /** The value the logger has before the tests. */
+    /** The value the logger had before the tests. */
     private final Level previousLevel;
     /** The level to be used during the tests. */
     private final Level level;
