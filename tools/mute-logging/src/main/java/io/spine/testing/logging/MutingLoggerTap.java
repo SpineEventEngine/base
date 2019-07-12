@@ -38,8 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class MutingLoggerTap {
 
-    /** The name of the associated logger. */
-    private final String name;
+    /** The loggerName of the associated logger. */
+    private final String loggerName;
 
     // Previous state of the Logger that we amend.
     private boolean usedParentHandlers;
@@ -47,8 +47,11 @@ final class MutingLoggerTap {
     private @Nullable Handler handler;
     private @Nullable ImmutableList<Handler> previousHandlers;
 
-    MutingLoggerTap(String name) {
-        this.name = name;
+    /**
+     * Creates the muting tap for the log with the passed name.
+     */
+    MutingLoggerTap(String loggerName) {
+        this.loggerName = loggerName;
     }
 
     /**
@@ -159,6 +162,6 @@ final class MutingLoggerTap {
     }
 
     private Logger logger() {
-        return Logger.getLogger(name);
+        return Logger.getLogger(loggerName);
     }
 }
