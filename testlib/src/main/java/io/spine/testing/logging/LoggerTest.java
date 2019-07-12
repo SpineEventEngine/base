@@ -46,8 +46,10 @@ public abstract class LoggerTest {
     /**
      * Creates a new test suite.
      *
-     * @param loggingClass the class which performs the logging operations
-     * @param level        the level of logging we are interested in the tests
+     * @param loggingClass
+     *         the class which performs the logging operations
+     * @param level
+     *         the level of logging in which we are interested in the tests
      */
     protected LoggerTest(Class<?> loggingClass, Level level) {
         this.loggingClass = checkNotNull(loggingClass);
