@@ -68,7 +68,8 @@ class LoggerTestTest {
     @DisplayName("assign handler")
     void assigningHandler() {
         test.addHandler();
-        assertThat(test.handler()).isNotNull();
+        assertThat(test.handler())
+                .isNotNull();
     }
 
     @Test
