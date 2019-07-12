@@ -20,8 +20,8 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.option.OptionsProto;
 import io.spine.test.validate.CustomMessageRequiredByteStringFieldValue;
@@ -82,7 +82,7 @@ class ErrorMessageTest extends MessageValidatorTest {
     private void assertErrorMessage(Message message) {
         assertNotValid(message);
         Descriptor descriptor = message.getDescriptorForType();
-        String expectedErrorMessage = getCustomErrorMessage(descriptor);
+        String expectedErrorMessage = customErrorMessageFrom(descriptor);
         checkErrorMessage(expectedErrorMessage);
     }
 
@@ -91,9 +91,9 @@ class ErrorMessageTest extends MessageValidatorTest {
         assertEquals(expectedMessage, constraintViolation.getMsgFormat());
     }
 
-    private static String getCustomErrorMessage(Descriptor descriptor) {
-        Descriptors.FieldDescriptor firstFieldDescriptor = descriptor.getFields()
-                                                                     .get(0);
+    private static String customErrorMessageFrom(Descriptor descriptor) {
+        FieldDescriptor firstFieldDescriptor = descriptor.getFields()
+                                                         .get(0);
         return firstFieldDescriptor.getOptions()
                                    .getExtension(OptionsProto.ifMissing)
                                    .getMsgFormat();
