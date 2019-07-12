@@ -86,7 +86,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     @Override
     public Collection<MethodSpec> generate() {
-        _debug().log("The method construction for the %s singular field is started.",
+        _debug().log("The method construction for the `%s` singular field is started.",
                      javaFieldName);
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(setter());
@@ -97,7 +97,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
         methods.add(getter())
                .add(clearMethod());
-        _debug().log("The method construction for the %s singular field is finished.",
+        _debug().log("The method construction for the `%s` singular field is finished.",
                      javaFieldName);
         return methods.build();
     }
@@ -138,7 +138,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private MethodSpec clearMethod() {
-        _debug().log("The 'clear..()' method construction for the singular field is started.");
+        _debug().log("The `clear..()` method construction for the singular field is started.");
         String methodName = clearer().format(javaFieldName);
         String methodBody = callMethod(getMessageBuilder(), methodName);
         MethodSpec methodSpec =
