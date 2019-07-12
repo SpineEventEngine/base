@@ -118,7 +118,7 @@ public abstract class LoggerTest {
 
     /**
      * Removes the handler assigned in {@link #addHandler()} and restores the value
-     * of using {@linkplain Logger#getUseParentHandlers() parent handlers}.
+     * of the flag for using {@linkplain Logger#getUseParentHandlers() parent handlers}.
      *
      * <p>The {@linkplain #handler handler} is not available after this method is called until
      * it is created and added back by {@link #addHandler()}.
