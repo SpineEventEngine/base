@@ -34,6 +34,7 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
  * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
  */
 final class FloggerClassValue extends ClassValue<FluentLogger> {
+    
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final FloggerClassValue INSTANCE = new FloggerClassValue();
 
