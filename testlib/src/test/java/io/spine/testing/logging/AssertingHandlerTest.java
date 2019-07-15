@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -54,30 +53,16 @@ class AssertingHandlerTest {
     }
 
     @Test
-    @DisplayName("have alias method for 'debug' level")
-    void debugLevel() {
-        handler.setDebugLevel();
-        assertThat(handler.getLevel()).isEqualTo(Level.FINE);
-    }
-
-    @Test
-    @DisplayName("have alias method for 'error' level")
-    void errorLevel() {
-        handler.setErrorLevel();
-        assertThat(handler.getLevel()).isEqualTo(Level.SEVERE);
-    }
-
-    @Test
     @DisplayName("assert no logs if nothing logged")
     void noLogs() {
-        assertDoesNotThrow(handler::assertNoLogs);
+        assertDoesNotThrow(handler::isEmpty);
     }
 
     @Test
     @DisplayName("throw `AssertionError` if there were logs")
     void throwIfLogged() {
         logger.info("Testing assertion");
-        assertThrows(AssertionError.class, () -> handler.assertNoLogs());
+        assertThrows(AssertionError.class, () -> handler.isEmpty());
     }
 
     @Test
@@ -85,7 +70,7 @@ class AssertingHandlerTest {
     void textAssertion() {
         String msg = TestValues.randomString();
         logger.info(msg);
-        handler.assertOnlyLog()
+        handler.textOutput()
                .contains(msg);
     }
 }

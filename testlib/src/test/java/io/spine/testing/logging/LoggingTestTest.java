@@ -61,14 +61,14 @@ class LoggingTestTest {
     @Test
     @DisplayName("have no handler by default")
     void noHandler() {
-        assertThrows(NullPointerException.class, test::handler);
+        assertThrows(NullPointerException.class, test::assertLog);
     }
 
     @Test
     @DisplayName("assign handler")
     void assigningHandler() {
         test.interceptLogging();
-        assertThat(test.handler())
+        assertThat(test.assertLog())
                 .isNotNull();
     }
 
@@ -105,7 +105,7 @@ class LoggingTestTest {
     @DisplayName("clear handler")
     void clearingHandler() {
         test.restoreLogging();
-        assertThrows(NullPointerException.class, test::handler);
+        assertThrows(NullPointerException.class, test::assertLog);
     }
 
     @Test

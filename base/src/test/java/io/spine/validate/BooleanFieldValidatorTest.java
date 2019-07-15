@@ -72,7 +72,7 @@ class BooleanFieldValidatorTest {
         @Test
         @DisplayName("produce a warning upon finding a required boolean field")
         void warning() {
-            LogRecordSubject assertRecord = handler().assertRecord();
+            LogRecordSubject assertRecord = assertLog().hasFirstRecord();
             assertRecord.hasLevelThat()
                         .isEqualTo(Level.WARNING);
         }

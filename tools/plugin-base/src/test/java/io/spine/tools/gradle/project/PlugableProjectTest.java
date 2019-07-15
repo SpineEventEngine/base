@@ -118,7 +118,7 @@ class PlugableProjectTest {
             plugableProject.apply(plugin);
             assertTrue(plugableProject.isApplied(plugin));
 
-            LogRecordSubject assertLogRecord = handler().assertRecord();
+            LogRecordSubject assertLogRecord = assertLog().hasFirstRecord();
             assertLogRecord.isDebug();
             assertLogRecord.hasMessageThat()
                            .contains(plugin.className().value());

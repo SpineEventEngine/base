@@ -26,7 +26,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
@@ -38,7 +37,7 @@ import static java.lang.System.lineSeparator;
 /**
  * Test fixture for testing loggers based on JDK Logging.
  */
-public class AssertingHandler extends Handler {
+public class AssertingHandler extends Handler implements LoggingAssertions {
 
     private static final String FACT_NO_RECORDS = "There were no log records";
 
@@ -51,24 +50,12 @@ public class AssertingHandler extends Handler {
         }
     }
 
-    /** Sets the level to {@code Level.FINE}. */
-    public void setDebugLevel() {
-        setLevel(Level.FINE);
-    }
-
-    /** Sets the level to {@code Level.SEVERE}. */
-    public void setErrorLevel() {
-        setLevel(Level.SEVERE);
-    }
-
     private List<LogRecord> logRecords() {
         return checkNotNull(logRecords, "The handler is already closed.");
     }
 
-    /**
-     * Obtains the subject for asserting text output of the first log record.
-     */
-    public StringSubject assertOnlyLog() {
+    @Override
+    public StringSubject textOutput() {
         LogRecord logRecord = firstRecord();
         assertWithMessage(FACT_NO_RECORDS)
                 .that(logRecord)
@@ -78,12 +65,8 @@ public class AssertingHandler extends Handler {
         return subject;
     }
 
-    /**
-     * Obtains the subject for the only log record placed to the log.
-     *
-     * @throws AssertionError if the were no records or more than one log record
-     */
-    public LogRecordSubject assertRecord() {
+    @Override
+    public LogRecordSubject hasFirstRecord() {
         LogRecord logRecord = firstRecord();
         flush();
         LogRecordSubject subject = LogTruth.assertThat(logRecord);
@@ -96,10 +79,8 @@ public class AssertingHandler extends Handler {
         return logRecords().get(0);
     }
 
-    /**
-     * Asserts that there were no log messages.
-     */
-    public void assertNoLogs() {
+    @Override
+    public void isEmpty() {
         assertWithMessage("unexpected log recorded")
                 .that(logRecords)
                 .isEmpty();

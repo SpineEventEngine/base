@@ -57,8 +57,8 @@ public abstract class LoggingTest {
      * @see #interceptLogging()
      * @see #restoreLogging()
      */
-    protected final AssertingHandler handler() {
-        return interceptor.handler();
+    protected final LoggingAssertions assertLog() {
+        return interceptor.assertLog();
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class LoggingTest {
      * Removes the handler assigned in {@link #interceptLogging()} and restores the value
      * of the flag for using {@linkplain Logger#getUseParentHandlers() parent handlers}.
      *
-     * <p>The {@linkplain #handler handler} is not available after this method is called until
+     * <p>The {@linkplain #assertLog handler} is not available after this method is called until
      * it is created and added back by {@link #interceptLogging()}.
      */
     protected final void restoreLogging() {

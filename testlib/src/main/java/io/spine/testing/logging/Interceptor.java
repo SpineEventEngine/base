@@ -94,7 +94,7 @@ public final class Interceptor {
      * @see #intercept()
      * @see #release()
      */
-    public AssertingHandler handler() {
+    public LoggingAssertions assertLog() {
         return checkNotNull(
                 handler, "The handler is not available. Please call `intercept(Level)`."
         );
