@@ -24,7 +24,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.RequiredBooleanFieldValue;
-import io.spine.testing.logging.LogRecordSubject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -72,9 +71,9 @@ class BooleanFieldValidatorTest {
         @Test
         @DisplayName("produce a warning upon finding a required boolean field")
         void warning() {
-            LogRecordSubject assertRecord = assertLog().hasFirstRecord();
-            assertRecord.hasLevelThat()
-                        .isEqualTo(Level.WARNING);
+            assertLog().record()
+                       .hasLevelThat()
+                       .isEqualTo(Level.WARNING);
         }
     }
 }

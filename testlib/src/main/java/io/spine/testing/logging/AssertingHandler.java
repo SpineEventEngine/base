@@ -66,7 +66,7 @@ final class AssertingHandler extends Handler implements LoggingAssertions {
     }
 
     @Override
-    public LogRecordSubject hasFirstRecord() {
+    public LogRecordSubject record() {
         LogRecord logRecord = firstRecord();
         flush();
         LogRecordSubject subject = LogTruth.assertThat(logRecord);

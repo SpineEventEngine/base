@@ -94,7 +94,7 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
             List<ConstraintViolation> validate = requiredFieldValidator.validate();
             assertTrue(validate.isEmpty());
 
-            LogRecordSubject assertRecord = assertLog().hasFirstRecord();
+            LogRecordSubject assertRecord = assertLog().record();
             assertRecord.hasLevelThat()
                         .isEqualTo(Level.WARNING);
         }

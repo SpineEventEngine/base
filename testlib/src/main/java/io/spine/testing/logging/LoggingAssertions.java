@@ -42,5 +42,5 @@ public interface LoggingAssertions {
      *
      * @throws AssertionError if the were no records or more than one log record
      */
-    LogRecordSubject hasFirstRecord();
+    LogRecordSubject record();
 }
