@@ -49,6 +49,9 @@ final class MutingLoggerTap {
 
     /**
      * Creates the muting tap for the log with the passed name.
+     *
+     * @param loggerName
+     *         the name of the logger given upon its {@linkplain Logger#getLogger(String) creation}
      */
     MutingLoggerTap(String loggerName) {
         this.loggerName = loggerName;
