@@ -33,6 +33,7 @@ import org.slf4j.event.SubstituteLoggingEvent;
 /**
  * Propositions for {@link SubstituteLoggingEvent} subjects.
  */
+@SuppressWarnings("DuplicateStringLiteralInspection") // method names specific to Slf4J
 public class LogEventSubject extends Subject<LogEventSubject, SubstituteLoggingEvent> {
 
     private LogEventSubject(FailureMetadata metadata, @Nullable SubstituteLoggingEvent actual) {
@@ -53,7 +54,7 @@ public class LogEventSubject extends Subject<LogEventSubject, SubstituteLoggingE
 
     /** Obtains subject for the logging event arguments. */
     public ObjectArraySubject hasArgumentsThat() {
-        StandardSubjectBuilder check = check("getArguments");
+        StandardSubjectBuilder check = check("getArgumentArray()");
         return check.that(actual().getArgumentArray());
     }
 

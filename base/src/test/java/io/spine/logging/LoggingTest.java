@@ -20,13 +20,18 @@
 
 package io.spine.logging;
 
-import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.Subject;
+import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LogContext;
+import com.google.common.flogger.LoggerConfig;
+import com.google.common.flogger.backend.LogData;
 import io.spine.logging.given.LoggingObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
+
+import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import static io.spine.testing.logging.LogTruth.assertThat;
 
@@ -34,13 +39,74 @@ import static io.spine.testing.logging.LogTruth.assertThat;
 class LoggingTest {
 
     @Test
-    @DisplayName("obtain Logger instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
+    @DisplayName("assume `Level.FINE` for debug")
+    void debugLevel() {
+        assertThat(Logging.debugLevel())
+             .isEqualTo(Level.FINE);
+    }
 
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
+    @Test
+    @DisplayName("assume `Level.SEVER` for errors")
+    void errorLevel() {
+        assertThat(Logging.errorLevel())
+                .isEqualTo(Level.SEVERE);
+    }
+
+    @Test
+    @DisplayName("obtain same `FluentLogger` Instance")
+    void fluentLogger() {
+        Logging object = new LoggingObject();
+
+        FluentLogger logger = object.logger();
+
+        assertThat(object.logger())
+             .isSameInstanceAs(logger);
+        assertThat(new LoggingObject().logger())
+             .isSameInstanceAs(logger);
+    }
+
+    @Nested
+    @DisplayName("expose shortcut methods")
+    class Shortcuts {
+
+        private Logging object;
+        private FluentLogger logger;
+
+        @BeforeEach
+        void createLoggingObject() {
+            object = new LoggingObject();
+            logger = object.logger();
+        }
+
+        @Test
+        @DisplayName("for standard logging levels")
+        void shortcutMethods() {
+            assertApi(object::_config, Level.CONFIG);
+            assertApi(object::_fine, Level.FINE);
+            assertApi(object::_finer, Level.FINER);
+            assertApi(object::_finest, Level.FINEST);
+            assertApi(object::_info, Level.INFO);
+            assertApi(object::_severe, Level.SEVERE);
+            assertApi(object::_warn, Level.WARNING);
+        }
+
+        @Test
+        @DisplayName("for popular aliases")
+        void aliases() {
+            assertApi(object::_debug, Level.FINE);
+            assertApi(object::_trace, Level.FINEST);
+            assertApi(object::_error, Level.SEVERE);
+        }
+
+        private void assertApi(Supplier<FluentLogger.Api> method, Level expectedLevel) {
+            LoggerConfig.of(logger)
+                        .setLevel(expectedLevel);
+
+            FluentLogger.Api api = method.get();
+            assertThat(api)
+                    .isInstanceOf(LogContext.class);
+            assertThat(((LogData) api).getLevel())
+                    .isEqualTo(expectedLevel);
+        }
     }
 }

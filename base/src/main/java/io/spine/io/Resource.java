@@ -94,7 +94,7 @@ public final class Resource {
      * @return the URLs to the resolved resource files
      */
     public ImmutableList<URL> locateAll() {
-        Enumeration<URL> resources = getResourceEnumeration();
+        Enumeration<URL> resources = resourceEnumeration();
         UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
         ImmutableList<URL> result = ImmutableList.copyOf(iterator);
         checkState(!result.isEmpty(),
@@ -103,7 +103,7 @@ public final class Resource {
         return result;
     }
 
-    private Enumeration<URL> getResourceEnumeration() {
+    private Enumeration<URL> resourceEnumeration() {
         try {
             Enumeration<URL> resources = classLoader().getResources(path);
             return resources;

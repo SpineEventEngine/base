@@ -20,12 +20,12 @@
 
 package io.spine.base;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.testing.UtilityClassTest;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.google.common.collect.ImmutableList;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Errors.causeOf;

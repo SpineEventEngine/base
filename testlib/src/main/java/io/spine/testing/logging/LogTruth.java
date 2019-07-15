@@ -20,14 +20,18 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.IterableSubject;
 import com.google.common.truth.Subject;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
@@ -56,5 +60,26 @@ public final class LogTruth {
     public static IterableSubject assertThat(Queue<SubstituteLoggingEvent> queue) {
         checkNotNull(queue);
         return assert_().that(queue);
+    }
+
+    /** Creates a subject for the passed logger. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable FluentLogger actual) {
+        return assert_().that(actual);
+    }
+
+    /** Creates a subject for the passed record. */
+    public static LogRecordSubject assertThat(@Nullable LogRecord record) {
+        return assertAbout(LogRecordSubject.records()).that(record);
+    }
+
+    /** Creates a subject for the logging level. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable Level actual) {
+        return assert_().that(actual);
+    }
+
+    /** Creates a subject for the logging API. */
+    public static
+    Subject<DefaultSubject, Object> assertThat(@NullableDecl FluentLogger.Api actual) {
+        return assert_().that(actual);
     }
 }

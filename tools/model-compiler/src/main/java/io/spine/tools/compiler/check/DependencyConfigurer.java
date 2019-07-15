@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.check;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.logging.Logging;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -29,8 +30,6 @@ import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.initialization.dsl.ScriptHandler;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -46,7 +45,7 @@ import static io.spine.tools.gradle.ConfigurationName.classpath;
  * <p>The class manages dependencies of the given {@link Configuration} for the given
  * {@link Project}.
  */
-public class DependencyConfigurer {
+public class DependencyConfigurer implements Logging {
 
     private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
 
@@ -90,7 +89,7 @@ public class DependencyConfigurer {
     public boolean addErrorProneChecksDependency() {
         Optional<String> versionToUse = acquireModelCompilerVersion();
         if (!versionToUse.isPresent()) {
-            log().debug("Can't acquire model compiler version for the project {}",
+            _debug().log("Can't acquire model compiler version for the project `%s`.",
                         project.getName());
             return false;
         }
@@ -147,22 +146,13 @@ public class DependencyConfigurer {
     /**
      * Adds the {@code spine-erroprone-checks} dependency to the project configuration.
      */
-    private static void dependOnErrorProneChecks(String version, Configuration configuration) {
-        log().debug("Adding dependency on {}:{}:{} to the {} configuration",
+    private void dependOnErrorProneChecks(String version, Configuration configuration) {
+        _debug().log("Adding dependency on %s:%s:%s to the %s configuration",
                     SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version,
                     annotationProcessor.value());
         DependencySet dependencies = configuration.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
                 SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version);
         dependencies.add(dependency);
-    }
-
-    /**
-     * Obtains the SLF4J logger specific to this class.
-     *
-     * @return the logger for this class
-     */
-    private static Logger log() {
-        return LoggerFactory.getLogger(DependencyConfigurer.class);
     }
 }

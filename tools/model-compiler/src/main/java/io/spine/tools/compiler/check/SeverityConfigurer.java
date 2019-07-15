@@ -21,14 +21,13 @@
 package io.spine.tools.compiler.check;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.logging.Logging;
 import io.spine.tools.gradle.compiler.Severity;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.plugins.PluginContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompile;
@@ -44,7 +43,7 @@ import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
  * @see io.spine.tools.gradle.compiler.ErrorProneChecksExtension
  * @see io.spine.tools.gradle.compiler.Extension#getSpineCheckSeverity(Project)
  */
-public class SeverityConfigurer {
+public class SeverityConfigurer implements Logging {
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
@@ -88,8 +87,8 @@ public class SeverityConfigurer {
      */
     private void configureCheckSeverity() {
         if (!hasErrorPronePlugin()) {
-            log().debug("Cannot configure Spine Error Prone check severity as the Error Prone " +
-                                "plugin is not applied to the project {}.", project.getName());
+            _debug().log("Cannot configure Spine Error Prone check severity as the Error Prone " +
+                                 "plugin is not applied to the project `%s`.", project.getName());
             return;
         }
         Severity defaultSeverity = getSpineCheckSeverity(project);
@@ -122,18 +121,11 @@ public class SeverityConfigurer {
                 severity = defaultSeverity;
             }
         }
-        log().debug("Setting UseValidatingBuilder checker severity to {} for the project {}",
-                    severity.name(), project.getName());
+        _debug().log(
+                "Setting `UseValidatingBuilder` checker severity to `%s` for the project `%s`.",
+                severity.name(), project.getName()
+        );
         String severityArg = "-Xep:UseValidatingBuilder:" + severity.name();
         addArgsToJavaCompile(project, severityArg);
-    }
-
-    /**
-     * Obtains the SLF4J logger specific to this class.
-     *
-     * @return the logger for this class
-     */
-    private static Logger log() {
-        return LoggerFactory.getLogger(SeverityConfigurer.class);
     }
 }

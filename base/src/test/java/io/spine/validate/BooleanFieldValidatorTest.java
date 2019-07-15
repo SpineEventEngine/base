@@ -23,22 +23,17 @@ package io.spine.validate;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldContext;
-import io.spine.logging.Logging;
 import io.spine.test.validate.RequiredBooleanFieldValue;
-import io.spine.validate.option.Required;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.SubstituteLogger;
 
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Queue;
+import java.util.logging.Level;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.slf4j.event.Level.WARN;
 
 @DisplayName("BooleanFieldValidator should")
 class BooleanFieldValidatorTest {
@@ -56,23 +51,29 @@ class BooleanFieldValidatorTest {
         assertFalse(validator.isNotSet(false));
     }
 
-    @Test
-    @DisplayName("produce a warning upon finding a required boolean field")
-    void testRequiredBooleanFieldWarning() {
-        FieldDescriptor descriptor = RequiredBooleanFieldValue
-                .getDescriptor()
-                .getFields()
-                .get(0);
-        FieldContext context = FieldContext.create(descriptor);
-        FieldValue<Boolean> fieldValue = FieldValue.of(true, context);
-        BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
+    @Nested
+    class RequiredBooleanFieldWarning extends RequiredFieldWarningTest {
 
-        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
-        Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
-        List<ConstraintViolation> violations = validator.validate();
+        @BeforeEach
+        void validate() {
+            FieldDescriptor descriptor = RequiredBooleanFieldValue
+                    .getDescriptor()
+                    .getFields()
+                    .get(0);
+            FieldContext context = FieldContext.create(descriptor);
+            FieldValue<Boolean> fieldValue = FieldValue.of(true, context);
+            BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
 
-        assertTrue(violations.isEmpty());
-        assertEquals(1, loggedMessages.size());
-        assertEquals(WARN, loggedMessages.peek().getLevel());
+            List<ConstraintViolation> violations = validator.validate();
+            assertThat(violations).isEmpty();
+        }
+
+        @Test
+        @DisplayName("produce a warning upon finding a required boolean field")
+        void warning() {
+            assertLog().record()
+                       .hasLevelThat()
+                       .isEqualTo(Level.WARNING);
+        }
     }
 }

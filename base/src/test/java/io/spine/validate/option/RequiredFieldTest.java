@@ -109,12 +109,13 @@ final class RequiredFieldTest extends MessageValidatorTest {
         @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
         @DisplayName("a message qualifies for complex required field pattern")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.RequiredFieldTest#validComplexMessages")
+        @MethodSource("io.spine.validate.option.RequiredFieldTest#validComplexMessages")
         void qualifiesForComplexRequiredFieldPattern(ComplexRequiredFields message) {
             assertValid(message);
         }
     }
 
+    @SuppressWarnings("unused") // used via `@MethodSource` value
     private static Stream<ComplexRequiredFields> validComplexMessages() {
         ComplexRequiredFields message = ComplexRequiredFields
                 .newBuilder()
@@ -187,12 +188,13 @@ final class RequiredFieldTest extends MessageValidatorTest {
         @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
         @DisplayName("a message does not qualifies for a complext required field pattern")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.RequiredFieldTest#invalidComplexMessages")
+        @MethodSource("io.spine.validate.option.RequiredFieldTest#invalidComplexMessages")
         void notQualifiesForComplexPattern(ComplexRequiredFields message) {
             assertNotValid(message, false);
         }
     }
 
+    @SuppressWarnings("unused") // invoked via `@MethodSource`.
     private static Stream<ComplexRequiredFields> invalidComplexMessages() {
         ComplexRequiredFields.FifthField.Builder fifthFieldValue =
                 ComplexRequiredFields.FifthField.newBuilder()

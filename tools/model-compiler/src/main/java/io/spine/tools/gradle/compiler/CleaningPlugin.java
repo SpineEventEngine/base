@@ -25,7 +25,6 @@ import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.preClean;
@@ -39,15 +38,14 @@ public class CleaningPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Logger log = log();
         Action<Task> preCleanAction = task -> {
-            log.debug("Pre-clean: deleting the directories");
+            _debug().log("Pre-clean: deleting the directories.");
             DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
         };
         GradleTask preCleanTask =
                 newTask(preClean, preCleanAction)
                         .insertBeforeTask(clean)
                         .applyNowTo(project);
-        log.debug("Pre-clean phase initialized: {}", preCleanTask);
+        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
     }
 }

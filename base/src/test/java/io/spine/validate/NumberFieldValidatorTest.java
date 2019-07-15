@@ -22,23 +22,19 @@ package io.spine.validate;
 
 import com.google.protobuf.Any;
 import io.spine.code.proto.FieldContext;
-import io.spine.logging.Logging;
-import io.spine.validate.option.Required;
+import io.spine.testing.logging.LogRecordSubject;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.SubstituteLogger;
 
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Queue;
+import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.slf4j.event.Level.WARN;
 
 abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
                                         T extends NumberFieldValidator<V>> {
@@ -89,15 +85,18 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
         assertThat(any).isNotEqualToDefaultInstance();
     }
 
-    @Test
-    @DisplayName("produce a warning upon finding a required double field")
-    void testRequiredDoubleFieldWarning() {
-        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
-        SubstituteLogger log = (SubstituteLogger) Logging.get(Required.class);
-        Logging.redirect(log, loggedMessages);
-        List<ConstraintViolation> validate = requiredFieldValidator.validate();
-        assertTrue(validate.isEmpty());
-        assertEquals(1, loggedMessages.size());
-        assertEquals(WARN, loggedMessages.peek().getLevel());
+    @Nested
+    class RequiredDoubleFieldWarning extends RequiredFieldWarningTest {
+
+        @Test
+        @DisplayName("produce a warning upon finding a required double field")
+        void testRequiredDoubleFieldWarning() {
+            List<ConstraintViolation> validate = requiredFieldValidator.validate();
+            assertTrue(validate.isEmpty());
+
+            LogRecordSubject assertRecord = assertLog().record();
+            assertRecord.hasLevelThat()
+                        .isEqualTo(Level.WARNING);
+        }
     }
 }

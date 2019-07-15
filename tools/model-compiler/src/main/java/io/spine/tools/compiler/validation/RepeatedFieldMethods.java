@@ -103,23 +103,25 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     @Override
     public Collection<MethodSpec> generate() {
-        _debug("The methods construction for the {} repeated field is started.", javaFieldName);
+        _debug().log("The methods construction for the repeated field `%s` is started.",
+                     javaFieldName);
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(getter())
                 .addAll(repeatedMethods())
                 .addAll(repeatedRawMethods());
-        _debug("The methods construction for the {} repeated field is finished.", javaFieldName);
+        _debug().log("The methods construction for the repeated field `%s` is finished.",
+                     javaFieldName);
         return methods.build();
     }
 
     private MethodSpec getter() {
-        _debug("The getter construction for the repeated field is started.");
+        _debug().log("The getter construction for the repeated field is started.");
 
         String methodName = AccessorTemplates.getter().format(javaFieldName);
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType, listElementClassName);
-        String returnStatement = returnValue(callMethod(getMessageBuilder(),
-                                                        listGetter().format(javaFieldName)));
+        String returnStatement =
+                returnValue(callMethod(getMessageBuilder(), listGetter().format(javaFieldName)));
         MethodSpec methodSpec = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
@@ -127,12 +129,12 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
                 .addStatement(returnStatement)
                 .build();
 
-        _debug("The getter construction for the repeated field is finished.");
+        _debug().log("The getter construction for the repeated field is finished.");
         return methodSpec;
     }
 
     private Collection<MethodSpec> repeatedRawMethods() {
-        _debug("The raw methods construction for the repeated field is is started.");
+        _debug().log("The raw methods construction for the repeated field is is started.");
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(rawAddObjectMethod())
                 .add(rawSetObjectByIndexMethod())
@@ -141,8 +143,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         if (!isScalarOrEnum) {
             methods.add(createRawAddObjectByIndexMethod());
         }
-
-        _debug("The raw methods construction for the repeated field is is finished.");
+        _debug().log("The raw methods construction for the repeated field is is finished.");
         return methods.build();
     }
 

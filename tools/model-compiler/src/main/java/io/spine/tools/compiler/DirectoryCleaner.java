@@ -69,8 +69,8 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
                 if (dir.isDirectory()) {
                     delete(dir.toPath());
                 } else {
-                    String msg = "Trying to delete '{}' which is not a directory.";
-                    _warn(msg, dir.getAbsolutePath());
+                    String msg = "Trying to delete `%s` which is not a directory.";
+                    _warn().log(msg, dir.getAbsolutePath());
                 }
             }
         }
@@ -89,11 +89,11 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     private void delete(Path path) {
         try {
             FileVisitor<Path> visitor = new DirectoryCleaner(path);
-            _debug("Starting to delete the files recursively in {}", path.toString());
+            _debug().log("Starting to delete the files recursively in `%s`.", path.toString());
             Files.walkFileTree(path, visitor);
         } catch (IOException e) {
             throw newIllegalStateException(
-                    e, "Failed to delete the folder with its contents: %s", path
+                    e, "Failed to delete the folder with its contents: `%s`.", path
             );
         }
     }
@@ -107,7 +107,7 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        _error(exc, "Unable to delete `{}`.", file);
+        _error().withCause(exc).log("Unable to delete `%s`.", file);
         return FileVisitResult.CONTINUE;
     }
 
@@ -123,6 +123,6 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     }
 
     private void logDeletionOf(Path file) {
-        _debug("Deleting file `{}`.", file.toString());
+        _debug().log("Deleting file `%s`.", file.toString());
     }
 }

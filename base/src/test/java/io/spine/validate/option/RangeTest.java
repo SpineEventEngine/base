@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
+@SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and find out that")
 final class RangeTest extends MessageValidatorTest {
 

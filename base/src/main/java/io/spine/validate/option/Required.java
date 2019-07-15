@@ -47,8 +47,6 @@ public class Required<@ImmutableTypeParameter T>
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
-    private final IfMissing ifMissing = new IfMissing();
-
     /**
      * Creates a new instance of this option.
      */
@@ -95,21 +93,14 @@ public class Required<@ImmutableTypeParameter T>
      *         a value that the option is applied to
      */
     void checkUsage(FieldDescriptor field) {
-        ifMissing.valueFrom(field)
-                 .ifPresent(ifMissingOption -> _warn(
-                         "(if_missing) option is set without (required) = true"
-                 ));
-        checkCanBeRequired(field);
-    }
-
-    private void checkCanBeRequired(FieldDescriptor field) {
         JavaType type = field.getJavaType();
         if (!CAN_BE_REQUIRED.contains(type)) {
             String typeName = field.getType().name();
-            _warn("Fields of type {} should not be declared as (required) ({}.{}).",
-                  typeName,
+            _warn().log("The field `%s.%s` has the type %s and" +
+                                " should not be declared as `(required)`.",
                   field.getContainingType().getFullName(),
-                  field.getName());
+                  field.getName(),
+                  typeName);
         }
     }
 

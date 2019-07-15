@@ -30,13 +30,15 @@ buildscript {
         classpath deps.build.protobuf
         classpath deps.build.guava
         classpath deps.build.slf4j
+        classpath deps.build.flogger
         classpath deps.build.checkerAnnotations
         classpath deps.build.errorProneAnnotations
         classpath deps.build.jsr305Annotations
         classpath deps.build.gradlePlugins.protobuf
 
         classpath deps.gen.javaPoet
-
+        classpath deps.runtime.floggerSystemBackend
+        
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
@@ -78,6 +80,7 @@ dependencies {
     compileOnly deps.build.protobuf
     compileOnly deps.build.guava
     compileOnly deps.build.slf4j
+    compileOnly deps.build.flogger
     compileOnly deps.build.checkerAnnotations
     compileOnly deps.build.errorProneAnnotations
     compileOnly deps.build.jsr305Annotations

@@ -45,7 +45,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.validation.VBuilderMethods.methodsOf;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -81,7 +81,7 @@ final class VBuilderCode implements Logging {
      */
     @CanIgnoreReturnValue
     File write() {
-        _debug("Creating spec. for class: {}", vbClass);
+        _debug().log("Creating spec. for the class: `%s`.", vbClass);
 
         TypeSpec javaClassSpec = defineClass()
                 .addAnnotation(generatedBySpineModelCompiler())
@@ -118,7 +118,7 @@ final class VBuilderCode implements Logging {
 
     @CanIgnoreReturnValue
     private File writeClass(String javaPackage, TypeSpec classToCreate) {
-        _debug("Writing the {} class", vbClass);
+        _debug().log("Writing the `%s` class.", vbClass);
         try {
             Path dir = targetDir.toPath();
             Files.createDirectories(dir);
@@ -129,13 +129,12 @@ final class VBuilderCode implements Logging {
                     .writeTo(targetDir);
 
             File createdFile = resolve(javaPackage, classToCreate.name);
-            _debug("The {} class created, written to file {}.", vbClass, createdFile);
+            _debug().log("The `%s` class created, written to the file `%s`.", vbClass, createdFile);
             return createdFile;
 
         } catch (IOException e) {
-            String exMessage = format("%s was not written.", targetDir);
-            _warn(exMessage, e);
-            throw newIllegalArgumentException(exMessage, e);
+            String exMessage = format("`%s` was not written.", targetDir);
+            throw newIllegalStateException(exMessage, e);
         }
     }
 

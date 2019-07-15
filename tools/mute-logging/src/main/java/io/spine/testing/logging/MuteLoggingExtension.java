@@ -20,13 +20,11 @@
 
 package io.spine.testing.logging;
 
-import io.spine.logging.Logging;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Optional;
 
 /**
@@ -40,81 +38,27 @@ import java.util.Optional;
  */
 public final class MuteLoggingExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private final MemoizingStream memoizingStream = new MemoizingStream();
-    private final PrintStream temporaryOutputStream = new PrintStream(memoizingStream);
-    private final ProgramOutput temporaryOutput = ProgramOutput.into(temporaryOutputStream);
+    private static final String ROOT = "";
+    private final MutingLoggerTap loggerTap;
+    /**
+     * Creates new instance of the extension, redirecting to the stream which stores the output
+     * into memory.
+     */
+    public MuteLoggingExtension() {
+        this.loggerTap = new MutingLoggerTap(ROOT);
+    }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        mute();
+        loggerTap.install();
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        unmute(context);
-    }
-
-    private void mute() {
-        Logging.mute();
-        temporaryOutput.install();
-    }
-
-    private void unmute(ExtensionContext context) throws IOException {
-        ProgramOutput standardOutput = ProgramOutput.fromSystem();
-        standardOutput.install();
-        Logging.unmute();
-
         Optional<Throwable> exception = context.getExecutionException();
         if (exception.isPresent()) {
-            memoizingStream.flushTo(standardOutput.err);
-        } else {
-            memoizingStream.clear();
+            loggerTap.flushToSystemErr();
         }
-    }
-
-    /**
-     * The output of a software component.
-     */
-    private static final class ProgramOutput {
-
-        @SuppressWarnings("UseOfSystemOutOrSystemErr")
-        private static final ProgramOutput SYSTEM = new ProgramOutput(System.out, System.err);
-
-        private final PrintStream out;
-        private final PrintStream err;
-
-        private ProgramOutput(PrintStream out, PrintStream err) {
-            this.out = out;
-            this.err = err;
-        }
-
-        /**
-         * Creates an {@code ProgramOutput} into the given stream.
-         *
-         * <p>Both the output and error streams are represented with the given target stream.
-         *
-         * @param stream the target stream
-         * @return new instance of {@code ProgramOutput}
-         */
-        private static ProgramOutput into(PrintStream stream) {
-            return new ProgramOutput(stream, stream);
-        }
-
-        /**
-         * Obtains an instance of {@code ProgramOutput} from the standard I/O of this process.
-         *
-         * @return the standard I/O output
-         */
-        private static ProgramOutput fromSystem() {
-            return SYSTEM;
-        }
-
-        /**
-         * Installs this output for the current process.
-         */
-        private void install() {
-            System.setOut(out);
-            System.setErr(err);
-        }
+        loggerTap.remove();
     }
 }

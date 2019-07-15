@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.logging.Logging;
 import io.spine.validate.option.Constraint;
 import io.spine.validate.option.RequiredField;
 
@@ -33,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>See definition of {@code MessageOptions.required_field} in {@code options.proto}.
  */
-final class AlternativeFieldValidator implements Logging {
+final class AlternativeFieldValidator {
 
     private final MessageValue message;
 

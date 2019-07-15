@@ -18,15 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.io;
+package io.spine.testing.logging;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
-@DisplayName("PropertyFiles utility class should")
-class PropertyFilesTest extends UtilityClassTest<PropertyFiles> {
+import java.util.logging.Level;
 
-    PropertyFilesTest() {
-        super(PropertyFiles.class);
+/**
+ * Abstract base for logging tests that can setup and clean the logging fixture via
+ * annotated methods.
+ */
+public abstract class SimpleLoggingTest extends LoggingTest {
+
+    /**
+     * Creates new test suite.
+     *
+     * @param loggingClass
+     *         the class which performs the logging operations
+     * @param level
+     *         the level of logging we are interested in the tests
+     */
+    protected SimpleLoggingTest(Class<?> loggingClass, Level level) {
+        super(loggingClass, level);
     }
+
+    @BeforeEach
+    void setupLogging() {
+        interceptLogging();
+    }
+
+    @AfterEach
+    void resetLogging() {
+        restoreLogging();
+    }
+
 }

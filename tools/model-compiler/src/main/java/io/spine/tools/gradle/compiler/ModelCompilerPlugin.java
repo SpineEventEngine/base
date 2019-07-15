@@ -44,7 +44,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
     @Override
     public void apply(Project project) {
-        _debug("Adding the extension to the project.");
+        _debug().log("Adding the extension to the project.");
         project.getExtensions()
                .create(extensionName(), Extension.class);
 
@@ -63,8 +63,8 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     }
 
     private void apply(SpinePlugin plugin, Project project) {
-        _debug("Applying {}", plugin.getClass()
-                                         .getName());
+        _debug().log("Applying `%s`.", plugin.getClass()
+                                             .getName());
         plugin.apply(project);
     }
 }

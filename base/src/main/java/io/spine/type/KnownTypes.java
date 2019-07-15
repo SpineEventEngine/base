@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -30,11 +31,9 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.logging.Logging;
 import io.spine.security.InvocationGuard;
 import io.spine.type.ref.TypeRef;
 import io.spine.validate.ExternalConstraints;
-import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -148,7 +147,7 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Assembles the known types into a {@link JsonFormat.TypeRegistry}.
+     * Assembles the known types into a {@code JsonFormat.TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
@@ -240,7 +239,7 @@ public class KnownTypes implements Serializable {
     @Internal
     public static final class Holder {
 
-        private static final Logger log = Logging.get(Holder.class);
+        private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
@@ -271,9 +270,8 @@ public class KnownTypes implements Serializable {
          */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
-
-            log.debug("Adding types {} to known types.", moreKnownTypes);
-
+            logger.atFine()
+                  .log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);

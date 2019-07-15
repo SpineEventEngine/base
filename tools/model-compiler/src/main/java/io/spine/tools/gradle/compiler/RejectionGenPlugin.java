@@ -34,13 +34,13 @@ import io.spine.type.RejectionType;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.RejectionsFile.findAll;
 import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.TaskName.compileTestJava;
@@ -74,7 +74,6 @@ public class RejectionGenPlugin extends ProtoPlugin {
      */
     @Override
     public void apply(Project project) {
-        Logger log = log();
 
         Action<Task> mainScopeAction =
                 createAction(project,
@@ -105,7 +104,8 @@ public class RejectionGenPlugin extends ProtoPlugin {
                         .withOutputFiles(module.testCompiledRejections())
                         .applyNowTo(project);
 
-        log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
+        _debug().log("Rejection generation phase initialized with tasks: `%s`, `%s`.",
+                     mainTask, testTask);
     }
 
     private static Action<Task> createAction(Project project,
@@ -140,7 +140,8 @@ public class RejectionGenPlugin extends ProtoPlugin {
         @Override
         public void execute(Task task) {
             ImmutableSet<RejectionsFile> rejectionFiles = findModuleRejections(protoFiles().get());
-            _debug("Processing the file descriptors for the rejections {}", rejectionFiles);
+            _debug().log("Processing the file descriptors for the rejections `%s`.",
+                         rejectionFiles);
             for (RejectionsFile source : rejectionFiles) {
                 // We are sure that this is a rejections file because we got them filtered.
                 generateRejections(source);
@@ -169,23 +170,19 @@ public class RejectionGenPlugin extends ProtoPlugin {
             for (RejectionType rejection : rejections) {
                 // The name of the generated `ThrowableMessage` will be the same
                 // as for the Protobuf message.
-                _debug("Processing rejection '{}'", rejection.simpleJavaClassName());
+                _debug().log("Processing rejection `%s`.", rejection.simpleJavaClassName());
                 RejectionWriter writer = new RejectionWriter(rejection, targetDir(), indent());
                 writer.write();
             }
         }
 
         private void logGeneratingForFile(RejectionsFile source) {
-            if (!log().isDebugEnabled()) {
-                return;
-            }
-            _debug(
-                    "Generating rejections from file: `{}` " +
-                            "javaPackage: `{}`, javaOuterClassName: `{}`",
+            _debug().log(
+                    "Generating rejections from the file: `%s` " +
+                            "`javaPackage`: `%s`, `javaOuterClassName`: `%s`.",
                     source.getPath(),
-                    PackageName.resolve(source.getDescriptor()
-                                              .toProto()),
-                    SimpleClassName.outerOf(source.getDescriptor())
+                    lazy(() -> PackageName.resolve(source.descriptor().toProto())),
+                    lazy(() -> SimpleClassName.outerOf(source.descriptor()))
             );
         }
 

@@ -20,21 +20,44 @@
 
 package io.spine.code.proto;
 
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("FileSet should")
 class FileSetTest {
 
+    private FileSet fileSet;
+
+    @BeforeEach
+    void load() {
+        fileSet = FileSet.load();
+    }
+
     @Test
     @DisplayName("load mains resources")
     void loadMainResources() {
-        assertFalse(FileSet.load()
-                           .isEmpty());
+        assertFalse(fileSet.isEmpty());
+    }
+
+    @Test
+    @DisplayName("filter message type by predicate")
+    void findType() {
+        String nameFragment = "Field";
+        List<MessageType> types =
+                fileSet.findMessageTypes((d) -> d.getName()
+                                                 .contains(nameFragment));
+        types.forEach(
+                type -> assertThat(type.name().value()).contains(nameFragment)
+        );
     }
 }

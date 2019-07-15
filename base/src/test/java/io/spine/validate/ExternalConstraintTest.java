@@ -75,7 +75,6 @@ final class ExternalConstraintTest {
     @Test
     @DisplayName("build same validation rules")
     void buildSameRules() {
-        String fieldName = PACKAGE + ".AMessage.field";
         Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
         ExternalMessageConstraint rule =
                 new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD));

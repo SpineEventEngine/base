@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Validates fields of type {@link Boolean}.
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> {
+final class BooleanFieldValidator extends FieldValidator<Boolean> {
 
     /**
      * Creates a new validator instance.

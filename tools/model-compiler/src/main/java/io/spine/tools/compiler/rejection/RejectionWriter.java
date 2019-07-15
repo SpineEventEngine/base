@@ -85,12 +85,12 @@ public class RejectionWriter implements Logging {
      */
     public void write() {
         try {
-            _debug("Creating the output directory {}", outputDirectory.getPath());
+            _debug().log("Creating the output directory `%s`.", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
             String className = declaration.simpleJavaClassName()
                                           .value();
-            _debug("Constructing class {}", className);
+            _debug().log("Constructing the class `%s`.", className);
             TypeSpec rejection =
                     TypeSpec.classBuilder(className)
                             .addJavadoc(classJavadoc())
@@ -110,16 +110,16 @@ public class RejectionWriter implements Logging {
                             .skipJavaLangImports(true)
                             .indent(indent.toString())
                             .build();
-            _debug("Writing {}", className);
+            _debug().log("Writing %s.", className);
             javaFile.writeTo(outputDirectory);
-            _debug("Rejection {} written successfully", className);
+            _debug().log("Rejection %s written successfully.", className);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private MethodSpec constructor() {
-        _debug("Creating the constructor for the type '{}'",
+        _debug().log("Creating the constructor for the type `%s`.",
                     declaration.simpleJavaClassName());
         ParameterSpec builderParameter = builder.asParameter();
         CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
@@ -133,7 +133,7 @@ public class RejectionWriter implements Logging {
 
     private MethodSpec messageThrown() {
         String methodSignature = messageThrown.signature();
-        _debug("Constructing method {}", methodSignature);
+        _debug().log("Constructing method `%s`.", methodSignature);
         ClassName returnType = messageClass;
         return MethodSpec.methodBuilder(messageThrown.name())
                          .addAnnotation(Override.class)

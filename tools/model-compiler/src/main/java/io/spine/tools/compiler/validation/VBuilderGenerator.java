@@ -29,13 +29,11 @@ import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;
-import org.slf4j.Logger;
 
 import java.io.File;
 
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.lang.String.format;
 
 /**
  * Gradle {@code Action} for validating builder generation.
@@ -67,8 +65,8 @@ public final class VBuilderGenerator implements Logging {
         this.protoSrcDir = protoSrcDir;
         this.targetDir = targetDir;
         this.indent = indent;
-        _debug("Initiating generation of validating builders. " +
-                       "Proto src dir: {} Target dir: {}", protoSrcDir, targetDir);
+        _debug().log("Initiating generation of validating builders. " +
+                       "Proto src dir: `%s`. Target dir: `%s`.", protoSrcDir, targetDir);
     }
 
     public void process(FileSet files) {
@@ -89,28 +87,16 @@ public final class VBuilderGenerator implements Logging {
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {
-        _debug("Generating validating builders for {} types.", messages.size());
+        _debug().log("Generating validating builders for %d types.", messages.size());
         for (MessageType messageType : messages) {
             try {
                 VBuilderCode code = new VBuilderCode(targetDir, indent, messageType);
                 code.write();
             } catch (RuntimeException e) {
-                logError(messageType, e);
+                _error().withCause(e)
+                        .log("Cannot generate a validating builder for `%s`.", messageType);
             }
         }
-        _debug("Validating builder generation is finished.");
-    }
-
-    private void logError(MessageType type, RuntimeException e) {
-        Logger log = log();
-        String message =
-                format("Cannot generate a validating builder for `%s`.%n" +
-                               "Error: %s", type, e.toString());
-        // If debug level is enabled give it under this lever, otherwise WARN.
-        if (log.isDebugEnabled()) {
-            log.debug(message, e);
-        } else {
-            log.warn(message);
-        }
+        _debug().log("Validating builder generation is finished.");
     }
 }

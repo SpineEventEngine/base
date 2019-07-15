@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
@@ -95,24 +96,26 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
-            _debug("Annotating sources marked as `{}` with `{}`.", protobufOption, javaAnnotation);
-            _debug("Annotating by the file option.");
+            FluentLogger.Api debug = _debug();
+            debug.log("Annotating sources marked as `%s` with `%s`.",
+                      protobufOption, javaAnnotation);
+            debug.log("Annotating by the file option.");
             factory.createFileAnnotator(javaAnnotation, protobufOption)
                    .annotate();
-            _debug("Annotating by the message option.");
+            debug.log("Annotating by the message option.");
             factory.createMessageAnnotator(javaAnnotation, protobufOption)
                    .annotate();
             if (protobufOption.supportsServices()) {
-                _debug("Annotating by the service option.");
+                debug.log("Annotating by the service option.");
                 factory.createServiceAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
             if (protobufOption.supportsFields()) {
-                _debug("Annotating by the field option.");
+                debug.log("Annotating by the field option.");
                 factory.createFieldAnnotator(javaAnnotation, protobufOption)
                        .annotate();
             }
-            _debug("Option `{}` processed.", protobufOption);
+            debug.log("Option `%s` processed.", protobufOption);
         }
     }
 
@@ -133,10 +136,10 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
-            _debug("Annotating classes matching `{}` with `{}`.", pattern, javaAnnotation);
+            _debug().log("Annotating classes matching `%s` with `%s`.", pattern, javaAnnotation);
             factory.createPatternAnnotator(javaAnnotation, pattern)
                    .annotate();
-            _debug("Pattern `{}` processed.", pattern);
+            _debug().log("Pattern `%s` processed.", pattern);
         }
     }
 
@@ -155,7 +158,8 @@ public final class ModuleAnnotator {
 
         @Override
         public void execute(AnnotatorFactory factory) {
-            _debug("Annotating methods matching patterns {} with `{}`.", patterns, javaAnnotation);
+            _debug().log("Annotating methods matching patterns `%s` with `%s`.",
+                         patterns, javaAnnotation);
             factory.createMethodAnnotator(javaAnnotation, patterns)
                    .annotate();
         }

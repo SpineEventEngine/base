@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.IterableSubject;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
@@ -49,6 +50,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
@@ -317,7 +319,7 @@ final class InterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate message interfaces for (is) if `generate = true`")
+    @DisplayName("generate message interfaces for `(is)` if `generate = true`")
     void generateInterfacesForIs() {
         String filePath = "spine/tools/protoc/iface/is_generated.proto";
 
@@ -351,7 +353,7 @@ final class InterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate message interfaces for (every_is) if `generate = true`")
+    @DisplayName("generate message interfaces for `(every_is)` if `generate = true`")
     void generateInterfacesForEveryIs() {
         String filePath = "spine/tools/protoc/iface/every_is_generated.proto";
 
@@ -402,11 +404,14 @@ final class InterfaceGeneratorTest {
                                              .stream()
                                              .map(File::getName)
                                              .collect(toSet());
-        assertTrue(generatedFiles.contains("io/spine/tools/protoc/iface/User.java"));
-        assertTrue(generatedFiles.contains("io/spine/tools/protoc/iface/LawSubject.java"));
 
-        assertFalse(generatedFiles.contains("io/spine/tools/protoc/iface/UserName.java"));
-        assertFalse(generatedFiles.contains("io/spine/tools/protoc/iface/Name.java"));
+        IterableSubject assertGeneratedFiles = assertThat(generatedFiles);
+        assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/iface/UserName.java");
+        assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/iface/Name.java");
+        assertGeneratedFiles.containsExactly(
+                "io/spine/tools/protoc/iface/User.java",
+                "io/spine/tools/protoc/iface/LawSubject.java"
+        );
     }
 
     private CodeGeneratorResponse processCodeGenRequest(String filePath,
@@ -440,10 +445,15 @@ final class InterfaceGeneratorTest {
         assertTrue(generatedFilePath.startsWith(directory.getPath()));
     }
 
+    /**
+     * Verifies that the file contains the name of the interface class suffixed with comma.
+     *
+     * <p>The trailing comma is needed because the interface name will be one of the several
+     * interfaces in the {@code implements} clause of the generated class.
+     */
     private static void assertGeneratedInterface(Class<?> interfaceClass, File file) {
         assertTrue(file.hasInsertionPoint());
         assertTrue(file.hasName());
-
-        assertEquals(interfaceClass.getName() + ',', file.getContent());
+        assertThat(file.getContent()).isEqualTo(interfaceClass.getName() + ',');
     }
 }

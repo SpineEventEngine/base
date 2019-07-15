@@ -21,16 +21,15 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.logging.Logging;
 import io.spine.protobuf.Diff;
 import io.spine.type.TypeName;
 import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +45,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * This class provides general validation routines.
  */
 public final class Validate {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /** Prevents instantiation of this utility class. */
     private Validate() {
@@ -352,11 +353,11 @@ public final class Validate {
     @SuppressWarnings("DuplicateStringLiteralInspection")
         // Usage in AbstractValidatingBuilder will be removed.
     private static void onSetOnceMisuse(FieldDeclaration field) {
-        Logger logger = Logging.get(Validate.class);
         FieldName fieldName = field.name();
-        logger.error("Error found in `{}`. " +
-                     "Repeated and map fields cannot be marked as `(set_once) = true`.",
-                     fieldName);
+        logger.atSevere()
+              .log("Error found in `%s`. " +
+                           "Repeated and map fields cannot be marked as `(set_once) = true`.",
+                   fieldName);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")

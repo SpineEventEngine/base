@@ -27,12 +27,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
 import org.slf4j.helpers.SubstituteLoggerFactory;
 
-import static org.slf4j.helpers.NOPLogger.NOP_LOGGER;
-
 /**
  * Obtains {@link Logger} instance for a passed class and associates the value with the class.
  */
-class LoggerClassValue extends ClassValue<Logger> {
+@Deprecated
+final class LoggerClassValue extends ClassValue<Logger> {
 
     private static final LoggerClassValue INSTANCE = new LoggerClassValue();
 
@@ -47,40 +46,16 @@ class LoggerClassValue extends ClassValue<Logger> {
      */
     private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
 
-    /**
-     * {@code true} if this class value should be resolved to a
-     * {@linkplain org.slf4j.helpers.NOPLogger NO-OP logger}.
-     */
-    private boolean muted;
-
     private LoggerClassValue() {
         super();
         this.substFactory = Environment.instance()
                                        .isTests()
                             ? new SubstituteLoggerFactory()
                             : null;
-        this.muted = false;
     }
 
     static Logger loggerOf(Class<?> cls) {
         return INSTANCE.get(cls);
-    }
-
-    /**
-     * Mutes all computed logger instances.
-     *
-     * <p>This will cause all class values to be resolved to a
-     * {@linkplain org.slf4j.helpers.NOPLogger NO-OP logger}.
-     */
-    static void muteAll() {
-        INSTANCE.setMuted(true);
-    }
-
-    /**
-     * Unmutes all computed logger instances.
-     */
-    static void unmuteAll() {
-        INSTANCE.setMuted(false);
     }
 
     /**
@@ -93,9 +68,7 @@ class LoggerClassValue extends ClassValue<Logger> {
      */
     @Override
     protected Logger computeValue(Class<?> type) {
-        Logger result = muted
-                        ? noopLogger(type)
-                        : computeLogger(type);
+        Logger result = computeLogger(type);
         return result;
     }
 
@@ -108,17 +81,6 @@ class LoggerClassValue extends ClassValue<Logger> {
         return result;
     }
 
-    /**
-     * Returns a NO-OP {@linkplain org.slf4j.helpers.NOPLogger implementation} of the logger.
-     *
-     * <p>In case of test environment, this logger's output can still be redirected via
-     * {@link SubstituteLogger#setDelegate(Logger)}.
-     */
-    private Logger noopLogger(Class<?> cls) {
-        Logger result = substituteIfAvailable(NOP_LOGGER, cls);
-        return result;
-    }
-
     private Logger substituteIfAvailable(Logger logger, Class<?> cls) {
         if (substFactory != null) {
             SubstituteLogger substLogger = (SubstituteLogger) substFactory.getLogger(cls.getName());
@@ -128,7 +90,4 @@ class LoggerClassValue extends ClassValue<Logger> {
         return logger;
     }
 
-    private void setMuted(boolean muted) {
-        this.muted = muted;
-    }
 }

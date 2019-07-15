@@ -20,6 +20,7 @@
 
 package io.spine.logging;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -29,28 +30,21 @@ import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.Queue;
+import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.logging.LogMessages.logThrowable;
-import static io.spine.logging.LoggerClassValue.loggerOf;
 import static java.lang.String.format;
 
 /**
  * Utility interface for objects that require logging output.
  *
- * <p>Such an object is needed to implement this interface and obtain a {@link Logger} instance
- * associated with the class of the object via {@link #log()} method.
+ * <p>Such an object needs to implement this interface and obtain a {@link FluentLogger} instance
+ * associated with the class of the object via the {@link #logger()} method.
  *
- * <p>In addition to this, this interface provides shortcut methods for the popular
- * logging interface methods. These shortcut methods are named after those provided by
- * {@link Logger}, but with the underscore as the prefix:
- * {@link #_trace(String) _trace()}, {@link #_debug(String) _debug()},
- * {@link #_warn(String) _warn()}, {@link #_error(String) _error()}.
- *
- * <p>The interface does not provide shortcut methods for more than three arguments
- * because of the {@linkplain Logger#debug(String, Object...) associated performance cost}.
- * If you do need more than three arguments, please use a {@code Logger}
- * instance obtained via {@link #log()}.
+ * <p>In addition to this, the interface provides shortcut methods for the popular
+ * logging interface methods. These shortcut methods are named after the tracing level
+ * of Java Logging (such as {@link #_fine()} or {@link #_severe()}, and aliases for the levels
+ * popular from other logging frameworks (such as {@link #_debug()} or {@link #_error()}.
  *
  * @apiNote The underscore-based convention is selected for making logging calls more visible and
  *          distinguishable from the real code.
@@ -65,53 +59,123 @@ import static java.lang.String.format;
 })
 public interface Logging {
 
+    /** Returns {@link Level#FINE} as the convention for debug logging. */
+    static Level debugLevel() {
+        return Level.FINE;
+    }
+
+    /** Returns {@link Level#SEVERE} as the convention for logging errors. */
+    static Level errorLevel() {
+        return Level.SEVERE;
+    }
+
+    // Flogger API
+    //****************
+
+    /**
+     * Obtains {@code FluentLogger} instance for this class.
+     */
+    default FluentLogger logger() {
+        return FloggerClassValue.loggerOf(getClass());
+    }
+
+    /** A convenience method for {@link FluentLogger#atSevere()}. */
+    default FluentLogger.Api _severe() {
+        return logger().atSevere();
+    }
+
+    /** Same as {@link #_severe()}. */
+    default FluentLogger.Api _error() {
+        return _severe();
+    }
+
+    /** A convenience method for {@link FluentLogger#atWarning()}. */
+    default FluentLogger.Api _warn() {
+        return logger().atWarning();
+    }
+
+    /** A convenience method for {@link FluentLogger#atInfo()}. */
+    default FluentLogger.Api _info() {
+        return logger().atInfo();
+    }
+
+    /** A convenience method for {@link FluentLogger#atConfig()}. */
+    default FluentLogger.Api _config() {
+        return logger().atConfig();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFine()}. */
+    default FluentLogger.Api _fine() {
+        return logger().atFine();
+    }
+
+    /** Sames as {@link #_fine()}. */
+    default FluentLogger.Api _debug() {
+        return _fine();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFiner()}. */
+    default FluentLogger.Api _finer() {
+        return logger().atFiner();
+    }
+
+    /** A convenience method for {@link FluentLogger#atFine()}. */
+    default FluentLogger.Api _finest() {
+        return logger().atFinest();
+    }
+
+    /** Same as {@link #_finest()}. */
+    default FluentLogger.Api _trace() {
+        return _finest();
+    }
+
+    //
+    // Slf4J API (BEING DEPRECATED)
+    //****************************************
+
     /**
      * Obtains Logger instance for the passed class.
      * @apiNote The primary purpose of this method is to provide logging in static methods.
+     *
+     * @deprecated use {@link FluentLogger#forEnclosingClass()}
      */
+    @Deprecated
     static Logger get(Class<?> cls) {
-        return loggerOf(cls);
+        return LoggerClassValue.loggerOf(cls);
     }
 
     /**
      * Obtains logger associated with the class of this instance.
+     *
+     * @deprecated please use {@link #logger()}
      */
+    @Deprecated
     default Logger log() {
-        return loggerOf(getClass());
+        return LoggerClassValue.loggerOf(getClass());
     }
 
     /**
      * Redirects logging to the passed logging event queue.
+     *
+     * @deprecated please use Flogger-based API and {@code AssertingHandler}.
      */
+    @Deprecated
     static void redirect(SubstituteLogger log, Queue<SubstituteLoggingEvent> queue) {
         checkNotNull(log);
         checkNotNull(queue);
         log.setDelegate(new EventRecodingLogger(log, queue));
     }
 
-    /**
-     * Mutes all logging done with this utility.
-     *
-     * <p>To enable the logging back, use {@link #unmute()}.
-     */
-    static void mute() {
-        LoggerClassValue.muteAll();
-    }
-
-    /**
-     * Unmutes the logging done with this utility.
-     *
-     * <p>In case the logging wasn't {@linkplain #mute() muted}, does nothing.
-     */
-    static void unmute() {
-        LoggerClassValue.unmuteAll();
-    }
-
     /*
      * TRACE Level
      ****************/
 
-    /** Logs a message at the {@linkplain Logger#trace(String) TRACE} level. */
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String) TRACE} level.
+     *
+     * @deprecated please use {@link #_trace()}.
+     */
+    @Deprecated
     default void _trace(String msg) {
         log().trace(msg);
     }
@@ -119,7 +183,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
      * to the specified format and argument.
+     *
+     * @deprecated please use {@link #_trace()}
      */
+    @Deprecated
     default void _trace(String format, Object arg) {
         log().trace(format, arg);
     }
@@ -127,7 +194,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
      * to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_trace()}
      */
+    @Deprecated
     default void _trace(String format, Object arg1, Object arg2) {
         log().trace(format, arg1, arg2);
     }
@@ -138,7 +208,10 @@ public interface Logging {
      *
      * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().trace(format, arg1, arg2, arg3, ...); }</blockquote>
+     *
+     * @deprecated please use {@link #_trace()}
      */
+    @Deprecated
     default void _trace(String format, Object arg1, Object arg2, Object arg3) {
         log().trace(format, arg1, arg2, arg3);
     }
@@ -147,7 +220,12 @@ public interface Logging {
      * DEBUG Level
      ****************/
 
-    /** Logs a message at the {@linkplain Logger#debug(String) DEBUG} level. */
+    /**
+     *  Logs a message at the {@linkplain Logger#debug(String) DEBUG} level.
+     *
+     * @deprecated please use {@link #_debug()}
+     */
+    @Deprecated
     default void _debug(String msg) {
         log().debug(msg);
     }
@@ -155,7 +233,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
      * to the specified format and argument.
+     *
+     * @deprecated please use {@link #_debug()}
      */
+    @Deprecated
     default void _debug(String format, Object arg) {
         log().debug(format, arg);
     }
@@ -163,7 +244,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
      * to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_debug()}
      */
+    @Deprecated
     default void _debug(String format, Object arg1, Object arg2) {
         log().debug(format, arg1, arg2);
     }
@@ -174,7 +258,10 @@ public interface Logging {
      *
      * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().debug(format, arg1, arg2, arg3, ...); }</blockquote>
+     *
+     * @deprecated please use {@link #_debug()}
      */
+    @Deprecated
     default void _debug(String format, Object arg1, Object arg2, Object arg3) {
         log().debug(format, arg1, arg2, arg3);
     }
@@ -183,7 +270,12 @@ public interface Logging {
      * INFO level
      ****************/
 
-    /** Logs a message at the {@linkplain Logger#info(String) INFO} level. */
+    /**
+     * Logs a message at the {@linkplain Logger#info(String) INFO} level.
+     *
+     * @deprecated please use {@link #_info()}
+     */
+    @Deprecated
     default void _info(String msg) {
         log().info(msg);
     }
@@ -191,7 +283,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
      * to the specified format and argument.
+     *
+     * @deprecated please use {@link #_info()}
      */
+    @Deprecated
     default void _info(String format, Object arg) {
         log().info(format, arg);
     }
@@ -199,7 +294,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
      * to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_info()}
      */
+    @Deprecated
     default void _info(String format, Object arg1, Object arg2) {
         log().info(format, arg1, arg2);
     }
@@ -210,7 +308,10 @@ public interface Logging {
      *
      * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().info(format, arg1, arg2, arg3, ...); }</blockquote>
+     *
+     * @deprecated please use {@link #_info()}
      */
+    @Deprecated
     default void _info(String format, Object arg1, Object arg2, Object arg3) {
         log().info(format, arg1, arg2, arg3);
     }
@@ -219,7 +320,12 @@ public interface Logging {
      * WARN Level
      ****************/
 
-    /** Logs a message at the {@linkplain Logger#warn(String) WARN} level. */
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String) WARN} level.
+     *
+     * @deprecated please use {@link #_warn()}
+     */
+    @Deprecated
     default void _warn(String msg) {
         log().warn(msg);
     }
@@ -227,7 +333,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
      * to the specified format and argument.
+     *
+     * @deprecated please use {@link #_warn()}
      */
+    @Deprecated
     default void _warn(String format, Object arg) {
         log().warn(format, arg);
     }
@@ -235,7 +344,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
      * to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_warn()}
      */
+    @Deprecated
     default void _warn(String format, Object arg1, Object arg2) {
         log().warn(format, arg1, arg2);
     }
@@ -246,7 +358,10 @@ public interface Logging {
      *
      * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().warn(format, arg1, arg2, arg3, ...); }</blockquote>
+     *
+     * @deprecated please use {@link #_warn()}
      */
+    @Deprecated
     default void _warn(String format, Object arg1, Object arg2, Object arg3) {
         log().warn(format, arg1, arg2, arg3);
     }
@@ -279,14 +394,17 @@ public interface Logging {
     /**
      * Logs a {@code Throwable} with message at the {@linkplain Logger#warn(String, Throwable)
      * WARN} level according to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_warn()}
      */
+    @Deprecated
     default void _warn(Throwable t, String fmt, Object @Nullable ... params) {
         checkNotNull(t);
         checkNotNull(fmt);
         checkNotNull(params);
         Logger log = log();
         if (log.isWarnEnabled()) {
-            logThrowable(log::warn, t, fmt, params);
+            LogMessages.logThrowable(log::warn, t, fmt, params);
         }
     }
 
@@ -294,7 +412,12 @@ public interface Logging {
      * ERROR Level
      ****************/
 
-    /** Logs a message at the {@linkplain Logger#error(String) ERROR} level. */
+    /**
+     * Logs a message at the {@linkplain Logger#error(String) ERROR} level.
+     *
+     * @deprecated please use {@link #_error()}
+     */
+    @Deprecated
     default void _error(String msg) {
         log().error(msg);
     }
@@ -302,7 +425,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
      * to the specified format and argument.
+     *
+     * @deprecated please use {@link #_error()}
      */
+    @Deprecated
     default void _error(String format, Object arg) {
         log().error(format, arg);
     }
@@ -310,7 +436,10 @@ public interface Logging {
     /**
      * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
      * to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_error()}
      */
+    @Deprecated
     default void _error(String format, Object arg1, Object arg2) {
         log().error(format, arg1, arg2);
     }
@@ -321,7 +450,10 @@ public interface Logging {
      *
      * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().error(format, arg1, arg2, arg3, ...); }</blockquote>
+     *
+     * @deprecated please use {@link #_error()}
      */
+    @Deprecated
     default void _error(String format, Object arg1, Object arg2, Object arg3) {
         log().error(format, arg1, arg2, arg3);
     }
@@ -329,14 +461,17 @@ public interface Logging {
     /**
      * Logs a {@code Throwable} with message at the {@linkplain Logger#error(String, Throwable)
      * ERROR} level according to the specified format and arguments.
+     *
+     * @deprecated please use {@link #_error()}
      */
+    @Deprecated
     default void _error(Throwable t, String fmt, Object @Nullable ... params) {
         checkNotNull(t);
         checkNotNull(fmt);
         checkNotNull(params);
         Logger log = log();
         if (log.isErrorEnabled()) {
-            logThrowable(log::error, t, fmt, params);
+            LogMessages.logThrowable(log::error, t, fmt, params);
         }
     }
 }

@@ -44,6 +44,12 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
+    <groupId>com.google.flogger</groupId>
+    <artifactId>flogger</artifactId>
+    <version>0.4</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
     <version>28.0-jre</version>
@@ -71,6 +77,12 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.squareup</groupId>
     <artifactId>javapoet</artifactId>
     <version>1.11.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.grpc</groupId>
+    <artifactId>grpc-core</artifactId>
+    <version>1.21.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -102,6 +114,12 @@ all modules and does not describe the project structure per-subproject.
     <artifactId>slf4j-api</artifactId>
     <version>1.7.26</version>
     <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.google.flogger</groupId>
+    <artifactId>flogger-system-backend</artifactId>
+    <version>0.4</version>
+    <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
@@ -160,19 +178,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-api</artifactId>
-    <version>5.4.2</version>
+    <version>5.5.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.4.2</version>
+    <version>5.5.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-params</artifactId>
-    <version>5.4.2</version>
+    <version>5.5.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>

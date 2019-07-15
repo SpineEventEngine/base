@@ -36,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * This test suite tests default methods of the {@link Logging} interface.
  */
 @DisplayName("Logging should provide a shortcut methods")
+@SuppressWarnings("deprecation") // ... and remove the class once deprecated API is removed.
 class LoggingMethodTest {
 
     @Nested
@@ -52,6 +53,8 @@ class LoggingMethodTest {
         }
 
         /**
+         * Tests debug level.
+         *
          * @implNote This method passes {@code TRACE} instead of {@code DEBUG}
          * because of the <a href="https://jira.qos.ch/browse/SLF4J-376">bug</a>
          * in {@link org.slf4j.event.EventRecodingLogger#debug(String)

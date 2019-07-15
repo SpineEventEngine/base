@@ -66,7 +66,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        log().debug("Adding the ProtoJavadocPlugin extension to the project.");
+        _debug().log("Adding the ProtoJavadocPlugin extension to the project.");
         project.getExtensions()
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
@@ -91,7 +91,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         String genProtoDir = taskType.getGenProtoDir(project);
         File file = new File(genProtoDir);
         if (!file.exists()) {
-            log().warn("Cannot perform formatting. Directory `{}` does not exist.", file);
+            _warn().log("Cannot perform formatting. Directory `%s` does not exist.", file);
             return;
         }
 
@@ -100,7 +100,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
                                  new PreTagFormatting())
         );
         try {
-            log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);
+            _debug().log("Starting Javadocs formatting in `%s`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
         } catch (IOException e) {
             String errMsg = format("Failed to format the sources in `%s`.", genProtoDir);

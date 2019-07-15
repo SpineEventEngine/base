@@ -75,12 +75,12 @@ public class Extension implements Logging {
 
     void setMainGenProtoDir(String mainGenProtoDir) {
         this.mainGenProtoDir = mainGenProtoDir;
-        log().debug("Path to main generated Protobufs set up to {}.", mainGenProtoDir);
+        _debug().log("Path to main generated Protobufs set up to `%s`.", mainGenProtoDir);
     }
 
     void setTestGenProtoDir(String testGenProtoDir) {
         this.testGenProtoDir = testGenProtoDir;
-        log().debug("Path to test generated Protobufs set up to {}.", testGenProtoDir);
+        _debug().log("Path to test generated Protobufs set up to `%s`.", testGenProtoDir);
     }
 
     private static void checkExtensionField(@Nullable String value, String name) {

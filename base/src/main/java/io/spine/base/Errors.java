@@ -95,6 +95,7 @@ public final class Errors {
      *         the {@code Throwable} to convert
      * @return new builder of {@link Error}
      */
+    @SuppressWarnings("CheckReturnValue") // calling builder
     private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
         String type = throwable.getClass()

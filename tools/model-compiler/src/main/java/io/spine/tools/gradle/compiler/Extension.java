@@ -21,10 +21,10 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
-import io.spine.logging.Logging;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
@@ -32,7 +32,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.util.ConfigureUtil;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +51,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
         "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */})
 public class Extension extends GradleExtension {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -184,12 +185,16 @@ public class Extension extends GradleExtension {
         return DefaultJavaProject.at(project.getProjectDir());
     }
 
+    @SuppressWarnings("PMD.MethodNamingConventions")
+    private static FluentLogger.Api _debug() {
+        return logger.atFine();
+    }
+
     public static String getMainProtoSrcDir(Project project) {
-        Logger log = log();
         Extension extension = extension(project);
-        log.debug("Extension is {}", extension);
+        _debug().log("Extension is `%s`.", extension);
         String protoDir = extension.mainProtoSrcDir;
-        log.debug("modelCompiler.mainProtoSrcDir is {}", protoDir);
+        _debug().log("`modelCompiler.mainProtoSrcDir` is `%s`.", protoDir);
         return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
@@ -283,45 +288,45 @@ public class Extension extends GradleExtension {
 
     public static boolean isGenerateValidatingBuilders(Project project) {
         boolean result = extension(project).generateValidatingBuilders;
-        log().debug("The current validating builder generation setting is {}", result);
+        _debug().log("The current validating builder generation setting is %b.", result);
         return result;
     }
 
     public static Indent getIndent(Project project) {
         Indent result = extension(project).indent;
-        log().debug("The current indent is {}", result.getSize());
+        _debug().log("The current indent is %d.", result.getSize());
         return result;
     }
 
     @SuppressWarnings("unused")
     public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
         this.generateValidatingBuilders = generateValidatingBuilders;
-        log().debug("Validating builder generation has been {}",
+        _debug().log("Validating builder generation has been %s.",
                     (generateValidatingBuilders ? "enabled" : "disabled"));
     }
 
     @SuppressWarnings("unused")
     public void setIndent(int indent) {
         this.indent = Indent.of(indent);
-        log().debug("Indent has been set to {}", generateValidatingBuilders);
+        _debug().log("Indent has been set to %d.", indent);
     }
 
     public static List<String> getDirsToClean(Project project) {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
-        Logger log = log();
-        log.debug("Finding the directories to clean");
+        _debug().log("Finding the directories to clean.");
         List<String> dirs = extension(project).dirsToClean;
         String singleDir = extension(project).dirToClean;
         if (dirs.size() > 0) {
-            log.error("Found {} directories to clean: {}", dirs.size(), dirs);
+            logger.atInfo()
+                  .log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
         } else if (singleDir != null && !singleDir.isEmpty()) {
-            log.debug("Found directory to clean: {}", singleDir);
+            _debug().log("Found directory to clean: `%s`.", singleDir);
             dirsToClean.add(singleDir);
         } else {
             String defaultValue = def(project).generated()
                                               .toString();
-            log.debug("Default directory to clean: {}", defaultValue);
+            _debug().log("Default directory to clean: `%s`.", defaultValue);
             dirsToClean.add(defaultValue);
         }
         return ImmutableList.copyOf(dirsToClean);
@@ -329,8 +334,8 @@ public class Extension extends GradleExtension {
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
         Severity result = extension(project).spineCheckSeverity;
-        log().debug("The severity of Spine-custom Error Prone checks is {}",
-                    (result == null ? "unset" : result.name()));
+        _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
+                     (result == null ? "unset" : result.name()));
         return result;
     }
 
@@ -409,7 +414,7 @@ public class Extension extends GradleExtension {
                                 .getCanonicalFile();
         } catch (IOException e) {
             throw newIllegalStateException(
-                    e, "Project directory %s is invalid!", project.getProjectDir()
+                    e, "Unable to obtain project directory `%s`.", project.getProjectDir()
             );
         }
         File spinePath = DefaultJavaProject.at(projectDir)
@@ -425,9 +430,5 @@ public class Extension extends GradleExtension {
         return (Extension)
                 project.getExtensions()
                        .getByName(ModelCompilerPlugin.extensionName());
-    }
-
-    private static Logger log() {
-        return Logging.get(Extension.class);
     }
 }
