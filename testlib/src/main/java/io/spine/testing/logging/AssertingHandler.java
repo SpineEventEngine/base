@@ -37,7 +37,7 @@ import static java.lang.System.lineSeparator;
 /**
  * Test fixture for testing loggers based on JDK Logging.
  */
-public class AssertingHandler extends Handler implements LoggingAssertions {
+final class AssertingHandler extends Handler implements LoggingAssertions {
 
     private static final String FACT_NO_RECORDS = "There were no log records";
 
