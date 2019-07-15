@@ -99,7 +99,7 @@ import static org.slf4j.event.Level.ERROR;
  * <p>Any {@code ValidatingBuilder} implementation should pass these tests. When implementing your
  * own {@code ValidatingBuilder}, be sure to check if it fits the constraints stated below.
  */
-@DisplayName("`ValidatingBuilder` should")
+@DisplayName("ValidatingBuilder should")
 class ValidatingBuilderTest {
 
     private ProjectVBuilder builder;
