@@ -46,7 +46,7 @@ public abstract class LoggingTest {
      */
     protected LoggingTest(Class<?> loggingClass, Level level) {
         this.level = checkNotNull(level);
-        this.interceptor = new Interceptor(loggingClass);
+        this.interceptor = new Interceptor(loggingClass, level);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class LoggingTest {
      * @see #restoreLogging()
      */
     protected final void interceptLogging() {
-        interceptor.intercept(this.level);
+        interceptor.intercept();
     }
 
     /**

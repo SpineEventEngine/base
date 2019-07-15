@@ -41,29 +41,34 @@ public final class Interceptor {
     /** The value the logger had before the tests. */
     private final Level previousLevel;
     /** The level to be used during the tests. */
-    private @Nullable Level level;
+    private final Level level;
     /** The handler which remembers log records and performs assertions. */
     private @Nullable AssertingHandler handler;
 
     /**
-     * Creates new instance for intercepting the logging of the passed class.
+     * Creates new instance for intercepting the logging of the passed class at the specified
+     * minimum level.
      */
-    public Interceptor(Class<?> loggingClass) {
+    public Interceptor(Class<?> loggingClass, Level level) {
         this.loggingClass = checkNotNull(loggingClass);
+        this.level = checkNotNull(level);
         this.config = LoggerConfig.getConfig(this.loggingClass);
         this.previousLevel = config.getLevel();
     }
 
     /**
-     * Installs the handler for intercepting the records and set the logger
-     * to the passed minimum level.
+     * Installs the handler for intercepting the records.
+     *
+     * <p>Current handlers are removed and remembered. The logger will also not use
+     * parent handlers.
+     *
+     * @see #release()
      */
-    public void intercept(Level level) {
-        this.level = checkNotNull(level);
+    public void intercept() {
         handler = new AssertingHandler();
-        handler.setLevel(level);
+        handler.setLevel(this.level);
         useParentHandler = config.getUseParentHandlers();
-        config.setLevel(level);
+        config.setLevel(this.level);
         config.addHandler(handler);
         config.setUseParentHandlers(false);
     }
@@ -79,7 +84,6 @@ public final class Interceptor {
         config.setUseParentHandlers(useParentHandler);
         config.setLevel(previousLevel);
         handler = null;
-        level = null;
     }
 
     /**
@@ -87,7 +91,7 @@ public final class Interceptor {
      *
      * @throws NullPointerException
      *          if the handler was not initialized or already removed
-     * @see #intercept(Level)
+     * @see #intercept()
      * @see #release()
      */
     public AssertingHandler handler() {
