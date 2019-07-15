@@ -83,9 +83,11 @@ public abstract class LoggingTest {
     }
 
     /**
-     * Redirects logging to a {@linkplain AssertingHandler custom handler}.
+     * Redirects logging to a custom handler which would accumulate the log output.
      *
-     * <p>The handler will have the {@linkplain #level() level} assigned for the test.
+     * <p>The output can be later {@linkplain #assertLog() asserted}.
+     *
+     * <p>The logging will have the {@linkplain #level() level} assigned for the test.
      * The method also turns off {@linkplain Logger#setUseParentHandlers(boolean) parent
      * handlers}.
      *

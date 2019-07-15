@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("`LoggerTest` should")
+@DisplayName("LoggerTest should")
 class LoggingTestTest {
 
     private LoggingTest test;
