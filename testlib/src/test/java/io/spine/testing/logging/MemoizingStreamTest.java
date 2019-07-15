@@ -68,7 +68,8 @@ class MemoizingStreamTest {
         @Test
         @DisplayName("equal to zero")
         void nothingWritten() {
-            assertThat(stream.size()).isEqualTo(0);
+            assertThat(stream.size())
+                    .isEqualTo(0);
         }
 
         @Test
