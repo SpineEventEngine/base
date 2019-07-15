@@ -59,13 +59,13 @@ class LoggingTestTest {
     }
 
     @Test
-    @DisplayName("have no handler by default")
+    @DisplayName("do not intercept by default")
     void noHandler() {
-        assertThrows(NullPointerException.class, test::assertLog);
+        assertThrows(IllegalStateException.class, test::assertLog);
     }
 
     @Test
-    @DisplayName("assign handler")
+    @DisplayName("provide assertion API when installed")
     void assigningHandler() {
         test.interceptLogging();
         assertThat(test.assertLog())
@@ -102,10 +102,10 @@ class LoggingTestTest {
     }
 
     @Test
-    @DisplayName("clear handler")
+    @DisplayName("do not provide assertions API after restored")
     void clearingHandler() {
         test.restoreLogging();
-        assertThrows(NullPointerException.class, test::assertLog);
+        assertThrows(IllegalStateException.class, test::assertLog);
     }
 
     @Test

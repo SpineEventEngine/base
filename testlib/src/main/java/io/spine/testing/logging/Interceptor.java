@@ -26,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Intercepts logging records of the associated class.
@@ -46,7 +47,7 @@ public final class Interceptor {
     private @Nullable AssertingHandler handler;
 
     /**
-     * Creates new instance for intercepting the logging of the passed class at the specified
+     * Creates a new instance for intercepting logging of the passed class at the specified
      * minimum level.
      */
     public Interceptor(Class<?> loggingClass, Level level) {
@@ -59,8 +60,8 @@ public final class Interceptor {
     /**
      * Installs the handler for intercepting the records.
      *
-     * <p>Current handlers are removed and remembered. The logger will also not use
-     * parent handlers.
+     * <p>Current handlers are removed and remembered.
+     * The logger will also not use parent handlers.
      *
      * @see #release()
      */
@@ -87,17 +88,19 @@ public final class Interceptor {
     }
 
     /**
-     * Obtains the instance of {@code AssertingHandler} used by this interceptor.
+     * Obtains assertions for the accumulated log.
      *
-     * @throws NullPointerException
-     *          if the handler was not initialized or already removed
+     * @throws IllegalStateException
+     *          if the interceptor is not yet {@linkplain #intercept() installed} or already
+     *          {@linkplain #release() released}
      * @see #intercept()
      * @see #release()
      */
     public LoggingAssertions assertLog() {
-        return checkNotNull(
-                handler, "The handler is not available. Please call `intercept(Level)`."
+        checkState(
+                handler != null, "The handler is not available. Please call `intercept(Level)`."
         );
+        return handler;
     }
 
     /**
@@ -110,8 +113,9 @@ public final class Interceptor {
     /**
      * Obtains the level of logging assigned for the tests.
      *
-     * @throws NullPointerException
-     *          if the handler was not initialized or already removed
+     * @throws IllegalStateException
+     *          if the interceptor is not yet {@linkplain #intercept() installed} or already
+     *          {@linkplain #release() released}
      */
     public Level level() {
         return checkNotNull(level);
