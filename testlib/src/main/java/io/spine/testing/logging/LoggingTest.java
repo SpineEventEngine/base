@@ -62,7 +62,7 @@ public abstract class LoggingTest {
     }
 
     /**
-     * Obtains the class which logging operations of which we test.
+     * Obtains the class which logging operations are tested.
      */
     protected final Class<?> loggingClass() {
         return interceptor.loggingClass();

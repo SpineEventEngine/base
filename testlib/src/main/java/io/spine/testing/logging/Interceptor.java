@@ -104,7 +104,7 @@ public final class Interceptor {
     }
 
     /**
-     * Obtains the class which logging operations of which we test.
+     * Obtains the class which logging operations are tested.
      */
     public Class<?> loggingClass() {
         return loggingClass;
