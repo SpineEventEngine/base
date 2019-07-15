@@ -31,9 +31,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`LoggerTest` should")
-class LoggerTestTest {
+class LoggingTestTest {
 
-    private LoggerTest test;
+    private LoggingTest test;
     private Level previousLevel;
     private Level newLevel;
 
@@ -67,7 +67,7 @@ class LoggerTestTest {
     @Test
     @DisplayName("assign handler")
     void assigningHandler() {
-        test.addHandler();
+        test.interceptLogging();
         assertThat(test.handler())
                 .isNotNull();
     }
@@ -77,7 +77,7 @@ class LoggerTestTest {
     void assigningLevel() {
         assertThat(test.level())
                 .isNotEqualTo(previousLevel);
-        test.addHandler();
+        test.interceptLogging();
         assertThat(jdkLogger().getLevel())
                 .isNotEqualTo(previousLevel);
     }
@@ -95,7 +95,7 @@ class LoggerTestTest {
         assertThat(jdkLogger().getLevel())
                 .isEqualTo(previousLevel);
 
-        test.addHandler();
+        test.interceptLogging();
 
         assertThat(jdkLogger().getLevel())
                 .isEqualTo(newLevel);
@@ -104,20 +104,20 @@ class LoggerTestTest {
     @Test
     @DisplayName("clear handler")
     void clearingHandler() {
-        test.removeHandler();
+        test.restoreLogging();
         assertThrows(NullPointerException.class, test::handler);
     }
 
     @Test
     @DisplayName("restore JDK logger level")
     void restoringLevel() {
-        test.addHandler();
-        test.removeHandler();
+        test.interceptLogging();
+        test.restoreLogging();
         assertThat(jdkLogger().getLevel())
                 .isEqualTo(previousLevel);
     }
 
-    private static class TestFixture extends LoggerTest {
+    private static class TestFixture extends LoggingTest {
         TestFixture(Class<?> loggingClass, Level level) {
             super(loggingClass, level);
         }

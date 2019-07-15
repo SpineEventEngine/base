@@ -29,7 +29,7 @@ import java.util.logging.Level;
  * Abstract base for logging tests that can setup and clean the logging fixture via
  * annotated methods.
  */
-public abstract class SimpleLoggerTest extends LoggerTest {
+public abstract class SimpleLoggingTest extends LoggingTest {
 
     /**
      * Creates new test suite.
@@ -39,18 +39,18 @@ public abstract class SimpleLoggerTest extends LoggerTest {
      * @param level
      *         the level of logging we are interested in the tests
      */
-    protected SimpleLoggerTest(Class<?> loggingClass, Level level) {
+    protected SimpleLoggingTest(Class<?> loggingClass, Level level) {
         super(loggingClass, level);
     }
 
     @BeforeEach
     void setupLogging() {
-        addHandler();
+        interceptLogging();
     }
 
     @AfterEach
     void resetLogging() {
-        removeHandler();
+        restoreLogging();
     }
 
 }

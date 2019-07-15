@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import io.spine.testing.logging.SimpleLoggerTest;
+import io.spine.testing.logging.SimpleLoggingTest;
 import io.spine.validate.option.Required;
 
 import java.util.logging.Level;
@@ -28,7 +28,7 @@ import java.util.logging.Level;
 /**
  * Abstract base for testing logging of required field validation.
  */
-abstract class RequiredFieldWarningTest extends SimpleLoggerTest {
+abstract class RequiredFieldWarningTest extends SimpleLoggingTest {
 
     RequiredFieldWarningTest() {
         super(Required.class, Level.WARNING);

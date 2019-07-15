@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Abstract base for tests of logging.
  */
-public abstract class LoggerTest {
+public abstract class LoggingTest {
 
     /** The level to be used during the tests. */
     private final Level level;
@@ -44,7 +44,7 @@ public abstract class LoggerTest {
      * @param level
      *         the level of logging in which we are interested in the tests
      */
-    protected LoggerTest(Class<?> loggingClass, Level level) {
+    protected LoggingTest(Class<?> loggingClass, Level level) {
         this.level = checkNotNull(level);
         this.interceptor = new Interceptor(loggingClass);
     }
@@ -54,8 +54,8 @@ public abstract class LoggerTest {
      *
      * @throws NullPointerException
      *          if the handler was not initialized or already removed
-     * @see #addHandler()
-     * @see #removeHandler()
+     * @see #interceptLogging()
+     * @see #restoreLogging()
      */
     protected final AssertingHandler handler() {
         return interceptor.handler();
@@ -83,7 +83,7 @@ public abstract class LoggerTest {
     }
 
     /**
-     * Creates and assigns an {@link AssertingHandler} to the logger of the class.
+     * Redirects logging to a {@linkplain AssertingHandler custom handler}.
      *
      * <p>The handler will have the {@linkplain #level() level} assigned for the test.
      * The method also turns off {@linkplain Logger#setUseParentHandlers(boolean) parent
@@ -93,20 +93,20 @@ public abstract class LoggerTest {
      *         suites hook up the logging where appropriate to the test suite. In some cases
      *         the logger should be tuned <em>after</em> some of the operations performed in
      *         a test setup.
-     * @see #removeHandler()
+     * @see #restoreLogging()
      */
-    protected final void addHandler() {
+    protected final void interceptLogging() {
         interceptor.intercept(this.level);
     }
 
     /**
-     * Removes the handler assigned in {@link #addHandler()} and restores the value
+     * Removes the handler assigned in {@link #interceptLogging()} and restores the value
      * of the flag for using {@linkplain Logger#getUseParentHandlers() parent handlers}.
      *
      * <p>The {@linkplain #handler handler} is not available after this method is called until
-     * it is created and added back by {@link #addHandler()}.
+     * it is created and added back by {@link #interceptLogging()}.
      */
-    protected final void removeHandler() {
+    protected final void restoreLogging() {
         interceptor.release();
     }
 }
