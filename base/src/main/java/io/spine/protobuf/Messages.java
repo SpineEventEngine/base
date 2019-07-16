@@ -19,8 +19,12 @@
  */
 package io.spine.protobuf;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
+import com.google.protobuf.MessageLite;
 import io.spine.annotation.Internal;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +42,14 @@ public final class Messages {
     /** The name of a message builder factory method. */
     public static final String METHOD_NEW_BUILDER = "newBuilder";
 
+    /**
+     * The cache of the default instances per {@link Message} class.
+     *
+     * <p>Creates and caches objects in a lazy mode.
+     */
+    private static final
+    LoadingCache<Class<? extends MessageLite>, MessageLite> defaultInstances = loadingCache(1_000);
+
     /** Prevent instantiation of this utility class. */
     private Messages() {
     }
@@ -51,9 +63,9 @@ public final class Messages {
      */
     public static <M extends Message> M defaultInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
-        // It is safe to use the `Internal` utility class from Protobuf since it relies on the
-        // the fact that the generated class has the `getDefaultInstance()` static method.
-        M result = com.google.protobuf.Internal.getDefaultInstance(messageClass);
+
+        @SuppressWarnings("unchecked")  // Ensured by the `MessageCacheLoader` implementation.
+        M result = (M) defaultInstances.getUnchecked(messageClass);
         return result;
     }
 
@@ -108,5 +120,30 @@ public final class Messages {
             commandMessage = msgOrAny;
         }
         return commandMessage;
+    }
+
+    private static LoadingCache<Class<? extends MessageLite>, MessageLite> loadingCache(int size) {
+        return CacheBuilder.newBuilder()
+                           .maximumSize(size)
+                           .build(new MessageCacheLoader());
+    }
+
+    /**
+     * The loader of the cache of default instances per {@link Message} class.
+     *
+     * <p>Loads an default instance of {@code Message} for the given type passed.
+     *
+     * <p>The {@link MessageLite} is used as a super type of the loaded objects to comply
+     * with {@linkplain com.google.protobuf.Internal Protobuf Internal} tool API.
+     */
+    private static final class MessageCacheLoader
+            extends CacheLoader<Class<? extends MessageLite>, MessageLite> {
+
+        @Override
+        public MessageLite load(Class<? extends MessageLite> messageClass) {
+            // It is safe to use the `Internal` utility class from Protobuf since it relies on the
+            // the fact that the generated class has the `getDefaultInstance()` static method.
+            return com.google.protobuf.Internal.getDefaultInstance(messageClass);
+        }
     }
 }
