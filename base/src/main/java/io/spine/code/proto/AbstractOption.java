@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -74,5 +75,30 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
                ? Optional.of(options.getExtension(this.extension))
                : Optional.empty();
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractOption)) {
+            return false;
+        }
+        AbstractOption<?, ?, ?> option = (AbstractOption<?, ?, ?>) o;
+        return Objects.equals(extension.getNumber(), option.extension.getNumber());
+    }
+
+    /**
+     * Computes the hash code of this option basing on its extension number.
+     *
+     * <p>Improves the performance of operations that group the {@code AbstractOption} instances
+     * into {@code Set}s or other structures relying onto the hash code value.
+     *
+     * @return the hash code value
+     */
+    @Override
+    public int hashCode() {
+        return extension.getNumber();
     }
 }
