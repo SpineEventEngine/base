@@ -21,6 +21,8 @@
 package io.spine.type;
 
 import com.google.common.base.Objects;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
@@ -41,6 +43,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable(containerOf = {"T", "P"})
 @Internal
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
+
+    /**
+     * A cache of known classes per {@linkplain #javaClassName() Java class name}.
+     *
+     * <p>Saves the memory by limiting the maximum number of cached objects.
+     *
+     * <p>{@link com.google.common.cache.LoadingCache LoadingCache} implementation would make
+     * dealing with the exceptions a bit more difficult to maintain and read. Which is why
+     * a straightforward get-put approach with a plain {@code Cache} implementation is used.
+     */
+    private static final Cache<String, Class<?>> knownClasses = CacheBuilder.newBuilder()
+                                                                            .maximumSize(1_000)
+                                                                            .build();
 
     private final T descriptor;
     private final boolean supportsBuilders;
@@ -79,11 +94,16 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public Class<?> javaClass() {
         String clsName = javaClassName().value();
-        try {
-            return Class.forName(clsName);
-        } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(descriptor.getFullName(), e);
+        Class<?> result = knownClasses.getIfPresent(clsName);
+        if (result == null) {
+            try {
+                result = Class.forName(clsName);
+                knownClasses.put(clsName, result);
+            } catch (ClassNotFoundException e) {
+                throw new UnknownTypeException(descriptor.getFullName(), e);
+            }
         }
+        return result;
     }
 
     /**
