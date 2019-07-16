@@ -47,7 +47,6 @@ import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.google.common.collect.Sets.union;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -93,7 +92,10 @@ public abstract class FieldValidator<V> implements Logging {
         this.ifInvalid = ifInvalid(descriptor(value));
         ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
         ImmutableSet<FieldValidatingOption<?, V>> additionalOptions = additionalOptions();
-        this.fieldValidatingOptions = ImmutableSet.copyOf(union(commonOptions, additionalOptions));
+        this.fieldValidatingOptions =
+                ImmutableSet.<FieldValidatingOption<?, V>>builder().addAll(commonOptions)
+                                                                   .addAll(additionalOptions)
+                                                                   .build();
     }
 
     private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
