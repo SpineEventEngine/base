@@ -20,7 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -30,11 +30,14 @@ import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.Iterators.filter;
+import static com.google.common.collect.Iterators.transform;
+import static com.google.common.collect.Iterators.unmodifiableIterator;
 
 /**
  * A value of a {@link Message} to validate.
@@ -87,13 +90,12 @@ public final class MessageValue {
      *
      * @return values of message fields excluding {@code Oneof} fields
      */
-    ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
-        ImmutableList<FieldValue<?>> values = descriptor.getFields()
-                                                        .stream()
-                                                        .filter(MessageValue::isNotOneof)
-                                                        .map(this::valueOfField)
-                                                        .collect(toImmutableList());
-        return values;
+    UnmodifiableIterator<FieldValue<?>> fieldsExceptOneofs() {
+        Iterator<FieldDescriptor> iterator = descriptor.getFields()
+                                                       .iterator();
+        UnmodifiableIterator<FieldDescriptor> noOneofs = filter(iterator, MessageValue::isNotOneof);
+        Iterator<FieldValue<?>> values = transform(noOneofs, this::valueOfField);
+        return unmodifiableIterator(values);
     }
 
     /**
@@ -132,14 +134,14 @@ public final class MessageValue {
      *         if the if the message doesn't declare this oneof
      */
     public Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
-        checkArgument(oneofDescriptors().contains(oneof));
+        checkArgument(descriptor.getOneofs().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
     }
 
     /** Returns descriptors of {@code Oneof} declarations in the message. */
-    ImmutableList<OneofDescriptor> oneofDescriptors() {
-        return ImmutableList.copyOf(descriptor.getOneofs());
+    UnmodifiableIterator<OneofDescriptor> oneofDescriptors() {
+        return unmodifiableIterator(descriptor.getOneofs().iterator());
     }
 
     /** Returns the context of the message. */

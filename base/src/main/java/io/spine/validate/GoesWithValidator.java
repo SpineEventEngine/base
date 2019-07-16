@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.UnmodifiableIterator;
 import io.spine.validate.option.Constraint;
 import io.spine.validate.option.Goes;
 
@@ -49,7 +50,10 @@ final class GoesWithValidator {
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
         Goes<?> goesFieldOption = Goes.create(messageValue);
-        for (FieldValue value : messageValue.fieldsExceptOneofs()) {
+
+        UnmodifiableIterator<FieldValue<?>> fields = messageValue.fieldsExceptOneofs();
+        while (fields.hasNext()) {
+            FieldValue value = fields.next();
             if (goesFieldOption.shouldValidate(value)) {
                 Constraint constraint = goesFieldOption.constraintFor(value);
                 violations.addAll(constraint.check(value));
