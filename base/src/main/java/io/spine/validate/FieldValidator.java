@@ -33,6 +33,7 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
+import io.spine.validate.option.Constraint;
 import io.spine.validate.option.Distinct;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.IfInvalid;
@@ -45,9 +46,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -99,12 +98,14 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        ImmutableSet<FieldValidatingOption<?, V>> options = ValidatingOptionsLoader.INSTANCE
-                .implementations()
-                .stream()
-                .flatMap(factory -> createMoreOptions(factory).stream())
-                .collect(toImmutableSet());
-        return options;
+        ImmutableSet.Builder<FieldValidatingOption<?, V>> result = ImmutableSet.builder();
+        ImmutableSet<ValidatingOptionFactory> factories =
+                ValidatingOptionsLoader.INSTANCE.implementations();
+        for (ValidatingOptionFactory factory : factories) {
+            Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
+            result.addAll(options);
+        }
+        return result.build();
     }
 
     protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
@@ -173,14 +174,15 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     private List<ConstraintViolation> optionViolations() {
-        List<ConstraintViolation> violations =
-                fieldValidatingOptions.stream()
-                                      .filter(option -> option.shouldValidate(value))
-                                      .map(option -> option.constraintFor(value))
-                                      .map(constraint -> constraint.check(value))
-                                      .flatMap(List::stream)
-                                      .collect(toList());
-        return violations;
+        ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
+        for (FieldValidatingOption<?, V> option : fieldValidatingOptions) {
+            if(option.shouldValidate(value)) {
+                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
+                ImmutableList<ConstraintViolation> violations = constraint.check(value);
+                result.addAll(violations);
+            }
+        }
+        return result.build();
     }
 
     /**
