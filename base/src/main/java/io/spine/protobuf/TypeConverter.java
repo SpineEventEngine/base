@@ -229,7 +229,6 @@ public final class TypeConverter {
         }
     }
 
-    @SuppressWarnings("OverlyCoupledClass") // OK as it maps many converted types.
     private static final class PrimitiveTypeCaster<M extends Message, T>
             extends MessageCaster<M, T> {
 
@@ -263,7 +262,7 @@ public final class TypeConverter {
                     (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
             checkArgument(typeUnpacker != null,
                           "Could not find a primitive type for %s.",
-                          boxedType.getCanonicalName());
+                          boxedType.getName());
             T result = typeUnpacker.convert(input);
             return result;
         }
@@ -275,7 +274,7 @@ public final class TypeConverter {
                     (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
-                          cls.getCanonicalName());
+                          cls.getName());
             M result = converter.reverse()
                                 .convert(input);
             return result;
