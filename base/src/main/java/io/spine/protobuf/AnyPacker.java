@@ -111,12 +111,9 @@ public final class AnyPacker {
         T defaultInstance = Messages.defaultInstance(cls);
 
         TypeUrl actualTypeUrl = TypeUrl.parse(any.getTypeUrl());
-        String expectedTypeName = defaultInstance.getDescriptorForType()
-                                                 .getFullName();
-        String actualTypeName = actualTypeUrl.toTypeName()
-                                             .value();
-        if (!actualTypeName.equals(expectedTypeName)) {
-            throw new UnexpectedTypeException(expectedTypeName, actualTypeName);
+        TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
+        if (!actualTypeUrl.equals(expectedTypeUrl)) {
+            throw new UnexpectedTypeException(actualTypeUrl, expectedTypeUrl);
         }
 
         try {

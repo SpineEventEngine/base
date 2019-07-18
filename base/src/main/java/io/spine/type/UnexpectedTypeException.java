@@ -31,8 +31,7 @@ import static java.lang.String.format;
  * in unsuccessful call of {@link com.google.protobuf.Any#unpack(Class) Any.unpack(Class)}.
  *
  * <p>Another usage scenario is a mismatch between
- * the {@linkplain com.google.protobuf.Descriptors.Descriptor#getFullName() descriptor full names}
- * of the instance wrapped by {@code Any} and the target message.
+ * the {@linkplain TypeUrl}s of the instance wrapped by {@code Any} and the target message.
  */
 public class UnexpectedTypeException extends RuntimeException {
 
@@ -46,15 +45,14 @@ public class UnexpectedTypeException extends RuntimeException {
     }
 
     /**
-     * Creates an instance {@code UnexpectedTypeException} with the expected and actual type names.
+     * Creates an instance {@code UnexpectedTypeException} with the expected and actual type URLs.
      */
-    public UnexpectedTypeException(String expectedTypeName, String actualTypeName) {
-        super(formatMsg(expectedTypeName, actualTypeName));
+    public UnexpectedTypeException(TypeUrl expected, TypeUrl actual) {
+        super(formatMsg(expected, actual));
     }
 
-    private static String formatMsg(String expectedTypeName, String actualTypeName) {
-        return format(
-                "Cannot unpack `Any` instance. Expected type name is `%s`, actual is `%s`.",
-                expectedTypeName, actualTypeName);
+    private static String formatMsg(TypeUrl expected, TypeUrl actual) {
+        return format("Cannot unpack `Any` instance. Expected type name is `%s`, actual is `%s`.",
+                      expected, actual);
     }
 }
