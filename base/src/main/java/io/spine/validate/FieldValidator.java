@@ -22,7 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -42,10 +42,12 @@ import io.spine.validate.option.Required;
 import io.spine.validate.option.ValidatingOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.Iterators.unmodifiableIterator;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -64,7 +66,7 @@ public abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final ImmutableSet<FieldValidatingOption<?, V>> fieldValidatingOptions;
+    private final UnmodifiableIterator<FieldValidatingOption<?, V>> fieldValidatingOptions;
 
     /**
      * If set the validator would assume that the field is required even
@@ -82,30 +84,29 @@ public abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field is required regardless
      *         of the {@code required} Protobuf option value
      */
-    @SuppressWarnings("Immutable") // message field values are immutable
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
         this.ifInvalid = ifInvalid(descriptor(value));
-        ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
-        ImmutableSet<FieldValidatingOption<?, V>> additionalOptions = additionalOptions();
-        this.fieldValidatingOptions =
-                ImmutableSet.<FieldValidatingOption<?, V>>builder().addAll(commonOptions)
-                                                                   .addAll(additionalOptions)
-                                                                   .build();
+        this.fieldValidatingOptions = validatingOptions();
     }
 
-    private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        ImmutableSet.Builder<FieldValidatingOption<?, V>> result = ImmutableSet.builder();
+    @SuppressWarnings("Immutable") // message field values are immutable
+    private UnmodifiableIterator<FieldValidatingOption<?, V>> validatingOptions() {
+        List<FieldValidatingOption<?, V>> allOptions = new ArrayList<>();
+
+        allOptions.add(Distinct.create());
+        allOptions.add(Required.create(assumeRequired));
+
         ImmutableSet<ValidatingOptionFactory> factories =
                 ValidatingOptionsLoader.INSTANCE.implementations();
         for (ValidatingOptionFactory factory : factories) {
             Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
-            result.addAll(options);
+            allOptions.addAll(options);
         }
-        return result.build();
+        return unmodifiableIterator(allOptions.iterator());
     }
 
     protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
@@ -175,7 +176,8 @@ public abstract class FieldValidator<V> implements Logging {
 
     private List<ConstraintViolation> optionViolations() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
-        for (FieldValidatingOption<?, V> option : fieldValidatingOptions) {
+        while (fieldValidatingOptions.hasNext()) {
+            FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
             if(option.shouldValidate(value)) {
                 Constraint<FieldValue<V>> constraint = option.constraintFor(value);
                 ImmutableList<ConstraintViolation> violations = constraint.check(value);
@@ -336,11 +338,5 @@ public abstract class FieldValidator<V> implements Logging {
     /** Returns the declaration of the validated field. */
     protected final FieldDeclaration field() {
         return declaration;
-    }
-
-    private static <@ImmutableTypeParameter V>
-    ImmutableSet<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
-        return ImmutableSet.of(Distinct.create(),
-                               Required.create(strict));
     }
 }
