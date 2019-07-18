@@ -77,7 +77,7 @@ public final class AnyPacker {
      * Unwraps {@code Any} value into an instance of type specified by value
      * returned by {@link Any#getTypeUrl()}.
      *
-     * @param any instance of {@link com.google.protobuf.Any} that should be unwrapped
+     * @param any instance of {@link Any} that should be unwrapped
      * @return unwrapped message instance
      */
     public static Message unpack(Any any) {
@@ -110,10 +110,10 @@ public final class AnyPacker {
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
         T defaultInstance = Messages.defaultInstance(cls);
 
-        TypeUrl actualTypeUrl = TypeUrl.parse(any.getTypeUrl());
+        String actualTypeUrl = any.getTypeUrl();
         TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
-        if (!actualTypeUrl.equals(expectedTypeUrl)) {
-            throw new UnexpectedTypeException(actualTypeUrl, expectedTypeUrl);
+        if (!expectedTypeUrl.value().equals(actualTypeUrl)) {
+            throw new UnexpectedTypeException(TypeUrl.parse(actualTypeUrl), expectedTypeUrl);
         }
 
         try {
