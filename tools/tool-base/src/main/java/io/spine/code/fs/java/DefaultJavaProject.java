@@ -101,7 +101,7 @@ public final class DefaultJavaProject extends DefaultProject {
      * A root source code directory for manually written code.
      *
      * <p>Adds a root directory for the proto code in addition to those exposed
-     * by {@link DefaultProject.SourceRoot SourceRoot}.
+     * by {@code DefaultProject.SourceRoot}.
      */
     public static class HandmadeCodeRoot extends JavaCodeRoot {
 
@@ -129,7 +129,6 @@ public final class DefaultJavaProject extends DefaultProject {
      */
     public static final class GeneratedRoot extends JavaCodeRoot {
 
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
         private static final String SPINE_DIR = "spine";
         private static final String GRPC_DIR = "grpc";
         private static final String RESOURCES_DIR = "resources";

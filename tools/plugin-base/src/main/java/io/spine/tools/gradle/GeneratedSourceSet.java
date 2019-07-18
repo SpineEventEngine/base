@@ -25,6 +25,11 @@ import io.spine.code.AbstractDirectory;
 
 import java.nio.file.Path;
 
+import static io.spine.code.fs.java.DirectoryName.grpc;
+import static io.spine.code.fs.java.DirectoryName.java;
+import static io.spine.code.fs.java.DirectoryName.resources;
+import static io.spine.code.fs.java.DirectoryName.spine;
+
 /**
  * The generated code directory which belongs to a certain source set.
  *
@@ -37,18 +42,16 @@ import java.nio.file.Path;
 public final class GeneratedSourceSet extends AbstractDirectory {
 
     @VisibleForTesting
-    static final String JAVA = "java";
+    static final String JAVA = java.value();
 
     @VisibleForTesting
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-    static final String SPINE = "spine";
+    static final String SPINE = spine.value();
 
     @VisibleForTesting
-    static final String GRPC = "grpc";
+    static final String GRPC = grpc.value();
 
     @VisibleForTesting
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-    static final String RESOURCES = "resources";
+    static final String RESOURCES = resources.value();
 
     GeneratedSourceSet(Path path) {
         super(path);
