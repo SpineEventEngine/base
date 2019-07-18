@@ -22,18 +22,13 @@ package io.spine.testing.logging;
 
 import com.google.common.flogger.FluentLogger;
 import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.IterableSubject;
 import com.google.common.truth.Subject;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.event.SubstituteLoggingEvent;
 
-import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assert_;
 
@@ -44,22 +39,6 @@ public final class LogTruth {
 
     /** Prevents instantiation of this utility class. */
     private LogTruth() {
-    }
-
-    /** Creates a subject for the passed event. */
-    public static LogEventSubject assertThat(@Nullable SubstituteLoggingEvent event) {
-        return assertAbout(LogEventSubject.events()).that(event);
-    }
-
-    /** Creates a subject for the passed logger. */
-    public static Subject<DefaultSubject, Object> assertThat(@Nullable Logger actual) {
-        return assert_().that(actual);
-    }
-
-    /** Creates a subject for the passed logging event queue. */
-    public static IterableSubject assertThat(Queue<SubstituteLoggingEvent> queue) {
-        checkNotNull(queue);
-        return assert_().that(queue);
     }
 
     /** Creates a subject for the passed logger. */

@@ -137,7 +137,6 @@ subprojects {
         //  https://github.com/epeee/junit-jupiter-extension-testing/blob/57b7ba75ab64ed8c229d2a5b14a954d6ae359189/gradle/errorprone.gradle
         
         api deps.build.protobuf
-        api deps.build.slf4j
         api deps.build.flogger
 
         implementation deps.build.guava

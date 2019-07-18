@@ -21,62 +21,12 @@
 package io.spine.testing.logging;
 
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
-import org.slf4j.event.SubstituteLoggingEvent;
-
-import static io.spine.testing.logging.LogTruth.assertThat;
 
 @DisplayName("LogTruth should")
 class LogTruthTest extends UtilityClassTest<LogTruth> {
 
     LogTruthTest() {
         super(LogTruth.class);
-    }
-
-    @Test
-    void eventSubject() {
-        SubstituteLoggingEvent event = new SubstituteLoggingEvent();
-        LogEventSubject assertThat = assertThat(event);
-        assertThat.isNotNull();
-    }
-
-    @Nested
-    @DisplayName("provide Subject for log event with")
-    class SubjectForLogEvent {
-
-        private SubstituteLoggingEvent event;
-        private LogEventSubject subject;
-
-        @BeforeEach
-        void setUp() {
-            event = new SubstituteLoggingEvent();
-            event.setLevel(Level.DEBUG);
-            event.setMessage("Testing subject of logging event");
-            event.setArgumentArray(new String[] { "arg1", "arg2", "arg3" });
-
-            subject = assertThat(event);
-        }
-
-        @Test
-        void isNotNull() {
-            subject.isNotNull();
-        }
-
-        @Test
-        void hasMessageThat() {
-            subject.hasMessageThat()
-                   .isEqualTo(event.getMessage());
-        }
-
-        @Test
-        void hasArgumentsThat() {
-            subject.hasArgumentsThat()
-                   .asList()
-                   .containsExactly(event.getArgumentArray());
-        }
     }
 }
