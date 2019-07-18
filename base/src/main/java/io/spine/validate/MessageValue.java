@@ -28,8 +28,8 @@ import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -46,6 +46,7 @@ import static com.google.common.collect.Iterators.unmodifiableIterator;
 public final class MessageValue {
 
     private final Message message;
+    private final @Nullable FieldAwareMessage asFieldAware;
     private final Descriptor descriptor;
     private final FieldContext context;
 
@@ -53,6 +54,11 @@ public final class MessageValue {
         this.message = checkNotNull(message);
         this.descriptor = message.getDescriptorForType();
         this.context = checkNotNull(context);
+        if(message instanceof FieldAwareMessage) {
+            asFieldAware = (FieldAwareMessage) message;
+        } else {
+            asFieldAware = null;
+        }
     }
 
     /**
@@ -159,9 +165,14 @@ public final class MessageValue {
 
     private FieldValue<?> valueOfField(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
+        Object rawValue = readValue(field);
         @SuppressWarnings("Immutable") // field values are immutable
-        FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
+        FieldValue<?> value = FieldValue.of(rawValue, fieldContext);
         return value;
+    }
+
+    private Object readValue(FieldDescriptor field) {
+        return asFieldAware == null ? message.getField(field) : asFieldAware.readValue(field);
     }
 
     private static boolean isNotOneof(FieldDescriptor field) {
