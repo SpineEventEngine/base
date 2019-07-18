@@ -64,16 +64,6 @@ public enum TaskName {
     generateTestRejections,
 
     /**
-     * Generates the code of validating builders in the {@code main} scope.
-     */
-    generateValidatingBuilders,
-
-    /**
-     * Generates the code of validating builders in the {@code test} scope.
-     */
-    generateTestValidatingBuilders,
-
-    /**
      * The name of the class path scan task added to the Gradle lifecycle.
      */
     scanClassPath,

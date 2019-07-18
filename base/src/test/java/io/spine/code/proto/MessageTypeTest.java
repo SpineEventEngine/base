@@ -25,7 +25,6 @@ import com.google.common.truth.IterableSubject;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.net.Uri;
 import io.spine.net.Url;
@@ -186,28 +185,6 @@ final class MessageTypeTest {
             }
         }
 
-        @DisplayName("has")
-        @Nested
-        final class Has {
-
-            @Test
-            @DisplayName("a Validating Builder")
-            void hasVBuilder() {
-                assertQuality(MessageType::hasVBuilder, MttUuidMessage.getDescriptor());
-                assertQuality(MessageType::hasVBuilder, MttProjectStarted.getDescriptor());
-                assertQuality(MessageType::hasVBuilder, MttStartProject.getDescriptor());
-                assertQuality(MessageType::hasVBuilder, MttStartProject.getDescriptor());
-            }
-
-            @Test
-            @DisplayName("not a Validating Builder")
-            void hasNotVBuilder() {
-                assertQuality(not(MessageType::hasVBuilder),
-                              TestRejections.MttSampleRejection.getDescriptor());
-                assertQuality(not(MessageType::hasVBuilder), StringValue.getDescriptor());
-                assertQuality(not(MessageType::hasVBuilder), EntityOption.getDescriptor());
-            }
-        }
     }
 
     @Nested

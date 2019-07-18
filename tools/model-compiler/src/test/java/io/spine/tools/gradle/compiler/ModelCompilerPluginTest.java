@@ -36,8 +36,6 @@ import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.TaskName.compileTestJava;
 import static io.spine.tools.gradle.TaskName.generateRejections;
 import static io.spine.tools.gradle.TaskName.generateTestRejections;
-import static io.spine.tools.gradle.TaskName.generateTestValidatingBuilders;
-import static io.spine.tools.gradle.TaskName.generateValidatingBuilders;
 import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.TaskName.preClean;
@@ -87,20 +85,6 @@ class ModelCompilerPluginTest {
         void generateTestRejections() {
             assertDependencies(
                     generateTestRejections, mergeTestDescriptorSet, compileTestJava
-            );
-        }
-
-        @Test
-        void generateValidatingBuilders() {
-            assertDependencies(
-                    generateValidatingBuilders, mergeDescriptorSet, compileJava
-            );
-        }
-
-        @Test
-        void generateTestValidatingBuilders() {
-            assertDependencies(
-                    generateTestValidatingBuilders, mergeTestDescriptorSet, compileTestJava
             );
         }
 

@@ -53,11 +53,6 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
-     * Standard suffix for a Validating Builder class name.
-     */
-    public static final String VBUILDER_SUFFIX = "VBuilder";
-
-    /**
      * Creates a new instance by the given message descriptor.
      */
     public MessageType(Descriptor descriptor) {
@@ -177,14 +172,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isEvent() {
         boolean result = isTopLevel() && declaringFileName().isEvents();
-        return result;
-    }
-
-    /**
-     * Tells if this message has a {@link io.spine.validate.ValidatingBuilder Validating Builder}.
-     */
-    public boolean hasVBuilder(){
-        boolean result = isCustom() && !isRejection();
         return result;
     }
 
