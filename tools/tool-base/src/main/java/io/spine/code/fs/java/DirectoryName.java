@@ -30,6 +30,9 @@ public enum DirectoryName {
     /** Contains Java source code. */
     java,
 
+    /** Root directory for source code. */
+    src,
+
     /** Contains production code. */
     main,
 
