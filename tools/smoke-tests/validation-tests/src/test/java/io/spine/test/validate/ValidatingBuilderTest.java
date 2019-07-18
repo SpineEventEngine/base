@@ -62,8 +62,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -88,7 +86,6 @@ import static io.spine.test.validate.msg.builder.TaskLabel.OF_LITTLE_IMPORTANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.slf4j.event.Level.ERROR;
 
 /**
  * A test suite covering the {@link ValidatingBuilder} behavior.
@@ -279,41 +276,6 @@ class ValidatingBuilderTest {
         assertThrows(ValidationException.class, () -> violatingOperation.apply(initialBuilder));
     }
 
-    @Nested
-    @DisplayName("Produce an error if `(set_once) = true` is put for")
-    @Disabled("until testing of FluentLogger is implemented")
-    class InapplicableOption {
-
-        private EssayVBuilder essay;
-        private Queue<SubstituteLoggingEvent> loggedMessages;
-
-        @BeforeEach
-        void setUp() {
-            essay = EssayVBuilder.newBuilder();
-            loggedMessages = redirectLogging(EssayVBuilder.class);
-        }
-
-        @Test
-        @DisplayName("a repeated field")
-        void testSetOnceRepeatedFieldsError() {
-            essay.addLine("First line of the task");
-            assertLoggedError();
-        }
-
-        @Test
-        @DisplayName("a map field")
-        void testSetOnceMapFieldError() {
-            essay.putTableOfContents("Synopsis", 0);
-            assertLoggedError();
-        }
-
-        private void assertLoggedError() {
-            assertFalse(loggedMessages.isEmpty());
-            SubstituteLoggingEvent lastEvent = loggedMessages.peek();
-            assertEquals(lastEvent.getLevel(), ERROR);
-        }
-    }
-
     @Test
     @DisplayName("not allow to change a state of an implicitly `(set_once)` field")
     void testSetOnceImplicitForEntities() {
@@ -348,41 +310,6 @@ class ValidatingBuilderTest {
         ArtificialBlizzardVBuilder builder = ArtificialBlizzardVBuilder.newBuilder();
         builder.addSnowflake(triangularSnowflake())
                .addSnowflake(triangularSnowflake());
-    }
-
-    @Nested
-    @DisplayName("upon finding a boolean field")
-    @Disabled("until testing of FluentLogger is implemented")
-    class RequiredLoggingTest {
-
-        private final Queue<SubstituteLoggingEvent> loggedMessages;
-
-        RequiredLoggingTest() {
-            this.loggedMessages = new ArrayDeque<>();
-            Logging.redirect((SubstituteLogger) Logging.get(Required.class), loggedMessages);
-        }
-
-        @DisplayName("not produce warnings if it is not `required`")
-        @Test
-        @SuppressWarnings("CheckReturnValue")
-            // Builder used for the side effect.
-        void testNoWarningOnBoolField() {
-            int sizeBefore = loggedMessages.size();
-            MenuVBuilder builder = MenuVBuilder.newBuilder();
-            builder.setName("Non-vegetarian menu.")
-                   .setMeatDish("Non-vegetarian dish.")
-                   .build();
-            assertEquals(sizeBefore, loggedMessages.size());
-        }
-
-        @DisplayName("produce warning if it is `required`")
-        @Test
-        void testWarningOnBooleanRequired() {
-            int sizeBefore = loggedMessages.size();
-            RequiredBooleanFieldVBuilder builder = RequiredBooleanFieldVBuilder.newBuilder();
-            builder.setValue(true);
-            assertEquals(sizeBefore + 1, loggedMessages.size());
-        }
     }
 
     @DisplayName("not allow values that don't fit into a closed range")
@@ -520,15 +447,6 @@ class ValidatingBuilderTest {
         assertThat(builder.getMilkCase()).isEqualTo(DIARY);
         builder.setAlmond(Ingredient.getDefaultInstance());
         assertThat(builder.getMilkCase()).isEqualTo(ALMOND);
-    }
-
-    /** Redirects logging of all validating builders to the queue that is returned. */
-    private static Queue<SubstituteLoggingEvent> redirectLogging(
-            Class<? extends AbstractValidatingBuilder> cls) {
-        SubstituteLogger logger = (SubstituteLogger) Logging.get(cls);
-        Queue<SubstituteLoggingEvent> loggedMessages = new ArrayDeque<>();
-        Logging.redirect(logger, loggedMessages);
-        return loggedMessages;
     }
 
     private static Snowflake triangularSnowflake() {

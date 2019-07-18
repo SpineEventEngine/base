@@ -30,8 +30,6 @@ dependencies {
     api deps.test.guavaTestlib
     api deps.test.mockito
     api deps.test.hamcrest
-
-    testImplementation deps.test.slf4j
 }
 
 /*
