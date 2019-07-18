@@ -22,10 +22,12 @@
  * This package contains tools for working with the structure of a JavaScript project.
  */
 
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.fs.js;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;
