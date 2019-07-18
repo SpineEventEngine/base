@@ -54,16 +54,6 @@ public final class Environment {
         this.tests = copy.tests;
     }
 
-    /**
-     * Returns the singleton instance.
-     * 
-     * @deprecated please use {@link #instance()}.
-     */
-    @Deprecated
-    public static Environment getInstance() {
-        return instance();
-    }
-
     /** Returns the singleton instance. */
     public static Environment instance() {
         return INSTANCE;
