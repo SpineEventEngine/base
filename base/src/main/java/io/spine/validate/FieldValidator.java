@@ -156,26 +156,8 @@ public abstract class FieldValidator<V> implements Logging {
         if (isRequiredId()) {
             validateEntityId();
         }
-        List<ConstraintViolation> ownViolations = assembleViolations();
-        List<ConstraintViolation> optionViolations = optionViolations();
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
-        result.addAll(ownViolations)
-              .addAll(optionViolations);
-        return result.build();
-    }
-
-    protected final IfInvalidOption ifInvalid() {
-        return ifInvalid;
-    }
-
-    private List<ConstraintViolation> assembleViolations() {
-        return ImmutableList.<ConstraintViolation>builder()
-                .addAll(violations)
-                .build();
-    }
-
-    private List<ConstraintViolation> optionViolations() {
-        ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
+        result.addAll(violations);
         while (fieldValidatingOptions.hasNext()) {
             FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
             if(option.shouldValidate(value)) {
@@ -185,6 +167,10 @@ public abstract class FieldValidator<V> implements Logging {
             }
         }
         return result.build();
+    }
+
+    protected final IfInvalidOption ifInvalid() {
+        return ifInvalid;
     }
 
     /**
