@@ -47,7 +47,7 @@ class OneofValidator {
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList<ConstraintViolation> violations = message.valueOf(oneof)
                                                                .map(OneofValidator::validateField)
-                                                               .orElse(ImmutableList.of());
+                                                               .orElseGet(ImmutableList::of);
 
         return violations;
     }
