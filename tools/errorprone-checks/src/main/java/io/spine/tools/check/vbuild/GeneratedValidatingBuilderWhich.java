@@ -32,9 +32,6 @@ import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
 
 /**
  * A predicate which matches builders of custom (i.e. non-Google) Protobuf messages.
- *
- * <p>Any Java class which descends from {@link io.spine.validate.ValidatingBuilder} matches this
- * predicate.
  */
 final class GeneratedValidatingBuilderWhich implements TypePredicate {
 

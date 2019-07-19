@@ -27,6 +27,11 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.fs.java.DirectoryName.generated;
+import static io.spine.code.fs.java.DirectoryName.grpc;
+import static io.spine.code.fs.java.DirectoryName.resources;
+import static io.spine.code.fs.java.DirectoryName.spine;
+import static io.spine.code.fs.java.DirectoryName.src;
 
 /**
  * A default directory structure for a Spine-based Java project.
@@ -69,7 +74,7 @@ public final class DefaultJavaProject extends DefaultProject {
     }
 
     public HandmadeCodeRoot src() {
-        return new HandmadeCodeRoot(this, "src");
+        return new HandmadeCodeRoot(this, src.value());
     }
 
     public GeneratedRoot generated() {
@@ -101,7 +106,7 @@ public final class DefaultJavaProject extends DefaultProject {
      * A root source code directory for manually written code.
      *
      * <p>Adds a root directory for the proto code in addition to those exposed
-     * by {@link DefaultProject.SourceRoot SourceRoot}.
+     * by {@code DefaultProject.SourceRoot}.
      */
     public static class HandmadeCodeRoot extends JavaCodeRoot {
 
@@ -129,13 +134,12 @@ public final class DefaultJavaProject extends DefaultProject {
      */
     public static final class GeneratedRoot extends JavaCodeRoot {
 
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-        private static final String SPINE_DIR = "spine";
-        private static final String GRPC_DIR = "grpc";
-        private static final String RESOURCES_DIR = "resources";
+        private static final String SPINE_DIR = spine.value();
+        private static final String GRPC_DIR = grpc.value();
+        private static final String RESOURCES_DIR = resources.value();
 
         private GeneratedRoot(DefaultProject parent) {
-            super(parent, "generated");
+            super(parent, generated.value());
         }
 
         /**

@@ -105,10 +105,6 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      * common ancestors between all the possible value types ({@code Map} for Protobuf {@code map}
      * fields, {@code List} for {@code repeated} fields, and {@code T} for plain values).
      *
-     * Casting to {@code T} is safe because the {@code FieldValue} is always created by the
-     * {@linkplain io.spine.validate.ValidatingBuilder validating builder} implementors, and the
-     * raw value always corresponds to one of the Protobuf field types.
-     *
      * @return a properly typed {@code FieldValue} instance.
      */
     @SuppressWarnings({

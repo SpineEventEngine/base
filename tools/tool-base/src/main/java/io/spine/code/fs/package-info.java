@@ -24,10 +24,12 @@
  * <p>These components consider a project from the file system perspective.
  */
 
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.fs;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

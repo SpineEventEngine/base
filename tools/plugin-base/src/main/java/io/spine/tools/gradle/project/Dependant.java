@@ -24,7 +24,6 @@ import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 
-import static io.spine.tools.gradle.ConfigurationName.compile;
 import static io.spine.tools.gradle.ConfigurationName.implementation;
 
 /**
@@ -74,7 +73,7 @@ public interface Dependant {
      */
     @SuppressWarnings("deprecation") // See the doc.
     default void compile(String notation) {
-        depend(compile, notation);
+        depend(ConfigurationName.compile, notation);
     }
 
     /**
