@@ -20,35 +20,34 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.UnmodifiableIterator;
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterators.filter;
-import static com.google.common.collect.Iterators.transform;
 import static com.google.common.collect.Iterators.unmodifiableIterator;
 
 /**
  * A value of a {@link Message} to validate.
  */
-@Immutable
 public final class MessageValue {
 
     private final Message message;
     private final @Nullable FieldAwareMessage asFieldAware;
     private final Descriptor descriptor;
     private final FieldContext context;
+    private @MonotonicNonNull ImmutableList<FieldValue<?>> nonOneofValues = null;
 
     private MessageValue(Message message, FieldContext context) {
         this.message = checkNotNull(message);
@@ -95,13 +94,22 @@ public final class MessageValue {
      * <p>Values of {@code Oneof} fields are filtered out and not returned.
      *
      * @return values of message fields excluding {@code Oneof} fields
+     * @implNote The values are computed in lazy mode and cached in this
+     *         {@code MessageValue} instance to improve the performance of the repeated calls.
      */
-    UnmodifiableIterator<FieldValue<?>> fieldsExceptOneofs() {
-        Iterator<FieldDescriptor> iterator = descriptor.getFields()
-                                                       .iterator();
-        UnmodifiableIterator<FieldDescriptor> noOneofs = filter(iterator, MessageValue::isNotOneof);
-        Iterator<FieldValue<?>> values = transform(noOneofs, this::valueOfField);
-        return unmodifiableIterator(values);
+    ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
+        if (nonOneofValues == null) {
+            ImmutableList.Builder<FieldValue<?>> builder = ImmutableList.builder();
+            List<FieldDescriptor> fields = descriptor.getFields();
+            for (FieldDescriptor field : fields) {
+                if(isNotOneof(field)) {
+                    FieldValue<?> value = valueOfField(field);
+                    builder.add(value);
+                }
+            }
+            nonOneofValues = builder.build();
+        }
+        return nonOneofValues;
     }
 
     /**
