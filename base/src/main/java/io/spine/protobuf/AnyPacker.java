@@ -113,7 +113,7 @@ public final class AnyPacker {
         String actualTypeUrl = any.getTypeUrl();
         TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
         if (!expectedTypeUrl.value().equals(actualTypeUrl)) {
-            throw new UnexpectedTypeException(TypeUrl.parse(actualTypeUrl), expectedTypeUrl);
+            throw new UnexpectedTypeException(expectedTypeUrl, TypeUrl.parse(actualTypeUrl));
         }
 
         try {
