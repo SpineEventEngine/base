@@ -93,9 +93,8 @@ public class MessageValidator {
      * separately}.
      */
     private void validateFields() {
-        UnmodifiableIterator<FieldValue<?>> fields = message.fieldsExceptOneofs();
-        while (fields.hasNext()) {
-            FieldValue<?> value = fields.next();
+        ImmutableList<FieldValue<?>> values = message.fieldsExceptOneofs();
+        for (FieldValue<?> value : values) {
             FieldValidator<?> fieldValidator = value.createValidator();
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
