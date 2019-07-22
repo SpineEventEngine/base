@@ -100,12 +100,12 @@ public final class AnyPacker {
      * @param <T>
      *         the type enclosed into {@code Any}
      * @return unwrapped message instance
-     * @implNote [performance] Protobuf {@link Any#unpack(Class)} isn't used by this
+     * @implNote Protobuf {@link Any#unpack(Class)} isn't used by this
      *         implementation, since it creates a redundant default {@code Message} instance in its
      *         internal {@link Any#is(Class) is(Class)} sub-call. We are aiming for better
      *         performance and lower memory footprint. Therefore, we use the same default instance
-     *         of the target {@code Message} to both verify the type name
-     *         (complying {@code is(Class) sub-call}) and parse its contents.
+     *         of the target {@code Message} to both verify the type name (complying
+     *         {@code is(Class)} sub-call) and parse its contents.
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
         T defaultInstance = Messages.defaultInstance(cls);
