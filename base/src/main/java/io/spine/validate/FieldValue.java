@@ -114,9 +114,8 @@ public final class FieldValue<@ImmutableTypeParameter T> {
             "unchecked", // Raw value is always of a correct type, see Javadoc for details.
             "ChainOfInstanceofChecks" // No common ancestors.
     })
-    private static <@ImmutableTypeParameter T> FieldValue<T> resolveType(FieldDeclaration field,
-                                                                         FieldContext context,
-                                                                         T value) {
+    private static <@ImmutableTypeParameter T>
+    FieldValue<T> resolveType(FieldDeclaration field, FieldContext context, T value) {
         if (value instanceof List) {
             List<T> values = (List<T>) value;
             return new FieldValue<>(values, context, field);
