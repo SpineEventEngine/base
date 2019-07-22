@@ -118,7 +118,7 @@ public final class AnyPacker {
 
         try {
             @SuppressWarnings("unchecked")  // Ensured by the check above.
-                    T result = (T) defaultInstance
+            T result = (T) defaultInstance
                     .getParserForType()
                     .parseFrom(any.getValue());
             return result;
