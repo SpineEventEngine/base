@@ -49,9 +49,10 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      *
      * <p>Saves the memory by limiting the maximum number of cached objects.
      *
-     * <p>{@link com.google.common.cache.LoadingCache LoadingCache} implementation would make
-     * dealing with the exceptions a bit more difficult to maintain and read. Which is why
-     * a straightforward get-put approach with a plain {@code Cache} implementation is used.
+     * @implNote {@link com.google.common.cache.LoadingCache LoadingCache} implementation
+     *         would make dealing with the exceptions a bit more difficult to maintain and read.
+     *         Which is why a straightforward get-put approach with a plain {@code Cache}
+     *         implementation is used.
      */
     private static final Cache<String, Class<?>> knownClasses = CacheBuilder.newBuilder()
                                                                             .maximumSize(1_000)
