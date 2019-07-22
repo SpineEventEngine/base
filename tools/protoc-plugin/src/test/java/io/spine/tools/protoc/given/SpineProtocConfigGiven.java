@@ -25,7 +25,6 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.gen.java.UuidMethodFactory;
-import io.spine.code.gen.java.VBuilderMethodFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
 import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
@@ -83,7 +82,6 @@ public final class SpineProtocConfigGiven {
         GeneratedMethods methods = new GeneratedMethods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
-        methods.applyFactory(VBuilderMethodFactory.class.getName(), messages.all());
         return methods;
     }
 }

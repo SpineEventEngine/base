@@ -119,8 +119,8 @@ subprojects {
 
     apply from: deps.scripts.projectLicenseReport
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     // Set Java home to point to JDK8 in gradle.properties file.
     //
@@ -137,7 +137,6 @@ subprojects {
         //  https://github.com/epeee/junit-jupiter-extension-testing/blob/57b7ba75ab64ed8c229d2a5b14a954d6ae359189/gradle/errorprone.gradle
         
         api deps.build.protobuf
-        api deps.build.slf4j
         api deps.build.flogger
 
         implementation deps.build.guava

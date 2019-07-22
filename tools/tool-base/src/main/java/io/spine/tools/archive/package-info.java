@@ -22,10 +22,12 @@
  * This package contains classes working with archive files.
  */
 
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.archive;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

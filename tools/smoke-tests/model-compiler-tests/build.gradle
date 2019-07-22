@@ -37,6 +37,5 @@ modelCompiler {
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*regex.*test.*')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*multi.*factory.*test.*')
-        applyFactory "io.spine.code.gen.java.VBuilderMethodFactory", messages().all()
     }
 }

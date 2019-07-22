@@ -33,9 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 
 /**
  * A source code module with Protobuf.
@@ -109,32 +107,6 @@ final class ProtoModule {
                                             .findByName(sourceScope.name());
         checkNotNull(sourceSet);
         return sourceSet;
-    }
-
-    /**
-     * Obtains a {@linkplain FileCollection collection of files} containing all the production
-     * {@link io.spine.validate.ValidatingBuilder}s generated in this module.
-     *
-     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
-     * changing, the contents of the collection are mutated.
-     */
-    FileCollection validatingBuilders() {
-        String vBuilderGenTarget = getTargetGenValidatorsRootDir(project);
-        FileCollection files = project.fileTree(vBuilderGenTarget);
-        return files;
-    }
-
-    /**
-     * Obtains a {@linkplain FileCollection collection of files} containing all the test
-     * {@link io.spine.validate.ValidatingBuilder}s generated in this module.
-     *
-     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
-     * changing, the contents of the collection are mutated.
-     */
-    FileCollection testValidatingBuilders() {
-        String vBuilderGenTarget = getTargetTestGenValidatorsRootDir(project);
-        FileCollection files = project.fileTree(vBuilderGenTarget);
-        return files;
     }
 
     /**

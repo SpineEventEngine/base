@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@link MethodFactory} used by default to create new static helper methods for
- * {@link io.spine.base.UuidValue UuidValue} messages.
+ * {@code UuidValue} messages.
  *
  * <p>Creates following methods:
  * <ul>
@@ -51,6 +51,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     {@code UuidValue} message with a supplied {@code uuid} value.
  * </ul>
  */
+@SuppressWarnings("HardcodedLineSeparator")
+// required by Java Poet. See https://github.com/square/javapoet/issues/552
 @Immutable
 public final class UuidMethodFactory implements MethodFactory {
 
@@ -120,6 +122,7 @@ public final class UuidMethodFactory implements MethodFactory {
      * </pre>
      */
     private static GeneratedMethod newGenerateMethodSpec(ClassName self) {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic: method name
         MethodSpec spec = MethodSpec
                 .methodBuilder("generate")
                 .returns(self)

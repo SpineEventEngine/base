@@ -26,6 +26,12 @@ import io.spine.code.SourceCodeDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
+import static io.spine.code.fs.java.DirectoryName.build;
+import static io.spine.code.fs.java.DirectoryName.descriptors;
+import static io.spine.code.fs.java.DirectoryName.dotSpine;
+import static io.spine.code.fs.java.DirectoryName.main;
+import static io.spine.code.fs.java.DirectoryName.test;
+
 /**
  * This class represents a default directory structure for a Spine-based project of any language.
  *
@@ -38,13 +44,6 @@ import java.nio.file.Path;
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Only stores common elements of subclasses.
 public abstract class DefaultProject extends AbstractDirectory {
-
-    /**
-     * The Spine internal directory name for storing temporary build artifacts.
-     *
-     * @see #tempArtifacts()
-     */
-    private static final String TEMP_ARTIFACT_DIR = ".spine";
 
     protected DefaultProject(Path path) {
         super(path);
@@ -62,7 +61,7 @@ public abstract class DefaultProject extends AbstractDirectory {
      * <p>The directory is deleted on {@code :pre-clean"}.
      */
     public File tempArtifacts() {
-        File result = new File(getPath().toFile(), TEMP_ARTIFACT_DIR);
+        File result = new File(getPath().toFile(), dotSpine.value());
         return result;
     }
 
@@ -84,11 +83,11 @@ public abstract class DefaultProject extends AbstractDirectory {
         }
 
         protected SourceDir getMain() {
-            return new SourceDir(this, "main");
+            return new SourceDir(this, main.value());
         }
 
         protected SourceDir getTest() {
-            return new SourceDir(this, "test");
+            return new SourceDir(this, test.value());
         }
     }
 
@@ -97,12 +96,9 @@ public abstract class DefaultProject extends AbstractDirectory {
      */
     public static final class BuildRoot extends AbstractDirectory {
 
-        @SuppressWarnings("DuplicateStringLiteralInspection") // different meanings around the code.
-        private static final String DIR_NAME = "build";
-
         private BuildRoot(DefaultProject module) {
             super(module.getPath()
-                        .resolve(DIR_NAME));
+                        .resolve(build.value()));
         }
 
         static BuildRoot of(DefaultProject project) {
@@ -110,7 +106,7 @@ public abstract class DefaultProject extends AbstractDirectory {
         }
 
         public DescriptorsDir descriptors() {
-            return new DescriptorsDir(this, "descriptors");
+            return new DescriptorsDir(this, descriptors.value());
         }
     }
 
@@ -122,11 +118,11 @@ public abstract class DefaultProject extends AbstractDirectory {
         }
 
         public Path mainDescriptors() {
-            return getPath().resolve("main");
+            return getPath().resolve(main.value());
         }
 
         public Path testDescriptors() {
-            return getPath().resolve("test");
+            return getPath().resolve(test.value());
         }
     }
 }

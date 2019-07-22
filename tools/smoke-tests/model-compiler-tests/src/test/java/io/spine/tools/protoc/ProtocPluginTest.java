@@ -50,6 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 @DisplayName("ProtocPlugin should")
 final class ProtocPluginTest {
 
@@ -209,8 +210,8 @@ final class ProtocPluginTest {
         assertEquals(TypicalIdentifier.of(uuid), TypicalIdentifier.of(uuid));
     }
 
-    @DisplayName("mark a message with the interface using")
     @Nested
+    @DisplayName("mark a message with the interface using")
     final class MarkMessages {
 
         @Test
@@ -262,15 +263,6 @@ final class ProtocPluginTest {
                     new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
             assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
         }
-
-        @Test
-        @DisplayName("all() pattern")
-        void allBasedMethod() {
-            assertThat(MessageEnhancedWithSuffixGenerations.vBuilder())
-                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
-            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance().toVBuilder())
-                    .isInstanceOf(MessageEnhancedWithSuffixGenerationsVBuilder.class);
-        }
     }
 
     @DisplayName("generate methods for MFGTMessage using")
@@ -283,15 +275,6 @@ final class ProtocPluginTest {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
             assertEquals(MFGTMessage.of(uuid), MFGTMessage.of(uuid));
-        }
-
-        @DisplayName("VBuilderMethodFactory")
-        @Test
-        void vBuilderMethodFactory() {
-            assertThat(MFGTMessage.vBuilder())
-                    .isInstanceOf(MFGTMessageVBuilder.class);
-            assertThat(MFGTMessage.getDefaultInstance().toVBuilder())
-                    .isInstanceOf(MFGTMessageVBuilder.class);
         }
 
         @DisplayName("TestMethodFactory")
