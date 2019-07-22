@@ -20,15 +20,26 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Experimental;
 import io.spine.annotation.GeneratedMixin;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * The mixin for {@link Message Message}s which are aware of their fields and are able to provide
  * their values with no reflection {@linkplain Message#getField(FieldDescriptor) used by Protobuf}.
+ *
+ * <p>This mixin is an experimental part of the framework and may be changed or removed in future.
  */
 @GeneratedMixin
+@Experimental
 public interface FieldAwareMessage extends Message {
 
     /**
@@ -43,5 +54,25 @@ public interface FieldAwareMessage extends Message {
      */
     default Object readValue(FieldDescriptor field) {
         return getField(field);
+    }
+
+    /**
+     * A test-only method that checks that the implementation of {@link #readValue(FieldDescriptor)}
+     * gives the same results as the {@link Message#getField(FieldDescriptor)}.
+     */
+    @VisibleForTesting
+    default boolean checkFieldsReachable() {
+        Descriptors.Descriptor msgDescriptor = getDescriptorForType();
+        List<FieldDescriptor> fields = msgDescriptor.getFields();
+
+        for (FieldDescriptor field : fields) {
+            Object value = getField(field);
+            Object actual = readValue(field);
+            boolean equals = Objects.equals(actual, value);
+            checkArgument(equals, "" +
+                    "`readValue(field)` is implemented incorrectly for the `%s` field in `%s`",
+                          field, getClass());
+        }
+        return true;
     }
 }
