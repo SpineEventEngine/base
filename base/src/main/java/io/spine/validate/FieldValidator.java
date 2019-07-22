@@ -41,6 +41,7 @@ import io.spine.validate.option.IfMissing;
 import io.spine.validate.option.Required;
 import io.spine.validate.option.ValidatingOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,14 @@ public abstract class FieldValidator<V> implements Logging {
      * if the {@code required} option is not set.
      */
     private final boolean assumeRequired;
-    private final IfInvalidOption ifInvalid;
+
+    /**
+     * An option holding the text required if the validated {@code Message} is invalid.
+     *
+     * <p>As soon as this isn't happening for every validated {@code Message}, this field
+     * is {@code null} until someone {@linkplain #ifInvalid() requests it}.
+     */
+    private @MonotonicNonNull IfInvalidOption ifInvalid;
 
     /**
      * Creates a new validator instance.
@@ -89,7 +97,6 @@ public abstract class FieldValidator<V> implements Logging {
         this.declaration = value.declaration();
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
-        this.ifInvalid = ifInvalid(descriptor(value));
         this.fieldValidatingOptions = validatingOptions();
     }
 
@@ -170,6 +177,9 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     protected final IfInvalidOption ifInvalid() {
+        if(ifInvalid == null) {
+            ifInvalid = ifInvalid(descriptor(value));
+        }
         return ifInvalid;
     }
 
