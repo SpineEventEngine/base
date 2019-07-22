@@ -229,6 +229,19 @@ public final class TypeConverter {
         }
     }
 
+    /**
+     * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
+     *
+     * @param <M> the type of the message
+     * @param <T> the type to cast to and from the message
+     *
+     * @implNote The arguments are checked during the conversion and an
+     * {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in the
+     * error message is a simple {@link Class#getName() Class.getName()} call result. It's the
+     * best-performant solution among options, such as {@link Class#getCanonicalName()
+     * Class.getCanonicalName()}.
+     */
+    @SuppressWarnings("OverlyCoupledClass")     // OK, as references a lot of type for casting.
     private static final class PrimitiveTypeCaster<M extends Message, T>
             extends MessageCaster<M, T> {
 
