@@ -159,7 +159,6 @@ public final class MessageValue {
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
     public Optional<FieldValue<?>> valueOf(String fieldName) {
-
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
         return valueOf(field);
     }
