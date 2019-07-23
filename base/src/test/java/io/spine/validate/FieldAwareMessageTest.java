@@ -31,7 +31,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`FieldAwareMessage` should")
-class FieldMessageAwareTest {
+class FieldAwareMessageTest {
 
     @Test
     @DisplayName("read values when `readValues` is properly implemented")
