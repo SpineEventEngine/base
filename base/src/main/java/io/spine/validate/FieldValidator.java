@@ -100,20 +100,49 @@ public abstract class FieldValidator<V> implements Logging {
         this.fieldValidatingOptions = validatingOptions();
     }
 
+    /**
+     * Collects the validation options to use when reading option values.
+     *
+     * <p>Does not include options from the external constraints.
+     *
+     * @implNote If the {@code Required} option is assumed to be required, it is always
+     *         present in the results. In case no options are defined for the field,
+     *         the result remains empty.
+     *         This is a performance optimization made to avoid redundant reflective calls
+     *         to Protobuf data attempting to read the missing option values.
+     */
     @SuppressWarnings("Immutable") // message field values are immutable
     private UnmodifiableIterator<FieldValidatingOption<?, V>> validatingOptions() {
         List<FieldValidatingOption<?, V>> allOptions = new ArrayList<>();
 
-        allOptions.add(Distinct.create());
-        allOptions.add(Required.create(assumeRequired));
+        if (assumeRequired) {
+            allOptions.add(Required.create(true));
+        }
 
-        ImmutableSet<ValidatingOptionFactory> factories =
-                ValidatingOptionsLoader.INSTANCE.implementations();
-        for (ValidatingOptionFactory factory : factories) {
-            Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
-            allOptions.addAll(options);
+        if (fieldHasOptions()) {
+            if (values.size() > 1) {
+                allOptions.add(Distinct.create());
+            }
+
+            // Add the option if it wasn't added already.
+            if (!assumeRequired) {
+                allOptions.add(Required.create(false));
+            }
+
+            ImmutableSet<ValidatingOptionFactory> factories =
+                    ValidatingOptionsLoader.INSTANCE.implementations();
+            for (ValidatingOptionFactory factory : factories) {
+                Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
+                allOptions.addAll(options);
+            }
         }
         return unmodifiableIterator(allOptions.iterator());
+    }
+
+    private boolean fieldHasOptions() {
+        return field().descriptor()
+                      .toProto()
+                      .hasOptions();
     }
 
     protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
@@ -152,9 +181,9 @@ public abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>perform type-specific validation according to validation options.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>perform type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
@@ -167,7 +196,7 @@ public abstract class FieldValidator<V> implements Logging {
         result.addAll(violations);
         while (fieldValidatingOptions.hasNext()) {
             FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
-            if(option.shouldValidate(value)) {
+            if (option.shouldValidate(value)) {
                 Constraint<FieldValue<V>> constraint = option.constraintFor(value);
                 ImmutableList<ConstraintViolation> violations = constraint.check(value);
                 result.addAll(violations);
@@ -177,7 +206,7 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     protected final IfInvalidOption ifInvalid() {
-        if(ifInvalid == null) {
+        if (ifInvalid == null) {
             ifInvalid = ifInvalid(descriptor(value));
         }
         return ifInvalid;
