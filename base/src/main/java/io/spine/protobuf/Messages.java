@@ -48,7 +48,7 @@ public final class Messages {
      * <p>Creates and caches objects in a lazy mode.
      */
     private static final
-    LoadingCache<Class<? extends MessageLite>, MessageLite> defaultInstances = loadingCache(1_000);
+    LoadingCache<Class<? extends Message>, Message> defaultInstances = loadingCache(1_000);
 
     /** Prevent instantiation of this utility class. */
     private Messages() {
@@ -122,7 +122,7 @@ public final class Messages {
         return commandMessage;
     }
 
-    private static LoadingCache<Class<? extends MessageLite>, MessageLite> loadingCache(int size) {
+    private static LoadingCache<Class<? extends Message>, Message> loadingCache(int size) {
         return CacheBuilder.newBuilder()
                            .maximumSize(size)
                            .build(new MessageCacheLoader());
@@ -137,10 +137,10 @@ public final class Messages {
      * with {@linkplain com.google.protobuf.Internal Protobuf Internal} tool API.
      */
     private static final class MessageCacheLoader
-            extends CacheLoader<Class<? extends MessageLite>, MessageLite> {
+            extends CacheLoader<Class<? extends Message>, Message> {
 
         @Override
-        public MessageLite load(Class<? extends MessageLite> messageClass) {
+        public Message load(Class<? extends Message> messageClass) {
             // It is safe to use the `Internal` utility class from Protobuf since it relies on the
             // the fact that the generated class has the `getDefaultInstance()` static method.
             return com.google.protobuf.Internal.getDefaultInstance(messageClass);
