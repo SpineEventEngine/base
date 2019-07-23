@@ -20,6 +20,8 @@
 
 package io.spine.type;
 
+import static java.lang.String.format;
+
 /**
  * Exception thrown when the content of {@link com.google.protobuf.Any Any} does not
  * match one we expect when unpacking.
@@ -27,12 +29,30 @@ package io.spine.type;
  * <p>Typically this exception wraps
  * {@link com.google.protobuf.InvalidProtocolBufferException InvalidProtocolBufferException} thrown
  * in unsuccessful call of {@link com.google.protobuf.Any#unpack(Class) Any.unpack(Class)}.
+ *
+ * <p>Another usage scenario is a mismatch between
+ * the {@linkplain TypeUrl}s of the instance wrapped by {@code Any} and the target message.
  */
 public class UnexpectedTypeException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
+    /**
+     * Creates an instance of {@code UnexpectedTypeException} by wrapping the root cause.
+     */
     public UnexpectedTypeException(Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * Creates an instance {@code UnexpectedTypeException} with the expected and actual type URLs.
+     */
+    public UnexpectedTypeException(TypeUrl expected, TypeUrl actual) {
+        super(formatMsg(expected, actual));
+    }
+
+    private static String formatMsg(TypeUrl expected, TypeUrl actual) {
+        return format("Cannot unpack `Any` instance. Expected type name is `%s`, actual is `%s`.",
+                      expected, actual);
     }
 }

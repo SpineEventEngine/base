@@ -229,7 +229,19 @@ public final class TypeConverter {
         }
     }
 
-    @SuppressWarnings("OverlyCoupledClass") // OK as it maps many converted types.
+    /**
+     * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
+     *
+     * @param <M> the type of the message
+     * @param <T> the type to cast to and from the message
+     *
+     * @implNote The arguments are checked during the conversion and an
+     * {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in the
+     * error message is a simple {@link Class#getName() Class.getName()} call result. It's the
+     * best-performant solution among options, such as {@link Class#getCanonicalName()
+     * Class.getCanonicalName()}.
+     */
+    @SuppressWarnings("OverlyCoupledClass")     // OK, as references a lot of type for casting.
     private static final class PrimitiveTypeCaster<M extends Message, T>
             extends MessageCaster<M, T> {
 
@@ -263,7 +275,7 @@ public final class TypeConverter {
                     (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
             checkArgument(typeUnpacker != null,
                           "Could not find a primitive type for %s.",
-                          boxedType.getCanonicalName());
+                          boxedType.getName());
             T result = typeUnpacker.convert(input);
             return result;
         }
@@ -275,7 +287,7 @@ public final class TypeConverter {
                     (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
-                          cls.getCanonicalName());
+                          cls.getName());
             M result = converter.reverse()
                                 .convert(input);
             return result;

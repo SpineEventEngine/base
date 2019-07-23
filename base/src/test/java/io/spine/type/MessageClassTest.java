@@ -42,13 +42,19 @@ import static com.google.common.truth.Truth.assertThat;
 class MessageClassTest {
 
     private static final Class<StringValue> MSG_CLASS = StringValue.class;
+    private static final TypeUrl MSG_TYPE = TypeUrl.of(StringValue.class);
 
     @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
     @DisplayName("provide equality within the class")
     void beEqualWithingClass() {
         new EqualsTester()
-                .addEqualityGroup(new TestMessageClass(MSG_CLASS), new TestMessageClass(MSG_CLASS))
+                .addEqualityGroup(new TestMessageClass(MSG_CLASS),
+                                  new TestMessageClass(MSG_CLASS))
+                .addEqualityGroup(new TestMessageClass(MSG_CLASS, MSG_TYPE),
+                                  new TestMessageClass(MSG_CLASS, MSG_TYPE))
+                .addEqualityGroup(new TestMessageClass(MSG_CLASS),
+                                  new TestMessageClass(MSG_CLASS, MSG_TYPE))
                 .addEqualityGroup(new MessageClass<StringValue>(MSG_CLASS) {
                     private static final long serialVersionUID = 0L;
                 });
@@ -82,6 +88,10 @@ class MessageClassTest {
 
         private TestMessageClass(Class<? extends Message> value) {
             super(value);
+        }
+
+        private TestMessageClass(Class<? extends Message> value, TypeUrl url) {
+            super(value, url);
         }
     }
 

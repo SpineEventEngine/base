@@ -22,7 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -33,6 +33,7 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
+import io.spine.validate.option.Constraint;
 import io.spine.validate.option.Distinct;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.IfInvalid;
@@ -40,15 +41,15 @@ import io.spine.validate.option.IfMissing;
 import io.spine.validate.option.Required;
 import io.spine.validate.option.ValidatingOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Iterators.unmodifiableIterator;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.google.common.collect.Sets.union;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Validates messages according to Spine custom Protobuf options and
@@ -66,14 +67,21 @@ public abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final ImmutableSet<FieldValidatingOption<?, V>> fieldValidatingOptions;
+    private final UnmodifiableIterator<FieldValidatingOption<?, V>> fieldValidatingOptions;
 
     /**
      * If set the validator would assume that the field is required even
      * if the {@code required} option is not set.
      */
     private final boolean assumeRequired;
-    private final IfInvalidOption ifInvalid;
+
+    /**
+     * An option holding the text required if the validated {@code Message} is invalid.
+     *
+     * <p>As soon as this isn't happening for every validated {@code Message}, this field
+     * is {@code null} until someone {@linkplain #ifInvalid() requests it}.
+     */
+    private @MonotonicNonNull IfInvalidOption ifInvalid;
 
     /**
      * Creates a new validator instance.
@@ -84,25 +92,57 @@ public abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field is required regardless
      *         of the {@code required} Protobuf option value
      */
-    @SuppressWarnings("Immutable") // message field values are immutable
     protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
         this.values = value.asList();
         this.assumeRequired = assumeRequired;
-        this.ifInvalid = ifInvalid(descriptor(value));
-        ImmutableSet<FieldValidatingOption<?, V>> commonOptions = commonOptions(assumeRequired);
-        ImmutableSet<FieldValidatingOption<?, V>> additionalOptions = additionalOptions();
-        this.fieldValidatingOptions = ImmutableSet.copyOf(union(commonOptions, additionalOptions));
+        this.fieldValidatingOptions = validatingOptions();
     }
 
-    private ImmutableSet<FieldValidatingOption<?, V>> additionalOptions() {
-        ImmutableSet<FieldValidatingOption<?, V>> options = ValidatingOptionsLoader.INSTANCE
-                .implementations()
-                .stream()
-                .flatMap(factory -> createMoreOptions(factory).stream())
-                .collect(toImmutableSet());
-        return options;
+    /**
+     * Collects the validation options to use when reading option values.
+     *
+     * <p>Does not include options from the external constraints.
+     *
+     * @implNote If the {@code Required} option is assumed to be required, it is always
+     *         present in the results. In case no options are defined for the field,
+     *         the result remains empty.
+     *         This is a performance optimization made to avoid redundant reflective calls
+     *         to Protobuf data attempting to read the missing option values.
+     */
+    @SuppressWarnings("Immutable") // message field values are immutable
+    private UnmodifiableIterator<FieldValidatingOption<?, V>> validatingOptions() {
+        List<FieldValidatingOption<?, V>> allOptions = new ArrayList<>();
+
+        if (assumeRequired) {
+            allOptions.add(Required.create(true));
+        }
+
+        if (fieldHasOptions()) {
+            if (values.size() > 1) {
+                allOptions.add(Distinct.create());
+            }
+
+            // Add the option if it wasn't added already.
+            if (!assumeRequired) {
+                allOptions.add(Required.create(false));
+            }
+
+            ImmutableSet<ValidatingOptionFactory> factories =
+                    ValidatingOptionsLoader.INSTANCE.implementations();
+            for (ValidatingOptionFactory factory : factories) {
+                Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
+                allOptions.addAll(options);
+            }
+        }
+        return unmodifiableIterator(allOptions.iterator());
+    }
+
+    private boolean fieldHasOptions() {
+        return field().descriptor()
+                      .toProto()
+                      .hasOptions();
     }
 
     protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
@@ -141,9 +181,9 @@ public abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>perform type-specific validation according to validation options.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>perform type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
@@ -152,33 +192,24 @@ public abstract class FieldValidator<V> implements Logging {
         if (isRequiredId()) {
             validateEntityId();
         }
-        List<ConstraintViolation> ownViolations = assembleViolations();
-        List<ConstraintViolation> optionViolations = optionViolations();
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
-        result.addAll(ownViolations)
-              .addAll(optionViolations);
+        result.addAll(violations);
+        while (fieldValidatingOptions.hasNext()) {
+            FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
+            if (option.shouldValidate(value)) {
+                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
+                ImmutableList<ConstraintViolation> violations = constraint.check(value);
+                result.addAll(violations);
+            }
+        }
         return result.build();
     }
 
     protected final IfInvalidOption ifInvalid() {
+        if (ifInvalid == null) {
+            ifInvalid = ifInvalid(descriptor(value));
+        }
         return ifInvalid;
-    }
-
-    private List<ConstraintViolation> assembleViolations() {
-        return ImmutableList.<ConstraintViolation>builder()
-                .addAll(violations)
-                .build();
-    }
-
-    private List<ConstraintViolation> optionViolations() {
-        List<ConstraintViolation> violations =
-                fieldValidatingOptions.stream()
-                                      .filter(option -> option.shouldValidate(value))
-                                      .map(option -> option.constraintFor(value))
-                                      .map(constraint -> constraint.check(value))
-                                      .flatMap(List::stream)
-                                      .collect(toList());
-        return violations;
     }
 
     /**
@@ -332,11 +363,5 @@ public abstract class FieldValidator<V> implements Logging {
     /** Returns the declaration of the validated field. */
     protected final FieldDeclaration field() {
         return declaration;
-    }
-
-    private static <@ImmutableTypeParameter V>
-    ImmutableSet<FieldValidatingOption<?, V>> commonOptions(boolean strict) {
-        return ImmutableSet.of(Distinct.create(),
-                               Required.create(strict));
     }
 }

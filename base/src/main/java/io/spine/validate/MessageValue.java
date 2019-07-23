@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -28,28 +29,69 @@ import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.Iterators.unmodifiableIterator;
 
 /**
  * A value of a {@link Message} to validate.
+ *
+ * @implNote For the performance reasons the values of the passed {@code Message} fields are
+ *         read either via {@linkplain Message#getField(FieldDescriptor) reflection} or
+ *         {@linkplain FieldAwareMessage#readValue(FieldDescriptor) directly} if an
+ *         instance of {@link FieldAwareMessage} is passed.
+ *         Also, for the same reason the contents of non-{@code oneof} fields are cached once read.
  */
 @Immutable
 public final class MessageValue {
 
+    /**
+     * The message which is validated.
+     */
     private final Message message;
+
+    /**
+     * Refers to a {@code Message} which may optimize reading of its fields.
+     *
+     * <p>If the {@linkplain MessageValue#MessageValue(Message, FieldContext) passed} message isn't
+     * an instance of {@link FieldAwareMessage}, this field is {@code null}.
+     */
+    private final @Nullable FieldAwareMessage asFieldAware;
+
+    /**
+     * The descriptor of type of the validated message.
+     */
     private final Descriptor descriptor;
+
+    /**
+     * The field context of the validated message.
+     */
     private final FieldContext context;
+
+    /**
+     * The cached message contents.
+     *
+     * <p>Do not contain {@code oneof} fields, as they are rarely accessed.
+     */
+    @SuppressWarnings("Immutable")  // cached field values are effectively immutable.
+    private @MonotonicNonNull ImmutableList<FieldValue<?>> nonOneofValues;
 
     private MessageValue(Message message, FieldContext context) {
         this.message = checkNotNull(message);
         this.descriptor = message.getDescriptorForType();
         this.context = checkNotNull(context);
+        if (message instanceof FieldAwareMessage) {
+            asFieldAware = (FieldAwareMessage) message;
+        } else {
+            asFieldAware = null;
+        }
+        this.nonOneofValues = readNonOneofs();
     }
 
     /**
@@ -86,14 +128,26 @@ public final class MessageValue {
      * <p>Values of {@code Oneof} fields are filtered out and not returned.
      *
      * @return values of message fields excluding {@code Oneof} fields
+     * @implNote The values are computed in lazy mode and cached in this
+     *         {@code MessageValue} instance to improve the performance of the repeated calls.
      */
     ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
-        ImmutableList<FieldValue<?>> values = descriptor.getFields()
-                                                        .stream()
-                                                        .filter(MessageValue::isNotOneof)
-                                                        .map(this::valueOfField)
-                                                        .collect(toImmutableList());
-        return values;
+        if(nonOneofValues == null) {
+            nonOneofValues = readNonOneofs();
+        }
+        return nonOneofValues;
+    }
+
+    private ImmutableList<FieldValue<?>> readNonOneofs() {
+        ImmutableList.Builder<FieldValue<?>> builder = ImmutableList.builder();
+        List<FieldDescriptor> fields = descriptor.getFields();
+        for (FieldDescriptor field : fields) {
+            if (isNotOneof(field)) {
+                FieldValue<?> value = valueOfField(field);
+                builder.add(value);
+            }
+        }
+        return builder.build();
     }
 
     /**
@@ -132,14 +186,16 @@ public final class MessageValue {
      *         if the if the message doesn't declare this oneof
      */
     public Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
-        checkArgument(oneofDescriptors().contains(oneof));
+        checkArgument(descriptor.getOneofs()
+                                .contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
     }
 
     /** Returns descriptors of {@code Oneof} declarations in the message. */
-    ImmutableList<OneofDescriptor> oneofDescriptors() {
-        return ImmutableList.copyOf(descriptor.getOneofs());
+    UnmodifiableIterator<OneofDescriptor> oneofDescriptors() {
+        return unmodifiableIterator(descriptor.getOneofs()
+                                              .iterator());
     }
 
     /** Returns the context of the message. */
@@ -157,9 +213,14 @@ public final class MessageValue {
 
     private FieldValue<?> valueOfField(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
+        Object rawValue = readValue(field);
         @SuppressWarnings("Immutable") // field values are immutable
-        FieldValue<?> value = FieldValue.of(message.getField(field), fieldContext);
+                FieldValue<?> value = FieldValue.of(rawValue, fieldContext);
         return value;
+    }
+
+    private Object readValue(FieldDescriptor field) {
+        return asFieldAware == null ? message.getField(field) : asFieldAware.readValue(field);
     }
 
     private static boolean isNotOneof(FieldDescriptor field) {

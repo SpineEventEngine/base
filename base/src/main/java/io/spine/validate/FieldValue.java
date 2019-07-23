@@ -28,10 +28,12 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ import static java.lang.String.format;
  *         Protobuf Maps</a>
  */
 @Immutable
+@Internal
 public final class FieldValue<@ImmutableTypeParameter T> {
 
     /**
@@ -68,7 +71,7 @@ public final class FieldValue<@ImmutableTypeParameter T> {
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(List<T> values, FieldContext context, FieldDeclaration declaration) {
+    private FieldValue(Collection<T> values, FieldContext context, FieldDeclaration declaration) {
         this.values = ImmutableList.copyOf(values);
         this.context = context;
         this.declaration = declaration;
@@ -111,22 +114,20 @@ public final class FieldValue<@ImmutableTypeParameter T> {
             "unchecked", // Raw value is always of a correct type, see Javadoc for details.
             "ChainOfInstanceofChecks" // No common ancestors.
     })
-    private static <@ImmutableTypeParameter T> FieldValue<T> resolveType(FieldDeclaration field,
-                                                 FieldContext context,
-                                                 T value) {
+    private static <@ImmutableTypeParameter T>
+    FieldValue<T> resolveType(FieldDeclaration field, FieldContext context, T value) {
         if (value instanceof List) {
             List<T> values = (List<T>) value;
             return new FieldValue<>(values, context, field);
         } else if (value instanceof Map) {
             Map<?, T> map = (Map<?, T>) value;
-            ImmutableList<T> values = ImmutableList.copyOf(map.values());
-            return new FieldValue<>(values, context, field);
+            return new FieldValue<>(map.values(), context, field);
         } else {
             return new FieldValue<>(ImmutableList.of(value), context, field);
         }
     }
 
-    public FieldValidator<?> createValidator() {
+    FieldValidator<?> createValidator() {
         return createValidator(false);
     }
 
@@ -211,17 +212,17 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *
      * @return the value as a list
      */
-    public ImmutableList<T> asList() {
-        return ImmutableList.copyOf(values);
+    public final ImmutableList<T> asList() {
+        return values;
     }
 
     public T singleValue() {
-        return asList().get(0);
+        return values.get(0);
     }
 
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
     public boolean isDefault() {
-        return asList().isEmpty() || (declaration.isNotCollection() &&
+        return values.isEmpty() || (declaration.isNotCollection() &&
                 isSingleValueDefault());
     }
 

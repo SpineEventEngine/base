@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -92,7 +93,8 @@ public class MessageValidator {
      * separately}.
      */
     private void validateFields() {
-        for (FieldValue value : message.fieldsExceptOneofs()) {
+        ImmutableList<FieldValue<?>> values = message.fieldsExceptOneofs();
+        for (FieldValue<?> value : values) {
             FieldValidator<?> fieldValidator = value.createValidator();
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
@@ -103,8 +105,9 @@ public class MessageValidator {
      * Validates every {@code Oneof} declaration in the message.
      */
     private void validateOneofFields() {
-        List<OneofDescriptor> oneofDescriptors = message.oneofDescriptors();
-        for (OneofDescriptor oneof : oneofDescriptors) {
+        UnmodifiableIterator<OneofDescriptor> descriptors = message.oneofDescriptors();
+        while (descriptors.hasNext()) {
+            OneofDescriptor oneof = descriptors.next();
             OneofValidator validator = new OneofValidator(oneof, message);
             ImmutableList<ConstraintViolation> oneofViolations = validator.validate();
             result.addAll(oneofViolations);

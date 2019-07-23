@@ -20,14 +20,15 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides information about a proto field in the nesting hierarchy.
@@ -36,45 +37,43 @@ import static com.google.common.base.Preconditions.checkState;
 public final class FieldContext {
 
     /**
-     * Descriptors of fields in the nesting hierarchy.
+     * The descriptor of the current proto field.
      *
-     * <p>The list starts from the top-most field and ends with the descriptor
-     * of the target field.
-     *
-     * <p>Suppose we have the following declarations:
-     * <pre>{@code
-     * message User {
-     *     UserId id = 1;
-     * }
-     *
-     * message UserId {
-     *     string value = 1;
-     * }
-     * }</pre>
-     *
-     * <p>The value of this field for the {@code value} field of the {@code UserId} is
-     * {@code [FieldDescriptor_for_id, FieldDescriptor_for_value]}.
+     * <p>Is {@code null} if this field context is empty.
      */
-    private final ImmutableList<FieldDescriptor> descriptors;
+    private final @Nullable FieldDescriptor target;
 
     /**
-     * Provides field names in the nesting hierarchy.
+     * The context of the parent field context.
+     *
+     * <p>Is {@code null} if the {@linkplain #target target field} has no parent.
      */
-    private final FieldPath fieldPath;
+    private final @Nullable FieldContext parent;
 
-    private FieldContext(ImmutableList<FieldDescriptor> descriptors) {
-        this.descriptors = descriptors;
-        this.fieldPath = toPath(descriptors);
+    private FieldContext() {
+        this.target = null;
+        this.parent = null;
+    }
+
+    private FieldContext(FieldDescriptor target) {
+        this.target = target;
+        this.parent = null;
+    }
+
+    private FieldContext(FieldContext parent, FieldDescriptor target) {
+        this.target = target;
+        this.parent = parent;
     }
 
     /**
      * Creates descriptor context for the specified field.
      *
-     * @param field the field of the context to create
+     * @param field
+     *         the field of the context to create
      * @return the field context
      */
     public static FieldContext create(FieldDescriptor field) {
-        return new FieldContext(ImmutableList.of(field));
+        return new FieldContext(field);
     }
 
     /**
@@ -83,22 +82,18 @@ public final class FieldContext {
      * @return the descriptor context
      */
     public static FieldContext empty() {
-        return new FieldContext(ImmutableList.of());
+        return new FieldContext();
     }
 
     /**
      * Obtains {@code FieldContext} for the specified child.
      *
-     * @param child the child descriptor
+     * @param child
+     *         the child descriptor
      * @return the child descriptor context
      */
     public FieldContext forChild(FieldDescriptor child) {
-        return new FieldContext(
-                ImmutableList.<FieldDescriptor>builder()
-                        .addAll(descriptors)
-                        .add(child)
-                        .build()
-        );
+        return new FieldContext(this, child);
     }
 
     /**
@@ -107,17 +102,11 @@ public final class FieldContext {
      * @return the target descriptor
      */
     public FieldDescriptor target() {
-        checkState(!descriptors.isEmpty(), "Empty context cannot have a target.");
-        int targetIndex = descriptors.size() - 1;
-        return descriptors.get(targetIndex);
+        return checkNotNull(target, "Empty context cannot have a target.");
     }
 
     private Optional<FieldDescriptor> targetParent() {
-        int targetParentIndex = descriptors.size() - 2;
-        boolean parentExists = targetParentIndex > -1;
-        return parentExists
-               ? Optional.of(descriptors.get(targetParentIndex))
-               : Optional.empty();
+        return parent == null ? Optional.empty() : Optional.ofNullable(parent.target);
     }
 
     /**
@@ -126,14 +115,26 @@ public final class FieldContext {
      * @return the field path
      */
     public FieldPath fieldPath() {
-        return fieldPath;
+        if (target == null) {
+            return FieldPath.getDefaultInstance();
+        }
+        if (parent == null) {
+            return FieldPath.newBuilder()
+                            .addFieldName(target.getName())
+                            .build();
+        }
+        return parent.fieldPath()
+                     .toBuilder()
+                     .addFieldName(target.getName())
+                     .build();
     }
 
     /**
      * Determines whether this context has the same target and
      * the same parent as the specified context.
      *
-     * @param other the context to check
+     * @param other
+     *         the context to check
      * @return {@code true} if this context has the same target and the same parent
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
@@ -154,15 +155,6 @@ public final class FieldContext {
                                                 .equals(parentFromOther.get());
     }
 
-    private static FieldPath toPath(Iterable<FieldDescriptor> descriptors) {
-        FieldPath.Builder builder = FieldPath.newBuilder();
-        for (FieldDescriptor descriptor : descriptors) {
-            String fieldName = descriptor.getName();
-            builder = builder.addFieldName(fieldName);
-        }
-        return builder.build();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -171,14 +163,13 @@ public final class FieldContext {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        FieldContext that = (FieldContext) o;
-
-        return descriptors.equals(that.descriptors);
+        FieldContext context = (FieldContext) o;
+        return Objects.equals(target, context.target) &&
+                Objects.equals(parent, context.parent);
     }
 
     @Override
     public int hashCode() {
-        return descriptors.hashCode();
+        return Objects.hash(target, parent);
     }
 }

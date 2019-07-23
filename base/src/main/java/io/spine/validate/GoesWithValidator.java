@@ -49,7 +49,9 @@ final class GoesWithValidator {
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
         Goes<?> goesFieldOption = Goes.create(messageValue);
-        for (FieldValue value : messageValue.fieldsExceptOneofs()) {
+
+        ImmutableList<FieldValue<?>> values = messageValue.fieldsExceptOneofs();
+        for (FieldValue value : values) {
             if (goesFieldOption.shouldValidate(value)) {
                 Constraint constraint = goesFieldOption.constraintFor(value);
                 violations.addAll(constraint.check(value));

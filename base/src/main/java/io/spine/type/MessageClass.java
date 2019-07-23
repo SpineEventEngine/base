@@ -45,6 +45,11 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
         this.typeName = TypeName.of(value);
     }
 
+    protected MessageClass(Class<? extends M> value, TypeUrl typeUrl) {
+        super(value);
+        this.typeName = TypeName.from(typeUrl);
+    }
+
     /**
      * Obtains a type name of the messages of this class.
      */

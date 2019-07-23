@@ -77,7 +77,7 @@ public final class AnyPacker {
      * Unwraps {@code Any} value into an instance of type specified by value
      * returned by {@link Any#getTypeUrl()}.
      *
-     * @param any instance of {@link com.google.protobuf.Any} that should be unwrapped
+     * @param any instance of {@link Any} that should be unwrapped
      * @return unwrapped message instance
      */
     public static Message unpack(Any any) {
@@ -90,18 +90,37 @@ public final class AnyPacker {
     /**
      * Unwraps {@code Any} value into an instance of the passed class.
      *
-     * <p>If there is no Java class for the type,
-     * {@link UnexpectedTypeException UnexpectedTypeException}
-     * will be thrown.
+     * <p>If there is no Java class for the type, {@link UnexpectedTypeException
+     * UnexpectedTypeException} is thrown.
      *
-     * @param any   instance of {@link Any} that should be unwrapped
-     * @param cls the class implementing the type of the enclosed object
-     * @param <T>   the type enclosed into {@code Any}
+     * @param any
+     *         instance of {@link Any} that should be unwrapped
+     * @param cls
+     *         the class implementing the type of the enclosed object
+     * @param <T>
+     *         the type enclosed into {@code Any}
      * @return unwrapped message instance
+     * @implNote Protobuf {@link Any#unpack(Class)} isn't used by this
+     *         implementation, since it creates a redundant default {@code Message} instance in its
+     *         internal {@link Any#is(Class) is(Class)} sub-call. We are aiming for better
+     *         performance and lower memory footprint. Therefore, we use the same default instance
+     *         of the target {@code Message} to both verify the type name (complying
+     *         {@code is(Class)} sub-call) and parse its contents.
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
+        T defaultInstance = Messages.defaultInstance(cls);
+
+        String actualTypeUrl = any.getTypeUrl();
+        TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
+        if (!expectedTypeUrl.value().equals(actualTypeUrl)) {
+            throw new UnexpectedTypeException(expectedTypeUrl, TypeUrl.parse(actualTypeUrl));
+        }
+
         try {
-            T result = any.unpack(cls);
+            @SuppressWarnings("unchecked")  // Ensured by the check above.
+            T result = (T) defaultInstance
+                    .getParserForType()
+                    .parseFrom(any.getValue());
             return result;
         } catch (InvalidProtocolBufferException e) {
             throw new UnexpectedTypeException(e);
