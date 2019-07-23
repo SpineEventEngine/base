@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.GeneratedMixin;
+import io.spine.annotation.Internal;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 @GeneratedMixin
 @Experimental
+@Internal
 public interface FieldAwareMessage extends Message {
 
     /**
