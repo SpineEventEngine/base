@@ -70,14 +70,6 @@ allprojects {
 
     // Use the same version numbering for the Spine Base library.
     version = versionToPublish
-
-    // Enforce encoding and warnings.
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.encoding = 'UTF-8'
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
-    }    
 }
 
 subprojects {
