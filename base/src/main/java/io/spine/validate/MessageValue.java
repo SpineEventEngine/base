@@ -43,9 +43,9 @@ import static com.google.common.collect.Iterators.unmodifiableIterator;
  * A value of a {@link Message} to validate.
  *
  * @implNote For the performance reasons the values of the passed {@code Message} fields are
- *         read either via {@linkplain Message#getField(FieldDescriptor) reflection} or
- *         {@linkplain FieldAwareMessage#readValue(FieldDescriptor) directly} if an
- *         instance of {@link FieldAwareMessage} is passed.
+ *         read either via {@linkplain Message#getField(com.google.protobuf.Descriptors.FieldDescriptor)
+ *         reflection} or {@linkplain FieldAwareMessage#readValue(com.google.protobuf.Descriptors.FieldDescriptor)
+ *         directly} if an instance of {@link FieldAwareMessage} is passed.
  *         Also, for the same reason the contents of non-{@code oneof} fields are cached once read.
  */
 @Immutable
@@ -199,6 +199,7 @@ public final class MessageValue {
     }
 
     /** Returns the context of the message. */
+    @SuppressWarnings("unused")
     FieldContext context() {
         return context;
     }

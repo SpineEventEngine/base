@@ -35,7 +35,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * The mixin for {@link Message Message}s which are aware of their fields and are able to provide
- * their values with no reflection {@linkplain Message#getField(FieldDescriptor) used by Protobuf}.
+ * their values with no reflection {@linkplain Message#getField(Descriptors.FieldDescriptor)
+ * used by Protobuf}.
  *
  * <p>This mixin is an experimental part of the framework and may be changed or removed in future.
  */
@@ -47,8 +48,8 @@ public interface FieldAwareMessage extends Message {
     /**
      * Reads the value of the field.
      *
-     * <p>By default, falls back to the {@linkplain Message#getField(FieldDescriptor) original
-     * Protobuf method}.
+     * <p>By default, falls back to the {@linkplain Message#getField(Descriptors.FieldDescriptor)
+     * original Protobuf method}.
      *
      * @param field
      *         descriptor of the field
@@ -59,8 +60,9 @@ public interface FieldAwareMessage extends Message {
     }
 
     /**
-     * A test-only method that checks that the implementation of {@link #readValue(FieldDescriptor)}
-     * gives the same results as the {@link Message#getField(FieldDescriptor)}.
+     * A test-only method that checks that the implementation of
+     * {@link #readValue(Descriptors.FieldDescriptor)} gives the same results as
+     * the {@link Message#getField(Descriptors.FieldDescriptor)}.
      */
     @VisibleForTesting
     default boolean checkFieldsReachable() {
