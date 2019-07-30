@@ -151,42 +151,6 @@ class ExtensionTest {
     }
 
     @Test
-    @DisplayName("return targetGenValidatorsRootDir if not set")
-    void return_targetGenValidatorsRootDir_if_not_set() {
-        String dir = Extension.getTargetGenValidatorsRootDir(project);
-
-        assertNotEmptyAndIsInProjectDir(dir);
-    }
-
-    @Test
-    @DisplayName("return targetGenValidatorsRootDir if set")
-    void return_targetTestGenValidatorsRootDir_if_set() {
-        spineProtobuf().targetTestGenVBuildersRootDir = newUuid();
-
-        String dir = Extension.getTargetTestGenValidatorsRootDir(project);
-
-        assertEquals(spineProtobuf().targetTestGenVBuildersRootDir, dir);
-    }
-
-    @Test
-    @DisplayName("return targetTestGenValidatorsRootDir if not set")
-    void return_targetTestGenValidatorsRootDir_if_not_set() {
-        String dir = Extension.getTargetTestGenValidatorsRootDir(project);
-
-        assertNotEmptyAndIsInProjectDir(dir);
-    }
-
-    @Test
-    @DisplayName("return targetTestGenValidatorsRootDir if set")
-    void return_targetGenValidatorsRootDir_if_set() {
-        spineProtobuf().targetGenVBuildersRootDir = newUuid();
-
-        String dir = Extension.getTargetGenValidatorsRootDir(project);
-
-        assertEquals(spineProtobuf().targetGenVBuildersRootDir, dir);
-    }
-
-    @Test
     @DisplayName("return default dirsToClean if not set")
     void return_default_dirsToClean_if_not_set() {
         List<String> actualDirs = Extension.getDirsToClean(project);
