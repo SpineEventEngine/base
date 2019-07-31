@@ -18,23 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A file pattern matching file names which start with a certain prefix.
+ * A file pattern matching file names that qualifies supplied regex.
  */
-public final class PrefixSelector extends PatternSelector {
+public final class RegexSelector extends PatternSelector {
 
-    PrefixSelector(@Regex String prefix) {
-        super(prefix);
+    RegexSelector(@Regex String regex) {
+        super(regex);
     }
 
     @Override
     FilePattern toProto() {
-        return FilePatterns.filePrefix(getPattern());
+        return FilePatterns.fileRegex(getPattern());
     }
 }

@@ -18,25 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
-
 /**
- * Represents a Protoc Spine plugin configuration selector.
+ * Spine Protoc Gradle plugin configurations.
  */
-public interface Selector {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc;
 
-    /**
-     * Disables current selector.
-     */
-    void disable();
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * Enables current selector.
-     */
-    void enable();
-
-    /**
-     * Determines if the current selector is enabled.
-     */
-    boolean enabled();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

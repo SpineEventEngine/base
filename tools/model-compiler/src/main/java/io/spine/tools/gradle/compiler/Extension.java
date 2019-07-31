@@ -26,8 +26,8 @@ import groovy.lang.Closure;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedInterfaces;
+import io.spine.tools.protoc.GeneratedMethods;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -123,26 +123,11 @@ public class Extension extends GradleExtension {
     public String targetTestGenRejectionsRootDir;
 
     /**
-     * The absolute path to the main target generated validating builders root directory.
-     */
-    public String targetGenVBuildersRootDir;
-
-    /**
-     * The absolute path to the test target generated generated validating builders root directory.
-     */
-    public String targetTestGenVBuildersRootDir;
-
-    /**
      * The absolute path to directory to delete.
      *
      * <p>Either this property OR {@code dirsToClean} property is used.
      */
     public String dirToClean;
-
-    /**
-     * The flag which determines validating builders generation is needed or not.
-     */
-    public boolean generateValidatingBuilders = true;
 
     /**
      * The indent for the generated code in the validating builders.
@@ -268,41 +253,16 @@ public class Extension extends GradleExtension {
                                          .testSpine());
     }
 
-    public static String getTargetGenValidatorsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetGenVBuildersRootDir,
-                             def(project).generated()
-                                         .mainSpine());
-    }
-
-    public static String getTargetTestGenValidatorsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetTestGenVBuildersRootDir,
-                             def(project).generated()
-                                         .testSpine());
-    }
-
     private static String pathOrDefault(String path, Object defaultValue) {
         return isNullOrEmpty(path)
                ? defaultValue.toString()
                : path;
     }
 
-    public static boolean isGenerateValidatingBuilders(Project project) {
-        boolean result = extension(project).generateValidatingBuilders;
-        _debug().log("The current validating builder generation setting is %b.", result);
-        return result;
-    }
-
     public static Indent getIndent(Project project) {
         Indent result = extension(project).indent;
         _debug().log("The current indent is %d.", result.getSize());
         return result;
-    }
-
-    @SuppressWarnings("unused")
-    public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
-        this.generateValidatingBuilders = generateValidatingBuilders;
-        _debug().log("Validating builder generation has been %s.",
-                    (generateValidatingBuilders ? "enabled" : "disabled"));
     }
 
     @SuppressWarnings("unused")

@@ -3,6 +3,8 @@
 The module contains the custom Javadoc doclet, which excludes
 elements annotated with `io.spine.Internal`.
 
+This module relies on JDK 8 API.
+
 ## Usage
 
 To use the doclet, specify the Javadoc options:

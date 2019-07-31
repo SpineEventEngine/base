@@ -21,10 +21,7 @@
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-import static com.google.common.io.Files.createParentDirs
-
 ext {
-    roasterVersion = '2.20.1.Final'
     spineFolder = "${project.projectDir}/.spine" as File
     protocPluginDependency = null
 }
@@ -40,11 +37,11 @@ dependencies {
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    implementation (deps.build.roasterApi) {
+    implementation(deps.build.roasterApi) {
         exclude group: 'com.google.guava'
     }
-    
-    implementation (deps.build.roasterJdt) {
+
+    implementation(deps.build.roasterJdt) {
         exclude group: 'com.google.guava'
     }
 
@@ -109,7 +106,6 @@ copyProtocPluginTestArtifact.doLast(copyPluginJarAction)
 copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publishToMavenLocal
 
 // Tests use the Protobuf plugin.
-test {
+compileTestJava {
     dependsOn copyProtocPluginTestArtifact
-    dependsOn rootProject.subprojects*.publishToMavenLocal
 }

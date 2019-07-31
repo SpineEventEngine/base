@@ -35,7 +35,7 @@ import io.spine.code.fs.java.Directory;
 import io.spine.code.fs.java.FileName;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.PackageName;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
+import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.given.SpineProtocConfigGiven;

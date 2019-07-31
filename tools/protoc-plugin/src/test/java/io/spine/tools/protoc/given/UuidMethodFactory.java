@@ -22,6 +22,7 @@ package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.UuidMessage;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
@@ -30,7 +31,7 @@ import java.util.List;
 
 /**
  * A test-only implementation of a {@link MethodFactory} to be used with
- * {@link io.spine.tools.gradle.compiler.protoc.UuidMessage UuidMessage}.
+ * {@link UuidMessage UuidMessage}.
  */
 @Immutable
 public class UuidMethodFactory implements MethodFactory {

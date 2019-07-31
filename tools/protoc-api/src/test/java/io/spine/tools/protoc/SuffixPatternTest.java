@@ -18,21 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RegexPattern should")
-final class RegexPatternTest {
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
     @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
-        String regex = ".*/spine/.*";
-        FilePattern pattern = new RegexSelector(regex).toProto();
-        Assertions.assertEquals(regex, pattern.getRegex());
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
     }
 }

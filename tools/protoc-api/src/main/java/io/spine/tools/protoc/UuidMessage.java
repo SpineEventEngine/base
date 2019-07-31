@@ -18,23 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
-
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+package io.spine.tools.protoc;
 
 /**
- * A file pattern matching file names which end with a certain postfix.
+ * Selects messages with a single {@code string} field named {@code uuid}.
  */
-public final class SuffixSelector extends PatternSelector {
+public final class UuidMessage extends MessageSelector {
 
-    SuffixSelector(@Regex String suffix) {
-        super(suffix);
-    }
-
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.fileSuffix(getPattern());
+    UuidMessage() {
+        super();
     }
 }

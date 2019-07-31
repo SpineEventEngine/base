@@ -11,11 +11,9 @@ These features include:
 
 * [Annotating](src/main/java/io/spine/tools/compiler/annotation) Java files generated from the 
   Protobuf definitions.
-* Event [enrichments](src/main/java/io/spine/tools/compiler/enrichment).
 * [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from the `proto` 
   messages.
-* Various [validation tools](src/main/java/io/spine/tools/compiler/validation) including
-  [Validating Builders creation](src/main/java/io/spine/tools/gradle/compiler/ValidatingBuilderGenPlugin.java).
+* Various [validation tools](src/main/java/io/spine/tools/compiler/validation).
 
 ## Usage
 
@@ -34,17 +32,7 @@ The required version of the Protobuf Gradle plugin is `0.8.3` or higher.
 
 ## Settings
 
-The validating builders generation can be disabled as follows:
-
-```groovy
-modelCompiler {
-    generateValidatingBuilders = false
-}
-```
-
-By default, the value is `true`.
-
-All code in the validating builders is indented with spaces. To set the width, please use the 
+The generated code is indented with spaces. To set the width, please use the 
 `indent` property of the `modelCompiler`:
 
 ```groovy

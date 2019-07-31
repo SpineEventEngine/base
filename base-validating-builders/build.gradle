@@ -91,10 +91,6 @@ dependencies {
     compileOnly name: "base-${spineVersion}"
 }
 
-modelCompiler {
-    generateValidatingBuilders = false
-}
-
 sourceSets {
     main.java.srcDirs "$projectDir/generated/main/spine"
     main.proto.srcDirs = ["$projectDir/../base/src/main/proto"]

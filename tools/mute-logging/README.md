@@ -36,7 +36,7 @@ Most `Logger` implementations are static system-wide tools and in fact have stat
 state.
 
 For example, the 
-[standard JDK logger](https://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html) 
+[standard JDK logger](https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html) 
 which we use in tests relies on its `RootLogger` to handle the console output and system 
 `out`/`err` streams. The `RootLogger` instance will be the same for multiple class loggers and is 
 initialized on the first access to a class-level logger.

@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import io.spine.tools.protoc.FilePattern;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 

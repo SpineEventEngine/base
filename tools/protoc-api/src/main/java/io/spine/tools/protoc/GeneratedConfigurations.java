@@ -18,14 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.ConfigByPattern;
 
 import java.util.Map;
 

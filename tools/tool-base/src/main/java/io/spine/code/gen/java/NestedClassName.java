@@ -61,7 +61,7 @@ public final class NestedClassName extends StringTypeValue {
      * list would be {@code ["Container", "Job", "Builder"]}.
      *
      * <p>If this class name is just a {@link SimpleClassName}, then the only entry of the resulting
-     * list is that simple name.VBuilderCodeTest.java:130
+     * list is that simple name.
      *
      * @return this name split into simple class names
      */

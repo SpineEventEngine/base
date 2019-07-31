@@ -18,25 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.tools.protoc;
 
-package spine.test.tools.validation.builder;
+import org.checkerframework.checker.regex.qual.Regex;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "TopLevelScalarFieldsProto";
-option java_package = "io.spine.test.tools.validation.builder";
+/**
+ * A file pattern matching file names which start with a certain prefix.
+ */
+public final class PrefixSelector extends PatternSelector {
 
-import "spine/options.proto";
+    PrefixSelector(@Regex String prefix) {
+        super(prefix);
+    }
 
-// This file declares message types with scalar fields for testing generation of validation
-// builders for such messages.
-//
-// Use only for `VBuilderCodeTest.java`.
-
-message VbtScalarFields {
-
-    int32 int_number = 1 [(min).value = "10", (max).value = "99"];
-
-    float float_number = 2;
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.filePrefix(getPattern());
+    }
 }
