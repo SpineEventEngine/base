@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 ext {
     spineFolder = "${project.projectDir}/.spine" as File
     protocPluginDependency = null
@@ -49,6 +52,9 @@ dependencies {
     testImplementation deps.test.junitPioneer
     testImplementation gradleTestKit()
     testImplementation project(':plugin-testlib')
+
+    // The freshest version of the plugin required for tests
+    protocPluginDependency = testCompileOnly "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {
@@ -79,4 +85,27 @@ sourceSets {
         java.srcDirs += "$projectDir/generated/test/spine"
         resources.srcDirs += "$buildDir/descriptors/test"
     }
+}
+
+final def copyPluginJarAction = {
+    final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile
+    final def srcPath = from.toPath()
+    final def dest = project.spineFolder.toPath().resolve(from.name)
+    dest.toFile().mkdirs()
+    Files.copy(srcPath, dest, StandardCopyOption.REPLACE_EXISTING)
+}
+
+// We cannot use standard Copy task here as it resolves the `from` property not lazily.
+// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
+// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
+task copyProtocPluginTestArtifact {
+    description = "Spawns the Spine Protoc plugin artifact in the project directory for tests"
+}
+
+copyProtocPluginTestArtifact.doLast(copyPluginJarAction)
+copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publishToMavenLocal
+
+// Tests use the Protobuf plugin.
+compileTestJava {
+    dependsOn copyProtocPluginTestArtifact
 }

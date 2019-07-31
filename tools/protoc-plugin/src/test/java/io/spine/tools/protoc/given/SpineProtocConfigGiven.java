@@ -26,15 +26,15 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.gen.java.UuidMethodFactory;
 import io.spine.code.java.ClassName;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
-import io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory;
+import io.spine.tools.protoc.GeneratedInterfaces;
+import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
-import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
+import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 
 /**
  * A helper class for {@link io.spine.tools.protoc.SpineProtocConfig}s creation.

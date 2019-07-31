@@ -22,10 +22,10 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
 import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.GeneratedInterfaces;
+import io.spine.tools.protoc.GeneratedMethods;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;

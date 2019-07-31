@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("FilePattern should")
-final class FilePatternTest {
+@DisplayName("`PatternSelector` implementations should")
+final class PatternSelectorsTest {
 
-    @DisplayName("ensure that implementations differ")
+    @DisplayName("be different from each other")
     @Test
     void implementationsDiffer() {
         String pattern = "testPattern";

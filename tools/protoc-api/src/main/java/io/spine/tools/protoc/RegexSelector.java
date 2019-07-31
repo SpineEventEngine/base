@@ -18,14 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
+
+import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * Selects messages with a single {@code string} field named {@code uuid}.
+ * A file pattern matching file names that qualifies supplied regex.
  */
-public final class UuidMessage extends MessageSelector {
+public final class RegexSelector extends PatternSelector {
 
-    UuidMessage() {
-        super();
+    RegexSelector(@Regex String regex) {
+        super(regex);
+    }
+
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.fileRegex(getPattern());
     }
 }

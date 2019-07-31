@@ -23,8 +23,8 @@ package io.spine.tools.protoc.given;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
-import io.spine.tools.gradle.compiler.protoc.GeneratedInterfaces;
-import io.spine.tools.gradle.compiler.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedInterfaces;
+import io.spine.tools.protoc.GeneratedMethods;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.io.File;

@@ -146,6 +146,12 @@ all modules and does not describe the project structure per-subproject.
     <scope>test</scope>
   </dependency>
   <dependency>
+    <groupId>io.spine.tools</groupId>
+    <artifactId>spine-protoc-plugin</artifactId>
+    <version>1.0.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
     <groupId>org.apiguardian</groupId>
     <artifactId>apiguardian-api</artifactId>
     <version>1.0.0</version>

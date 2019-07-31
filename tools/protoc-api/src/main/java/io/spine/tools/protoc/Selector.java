@@ -18,23 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
-
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+package io.spine.tools.protoc;
 
 /**
- * A file pattern matching file names which start with a certain prefix.
+ * Represents a Protoc Spine plugin configuration selector.
  */
-public final class PrefixSelector extends PatternSelector {
+public interface Selector {
 
-    PrefixSelector(@Regex String prefix) {
-        super(prefix);
-    }
+    /**
+     * Disables current selector.
+     */
+    void disable();
 
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.filePrefix(getPattern());
-    }
+    /**
+     * Enables current selector.
+     */
+    void enable();
+
+    /**
+     * Determines if the current selector is enabled.
+     */
+    boolean enabled();
 }

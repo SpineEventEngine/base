@@ -18,23 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A file pattern matching file names which end with a certain postfix.
- */
-public final class SuffixSelector extends PatternSelector {
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
-    SuffixSelector(@Regex String suffix) {
-        super(suffix);
-    }
-
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.fileSuffix(getPattern());
+    @DisplayName("translate itself to Protobuf counterpart")
+    @Test
+    void convertToProtobufCounterpart() {
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
     }
 }

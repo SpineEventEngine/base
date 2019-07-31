@@ -18,21 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+/**
+ * An abstract {@link com.google.protobuf.Message Message} selector base.
+ */
+class MessageSelector implements Selector {
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
+    private boolean enabled = true;
 
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
+    @Override
+    public void disable() {
+        enabled = false;
+    }
+
+    @Override
+    public void enable() {
+        enabled = true;
+    }
+
+    @Override
+    public boolean enabled() {
+        return enabled;
     }
 }

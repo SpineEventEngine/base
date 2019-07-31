@@ -28,7 +28,6 @@ dependencies {
     implementation deps.gen.javaPoet
 
     testCompile project(':base')
-    testImplementation project(':model-compiler')
     testImplementation project(':testlib')
     testImplementation project(':mute-logging')
     testImplementation deps.test.truth

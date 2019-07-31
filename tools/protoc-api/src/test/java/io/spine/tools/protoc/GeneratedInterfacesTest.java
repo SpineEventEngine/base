@@ -18,21 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.AddInterfaces;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.prefix;
-import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.regex;
-import static io.spine.tools.gradle.compiler.protoc.MessageSelectorFactory.suffix;
+import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedInterfaces should")

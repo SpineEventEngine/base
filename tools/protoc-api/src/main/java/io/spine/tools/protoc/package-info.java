@@ -18,23 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
-
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
-
 /**
- * A file pattern matching file names that qualifies supplied regex.
+ * Spine Protoc Gradle plugin configurations.
  */
-public final class RegexSelector extends PatternSelector {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc;
 
-    RegexSelector(@Regex String regex) {
-        super(regex);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.fileRegex(getPattern());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

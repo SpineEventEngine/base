@@ -18,25 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 /**
- * Represents a Protoc Spine plugin configuration selector.
+ * Selects messages with a single {@code string} field named {@code uuid}.
  */
-public interface Selector {
+public final class UuidMessage extends MessageSelector {
 
-    /**
-     * Disables current selector.
-     */
-    void disable();
-
-    /**
-     * Enables current selector.
-     */
-    void enable();
-
-    /**
-     * Determines if the current selector is enabled.
-     */
-    boolean enabled();
+    UuidMessage() {
+        super();
+    }
 }

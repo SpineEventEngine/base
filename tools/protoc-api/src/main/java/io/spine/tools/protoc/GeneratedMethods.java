@@ -18,12 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.AddMethods;
-import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 

@@ -18,21 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.regex.qual.Regex;
 
-@DisplayName("RegexPattern should")
-final class RegexPatternTest {
+/**
+ * A file pattern matching file names which start with a certain prefix.
+ */
+public final class PrefixSelector extends PatternSelector {
 
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String regex = ".*/spine/.*";
-        FilePattern pattern = new RegexSelector(regex).toProto();
-        Assertions.assertEquals(regex, pattern.getRegex());
+    PrefixSelector(@Regex String prefix) {
+        super(prefix);
+    }
+
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.filePrefix(getPattern());
     }
 }

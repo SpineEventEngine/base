@@ -18,13 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc;
+
+import org.checkerframework.checker.regex.qual.Regex;
+
 /**
- * Spine Protoc Gradle plugin configurations.
+ * A file pattern matching file names which end with a certain postfix.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.gradle.compiler.protoc;
+public final class SuffixSelector extends PatternSelector {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    SuffixSelector(@Regex String suffix) {
+        super(suffix);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.fileSuffix(getPattern());
+    }
+}

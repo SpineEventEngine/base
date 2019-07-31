@@ -18,27 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-/**
- * An abstract {@link com.google.protobuf.Message Message} selector base.
- */
-class MessageSelector implements Selector {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    private boolean enabled = true;
+@DisplayName("RegexPattern should")
+final class RegexPatternTest {
 
-    @Override
-    public void disable() {
-        enabled = false;
-    }
-
-    @Override
-    public void enable() {
-        enabled = true;
-    }
-
-    @Override
-    public boolean enabled() {
-        return enabled;
+    @DisplayName("translate itself to Protobuf counterpart")
+    @Test
+    void convertToProtobufCounterpart() {
+        String regex = ".*/spine/.*";
+        FilePattern pattern = new RegexSelector(regex).toProto();
+        Assertions.assertEquals(regex, pattern.getRegex());
     }
 }

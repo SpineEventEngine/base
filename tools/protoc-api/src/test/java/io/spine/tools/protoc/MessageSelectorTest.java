@@ -18,21 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.protoc;
+package io.spine.tools.protoc;
 
-import io.spine.tools.protoc.FilePattern;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("SuffixPattern should")
-final class SuffixPatternTest {
+import static com.google.common.truth.Truth.assertThat;
 
-    @DisplayName("translate itself to Protobuf counterpart")
+@DisplayName("MessageSelector should")
+final class MessageSelectorTest {
+
+    @DisplayName("be enabled by default")
     @Test
-    void convertToProtobufCounterpart() {
-        String suffix = "test.proto";
-        FilePattern pattern = new SuffixSelector(suffix).toProto();
-        Assertions.assertEquals(suffix, pattern.getSuffix());
+    void beEnabledByDefault() {
+        assertThat(new MessageSelector().enabled()).isTrue();
+    }
+
+    @DisplayName("allow disabling and enabling itself")
+    @Test
+    void allowDisablingAndEnablingItself() {
+        MessageSelector selector = new MessageSelector();
+        selector.disable();
+        assertThat(selector.enabled()).isFalse();
+        selector.enable();
+        assertThat(selector.enabled()).isTrue();
     }
 }
