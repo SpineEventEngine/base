@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.Dependency;
@@ -58,6 +59,27 @@ class MemoizingDependantTest {
         checkExcluded(unwanted);
     }
 
+    @Test
+    @DisplayName("memoize a forced dependency")
+    void addForcedDependency() {
+        Dependency dependency = dependency();
+        String version = version();
+        container.force(dependency, version);
+
+        checkForced(dependency, version);
+    }
+
+    @Test
+    @DisplayName("remove memoized forced dependency")
+    void removeForcedDependency() {
+        Dependency dependency = dependency();
+        String version = version();
+        container.force(dependency, version);
+
+        container.removeForcedDependency(dependency);
+        assertThat(container.forcedDependencies()).isEmpty();
+    }
+
     private void checkDependency(Artifact dependency) {
         ImmutableSet<String> dependencies = container.dependencies();
         assertThat(dependencies).contains(dependency.notation());
@@ -68,11 +90,20 @@ class MemoizingDependantTest {
         assertThat(exclusions).contains(unwanted);
     }
 
+    private void checkForced(Dependency dependency, String version) {
+        ImmutableMap<Dependency, String> forcedDependencies = container.forcedDependencies();
+        assertThat(forcedDependencies).containsExactly(dependency, version);
+    }
+
     private static Dependency dependency() {
         return new ThirdPartyDependency("test.dependency", "test-dependency");
     }
 
+    private static String version() {
+        return "3.14";
+    }
+
     private static Artifact artifact() {
-        return dependency().ofVersion("3.14");
+        return dependency().ofVersion(version());
     }
 }
