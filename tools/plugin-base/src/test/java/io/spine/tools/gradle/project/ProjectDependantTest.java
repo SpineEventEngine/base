@@ -20,13 +20,18 @@
 
 package io.spine.tools.gradle.project;
 
+import com.google.common.base.Function;
+import com.google.common.truth.Correspondence;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.ThirdPartyDependency;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ExcludeRule;
+import org.gradle.api.artifacts.ModuleVersionSelector;
 import org.gradle.api.internal.artifacts.DefaultExcludeRule;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -46,6 +51,7 @@ import static io.spine.tools.gradle.ConfigurationName.compile;
 import static io.spine.tools.gradle.ConfigurationName.implementation;
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
+import static java.lang.String.format;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("DependantProject should")
@@ -98,11 +104,41 @@ class ProjectDependantTest {
     @DisplayName("exclude dependencies")
     void excludeDependencies() {
         DependantProject container = DependantProject.from(project);
-        Dependency unwanted = new ThirdPartyDependency("org.example.system", "system-core");
+        Dependency unwanted = dependency();
         container.exclude(unwanted);
 
         checkExcluded(runtimeClasspath, unwanted);
         checkExcluded(testRuntimeClasspath, unwanted);
+    }
+
+    @Test
+    @DisplayName("force a particular version of the dependency")
+    void forceDependency() {
+        DependantProject container = DependantProject.from(project);
+        Dependency dependency = dependency();
+        String version = version();
+        container.force(dependency, version);
+
+        ConfigurationContainer configurations = project.getConfigurations();
+        configurations.forEach(config -> checkForced(config, dependency, version));
+    }
+
+    @Test
+    @DisplayName("remove a dependency from the forced dependencies list")
+    void removeForcedDependency() {
+        Dependency dependency = dependency();
+        String version = version();
+
+        String dependencyNotation = dependency.ofVersion(version)
+                                              .notation();
+        project.getConfigurations()
+               .forEach(config -> config.getResolutionStrategy()
+                                        .setForcedModules(dependencyNotation));
+
+        DependantProject container = DependantProject.from(project);
+        container.removeForcedDependency(dependency);
+
+        project.getConfigurations().forEach(ProjectDependantTest::checkForcedModulesEmpty);
     }
 
     private void checkDependency(ConfigurationName configuration, Artifact dependency) {
@@ -122,6 +158,34 @@ class ProjectDependantTest {
         assertThat(runtimeExclusionRules).containsExactly(excludeRule);
     }
 
+    private static void checkForced(Configuration config, Dependency dependency, String version) {
+        String notation = dependency.ofVersion(version)
+                                    .notation();
+        Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
+                                                         .getForcedModules();
+        Correspondence<ModuleVersionSelector, String> correspondence =
+                Correspondence.transforming(new ModuleVersionSelectorToNotation(), "");
+        assertThat(forcedModules)
+                .comparingElementsUsing(correspondence)
+                .contains(notation);
+    }
+
+    private static void checkForcedModulesEmpty(Configuration config) {
+        Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
+                                                         .getForcedModules();
+        assertThat(forcedModules).isEmpty();
+    }
+
+    private static Dependency dependency() {
+        Dependency dependency = new ThirdPartyDependency("org.example.system", "system-core");
+        return dependency;
+    }
+
+    private static String version() {
+        String version = "1.15.12";
+        return version;
+    }
+
     private static Artifact artifact() {
         Artifact artifact = Artifact
                 .newBuilder()
@@ -130,5 +194,17 @@ class ProjectDependantTest {
                 .setVersion("42.0")
                 .build();
         return artifact;
+    }
+
+    private static class ModuleVersionSelectorToNotation
+            implements Function<ModuleVersionSelector, String> {
+
+        @Override
+        public String apply(ModuleVersionSelector selector) {
+            String notation = format(
+                    "%s:%s:%s", selector.getGroup(), selector.getName(), selector.getVersion()
+            );
+            return notation;
+        }
     }
 }
