@@ -53,8 +53,22 @@ public interface Dependant {
      */
     void exclude(Dependency dependency);
 
+    /**
+     * Forces all project configurations to use the particular dependency version.
+     *
+     * @param dependency
+     *         the dependency to force
+     * @param version
+     *         the version of the dependency
+     */
     void force(Dependency dependency, String version);
 
+    /**
+     * Removes a forced dependency from resolution strategies of all configurations.
+     *
+     * @param dependency
+     *         the dependency to remove from the list of forced dependencies
+     */
     void removeForcedDependency(Dependency dependency);
 
     /**
