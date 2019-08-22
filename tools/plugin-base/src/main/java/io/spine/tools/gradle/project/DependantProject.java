@@ -105,16 +105,29 @@ public final class DependantProject implements Dependant {
         ));
     }
 
-    private static void removeForcedDependency(Configuration config, Dependency dependency) {
-        Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
+    /**
+     * Removes a forced dependency from the resolution strategy of a given configuration.
+     *
+     * @param configuration
+     *         the configuration to remove a forced dependency from
+     * @param dependency
+     *         the forced dependency
+     */
+    private static void
+    removeForcedDependency(Configuration configuration, Dependency dependency) {
+        Set<ModuleVersionSelector> forcedModules = configuration.getResolutionStrategy()
                                                          .getForcedModules();
         Collection<ModuleVersionSelector> newForcedModules = new HashSet<>(forcedModules);
         newForcedModules.removeIf(equalsTo(dependency));
 
-        config.getResolutionStrategy()
+        configuration.getResolutionStrategy()
               .setForcedModules(newForcedModules);
     }
 
+    /**
+     * Returns a predicate which compares the given {@link ModuleVersionSelector} to
+     * a Spine {@link Dependency}.
+     */
     private static Predicate<ModuleVersionSelector> equalsTo(Dependency dependency) {
         return selector -> {
             boolean groupEquals = dependency.groupId()
