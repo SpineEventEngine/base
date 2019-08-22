@@ -26,7 +26,13 @@ import io.spine.tools.gradle.Dependency;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.artifacts.ModuleVersionSelector;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
@@ -71,6 +77,19 @@ public final class DependantProject implements Dependant {
         exclude(testConfig, dependency);
     }
 
+    @Override
+    public void force(Dependency dependency, String version) {
+        String dependencyNotation = dependency.ofVersion(version)
+                                              .notation();
+        configurations.all(config -> config.getResolutionStrategy()
+                                           .force(dependencyNotation));
+    }
+
+    @Override
+    public void removeForcedDependency(Dependency dependency) {
+        configurations.all(config -> removeForcedDependency(config, dependency));
+    }
+
     /**
      * Excludes the given dependency from the given configuration.
      *
@@ -84,5 +103,25 @@ public final class DependantProject implements Dependant {
                 GROUP_KEY, dependency.groupId(),
                 MODULE_KEY, dependency.name()
         ));
+    }
+
+    private static void removeForcedDependency(Configuration config, Dependency dependency) {
+        Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
+                                                         .getForcedModules();
+        Collection<ModuleVersionSelector> newForcedModules = new HashSet<>(forcedModules);
+        newForcedModules.removeIf(equalsTo(dependency));
+
+        config.getResolutionStrategy()
+              .setForcedModules(newForcedModules);
+    }
+
+    private static Predicate<ModuleVersionSelector> equalsTo(Dependency dependency) {
+        return selector -> {
+            boolean groupEquals = dependency.groupId()
+                                            .equals(selector.getGroup());
+            boolean nameEquals = dependency.name()
+                                           .equals(selector.getName());
+            return groupEquals && nameEquals;
+        };
     }
 }

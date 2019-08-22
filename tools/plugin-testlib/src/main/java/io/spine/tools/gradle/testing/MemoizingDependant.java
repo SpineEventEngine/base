@@ -20,13 +20,16 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.project.Dependant;
 
+import java.util.Map;
 import java.util.Set;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
@@ -36,6 +39,7 @@ public final class MemoizingDependant implements Dependant {
 
     private final Set<String> dependencies = newHashSet();
     private final Set<Dependency> exclusions = newHashSet();
+    private final Map<Dependency, String> forcedDependencies = newHashMap();
 
     @Override
     public void depend(ConfigurationName configuration, String notation) {
@@ -47,11 +51,25 @@ public final class MemoizingDependant implements Dependant {
         exclusions.add(dependency);
     }
 
+    @Override
+    public void force(Dependency dependency, String version) {
+        forcedDependencies.put(dependency, version);
+    }
+
+    @Override
+    public void removeForcedDependency(Dependency dependency) {
+        forcedDependencies.remove(dependency);
+    }
+
     public ImmutableSet<String> dependencies() {
         return ImmutableSet.copyOf(dependencies);
     }
 
     public ImmutableSet<Dependency> exclusions() {
         return ImmutableSet.copyOf(exclusions);
+    }
+
+    public ImmutableMap<Dependency, String> forcedDependencies() {
+        return ImmutableMap.copyOf(forcedDependencies);
     }
 }

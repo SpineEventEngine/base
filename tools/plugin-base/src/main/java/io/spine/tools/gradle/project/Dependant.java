@@ -53,6 +53,10 @@ public interface Dependant {
      */
     void exclude(Dependency dependency);
 
+    void force(Dependency dependency, String version);
+
+    void removeForcedDependency(Dependency dependency);
+
     /**
      * Adds a new dependency within the {@code compile} configuration.
      *
