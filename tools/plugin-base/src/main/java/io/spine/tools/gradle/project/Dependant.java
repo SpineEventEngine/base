@@ -54,10 +54,10 @@ public interface Dependant {
     void exclude(Dependency dependency);
 
     /**
-     * Forces all project configurations to use the particular dependency version.
+     * Forces all project configurations to fetch the particular dependency version.
      *
      * @param dependency
-     *         the dependency for which the particular version should be forced
+     *         the forced dependency
      * @param version
      *         the required version of the dependency
      */
