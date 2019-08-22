@@ -112,7 +112,7 @@ class ProjectDependantTest {
     }
 
     @Test
-    @DisplayName("force a particular version of the dependency")
+    @DisplayName("force the dependency to resolve to a particular version")
     void forceDependency() {
         DependantProject container = DependantProject.from(project);
         Dependency dependency = dependency();
