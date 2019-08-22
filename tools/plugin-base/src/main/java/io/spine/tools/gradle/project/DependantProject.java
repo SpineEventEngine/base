@@ -116,17 +116,17 @@ public final class DependantProject implements Dependant {
     private static void
     removeForcedDependency(Configuration configuration, Dependency dependency) {
         Set<ModuleVersionSelector> forcedModules = configuration.getResolutionStrategy()
-                                                         .getForcedModules();
+                                                                .getForcedModules();
         Collection<ModuleVersionSelector> newForcedModules = new HashSet<>(forcedModules);
         newForcedModules.removeIf(equalsTo(dependency));
 
         configuration.getResolutionStrategy()
-              .setForcedModules(newForcedModules);
+                     .setForcedModules(newForcedModules);
     }
 
     /**
-     * Returns a predicate which compares the given {@link ModuleVersionSelector} to
-     * a Spine {@link Dependency}.
+     * Returns a predicate which tests the equality of the given {@link ModuleVersionSelector} to
+     * a {@link Dependency}.
      */
     private static Predicate<ModuleVersionSelector> equalsTo(Dependency dependency) {
         return selector -> {

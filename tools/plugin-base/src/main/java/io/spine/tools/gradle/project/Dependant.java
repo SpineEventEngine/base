@@ -57,14 +57,14 @@ public interface Dependant {
      * Forces all project configurations to use the particular dependency version.
      *
      * @param dependency
-     *         the dependency to force
+     *         the dependency for which the particular version should be forced
      * @param version
-     *         the version of the dependency
+     *         the required version of the dependency
      */
     void force(Dependency dependency, String version);
 
     /**
-     * Removes a forced dependency from resolution strategies of all configurations.
+     * Removes a forced dependency from resolution strategies of all project configurations.
      *
      * @param dependency
      *         the dependency to remove from the list of forced dependencies

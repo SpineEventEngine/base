@@ -163,8 +163,9 @@ class ProjectDependantTest {
                                     .notation();
         Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
                                                          .getForcedModules();
+        String description = "in string form equals to";
         Correspondence<ModuleVersionSelector, String> correspondence =
-                Correspondence.transforming(new ModuleVersionSelectorToNotation(), "");
+                Correspondence.transforming(new ModuleVersionSelectorToNotation(), description);
         assertThat(forcedModules)
                 .comparingElementsUsing(correspondence)
                 .contains(notation);
