@@ -208,6 +208,12 @@ public final class Stringifiers {
         return result;
     }
 
+    static <T extends Enum<T>> Stringifier<T> newForEnum(Class<T> enumClass) {
+        checkNotNull(enumClass);
+        EnumStringifier<T> result = new EnumStringifier<>(enumClass);
+        return result;
+    }
+
     /**
      * Obtains the default {@code Stringifier} for the {@code Message} classes.
      *

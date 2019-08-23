@@ -87,6 +87,20 @@ public final class Types {
     }
 
     /**
+     * Checks if the given type is a {@code enum} type.
+     *
+     * @param type
+     *         the type to check
+     * @return {@code true} if the given type is a {@code enum} type and {@code false} otherwise
+     */
+    public static boolean isEnum(Type type) {
+        TypeToken<?> token = TypeToken.of(type);
+        Class<?> rawClass = token.getRawType();
+        boolean result = rawClass.isEnum();
+        return result;
+    }
+
+    /**
      * Obtains parameter values of a parameterized type.
      *
      * <p>If the parameters are generic types themselves, their arguments are preserved.

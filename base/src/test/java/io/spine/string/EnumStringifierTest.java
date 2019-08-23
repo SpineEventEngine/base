@@ -24,6 +24,7 @@ import com.google.common.base.Converter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("EnumStringifier should")
@@ -32,7 +33,8 @@ class EnumStringifierTest {
     @Test
     @DisplayName("convert values to String and back")
     void convert() {
-        DayOfWeekStringifier stringifier = DayOfWeekStringifier.INSTANCE;
+        EnumStringifier<DayOfWeek> stringifier =
+                new EnumStringifier<>(DayOfWeek.class.getName(), DayOfWeek.class);
         Converter<String, DayOfWeek> reverse = stringifier.reverse();
 
         for (DayOfWeek value : DayOfWeek.values()) {
@@ -41,19 +43,18 @@ class EnumStringifierTest {
         }
     }
 
+    @Test
+    @DisplayName("provide a default identity if it's not specified in c-tor")
+    void provideDefaultIdentity() {
+        EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
+        String identity = stringifier.toString();
+
+        String expected = EnumStringifier.defaultIdentity(DayOfWeek.class);
+        assertThat(identity).isEqualTo(expected);
+    }
 
     private enum DayOfWeek {
         MONDAY, TUESDAY, WEDNESDAY,
         THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
-
-    private static final class DayOfWeekStringifier extends EnumStringifier<DayOfWeek> {
-
-        private static final long serialVersionUID = 0L;
-        private static final DayOfWeekStringifier INSTANCE = new DayOfWeekStringifier();
-
-        private DayOfWeekStringifier() {
-            super(DayOfWeekStringifier.class.getName(), DayOfWeek.class);
-        }
     }
 }

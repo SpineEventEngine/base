@@ -104,8 +104,8 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         }
 
         @Test
-        @DisplayName("an enum")
-        void anEnum() {
+        @DisplayName("a enum")
+        void aEnum() {
             checkConverts(DONE, "DONE");
         }
 

@@ -32,12 +32,14 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.protobuf.Messages.isMessage;
+import static io.spine.reflect.Types.isEnum;
 import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;
 import static io.spine.string.Stringifiers.forLong;
 import static io.spine.string.Stringifiers.forString;
 import static io.spine.string.Stringifiers.forTimestamp;
+import static io.spine.string.Stringifiers.newForEnum;
 import static io.spine.string.Stringifiers.newForMessage;
 import static java.lang.String.format;
 import static java.util.Collections.synchronizedMap;
@@ -80,6 +82,12 @@ public final class StringifierRegistry {
         if (optional.isPresent()) {
             Stringifier<T> stringifier = optional.get();
             return stringifier;
+        }
+
+        if (isEnum(typeOfT)) {
+            @SuppressWarnings("unchecked") // OK since the type is checked above.
+            Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
+            return result;
         }
 
         if (isMessage(typeOfT)) {
