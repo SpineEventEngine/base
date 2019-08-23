@@ -38,8 +38,6 @@ message STask {
 }
 
 enum STaskStatus {
-
     OPEN = 0;
-
     DONE = 1;
 }
