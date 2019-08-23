@@ -43,7 +43,7 @@ class EnumStringifierTest {
     }
 
     @Test
-    @DisplayName("have an identity tied to a processed class name")
+    @DisplayName("have an identity tied to the name of a processed class")
     void provideDefaultIdentity() {
         EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
         String identity = stringifier.toString();
