@@ -80,14 +80,23 @@ public final class DependantProject implements Dependant {
 
     @Override
     public void force(Artifact artifact) {
-        String dependencySpec = artifact.notation();
+        force(artifact.notation());
+    }
+
+    @Override
+    public void force(String notation) {
         configurations.all(config -> config.getResolutionStrategy()
-                                           .force(dependencySpec));
+                                           .force(notation));
     }
 
     @Override
     public void removeForcedDependency(Dependency dependency) {
-        configurations.all(config -> removeForcedDependency(config, dependency));
+        configurations.all(config -> removeForcedDependency(config, equalsTo(dependency)));
+    }
+
+    @Override
+    public void removeForcedDependency(String notation) {
+        configurations.all(config -> removeForcedDependency(config, equalsTo(notation)));
     }
 
     /**
@@ -110,15 +119,15 @@ public final class DependantProject implements Dependant {
      *
      * @param configuration
      *         the configuration to remove a forced dependency from
-     * @param dependency
-     *         the forced dependency
+     * @param filter
+     *         the dependency filter
      */
     private static void
-    removeForcedDependency(Configuration configuration, Dependency dependency) {
+    removeForcedDependency(Configuration configuration, Predicate<ModuleVersionSelector> filter) {
         Set<ModuleVersionSelector> forcedModules = configuration.getResolutionStrategy()
                                                                 .getForcedModules();
         Collection<ModuleVersionSelector> newForcedModules = new HashSet<>(forcedModules);
-        newForcedModules.removeIf(equalsTo(dependency));
+        newForcedModules.removeIf(filter);
 
         configuration.getResolutionStrategy()
                      .setForcedModules(newForcedModules);
@@ -135,6 +144,26 @@ public final class DependantProject implements Dependant {
             boolean nameEquals = dependency.name()
                                            .equals(selector.getName());
             return groupEquals && nameEquals;
+        };
+    }
+
+    /**
+     * Returns a predicate which tests the equality of the given {@link ModuleVersionSelector} to
+     * a dependency spec.
+     */
+    private static Predicate<ModuleVersionSelector> equalsTo(String notation) {
+        return selector -> {
+            Artifact.Builder artifact = Artifact
+                    .newBuilder()
+                    .setGroup(selector.getGroup())
+                    .setName(selector.getName());
+            if (selector.getVersion() != null) {
+                artifact.setVersion(selector.getVersion());
+            }
+            String artifactNotation = artifact.build()
+                                              .notation();
+            boolean result = artifactNotation.equals(notation);
+            return result;
         };
     }
 }

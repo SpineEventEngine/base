@@ -62,12 +62,28 @@ public interface Dependant {
     void force(Artifact artifact);
 
     /**
+     * Forces all project configurations to fetch the particular dependency version.
+     *
+     * @param notation
+     *         the dependency spec, e.g. {@code com.google.protobuf:protoc:3.9.0}
+     */
+    void force(String notation);
+
+    /**
      * Removes a forced dependency from resolution strategies of all project configurations.
      *
      * @param dependency
      *         the dependency to remove from the list of forced dependencies
      */
     void removeForcedDependency(Dependency dependency);
+
+    /**
+     * Removes a forced dependency from resolution strategies of all project configurations.
+     *
+     * @param notation
+     *         the dependency spec, e.g. {@code com.google.protobuf:protoc:3.9.0}
+     */
+    void removeForcedDependency(String notation);
 
     /**
      * Adds a new dependency within the {@code compile} configuration.

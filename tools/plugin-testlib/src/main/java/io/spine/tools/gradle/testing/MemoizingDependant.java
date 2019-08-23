@@ -38,7 +38,7 @@ public final class MemoizingDependant implements Dependant {
 
     private final Set<String> dependencies = newHashSet();
     private final Set<Dependency> exclusions = newHashSet();
-    private final Set<Artifact> forcedDependencies = newHashSet();
+    private final Set<String> forcedDependencies = newHashSet();
 
     @Override
     public void depend(ConfigurationName configuration, String notation) {
@@ -52,12 +52,22 @@ public final class MemoizingDependant implements Dependant {
 
     @Override
     public void force(Artifact artifact) {
-        forcedDependencies.add(artifact);
+        forcedDependencies.add(artifact.notation());
+    }
+
+    @Override
+    public void force(String notation) {
+        forcedDependencies.add(notation);
     }
 
     @Override
     public void removeForcedDependency(Dependency dependency) {
         forcedDependencies.removeIf(matches(dependency));
+    }
+
+    @Override
+    public void removeForcedDependency(String notation) {
+        forcedDependencies.remove(notation);
     }
 
     public ImmutableSet<String> dependencies() {
@@ -68,17 +78,15 @@ public final class MemoizingDependant implements Dependant {
         return ImmutableSet.copyOf(exclusions);
     }
 
-    public ImmutableSet<Artifact> forcedDependencies() {
+    public ImmutableSet<String> forcedDependencies() {
         return ImmutableSet.copyOf(forcedDependencies);
     }
 
-    private static Predicate<Artifact> matches(Dependency dependency) {
-        return artifact -> {
-            boolean groupEquals = dependency.groupId()
-                                            .equals(artifact.group());
-            boolean nameEquals = dependency.name()
-                                           .equals(artifact.name());
-            return groupEquals && nameEquals;
+    private static Predicate<String> matches(Dependency dependency) {
+        return notation -> {
+            String spec = String.format("%s:%s", dependency.groupId(), dependency.name());
+            boolean result = notation.startsWith(spec);
+            return result;
         };
     }
 }
