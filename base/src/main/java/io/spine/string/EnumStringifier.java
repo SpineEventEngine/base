@@ -30,7 +30,7 @@ import static java.lang.String.format;
  * @param <E>
  *         the type of the {@code enum}
  */
-public final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
+final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
     private static final long serialVersionUID = 0L;
 
@@ -38,7 +38,7 @@ public final class EnumStringifier<E extends Enum<E>> extends SerializableString
 
     private final Class<E> enumClass;
 
-    public EnumStringifier(Class<E> enumClass) {
+    EnumStringifier(Class<E> enumClass) {
         super(identity(enumClass));
         this.enumClass = enumClass;
     }

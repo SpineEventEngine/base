@@ -241,7 +241,7 @@ public final class Stringifiers {
      *         the type of the {@code enum}
      * @return the stringifier for the passed {@code enum} class
      */
-    static <T extends Enum<T>> Stringifier<T> newForEnum(Class<T> enumClass) {
+    public static <T extends Enum<T>> Stringifier<T> newForEnum(Class<T> enumClass) {
         checkNotNull(enumClass);
         EnumStringifier<T> result = new EnumStringifier<>(enumClass);
         return result;
