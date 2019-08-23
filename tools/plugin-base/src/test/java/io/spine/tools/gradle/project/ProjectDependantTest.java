@@ -113,11 +113,6 @@ class ProjectDependantTest {
         checkExcluded(testRuntimeClasspath, unwanted);
     }
 
-    @Test
-    @DisplayName("force the dependency to resolve to a particular version")
-    void forceDependency() {
-        }
-
     @Nested
     @DisplayName("force the dependency to resolve to a particular version")
     class ForceDependency {
@@ -170,7 +165,9 @@ class ProjectDependantTest {
         void asDependency() {
             Dependency dependency = dependency();
             String version = version();
-            forceDependency(dependency, version);
+            String notation = dependency.ofVersion(version)
+                                        .notation();
+            forceDependency(notation);
 
             DependantProject container = DependantProject.from(project);
             container.removeForcedDependency(dependency);
@@ -183,22 +180,20 @@ class ProjectDependantTest {
         void asString() {
             Dependency dependency = dependency();
             String version = version();
-            forceDependency(dependency, version);
-
-            DependantProject container = DependantProject.from(project);
             String notation = dependency.ofVersion(version)
                                         .notation();
+            forceDependency(notation);
+
+            DependantProject container = DependantProject.from(project);
             container.removeForcedDependency(notation);
 
             checkNotForced();
         }
 
-        private void forceDependency(Dependency dependency, String version) {
-            String dependencyNotation = dependency.ofVersion(version)
-                                                  .notation();
+        private void forceDependency(String notation) {
             project.getConfigurations()
                    .forEach(config -> config.getResolutionStrategy()
-                                            .setForcedModules(dependencyNotation));
+                                            .setForcedModules(notation));
         }
 
         private void checkNotForced() {
