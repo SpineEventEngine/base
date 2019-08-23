@@ -25,16 +25,16 @@ import com.google.common.annotations.VisibleForTesting;
 import static java.lang.String.format;
 
 /**
- * Abstract base for stringifiers that work with enum values.
+ * A stringifier for {@code enum} values.
  *
  * @param <E>
- *         the type of the enum
+ *         the type of the {@code enum}
  */
 public final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
     private static final long serialVersionUID = 0L;
 
-    private static final String DEFAULT_IDENTITY = "a stringifier of enum class `%s`";
+    private static final String DEFAULT_IDENTITY_FORMAT = "a stringifier of enum class `%s`";
 
     private final Class<E> enumClass;
 
@@ -60,6 +60,6 @@ public final class EnumStringifier<E extends Enum<E>> extends SerializableString
 
     @VisibleForTesting
     static <E extends Enum<E>> String defaultIdentity(Class<E> enumClass) {
-        return format(DEFAULT_IDENTITY, enumClass.getCanonicalName());
+        return format(DEFAULT_IDENTITY_FORMAT, enumClass.getCanonicalName());
     }
 }
