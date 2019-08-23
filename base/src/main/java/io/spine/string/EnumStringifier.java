@@ -34,17 +34,13 @@ public final class EnumStringifier<E extends Enum<E>> extends SerializableString
 
     private static final long serialVersionUID = 0L;
 
-    private static final String DEFAULT_IDENTITY_FORMAT = "a stringifier of enum class `%s`";
+    private static final String IDENTITY_FORMAT = "Stringifiers.newForEnum(%s.class)";
 
     private final Class<E> enumClass;
 
-    public EnumStringifier(String identity, Class<E> enumClass) {
-        super(identity);
-        this.enumClass = enumClass;
-    }
-
     public EnumStringifier(Class<E> enumClass) {
-        this(defaultIdentity(enumClass), enumClass);
+        super(identity(enumClass));
+        this.enumClass = enumClass;
     }
 
     @Override
@@ -59,7 +55,7 @@ public final class EnumStringifier<E extends Enum<E>> extends SerializableString
     }
 
     @VisibleForTesting
-    static <E extends Enum<E>> String defaultIdentity(Class<E> enumClass) {
-        return format(DEFAULT_IDENTITY_FORMAT, enumClass.getCanonicalName());
+    static <E extends Enum<E>> String identity(Class<E> enumClass) {
+        return format(IDENTITY_FORMAT, enumClass.getSimpleName());
     }
 }

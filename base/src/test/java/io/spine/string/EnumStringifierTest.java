@@ -33,8 +33,7 @@ class EnumStringifierTest {
     @Test
     @DisplayName("convert values to String and back")
     void convert() {
-        EnumStringifier<DayOfWeek> stringifier =
-                new EnumStringifier<>(DayOfWeek.class.getName(), DayOfWeek.class);
+        EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
         Converter<String, DayOfWeek> reverse = stringifier.reverse();
 
         for (DayOfWeek value : DayOfWeek.values()) {
@@ -44,12 +43,12 @@ class EnumStringifierTest {
     }
 
     @Test
-    @DisplayName("provide a default identity if it's not specified in c-tor")
+    @DisplayName("have an identity tied to a processed class name")
     void provideDefaultIdentity() {
         EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
         String identity = stringifier.toString();
 
-        String expected = EnumStringifier.defaultIdentity(DayOfWeek.class);
+        String expected = EnumStringifier.identity(DayOfWeek.class);
         assertThat(identity).isEqualTo(expected);
     }
 
