@@ -36,9 +36,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -124,25 +121,6 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
 
             String expected = Json.toCompactJson(message);
             checkConverts(message, expected);
-        }
-
-        @Test
-        @DisplayName("a `List`")
-        void aList() {
-            List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));
-
-            checkConverts(list, "1, 2, 3");
-        }
-
-        @Test
-        @DisplayName("a `Map`")
-        void aMap() {
-            Map<String, Integer> map = new HashMap<>();
-            map.put("number-one", 1);
-            map.put("number-two", 2);
-            map.put("number-three", 3);
-
-            checkConverts(map, "number-one:1,number-two:2,number-three:3");
         }
 
         private void checkConverts(Object value, String expected) {
