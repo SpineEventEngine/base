@@ -23,6 +23,7 @@ package io.spine.reflect;
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
+import com.google.protobuf.Message;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -87,17 +88,37 @@ public final class Types {
     }
 
     /**
-     * Checks if the given type is a {@code enum} type.
+     * Checks if the given type is a {@code enum} {@code Class}.
      *
      * @param type
      *         the type to check
      * @return {@code true} if the given type is a {@code enum} type and {@code false} otherwise
      */
-    public static boolean isEnum(Type type) {
-        TypeToken<?> token = TypeToken.of(type);
-        Class<?> rawClass = token.getRawType();
-        boolean result = rawClass.isEnum();
-        return result;
+    public static boolean isEnumClass(Type type) {
+        checkNotNull(type);
+        if (type instanceof Class) {
+            Class aClass = (Class) type;
+            boolean isEnum = aClass.isEnum();
+            return isEnum;
+        }
+        return false;
+    }
+
+    /**
+     * Checks that the type is a {@code Class} of the {@code Message}.
+     *
+     * @param type
+     *         the type to check
+     * @return {@code true} if the type is message class, {@code false} otherwise
+     */
+    public static boolean isMessageClass(Type type) {
+        checkNotNull(type);
+        if (type instanceof Class) {
+            Class<?> aClass = (Class) type;
+            boolean isMessage = Message.class.isAssignableFrom(aClass);
+            return isMessage;
+        }
+        return false;
     }
 
     /**

@@ -31,8 +31,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.protobuf.Messages.isMessage;
-import static io.spine.reflect.Types.isEnum;
+import static io.spine.reflect.Types.isEnumClass;
+import static io.spine.reflect.Types.isMessageClass;
 import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;
@@ -84,13 +84,13 @@ public final class StringifierRegistry {
             return stringifier;
         }
 
-        if (isEnum(typeOfT)) {
+        if (isEnumClass(typeOfT)) {
             @SuppressWarnings("unchecked") // OK since the type is checked above.
             Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
             return result;
         }
 
-        if (isMessage(typeOfT)) {
+        if (isMessageClass(typeOfT)) {
             @SuppressWarnings("unchecked") // OK since the type is checked above.
             Stringifier<T> result = (Stringifier<T>) newForMessage((Class<Message>) typeOfT);
             return result;

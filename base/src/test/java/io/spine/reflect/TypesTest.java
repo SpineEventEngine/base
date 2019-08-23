@@ -25,18 +25,21 @@ import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import io.spine.reflect.given.TypesTestEnv.ListOfMessages;
+import io.spine.reflect.given.TypesTestEnv.TaskStatus;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.reflect.Types.argumentIn;
+import static io.spine.reflect.Types.isEnumClass;
+import static io.spine.reflect.Types.isMessageClass;
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
 import static io.spine.reflect.Types.resolveArguments;
@@ -68,6 +71,26 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
+    @DisplayName("tell if type is a enum class")
+    void tellIfIsEnumClass() {
+
+        assertThat(isEnumClass(TaskStatus.class))
+                .isTrue();
+        assertThat(isEnumClass(Message.class))
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("tell if type is a message class")
+    void tellIfIsMessageClass() {
+
+        assertThat(isMessageClass(StringValue.class))
+                .isTrue();
+        assertThat(isMessageClass(TaskStatus.class))
+                .isFalse();
+    }
+
+    @Test
     @DisplayName("resolve params of a generic type")
     void resolveTypeParams() {
         Type type = new TypeToken<Function<String, StringValue>>() {}.getType();
@@ -94,12 +117,5 @@ class TypesTest extends UtilityClassTest<Types> {
     protected void configure(NullPointerTester tester) {
         super.configure(tester);
         tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
-    }
-
-    /**
-     * Stub class for testing obtaining generic argument.
-     */
-    @SuppressWarnings({"serial", "ClassExtendsConcreteCollection"})
-    private static class ListOfMessages extends ArrayList<Message> {
     }
 }

@@ -29,7 +29,6 @@ import io.spine.annotation.Internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -87,23 +86,6 @@ public final class Messages {
                                    clazz.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
-    }
-
-    /**
-     * Checks that the {@code Type} is a {@code Class} of the {@code Message}.
-     *
-     * @param typeToCheck the type to check
-     * @return {@code true} if the type is message class, {@code false} otherwise
-     */
-    @Internal
-    public static boolean isMessage(Type typeToCheck) {
-        checkNotNull(typeToCheck);
-        if (typeToCheck instanceof Class) {
-            Class<?> aClass = (Class) typeToCheck;
-            boolean isMessage = Message.class.isAssignableFrom(aClass);
-            return isMessage;
-        }
-        return false;
     }
 
     /**
