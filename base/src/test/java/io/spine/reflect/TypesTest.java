@@ -55,7 +55,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("create map type")
+    @DisplayName("create a map type")
     void createMapType() {
         Type type = mapTypeOf(String.class, Integer.class);
         Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
@@ -63,7 +63,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("create list type")
+    @DisplayName("create a list type")
     void createListType() {
         Type type = listTypeOf(String.class);
         Type expectedType = new TypeToken<List<String>>(){}.getType();
@@ -71,7 +71,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("tell if type is a enum class")
+    @DisplayName("tell if the type is a enum class")
     void tellIfIsEnumClass() {
 
         assertThat(isEnumClass(TaskStatus.class))
@@ -81,7 +81,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("tell if type is a message class")
+    @DisplayName("tell if the type is a message class")
     void tellIfIsMessageClass() {
 
         assertThat(isMessageClass(StringValue.class))
@@ -99,7 +99,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("return empty list when resolving params of non-parameterized type")
+    @DisplayName("return an empty list when resolving params of a non-parameterized type")
     void resolveRawTypeParams() {
         Type type = new TypeToken<String>() {}.getType();
         ImmutableList<Type> types = resolveArguments(type);
@@ -107,7 +107,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("obtain type argument value from the inheritance chain")
+    @DisplayName("obtain a type argument value from the inheritance chain")
     void getTypeArgument() {
         Class<?> argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
         assertEquals(argument, Message.class);
