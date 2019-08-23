@@ -47,8 +47,10 @@ public final class Stringifiers {
      * <p>Use this method for converting non-generic objects. For generic objects,
      * please use {@link #toString(Object, Type)}.
      *
-     * @param object the object to convert
-     * @param <T>    the type of the object
+     * @param object
+     *         the object to convert
+     * @param <T>
+     *         the type of the object
      * @return the string representation of the passed object
      */
     public static <T> String toString(T object) {
@@ -61,11 +63,15 @@ public final class Stringifiers {
      *
      * <p>This method must be used if the passed object is a generic type.
      *
-     * @param object  to object to convert
-     * @param typeOfT the type of the passed object
-     * @param <T>     the type of the object to convert
+     * @param object
+     *         to object to convert
+     * @param typeOfT
+     *         the type of the passed object
+     * @param <T>
+     *         the type of the object to convert
      * @return the string representation of the passed object
-     * @throws MissingStringifierException if passed value cannot be converted
+     * @throws MissingStringifierException
+     *         if passed value cannot be converted
      */
     public static <T> String toString(T object, Type typeOfT) {
         checkNotNull(object);
@@ -78,11 +84,15 @@ public final class Stringifiers {
     /**
      * Converts string value to the specified type.
      *
-     * @param str     the string to convert
-     * @param typeOfT the type into which to convert the string
-     * @param <T>     the type of the value to return
+     * @param str
+     *         the string to convert
+     * @param typeOfT
+     *         the type into which to convert the string
+     * @param <T>
+     *         the type of the value to return
      * @return the parsed value from string
-     * @throws MissingStringifierException if passed value cannot be converted
+     * @throws MissingStringifierException
+     *         if passed value cannot be converted
      */
     public static <T> T fromString(String str, Class<T> typeOfT) {
         checkNotNull(str);
@@ -96,10 +106,14 @@ public final class Stringifiers {
     /**
      * Obtains {@code Stringifier} for the map with default delimiter for the passed map elements.
      *
-     * @param keyClass   the class of keys are maintained by this map
-     * @param valueClass the class  of mapped values
-     * @param <K>        the type of keys are maintained by this map
-     * @param <V>        the type of the values stored in this map
+     * @param keyClass
+     *         the class of keys are maintained by this map
+     * @param valueClass
+     *         the class  of mapped values
+     * @param <K>
+     *         the type of keys are maintained by this map
+     * @param <V>
+     *         the type of the values stored in this map
      * @return the stringifier for the map
      */
     public static <K, V>
@@ -113,11 +127,16 @@ public final class Stringifiers {
     /**
      * Obtains {@code Stringifier} for the map with custom delimiter for the passed map elements.
      *
-     * @param keyClass   the class of keys are maintained by this map
-     * @param valueClass the class  of mapped values
-     * @param delimiter  the delimiter for the passed map elements via string
-     * @param <K>        the type of keys are maintained by this map
-     * @param <V>        the type of mapped values
+     * @param keyClass
+     *         the class of keys are maintained by this map
+     * @param valueClass
+     *         the class  of mapped values
+     * @param delimiter
+     *         the delimiter for the passed map elements via string
+     * @param <K>
+     *         the type of keys are maintained by this map
+     * @param <V>
+     *         the type of mapped values
      * @return the stringifier for the map
      */
     public static <K, V>
@@ -184,8 +203,10 @@ public final class Stringifiers {
     /**
      * Obtains {@code Stringifier} for list with default delimiter for the passed list elements.
      *
-     * @param elementClass the class of the list elements
-     * @param <T>          the type of the elements in this list
+     * @param elementClass
+     *         the class of the list elements
+     * @param <T>
+     *         the type of the elements in this list
      * @return the stringifier for the list
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass) {
@@ -197,9 +218,12 @@ public final class Stringifiers {
     /**
      * Obtains {@code Stringifier} for list with the custom delimiter for the passed list elements.
      *
-     * @param elementClass the class of the list elements
-     * @param delimiter    the delimiter or the list elements passed via string
-     * @param <T>          the type of the elements in this list
+     * @param elementClass
+     *         the class of the list elements
+     * @param delimiter
+     *         the delimiter or the list elements passed via string
+     * @param <T>
+     *         the type of the elements in this list
      * @return the stringifier for the list
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass, char delimiter) {
@@ -208,6 +232,15 @@ public final class Stringifiers {
         return result;
     }
 
+    /**
+     * Obtains a {@code Stringifier} for the passed {@code enum} class.
+     *
+     * @param enumClass
+     *         the {@code enum} class
+     * @param <T>
+     *         the type of the {@code enum}
+     * @return the stringifier for the passed {@code enum} class
+     */
     static <T extends Enum<T>> Stringifier<T> newForEnum(Class<T> enumClass) {
         checkNotNull(enumClass);
         EnumStringifier<T> result = new EnumStringifier<>(enumClass);
@@ -217,8 +250,10 @@ public final class Stringifiers {
     /**
      * Obtains the default {@code Stringifier} for the {@code Message} classes.
      *
-     * @param messageClass the message class
-     * @param <T>          the type of the message
+     * @param messageClass
+     *         the message class
+     * @param <T>
+     *         the type of the message
      * @return the default stringifier
      */
     static <T extends Message> Stringifier<T> newForMessage(Class<T> messageClass) {
@@ -230,7 +265,8 @@ public final class Stringifiers {
     /**
      * Creates the {@code Escaper} which escapes contained '\' and passed characters.
      *
-     * @param charToEscape the char to escape
+     * @param charToEscape
+     *         the char to escape
      * @return the constructed escaper
      */
     static Escaper createEscaper(char charToEscape) {

@@ -114,9 +114,12 @@ public final class StringifierRegistry {
     /**
      * Registers the passed stringifier in the registry.
      *
-     * @param stringifier the stringifier to register
-     * @param typeOfT     the value of the type of objects handled by the stringifier
-     * @param <T>         the type of the objects handled by the stringifier
+     * @param stringifier
+     *         the stringifier to register
+     * @param typeOfT
+     *         the value of the type of objects handled by the stringifier
+     * @param <T>
+     *         the type of the objects handled by the stringifier
      */
     public <T> void register(Stringifier<T> stringifier, Type typeOfT) {
         checkNotNull(typeOfT);
@@ -127,8 +130,10 @@ public final class StringifierRegistry {
     /**
      * Obtains a {@code Stringifier} for the passed type.
      *
-     * @param typeOfT the type to stringify
-     * @param <T>     the type of the values to convert
+     * @param typeOfT
+     *         the type to stringify
+     * @param <T>
+     *         the type of the values to convert
      * @return the found {@code Stringifier} or empty {@code Optional}
      */
     public <T> Optional<Stringifier<T>> get(Type typeOfT) {
