@@ -109,6 +109,20 @@ public final class Artifact {
         return result.toString();
     }
 
+    /**
+     * Returns the artifact group.
+     */
+    public String group() {
+        return group;
+    }
+
+    /**
+     * Returns the artifact name.
+     */
+    public String name() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return notation();

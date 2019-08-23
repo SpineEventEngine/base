@@ -56,12 +56,10 @@ public interface Dependant {
     /**
      * Forces all project configurations to fetch the particular dependency version.
      *
-     * @param dependency
-     *         the forced dependency
-     * @param version
-     *         the required version of the dependency
+     * @param artifact
+     *         the artifact which represents a dependency resolved to the required version
      */
-    void force(Dependency dependency, String version);
+    void force(Artifact artifact);
 
     /**
      * Removes a forced dependency from resolution strategies of all project configurations.

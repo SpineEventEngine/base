@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.Dependency;
@@ -62,21 +61,20 @@ class MemoizingDependantTest {
     @Test
     @DisplayName("memoize a forced dependency")
     void addForcedDependency() {
-        Dependency dependency = dependency();
-        String version = version();
-        container.force(dependency, version);
+        Artifact artifact = artifact();
+        container.force(artifact);
 
-        checkForced(dependency, version);
+        checkForced(artifact);
     }
 
     @Test
     @DisplayName("remove memoized forced dependency")
     void removeForcedDependency() {
-        Dependency dependency = dependency();
-        String version = version();
-        container.force(dependency, version);
+        container.force(artifact());
 
+        Dependency dependency = dependency();
         container.removeForcedDependency(dependency);
+
         assertThat(container.forcedDependencies()).isEmpty();
     }
 
@@ -90,9 +88,9 @@ class MemoizingDependantTest {
         assertThat(exclusions).contains(unwanted);
     }
 
-    private void checkForced(Dependency dependency, String version) {
-        ImmutableMap<Dependency, String> forcedDependencies = container.forcedDependencies();
-        assertThat(forcedDependencies).containsExactly(dependency, version);
+    private void checkForced(Artifact artifact) {
+        ImmutableSet<Artifact> forcedDependencies = container.forcedDependencies();
+        assertThat(forcedDependencies).contains(artifact);
     }
 
     private static Dependency dependency() {

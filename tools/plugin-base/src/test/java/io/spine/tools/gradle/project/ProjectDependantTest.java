@@ -115,12 +115,11 @@ class ProjectDependantTest {
     @DisplayName("force the dependency to resolve to a particular version")
     void forceDependency() {
         DependantProject container = DependantProject.from(project);
-        Dependency dependency = dependency();
-        String version = version();
-        container.force(dependency, version);
+        Artifact artifact = artifact();
+        container.force(artifact);
 
         ConfigurationContainer configurations = project.getConfigurations();
-        configurations.forEach(config -> checkForced(config, dependency, version));
+        configurations.forEach(config -> checkForced(config, artifact));
     }
 
     @Test
@@ -158,9 +157,8 @@ class ProjectDependantTest {
         assertThat(runtimeExclusionRules).containsExactly(excludeRule);
     }
 
-    private static void checkForced(Configuration config, Dependency dependency, String version) {
-        String notation = dependency.ofVersion(version)
-                                    .notation();
+    private static void checkForced(Configuration config, Artifact artifact) {
+        String notation = artifact.notation();
         Set<ModuleVersionSelector> forcedModules = config.getResolutionStrategy()
                                                          .getForcedModules();
         String description = "in string form equals to";

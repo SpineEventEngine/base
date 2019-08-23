@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.project;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import org.gradle.api.Project;
@@ -78,11 +79,10 @@ public final class DependantProject implements Dependant {
     }
 
     @Override
-    public void force(Dependency dependency, String version) {
-        String dependencyNotation = dependency.ofVersion(version)
-                                              .notation();
+    public void force(Artifact artifact) {
+        String dependencySpec = artifact.notation();
         configurations.all(config -> config.getResolutionStrategy()
-                                           .force(dependencyNotation));
+                                           .force(dependencySpec));
     }
 
     @Override

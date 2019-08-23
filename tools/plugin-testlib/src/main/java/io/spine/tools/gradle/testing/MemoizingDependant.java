@@ -20,16 +20,15 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.project.Dependant;
 
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
@@ -39,7 +38,7 @@ public final class MemoizingDependant implements Dependant {
 
     private final Set<String> dependencies = newHashSet();
     private final Set<Dependency> exclusions = newHashSet();
-    private final Map<Dependency, String> forcedDependencies = newHashMap();
+    private final Set<Artifact> forcedDependencies = newHashSet();
 
     @Override
     public void depend(ConfigurationName configuration, String notation) {
@@ -52,13 +51,13 @@ public final class MemoizingDependant implements Dependant {
     }
 
     @Override
-    public void force(Dependency dependency, String version) {
-        forcedDependencies.put(dependency, version);
+    public void force(Artifact artifact) {
+        forcedDependencies.add(artifact);
     }
 
     @Override
     public void removeForcedDependency(Dependency dependency) {
-        forcedDependencies.remove(dependency);
+        forcedDependencies.removeIf(matches(dependency));
     }
 
     public ImmutableSet<String> dependencies() {
@@ -69,7 +68,17 @@ public final class MemoizingDependant implements Dependant {
         return ImmutableSet.copyOf(exclusions);
     }
 
-    public ImmutableMap<Dependency, String> forcedDependencies() {
-        return ImmutableMap.copyOf(forcedDependencies);
+    public ImmutableSet<Artifact> forcedDependencies() {
+        return ImmutableSet.copyOf(forcedDependencies);
+    }
+
+    private static Predicate<Artifact> matches(Dependency dependency) {
+        return artifact -> {
+            boolean groupEquals = dependency.groupId()
+                                            .equals(artifact.group());
+            boolean nameEquals = dependency.name()
+                                           .equals(artifact.name());
+            return groupEquals && nameEquals;
+        };
     }
 }
