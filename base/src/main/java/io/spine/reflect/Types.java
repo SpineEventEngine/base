@@ -92,7 +92,7 @@ public final class Types {
      *
      * @param type
      *         the type to check
-     * @return {@code true} if the given type is a {@code enum} type and {@code false} otherwise
+     * @return {@code true} if the given type is a {@code enum} class and {@code false} otherwise
      */
     public static boolean isEnumClass(Type type) {
         checkNotNull(type);
