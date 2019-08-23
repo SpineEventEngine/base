@@ -59,19 +59,19 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a `boolean`")
         void aBoolean() {
-            checkConverts(false, "false");
+            checkStringifies(false, "false");
         }
 
         @Test
         @DisplayName("an `int`")
         void anInteger() {
-            checkConverts(1, "1");
+            checkStringifies(1, "1");
         }
 
         @Test
         @DisplayName(" a `long`")
         void aLong() {
-            checkConverts(1L, "1");
+            checkStringifies(1L, "1");
         }
 
         @Test
@@ -79,7 +79,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         void aString() {
             String theString = "some-string";
 
-            checkConverts(theString, theString);
+            checkStringifies(theString, theString);
         }
 
         @Test
@@ -88,7 +88,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
             Timestamp timestamp = Timestamp.getDefaultInstance();
             String expected = Timestamps.toString(timestamp);
 
-            checkConverts(timestamp, expected);
+            checkStringifies(timestamp, expected);
         }
 
         @Test
@@ -97,13 +97,13 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
             Duration duration = Duration.getDefaultInstance();
             String expected = Durations.toString(duration);
 
-            checkConverts(duration, expected);
+            checkStringifies(duration, expected);
         }
 
         @Test
         @DisplayName("a enum")
         void aEnum() {
-            checkConverts(DONE, "DONE");
+            checkStringifies(DONE, "DONE");
         }
 
         @Test
@@ -120,10 +120,10 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
                     .build();
 
             String expected = Json.toCompactJson(message);
-            checkConverts(message, expected);
+            checkStringifies(message, expected);
         }
 
-        private void checkConverts(Object value, String expected) {
+        private void checkStringifies(Object value, String expected) {
             String conversionResult = Stringifiers.toString(value);
             assertThat(conversionResult).isEqualTo(expected);
         }
