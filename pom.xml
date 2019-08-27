@@ -130,19 +130,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.truth</groupId>
     <artifactId>truth</artifactId>
-    <version>0.44</version>
+    <version>1.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>com.google.truth.extensions</groupId>
     <artifactId>truth-java8-extension</artifactId>
-    <version>0.44</version>
+    <version>1.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>com.google.truth.extensions</groupId>
     <artifactId>truth-proto-extension</artifactId>
-    <version>0.44</version>
+    <version>1.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -232,12 +232,12 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.agent</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.ant</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
   </dependency>
 </dependencies>
 </project>

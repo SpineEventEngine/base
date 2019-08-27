@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,15 +34,15 @@ final class PatternSelectorsTest {
     void implementationsDiffer() {
         String pattern = "testPattern";
 
-        Subject<DefaultSubject, Object> prefix = assertThat(new PrefixSelector(pattern));
+        Subject prefix = assertThat(new PrefixSelector(pattern));
         prefix.isNotEqualTo(new SuffixSelector(pattern));
         prefix.isNotEqualTo(new RegexSelector(pattern));
 
-        Subject<DefaultSubject, Object> suffix = assertThat(new SuffixSelector(pattern));
+        Subject suffix = assertThat(new SuffixSelector(pattern));
         suffix.isNotEqualTo(new PrefixSelector(pattern));
         suffix.isNotEqualTo(new RegexSelector(pattern));
 
-        Subject<DefaultSubject, Object> regex = assertThat(new RegexSelector(pattern));
+        Subject regex = assertThat(new RegexSelector(pattern));
         regex.isNotEqualTo(new SuffixSelector(pattern));
         regex.isNotEqualTo(new PrefixSelector(pattern));
     }

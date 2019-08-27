@@ -20,7 +20,6 @@
 
 package io.spine.base;
 
-import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time.SystemTimeProvider;
@@ -42,7 +41,6 @@ import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.GivenDurations.DURATION_1_MINUTE;
 import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Time class should")
@@ -63,7 +61,7 @@ class TimeTest {
         assertCurrentTime().isEqualTo(fiveMinutesAgo);
     }
 
-    private static Subject<DefaultSubject, Object> assertCurrentTime() {
+    private static Subject assertCurrentTime() {
         return assertThat(currentTime());
     }
 
@@ -95,6 +93,7 @@ class TimeTest {
     void gettingSystemTime() {
         setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
+        assertThat(systemTime().getSeconds()).isNotEqualTo(0);
         assertNotEquals(0, systemTime());
     }
 
