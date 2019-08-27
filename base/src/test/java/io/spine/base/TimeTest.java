@@ -94,7 +94,6 @@ class TimeTest {
         setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
         assertThat(systemTime().getSeconds()).isNotEqualTo(0);
-        assertNotEquals(0, systemTime());
     }
 
     @Test
