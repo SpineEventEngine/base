@@ -35,11 +35,9 @@ import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.protobuf.Messages.ensureMessage;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Messages utility class should")
 class MessagesTest extends UtilityClassTest<Messages> {
@@ -77,18 +75,6 @@ class MessagesTest extends UtilityClassTest<Messages> {
     void failGettingNonGeneratedBuilder() {
         assertThrows(IllegalArgumentException.class,
                      () -> builderFor(Message.class));
-    }
-
-    @Test
-    @DisplayName("tell if a class is a Message")
-    void tellIfMessage() {
-        assertTrue(Messages.isMessage(MessageWithStringValue.class));
-    }
-
-    @Test
-    @DisplayName("tell if a class is not Message")
-    void tellNotMessage() {
-        assertFalse(Messages.isMessage(getClass()));
     }
 
     @Test

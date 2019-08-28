@@ -108,7 +108,7 @@ class AppendTypeUrlGetterTest {
         }
 
         @Test
-        @DisplayName("for a enum class")
+        @DisplayName("for an enum class")
         void forEnumClass() {
             Method method = typeUrlMethod(enumType());
             CodeLines codeLines = method.value();

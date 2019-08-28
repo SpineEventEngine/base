@@ -18,44 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
+package io.spine.reflect.given;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Message;
 
-import static java.lang.String.format;
+import java.util.ArrayList;
 
-/**
- * A stringifier for {@code enum} values.
- *
- * @param <E>
- *         the type of the {@code enum}
- */
-final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
+public final class TypesTestEnv {
 
-    private static final long serialVersionUID = 0L;
-
-    private static final String IDENTITY_FORMAT = "Stringifiers.newForEnum(%s.class)";
-
-    private final Class<E> enumClass;
-
-    EnumStringifier(Class<E> enumClass) {
-        super(identity(enumClass));
-        this.enumClass = enumClass;
+    /** Prevents instantiation of this test env class. */
+    private TypesTestEnv() {
     }
 
-    @Override
-    protected final String toString(E e) {
-        return e.toString();
+    @SuppressWarnings({"serial", "ClassExtendsConcreteCollection"})
+    public static class ListOfMessages extends ArrayList<Message> {
     }
 
-    @Override
-    protected final E fromString(String s) {
-        E result = Enum.valueOf(enumClass, s);
-        return result;
-    }
-
-    @VisibleForTesting
-    static <E extends Enum<E>> String identity(Class<E> enumClass) {
-        return format(IDENTITY_FORMAT, enumClass.getSimpleName());
+    public enum TaskStatus {
+        OPEN,
+        DONE
     }
 }
