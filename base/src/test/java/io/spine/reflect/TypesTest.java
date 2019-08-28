@@ -71,7 +71,7 @@ class TypesTest extends UtilityClassTest<Types> {
     }
 
     @Test
-    @DisplayName("tell if the type is a enum class")
+    @DisplayName("tell if the type is an enum class")
     void tellIfIsEnumClass() {
 
         assertThat(isEnumClass(TaskStatus.class))
