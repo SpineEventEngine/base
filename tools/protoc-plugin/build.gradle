@@ -56,27 +56,11 @@ final def shellRunner = injectVersion(file('plugin_runner.sh'))
 final def batchRunner = injectVersion(file('plugin_runner.bat'))
 
 artifacts {
-    archives shellRunner
-    archives batchRunner
-}
-
-publishing {
-    publications {
-        runnerScript(MavenPublication) {
-            from components.java
-            groupId = "${group}"
-            artifactId = "spine-protoc-plugin"
-            version = "${version}"
-
-            [shellRunner, batchRunner].each { final script ->
-                final def path = script.getAbsolutePath()
-                final def ext = path.substring(path.lastIndexOf('.') + 1)
-                artifact(path) {
-                    classifier "script"
-                    extension ext
-                }
-            }
-        }
+    archives(shellRunner) {
+        classifier "script"
+    }
+    archives(batchRunner) {
+        classifier "script"
     }
 }
 

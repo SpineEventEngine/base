@@ -20,20 +20,27 @@
 
 package io.spine.string;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import static java.lang.String.format;
+
 /**
- * Abstract base for stringifiers that work with enum values.
+ * A stringifier for {@code enum} values.
  *
- * @param <E> the type of the enum
+ * @param <E>
+ *         the type of the {@code enum}
  */
-public abstract class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
+final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
     private static final long serialVersionUID = 0L;
 
+    private static final String IDENTITY_FORMAT = "Stringifiers.newForEnum(%s.class)";
+
     private final Class<E> enumClass;
 
-    protected EnumStringifier(String identity, Class<E> aClass) {
-        super(identity);
-        enumClass = aClass;
+    EnumStringifier(Class<E> enumClass) {
+        super(identity(enumClass));
+        this.enumClass = enumClass;
     }
 
     @Override
@@ -45,5 +52,10 @@ public abstract class EnumStringifier<E extends Enum<E>> extends SerializableStr
     protected final E fromString(String s) {
         E result = Enum.valueOf(enumClass, s);
         return result;
+    }
+
+    @VisibleForTesting
+    static <E extends Enum<E>> String identity(Class<E> enumClass) {
+        return format(IDENTITY_FORMAT, enumClass.getSimpleName());
     }
 }

@@ -25,15 +25,18 @@ import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
 import io.spine.tools.gradle.TaskDependencies;
 import io.spine.tools.gradle.TaskName;
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Task;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public final class TaskSubject extends Subject<TaskSubject, Task> {
+public final class TaskSubject extends Subject {
 
-    private TaskSubject(FailureMetadata metadata, @NullableDecl Task actual) {
+    private final @Nullable Task actual;
+
+    private TaskSubject(FailureMetadata metadata, @Nullable Task actual) {
         super(metadata, actual);
+        this.actual = actual;
     }
 
     /**
@@ -48,7 +51,7 @@ public final class TaskSubject extends Subject<TaskSubject, Task> {
      * the passed task.
      */
     public BooleanSubject dependsOn(Task task) {
-        return assertThat(TaskDependencies.dependsOn(actual(), task));
+        return assertThat(TaskDependencies.dependsOn(actual, task));
     }
 
     /**
@@ -56,13 +59,13 @@ public final class TaskSubject extends Subject<TaskSubject, Task> {
      * the task with the passed name.
      */
     public BooleanSubject dependsOn(TaskName taskName) {
-        return assertThat(TaskDependencies.dependsOn(actual(), taskName));
+        return assertThat(TaskDependencies.dependsOn(actual, taskName));
     }
 
     /**
      * Creates a subject to verify that the passed task depends on the actual value of this subject.
      */
     public BooleanSubject isDependencyOf(Task task) {
-        return assertThat(TaskDependencies.dependsOn(task, actual()));
+        return assertThat(TaskDependencies.dependsOn(task, actual));
     }
 }

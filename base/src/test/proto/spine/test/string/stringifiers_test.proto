@@ -17,33 +17,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.protoc;
+package spine.test.string;
 
-import com.google.common.truth.Subject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import "spine/options.proto";
 
-import static com.google.common.truth.Truth.assertThat;
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.test.string";
+option java_multiple_files = true;
+option java_outer_classname = "StringifiersTestProto";
 
-@DisplayName("`PatternSelector` implementations should")
-final class PatternSelectorsTest {
+message STaskId {
+    string uuid = 1;
+}
 
-    @DisplayName("be different from each other")
-    @Test
-    void implementationsDiffer() {
-        String pattern = "testPattern";
+message STask {
+    STaskId id = 1;
+    STaskStatus status = 2;
+}
 
-        Subject prefix = assertThat(new PrefixSelector(pattern));
-        prefix.isNotEqualTo(new SuffixSelector(pattern));
-        prefix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject suffix = assertThat(new SuffixSelector(pattern));
-        suffix.isNotEqualTo(new PrefixSelector(pattern));
-        suffix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject regex = assertThat(new RegexSelector(pattern));
-        regex.isNotEqualTo(new SuffixSelector(pattern));
-        regex.isNotEqualTo(new PrefixSelector(pattern));
-    }
+enum STaskStatus {
+    OPEN = 0;
+    DONE = 1;
 }

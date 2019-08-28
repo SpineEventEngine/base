@@ -18,32 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+/**
+ * The test environment classes for Spine reflection utils.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.reflect.given;
 
-import com.google.common.truth.Subject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("`PatternSelector` implementations should")
-final class PatternSelectorsTest {
-
-    @DisplayName("be different from each other")
-    @Test
-    void implementationsDiffer() {
-        String pattern = "testPattern";
-
-        Subject prefix = assertThat(new PrefixSelector(pattern));
-        prefix.isNotEqualTo(new SuffixSelector(pattern));
-        prefix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject suffix = assertThat(new SuffixSelector(pattern));
-        suffix.isNotEqualTo(new PrefixSelector(pattern));
-        suffix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject regex = assertThat(new RegexSelector(pattern));
-        regex.isNotEqualTo(new SuffixSelector(pattern));
-        regex.isNotEqualTo(new PrefixSelector(pattern));
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

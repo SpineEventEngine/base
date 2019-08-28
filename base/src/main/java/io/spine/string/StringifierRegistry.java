@@ -31,13 +31,15 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.protobuf.Messages.isMessage;
+import static io.spine.reflect.Types.isEnumClass;
+import static io.spine.reflect.Types.isMessageClass;
 import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;
 import static io.spine.string.Stringifiers.forLong;
 import static io.spine.string.Stringifiers.forString;
 import static io.spine.string.Stringifiers.forTimestamp;
+import static io.spine.string.Stringifiers.newForEnum;
 import static io.spine.string.Stringifiers.newForMessage;
 import static java.lang.String.format;
 import static java.util.Collections.synchronizedMap;
@@ -82,7 +84,13 @@ public final class StringifierRegistry {
             return stringifier;
         }
 
-        if (isMessage(typeOfT)) {
+        if (isEnumClass(typeOfT)) {
+            @SuppressWarnings("unchecked") // OK since the type is checked above.
+            Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
+            return result;
+        }
+
+        if (isMessageClass(typeOfT)) {
             @SuppressWarnings("unchecked") // OK since the type is checked above.
             Stringifier<T> result = (Stringifier<T>) newForMessage((Class<Message>) typeOfT);
             return result;
@@ -106,9 +114,12 @@ public final class StringifierRegistry {
     /**
      * Registers the passed stringifier in the registry.
      *
-     * @param stringifier the stringifier to register
-     * @param typeOfT     the value of the type of objects handled by the stringifier
-     * @param <T>         the type of the objects handled by the stringifier
+     * @param stringifier
+     *         the stringifier to register
+     * @param typeOfT
+     *         the value of the type of objects handled by the stringifier
+     * @param <T>
+     *         the type of the objects handled by the stringifier
      */
     public <T> void register(Stringifier<T> stringifier, Type typeOfT) {
         checkNotNull(typeOfT);
@@ -119,8 +130,10 @@ public final class StringifierRegistry {
     /**
      * Obtains a {@code Stringifier} for the passed type.
      *
-     * @param typeOfT the type to stringify
-     * @param <T>     the type of the values to convert
+     * @param typeOfT
+     *         the type to stringify
+     * @param <T>
+     *         the type of the values to convert
      * @return the found {@code Stringifier} or empty {@code Optional}
      */
     public <T> Optional<Stringifier<T>> get(Type typeOfT) {

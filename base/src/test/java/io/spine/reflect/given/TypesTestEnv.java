@@ -18,32 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.reflect.given;
 
-import com.google.common.truth.Subject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Message;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.ArrayList;
 
-@DisplayName("`PatternSelector` implementations should")
-final class PatternSelectorsTest {
+public final class TypesTestEnv {
 
-    @DisplayName("be different from each other")
-    @Test
-    void implementationsDiffer() {
-        String pattern = "testPattern";
+    /** Prevents instantiation of this test env class. */
+    private TypesTestEnv() {
+    }
 
-        Subject prefix = assertThat(new PrefixSelector(pattern));
-        prefix.isNotEqualTo(new SuffixSelector(pattern));
-        prefix.isNotEqualTo(new RegexSelector(pattern));
+    @SuppressWarnings({"serial", "ClassExtendsConcreteCollection"})
+    public static class ListOfMessages extends ArrayList<Message> {
+    }
 
-        Subject suffix = assertThat(new SuffixSelector(pattern));
-        suffix.isNotEqualTo(new PrefixSelector(pattern));
-        suffix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject regex = assertThat(new RegexSelector(pattern));
-        regex.isNotEqualTo(new SuffixSelector(pattern));
-        regex.isNotEqualTo(new PrefixSelector(pattern));
+    public enum TaskStatus {
+        OPEN,
+        DONE
     }
 }

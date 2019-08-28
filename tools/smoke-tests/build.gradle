@@ -19,9 +19,9 @@
  */
 
 buildscript {
-    ext.EXT = "$rootDir/../../version.gradle"
+    ext.versionGradle = "$rootDir/../../version.gradle"
 
-    apply from: EXT
+    apply from: versionGradle
     apply from: "$rootDir/../../config/gradle/dependencies.gradle"
 
     repositories {
@@ -52,7 +52,7 @@ buildscript {
 }
 
 allprojects {
-    apply from: EXT
+    apply from: versionGradle
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'project-report'
