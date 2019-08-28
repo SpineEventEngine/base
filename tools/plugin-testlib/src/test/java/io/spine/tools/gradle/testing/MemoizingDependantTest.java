@@ -26,10 +26,12 @@ import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.ThirdPartyDependency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@SuppressWarnings("DuplicateStringLiteralInspection") // Test display names duplication.
 @DisplayName("MemoizingDependant should")
 class MemoizingDependantTest {
 
@@ -58,6 +60,63 @@ class MemoizingDependantTest {
         checkExcluded(unwanted);
     }
 
+    @Nested
+    @DisplayName("memoize a forced dependency")
+    class MemoizeForcedDependency {
+
+        @Test
+        @DisplayName("represented as `Artifact`")
+        void representedAsArtifact() {
+            Artifact artifact = artifact();
+            container.force(artifact);
+
+            checkForced(artifact);
+        }
+
+        @Test
+        @DisplayName("represented as `String` notation")
+        void representedAsString() {
+            Artifact artifact = artifact();
+            String notation = artifact.notation();
+            container.force(notation);
+
+            checkForced(artifact);
+        }
+
+        private void checkForced(Artifact artifact) {
+            ImmutableSet<String> forcedDependencies = container.forcedDependencies();
+            String notation = artifact.notation();
+            assertThat(forcedDependencies).contains(notation);
+        }
+    }
+
+    @Nested
+    @DisplayName("remove memoized forced dependency")
+    class RemoveMemoizedForcedDependency {
+
+        @Test
+        @DisplayName("represented as `Dependency`")
+        void representedAsDependency() {
+            container.force(artifact());
+
+            Dependency dependency = dependency();
+            container.removeForcedDependency(dependency);
+
+            assertThat(container.forcedDependencies()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("represented as `String` notation")
+        void representedAsString() {
+            container.force(artifact());
+
+            String notation = artifact().notation();
+            container.removeForcedDependency(notation);
+
+            assertThat(container.forcedDependencies()).isEmpty();
+        }
+    }
+
     private void checkDependency(Artifact dependency) {
         ImmutableSet<String> dependencies = container.dependencies();
         assertThat(dependencies).contains(dependency.notation());
@@ -72,7 +131,11 @@ class MemoizingDependantTest {
         return new ThirdPartyDependency("test.dependency", "test-dependency");
     }
 
+    private static String version() {
+        return "3.14";
+    }
+
     private static Artifact artifact() {
-        return dependency().ofVersion("3.14");
+        return dependency().ofVersion(version());
     }
 }

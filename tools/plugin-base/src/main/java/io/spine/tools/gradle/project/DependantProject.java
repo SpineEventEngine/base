@@ -21,12 +21,19 @@
 package io.spine.tools.gradle.project;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.artifacts.ModuleVersionSelector;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
@@ -71,6 +78,27 @@ public final class DependantProject implements Dependant {
         exclude(testConfig, dependency);
     }
 
+    @Override
+    public void force(Artifact artifact) {
+        force(artifact.notation());
+    }
+
+    @Override
+    public void force(String notation) {
+        configurations.all(config -> config.getResolutionStrategy()
+                                           .force(notation));
+    }
+
+    @Override
+    public void removeForcedDependency(Dependency dependency) {
+        configurations.all(config -> removeForcedDependency(config, equalsTo(dependency)));
+    }
+
+    @Override
+    public void removeForcedDependency(String notation) {
+        configurations.all(config -> removeForcedDependency(config, equalsTo(notation)));
+    }
+
     /**
      * Excludes the given dependency from the given configuration.
      *
@@ -84,5 +112,58 @@ public final class DependantProject implements Dependant {
                 GROUP_KEY, dependency.groupId(),
                 MODULE_KEY, dependency.name()
         ));
+    }
+
+    /**
+     * Removes a forced dependency from the resolution strategy of a given configuration.
+     *
+     * @param configuration
+     *         the configuration to remove a forced dependency from
+     * @param filter
+     *         the dependency filter
+     */
+    private static void
+    removeForcedDependency(Configuration configuration, Predicate<ModuleVersionSelector> filter) {
+        Set<ModuleVersionSelector> forcedModules = configuration.getResolutionStrategy()
+                                                                .getForcedModules();
+        Collection<ModuleVersionSelector> newForcedModules = new HashSet<>(forcedModules);
+        newForcedModules.removeIf(filter);
+
+        configuration.getResolutionStrategy()
+                     .setForcedModules(newForcedModules);
+    }
+
+    /**
+     * Returns a predicate which tests the equality of the given {@link ModuleVersionSelector} to
+     * a {@link Dependency}.
+     */
+    private static Predicate<ModuleVersionSelector> equalsTo(Dependency dependency) {
+        return selector -> {
+            boolean groupEquals = dependency.groupId()
+                                            .equals(selector.getGroup());
+            boolean nameEquals = dependency.name()
+                                           .equals(selector.getName());
+            return groupEquals && nameEquals;
+        };
+    }
+
+    /**
+     * Returns a predicate which tests the equality of the given {@link ModuleVersionSelector} to
+     * a dependency spec.
+     */
+    private static Predicate<ModuleVersionSelector> equalsTo(String notation) {
+        return selector -> {
+            Artifact.Builder artifact = Artifact
+                    .newBuilder()
+                    .setGroup(selector.getGroup())
+                    .setName(selector.getName());
+            if (selector.getVersion() != null) {
+                artifact.setVersion(selector.getVersion());
+            }
+            String artifactNotation = artifact.build()
+                                              .notation();
+            boolean result = artifactNotation.equals(notation);
+            return result;
+        };
     }
 }

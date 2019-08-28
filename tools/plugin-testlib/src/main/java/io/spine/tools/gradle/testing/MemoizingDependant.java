@@ -21,11 +21,13 @@
 package io.spine.tools.gradle.testing;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.Dependency;
 import io.spine.tools.gradle.project.Dependant;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.Sets.newHashSet;
 
@@ -36,6 +38,7 @@ public final class MemoizingDependant implements Dependant {
 
     private final Set<String> dependencies = newHashSet();
     private final Set<Dependency> exclusions = newHashSet();
+    private final Set<String> forcedDependencies = newHashSet();
 
     @Override
     public void depend(ConfigurationName configuration, String notation) {
@@ -47,11 +50,43 @@ public final class MemoizingDependant implements Dependant {
         exclusions.add(dependency);
     }
 
+    @Override
+    public void force(Artifact artifact) {
+        forcedDependencies.add(artifact.notation());
+    }
+
+    @Override
+    public void force(String notation) {
+        forcedDependencies.add(notation);
+    }
+
+    @Override
+    public void removeForcedDependency(Dependency dependency) {
+        forcedDependencies.removeIf(matches(dependency));
+    }
+
+    @Override
+    public void removeForcedDependency(String notation) {
+        forcedDependencies.remove(notation);
+    }
+
     public ImmutableSet<String> dependencies() {
         return ImmutableSet.copyOf(dependencies);
     }
 
     public ImmutableSet<Dependency> exclusions() {
         return ImmutableSet.copyOf(exclusions);
+    }
+
+    public ImmutableSet<String> forcedDependencies() {
+        return ImmutableSet.copyOf(forcedDependencies);
+    }
+
+    private static Predicate<String> matches(Dependency dependency) {
+        return notation -> {
+            String spec = String.format("%s:%s", dependency.groupId(), dependency.name());
+            boolean result = notation.startsWith(spec);
+            return result;
+        };
     }
 }
