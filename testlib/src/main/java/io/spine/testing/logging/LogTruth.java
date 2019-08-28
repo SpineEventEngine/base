@@ -21,7 +21,6 @@
 package io.spine.testing.logging;
 
 import com.google.common.flogger.FluentLogger;
-import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,7 +41,7 @@ public final class LogTruth {
     }
 
     /** Creates a subject for the passed logger. */
-    public static Subject<DefaultSubject, Object> assertThat(@Nullable FluentLogger actual) {
+    public static Subject assertThat(@Nullable FluentLogger actual) {
         return assert_().that(actual);
     }
 
@@ -52,13 +51,12 @@ public final class LogTruth {
     }
 
     /** Creates a subject for the logging level. */
-    public static Subject<DefaultSubject, Object> assertThat(@Nullable Level actual) {
+    public static Subject assertThat(@Nullable Level actual) {
         return assert_().that(actual);
     }
 
     /** Creates a subject for the logging API. */
-    public static
-    Subject<DefaultSubject, Object> assertThat(@NullableDecl FluentLogger.Api actual) {
+    public static Subject assertThat(@NullableDecl FluentLogger.Api actual) {
         return assert_().that(actual);
     }
 }
