@@ -20,7 +20,6 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.ObjectArraySubject;
 import com.google.common.truth.StandardSubjectBuilder;
@@ -38,9 +37,11 @@ import static com.google.common.truth.Fact.simpleFact;
  * Propositions for {@link LogRecord} subjects.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // method names specific to Java Logging
-public class LogRecordSubject extends Subject<LogRecordSubject, LogRecord> {
+public class LogRecordSubject extends Subject {
 
     static final String NO_LOG_RECORD = "no log record";
+
+    private final @Nullable LogRecord actual;
 
     /** Obtains the factory for creating log record subjects for actual values. */
     static Subject.Factory<LogRecordSubject, LogRecord> records() {
@@ -49,26 +50,27 @@ public class LogRecordSubject extends Subject<LogRecordSubject, LogRecord> {
 
     private LogRecordSubject(FailureMetadata metadata, @Nullable LogRecord actual) {
         super(metadata, actual);
+        this.actual = actual;
     }
 
     /** Returns a {@code StringSubject} to make assertions about the log record message. */
     public StringSubject hasMessageThat() {
-        if (actual() == null) {
+        if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that("");
         }
         StandardSubjectBuilder check = check("getMessage()");
-        return check.that(actual().getMessage());
+        return check.that(actual.getMessage());
     }
 
     /** Obtains a subject for the logging level. */
-    public Subject<DefaultSubject, Object> hasLevelThat() {
-        if (actual() == null) {
+    public Subject hasLevelThat() {
+        if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that((Object) null);
         }
         StandardSubjectBuilder check = check("getLevel()");
-        Subject<DefaultSubject, Object> that = check.that(actual().getLevel());
+        Subject that = check.that(actual.getLevel());
         return that;
     }
 
@@ -84,22 +86,22 @@ public class LogRecordSubject extends Subject<LogRecordSubject, LogRecord> {
 
     /** Obtains a subject for the logging event arguments. */
     public ObjectArraySubject hasParametersThat() {
-        if (actual() == null) {
+        if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that((Object[]) null);
         }
         StandardSubjectBuilder check = check("getParameters()");
-        return check.that(actual().getParameters());
+        return check.that(actual.getParameters());
     }
 
     /** Obtains a subject for asserting {@code Throwable} associated with the log record. */
     public ThrowableSubject hasThrowableThat() {
-        if (actual() == null) {
+        if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that((Throwable) null);
         }
         StandardSubjectBuilder check = check("getThrow()");
-        return check.that(actual().getThrown());
+        return check.that(actual.getThrown());
     }
 
     private void shouldExistButDoesNot() {

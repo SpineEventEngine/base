@@ -34,7 +34,7 @@ import static com.google.common.truth.Truth.assertAbout;
  * @param <T>
  *         the target type tested by the {@code Subject}
  */
-public abstract class SubjectTest<S extends Subject<S, T>, T> {
+public abstract class SubjectTest<S extends Subject, T> {
 
     protected static final String EXPECTED = "expected";
     protected static final String BUT_WAS = "but was";
