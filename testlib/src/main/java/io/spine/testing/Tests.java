@@ -265,8 +265,7 @@ public final class Tests {
     }
 
     /**
-     * Designates that the a method calling this method should never be called
-     * by throwing {@link AssertionError}.
+     * Reports that a calling method should never be called by throwing {@link AssertionError}.
      *
      * @throws AssertionError always
      */
