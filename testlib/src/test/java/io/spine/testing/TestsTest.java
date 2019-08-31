@@ -395,4 +395,10 @@ class TestsTest extends UtilityClassTest<Tests> {
         assertThat(counter.get())
                 .isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("provide method `halt()`")
+    void haltMethod() {
+        assertThrows(AssertionError.class, Tests::halt);
+    }
 }

@@ -36,6 +36,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Utilities for testing.
@@ -261,5 +262,15 @@ public final class Tests {
         for (int i = 0; i < count; i++) {
              action.run();
         }
+    }
+
+    /**
+     * Designates that the a method calling this method should never be called
+     * by throwing {@link AssertionError}.
+     *
+     * @throws AssertionError always
+     */
+    public static void halt() throws AssertionError {
+        fail("This method should never be called.");
     }
 }
