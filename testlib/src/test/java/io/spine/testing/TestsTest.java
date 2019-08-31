@@ -397,7 +397,7 @@ class TestsTest extends UtilityClassTest<Tests> {
     }
 
     @Test
-    @DisplayName("provide method `halt()`")
+    @DisplayName("provide method `halt()` for failing methods that should never be called")
     void haltMethod() {
         assertThrows(AssertionError.class, Tests::halt);
     }
