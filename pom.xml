@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>1.0.3-SNAPSHOT</version>
+<version>1.0.3</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -52,7 +52,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
-    <version>28.0-jre</version>
+    <version>28.1-jre</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -124,7 +124,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava-testlib</artifactId>
-    <version>28.0-jre</version>
+    <version>28.1-jre</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -148,7 +148,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
