@@ -20,23 +20,29 @@
 
 package io.spine.base;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 import io.spine.value.ValueHolder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.TextFormat.shortDebugString;
-import static io.spine.base.FieldPaths.checkName;
-import static io.spine.base.FieldPaths.checkNotEmpty;
-import static io.spine.base.FieldPaths.classOf;
-import static io.spine.base.FieldPaths.fieldIn;
-import static io.spine.base.FieldPaths.join;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -51,6 +57,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @Immutable
 public final class Field extends ValueHolder<FieldPath> {
 
+    static final String SEPARATOR = ".";
+    static final Joiner joiner = Joiner.on(SEPARATOR);
+    static final Splitter dotSplitter = Splitter.on(SEPARATOR)
+                                                .trimResults();
     private static final long serialVersionUID = 0L;
 
     private Field(FieldPath path) {
@@ -79,7 +89,7 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public static Field parse(String path) {
         checkNotNull(path);
-        FieldPath fp = FieldPaths.doParse(path);
+        FieldPath fp = doParse(path);
         return create(fp);
     }
 
@@ -91,7 +101,7 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public static Field named(String fieldName) {
         checkName(fieldName);
-        FieldPath path = FieldPaths.create(fieldName);
+        FieldPath path = create(fieldName);
         Field result = create(path);
         return result;
     }
@@ -110,7 +120,7 @@ public final class Field extends ValueHolder<FieldPath> {
      *         in this type of messages
      */
     public Optional<Object> findValue(Message holder) {
-        Object value = FieldPaths.doGetValue(path(), holder, false);
+        Object value = doGetValue(path(), holder, false);
         return Optional.ofNullable(value);
     }
 
@@ -126,6 +136,7 @@ public final class Field extends ValueHolder<FieldPath> {
         );
         return result;
     }
+
     /**
      * Obtains a descriptor of the referenced field in the passed message type.
      *
@@ -136,7 +147,6 @@ public final class Field extends ValueHolder<FieldPath> {
         @Nullable FieldDescriptor field = fieldIn(path(), message);
         return Optional.ofNullable(field);
     }
-
     /**
      * Obtains the type of the referenced field in the passed message class.
      */
@@ -159,5 +169,144 @@ public final class Field extends ValueHolder<FieldPath> {
     @Override
     public String toString() {
         return join(value().getFieldNameList());
+    }
+
+    /** Creates a new path containing the passed elements. */
+    static FieldPath create(String... elements) {
+        checkNotNull(elements);
+        return create(ImmutableList.copyOf(elements));
+    }
+
+    /** Creates a new path containing the passed elements. */
+    static FieldPath create(List<String> elements) {
+        checkNotNull(elements);
+        checkArgument(!elements.isEmpty(), "A field path must contain at least one element.");
+        elements.forEach(Field::checkName);
+        FieldPath result = FieldPath
+                .newBuilder()
+                .addAllFieldName(elements)
+                .build();
+        return result;
+    }
+
+    /** Creates a path instance by parsing the passed non-empty string. */
+    static FieldPath doParse(String fieldPath) {
+        checkArgument(!fieldPath.isEmpty(), "A field path must not be empty.");
+        List<String> pathElements = dotSplitter.splitToList(fieldPath);
+        return create(pathElements);
+    }
+
+    /**
+     * Obtains a value of the field represented by the passed path in the passed message.
+     *
+     * @param path
+     *         the path to the field in the message
+     * @param holder
+     *         the instance of message from which to obtain the value
+     * @param strict
+     *         If {@code true}, the method would fail with the {@code IllegalArgumentException}
+     *         if there is no field matching the passed path.
+     *         If {@code false}, and the field is not found, {@code null} will be returned
+     * @return the value of the field, or
+     *         {@code null} if the field was not found, and the {@code strict} parameter
+     *         is {@code false}
+     * @throws IllegalArgumentException
+     *          if the call is {@code strict} and the value not found
+     */
+    static @Nullable Object doGetValue(FieldPath path, Message holder, boolean strict) {
+        Message message = holder;
+        Object currentValue = message;
+        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            String fieldName = iterator.next();
+            Descriptor type = message.getDescriptorForType();
+            @Nullable FieldDescriptor field = type.findFieldByName(fieldName);
+            if (field == null) {
+                if (strict) {
+                    throw newIllegalArgumentException(
+                            "Unable to find the field named `%s` in the type `%s`.",
+                            fieldName, type.getFullName());
+                }
+                return null;
+            }
+            currentValue = message.getField(field);
+            if (currentValue instanceof Message) {
+                message = (Message) currentValue;
+            } else {
+                if (iterator.hasNext()) {
+                    /* We're not at the end of iteration, and the inner path item references a
+                       non-message field. We cannot continue going the path and need to exit
+                       the routine. */
+                    if (strict) {
+                        throw newIllegalArgumentException(
+                                "The field referenced by the name `%s` is not a message, and" +
+                                        " it is not possible to obtain a nested field named `%s`. " +
+                                        " The full field path is: `%s`.",
+                                fieldName, iterator.next(), withPath(path)
+                        );
+                    }
+                    return null;
+                }
+            }
+        }
+        return currentValue;
+    }
+
+    /**
+     * Obtains the descriptor of the field in the passed message type.
+     *
+     * @return the descriptor or {@code null} if the message type does not declare this field
+     */
+    static @Nullable FieldDescriptor fieldIn(FieldPath path, Descriptor message) {
+        Descriptor current = message;
+        FieldDescriptor field = null;
+        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            String fieldName = iterator.next();
+            field = current.findFieldByName(fieldName);
+            if (field == null) {
+                return null;
+            }
+            if (iterator.hasNext()) {
+                checkArgument(field.getType() == MESSAGE,
+                              "Field `%s` of the type `%s` is not a message field.");
+                current = field.getMessageType();
+            }
+        }
+        return field;
+    }
+
+    /** Ensures that the passed filed name does not contain the path separator. */
+    static void checkName(String fieldName) {
+        checkArgument(
+                !fieldName.contains(SEPARATOR),
+                "A field name cannot contain path separator. Found: `%s`.", fieldName
+        );
+    }
+
+    /** Obtains the type of the values stored in the field. */
+    static Class<?> classOf(FieldDescriptor field) {
+        FieldDescriptor.Type type = field.getType();
+        if (type == MESSAGE) {
+            Class<?> cls = TypeUrl.from(field.getMessageType()).toJavaClass();
+            return cls;
+        } else if (type == ENUM) {
+            Class<?> cls = TypeUrl.from(field.getEnumType()).toJavaClass();
+            return cls;
+        } else {
+            Class<?> result = ScalarType.getJavaType(field.toProto().getType());
+            return result;
+        }
+    }
+
+    /** Ensures that the passed path has at least one element. */
+    static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
+        checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
+    }
+
+    /**
+     * Joins the passed path elements into the string representation of the path.
+     */
+    static String join(Iterable<String> elements) {
+        String result = joiner.join(elements);
+        return result;
     }
 }

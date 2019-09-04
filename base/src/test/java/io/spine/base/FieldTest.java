@@ -27,6 +27,7 @@ import com.google.protobuf.Message;
 import io.spine.test.protobuf.AnyHolder;
 import io.spine.test.protobuf.GenericHolder;
 import io.spine.test.protobuf.StringHolder;
+import io.spine.test.protobuf.StringHolderHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -50,44 +51,63 @@ class FieldTest {
         new NullPointerTester().testAllPublicStaticMethods(Field.class);
     }
 
-    @Test
-    @DisplayName("parse the passed path")
-    void parsing() {
-        String path = "highway.to.hell";
-        assertThat(Field.parse(path).toString())
-                .isEqualTo(path);
-    }
 
-    @Test
-    @DisplayName("create the field by its name")
-    void byName() {
-        String name = "my_way";
-        assertThat(Field.named(name).toString())
-                .isEqualTo(name);
+    @Nested
+    @DisplayName("parse the passed path")
+    class Parsing {
+
+        @Test
+        @DisplayName("with immediate field name")
+        void immediate() {
+            String expected = "val";
+            Field field = Field.parse(expected);
+            assertThat(field.path().getFieldNameList())
+                    .containsExactly(expected);
+        }
+
+        @Test
+        @DisplayName("delimited with dots")
+        void nested() {
+            String path = "highway.to.hell";
+            Field field = Field.parse(path);
+            assertThat(field.toString())
+                    .isEqualTo(path);
+            assertThat(field.path().getFieldNameList())
+                    .containsExactly("highway", "to", "hell");
+        }
+
+        @Test
+        @DisplayName("rejecting empty path")
+        void rejectingEmpty() {
+            assertThrows(IllegalArgumentException.class, () -> Field.parse(""));
+        }
     }
 
     @Test
     @DisplayName("create the instance by the path")
     void byPath() {
-        FieldPath expected = FieldPaths.doParse("road_to.mandalay");
+        FieldPath expected = Field.doParse("road_to.mandalay");
         assertThat(Field.withPath(expected).path())
                 .isEqualTo(expected);
     }
 
-    @Test
-    @DisplayName("do not allow `.` in the field name")
-    void noSeparatorInName() {
-        assertThrows(IllegalArgumentException.class, () -> Field.named("with.dot"));
-    }
+    @Nested
+    @DisplayName("create the field by its name")
+    class SingleField {
 
-    @Test
-    @DisplayName("obtain the path")
-    void path() {
-        String path = "something.borrowed";
-        assertThat(Field.parse(path)
-                        .path()
-                        .getFieldNameList())
-                .containsExactly("something", "borrowed");
+        @Test
+        @DisplayName("accepting non-empty string")
+        void byName() {
+            String name = "my_way";
+            assertThat(Field.named(name).toString())
+                    .isEqualTo(name);
+        }
+
+        @Test
+        @DisplayName("rejecting `.` in the field name")
+        void noSeparatorInName() {
+            assertThrows(IllegalArgumentException.class, () -> Field.named("with.dot"));
+        }
     }
 
     @Nested
@@ -128,16 +148,66 @@ class FieldTest {
         }
 
         @Test
-        @DisplayName("directly")
+        @DisplayName("directly via a nested path")
         void directValue() {
             assertThat(field.valueIn(message))
                     .isEqualTo(expectedValue);
         }
 
         @Test
+        @DisplayName("directly via a simple path")
+        void obtainSimple() {
+            StringHolder holder = StringHolder
+                    .newBuilder()
+                    .setVal("foobar")
+                    .build();
+            Field field = Field.parse("val");
+            assertThat(field.valueIn(holder))
+                    .isEqualTo(holder.getVal());
+        }
+
+        @Test
+        @DisplayName("via recursive path")
+        void recursivePath() {
+            String value = "42";
+            StringHolder holder0 = StringHolder
+                    .newBuilder()
+                    .setVal(value)
+                    .build();
+            StringHolderHolder holder1 = StringHolderHolder
+                    .newBuilder()
+                    .setHolder(holder0)
+                    .build();
+            GenericHolder holder2 = GenericHolder
+                    .newBuilder()
+                    .setHolderHolder(holder1)
+                    .build();
+            GenericHolder holder3 = GenericHolder
+                    .newBuilder()
+                    .setGeneric(holder2)
+                    .build();
+
+            Field field = Field.parse("generic.holder_holder.holder.val");
+            assertThat(field.valueIn(holder3))
+                    .isEqualTo(value);
+        }
+
+        @Test
         @DisplayName("throwing `ISE` if missed and getting directly")
         void directFailure() {
             assertThrows(IllegalStateException.class, () -> missingField.valueIn(message));
+        }
+
+        @Test
+        @DisplayName("failing if the path reaches over a primitive value")
+        void failOnMissingField() {
+            String value = "primitive value";
+            StringHolder holder = StringHolder
+                    .newBuilder()
+                    .setVal(value)
+                    .build();
+            Field wrongPath = Field.parse("val.this_field_is_absent");
+            assertThrows(IllegalStateException.class, () -> wrongPath.valueIn(holder));
         }
     }
 
@@ -194,6 +264,15 @@ class FieldTest {
             Truth8.assertThat(Field.parse("holder")
                                    .findType(GenericHolder.class))
                   .isEmpty();
+        }
+
+        @Test
+        @DisplayName("when the type is recursive")
+        void recursiveType() {
+            Field field = Field.parse("generic.generic.generic.generic.generic");
+
+            Truth8.assertThat(field.findType(GenericHolder.class))
+                  .hasValue(GenericHolder.class);
         }
     }
 }
