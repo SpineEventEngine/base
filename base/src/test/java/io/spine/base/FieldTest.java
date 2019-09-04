@@ -94,6 +94,8 @@ class FieldTest {
     @DisplayName("obtain the value in a message")
     class GettingValue {
 
+        private final Field field = Field.parse("any.val.type_url");
+        private final Field missingField = Field.parse("type_url");
         private Message message;
         private Object expectedValue;
 
@@ -112,19 +114,30 @@ class FieldTest {
         }
 
         @Test
-        @DisplayName("if present")
+        @DisplayName("as `Optional` value")
         void ifFound() {
-            Field field = Field.parse("any.val.type_url");
-            Truth8.assertThat(field.valueIn(message))
+            Truth8.assertThat(field.findValue(message))
                   .hasValue(expectedValue);
         }
 
         @Test
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
-            Truth8.assertThat(Field.parse("type_url")
-                                   .valueIn(message))
+            Truth8.assertThat(missingField.findValue(message))
                   .isEmpty();
+        }
+
+        @Test
+        @DisplayName("directly")
+        void directValue() {
+            assertThat(field.valueIn(message))
+                    .isEqualTo(expectedValue);
+        }
+
+        @Test
+        @DisplayName("throwing `ISE` if missed and getting directly")
+        void directFailure() {
+            assertThrows(IllegalStateException.class, () -> missingField.valueIn(message));
         }
     }
 
@@ -136,7 +149,7 @@ class FieldTest {
         @DisplayName("if present")
         void ifFound() {
             Truth8.assertThat(Field.named("val")
-                                   .descriptorIn(AnyHolder.getDescriptor()))
+                                   .findDescriptor(AnyHolder.getDescriptor()))
                   .isPresent();
         }
 
@@ -144,7 +157,7 @@ class FieldTest {
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
             Truth8.assertThat(Field.named("value") // the real name is `val`.
-                                   .descriptorIn(StringHolder.getDescriptor()))
+                                   .findDescriptor(StringHolder.getDescriptor()))
                   .isEmpty();
         }
     }
@@ -157,21 +170,21 @@ class FieldTest {
         @DisplayName("for messages")
         void messageType() {
             Truth8.assertThat(Field.parse("holder_holder.holder")
-                                   .typeIn(GenericHolder.class))
+                                   .findType(GenericHolder.class))
                   .hasValue(StringHolder.class);
         }
 
         @Test
         @DisplayName("for primitives")
         void primitiveType() {
-            Truth8.assertThat(Field.named("count").typeIn(GenericHolder.class))
+            Truth8.assertThat(Field.named("count").findType(GenericHolder.class))
                   .hasValue(GenericHolder.Count.class);
         }
 
         @Test
         @DisplayName("for enums")
         void enumType() {
-            Truth8.assertThat(Field.named("size").typeIn(GenericHolder.class))
+            Truth8.assertThat(Field.named("size").findType(GenericHolder.class))
                   .hasValue(int.class);
         }
 
@@ -179,7 +192,7 @@ class FieldTest {
         @DisplayName("returning empty `Optional` if not found")
         void notFound() {
             Truth8.assertThat(Field.parse("holder")
-                                   .typeIn(GenericHolder.class))
+                                   .findType(GenericHolder.class))
                   .isEmpty();
         }
     }

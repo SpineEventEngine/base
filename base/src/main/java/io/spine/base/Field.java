@@ -30,11 +30,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.base.FieldPaths.checkName;
 import static io.spine.base.FieldPaths.checkNotEmpty;
 import static io.spine.base.FieldPaths.classOf;
 import static io.spine.base.FieldPaths.fieldIn;
 import static io.spine.base.FieldPaths.join;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A reference to a Protobuf message field.
@@ -105,18 +107,30 @@ public final class Field extends ValueHolder<FieldPath> {
      * @return the value of the field or empty {@code Optional} if the field is not defined
      *         in this type of messages
      */
-    public Optional<Object> valueIn(Message holder) {
+    public Optional<Object> findValue(Message holder) {
         Object value = FieldPaths.doGetValue(path(), holder, false);
         return Optional.ofNullable(value);
     }
 
+    /**
+     * Obtains the value of the field (which must exist) in the passed message.
+     *
+     * @throws IllegalStateException if the type of the passed message does not declare this field
+     */
+    public Object valueIn(Message holder) {
+        Object result = findValue(holder).orElseThrow(
+                () -> newIllegalStateException("Unable to get the field `%s` from `%s`.",
+                                               this, shortDebugString(holder))
+        );
+        return result;
+    }
     /**
      * Obtains a descriptor of the referenced field in the passed message type.
      *
      * @return the descriptor, if there is such a field in the passed type, or empty
      *  {@code Optional} if the field is not declared
      */
-    public Optional<FieldDescriptor> descriptorIn(Descriptor message) {
+    public Optional<FieldDescriptor> findDescriptor(Descriptor message) {
         @Nullable FieldDescriptor field = fieldIn(path(), message);
         return Optional.ofNullable(field);
     }
@@ -124,7 +138,7 @@ public final class Field extends ValueHolder<FieldPath> {
     /**
      * Obtains the type of the referenced field in the passed message class.
      */
-    public Optional<Class<?>> typeIn(Class<? extends Message> holderType) {
+    public Optional<Class<?>> findType(Class<? extends Message> holderType) {
         Descriptor message = TypeName.of(holderType).messageDescriptor();
         @Nullable FieldDescriptor field = fieldIn(path(), message);
         if (field == null) {

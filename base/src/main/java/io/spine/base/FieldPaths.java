@@ -121,7 +121,7 @@ public final class FieldPaths {
      *         the message from which to obtain a value of the field
      * @return the value of the field
      * @throws IllegalArgumentException if the passed message does not define such a field
-     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#valueIn(Message)}
+     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#findValue(Message)}
      */
     @Deprecated
     public static Object getValue(FieldPath path, Message holder) {
@@ -137,7 +137,7 @@ public final class FieldPaths {
      *
      * @return the value of the referenced field, or empty {@code Optional} if the full path
      *         cannot be found
-     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#valueIn(Message)}
+     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#findValue(Message)}
      */
     @Deprecated
     public static Optional<Object> find(FieldPath path, Message holder) {
@@ -232,7 +232,7 @@ public final class FieldPaths {
      * @param path
      *         the field path to search by
      * @return the class of the requested field
-     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#typeIn(Class)}
+     * @deprecated please use {@link Field#withPath(FieldPath)} and then {@link Field#findType(Class)}
      */
     @Deprecated
     public static Class<?> typeOfFieldAt(Class<? extends Message> holderType, FieldPath path) {
@@ -257,7 +257,7 @@ public final class FieldPaths {
      * Obtains the field descriptor referenced by the path.
      *
      * @deprecated please use {@link Field#withPath(FieldPath)} and then
-     * {@link Field#descriptorIn(com.google.protobuf.Descriptors.Descriptor) Field.descriptorIn()}
+     * {@link Field#findDescriptor(com.google.protobuf.Descriptors.Descriptor) Field.descriptorIn()}
      */
     @Deprecated
     @Internal
