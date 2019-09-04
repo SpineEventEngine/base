@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
@@ -47,6 +48,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * on this package. Thus, {@code GeneratedMixin} cannot be used for augmenting generated classes
  * that belong to it.
  */
+@Immutable
 public final class Field extends ValueHolder<FieldPath> {
 
     private static final long serialVersionUID = 0L;
