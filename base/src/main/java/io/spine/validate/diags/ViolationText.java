@@ -20,7 +20,8 @@
 
 package io.spine.validate.diags;
 
-import io.spine.base.FieldPaths;
+import io.spine.base.Field;
+import io.spine.base.FieldPath;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.Collection;
@@ -79,9 +80,10 @@ public final class ViolationText {
 
     private StringBuilder buildMessage() {
         String typeName = violation.getTypeName();
-
-        String fieldPath = FieldPaths.toString(violation.getFieldPath());
-
+        FieldPath path = violation.getFieldPath();
+        String fieldPath = path.getFieldNameCount() == 0
+                ? ""
+                : Field.withPath(path).toString();
         String format = violation.getMsgFormat();
         List<String> params = violation.getParamList();
         String formattedMessage = format(format, params.toArray());
