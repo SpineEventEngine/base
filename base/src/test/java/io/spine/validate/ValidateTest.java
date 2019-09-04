@@ -22,7 +22,7 @@ package io.spine.validate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import io.spine.base.FieldPaths;
+import io.spine.base.Field;
 import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;
@@ -290,7 +290,8 @@ class ValidateTest extends UtilityClassTest<Validate> {
                 String expectedTypeName = TypeName.of(newValue).value();
                 assertThat(violation.getTypeName()).contains(expectedTypeName);
 
-                assertThat(violation.getFieldPath()).isEqualTo(FieldPaths.parse(field));
+                assertThat(violation.getFieldPath())
+                        .isEqualTo(Field.parse(field).path());
             }
         }
     }
