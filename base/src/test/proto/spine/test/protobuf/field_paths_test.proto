@@ -28,4 +28,12 @@ message GenericHolder {
     StringHolderHolder holder_holder = 2;
     AnyHolder any = 3;
     GenericHolder generic = 4;
+    enum Count {
+        ZERO = 0;
+        ONE = 1;
+        TWO = 2;
+        THREE = 3;
+    }
+    Count count = 5;
+    int32 size = 6;
 }

@@ -24,8 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
 import com.google.protobuf.Timestamp;
-import io.spine.base.FieldPath;
-import io.spine.base.FieldPaths;
+import io.spine.base.Field;
 import io.spine.type.TypeName;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
@@ -58,13 +57,14 @@ class ViolationTextTest {
     @Test
     @DisplayName("include field info in the violation text")
     void includeField() {
-        FieldPath field = FieldPaths.parse("msg.foo.bar");
+        Field field = Field.parse("msg.foo.bar");
         ConstraintViolation violation = ConstraintViolation
                 .newBuilder()
-                .setFieldPath(field)
+                .setFieldPath(field.path())
                 .build();
         ViolationText text = ViolationText.of(violation);
-        assertThat(text.toString()).contains(FieldPaths.toString(field));
+        assertThat(text.toString())
+                .contains(field.toString());
     }
 
     @Test

@@ -33,13 +33,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.FieldPaths.getValue;
-import static io.spine.base.FieldPaths.parse;
-import static io.spine.base.FieldPaths.typeOfFieldAt;
 import static io.spine.protobuf.AnyPacker.pack;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SuppressWarnings("deprecation")// testing deprecated methods
 @DisplayName("FieldPaths should")
 class FieldPathsTest extends UtilityClassTest<FieldPaths> {
 
@@ -57,7 +55,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @DisplayName("parse simple path")
     void parseSimple() {
         String path = "val";
-        FieldPath parsed = parse(path);
+        FieldPath parsed = FieldPaths.parse(path);
         assertEquals(1 , parsed.getFieldNameCount());
         assertEquals(path , parsed.getFieldName(0));
     }
@@ -66,14 +64,14 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @DisplayName("parse long field paths")
     void parseLong() {
         String path = "holder_holder.holder.val";
-        FieldPath parsed = parse(path);
+        FieldPath parsed = FieldPaths.parse(path);
         assertThat(parsed.getFieldNameList()).containsExactly("holder_holder", "holder", "val");
     }
 
     @Test
     @DisplayName("not parse empty")
     void failToParseEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> parse(""));
+        assertThrows(IllegalArgumentException.class, () -> FieldPaths.parse(""));
     }
 
     @Test
@@ -83,8 +81,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .newBuilder()
                 .setVal("foobar")
                 .build();
-        FieldPath path = parse("val");
-        Object result = getValue(path, holder);
+        FieldPath path = FieldPaths.parse("val");
+        Object result = FieldPaths.getValue(path, holder);
         assertEquals(holder.getVal(), result);
     }
 
@@ -100,8 +98,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .newBuilder()
                 .setAny(anyHolder)
                 .build();
-        FieldPath pathToTypeUrl = parse("any.val.type_url");
-        Object actual = getValue(pathToTypeUrl, anyHolderHolder);
+        FieldPath pathToTypeUrl = FieldPaths.parse("any.val.type_url");
+        Object actual = FieldPaths.getValue(pathToTypeUrl, anyHolderHolder);
         assertEquals(value.getTypeUrl(), actual);
     }
 
@@ -125,8 +123,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .newBuilder()
                 .setGeneric(holder2)
                 .build();
-        FieldPath path = parse("generic.holder_holder.holder.val");
-        Object actual = getValue(path, holder3);
+        FieldPath path = FieldPaths.parse("generic.holder_holder.holder.val");
+        Object actual = FieldPaths.getValue(path, holder3);
         assertEquals(value, actual);
     }
 
@@ -134,9 +132,9 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @DisplayName("fail when trying to obtain a value at an empty path")
     void notAllowEmptyPaths() {
         assertThrows(IllegalArgumentException.class,
-                     () -> getValue(FieldPath.getDefaultInstance(), Empty.getDefaultInstance()));
+                     () -> FieldPaths.getValue(FieldPath.getDefaultInstance(), Empty.getDefaultInstance()));
         assertThrows(IllegalArgumentException.class,
-                     () -> typeOfFieldAt(Empty.class, FieldPath.getDefaultInstance()));
+                     () -> FieldPaths.typeOfFieldAt(Empty.class, FieldPath.getDefaultInstance()));
     }
 
     @Test
@@ -147,8 +145,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .newBuilder()
                 .setVal(value)
                 .build();
-        FieldPath wrongPath = parse("wrong_field_name");
-        assertThrows(IllegalArgumentException.class, () -> getValue(wrongPath, holder));
+        FieldPath wrongPath = FieldPaths.parse("wrong_field_name");
+        assertThrows(IllegalArgumentException.class, () -> FieldPaths.getValue(wrongPath, holder));
     }
 
     @Test
@@ -159,37 +157,37 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .newBuilder()
                 .setVal(value)
                 .build();
-        FieldPath wrongPath = parse("val.this_field_is_absent");
-        assertThrows(IllegalArgumentException.class, () -> getValue(wrongPath, holder));
+        FieldPath wrongPath = FieldPaths.parse("val.this_field_is_absent");
+        assertThrows(IllegalArgumentException.class, () -> FieldPaths.getValue(wrongPath, holder));
     }
 
     @Test
     @DisplayName("obtain a field type")
     void findTypeByPath() {
-        FieldPath path = parse("holder_holder.holder");
-        assertEquals(StringHolder.class, typeOfFieldAt(GenericHolder.class, path));
+        FieldPath path = FieldPaths.parse("holder_holder.holder");
+        assertEquals(StringHolder.class, FieldPaths.typeOfFieldAt(GenericHolder.class, path));
     }
 
     @Test
     @DisplayName("fail if the type lookup reaches a primitive value")
     void failOnMissingFieldInTypeLookup() {
-        FieldPath wrongPath = parse("val.non_existing_field");
+        FieldPath wrongPath = FieldPaths.parse("val.non_existing_field");
         assertThrows(IllegalArgumentException.class,
-                     () -> typeOfFieldAt(StringHolder.class, wrongPath));
+                     () -> FieldPaths.typeOfFieldAt(StringHolder.class, wrongPath));
     }
 
     @Test
     @DisplayName("fail if the path to find a type by contains a typo")
     void failOnTypoInFieldPathInTypeLookup() {
-        FieldPath wrongPath = parse("generic.hldr");
+        FieldPath wrongPath = FieldPaths.parse("generic.hldr");
         assertThrows(IllegalArgumentException.class,
-                     () -> typeOfFieldAt(GenericHolder.class, wrongPath));
+                     () -> FieldPaths.typeOfFieldAt(GenericHolder.class, wrongPath));
     }
 
     @Test
     @DisplayName("lookup recursive types")
     void recursiveTypeLookup() {
-        FieldPath path = parse("generic.generic.generic.generic.generic");
-        assertEquals(GenericHolder.class, typeOfFieldAt(GenericHolder.class, path));
+        FieldPath path = FieldPaths.parse("generic.generic.generic.generic.generic");
+        assertEquals(GenericHolder.class, FieldPaths.typeOfFieldAt(GenericHolder.class, path));
     }
 }
