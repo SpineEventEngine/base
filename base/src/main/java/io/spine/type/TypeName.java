@@ -136,16 +136,34 @@ public final class TypeName extends StringTypeValue {
 
     /**
      * Returns a message {@link Class} corresponding to the Protobuf message type represented
-     * by this type URL.
+     * by this type name.
      *
-     * <p>This is a convenience method. Use it only when you are sure that the {@link TypeUrl}
+     * <p>This is a convenience method. Use it only when you are sure that the name
      * represents a {@code Message} and is not an enum.
      *
-     * @throws IllegalStateException if the type URL represents an enum
+     * @param <T> the type of the message
+     * @throws UnknownTypeException if the type is not found among known types
      */
     public <T extends Message> Class<T> toMessageClass() throws UnknownTypeException {
         Class<?> cls = toJavaClass();
         checkState(Message.class.isAssignableFrom(cls));
+        @SuppressWarnings("unchecked")
+        Class<T> result = (Class<T>) cls;
+        return result;
+    }
+
+    /**
+     * Returns an enum class corresponding to this type name.
+     *
+     * <p>This is a convenience method. Use it only when you are sure that the name
+     * represents an enum not a {@code Message}.
+     *
+     * @param <T> the type of the enum
+     * @throws UnknownTypeException if the type is not found among known types
+     */
+    public <T extends Enum<?>> Class<T> toEnumClass() throws UnknownTypeException {
+        Class<?> cls = toJavaClass();
+        checkState(Enum.class.isAssignableFrom(cls));
         @SuppressWarnings("unchecked")
         Class<T> result = (Class<T>) cls;
         return result;
