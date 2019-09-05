@@ -26,6 +26,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.test.protobuf.AnyHolder;
 import io.spine.test.protobuf.GenericHolder;
+import io.spine.test.protobuf.GenericHolder.Count;
 import io.spine.test.protobuf.StringHolder;
 import io.spine.test.protobuf.StringHolderHolder;
 import org.junit.jupiter.api.BeforeEach;
@@ -193,6 +194,19 @@ class FieldTest {
         }
 
         @Test
+        @DisplayName("if the value is enum")
+        void enumValue() {
+            GenericHolder holder = GenericHolder
+                    .newBuilder()
+                    .setCount(Count.TWO)
+                    .build();
+
+            Field field = Field.parse("count");
+            assertThat(field.valueIn(holder))
+                    .isEqualTo(Count.TWO);
+        }
+
+        @Test
         @DisplayName("throwing `ISE` if missed and getting directly")
         void directFailure() {
             assertThrows(IllegalStateException.class, () -> missingField.valueIn(message));
@@ -245,14 +259,14 @@ class FieldTest {
         }
 
         @Test
-        @DisplayName("for primitives")
+        @DisplayName("for enums")
         void primitiveType() {
             Truth8.assertThat(Field.named("count").findType(GenericHolder.class))
-                  .hasValue(GenericHolder.Count.class);
+                  .hasValue(Count.class);
         }
 
         @Test
-        @DisplayName("for enums")
+        @DisplayName("for primitives")
         void enumType() {
             Truth8.assertThat(Field.named("size").findType(GenericHolder.class))
                   .hasValue(int.class);

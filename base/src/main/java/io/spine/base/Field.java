@@ -25,6 +25,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.ScalarType;
@@ -229,6 +231,8 @@ public final class Field extends ValueHolder<FieldPath> {
                 return null;
             }
             currentValue = message.getField(field);
+            currentValue = convertIfEnum(currentValue);
+
             if (currentValue instanceof Message) {
                 message = (Message) currentValue;
             } else {
@@ -249,6 +253,28 @@ public final class Field extends ValueHolder<FieldPath> {
             }
         }
         return currentValue;
+    }
+
+    /**
+     * If the passed value is {@code EnumValueDescriptor} converts it to the corresponding
+     * Java enum value. Otherwise, returns the passed value.
+     *
+     * <p>{@link Message#getField(FieldDescriptor)} returns {@code EnumValueDescriptor} if
+     * a field of a message is an enum value. This descriptor contains information about the
+     * the value of the enum. This method converts this value into an instance of a generated
+     * Java {@link Enum} which corresponds to the enum proto type of the field.
+     */
+    private static Object convertIfEnum(Object currentValue) {
+        if (!(currentValue instanceof EnumValueDescriptor)) {
+            return currentValue;
+        }
+        EnumValueDescriptor value = (EnumValueDescriptor) currentValue;
+        EnumDescriptor enumType = value.getType();
+        TypeName typeName = TypeName.of(enumType.getFullName());
+        Class<? extends Enum> cls = typeName.toEnumClass();
+        @SuppressWarnings("unchecked") // The generic arg. of the enum is of no importance here.
+        Enum enumValue = Enum.valueOf(cls, value.getName());
+        return enumValue;
     }
 
     /**
