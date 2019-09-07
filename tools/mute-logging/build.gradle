@@ -24,6 +24,4 @@ dependencies {
     implementation project(':base')
     implementation project(':testlib')
     implementation deps.test.junit5Api
-
-    testImplementation deps.test.slf4j
 }

@@ -25,5 +25,4 @@ dependencies {
     implementation deps.gen.javaPoet
 
     testImplementation project(':testlib')
-    testImplementation deps.test.slf4j
 }

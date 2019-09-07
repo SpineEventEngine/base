@@ -194,12 +194,6 @@ all modules and does not describe the project structure per-subproject.
     <scope>test</scope>
   </dependency>
   <dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-jdk14</artifactId>
-    <version>1.7.26</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
     <groupId>com.google.auto.service</groupId>
     <artifactId>auto-service</artifactId>
     <version>1.0-rc5</version>
