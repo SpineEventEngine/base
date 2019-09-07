@@ -37,7 +37,6 @@ dependencies {
     // ErrorProne Annotations is part of our API.
     api deps.build.errorProneAnnotations
 
-    testImplementation deps.test.slf4j
     testImplementation project(path: ":testlib")
     testImplementation project(path: ":mute-logging")
 }
