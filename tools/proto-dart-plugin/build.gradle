@@ -21,17 +21,8 @@
 group 'io.spine.tools'
 
 dependencies {
-    implementation project(':base')
     implementation project(':plugin-base')
     implementation deps.build.gradlePlugins.protobuf
-
-    testProtobuf project(':base')
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation gradleTestKit()
-
-    testImplementation deps.test.junit5Api
-    testImplementation deps.test.junit5Runner
 }
 
 protobuf {
