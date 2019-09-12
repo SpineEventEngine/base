@@ -23,6 +23,7 @@ package io.spine.tools.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 
+import java.util.Collection;
 import java.util.Deque;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -44,9 +45,10 @@ public final class ProjectHierarchy {
      *
      * <p>The action is applied in the breadth-first order from the root project to the subprojects.
      *
-     * @param rootProject {@linkplain Project#getRootProject() the root project} of a Gradle project
-     *                    hierarchy
-     * @param action      the action to apply to each project in the hierarchy
+     * @param rootProject
+     *         {@linkplain Project#getRootProject() the root project} of a Gradle project hierarchy
+     * @param action
+     *         the action to apply to each project in the hierarchy
      */
     public static void applyToAll(Project rootProject, Action<Project> action) {
         checkNotNull(rootProject);
@@ -55,12 +57,20 @@ public final class ProjectHierarchy {
                       "Passed project %s is not the root project. ",
                       rootProject.getPath());
         action.execute(rootProject);
-        Deque<Project> subprojects = newLinkedList(rootProject.getSubprojects());
+        Deque<Project> subprojects = newLinkedList(directChildren(rootProject));
         while (!subprojects.isEmpty()) {
             Project current = subprojects.poll();
             checkNotNull(current);
             action.execute(current);
-            subprojects.addAll(current.getSubprojects());
+            subprojects.addAll(directChildren(current));
         }
+    }
+
+    /**
+     * Obtains the direct children of the given project.
+     */
+    private static Collection<Project> directChildren(Project project) {
+        return project.getChildProjects()
+                      .values();
     }
 }

@@ -25,20 +25,15 @@ import io.spine.testing.UtilityClassTest;
 import io.spine.tools.gradle.testing.NoOp;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @DisplayName("ProjectHierarchy should")
 class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
@@ -50,47 +45,53 @@ class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
     @Override
     protected void configure(NullPointerTester tester) {
         super.configure(tester);
-        tester.setDefault(Project.class, mock(Project.class))
-              .setDefault(Action.class, mock(Action.class));
+        tester.setDefault(Project.class, newProject("some-name"))
+              .setDefault(Action.class, NoOp.action());
     }
 
     @Test
     @DisplayName("traverse hierarchy in bf ordering")
     void traverseHierarchyInBfOrdering() {
-        Project root = mock(Project.class);
-        Project sub1 = mock(Project.class);
-        Project sub2 = mock(Project.class);
-        Project subsub1 = mock(Project.class);
-        Project subsub2 = mock(Project.class);
+        Project root = newProject("root");
 
-        when(root.getSubprojects()).thenReturn(newHashSet(sub1, sub2));
-        when(sub1.getSubprojects()).thenReturn(newHashSet(subsub1, subsub2));
-        when(sub2.getSubprojects()).thenReturn(emptySet());
-        when(subsub1.getSubprojects()).thenReturn(emptySet());
-        when(subsub2.getSubprojects()).thenReturn(emptySet());
+        Project sub1 = withParent(root, "sub1");
+        Project sub2 = withParent(root, "sub2");
 
-        when(root.getRootProject()).thenReturn(root);
+        Project subsub1 = withParent(sub1, "subsub1");
+        Project subsub2 = withParent(sub1, "subsub2");
 
         Set<Project> visited = newHashSet();
         ProjectHierarchy.applyToAll(root, project -> {
-            assertFalse(visited.contains(project));
+            assertThat(visited).doesNotContain(project);
             for (Project child : project.getSubprojects()) {
-                assertFalse(visited.contains(child));
+                assertThat(visited).doesNotContain(child);
             }
             visited.add(project);
         });
 
-        assertTrue(visited.containsAll(asList(root, sub1, sub2, subsub1, subsub2)));
-        assertEquals(5, visited.size());
+        assertThat(visited).containsExactly(root, sub1, sub2, subsub1, subsub2);
+        assertThat(visited).hasSize(5);
     }
 
     @Test
     @DisplayName("not accept non root projects")
     void notAcceptNonRootProjects() {
-        Project project = mock(Project.class);
-        when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
+        Project project = newProject("root");
+        Project sub = withParent(project, "sub");
         assertThrows(IllegalArgumentException.class,
-                     () -> ProjectHierarchy.applyToAll(project, NoOp.action()));
+                     () -> ProjectHierarchy.applyToAll(sub, NoOp.action()));
     }
 
+    private static Project newProject(String name) {
+        return ProjectBuilder.builder()
+                             .withName(name)
+                             .build();
+    }
+
+    private static Project withParent(Project parent, String name) {
+        return ProjectBuilder.builder()
+                             .withName(name)
+                             .withParent(parent)
+                             .build();
+    }
 }
