@@ -31,7 +31,7 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
  */
-public class PreprocessorConfigurer {
+public final class PreprocessorConfigurer {
 
     private final Project project;
 

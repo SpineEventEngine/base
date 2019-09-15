@@ -28,7 +28,6 @@ dependencies {
     api deps.test.junit5Api
     api deps.test.truth
     api deps.test.guavaTestlib
-    api deps.test.mockito
     api deps.test.hamcrest
 }
 

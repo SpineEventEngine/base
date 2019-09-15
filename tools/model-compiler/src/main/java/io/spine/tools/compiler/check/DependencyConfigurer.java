@@ -45,9 +45,10 @@ import static io.spine.tools.gradle.ConfigurationName.classpath;
  * <p>The class manages dependencies of the given {@link Configuration} for the given
  * {@link Project}.
  */
-public class DependencyConfigurer implements Logging {
+public final class DependencyConfigurer implements Logging {
 
-    private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
+    @VisibleForTesting
+    public static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
 
     @VisibleForTesting
     static final String SPINE_CHECKER_MODULE = "spine-errorprone-checks";
