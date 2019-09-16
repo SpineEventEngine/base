@@ -45,8 +45,7 @@ import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
  */
 public final class SeverityConfigurer implements Logging {
 
-    @VisibleForTesting
-    static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
+    private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     private final Project project;
     private @Nullable Boolean hasErrorProneChecksPlugin;
