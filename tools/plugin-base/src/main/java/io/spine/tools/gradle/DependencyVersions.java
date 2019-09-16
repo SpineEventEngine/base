@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
- * Versions of dependencies required by Spine Protoc compiler configuration.
+ * Versions of the dependencies that are used by Spine plugins.
  *
  * @see ProtocConfigurationPlugin
  */
