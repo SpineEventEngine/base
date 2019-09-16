@@ -35,8 +35,8 @@ import static com.google.common.truth.Truth.assertThat;
  * <p>Can be configured to contain real dependencies, repositories, etc. according to the test
  * needs.
  *
- * <p>NOTE: the real dependencies and their resolution in unit tests will often lead to relatively
- * long execution times, the {@link io.spine.testing.SlowTest} annotation should be used for such
+ * <p>NOTE: the real dependencies and their resolution in tests will often lead to relatively long
+ * execution times, the {@link io.spine.testing.SlowTest} annotation should be used for such
  * test cases.
  */
 public final class Project {
@@ -72,7 +72,7 @@ public final class Project {
     /**
      * Configures the project to contain the specified Maven repository.
      *
-     * <p>Also adds {@code mavenCentral()} repository by default for convenience.
+     * <p>Also adds {@code mavenCentral()} repository by default.
      *
      * @return self for method chaining
      */

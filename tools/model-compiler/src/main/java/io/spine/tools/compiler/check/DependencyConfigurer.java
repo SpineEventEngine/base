@@ -64,8 +64,10 @@ public final class DependencyConfigurer implements Logging {
     /**
      * Create the {@code DependencyConfigurer} for the given project and configuration.
      *
-     * @param project       the project
-     * @param configuration the configuration
+     * @param project
+     *         the project
+     * @param configuration
+     *         the configuration
      * @return the {@code DependencyConfigurer} instance
      */
     public static DependencyConfigurer createFor(Project project, Configuration configuration) {

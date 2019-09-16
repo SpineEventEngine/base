@@ -57,7 +57,8 @@ public final class SeverityConfigurer implements Logging {
     /**
      * Create the {@code SeverityConfigurer} instance for the given project.
      *
-     * @param project the project
+     * @param project
+     *         the project
      * @return the {@code SeverityConfigurer} instance
      */
     public static SeverityConfigurer initFor(Project project) {
