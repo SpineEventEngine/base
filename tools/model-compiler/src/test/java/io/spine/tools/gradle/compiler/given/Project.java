@@ -72,7 +72,7 @@ public final class Project {
     /**
      * Configures the project to contain the specified Maven repository.
      *
-     * <p>Also adds {@code mavenCentral()} repository by default.
+     * <p>Also adds the {@code mavenCentral()} repository by default.
      *
      * @return self for method chaining
      */
