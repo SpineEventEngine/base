@@ -37,9 +37,13 @@ import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.Project.newProject;
 
-// TODO:2019-09-15:dmytro.kuzmin: This test configures the project with real dependencies and
-//  repositories which leads to a slow test execution. In future, it should be removed in favor of
-//  proper integration tests for the `spine-errorprone-checks` plugin.
+/**
+ * A test for the {@link DependencyConfigurer} part of the Spine Error Prone Checks plugin.
+ *
+ * @implNote This test configures the project with real dependencies and repositories which leads
+ *         to a slow test execution. In future, it should be removed in favor of proper integration
+ *         tests for the `spine-errorprone-checks` plugin.
+ */
 @SuppressWarnings("CheckReturnValue")
 // We ignore boolean "success" flag which is not interesting for us in this test.
 @SlowTest
