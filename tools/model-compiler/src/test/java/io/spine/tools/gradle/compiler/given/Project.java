@@ -20,14 +20,7 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import io.spine.tools.gradle.ConfigurationName;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.gradle.api.initialization.dsl.ScriptHandler;
-
-import static com.google.common.truth.Truth.assertThat;
 
 /**
  * A configurable Gradle project.
@@ -55,31 +48,15 @@ public final class Project {
     }
 
     /**
-     * Configures the project to contain a specified buildscript dependency within the specified
-     * configuration.
+     * Configures the project to contain the {@code mavenCentral()} and {@code mavenLocal()}
+     * repositories for proper dependency resolution.
      *
      * @return self for method chaining
      */
-    public Project
-    withBuildscriptDependency(Dependency dependency, ConfigurationName configuration) {
-        Configuration config = buildscriptConfiguration(configuration);
-        assertThat(config).isNotNull();
-        config.getDependencies()
-              .add(dependency);
-        return this;
-    }
-
-    /**
-     * Configures the project to contain the specified Maven repository.
-     *
-     * <p>Also adds the {@code mavenCentral()} repository by default.
-     *
-     * @return self for method chaining
-     */
-    public Project withMavenRepository(String repositoryUrl) {
+    public Project withMavenRepositories() {
         RepositoryHandler repositories = project.getRepositories();
         repositories.mavenCentral();
-        repositories.maven(repository -> repository.setUrl(repositoryUrl));
+        repositories.mavenLocal();
         return this;
     }
 
@@ -88,13 +65,5 @@ public final class Project {
      */
     public org.gradle.api.Project get() {
         return project;
-    }
-
-    private Configuration buildscriptConfiguration(ConfigurationName configuration) {
-        ScriptHandler buildscript = project.getRootProject()
-                                           .getBuildscript();
-        ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration config = configurations.findByName(configuration.value());
-        return config;
     }
 }

@@ -108,3 +108,5 @@ copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publish
 compileTestJava {
     dependsOn copyProtocPluginTestArtifact
 }
+
+test.dependsOn project(':errorprone-checks').publishToMavenLocal

@@ -39,6 +39,8 @@ public final class DependencyVersions {
 
     private static final String RESOURCE_NAME = "/versions.properties";
 
+    private static final DependencyVersions INSTANCE = load();
+
     private final String spineBase;
     private final String protobuf;
     private final String grpc;
@@ -50,9 +52,16 @@ public final class DependencyVersions {
     }
 
     /**
+     * Obtains the {@code DependencyVersions} instance.
+     */
+    public static DependencyVersions get() {
+        return INSTANCE;
+    }
+
+    /**
      * Loads the versions from {@code versions.properties} resource file.
      */
-    static DependencyVersions load() {
+    private static DependencyVersions load() {
          try (InputStream resource = DependencyVersions.class.getResourceAsStream(RESOURCE_NAME)) {
              checkNotNull(resource, "%s is not available.", RESOURCE_NAME);
              Reader reader = new InputStreamReader(resource, UTF_8);
@@ -73,14 +82,14 @@ public final class DependencyVersions {
     /**
      * Obtains the version of Spine base, Spine model-compiler plugin, and Spine Protoc plugin.
      */
-    String spineBase() {
+    public String spineBase() {
         return spineBase;
     }
 
     /**
      * Obtains the version of Protobuf.
      */
-    String protobuf() {
+    public String protobuf() {
         return protobuf;
     }
 

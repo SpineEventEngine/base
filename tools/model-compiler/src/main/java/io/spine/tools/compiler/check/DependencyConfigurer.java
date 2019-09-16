@@ -22,83 +22,56 @@ package io.spine.tools.compiler.check;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.logging.Logging;
-import org.gradle.api.Project;
+import io.spine.tools.gradle.DependencyVersions;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
-import org.gradle.api.initialization.dsl.ScriptHandler;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.gradle.ConfigurationName.classpath;
 
 /**
- * Class which helps managing dependencies related to the Spine Error Prone Checks module and the
- * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin}.
- *
- * <p>The class manages dependencies of the given {@link Configuration} for the given
- * {@link Project}.
+ * Adds a {@code spine-errorprone-checks} dependency to the given project {@link Configuration}.
  */
 public final class DependencyConfigurer implements Logging {
 
     @VisibleForTesting
-    static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
-
-    @VisibleForTesting
     static final String SPINE_CHECKER_MODULE = "spine-errorprone-checks";
 
-    private final Project project;
     private final Configuration configuration;
 
-    private DependencyConfigurer(Project project, Configuration configuration) {
-        this.project = project;
+    private DependencyConfigurer(Configuration configuration) {
         this.configuration = configuration;
     }
 
     /**
-     * Create the {@code DependencyConfigurer} for the given project and configuration.
+     * Create the {@code DependencyConfigurer} for the given project {@link Configuration}.
      *
-     * @param project
-     *         the project
      * @param configuration
      *         the configuration
      * @return the {@code DependencyConfigurer} instance
      */
-    public static DependencyConfigurer createFor(Project project, Configuration configuration) {
-        checkNotNull(project);
+    public static DependencyConfigurer createFor(Configuration configuration) {
         checkNotNull(configuration);
-        return new DependencyConfigurer(project, configuration);
+        return new DependencyConfigurer(configuration);
     }
 
     /**
      * Adds the {@code io.spine.tools.spine-errorprone-checks} dependency to the project
      * configuration.
      *
-     * <p>The version of the dependency used is the same as the version of the
-     * {@code spine-model-compiler} plugin used by the project.
-     *
-     * <p>If the {@code spine-model-compiler} version cannot be acquired or the
-     * {@code spine-errorprone-checks} version is not resolvable, the method does nothing and
-     * returns {@code false}.
+     * <p>If the dependency cannot be resolved, the method does nothing and returns {@code false}.
      *
      * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
      */
     public boolean addErrorProneChecksDependency() {
-        Optional<String> versionToUse = acquireModelCompilerVersion();
-        if (!versionToUse.isPresent()) {
-            _debug().log("Can't acquire model compiler version for the project `%s`.",
-                        project.getName());
-            return false;
-        }
-        String version = versionToUse.get();
+        DependencyVersions dependencyVersions = DependencyVersions.get();
+        String version = dependencyVersions.spineBase();
 
-        boolean isResolvable = isChecksVersionResolvable(version);
+        boolean isResolvable = isDependencyResolvable(version);
         if (isResolvable) {
             dependOnErrorProneChecks(version, configuration);
         }
@@ -106,39 +79,12 @@ public final class DependencyConfigurer implements Logging {
     }
 
     /**
-     * Gets the {@code spine-model-compiler} dependency version from the
-     * {@code project.buildsript.classpath} configuration.
+     * Checks if the given {@code spine-errorprone-checks} dependency version is resolvable.
      *
-     * <p>If the dependency version is not found, returns {@link Optional#empty()}.
+     * <p>Uses the configuration copy because the configuration resolution is the irreversible
+     * action that can be done only once for any given {@link Configuration}.
      */
-    @VisibleForTesting
-    Optional<String> acquireModelCompilerVersion() {
-        ScriptHandler buildscript = project.getRootProject()
-                                           .getBuildscript();
-        ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration classpathConfig = configurations.findByName(classpath.value());
-        if (classpathConfig == null) {
-            return Optional.empty();
-        }
-        DependencySet classpathDependencies = classpathConfig.getDependencies();
-        Optional<String> version = Optional.empty();
-        for (Dependency dependency : classpathDependencies) {
-            if (MODEL_COMPILER_PLUGIN_NAME.equals(dependency.getName())) {
-                String dependencyVersion = dependency.getVersion();
-                version = Optional.ofNullable(dependencyVersion);
-            }
-        }
-        return version;
-    }
-
-    /**
-     * Checks if the given {@code spine-errorprone-checks} dependency is resolvable for the project
-     * configuration.
-     *
-     * <p>Uses the configuration copy to not resolve the given configuration itself.
-     */
-    @VisibleForTesting
-    boolean isChecksVersionResolvable(String version) {
+    private boolean isDependencyResolvable(String version) {
         Configuration configCopy = configuration.copy();
         dependOnErrorProneChecks(version, configCopy);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
