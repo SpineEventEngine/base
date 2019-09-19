@@ -18,32 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+import "package:protobuf/builder_info.dart";
+import "package:protobuf/generated_message.dart";
 
-include 'base'
+// $import$
 
-include 'testlib'
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
-}
+Map<string, BuilderInfo> _typeUrlToInfo = {
+  // $type-to-info$
 
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
+};
 
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
+Map<GeneratedMessage, string> _defaultToTypeUrl = {
+  // $message-to-type$
 
-module 'proto-js-plugin'
-module 'proto-dart-plugin'
-
-module 'protoc-api'
-module 'protoc-plugin'
+};

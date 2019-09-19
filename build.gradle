@@ -116,13 +116,6 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
-    // Set Java home to point to JDK8 in gradle.properties file.
-    //
-    // For Mac OS X, it looks like this:
-    //
-    // # suppress inspection "UnusedProperty"
-    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/
-
     defaultRepositories(project)
     dependencies {
         errorprone deps.build.errorProneCore

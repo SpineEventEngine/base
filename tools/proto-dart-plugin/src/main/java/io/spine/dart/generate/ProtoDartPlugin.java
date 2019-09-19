@@ -18,32 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.dart.generate;
 
-include 'base'
+import io.spine.tools.gradle.SpinePlugin;
+import org.gradle.api.Project;
 
-include 'testlib'
+public class ProtoDartPlugin extends SpinePlugin {
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
+    @Override
+    public void apply(Project project) {
+        Extension extension = new Extension(project);
+        project.getExtensions()
+               .add(Extension.class, Extension.NAME, extension);
+
+    }
 }
-
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
-
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
-
-module 'proto-js-plugin'
-module 'proto-dart-plugin'
-
-module 'protoc-api'
-module 'protoc-plugin'
