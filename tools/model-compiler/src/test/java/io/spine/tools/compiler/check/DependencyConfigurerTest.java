@@ -21,91 +21,80 @@
 package io.spine.tools.compiler.check;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.testing.SlowTest;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static io.spine.tools.gradle.compiler.given.Project.newProject;
 
-@SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+/**
+ * A test for the {@link DependencyConfigurer} part of the Spine Error Prone Checks plugin.
+ *
+ * @implNote This test configures the project with real dependencies and repositories which leads
+ *         to a slow test execution. In future, it should be removed in favor of proper integration
+ *         tests for the `spine-errorprone-checks` plugin.
+ */
+@SuppressWarnings("CheckReturnValue")
 // We ignore boolean "success" flag which is not interesting for us in this test.
+@SlowTest
 @DisplayName("DependencyConfigurer should")
 class DependencyConfigurerTest {
 
-    private static final String STUB_VERSION = "versionStub";
-
-    private Configuration annotationProcessorConfig;
-    private DependencyConfigurer helper;
-    private DependencyConfigurer helperMock;
-
-    @BeforeEach
-    void setUp() {
-        Project project = newProject();
-        ConfigurationContainer configs = project.getConfigurations();
-        annotationProcessorConfig = configs.getByName(annotationProcessor.value());
-        helper = DependencyConfigurer.createFor(project, annotationProcessorConfig);
-        helperMock = spy(helper);
-    }
-
     @Test
-    @DisplayName("pass null tolerance check")
+    @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
-        new NullPointerTester().testAllPublicInstanceMethods(helper);
+        new NullPointerTester().testAllPublicInstanceMethods(createFor(newProject().get()));
     }
 
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
-        when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
-        when(helperMock.isChecksVersionResolvable(any())).thenReturn(true);
+        Project project = newProject()
+                .withMavenRepositories()
+                .get();
+        addDependency(project);
 
-        helperMock.addErrorProneChecksDependency();
-
-        boolean hasDependency = hasErrorProneChecksDependency();
-        assertTrue(hasDependency);
+        boolean hasDependency = hasErrorProneChecksDependency(project);
+        assertThat(hasDependency).isTrue();
     }
 
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
-        when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
-        when(helperMock.isChecksVersionResolvable(any())).thenReturn(false);
+        Project project = newProject()
+                .get();
+        addDependency(project);
 
-        helperMock.addErrorProneChecksDependency();
-
-        boolean hasDependency = hasErrorProneChecksDependency();
-        assertFalse(hasDependency);
+        boolean hasDependency = hasErrorProneChecksDependency(project);
+        assertThat(hasDependency).isFalse();
     }
 
-    @Test
-    @DisplayName("not add spine check dependency if model compiler dependency not available")
-    void notAddSpineCheckDependencyIfModelCompilerDependencyNotAvailable() {
-        when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.empty());
-
-        helperMock.addErrorProneChecksDependency();
-
-        boolean hasDependency = hasErrorProneChecksDependency();
-        assertFalse(hasDependency);
+    private static void addDependency(Project project) {
+        DependencyConfigurer configurer = createFor(project);
+        configurer.addErrorProneChecksDependency();
     }
 
-    private boolean hasErrorProneChecksDependency() {
-        DependencySet dependencies = annotationProcessorConfig.getDependencies();
+    private static DependencyConfigurer createFor(Project project) {
+        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
+        DependencyConfigurer configurer =
+                DependencyConfigurer.createFor(annotationProcessorConfig);
+        return configurer;
+    }
+
+    private static boolean hasErrorProneChecksDependency(Project project) {
+        Configuration config = annotationProcessorConfig(project);
+        DependencySet dependencies = config.getDependencies();
         for (Dependency dependency : dependencies) {
             if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
                     SPINE_CHECKER_MODULE.equals(dependency.getName())) {
@@ -113,5 +102,10 @@ class DependencyConfigurerTest {
             }
         }
         return false;
+    }
+
+    private static Configuration annotationProcessorConfig(Project project) {
+        ConfigurationContainer configs = project.getConfigurations();
+        return configs.getByName(annotationProcessor.value());
     }
 }
