@@ -42,7 +42,6 @@ module 'javadoc-filter'
 module 'javadoc-prettifier'
 module 'model-compiler'
 
-module 'proto-dart-plugin'
 module 'proto-js-plugin'
 
 module 'protoc-api'

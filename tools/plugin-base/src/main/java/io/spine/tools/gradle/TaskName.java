@@ -140,7 +140,11 @@ public enum TaskName {
      *
      * <p>Works only with the {@code test} scope descriptors.
      */
-    writeTestDescriptorReference;
+    writeTestDescriptorReference,
+
+    generateDartExport,
+
+    copyTestDescriptorToDartPackage;
 
     /**
      * Obtains the name of the task.
