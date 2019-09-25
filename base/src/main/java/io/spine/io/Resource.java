@@ -31,8 +31,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -135,8 +137,20 @@ public final class Resource {
      * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
      * stream.
      */
+    public Reader openAsText(Charset charset) {
+        return new InputStreamReader(open(), charset);
+    }
+
+    /**
+     * Reads this resource as UTF-8 text.
+     *
+     * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
+     * stream.
+     *
+     * @see #openAsText(Charset)
+     */
     public Reader openAsText() {
-        return new InputStreamReader(open());
+        return openAsText(UTF_8);
     }
 
     private void checkFound(@Nullable Object resourceHandle) {

@@ -48,8 +48,8 @@ public class ProtoDartPlugin extends SpinePlugin {
             File descriptorsFile = extension.getMainDescriptorSet()
                                             .get()
                                             .getAsFile();
-            TypesTemplate typesTemplate = TypesTemplate.instance(
-                    Resource.file("types.template.dart"), descriptorsFile);
+            Resource template = Resource.file("types.template.dart");
+            TypesTemplate typesTemplate = TypesTemplate.instance(template, descriptorsFile);
             typesTemplate.addimports(extension.getPackageName().get());
             typesTemplate.addmap1();
             typesTemplate.addmap2();
