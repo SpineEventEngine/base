@@ -31,26 +31,24 @@ import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
-public final class SourceFile {
-
-    private static final String NAME = "types.dart";
+public final class GeneratedDartFile {
 
     private final String content;
 
-    SourceFile(String content) {
+    public GeneratedDartFile(String content) {
         this.content = checkNotNull(content);
     }
 
-    void storeIn(File directory) {
-        checkNotNull(directory);
-        File file = new File(directory, NAME);
-        if (file.exists()) {
-            throw newIllegalStateException("Cannot over-write file %s.", file);
+    public void writeTo(File target) {
+        checkNotNull(target);
+        if (target.exists()) {
+            throw newIllegalStateException("Cannot over-write file %s.", target);
         }
         try {
-            createParentDirs(file);
-            file.createNewFile();
-            Files.asCharSink(file, UTF_8).write(content);
+            createParentDirs(target);
+            target.createNewFile();
+            Files.asCharSink(target, UTF_8)
+                 .write(content);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }

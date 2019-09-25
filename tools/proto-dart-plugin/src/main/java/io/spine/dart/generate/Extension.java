@@ -21,43 +21,56 @@
 package io.spine.dart.generate;
 
 import org.gradle.api.Project;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
+
+import java.io.File;
 
 public final class Extension {
 
     static final String NAME = "protoDart";
 
-    private final RegularFileProperty mainDescriptorSet;
-    private final DirectoryProperty destinationDir;
+    private final RegularFileProperty descriptorSet;
+    private final RegularFileProperty destination;
     private final Property<String> packageName;
 
     Extension(Project project) {
         ObjectFactory objects = project.getObjects();
-        this.mainDescriptorSet = objects.fileProperty();
-        mainDescriptorSet.convention(project.getLayout()
-                                            .getBuildDirectory()
-                                            .file("descriptors/main.desc"));
-        this.destinationDir = objects.directoryProperty();
-        destinationDir.convention(project.getLayout()
-                                         .getProjectDirectory()
-                                         .dir("lib"));
+        this.descriptorSet = objects.fileProperty();
+        descriptorSet.convention(project.getLayout()
+                                        .getBuildDirectory()
+                                        .file("descriptors/main.desc"));
+        this.destination = objects.fileProperty();
+        destination.convention(project.getLayout()
+                                      .getProjectDirectory()
+                                      .file("lib/types.dart"));
         this.packageName = objects.property(String.class);
         packageName.convention(project.getProjectDir()
                                       .getName());
     }
 
-    public RegularFileProperty getMainDescriptorSet() {
-        return mainDescriptorSet;
+    public RegularFileProperty getDescriptorSet() {
+        return descriptorSet;
     }
 
-    public DirectoryProperty getDestinationDir() {
-        return destinationDir;
+    File descriptorSetFile() {
+        return getDescriptorSet().get().getAsFile();
+    }
+
+    public RegularFileProperty getDestination() {
+        return destination;
+    }
+
+    File destinationFile() {
+        return getDestination().get().getAsFile();
     }
 
     public Property<String> getPackageName() {
         return packageName;
+    }
+
+    String packageName() {
+        return getPackageName().get();
     }
 }

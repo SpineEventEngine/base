@@ -20,6 +20,7 @@
 
 package io.spine.dart.generate;
 
+import io.spine.dart.knowntypes.TypesTemplate;
 import io.spine.io.Resource;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
@@ -30,8 +31,9 @@ import org.gradle.api.Task;
 import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.assemble;
+import static io.spine.tools.gradle.TaskName.clean;
 
-public class ProtoDartPlugin extends SpinePlugin {
+public final class ProtoDartPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
@@ -39,23 +41,21 @@ public class ProtoDartPlugin extends SpinePlugin {
         project.getExtensions()
                .add(Extension.class, Extension.NAME, extension);
         newTask(TaskName.generateDartTypeRegistry, createAction(extension))
+                .insertAfterTask(clean)
                 .insertBeforeTask(assemble)
+                .withOutputFiles(project.files(extension.getDestination()))
                 .applyNowTo(project);
     }
 
     private static Action<Task> createAction(Extension extension) {
         return t -> {
-            File descriptorsFile = extension.getMainDescriptorSet()
-                                            .get()
-                                            .getAsFile();
+            File descriptorsFile = extension.descriptorSetFile();
             Resource template = Resource.file("types.template.dart");
             TypesTemplate typesTemplate = TypesTemplate.instance(template, descriptorsFile);
-            typesTemplate.addimports(extension.getPackageName().get());
-            typesTemplate.addmap1();
-            typesTemplate.addmap2();
-            typesTemplate.storeAsFile(extension.getDestinationDir()
-                                               .get()
-                                               .getAsFile());
+            typesTemplate.fillInImports(extension.packageName());
+            typesTemplate.fillInBuilderInfoMap();
+            typesTemplate.fillInTypeUrlMap();
+            typesTemplate.storeAsFile(extension.destinationFile());
         };
     }
 }

@@ -32,12 +32,15 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
-public class Template {
+/**
+ * A Dart code template loaded from a resource.
+ */
+public class CodeTemplate {
 
     private final Resource template;
     private final Map<String, String> insertions;
 
-    public Template(Resource resource) {
+    public CodeTemplate(Resource resource) {
         this.template = checkNotNull(resource);
         this.insertions = new HashMap<>();
     }
@@ -49,13 +52,13 @@ public class Template {
         insertions.put(token, content);
     }
 
-    public SourceFile compile() {
+    public GeneratedDartFile compile() {
         try (ReplaceTokens reader = new ReplaceTokens(template.openAsText())) {
             insertions.forEach(
                     (key, value) -> reader.addConfiguredToken(token(key, value))
             );
             String text = CharStreams.toString(reader);
-            return new SourceFile(text);
+            return new GeneratedDartFile(text);
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to read resource `%s`.", template);
         }

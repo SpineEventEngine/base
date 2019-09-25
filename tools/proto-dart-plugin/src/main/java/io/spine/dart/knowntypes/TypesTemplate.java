@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.generate;
+package io.spine.dart.knowntypes;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -34,6 +34,8 @@ import io.spine.dart.code.Import;
 import io.spine.dart.code.MapEntry;
 import io.spine.dart.code.Reference;
 import io.spine.dart.code.StringLiteral;
+import io.spine.dart.generate.GeneratedDartFile;
+import io.spine.dart.generate.CodeTemplate;
 import io.spine.io.Resource;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -47,26 +49,25 @@ import static java.util.stream.Collectors.joining;
 
 public final class TypesTemplate {
 
-    private final Template template;
+    private final CodeTemplate template;
     private final TypeSet protoTypes;
 
-    private TypesTemplate(Template template, TypeSet protoTypes) {
+    private TypesTemplate(CodeTemplate template, TypeSet protoTypes) {
         this.template = template;
         this.protoTypes = protoTypes;
     }
 
-    static TypesTemplate instance(Resource fileTemplate, File descriptorsFile) {
+    public static TypesTemplate instance(Resource fileTemplate, File descriptorsFile) {
         checkNotNull(fileTemplate);
         checkNotNull(descriptorsFile);
 
-        Template template = new Template(fileTemplate);
+        CodeTemplate template = new CodeTemplate(fileTemplate);
         List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
         TypeSet types = TypeSet.from(FileSet.ofFiles(ImmutableSet.copyOf(fileDescriptors)));
         return new TypesTemplate(template, types);
     }
 
-    // TODO:2019-09-25:dmytro.dashenkov: Naming.
-    void addimports(String packageName) {
+    public void fillInImports(String packageName) {
         String imports = protoTypes
                 .allTypes()
                 .stream()
@@ -79,7 +80,7 @@ public final class TypesTemplate {
         insert(InsertionPoint.IMPORT, imports);
     }
 
-    void addmap1() {
+    public void fillInBuilderInfoMap() {
         String typeToInfo = protoTypes.messageTypes()
                                       .stream()
                                       .map(TypesTemplate::mapTypeUrlToBuilderInfo)
@@ -100,7 +101,7 @@ public final class TypesTemplate {
         return new MapEntry(typeUrlKey, field);
     }
 
-    void addmap2() {
+    public void fillInTypeUrlMap() {
         String messageToType = protoTypes.messageTypes()
                                     .stream()
                                     .map(TypesTemplate::mapMessageToTypeUrl)
@@ -121,9 +122,9 @@ public final class TypesTemplate {
         return new MapEntry(constructorCall, typeUrl);
     }
 
-    void storeAsFile(File directory) {
-        SourceFile file = template.compile();
-        file.storeIn(directory);
+    public void storeAsFile(File targetFile) {
+        GeneratedDartFile file = template.compile();
+        file.writeTo(targetFile);
     }
 
     private void insert(InsertionPoint point, String content) {
