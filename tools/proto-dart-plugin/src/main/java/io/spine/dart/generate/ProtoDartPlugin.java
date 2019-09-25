@@ -43,7 +43,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
         newTask(TaskName.generateDartTypeRegistry, createAction(extension))
                 .insertAfterTask(clean)
                 .insertBeforeTask(assemble)
-                .withOutputFiles(project.files(extension.getDestination()))
+                .withOutputFiles(project.files(extension.getTypeRegistry()))
                 .applyNowTo(project);
     }
 
@@ -53,7 +53,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
             Resource template = Resource.file("types.template.dart");
             TypesTemplate typesTemplate = TypesTemplate.instance(template, descriptorsFile);
             typesTemplate.fillInForPackage(extension.packageName());
-            typesTemplate.storeAsFile(extension.destinationFile());
+            typesTemplate.storeAsFile(extension.typeRegistryFile());
         };
     }
 }

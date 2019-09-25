@@ -32,7 +32,7 @@ public final class Extension {
     static final String NAME = "protoDart";
 
     private final RegularFileProperty descriptorSet;
-    private final RegularFileProperty destination;
+    private final RegularFileProperty typeRegistry;
     private final Property<String> packageName;
 
     Extension(Project project) {
@@ -41,10 +41,10 @@ public final class Extension {
         descriptorSet.convention(project.getLayout()
                                         .getBuildDirectory()
                                         .file("descriptors/main.desc"));
-        this.destination = objects.fileProperty();
-        destination.convention(project.getLayout()
-                                      .getProjectDirectory()
-                                      .file("lib/types.dart"));
+        this.typeRegistry = objects.fileProperty();
+        typeRegistry.convention(project.getLayout()
+                                       .getProjectDirectory()
+                                       .file("lib/types.dart"));
         this.packageName = objects.property(String.class);
         packageName.convention(project.getProjectDir()
                                       .getName());
@@ -58,12 +58,12 @@ public final class Extension {
         return getDescriptorSet().get().getAsFile();
     }
 
-    public RegularFileProperty getDestination() {
-        return destination;
+    public RegularFileProperty getTypeRegistry() {
+        return typeRegistry;
     }
 
-    File destinationFile() {
-        return getDestination().get().getAsFile();
+    File typeRegistryFile() {
+        return getTypeRegistry().get().getAsFile();
     }
 
     public Property<String> getPackageName() {
