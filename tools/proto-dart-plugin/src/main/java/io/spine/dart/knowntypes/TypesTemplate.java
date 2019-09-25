@@ -67,7 +67,13 @@ public final class TypesTemplate {
         return new TypesTemplate(template, types);
     }
 
-    public void fillInImports(String packageName) {
+    public void fillInForPackage(String packageName) {
+        fillInImports(packageName);
+        fillInTypeUrlMap();
+        fillInBuilderInfoMap();
+    }
+
+    private void fillInImports(String packageName) {
         String imports = protoTypes
                 .allTypes()
                 .stream()
@@ -80,7 +86,7 @@ public final class TypesTemplate {
         insert(InsertionPoint.IMPORT, imports);
     }
 
-    public void fillInBuilderInfoMap() {
+    private void fillInBuilderInfoMap() {
         String typeToInfo = protoTypes.messageTypes()
                                       .stream()
                                       .map(TypesTemplate::mapTypeUrlToBuilderInfo)
@@ -101,7 +107,7 @@ public final class TypesTemplate {
         return new MapEntry(typeUrlKey, field);
     }
 
-    public void fillInTypeUrlMap() {
+    private void fillInTypeUrlMap() {
         String messageToType = protoTypes.messageTypes()
                                     .stream()
                                     .map(TypesTemplate::mapMessageToTypeUrl)
