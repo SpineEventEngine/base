@@ -31,29 +31,42 @@ import org.gradle.api.Task;
 import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.assemble;
-import static io.spine.tools.gradle.TaskName.clean;
+import static io.spine.tools.gradle.TaskName.testClasses;
 
 public final class ProtoDartPlugin extends SpinePlugin {
+
+    private static final Resource TEMPLATE = Resource.file("types.template.dart");
 
     @Override
     public void apply(Project project) {
         Extension extension = new Extension(project);
-        project.getExtensions()
-               .add(Extension.class, Extension.NAME, extension);
+        extension.registerIn(project);
         newTask(TaskName.generateDartTypeRegistry, createAction(extension))
-                .insertAfterTask(clean)
                 .insertBeforeTask(assemble)
-                .withOutputFiles(project.files(extension.getTypeRegistry()))
+                .withOutputFiles(project.files(extension.getMainTypeRegistry()))
+                .applyNowTo(project);
+        newTask(TaskName.generateDartTestTypeRegistry, createTestAction(extension))
+                .insertBeforeTask(testClasses)
+                .withOutputFiles(project.files(extension.getTestTypeRegistry()))
                 .applyNowTo(project);
     }
 
     private static Action<Task> createAction(Extension extension) {
-        return t -> {
-            File descriptorsFile = extension.descriptorSetFile();
-            Resource template = Resource.file("types.template.dart");
-            TypesTemplate typesTemplate = TypesTemplate.instance(template, descriptorsFile);
-            typesTemplate.fillInForPackage(extension.packageName());
-            typesTemplate.storeAsFile(extension.typeRegistryFile());
-        };
+        return t -> generateTypeRegistry(extension.packageName(),
+                                         extension.mainDescriptorSetFile(),
+                                         extension.mainTypeRegistryFile());
+    }
+
+    private static Action<Task> createTestAction(Extension extension) {
+        return t -> generateTypeRegistry(extension.packageName(),
+                                         extension.testDescriptorSetFile(),
+                                         extension.testTypeRegistryFile());
+    }
+
+    private static void
+    generateTypeRegistry(String packageName, File descriptorsFile, File targetFile) {
+        TypesTemplate typesTemplate = TypesTemplate.instance(TEMPLATE, descriptorsFile);
+        typesTemplate.fillInForPackage(packageName);
+        typesTemplate.storeAsFile(targetFile);
     }
 }
