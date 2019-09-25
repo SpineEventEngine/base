@@ -25,6 +25,7 @@ import io.spine.io.Resource;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -49,6 +50,8 @@ public final class ProtoDartPlugin extends SpinePlugin {
                 .insertBeforeTask(testClasses)
                 .withOutputFiles(project.files(extension.getTestTypeRegistry()))
                 .applyNowTo(project);
+        Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();
+        protocConfig.apply(project);
     }
 
     private static Action<Task> createAction(Extension extension) {
