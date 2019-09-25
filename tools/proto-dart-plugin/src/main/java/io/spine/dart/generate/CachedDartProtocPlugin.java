@@ -72,6 +72,14 @@ final class CachedDartProtocPlugin {
         return resolved;
     }
 
+    /**
+     * Looks up the plugin executable in the custom pub cache.
+     *
+     * <p>A custom pub cache is a path defined in the {@code PUB_CACHE} environmental variable.
+     *
+     * @return path to the plugin executable or {@code Optional.empty()} if a custom cache is not
+     *         defined or the file does not exist
+     */
     private static Optional<Path> inCustomPubCache() {
         @SuppressWarnings("CallToSystemGetenv")
         String customPubCache = System.getenv(PUB_CACHE_ENV);
@@ -94,16 +102,27 @@ final class CachedDartProtocPlugin {
         return Optional.empty();
     }
 
+    /**
+     * Locates the plugin executable in the platform-specific default location.
+     *
+     * @return a path to the executable which may or may not exist
+     */
     private static Path inDefaultPubCache() {
         return WINDOWS ? defaultForWindows() : defaultForNonWindows();
     }
 
+    /**
+     * Returns the path {@code %APPDATA%/Pub/Cache/bin/protoc-gen-dart.bat}.
+     */
     private static Path defaultForWindows() {
         @SuppressWarnings("CallToSystemGetenv")
         String appDataDir = System.getenv(APP_DATA_ENV);
         return Paths.get(appDataDir, "Pub", "Cache", BIN, SCRIPT_FILE_NAME);
     }
 
+    /**
+     * Returns the path {@code $HOME/.pub-cache/bin/protoc-gen-dart}.
+     */
     private static Path defaultForNonWindows() {
         @SuppressWarnings("AccessOfSystemProperties")
         String homeDir = System.getProperty("user.home");

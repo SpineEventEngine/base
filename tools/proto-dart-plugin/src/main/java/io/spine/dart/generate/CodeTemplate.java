@@ -34,24 +34,48 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A Dart code template loaded from a resource.
+ *
+ * <p>A code template is lazy. The original resource is not read until {@link #compile()} is called.
  */
 public class CodeTemplate {
 
     private final Resource template;
     private final Map<String, String> insertions;
 
+    /**
+     * Creates a new template.
+     */
     public CodeTemplate(Resource resource) {
         this.template = checkNotNull(resource);
         this.insertions = new HashMap<>();
     }
 
-    public void insert(String token, String content) {
+    /**
+     * Replaces the given token with the given content.
+     *
+     * <p>The replace is performed by the Ant's {@link ReplaceTokens}. The token in the template
+     * should be surrounded with {@code @} symbols. For example, to add a token named
+     * {@code placeholder-42}, add the {@code @placeholder-42@} to the original template.
+     *
+     * <p>Subsequent calls with the same token will override each other. Only the latest replacement
+     * is performed.
+     *
+     * @param token
+     *         the token to replace
+     * @param content
+     *         the content to replace with
+     */
+    public void replace(String token, String content) {
         checkNotNull(token);
         checkNotNull(content);
 
         insertions.put(token, content);
     }
 
+    /**
+     * Compiles this templates with the specified {@linkplain #replace replacements} into a Dart
+     * source file.
+     */
     public GeneratedDartFile compile() {
         try (ReplaceTokens reader = new ReplaceTokens(template.openAsText())) {
             insertions.forEach(

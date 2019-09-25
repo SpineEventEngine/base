@@ -31,14 +31,20 @@ import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A generated Dart source code file.
+ */
 public final class GeneratedDartFile {
 
     private final String content;
 
-    public GeneratedDartFile(String content) {
+    GeneratedDartFile(String content) {
         this.content = checkNotNull(content);
     }
 
+    /**
+     * Writes this source file to the given point on file system.
+     */
     public void writeTo(File target) {
         checkNotNull(target);
         if (target.exists()) {

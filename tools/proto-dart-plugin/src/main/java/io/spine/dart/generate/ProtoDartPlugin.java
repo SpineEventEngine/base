@@ -40,6 +40,14 @@ import static io.spine.tools.gradle.TaskName.generateDartTestTypeRegistry;
 import static io.spine.tools.gradle.TaskName.generateDartTypeRegistry;
 import static io.spine.tools.gradle.TaskName.testClasses;
 
+/**
+ * A Gradle plugin which configures Protobuf Dart code generation.
+ *
+ * <p>Generates mapping between Protobuf type URLs and Dart types and reflective descriptors
+ * (a.k.a. {@code BuilderInfo}s).
+ *
+ * @see DartProtocConfigurationPlugin
+ */
 public final class ProtoDartPlugin extends SpinePlugin {
 
     private static final Resource TEMPLATE = Resource.file("types.template.dart");

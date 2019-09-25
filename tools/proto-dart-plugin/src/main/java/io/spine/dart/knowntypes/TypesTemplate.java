@@ -141,7 +141,7 @@ public final class TypesTemplate {
     }
 
     private void insert(InsertionPoint point, String content) {
-        template.insert(point.key, point.comment + content);
+        template.replace(point.key, point.comment + content);
     }
 
     private enum InsertionPoint {
