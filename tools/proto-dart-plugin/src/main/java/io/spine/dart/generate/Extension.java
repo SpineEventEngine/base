@@ -21,49 +21,115 @@
 package io.spine.dart.generate;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 
 import java.io.File;
+import java.nio.file.Path;
 
+@SuppressWarnings("UnstableApiUsage") // Gradle `Property` API.
 public final class Extension {
 
-    static final String NAME = "protoDart";
+    private static final String NAME = "protoDart";
 
-    private final RegularFileProperty descriptorSet;
-    private final RegularFileProperty typeRegistry;
+    private static final String MAIN_DESCRIPTOR = "descriptors/main.desc";
+    private static final String TEST_DESCRIPTOR = "descriptors/test.desc";
+    private static final String TYPE_REGISTRY = "lib/types.dart";
+    private static final String TEST_TYPE_REGISTRY = "test/types.dart";
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static final String GENERATED_BASE_DIR = "proto";
+
+    private final RegularFileProperty mainDescriptorSet;
+    private final RegularFileProperty testDescriptorSet;
+    private final RegularFileProperty mainTypeRegistry;
+    private final RegularFileProperty testTypeRegistry;
+    private final DirectoryProperty generatedDir;
     private final Property<String> packageName;
 
     Extension(Project project) {
         ObjectFactory objects = project.getObjects();
-        this.descriptorSet = objects.fileProperty();
-        descriptorSet.convention(project.getLayout()
-                                        .getBuildDirectory()
-                                        .file("descriptors/main.desc"));
-        this.typeRegistry = objects.fileProperty();
-        typeRegistry.convention(project.getLayout()
+        this.mainDescriptorSet = objects.fileProperty();
+        mainDescriptorSet.convention(project.getLayout()
+                                            .getBuildDirectory()
+                                            .file(MAIN_DESCRIPTOR));
+        this.testDescriptorSet = objects.fileProperty();
+        testDescriptorSet.convention(project.getLayout()
+                                            .getBuildDirectory()
+                                            .file(TEST_DESCRIPTOR));
+        this.mainTypeRegistry = objects.fileProperty();
+        mainTypeRegistry.convention(project.getLayout()
+                                           .getProjectDirectory()
+                                           .file(TYPE_REGISTRY));
+        this.testTypeRegistry = objects.fileProperty();
+        testTypeRegistry.convention(project.getLayout()
+                                           .getProjectDirectory()
+                                           .file(TEST_TYPE_REGISTRY));
+        this.generatedDir = objects.directoryProperty();
+        generatedDir.convention(project.getLayout()
                                        .getProjectDirectory()
-                                       .file("lib/types.dart"));
+                                       .dir(GENERATED_BASE_DIR));
         this.packageName = objects.property(String.class);
         packageName.convention(project.getProjectDir()
                                       .getName());
     }
 
-    public RegularFileProperty getDescriptorSet() {
-        return descriptorSet;
+    static Extension findIn(Project project) {
+        Extension extension = project.getExtensions()
+                                     .getByType(Extension.class);
+        return extension;
     }
 
-    File descriptorSetFile() {
-        return getDescriptorSet().get().getAsFile();
+    void registerIn(Project project) {
+        project.getExtensions()
+               .add(Extension.class, NAME, this);
     }
 
-    public RegularFileProperty getTypeRegistry() {
-        return typeRegistry;
+    public RegularFileProperty getMainDescriptorSet() {
+        return mainDescriptorSet;
     }
 
-    File typeRegistryFile() {
-        return getTypeRegistry().get().getAsFile();
+    File mainDescriptorSetFile() {
+        return getMainDescriptorSet().get()
+                                     .getAsFile();
+    }
+
+    public RegularFileProperty getTestDescriptorSet() {
+        return testDescriptorSet;
+    }
+
+    File testDescriptorSetFile() {
+        return getTestDescriptorSet().get()
+                                     .getAsFile();
+    }
+
+    public RegularFileProperty getMainTypeRegistry() {
+        return mainTypeRegistry;
+    }
+
+    File mainTypeRegistryFile() {
+        return getMainTypeRegistry().get()
+                                    .getAsFile();
+    }
+
+    public RegularFileProperty getTestTypeRegistry() {
+        return testTypeRegistry;
+    }
+
+    File testTypeRegistryFile() {
+        return getTestTypeRegistry().get()
+                                    .getAsFile();
+    }
+
+    public DirectoryProperty getGeneratedDir() {
+        return generatedDir;
+    }
+
+    Path generatedDirPath() {
+        return getGeneratedDir().get()
+                                .getAsFile()
+                                .toPath();
     }
 
     public Property<String> getPackageName() {

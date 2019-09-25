@@ -23,7 +23,6 @@ group 'io.spine.tools'
 dependencies {
     implementation project(':base')
     implementation project(':plugin-base')
-    implementation deps.build.gradlePlugins.protobuf
 
     testProtobuf project(':base')
     testImplementation project(':testlib')
