@@ -29,7 +29,6 @@ buildscript {
     dependencies {
         classpath deps.build.protobuf
         classpath deps.build.guava
-        classpath deps.build.slf4j
         classpath deps.build.flogger
         classpath deps.build.checkerAnnotations
         classpath deps.build.errorProneAnnotations
@@ -79,7 +78,6 @@ repositories {
 dependencies {
     compileOnly deps.build.protobuf
     compileOnly deps.build.guava
-    compileOnly deps.build.slf4j
     compileOnly deps.build.flogger
     compileOnly deps.build.checkerAnnotations
     compileOnly deps.build.errorProneAnnotations
