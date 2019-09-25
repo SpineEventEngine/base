@@ -18,18 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import "package:protobuf/builder_info.dart";
-import "package:protobuf/generated_message.dart";
+package io.spine.dart.code;
 
-// @import@
+import com.google.common.base.Objects;
 
+public abstract class Lexeme {
 
-Map<string, BuilderInfo> _typeUrlToInfo = {
-  // @type-to-info@
+    private final String dartCode;
 
-};
+    Lexeme(String template, Object... formatArgs) {
+        this.dartCode = String.format(template, formatArgs);
+    }
 
-Map<GeneratedMessage, string> _defaultToTypeUrl = {
-  // @message-to-type@
+    public final String dartCode() {
+        return dartCode;
+    }
 
-};
+    @Override
+    public final String toString() {
+        return dartCode;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Lexeme)) {
+            return false;
+        }
+        Lexeme lexeme = (Lexeme) o;
+        return Objects.equal(dartCode, lexeme.dartCode);
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(dartCode);
+    }
+}

@@ -32,6 +32,7 @@ public enum TaskName {
 
     clean,
 
+    assemble,
     build,
 
     compileJava,
@@ -142,9 +143,7 @@ public enum TaskName {
      */
     writeTestDescriptorReference,
 
-    generateDartExport,
-
-    copyTestDescriptorToDartPackage;
+    generateDartTypeRegistry;
 
     /**
      * Obtains the name of the task.

@@ -20,8 +20,16 @@
 
 package io.spine.dart.generate;
 
+import io.spine.io.Resource;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.TaskName;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+
+import java.io.File;
+
+import static io.spine.tools.gradle.TaskName.assemble;
 
 public class ProtoDartPlugin extends SpinePlugin {
 
@@ -30,6 +38,24 @@ public class ProtoDartPlugin extends SpinePlugin {
         Extension extension = new Extension(project);
         project.getExtensions()
                .add(Extension.class, Extension.NAME, extension);
+        newTask(TaskName.generateDartTypeRegistry, createAction(extension))
+                .insertBeforeTask(assemble)
+                .applyNowTo(project);
+    }
 
+    private static Action<Task> createAction(Extension extension) {
+        return t -> {
+            File descriptorsFile = extension.getMainDescriptorSet()
+                                            .get()
+                                            .getAsFile();
+            TypesTemplate typesTemplate = TypesTemplate.instance(
+                    Resource.file("dictionary-template.dart"), descriptorsFile);
+            typesTemplate.addimports(extension.getPackageName().get());
+            typesTemplate.addmap1();
+            typesTemplate.addmap2();
+            typesTemplate.storeAsFile(extension.getDestinationDir()
+                                               .get()
+                                               .getAsFile());
+        };
     }
 }

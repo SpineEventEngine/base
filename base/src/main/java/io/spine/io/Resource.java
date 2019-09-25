@@ -28,6 +28,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -125,6 +127,16 @@ public final class Resource {
         InputStream stream = classLoader().getResourceAsStream(path);
         checkFound(stream);
         return stream;
+    }
+
+    /**
+     * Reads this resource as text.
+     *
+     * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
+     * stream.
+     */
+    public Reader openAsText() {
+        return new InputStreamReader(open());
     }
 
     private void checkFound(@Nullable Object resourceHandle) {

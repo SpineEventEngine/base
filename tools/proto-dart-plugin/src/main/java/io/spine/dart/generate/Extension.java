@@ -21,33 +21,43 @@
 package io.spine.dart.generate;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 
 public final class Extension {
 
     static final String NAME = "protoDart";
 
     private final RegularFileProperty mainDescriptorSet;
-    private final RegularFileProperty destination;
+    private final DirectoryProperty destinationDir;
+    private final Property<String> packageName;
 
     Extension(Project project) {
-        this.mainDescriptorSet = project.getObjects()
-                                        .fileProperty();
+        ObjectFactory objects = project.getObjects();
+        this.mainDescriptorSet = objects.fileProperty();
         mainDescriptorSet.convention(project.getLayout()
                                             .getBuildDirectory()
                                             .file("descriptors/main.desc"));
-        this.destination = project.getObjects()
-                                  .fileProperty();
-        destination.convention(project.getLayout()
-                                      .getProjectDirectory()
-                                      .file("lib/types.dart"));
+        this.destinationDir = objects.directoryProperty();
+        destinationDir.convention(project.getLayout()
+                                         .getProjectDirectory()
+                                         .dir("lib"));
+        this.packageName = objects.property(String.class);
+        packageName.convention(project.getProjectDir()
+                                      .getName());
     }
 
     public RegularFileProperty getMainDescriptorSet() {
         return mainDescriptorSet;
     }
 
-    public RegularFileProperty getDestination() {
-        return destination;
+    public DirectoryProperty getDestinationDir() {
+        return destinationDir;
+    }
+
+    public Property<String> getPackageName() {
+        return packageName;
     }
 }

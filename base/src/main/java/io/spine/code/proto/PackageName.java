@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.SourceCodeDirectory;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -83,5 +84,10 @@ public final class PackageName extends StringTypeValue {
         checkNotNull(parentCandidate);
         boolean result = value().startsWith(parentCandidate.value());
         return result;
+    }
+
+    public String asFilePath() {
+        // TODO:2019-09-20:dmytro.dashenkov: Clean up.
+        return value().replace(DELIMITER, "/");
     }
 }

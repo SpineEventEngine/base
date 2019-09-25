@@ -18,18 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import "package:protobuf/builder_info.dart";
-import "package:protobuf/generated_message.dart";
+package io.spine.dart.code;
 
-// @import@
+import com.google.common.base.Splitter;
 
+import java.util.List;
 
-Map<string, BuilderInfo> _typeUrlToInfo = {
-  // @type-to-info@
+import static com.google.common.base.Preconditions.checkNotNull;
 
-};
+public final class GeneratedAlias extends Reference {
 
-Map<GeneratedMessage, string> _defaultToTypeUrl = {
-  // @message-to-type@
+    private static final Splitter pathSplitter = Splitter.on('/');
+    private static final char ESCAPE_DELIMITER = '_';
 
-};
+    public GeneratedAlias(String pathToFile) {
+        super(escapePathToAlias(pathToFile));
+    }
+
+    private static String escapePathToAlias(String path) {
+        checkNotNull(path);
+        List<String> pathElements = pathSplitter.splitToList(path);
+        StringBuilder alias = new StringBuilder(path.length() + 1);
+        for (String element : pathElements) {
+            alias.append(ESCAPE_DELIMITER)
+                 .append(element);
+        }
+        return alias.toString();
+    }
+}

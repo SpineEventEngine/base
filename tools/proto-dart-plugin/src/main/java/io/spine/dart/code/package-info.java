@@ -18,18 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import "package:protobuf/builder_info.dart";
-import "package:protobuf/generated_message.dart";
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.dart.code;
 
-// @import@
+import com.google.errorprone.annotations.CheckReturnValue;
 
-
-Map<string, BuilderInfo> _typeUrlToInfo = {
-  // @type-to-info@
-
-};
-
-Map<GeneratedMessage, string> _defaultToTypeUrl = {
-  // @message-to-type@
-
-};
+import javax.annotation.ParametersAreNonnullByDefault;

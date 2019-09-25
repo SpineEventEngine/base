@@ -18,18 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import "package:protobuf/builder_info.dart";
-import "package:protobuf/generated_message.dart";
+package io.spine.dart.code;
 
-// @import@
+import static com.google.common.base.Preconditions.checkNotNull;
 
+public final class MapEntry extends Lexeme {
 
-Map<string, BuilderInfo> _typeUrlToInfo = {
-  // @type-to-info@
-
-};
-
-Map<GeneratedMessage, string> _defaultToTypeUrl = {
-  // @message-to-type@
-
-};
+    public MapEntry(Lexeme key, Lexeme value) {
+        super("%s: %s,", checkNotNull(key), checkNotNull(value));
+    }
+}
