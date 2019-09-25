@@ -31,6 +31,8 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.nio.file.Path;
 
+import static io.spine.tools.gradle.ProtocPluginName.dart;
+
 /**
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for JavaScript
  * projects.
@@ -67,6 +69,6 @@ public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlug
     protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         super.configureProtocPlugins(plugins);
         Path executable = CachedDartProtocPlugin.locate();
-        plugins.create(ProtocPlugin.dart.name(), locator -> locator.setPath(executable.toString()));
+        plugins.create(dart.name(), locator -> locator.setPath(executable.toString()));
     }
 }

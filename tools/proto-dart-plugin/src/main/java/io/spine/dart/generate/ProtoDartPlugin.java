@@ -22,16 +22,22 @@ package io.spine.dart.generate;
 
 import io.spine.dart.knowntypes.TypesTemplate;
 import io.spine.io.Resource;
+import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import static io.spine.tools.gradle.ProtocPluginName.dart;
+import static io.spine.tools.gradle.SourceScope.main;
+import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.gradle.TaskName.assemble;
+import static io.spine.tools.gradle.TaskName.generateDartTestTypeRegistry;
+import static io.spine.tools.gradle.TaskName.generateDartTypeRegistry;
 import static io.spine.tools.gradle.TaskName.testClasses;
 
 public final class ProtoDartPlugin extends SpinePlugin {
@@ -42,11 +48,11 @@ public final class ProtoDartPlugin extends SpinePlugin {
     public void apply(Project project) {
         Extension extension = new Extension(project);
         extension.registerIn(project);
-        newTask(TaskName.generateDartTypeRegistry, createAction(extension))
+        newTask(generateDartTypeRegistry, createAction(extension))
                 .insertBeforeTask(assemble)
                 .withOutputFiles(project.files(extension.getMainTypeRegistry()))
                 .applyNowTo(project);
-        newTask(TaskName.generateDartTestTypeRegistry, createTestAction(extension))
+        newTask(generateDartTestTypeRegistry, createTestAction(extension))
                 .insertBeforeTask(testClasses)
                 .withOutputFiles(project.files(extension.getTestTypeRegistry()))
                 .applyNowTo(project);
@@ -55,21 +61,29 @@ public final class ProtoDartPlugin extends SpinePlugin {
     }
 
     private static Action<Task> createAction(Extension extension) {
-        return t -> generateTypeRegistry(extension.packageName(),
+        return t -> generateTypeRegistry(extension,
                                          extension.mainDescriptorSetFile(),
-                                         extension.mainTypeRegistryFile());
+                                         extension.mainTypeRegistryFile(),
+                                         main);
     }
 
     private static Action<Task> createTestAction(Extension extension) {
-        return t -> generateTypeRegistry(extension.packageName(),
+        return t -> generateTypeRegistry(extension,
                                          extension.testDescriptorSetFile(),
-                                         extension.testTypeRegistryFile());
+                                         extension.testTypeRegistryFile(),
+                                         test);
     }
 
     private static void
-    generateTypeRegistry(String packageName, File descriptorsFile, File targetFile) {
+    generateTypeRegistry(Extension extension,
+                         File descriptorsFile,
+                         File targetFile,
+                         SourceScope scope) {
         TypesTemplate typesTemplate = TypesTemplate.instance(TEMPLATE, descriptorsFile);
-        typesTemplate.fillInForPackage(packageName);
+        Path generatedDir = extension.generatedDirPath()
+                                     .resolve(scope.name())
+                                     .resolve(dart.name());
+        typesTemplate.fillInForPackage(extension.packageName(), generatedDir);
         typesTemplate.storeAsFile(targetFile);
     }
 }

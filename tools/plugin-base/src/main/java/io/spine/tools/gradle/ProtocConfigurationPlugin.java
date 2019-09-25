@@ -46,6 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
+import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.gradle.internal.os.OperatingSystem.current;
@@ -125,7 +126,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
     @OverridingMethodsMustInvokeSuper
     protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         if (!spineProtocIsPresent(plugins)) {
-            plugins.create(ProtocPlugin.spineProtoc.name(), locator -> {
+            plugins.create(spineProtoc.name(), locator -> {
                 boolean windows = current().isWindows();
                 String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
                 locator.setArtifact(Artifact.newBuilder()
@@ -142,7 +143,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
 
     private static boolean
     spineProtocIsPresent(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        return plugins.findByName(ProtocPlugin.spineProtoc.name()) != null;
+        return plugins.findByName(spineProtoc.name()) != null;
     }
 
     private GradleTask createCopyPluginJarTask(Project project) {
@@ -225,13 +226,6 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         return protocTask.getSourceSet()
                          .getName()
                          .contains(SourceScope.test.name());
-    }
-
-    /** Names of tasks related to the Protobuf compiler ({@code protoc}) task. */
-    protected enum ProtocPlugin {
-        grpc,
-        spineProtoc,
-        dart
     }
 
     /**

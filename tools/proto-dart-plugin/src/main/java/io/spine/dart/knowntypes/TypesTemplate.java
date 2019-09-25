@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FileDescriptors;
+import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.TypeSet;
@@ -34,13 +35,14 @@ import io.spine.dart.code.Import;
 import io.spine.dart.code.MapEntry;
 import io.spine.dart.code.Reference;
 import io.spine.dart.code.StringLiteral;
-import io.spine.dart.generate.GeneratedDartFile;
 import io.spine.dart.generate.CodeTemplate;
+import io.spine.dart.generate.GeneratedDartFile;
 import io.spine.io.Resource;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -67,23 +69,28 @@ public final class TypesTemplate {
         return new TypesTemplate(template, types);
     }
 
-    public void fillInForPackage(String packageName) {
-        fillInImports(packageName);
+    public void fillInForPackage(String packageName, Path generatedProtoDir) {
+        fillInImports(packageName, generatedProtoDir);
         fillInTypeUrlMap();
         fillInBuilderInfoMap();
     }
 
-    private void fillInImports(String packageName) {
+    private void fillInImports(String packageName, Path generatedProtoDir) {
         String imports = protoTypes
                 .allTypes()
                 .stream()
                 .map(Type::declaringFileName)
-                .map(file -> PackageName.of(file.value())
-                                        .asFilePath())
+                .map(file -> protoFilePath(generatedProtoDir, file))
                 .map(path -> new Import(packageName, path))
                 .map(Import::dartCode)
                 .collect(joining(lineSeparator()));
         insert(InsertionPoint.IMPORT, imports);
+    }
+
+    private static String protoFilePath(Path generatedProtoDir, FileName file) {
+        PackageName packageName = PackageName.of(file.value());
+        String packagePath = packageName.asFilePath();
+        return generatedProtoDir.resolve(packagePath).toString();
     }
 
     private void fillInBuilderInfoMap() {

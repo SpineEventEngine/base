@@ -42,6 +42,8 @@ import java.nio.file.Paths;
 import java.util.Base64;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static io.spine.tools.gradle.ProtocPluginName.grpc;
+import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.tools.gradle.TaskName.clean;
 import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.TaskName.writePluginConfiguration;
@@ -88,9 +90,9 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
         protocTask.dependsOn(dependency, writeConfig);
         protocTask.getPlugins()
-                  .create(ProtocPlugin.grpc.name());
+                  .create(grpc.name());
         protocTask.getPlugins()
-                  .create(ProtocPlugin.spineProtoc.name(),
+                  .create(spineProtoc.name(),
                           options -> {
                               options.setOutputSubDir("java");
                               String option = spineProtocConfigPath.toString();
@@ -103,7 +105,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     @Override
     protected final void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         super.configureProtocPlugins(plugins);
-        plugins.create(ProtocPlugin.grpc.name(),
+        plugins.create(grpc.name(),
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
                                                               .setName(GRPC_PLUGIN_NAME)
