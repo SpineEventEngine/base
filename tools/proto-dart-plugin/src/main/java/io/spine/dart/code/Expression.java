@@ -20,9 +20,9 @@
 
 package io.spine.dart.code;
 
-public final class FieldAccess extends Expression {
+public abstract class Expression extends Lexeme {
 
-    public FieldAccess(Expression receiver, Reference field) {
-        super("%s.%s", receiver, field);
+    Expression(String template, Object... formatArgs) {
+        super(template, formatArgs);
     }
 }

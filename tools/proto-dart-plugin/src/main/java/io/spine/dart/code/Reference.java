@@ -20,7 +20,7 @@
 
 package io.spine.dart.code;
 
-public class Reference extends Lexeme {
+public class Reference extends Expression {
 
     public Reference(String name) {
         super(name);

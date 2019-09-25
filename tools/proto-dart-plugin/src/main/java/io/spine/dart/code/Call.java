@@ -22,9 +22,9 @@ package io.spine.dart.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class Call extends Lexeme {
+public final class Call extends Expression {
 
-    public Call(Lexeme receiver, String methodName) {
+    public Call(Expression receiver, String methodName) {
         super("%s.%s()", checkNotNull(receiver), checkNotNull(methodName));
     }
 }

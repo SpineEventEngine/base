@@ -20,7 +20,7 @@
 
 package io.spine.dart.code;
 
-public final class StringLiteral extends Lexeme {
+public final class StringLiteral extends Expression {
 
     public StringLiteral(String literalValue) {
         super("'%s'", literalValue);
