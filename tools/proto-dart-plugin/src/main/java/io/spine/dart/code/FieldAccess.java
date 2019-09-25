@@ -20,9 +20,11 @@
 
 package io.spine.dart.code;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class FieldAccess extends Expression {
 
-    public FieldAccess(Expression receiver, Reference field) {
-        super("%s.%s", receiver, field);
+    public FieldAccess(Expression receiver, String fieldName) {
+        super("%s.%s", checkNotNull(receiver), checkNotNull(fieldName));
     }
 }

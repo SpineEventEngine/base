@@ -22,14 +22,28 @@ package io.spine.dart.code;
 
 import com.google.common.base.Objects;
 
+/**
+ * A part of Dart language.
+ */
 public abstract class Lexeme {
 
     private final String dartCode;
 
+    /**
+     * Creates a new lexeme.
+     *
+     * @param template
+     *         formatting template
+     * @param formatArgs
+     *         formatting arguments
+     */
     Lexeme(String template, Object... formatArgs) {
         this.dartCode = String.format(template, formatArgs);
     }
 
+    /**
+     * Prints this lexeme to string.
+     */
     public final String dartCode() {
         return dartCode;
     }

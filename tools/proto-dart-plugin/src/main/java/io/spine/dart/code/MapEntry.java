@@ -22,6 +22,9 @@ package io.spine.dart.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A map entry literal in form of {@code key: value}.
+ */
 public final class MapEntry extends Lexeme {
 
     public MapEntry(Expression key, Expression value) {

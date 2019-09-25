@@ -22,8 +22,21 @@ package io.spine.dart.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An import of a Dart file.
+ */
 public final class Import extends Lexeme {
 
+    /**
+     * Creates a new {@code Import}.
+     *
+     * @param packageName
+     *         name of the Dart package
+     * @param path
+     *         path to the file, including the file name without the extension
+     * @param alias
+     *         import alias
+     */
     public Import(String packageName, String path, Reference alias) {
         super("import 'package:%s/%s.dart' as %s;",
               checkNotNull(packageName),
@@ -31,6 +44,14 @@ public final class Import extends Lexeme {
               checkNotNull(alias));
     }
 
+    /**
+     * Creates a new {@code Import} with a {@link GeneratedAlias}.
+     *
+     * @param packageName
+     *         name of the Dart package
+     * @param path
+     *         path to the file, including the file name without the extension
+     */
     public Import(String packageName, String path) {
         this(packageName, path, new GeneratedAlias(path));
     }

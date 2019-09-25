@@ -20,6 +20,9 @@
 
 package io.spine.dart.code;
 
+/**
+ * A Dart single-quoted string literal.
+ */
 public final class StringLiteral extends Expression {
 
     public StringLiteral(String literalValue) {

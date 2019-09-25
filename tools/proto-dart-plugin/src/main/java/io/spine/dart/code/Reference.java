@@ -20,6 +20,9 @@
 
 package io.spine.dart.code;
 
+/**
+ * A reference to an object.
+ */
 public class Reference extends Expression {
 
     public Reference(String name) {

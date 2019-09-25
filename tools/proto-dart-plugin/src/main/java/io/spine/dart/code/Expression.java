@@ -20,8 +20,14 @@
 
 package io.spine.dart.code;
 
+/**
+ * A lexeme which returns a value.
+ */
 public abstract class Expression extends Lexeme {
 
+    /**
+     * See {@link Lexeme#Lexeme(String, Object...)}.
+     */
     Expression(String template, Object... formatArgs) {
         super(template, formatArgs);
     }

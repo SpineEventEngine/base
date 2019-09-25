@@ -24,11 +24,17 @@ import com.google.common.base.Splitter;
 
 import java.util.List;
 
+import static com.google.common.base.CharMatcher.anyOf;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An alias for an imported Dart library.
+ *
+ * <p>Consists of the imported file path concatenated with {@code _} (underscore) symbols.
+ */
 public final class GeneratedAlias extends Reference {
 
-    private static final Splitter pathSplitter = Splitter.on('/');
+    private static final Splitter pathSplitter = Splitter.on(anyOf("/\\"));
     private static final char ESCAPE_DELIMITER = '_';
 
     public GeneratedAlias(String pathToFile) {

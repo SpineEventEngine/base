@@ -33,7 +33,6 @@ import io.spine.dart.code.FieldAccess;
 import io.spine.dart.code.GeneratedAlias;
 import io.spine.dart.code.Import;
 import io.spine.dart.code.MapEntry;
-import io.spine.dart.code.Reference;
 import io.spine.dart.code.StringLiteral;
 import io.spine.dart.generate.CodeTemplate;
 import io.spine.dart.generate.GeneratedDartFile;
@@ -90,7 +89,8 @@ public final class TypesTemplate {
     private static String protoFilePath(Path generatedProtoDir, FileName file) {
         PackageName packageName = PackageName.of(file.value());
         String packagePath = packageName.asFilePath();
-        return generatedProtoDir.resolve(packagePath).toString();
+        return generatedProtoDir.resolve(packagePath)
+                                .toString();
     }
 
     private void fillInBuilderInfoMap() {
@@ -103,23 +103,24 @@ public final class TypesTemplate {
     }
 
     private static MapEntry mapTypeUrlToBuilderInfo(MessageType type) {
-        StringLiteral typeUrlKey = new StringLiteral(type.url().value());
+        StringLiteral typeUrlKey = new StringLiteral(type.url()
+                                                         .value());
         Descriptors.Descriptor descriptor = type.descriptor();
         PackageName protoPackage = PackageName.of(descriptor);
         Call constructorCall = new Call(
                 new GeneratedAlias(protoPackage.asFilePath()),
                 descriptor.getName()
         );
-        FieldAccess field = new FieldAccess(constructorCall, new Reference("info_"));
+        FieldAccess field = new FieldAccess(constructorCall, "info_");
         return new MapEntry(typeUrlKey, field);
     }
 
     private void fillInTypeUrlMap() {
         String messageToType = protoTypes.messageTypes()
-                                    .stream()
-                                    .map(TypesTemplate::mapMessageToTypeUrl)
-                                    .map(MapEntry::dartCode)
-                                    .collect(joining(lineSeparator()));
+                                         .stream()
+                                         .map(TypesTemplate::mapMessageToTypeUrl)
+                                         .map(MapEntry::dartCode)
+                                         .collect(joining(lineSeparator()));
         insert(InsertionPoint.MESSAGE_TO_TYPE, messageToType);
     }
 

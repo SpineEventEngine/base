@@ -22,6 +22,9 @@ package io.spine.dart.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A method call.
+ */
 public final class Call extends Expression {
 
     public Call(Expression receiver, String methodName) {
