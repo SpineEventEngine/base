@@ -76,7 +76,8 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
     /**
      * Applies the plugin to the given {@code Project}.
      *
-     * @param project the project to apply the plugin to
+     * @param project
+     *         the project to apply the plugin to
      */
     @Override
     public void apply(Project project) {
@@ -87,7 +88,7 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
         Configuration preprocessorConfig = preprocessorConfigurer.setupPreprocessorConfig();
 
         DependencyConfigurer dependencyConfigurer =
-                DependencyConfigurer.createFor(project, preprocessorConfig);
+                DependencyConfigurer.createFor(preprocessorConfig);
         boolean dependencyResolved = dependencyConfigurer.addErrorProneChecksDependency();
         if (!dependencyResolved) {
             return;

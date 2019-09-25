@@ -37,8 +37,6 @@ import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCo
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
 import static io.spine.tools.gradle.compiler.Severity.OFF;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.
@@ -48,13 +46,11 @@ class SeverityConfigurerTest {
 
     private Project project;
     private SeverityConfigurer configurer;
-    private SeverityConfigurer configurerMock;
 
     @BeforeEach
     void setUp() {
         project = newProject();
         configurer = SeverityConfigurer.initFor(project);
-        configurerMock = spy(configurer);
     }
 
     @Test
@@ -72,8 +68,8 @@ class SeverityConfigurerTest {
         configureModelCompilerExtension();
         ErrorProneChecksExtension extension = configureSpineCheckExtension();
         extension.useValidatingBuilder = ERROR;
-        when(configurerMock.hasErrorPronePlugin()).thenReturn(true);
-        configurerMock.addConfigureSeverityAction();
+        configurer.setHasErrorProneChecksPlugin(true);
+        configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
@@ -85,8 +81,8 @@ class SeverityConfigurerTest {
         Extension extension = configureModelCompilerExtension();
         extension.spineCheckSeverity = ERROR;
         configureSpineCheckExtension();
-        when(configurerMock.hasErrorPronePlugin()).thenReturn(true);
-        configurerMock.addConfigureSeverityAction();
+        configurer.setHasErrorProneChecksPlugin(true);
+        configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
@@ -97,16 +93,16 @@ class SeverityConfigurerTest {
         modelCompilerExtension.spineCheckSeverity = OFF;
         ErrorProneChecksExtension errorProneChecksExtension = configureSpineCheckExtension();
         errorProneChecksExtension.useValidatingBuilder = ERROR;
-        when(configurerMock.hasErrorPronePlugin()).thenReturn(true);
-        configurerMock.addConfigureSeverityAction();
+        configurer.setHasErrorProneChecksPlugin(true);
+        configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
     @Test
     @DisplayName("not add severity args if ErrorProne plugin not applied")
     void detectErrorProne() {
-        when(configurerMock.hasErrorPronePlugin()).thenReturn(false);
-        configurerMock.addConfigureSeverityAction();
+        configurer.setHasErrorProneChecksPlugin(false);
+        configurer.addConfigureSeverityAction();
         checkSeverityNotConfigured();
     }
 

@@ -66,7 +66,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
     private static final String BAT_EXTENSION = "bat";
     private static final String SCRIPT_CLASSIFIER = "script";
 
-    protected static final DependencyVersions VERSIONS = DependencyVersions.load();
+    protected static final DependencyVersions VERSIONS = DependencyVersions.get();
 
     @Override
     public void apply(Project project) {

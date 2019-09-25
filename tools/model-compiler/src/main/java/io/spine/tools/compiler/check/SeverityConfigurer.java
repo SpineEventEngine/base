@@ -43,11 +43,12 @@ import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
  * @see io.spine.tools.gradle.compiler.ErrorProneChecksExtension
  * @see io.spine.tools.gradle.compiler.Extension#getSpineCheckSeverity(Project)
  */
-public class SeverityConfigurer implements Logging {
+public final class SeverityConfigurer implements Logging {
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     private final Project project;
+    private @Nullable Boolean hasErrorProneChecksPlugin;
 
     private SeverityConfigurer(Project project) {
         this.project = project;
@@ -56,7 +57,8 @@ public class SeverityConfigurer implements Logging {
     /**
      * Create the {@code SeverityConfigurer} instance for the given project.
      *
-     * @param project the project
+     * @param project
+     *         the project
      * @return the {@code SeverityConfigurer} instance
      */
     public static SeverityConfigurer initFor(Project project) {
@@ -98,11 +100,12 @@ public class SeverityConfigurer implements Logging {
     /**
      * Checks if the project has the Error Prone plugin applied.
      */
-    @VisibleForTesting
-    boolean hasErrorPronePlugin() {
-        PluginContainer appliedPlugins = project.getPlugins();
-        boolean hasPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
-        return hasPlugin;
+    private boolean hasErrorPronePlugin() {
+        if (hasErrorProneChecksPlugin == null) {
+            PluginContainer appliedPlugins = project.getPlugins();
+            hasErrorProneChecksPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
+        }
+        return hasErrorProneChecksPlugin;
     }
 
     /**
@@ -127,5 +130,14 @@ public class SeverityConfigurer implements Logging {
         );
         String severityArg = "-Xep:UseValidatingBuilder:" + severity.name();
         addArgsToJavaCompile(project, severityArg);
+    }
+
+    /**
+     * Allows to manually set the {@code hasErrorProneChecksPlugin} property for tests without
+     * actually applying the plugin.
+     */
+    @VisibleForTesting
+    void setHasErrorProneChecksPlugin(boolean hasErrorProneChecksPlugin) {
+        this.hasErrorProneChecksPlugin = hasErrorProneChecksPlugin;
     }
 }
