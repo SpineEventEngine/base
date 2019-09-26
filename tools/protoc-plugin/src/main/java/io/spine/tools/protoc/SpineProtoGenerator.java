@@ -106,7 +106,7 @@ public abstract class SpineProtoGenerator {
         checkNotNull(request);
         checkCompilerVersion(request);
         checkNotEmpty(request);
-        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
+        FileSet fileSet = FileSet.ofFiles(request.getProtoFileList());
         Set<FileName> requestedFileNames = request.getFileToGenerateList()
                                                   .stream()
                                                   .map(FileName::of)

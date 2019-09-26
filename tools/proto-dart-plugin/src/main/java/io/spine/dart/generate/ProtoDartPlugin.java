@@ -20,7 +20,11 @@
 
 package io.spine.dart.generate;
 
-import io.spine.dart.knowntypes.TypesTemplate;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.proto.FileDescriptors;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
+import io.spine.dart.knowntypes.KnownTypesBuilder;
 import io.spine.io.Resource;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
@@ -31,6 +35,7 @@ import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 import static io.spine.tools.gradle.SourceScope.main;
@@ -87,11 +92,22 @@ public final class ProtoDartPlugin extends SpinePlugin {
                          File descriptorsFile,
                          File targetFile,
                          SourceScope scope) {
-        TypesTemplate typesTemplate = TypesTemplate.instance(TEMPLATE, descriptorsFile);
+        List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
+        TypeSet types = TypeSet.from(FileSet.ofFiles(fileDescriptors));
         Path generatedDir = extension.generatedDirPath()
                                      .resolve(scope.name())
                                      .resolve(dart.name());
-        typesTemplate.fillInForPackage(extension.packageName(), generatedDir);
-        typesTemplate.storeAsFile(targetFile);
+        Path relativeGeneratedDir = targetFile.toPath()
+                                              .relativize(generatedDir);
+        String packageName = extension.packageName();
+        CodeTemplate template = new CodeTemplate(TEMPLATE);
+        GeneratedDartFile file = KnownTypesBuilder
+                .newBuilder()
+                .setKnownTypes(types)
+                .setGeneratedProtoDir(relativeGeneratedDir)
+                .setTemplate(template)
+                .setPackageName(packageName)
+                .buildAsSourceFile();
+        file.writeTo(targetFile);
     }
 }

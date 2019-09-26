@@ -20,12 +20,8 @@
 
 package io.spine.dart.knowntypes;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
-import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.code.proto.PackageName;
 import io.spine.code.proto.TypeSet;
 import io.spine.dart.code.Call;
@@ -36,57 +32,98 @@ import io.spine.dart.code.MapEntry;
 import io.spine.dart.code.StringLiteral;
 import io.spine.dart.generate.CodeTemplate;
 import io.spine.dart.generate.GeneratedDartFile;
-import io.spine.io.Resource;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 
-public final class TypesTemplate {
+/**
+ *  Builds the Dart source code which registers known Protobuf types.
+ */
+public final class KnownTypesBuilder {
 
-    private final CodeTemplate template;
-    private final TypeSet protoTypes;
+    private @MonotonicNonNull CodeTemplate template;
+    private @MonotonicNonNull TypeSet knownTypes;
+    private @MonotonicNonNull String packageName;
+    private @MonotonicNonNull Path generatedProtoDir;
 
-    private TypesTemplate(CodeTemplate template, TypeSet protoTypes) {
-        this.template = template;
-        this.protoTypes = protoTypes;
+    private KnownTypesBuilder() {
     }
 
-    public static TypesTemplate instance(Resource fileTemplate, File descriptorsFile) {
-        checkNotNull(fileTemplate);
-        checkNotNull(descriptorsFile);
-
-        CodeTemplate template = new CodeTemplate(fileTemplate);
-        List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
-        TypeSet types = TypeSet.from(FileSet.ofFiles(ImmutableSet.copyOf(fileDescriptors)));
-        return new TypesTemplate(template, types);
+    /**
+     * Creates a new instance of this builder.
+     */
+    public static KnownTypesBuilder newBuilder() {
+        return new KnownTypesBuilder();
     }
 
-    public void fillInForPackage(String packageName, Path generatedProtoDir) {
-        fillInImports(packageName, generatedProtoDir);
+    /**
+     * Specifies the {@link CodeTemplate}.
+     *
+     * <p>The generated Dart code is based on this template.
+     */
+    public KnownTypesBuilder setTemplate(CodeTemplate template) {
+        this.template = checkNotNull(template);
+        return this;
+    }
+
+    /**
+     * Specifies the types to register.
+     *
+     * <p>Typically, this set should only contain types declared in current project.
+     */
+    public KnownTypesBuilder setKnownTypes(TypeSet knownTypes) {
+        this.knownTypes = checkNotNull(knownTypes);
+        return this;
+    }
+
+    /**
+     * Specifies the name of the Dart package to which these types belong.
+     */
+    public KnownTypesBuilder setPackageName(String packageName) {
+        this.packageName = checkNotNull(packageName);
+        return this;
+    }
+
+    /**
+     * Specifies the base directory which contains Dart code generated for these Protobuf types.
+     */
+    public KnownTypesBuilder setGeneratedProtoDir(Path generatedProtoDir) {
+        this.generatedProtoDir = checkNotNull(generatedProtoDir);
+        return this;
+    }
+
+    public GeneratedDartFile buildAsSourceFile() {
+        checkNotNull(template);
+        checkNotNull(knownTypes);
+        checkNotNull(packageName);
+        checkNotNull(generatedProtoDir);
+
+        fillInImports();
         fillInTypeUrlMap();
         fillInBuilderInfoMap();
+
+        return template.compile();
     }
 
-    private void fillInImports(String packageName, Path generatedProtoDir) {
-        String imports = protoTypes
+    private void fillInImports() {
+        String imports = knownTypes
                 .allTypes()
                 .stream()
                 .map(Type::declaringFileName)
-                .map(file -> protoFilePath(generatedProtoDir, file))
+                .map(this::protoFilePath)
                 .map(path -> new Import(packageName, path))
                 .map(Import::dartCode)
                 .collect(joining(lineSeparator()));
         insert(InsertionPoint.IMPORT, imports);
     }
 
-    private static String protoFilePath(Path generatedProtoDir, FileName file) {
+    private String protoFilePath(FileName file) {
         PackageName packageName = PackageName.of(file.value());
         String packagePath = packageName.asFilePath();
         return generatedProtoDir.resolve(packagePath)
@@ -94,9 +131,9 @@ public final class TypesTemplate {
     }
 
     private void fillInBuilderInfoMap() {
-        String typeToInfo = protoTypes.messageTypes()
+        String typeToInfo = knownTypes.messageTypes()
                                       .stream()
-                                      .map(TypesTemplate::mapTypeUrlToBuilderInfo)
+                                      .map(KnownTypesBuilder::mapTypeUrlToBuilderInfo)
                                       .map(MapEntry::dartCode)
                                       .collect(joining(lineSeparator()));
         insert(InsertionPoint.TYPE_TO_INFO, typeToInfo);
@@ -116,9 +153,9 @@ public final class TypesTemplate {
     }
 
     private void fillInTypeUrlMap() {
-        String messageToType = protoTypes.messageTypes()
+        String messageToType = knownTypes.messageTypes()
                                          .stream()
-                                         .map(TypesTemplate::mapMessageToTypeUrl)
+                                         .map(KnownTypesBuilder::mapMessageToTypeUrl)
                                          .map(MapEntry::dartCode)
                                          .collect(joining(lineSeparator()));
         insert(InsertionPoint.MESSAGE_TO_TYPE, messageToType);
@@ -134,11 +171,6 @@ public final class TypesTemplate {
         StringLiteral typeUrl = new StringLiteral(type.url()
                                                       .value());
         return new MapEntry(constructorCall, typeUrl);
-    }
-
-    public void storeAsFile(File targetFile) {
-        GeneratedDartFile file = template.compile();
-        file.writeTo(targetFile);
     }
 
     private void insert(InsertionPoint point, String content) {

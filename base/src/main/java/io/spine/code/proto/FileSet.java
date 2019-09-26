@@ -165,9 +165,10 @@ public final class FileSet {
      *         file descriptors to include in the set
      * @return new file set
      */
-    public static FileSet ofFiles(ImmutableSet<FileDescriptorProto> protoDescriptors) {
+    public static FileSet ofFiles(Iterable<FileDescriptorProto> protoDescriptors) {
         checkNotNull(protoDescriptors);
-        return link(protoDescriptors);
+        ImmutableSet<FileDescriptorProto> descriptors = ImmutableSet.copyOf(protoDescriptors);
+        return link(descriptors);
     }
 
     /**
