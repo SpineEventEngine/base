@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
