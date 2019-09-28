@@ -96,12 +96,12 @@ public enum TaskName {
     verifyModel,
 
     /**
-     * Merges all the module known type descriptors into one in the {@code main} scope.
+     * Merges all the known type descriptors of the module into one in the {@code main} scope.
      */
     mergeDescriptorSet,
 
     /**
-     * Merges all the module known type descriptors into one in the {@code test} scope.
+     * Merges all the known type descriptors of the module into one in the {@code test} scope.
      */
     mergeTestDescriptorSet,
 
@@ -146,7 +146,11 @@ public enum TaskName {
 
     generateDartTypeRegistry,
 
-    generateDartTestTypeRegistry;
+    generateDartTestTypeRegistry,
+
+    copyGeneratedDart,
+
+    copyTestGeneratedDart;
 
     /**
      * Obtains the name of the task.

@@ -21,12 +21,14 @@
 package io.spine.dart.generate;
 
 import com.google.common.io.Files;
+import com.google.common.io.MoreFiles;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -47,12 +49,11 @@ public final class GeneratedDartFile {
      */
     public void writeTo(File target) {
         checkNotNull(target);
-        if (target.exists()) {
-            throw newIllegalStateException("Cannot over-write file %s.", target);
-        }
         try {
-            createParentDirs(target);
-            target.createNewFile();
+            if (!target.exists()) {
+                createParentDirs(target);
+                target.createNewFile();
+            }
             Files.asCharSink(target, UTF_8)
                  .write(content);
         } catch (IOException e) {

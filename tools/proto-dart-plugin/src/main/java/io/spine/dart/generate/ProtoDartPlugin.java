@@ -20,18 +20,19 @@
 
 package io.spine.dart.generate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.dart.knowntypes.KnownTypesBuilder;
 import io.spine.io.Resource;
-import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.Copy;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -40,10 +41,15 @@ import java.util.List;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.gradle.TaskName.assemble;
+import static io.spine.tools.gradle.TaskName.classes;
+import static io.spine.tools.gradle.TaskName.copyGeneratedDart;
+import static io.spine.tools.gradle.TaskName.copyTestGeneratedDart;
 import static io.spine.tools.gradle.TaskName.generateDartTestTypeRegistry;
 import static io.spine.tools.gradle.TaskName.generateDartTypeRegistry;
+import static io.spine.tools.gradle.TaskName.generateProto;
+import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskName.testClasses;
+import static org.gradle.api.Task.TASK_TYPE;
 
 /**
  * A Gradle plugin which configures Protobuf Dart code generation.
@@ -56,58 +62,90 @@ import static io.spine.tools.gradle.TaskName.testClasses;
 public final class ProtoDartPlugin extends SpinePlugin {
 
     private static final Resource TEMPLATE = Resource.file("types.template.dart");
+    private static final String TYPES_FILE_NAME = "types.dart";
 
     @Override
     public void apply(Project project) {
         Extension extension = new Extension(project);
         extension.registerIn(project);
-        newTask(generateDartTypeRegistry, createAction(extension))
-                .insertBeforeTask(assemble)
-                .withOutputFiles(project.files(extension.getMainTypeRegistry()))
-                .applyNowTo(project);
-        newTask(generateDartTestTypeRegistry, createTestAction(extension))
-                .insertBeforeTask(testClasses)
-                .withOutputFiles(project.files(extension.getTestTypeRegistry()))
-                .applyNowTo(project);
+
         Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();
         protocConfig.apply(project);
+
+        createMainCopyTask(project, extension);
+        createTestCopyTask(project, extension);
+
+        newTask(generateDartTypeRegistry, createAction(extension))
+                .insertAfterTask(copyGeneratedDart)
+                .insertBeforeTask(classes)
+                .withOutputFiles(project.files(extension.getMainGeneratedDir()
+                                                        .file(TYPES_FILE_NAME)))
+                .applyNowTo(project);
+        newTask(generateDartTestTypeRegistry, createTestAction(extension))
+                .insertAfterTask(copyTestGeneratedDart)
+                .insertBeforeTask(testClasses)
+                .withOutputFiles(project.files(extension.getTestGeneratedDir()
+                                                        .file(TYPES_FILE_NAME)))
+                .applyNowTo(project);
     }
 
-    private static Action<Task> createAction(Extension extension) {
+    private static void createMainCopyTask(Project project, Extension extension) {
+        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class),
+                                        copyGeneratedDart.name());
+        task.from(extension.getGeneratedBaseDir()
+                           .dir(main.name() + File.separator + dart.name()));
+        task.into(extension.getLibDir());
+        task.dependsOn(generateProto.name());
+    }
+
+    private static void createTestCopyTask(Project project, Extension extension) {
+        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class),
+                                        copyTestGeneratedDart.name());
+        task.from(extension.getGeneratedBaseDir()
+                           .dir(test.name() + File.separator + dart.name()));
+        task.into(extension.getTestDir());
+        task.dependsOn(generateTestProto.name());
+    }
+
+    private Action<Task> createAction(Extension extension) {
         return t -> generateTypeRegistry(extension,
                                          extension.mainDescriptorSetFile(),
-                                         extension.mainTypeRegistryFile(),
-                                         main);
+                                         extension.libDir(),
+                                         extension.mainGeneratedDir());
     }
 
-    private static Action<Task> createTestAction(Extension extension) {
+    private Action<Task> createTestAction(Extension extension) {
         return t -> generateTypeRegistry(extension,
                                          extension.testDescriptorSetFile(),
-                                         extension.testTypeRegistryFile(),
-                                         test);
+                                         extension.testDir(),
+                                         extension.testGeneratedDir());
     }
 
-    private static void
+    private void
     generateTypeRegistry(Extension extension,
                          File descriptorsFile,
-                         File targetFile,
-                         SourceScope scope) {
-        List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
-        TypeSet types = TypeSet.from(FileSet.ofFiles(fileDescriptors));
-        Path generatedDir = extension.generatedDirPath()
-                                     .resolve(scope.name())
-                                     .resolve(dart.name());
-        Path relativeGeneratedDir = targetFile.toPath()
-                                              .relativize(generatedDir);
-        String packageName = extension.packageName();
-        CodeTemplate template = new CodeTemplate(TEMPLATE);
-        GeneratedDartFile file = KnownTypesBuilder
-                .newBuilder()
-                .setKnownTypes(types)
-                .setGeneratedProtoDir(relativeGeneratedDir)
-                .setTemplate(template)
-                .setPackageName(packageName)
-                .buildAsSourceFile();
-        file.writeTo(targetFile);
+                         Path baseSourcePath,
+                         Path generatedSourcePath) {
+        extension.finalizeAll();
+        Path targetFile = generatedSourcePath.resolve(TYPES_FILE_NAME);
+        if (descriptorsFile.exists()) {
+            _fine().log("Generating Dart known types registry from descriptor `%s`.",
+                        descriptorsFile);
+            List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
+            TypeSet types = TypeSet.from(FileSet.ofFiles(fileDescriptors));
+            _finest().log("There are %d known types.", types.size());
+            CodeTemplate template = new CodeTemplate(TEMPLATE);
+            Path relativeSourcePath = baseSourcePath.relativize(generatedSourcePath);
+            GeneratedDartFile file = KnownTypesBuilder
+                    .newBuilder()
+                    .setKnownTypes(types)
+                    .setGeneratedFilesPrefix(relativeSourcePath)
+                    .setTemplate(template)
+                    .buildAsSourceFile();
+            _fine().log("Storing known types registry to `%s`.", targetFile);
+            file.writeTo(targetFile.toFile());
+        } else {
+            logMissingDescriptorSetFile(descriptorsFile);
+        }
     }
 }

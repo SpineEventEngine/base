@@ -18,31 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.dart.generate;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.code.fs.DefaultProject;
 
-/**
- * An import of a Dart file.
- */
-public final class Import extends Lexeme {
+import java.nio.file.Path;
 
-    /**
-     * Creates a new {@code Import}.
-     *
-     * @param uri
-     *         import URI, either a relative path, or a package and a path
-     * @param alias
-     *         import alias
-     */
-    private Import(StringLiteral uri, Reference alias) {
-        super("import %s as %s;", uri, alias);
+final class DefaultDartProject extends DefaultProject {
+
+    private DefaultDartProject(Path path) {
+        super(path);
     }
 
-    public static Import fileBased(String pathToFile, Reference alias) {
-        checkNotNull(pathToFile);
-        checkNotNull(alias);
-
-        return new Import(new StringLiteral(pathToFile), alias);
+    static DefaultDartProject at(Path root) {
+        return new DefaultDartProject(root);
     }
 }

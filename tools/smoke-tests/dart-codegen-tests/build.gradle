@@ -18,31 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * An import of a Dart file.
- */
-public final class Import extends Lexeme {
-
-    /**
-     * Creates a new {@code Import}.
-     *
-     * @param uri
-     *         import URI, either a relative path, or a package and a path
-     * @param alias
-     *         import alias
-     */
-    private Import(StringLiteral uri, Reference alias) {
-        super("import %s as %s;", uri, alias);
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
     }
-
-    public static Import fileBased(String pathToFile, Reference alias) {
-        checkNotNull(pathToFile);
-        checkNotNull(alias);
-
-        return new Import(new StringLiteral(pathToFile), alias);
+    dependencies {
+        classpath "io.spine.tools:spine-proto-dart-plugin:$spineVersion"
     }
 }
+
+apply plugin: 'io.spine.tools.proto-dart-plugin'
+
+sourceSets {
+    main.proto.srcDirs "$projectDir/src/main/proto"
+    test.proto.srcDirs "$projectDir/src/test/proto"
+}
+
+protobuf {
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+            }
+            task.plugins {
+                dart {}
+            }
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = task.sourceSet.name.equals('test')
+                    ? "${file(protoDart.testDescriptorSet.get())}"
+                    : "${file(protoDart.mainDescriptorSet.get())}"
+        }
+    }
+}
+
+protoDart {
+
+}
+
+tasks.withType(JavaCompile)*.enabled false

@@ -20,9 +20,10 @@
 
 package io.spine.dart.generate;
 
+import io.spine.code.fs.DefaultProject;
+import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 
@@ -33,48 +34,48 @@ import java.nio.file.Path;
  * DSL extension for configuring Protobuf-to-Dart compilation.
  */
 @SuppressWarnings("UnstableApiUsage") // Gradle `Property` API.
-public final class Extension {
+public final class Extension extends GradleExtension {
 
     private static final String NAME = "protoDart";
 
-    private static final String MAIN_DESCRIPTOR = "descriptors/main.desc";
-    private static final String TEST_DESCRIPTOR = "descriptors/test.desc";
-    private static final String TYPE_REGISTRY = "lib/types.dart";
-    private static final String TEST_TYPE_REGISTRY = "test/types.dart";
+    private static final String LIB_DIRECTORY = "lib";
+    private static final String TEST_DIRECTORY = "test";
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String GENERATED_BASE_DIR = "proto";
 
-    private final RegularFileProperty mainDescriptorSet;
-    private final RegularFileProperty testDescriptorSet;
-    private final RegularFileProperty mainTypeRegistry;
-    private final RegularFileProperty testTypeRegistry;
+    private final Property<Object> mainDescriptorSet;
+    private final Property<Object> testDescriptorSet;
     private final DirectoryProperty generatedDir;
-    private final Property<String> packageName;
+    private final DirectoryProperty libDir;
+    private final DirectoryProperty testDir;
+    private final DirectoryProperty mainGeneratedDir;
+    private final DirectoryProperty testGeneratedDir;
+    private final Project project;
 
     Extension(Project project) {
+        super();
+        this.project = project;
         ObjectFactory objects = project.getObjects();
-        this.mainDescriptorSet = objects.fileProperty();
-        mainDescriptorSet.convention(project.getLayout()
-                                            .getBuildDirectory()
-                                            .file(MAIN_DESCRIPTOR));
-        this.testDescriptorSet = objects.fileProperty();
-        testDescriptorSet.convention(project.getLayout()
-                                            .getBuildDirectory()
-                                            .file(TEST_DESCRIPTOR));
-        this.mainTypeRegistry = objects.fileProperty();
-        mainTypeRegistry.convention(project.getLayout()
-                                           .getProjectDirectory()
-                                           .file(TYPE_REGISTRY));
-        this.testTypeRegistry = objects.fileProperty();
-        testTypeRegistry.convention(project.getLayout()
-                                           .getProjectDirectory()
-                                           .file(TEST_TYPE_REGISTRY));
+        this.libDir = objects.directoryProperty();
+        this.testDir = objects.directoryProperty();
+        this.mainGeneratedDir = objects.directoryProperty();
+        this.testGeneratedDir = objects.directoryProperty();
+        this.mainDescriptorSet = objects.property(Object.class);
+        this.testDescriptorSet = objects.property(Object.class);
         this.generatedDir = objects.directoryProperty();
+        libDir.convention(project.getLayout()
+                                 .getProjectDirectory()
+                                 .dir(LIB_DIRECTORY));
+        testDir.convention(project.getLayout()
+                                  .getProjectDirectory()
+                                  .dir(TEST_DIRECTORY));
+        mainGeneratedDir.convention(libDir);
+        testGeneratedDir.convention(testDir);
+        mainDescriptorSet.convention(defaultMainDescriptor(project));
+        testDescriptorSet.convention(defaultTestDescriptor(project));
         generatedDir.convention(project.getLayout()
                                        .getProjectDirectory()
                                        .dir(GENERATED_BASE_DIR));
-        this.packageName = objects.property(String.class);
-        packageName.convention(project.getName());
     }
 
     /**
@@ -99,7 +100,7 @@ public final class Extension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/main.desc}.
      */
-    public RegularFileProperty getMainDescriptorSet() {
+    public Property<Object> getMainDescriptorSet() {
         return mainDescriptorSet;
     }
 
@@ -107,8 +108,7 @@ public final class Extension {
      * Resolves the descriptor set file for production Protobuf types.
      */
     File mainDescriptorSetFile() {
-        return getMainDescriptorSet().get()
-                                     .getAsFile();
+        return file(getMainDescriptorSet());
     }
 
     /**
@@ -116,7 +116,7 @@ public final class Extension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/test.desc}.
      */
-    public RegularFileProperty getTestDescriptorSet() {
+    public Property<Object> getTestDescriptorSet() {
         return testDescriptorSet;
     }
 
@@ -124,42 +124,7 @@ public final class Extension {
      * Resolves the descriptor set file for test Protobuf types.
      */
     File testDescriptorSetFile() {
-        return getTestDescriptorSet().get()
-                                     .getAsFile();
-    }
-
-    /**
-     * The generated type registry file for production types.
-     *
-     * <p>Defaults to {@code $projectDir/lib/types.dart}.
-     */
-    public RegularFileProperty getMainTypeRegistry() {
-        return mainTypeRegistry;
-    }
-
-    /**
-     * Resolves the generated type registry file for production types.
-     */
-    File mainTypeRegistryFile() {
-        return getMainTypeRegistry().get()
-                                    .getAsFile();
-    }
-
-    /**
-     * The generated type registry file for test types.
-     *
-     * <p>Defaults to {@code $projectDir/test/types.dart}.
-     */
-    public RegularFileProperty getTestTypeRegistry() {
-        return testTypeRegistry;
-    }
-
-    /**
-     * Resolves the generated type registry file for test types.
-     */
-    File testTypeRegistryFile() {
-        return getTestTypeRegistry().get()
-                                    .getAsFile();
+        return file(getTestDescriptorSet());
     }
 
     /**
@@ -181,18 +146,103 @@ public final class Extension {
     }
 
     /**
-     * The name of this Dart package.
+     * The directory which contains production Dart code.
      *
-     * <p>By default, equal to the name of the project.
+     * <p>Defaults to {@code $projectDir/lib}.
      */
-    public Property<String> getPackageName() {
-        return packageName;
+    public DirectoryProperty getLibDir() {
+        return libDir;
     }
 
     /**
-     * Resolves the name of this Dart package.
+     * Resolves the directory which contains production Dart code.
      */
-    String packageName() {
-        return getPackageName().get();
+    Path libDir() {
+        return getLibDir().get()
+                          .getAsFile()
+                          .toPath();
+    }
+
+    /**
+     * The directory which contains test Dart code.
+     *
+     * <p>Defaults to {@code $projectDir/test}.
+     */
+    public DirectoryProperty getTestDir() {
+        return testDir;
+    }
+
+    /**
+     * Resolves the directory which contains test Dart code.
+     */
+    Path testDir() {
+        return getTestDir().get()
+                           .getAsFile()
+                           .toPath();
+    }
+
+    /**
+     * The directory which contains the generated production Dart files.
+     *
+     * <p>Must be a subdirectory of {@link #getLibDir() libDir}.
+     *
+     * <p>Defaults to the {@code libDir}.
+     */
+    public DirectoryProperty getMainGeneratedDir() {
+        return mainGeneratedDir;
+    }
+
+    /**
+     * Resolves the directory which contains the generated production Dart files.
+     */
+    Path mainGeneratedDir() {
+        return getMainGeneratedDir().get()
+                                    .getAsFile()
+                                    .toPath();
+    }
+
+    /**
+     * The directory which contains the generated test Dart files.
+     *
+     * <p>Must be a subdirectory of {@link #getTestDir() testDir}.
+     *
+     * <p>Defaults to the {@code testDir}.
+     */
+    public DirectoryProperty getTestGeneratedDir() {
+        return testGeneratedDir;
+    }
+
+    /**
+     * Resolves the directory which contains the generated test Dart files.
+     */
+    Path testGeneratedDir() {
+        return getTestGeneratedDir().get()
+                                    .getAsFile()
+                                    .toPath();
+    }
+
+    /**
+     * Finalizes all configurable values.
+     *
+     * <p>If a user tries to configure the extension after this method is called, the Gradle build
+     * will fail with an error.
+     */
+    void finalizeAll() {
+        this.libDir.finalizeValue();
+        this.testDir.finalizeValue();
+        this.mainGeneratedDir.finalizeValue();
+        this.testGeneratedDir.finalizeValue();
+        this.mainDescriptorSet.finalizeValue();
+        this.testDescriptorSet.finalizeValue();
+        this.generatedDir.finalizeValue();
+    }
+
+    private File file(Property<Object> property) {
+        return project.file(property.get());
+    }
+
+    @Override
+    protected DefaultProject defaultProject(Project project) {
+        return DefaultDartProject.at(project.getProjectDir().toPath());
     }
 }

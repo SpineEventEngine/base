@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class GeneratedAlias extends Reference {
 
-    private static final Splitter pathSplitter = Splitter.on(anyOf("/\\"));
+    private static final Splitter partSplitter = Splitter.on(anyOf("/\\"));
     private static final char ESCAPE_DELIMITER = '_';
 
     public GeneratedAlias(String pathToFile) {
@@ -43,7 +43,7 @@ public final class GeneratedAlias extends Reference {
 
     private static String escapePathToAlias(String path) {
         checkNotNull(path);
-        List<String> pathElements = pathSplitter.splitToList(path);
+        List<String> pathElements = partSplitter.splitToList(path);
         StringBuilder alias = new StringBuilder(path.length() + 1);
         for (String element : pathElements) {
             alias.append(ESCAPE_DELIMITER)

@@ -20,9 +20,7 @@
 
 package io.spine.dart.knowntypes;
 
-import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FileName;
-import io.spine.code.proto.PackageName;
 import io.spine.code.proto.TypeSet;
 import io.spine.dart.code.Call;
 import io.spine.dart.code.FieldAccess;
@@ -33,6 +31,7 @@ import io.spine.dart.code.StringLiteral;
 import io.spine.dart.generate.CodeTemplate;
 import io.spine.dart.generate.GeneratedDartFile;
 import io.spine.type.MessageType;
+import io.spine.type.NestedTypeName;
 import io.spine.type.Type;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -47,10 +46,11 @@ import static java.util.stream.Collectors.joining;
  */
 public final class KnownTypesBuilder {
 
+    private static final String GENERATED_EXTENSION = ".pb.dart";
+
     private @MonotonicNonNull CodeTemplate template;
     private @MonotonicNonNull TypeSet knownTypes;
-    private @MonotonicNonNull String packageName;
-    private @MonotonicNonNull Path generatedProtoDir;
+    private @MonotonicNonNull Path generatedFilesPrefix;
 
     private KnownTypesBuilder() {
     }
@@ -83,26 +83,17 @@ public final class KnownTypesBuilder {
     }
 
     /**
-     * Specifies the name of the Dart package to which these types belong.
-     */
-    public KnownTypesBuilder setPackageName(String packageName) {
-        this.packageName = checkNotNull(packageName);
-        return this;
-    }
-
-    /**
      * Specifies the base directory which contains Dart code generated for these Protobuf types.
      */
-    public KnownTypesBuilder setGeneratedProtoDir(Path generatedProtoDir) {
-        this.generatedProtoDir = checkNotNull(generatedProtoDir);
+    public KnownTypesBuilder setGeneratedFilesPrefix(Path generatedFilesPrefix) {
+        this.generatedFilesPrefix = checkNotNull(generatedFilesPrefix);
         return this;
     }
 
     public GeneratedDartFile buildAsSourceFile() {
         checkNotNull(template);
         checkNotNull(knownTypes);
-        checkNotNull(packageName);
-        checkNotNull(generatedProtoDir);
+        checkNotNull(generatedFilesPrefix);
 
         fillInImports();
         fillInTypeUrlMap();
@@ -116,18 +107,16 @@ public final class KnownTypesBuilder {
                 .allTypes()
                 .stream()
                 .map(Type::declaringFileName)
-                .map(this::protoFilePath)
-                .map(path -> new Import(packageName, path))
+                .distinct()
+                .map(path -> Import.fileBased(protoFilePath(path), aliasFor(path)))
                 .map(Import::dartCode)
                 .collect(joining(lineSeparator()));
         insert(InsertionPoint.IMPORT, imports);
     }
 
     private String protoFilePath(FileName file) {
-        PackageName packageName = PackageName.of(file.value());
-        String packagePath = packageName.asFilePath();
-        return generatedProtoDir.resolve(packagePath)
-                                .toString();
+        return generatedFilesPrefix.resolve(file.nameWithoutExtension() + GENERATED_EXTENSION)
+                                   .toString();
     }
 
     private void fillInBuilderInfoMap() {
@@ -140,14 +129,8 @@ public final class KnownTypesBuilder {
     }
 
     private static MapEntry mapTypeUrlToBuilderInfo(MessageType type) {
-        StringLiteral typeUrlKey = new StringLiteral(type.url()
-                                                         .value());
-        Descriptors.Descriptor descriptor = type.descriptor();
-        PackageName protoPackage = PackageName.of(descriptor);
-        Call constructorCall = new Call(
-                new GeneratedAlias(protoPackage.asFilePath()),
-                descriptor.getName()
-        );
+        StringLiteral typeUrlKey = new StringLiteral(type.url().value());
+        Call constructorCall = constructorCall(type);
         FieldAccess field = new FieldAccess(constructorCall, "info_");
         return new MapEntry(typeUrlKey, field);
     }
@@ -161,16 +144,27 @@ public final class KnownTypesBuilder {
         insert(InsertionPoint.MESSAGE_TO_TYPE, messageToType);
     }
 
+    private static GeneratedAlias aliasFor(Type<?, ?> type) {
+        FileName fileName = type.declaringFileName();
+        return aliasFor(fileName);
+    }
+
+    private static GeneratedAlias aliasFor(FileName fileName) {
+        return new GeneratedAlias(fileName.nameWithoutExtension());
+    }
+
     private static MapEntry mapMessageToTypeUrl(MessageType type) {
-        Descriptors.Descriptor descriptor = type.descriptor();
-        PackageName protoPackage = PackageName.of(descriptor);
-        Call constructorCall = new Call(
-                new GeneratedAlias(protoPackage.asFilePath()),
-                descriptor.getName()
-        );
-        StringLiteral typeUrl = new StringLiteral(type.url()
-                                                      .value());
+        Call constructorCall = constructorCall(type);
+        StringLiteral typeUrl = new StringLiteral(type.url().value());
         return new MapEntry(constructorCall, typeUrl);
+    }
+
+    private static Call constructorCall(MessageType type) {
+        NestedTypeName typeName = type.nestedSimpleName();
+        return new Call(
+                aliasFor(type),
+                typeName.joinWithUnderscore()
+        );
     }
 
     private void insert(InsertionPoint point, String content) {
