@@ -20,11 +20,17 @@
 
 package io.spine.type;
 
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -74,5 +80,11 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
     @Override
     public ClassName javaClassName() {
         return ClassName.from(descriptor());
+    }
+
+    @Override
+    public Optional<Type<Descriptor, DescriptorProto>> containingType() {
+        // Services are now allowed to be nested in Protobuf.
+        return Optional.empty();
     }
 }

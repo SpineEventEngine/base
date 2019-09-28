@@ -84,9 +84,4 @@ public final class PackageName extends StringTypeValue {
         boolean result = value().startsWith(parentCandidate.value());
         return result;
     }
-
-    public String asFilePath() {
-        // TODO:2019-09-20:dmytro.dashenkov: Clean up.
-        return value().replace(DELIMITER, "/");
-    }
 }

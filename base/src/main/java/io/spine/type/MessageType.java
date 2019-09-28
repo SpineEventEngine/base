@@ -99,6 +99,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     @Override
+    public Optional<Type<Descriptor, DescriptorProto>> containingType() {
+        Descriptor parent = descriptor().getContainingType();
+        return Optional.ofNullable(parent)
+                       .map(MessageType::new);
+    }
+
+    @Override
     @SuppressWarnings("unchecked") // It is safe since we work with a message descriptors
     public Class<? extends Message> javaClass() {
         return (Class<? extends Message>) super.javaClass();

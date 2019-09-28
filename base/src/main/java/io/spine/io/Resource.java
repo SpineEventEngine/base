@@ -158,7 +158,8 @@ public final class Resource {
     }
 
     private static ClassLoader classLoader() {
-        return Resource.class.getClassLoader();
+        return Thread.currentThread()
+                     .getContextClassLoader();
     }
 
     @Override

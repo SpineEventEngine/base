@@ -1,0 +1,72 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.type;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+
+import java.util.Optional;
+
+import static io.spine.type.TypeName.NESTED_TYPE_SEPARATOR;
+
+public final class NestedTypeName {
+
+    private static final Joiner simpleNameJoiner = Joiner.on(NESTED_TYPE_SEPARATOR);
+    private static final Joiner underscoreNameJoiner = Joiner.on("_");
+
+    private final ImmutableList<String> names;
+
+    private NestedTypeName(ImmutableList<String> names) {
+        this.names = names;
+    }
+
+    static NestedTypeName of(Type<?, ?> type) {
+        ImmutableList.Builder<String> names = ImmutableList.builder();
+        String unqualified = type.descriptor()
+                                 .getName();
+        names.add(unqualified);
+        Optional<Type<Descriptor, DescriptorProto>> parent = type.containingType();
+        while (parent.isPresent()) {
+            Type<Descriptor, DescriptorProto> containingType = parent.get();
+            names.add(containingType.descriptor()
+                                    .getName());
+            parent = containingType.containingType();
+        }
+        ImmutableList<String> fullSimpleName = names.build()
+                                                    .reverse();
+        return new NestedTypeName(fullSimpleName);
+    }
+
+    public String value() {
+        return simpleNameJoiner.join(names);
+    }
+
+    public String joinWithUnderscore() {
+        return underscoreNameJoiner.join(names);
+    }
+
+    @Override
+    public String toString() {
+        return value();
+    }
+}

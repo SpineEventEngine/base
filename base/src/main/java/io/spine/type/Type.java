@@ -24,6 +24,8 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -31,6 +33,8 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileName;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -127,6 +131,12 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     public final SimpleClassName simpleJavaClassName() {
         return javaClassName().toSimple();
     }
+
+    public final NestedTypeName nestedSimpleName() {
+        return NestedTypeName.of(this);
+    }
+
+    public abstract Optional<Type<Descriptor, DescriptorProto>> containingType();
 
     /**
      * Defines whether or not the Java class generated from this type has a builder.
