@@ -432,7 +432,7 @@ final class InterfaceGeneratorTest {
 
     private static boolean haveSamePath(File generatedFile, SourceFile anotherFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
-        return generatedFilePath.equals(anotherFile.getPath());
+        return generatedFilePath.equals(anotherFile.path());
     }
 
     private static void assertFilePath(File generatedFile, SourceFile expectedFile) {
@@ -442,7 +442,7 @@ final class InterfaceGeneratorTest {
     private static void assertPackage(File generatedFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
         Directory directory = Directory.of(PACKAGE_NAME);
-        assertTrue(generatedFilePath.startsWith(directory.getPath()));
+        assertTrue(generatedFilePath.startsWith(directory.path()));
     }
 
     /**

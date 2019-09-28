@@ -18,10 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.dart.code;
+package io.spine.code.dart.lexeme;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public final class FieldAccess extends Expression {
+
+    public FieldAccess(Expression receiver, String fieldName) {
+        super("%s.%s", checkNotNull(receiver), checkNotNull(fieldName));
+    }
+}

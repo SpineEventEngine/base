@@ -18,30 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.testing;
+package io.spine.code.dart.lexeme;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.tools.gradle.GeneratedSourceRoot;
-import io.spine.tools.gradle.project.SourceSuperset;
+import com.google.common.base.Splitter;
 
-import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.base.CharMatcher.anyOf;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A memoizing test-only implementation of {@link SourceSuperset}.
+ * An alias for an imported Dart library.
+ *
+ * <p>Consists of the imported file path concatenated with {@code _} (underscore) symbols.
  */
-public final class MemoizingSourceSuperset implements SourceSuperset {
+public final class GeneratedAlias extends Reference {
 
-    private final Set<Path> javaSourceDirs = newHashSet();
+    private static final Splitter partSplitter = Splitter.on(anyOf("/\\"));
+    private static final char ESCAPE_DELIMITER = '_';
 
-    @Override
-    public void register(GeneratedSourceRoot directory) {
-        javaSourceDirs.add(directory.path());
+    public GeneratedAlias(String pathToFile) {
+        super(escapePathToAlias(pathToFile));
     }
 
-    public ImmutableSet<Path> javaSourceDirs() {
-        return ImmutableSet.copyOf(javaSourceDirs);
+    private static String escapePathToAlias(String path) {
+        checkNotNull(path);
+        List<String> pathElements = partSplitter.splitToList(path);
+        StringBuilder alias = new StringBuilder(path.length() + 1);
+        for (String element : pathElements) {
+            alias.append(ESCAPE_DELIMITER)
+                 .append(element);
+        }
+        return alias.toString();
     }
 }

@@ -54,7 +54,7 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
     protected Path generatedFilesBaseDir(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
         DefaultJsProject.GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
-        return generatedProtoRoot.getPath();
+        return generatedProtoRoot.path();
     }
 
     @Override

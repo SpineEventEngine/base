@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.generate;
+package io.spine.generate.dart;
 
-import io.spine.code.fs.DefaultProject;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -63,6 +62,10 @@ public final class Extension extends GradleExtension {
         this.mainDescriptorSet = objects.property(Object.class);
         this.testDescriptorSet = objects.property(Object.class);
         this.generatedDir = objects.directoryProperty();
+        initProperties();
+    }
+
+    private void initProperties() {
         libDir.convention(project.getLayout()
                                  .getProjectDirectory()
                                  .dir(LIB_DIRECTORY));
@@ -90,7 +93,7 @@ public final class Extension extends GradleExtension {
     /**
      * Registers this extension in the given project.
      */
-    void registerIn(Project project) {
+    void register() {
         project.getExtensions()
                .add(Extension.class, NAME, this);
     }
@@ -242,7 +245,7 @@ public final class Extension extends GradleExtension {
     }
 
     @Override
-    protected DefaultProject defaultProject(Project project) {
+    protected DefaultDartProject defaultProject(Project project) {
         return DefaultDartProject.at(project.getProjectDir().toPath());
     }
 }

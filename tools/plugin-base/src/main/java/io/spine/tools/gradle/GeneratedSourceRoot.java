@@ -57,7 +57,7 @@ public final class GeneratedSourceRoot extends AbstractDirectory {
      */
     public GeneratedSourceSet sourceSet(String name) {
         checkNotNull(name);
-        Path path = getPath().resolve(name);
+        Path path = path().resolve(name);
         return new GeneratedSourceSet(path);
     }
 

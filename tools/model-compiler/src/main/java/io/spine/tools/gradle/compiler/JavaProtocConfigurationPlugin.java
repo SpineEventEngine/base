@@ -123,7 +123,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     protected Path generatedFilesBaseDir(Project project) {
         DefaultJavaProject javaProject = DefaultJavaProject.at(project.getProjectDir());
         GeneratedRoot result = javaProject.generated();
-        return result.getPath();
+        return result.path();
     }
 
     @Override

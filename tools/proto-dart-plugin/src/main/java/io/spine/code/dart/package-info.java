@@ -18,14 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.dart;
 
-/**
- * A reference to an object.
- */
-public class Reference extends Expression {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public Reference(String name) {
-        super(name);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

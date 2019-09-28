@@ -18,17 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.code.dart.lexeme;
+
+import io.spine.code.dart.lexeme.Expression;
 
 /**
- * A lexeme which returns a value.
+ * A reference to an object.
  */
-public abstract class Expression extends Lexeme {
+public class Reference extends Expression {
 
-    /**
-     * See {@link Lexeme#Lexeme(String, Object...)}.
-     */
-    Expression(String template, Object... formatArgs) {
-        super(template, formatArgs);
+    public Reference(String name) {
+        super(name);
     }
 }

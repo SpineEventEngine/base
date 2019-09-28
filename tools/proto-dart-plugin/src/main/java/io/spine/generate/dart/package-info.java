@@ -20,7 +20,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.dart.knowntypes;
+package io.spine.generate.dart;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

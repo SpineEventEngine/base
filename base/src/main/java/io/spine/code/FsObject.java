@@ -40,7 +40,7 @@ public abstract class FsObject {
     /**
      * Obtains the path of the source code object.
      */
-    public Path getPath() {
+    public Path path() {
         return path;
     }
 
@@ -53,7 +53,7 @@ public abstract class FsObject {
 
     @Override
     public String toString() {
-        return getPath().toString();
+        return path().toString();
     }
 
     @Override

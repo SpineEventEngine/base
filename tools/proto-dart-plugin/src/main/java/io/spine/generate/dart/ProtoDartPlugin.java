@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.generate;
+package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.TypeSet;
-import io.spine.dart.knowntypes.KnownTypesBuilder;
 import io.spine.io.Resource;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -67,7 +67,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         Extension extension = new Extension(project);
-        extension.registerIn(project);
+        extension.register();
 
         Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();
         protocConfig.apply(project);
@@ -127,25 +127,36 @@ public final class ProtoDartPlugin extends SpinePlugin {
                          Path baseSourcePath,
                          Path generatedSourcePath) {
         extension.finalizeAll();
-        Path targetFile = generatedSourcePath.resolve(TYPES_FILE_NAME);
         if (descriptorsFile.exists()) {
-            _fine().log("Generating Dart known types registry from descriptor `%s`.",
-                        descriptorsFile);
-            List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
-            TypeSet types = TypeSet.from(FileSet.ofFiles(fileDescriptors));
-            _finest().log("There are %d known types.", types.size());
-            CodeTemplate template = new CodeTemplate(TEMPLATE);
-            Path relativeSourcePath = baseSourcePath.relativize(generatedSourcePath);
-            GeneratedDartFile file = KnownTypesBuilder
-                    .newBuilder()
-                    .setKnownTypes(types)
-                    .setGeneratedFilesPrefix(relativeSourcePath)
-                    .setTemplate(template)
-                    .buildAsSourceFile();
-            _fine().log("Storing known types registry to `%s`.", targetFile);
-            file.writeTo(targetFile.toFile());
+            doGenerateRegistry(descriptorsFile,
+                               baseSourcePath,
+                               generatedSourcePath);
         } else {
             logMissingDescriptorSetFile(descriptorsFile);
         }
+    }
+
+    private void doGenerateRegistry(File descriptorsFile,
+                                    Path baseSourcePath,
+                                    Path generatedSourcePath) {
+        _fine().log("Generating Dart known types registry from descriptor `%s`.",
+                    descriptorsFile);
+        Path targetFile = generatedSourcePath.resolve(TYPES_FILE_NAME);
+        List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
+        ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedSourcePath);
+        FileSet fileSet = FileSet.ofFiles(fileDescriptors)
+                                 .filter(predicate.forDescriptor());
+        TypeSet types = TypeSet.from(fileSet);
+        _finest().log("There are %d known types.", types.size());
+        CodeTemplate template = new CodeTemplate(TEMPLATE);
+        Path relativeSourcePath = baseSourcePath.relativize(generatedSourcePath);
+        GeneratedDartFile file = KnownTypesBuilder
+                .newBuilder()
+                .setKnownTypes(types)
+                .setGeneratedFilesPrefix(relativeSourcePath)
+                .setTemplate(template)
+                .buildAsSourceFile();
+        _fine().log("Storing known types registry to `%s`.", targetFile);
+        file.writeTo(targetFile.toFile());
     }
 }

@@ -18,19 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.generate;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.dart.lexeme;
 
-import io.spine.code.fs.DefaultProject;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import java.nio.file.Path;
-
-final class DefaultDartProject extends DefaultProject {
-
-    private DefaultDartProject(Path path) {
-        super(path);
-    }
-
-    static DefaultDartProject at(Path root) {
-        return new DefaultDartProject(root);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

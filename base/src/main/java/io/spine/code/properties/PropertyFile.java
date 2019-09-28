@@ -73,7 +73,7 @@ public class PropertyFile extends AbstractSourceFile {
      */
     public Map<String, String> load() {
         try {
-            InputStream inputStream = new FileInputStream(getPath().toFile());
+            InputStream inputStream = new FileInputStream(path().toFile());
             Properties properties = new Properties();
             properties.load(inputStream);
 

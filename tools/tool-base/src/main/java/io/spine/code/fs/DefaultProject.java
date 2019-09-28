@@ -61,14 +61,14 @@ public abstract class DefaultProject extends AbstractDirectory {
      * <p>The directory is deleted on {@code :pre-clean"}.
      */
     public File tempArtifacts() {
-        File result = new File(getPath().toFile(), dotSpine.value());
+        File result = new File(path().toFile(), dotSpine.value());
         return result;
     }
 
     protected static class SourceDir extends SourceCodeDirectory {
 
         public SourceDir(AbstractDirectory parent, String name) {
-            super(parent.getPath()
+            super(parent.path()
                         .resolve(name));
         }
     }
@@ -97,7 +97,7 @@ public abstract class DefaultProject extends AbstractDirectory {
     public static final class BuildRoot extends AbstractDirectory {
 
         private BuildRoot(DefaultProject module) {
-            super(module.getPath()
+            super(module.path()
                         .resolve(build.value()));
         }
 
@@ -113,16 +113,16 @@ public abstract class DefaultProject extends AbstractDirectory {
     public static final class DescriptorsDir extends AbstractDirectory {
 
         DescriptorsDir(BuildRoot parent, String name) {
-            super(parent.getPath()
+            super(parent.path()
                         .resolve(name));
         }
 
         public Path mainDescriptors() {
-            return getPath().resolve(main.value());
+            return path().resolve(main.value());
         }
 
         public Path testDescriptors() {
-            return getPath().resolve(test.value());
+            return path().resolve(test.value());
         }
     }
 }

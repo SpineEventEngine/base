@@ -63,7 +63,7 @@ class GeneratedSourceRootTest {
     @DisplayName("resolve '$projectDir/generated'")
     void resolveToGenerated() {
         Path generated = projectDir.resolve(GENERATED);
-        Path absoluteActual = sourceRoot.getPath();
+        Path absoluteActual = sourceRoot.path();
         assertThat((Object) absoluteActual).isEqualTo(generated);
     }
 
@@ -73,7 +73,7 @@ class GeneratedSourceRootTest {
         String sourceSetName = "dysfunctional-test";
         GeneratedSourceSet sourceSet = sourceRoot.sourceSet(sourceSetName);
         assertThat(sourceSet).isNotNull();
-        Path subdirectory = sourceSet.getPath();
+        Path subdirectory = sourceSet.path();
         Path expectedSubdirectory = projectDir.resolve(GENERATED)
                                               .resolve(sourceSetName);
         assertThat((Object) subdirectory).isEqualTo(expectedSubdirectory);
@@ -116,7 +116,7 @@ class GeneratedSourceRootTest {
 
         private void testSubDir(String name, Supplier<Path> selector) {
             Path javaSubdir = selector.get();
-            assertThat((Object) javaSubdir).isEqualTo(sourceSet.getPath()
+            assertThat((Object) javaSubdir).isEqualTo(sourceSet.path()
                                                                .resolve(name));
         }
     }

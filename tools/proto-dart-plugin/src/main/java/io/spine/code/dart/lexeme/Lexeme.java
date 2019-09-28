@@ -18,30 +18,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.testing;
+package io.spine.code.dart.lexeme;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.tools.gradle.GeneratedSourceRoot;
-import io.spine.tools.gradle.project.SourceSuperset;
-
-import java.nio.file.Path;
-import java.util.Set;
-
-import static com.google.common.collect.Sets.newHashSet;
+import com.google.common.base.Objects;
 
 /**
- * A memoizing test-only implementation of {@link SourceSuperset}.
+ * A part of Dart language.
  */
-public final class MemoizingSourceSuperset implements SourceSuperset {
+public abstract class Lexeme {
 
-    private final Set<Path> javaSourceDirs = newHashSet();
+    private final String dartCode;
 
-    @Override
-    public void register(GeneratedSourceRoot directory) {
-        javaSourceDirs.add(directory.path());
+    /**
+     * Creates a new lexeme.
+     *
+     * @param template
+     *         formatting template
+     * @param formatArgs
+     *         formatting arguments
+     */
+    Lexeme(String template, Object... formatArgs) {
+        this.dartCode = String.format(template, formatArgs);
     }
 
-    public ImmutableSet<Path> javaSourceDirs() {
-        return ImmutableSet.copyOf(javaSourceDirs);
+    /**
+     * Prints this lexeme to string.
+     */
+    public final String dartCode() {
+        return dartCode;
+    }
+
+    @Override
+    public final String toString() {
+        return dartCode;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Lexeme)) {
+            return false;
+        }
+        Lexeme lexeme = (Lexeme) o;
+        return Objects.equal(dartCode, lexeme.dartCode);
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(dartCode);
     }
 }

@@ -18,31 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.generate.dart;
+
+import io.spine.code.dart.FileName;
+import io.spine.code.proto.ProtoBelongsToModule;
+import io.spine.code.proto.SourceFile;
+
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An import of a Dart file.
+ * A predicate determining if the given Protobuf file was compiled to JavaScript
+ * and belongs to the specified module.
  */
-public final class Import extends Lexeme {
+public final class CompiledProtoBelongsToModule extends ProtoBelongsToModule {
+
+    private final Path generatedRoot;
 
     /**
-     * Creates a new {@code Import}.
+     * Creates a new instance.
      *
-     * @param uri
-     *         import URI, either a relative path, or a package and a path
-     * @param alias
-     *         import alias
+     * @param generatedRoot
+     *         the root directory for generated Protobufs
      */
-    private Import(StringLiteral uri, Reference alias) {
-        super("import %s as %s;", uri, alias);
+    CompiledProtoBelongsToModule(Path generatedRoot) {
+        super();
+        this.generatedRoot = generatedRoot;
     }
 
-    public static Import fileBased(String pathToFile, Reference alias) {
-        checkNotNull(pathToFile);
-        checkNotNull(alias);
-
-        return new Import(new StringLiteral(pathToFile), alias);
+    @Override
+    protected Path resolve(SourceFile file) {
+        FileName fileName = FileName.relative(file.descriptor());
+        Path filePath = generatedRoot.resolve(fileName.value());
+        return filePath;
     }
 }

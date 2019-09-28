@@ -18,55 +18,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.generate.dart;
 
-import com.google.common.base.Objects;
+import io.spine.code.AbstractDirectory;
+import io.spine.code.fs.DefaultProject;
 
-/**
- * A part of Dart language.
- */
-public abstract class Lexeme {
+import java.nio.file.Path;
 
-    private final String dartCode;
+final class DefaultDartProject extends DefaultProject {
 
-    /**
-     * Creates a new lexeme.
-     *
-     * @param template
-     *         formatting template
-     * @param formatArgs
-     *         formatting arguments
-     */
-    Lexeme(String template, Object... formatArgs) {
-        this.dartCode = String.format(template, formatArgs);
+    private DefaultDartProject(Path path) {
+        super(path);
     }
 
-    /**
-     * Prints this lexeme to string.
-     */
-    public final String dartCode() {
-        return dartCode;
+    static DefaultDartProject at(Path root) {
+        return new DefaultDartProject(root);
     }
 
-    @Override
-    public final String toString() {
-        return dartCode;
+    DartScrRoot src() {
+        return new DartScrRoot(this);
     }
 
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    static final class DartScrRoot extends SourceRoot {
+
+        private DartScrRoot(DefaultProject parent) {
+            super(parent, "src");
         }
-        if (!(o instanceof Lexeme)) {
-            return false;
+
+        SourceSetWithProtobuf mainProto() {
+            return new SourceSetWithProtobuf(getMain());
         }
-        Lexeme lexeme = (Lexeme) o;
-        return Objects.equal(dartCode, lexeme.dartCode);
+
+        SourceSetWithProtobuf testProto() {
+            return new SourceSetWithProtobuf(getTest());
+        }
     }
 
-    @Override
-    public final int hashCode() {
-        return Objects.hashCode(dartCode);
+    static final class SourceSetWithProtobuf extends SourceDir {
+
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+        private static final String NAME = "proto";
+
+        private SourceSetWithProtobuf(AbstractDirectory parent) {
+            super(parent, NAME);
+        }
     }
 }

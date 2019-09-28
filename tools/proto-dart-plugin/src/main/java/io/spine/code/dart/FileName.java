@@ -18,16 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.code.dart;
+
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.AbstractFileName;
+
+import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * A method call.
- */
-public final class Call extends Expression {
+public final class FileName extends AbstractFileName<FileName> {
 
-    public Call(Expression receiver, String methodName) {
-        super("%s.%s()", checkNotNull(receiver), checkNotNull(methodName));
+    private static final long serialVersionUID = 0L;
+
+    private static final String GENERATED_EXTENSION = ".pb.dart";
+
+    private FileName(String value) {
+        super(value);
+    }
+
+    private FileName(Path path) {
+        this(path.toString());
+    }
+
+    public static FileName relative(io.spine.code.proto.FileName file) {
+        String relativePath = file.nameWithoutExtension() + GENERATED_EXTENSION;
+        return new FileName(relativePath);
+    }
+
+    public static FileName relative(FileDescriptor file) {
+        io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
+        return relative(protoName);
+    }
+
+    public FileName prefixed(Path filePrefix) {
+        checkNotNull(filePrefix);
+        return new FileName(filePrefix.resolve(this.value()));
     }
 }

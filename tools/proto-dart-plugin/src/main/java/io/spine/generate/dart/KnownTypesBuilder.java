@@ -18,18 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.knowntypes;
+package io.spine.generate.dart;
 
-import io.spine.code.proto.FileName;
 import io.spine.code.proto.TypeSet;
-import io.spine.dart.code.Call;
-import io.spine.dart.code.FieldAccess;
-import io.spine.dart.code.GeneratedAlias;
-import io.spine.dart.code.Import;
-import io.spine.dart.code.MapEntry;
-import io.spine.dart.code.StringLiteral;
-import io.spine.dart.generate.CodeTemplate;
-import io.spine.dart.generate.GeneratedDartFile;
+import io.spine.code.dart.lexeme.Call;
+import io.spine.code.dart.lexeme.FieldAccess;
+import io.spine.code.dart.lexeme.GeneratedAlias;
+import io.spine.code.dart.lexeme.Import;
+import io.spine.code.dart.lexeme.MapEntry;
+import io.spine.code.dart.lexeme.StringLiteral;
+import io.spine.code.dart.FileName;
 import io.spine.type.MessageType;
 import io.spine.type.NestedTypeName;
 import io.spine.type.Type;
@@ -45,8 +43,6 @@ import static java.util.stream.Collectors.joining;
  *  Builds the Dart source code which registers known Protobuf types.
  */
 public final class KnownTypesBuilder {
-
-    private static final String GENERATED_EXTENSION = ".pb.dart";
 
     private @MonotonicNonNull CodeTemplate template;
     private @MonotonicNonNull TypeSet knownTypes;
@@ -108,15 +104,10 @@ public final class KnownTypesBuilder {
                 .stream()
                 .map(Type::declaringFileName)
                 .distinct()
-                .map(path -> Import.fileBased(protoFilePath(path), aliasFor(path)))
+                .map(path -> Import.fileBased(FileName.relative(path), aliasFor(path)))
                 .map(Import::dartCode)
                 .collect(joining(lineSeparator()));
         insert(InsertionPoint.IMPORT, imports);
-    }
-
-    private String protoFilePath(FileName file) {
-        return generatedFilesPrefix.resolve(file.nameWithoutExtension() + GENERATED_EXTENSION)
-                                   .toString();
     }
 
     private void fillInBuilderInfoMap() {
@@ -145,11 +136,10 @@ public final class KnownTypesBuilder {
     }
 
     private static GeneratedAlias aliasFor(Type<?, ?> type) {
-        FileName fileName = type.declaringFileName();
-        return aliasFor(fileName);
+        return aliasFor(type.declaringFileName());
     }
 
-    private static GeneratedAlias aliasFor(FileName fileName) {
+    private static GeneratedAlias aliasFor(io.spine.code.proto.FileName fileName) {
         return new GeneratedAlias(fileName.nameWithoutExtension());
     }
 

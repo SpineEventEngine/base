@@ -18,37 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.generate.dart;
 
-import com.google.common.base.Splitter;
+import com.google.common.io.Files;
+import com.google.common.io.MoreFiles;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
-import static com.google.common.base.CharMatcher.anyOf;
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.io.Files.createParentDirs;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * An alias for an imported Dart library.
- *
- * <p>Consists of the imported file path concatenated with {@code _} (underscore) symbols.
+ * A generated Dart source code file.
  */
-public final class GeneratedAlias extends Reference {
+public final class GeneratedDartFile {
 
-    private static final Splitter partSplitter = Splitter.on(anyOf("/\\"));
-    private static final char ESCAPE_DELIMITER = '_';
+    private final String content;
 
-    public GeneratedAlias(String pathToFile) {
-        super(escapePathToAlias(pathToFile));
+    GeneratedDartFile(String content) {
+        this.content = checkNotNull(content);
     }
 
-    private static String escapePathToAlias(String path) {
-        checkNotNull(path);
-        List<String> pathElements = partSplitter.splitToList(path);
-        StringBuilder alias = new StringBuilder(path.length() + 1);
-        for (String element : pathElements) {
-            alias.append(ESCAPE_DELIMITER)
-                 .append(element);
+    /**
+     * Writes this source file to the given point on file system.
+     */
+    public void writeTo(File target) {
+        checkNotNull(target);
+        try {
+            if (!target.exists()) {
+                createParentDirs(target);
+                target.createNewFile();
+            }
+            Files.asCharSink(target, UTF_8)
+                 .write(content);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
         }
-        return alias.toString();
     }
 }

@@ -18,13 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.code;
+package io.spine.code.dart.lexeme;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class FieldAccess extends Expression {
+/**
+ * A method call.
+ */
+public final class Call extends Expression {
 
-    public FieldAccess(Expression receiver, String fieldName) {
-        super("%s.%s", checkNotNull(receiver), checkNotNull(fieldName));
+    public Call(Expression receiver, String methodName) {
+        super("%s.%s()", checkNotNull(receiver), checkNotNull(methodName));
     }
 }

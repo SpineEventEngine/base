@@ -18,46 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.generate;
+package io.spine.code.dart.lexeme;
 
-import com.google.common.io.Files;
-import com.google.common.io.MoreFiles;
+import io.spine.code.dart.FileName;
 
-import java.io.File;
-import java.io.IOException;
-
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.io.Files.createParentDirs;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A generated Dart source code file.
+ * An import of a Dart file.
  */
-public final class GeneratedDartFile {
-
-    private final String content;
-
-    GeneratedDartFile(String content) {
-        this.content = checkNotNull(content);
-    }
+public final class Import extends Lexeme {
 
     /**
-     * Writes this source file to the given point on file system.
+     * Creates a new {@code Import}.
+     *
+     * @param uri
+     *         import URI, either a relative path, or a package and a path
+     * @param alias
+     *         import alias
      */
-    public void writeTo(File target) {
-        checkNotNull(target);
-        try {
-            if (!target.exists()) {
-                createParentDirs(target);
-                target.createNewFile();
-            }
-            Files.asCharSink(target, UTF_8)
-                 .write(content);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
+    private Import(StringLiteral uri, Reference alias) {
+        super("import %s as %s;", uri, alias);
+    }
+
+    public static Import fileBased(FileName fileName, Reference alias) {
+        checkNotNull(fileName);
+        checkNotNull(alias);
+
+        return new Import(new StringLiteral(fileName.value()), alias);
     }
 }
