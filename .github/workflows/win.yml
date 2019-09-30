@@ -27,7 +27,7 @@ jobs:
         run: choco install dart-sdk & refreshenv
 
       - name: Install Dart Protoc plugin
-        run: pub.bat global activate protoc_plugin
+        run: pub global activate protoc_plugin
 
       - name: Run smoke tests with Gradle
         run: cd tools\smoke-tests & gradlew.bat build
