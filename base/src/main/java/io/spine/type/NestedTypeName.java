@@ -32,6 +32,8 @@ import static io.spine.type.TypeName.NESTED_TYPE_SEPARATOR;
 
 /**
  * A simple name of a nested Protobuf type.
+ *
+ * <p>Consists of names of containing types and the name of the type, all separated with dots.
  */
 public final class NestedTypeName extends StringTypeValue {
 
