@@ -10,3 +10,6 @@ proto/
 
 # Dart code generated from Protobuf.
 **/*.pb.dart
+**/*.pbenum.dart
+**/*.pbjson.dart
+**/*.pbserver.dart
