@@ -7,5 +7,11 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 
 message DartSmokeTest {
+}
 
+message First {
+    message Second {
+        message Third {
+        }
+    }
 }
