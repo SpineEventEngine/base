@@ -122,13 +122,13 @@ class KnownTypesTest {
 
     @Test
     @DisplayName("a third level enum")
-    void hirdLevelEnum() {
+    void thirdLevelEnum() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_ENUM));
     }
 
     @Test
     @DisplayName("a fourth level message")
-    void fourthLevelMessasge() {
+    void fourthLevelMessage() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG, FOURTH_MSG));
     }
 
