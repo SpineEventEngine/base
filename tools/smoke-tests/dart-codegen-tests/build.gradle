@@ -29,6 +29,7 @@ buildscript {
 }
 
 apply plugin: 'io.spine.tools.proto-dart-plugin'
+apply from: "$baseRoot/config/gradle/dart/build-tasks.gradle"
 
 sourceSets {
     main.proto.srcDirs "$projectDir/src/main/proto"
