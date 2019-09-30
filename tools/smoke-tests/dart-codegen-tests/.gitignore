@@ -1,0 +1,16 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Dart template
+# See https://www.dartlang.org/guides/libraries/private-files
+
+# Files and directories created by pub
+.dart_tool/
+.packages
+build/
+# If you're building an application, you may want to check-in your pubspec.lock
+pubspec.lock
+
+# Temp difectory for sources generated from Protobuf.
+proto/
+
+# Dart code generated from Protobuf.
+**/*.pb.dart
