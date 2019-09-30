@@ -21,17 +21,14 @@
 package io.spine.generate.dart;
 
 import com.google.common.io.Files;
-import com.google.common.io.MoreFiles;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A generated Dart source code file.
