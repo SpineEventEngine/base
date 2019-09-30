@@ -219,6 +219,12 @@ public final class GradleProject {
             return this;
         }
 
+        /**
+         * Configures this runner to include the plugin under development into the classpath.
+         *
+         * @see GradleRunner#withPluginClasspath()
+         */
+        @SuppressWarnings("unused") // Used in downstream repositories.
         public Builder withPluginClasspath() {
             this.addPluginUnderTestClasspath = true;
             return this;

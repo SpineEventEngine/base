@@ -49,7 +49,7 @@ public final class TaskDependencies {
     public static boolean dependsOn(Task task, TaskName ontoTaskWithName) {
         checkNotNull(task);
         checkNotNull(ontoTaskWithName);
-        String taskName = ontoTaskWithName.value();
+        String taskName = ontoTaskWithName.name();
         return dependsOn(task, taskName);
     }
 

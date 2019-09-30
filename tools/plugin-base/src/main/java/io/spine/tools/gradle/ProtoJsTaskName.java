@@ -23,37 +23,14 @@ package io.spine.tools.gradle;
 import io.spine.annotation.Internal;
 
 /**
- * A name of a Gradle task.
- *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
+ * Names of Gradle tasks defined by the Spine Protobuf JS plugin.
  */
 @Internal
-public interface TaskName {
+public enum ProtoJsTaskName implements TaskName {
 
     /**
-     * The value of the name.
-     *
-     * <p>If an enum implements this interface, it is expected to name its constants so that
-     * the {@link Enum#name()} obtains the name of the task.
+     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
+     * {@code main} and {@code test} scopes.
      */
-    String name();
-
-    /**
-     * Obtains this task name as a path.
-     *
-     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
-     *
-     * @return the name with a colon symbol ({@code :}) at the beginning
-     */
-    default String path() {
-        return ':' + name();
-    }
+    generateJsonParsers
 }

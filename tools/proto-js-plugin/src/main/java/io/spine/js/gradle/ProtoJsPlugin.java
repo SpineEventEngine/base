@@ -30,6 +30,7 @@ import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.js.generate.resolve.ExternalModule;
 import io.spine.js.generate.resolve.ResolveImports;
+import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
@@ -40,8 +41,8 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.TaskName.build;
-import static io.spine.tools.gradle.TaskName.generateJsonParsers;
+import static io.spine.tools.gradle.BaseTaskName.build;
+import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -62,7 +63,7 @@ import static io.spine.tools.gradle.TaskName.generateJsonParsers;
  *
  * <p>The main plugin action may be retrieved and configured as necessary via the
  * {@linkplain Extension "protoJs" extension}. By default, the action is a dependency of the
- * {@linkplain io.spine.tools.gradle.TaskName#build build} task.
+ * {@linkplain BaseTaskName#build build} task.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
  * set to the required values in a project willing to use the plugin. These settings are:

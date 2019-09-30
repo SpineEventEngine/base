@@ -70,8 +70,8 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNA
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
-import static io.spine.tools.gradle.TaskName.annotateProto;
-import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
+import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
 
 @DisplayName("ProtoAnnotatorPlugin should")
 @ExtendWith(TempDirectory.class)

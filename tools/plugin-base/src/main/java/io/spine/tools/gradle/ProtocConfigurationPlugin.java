@@ -44,6 +44,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
+import static io.spine.tools.gradle.ModelCompilerTaskName.copyPluginJar;
 import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
@@ -164,9 +165,9 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
 
         Task copyPluginJarTask = project.getTasks()
-                           .findByPath(TaskName.copyPluginJar.name());
+                           .findByPath(copyPluginJar.name());
         if (copyPluginJarTask == null ){
-            GradleTask copyPluginJarBuilder = newTask(TaskName.copyPluginJar, action)
+            GradleTask copyPluginJarBuilder = newTask(copyPluginJar, action)
                     .allowNoDependencies()
                     .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
                     .withOutputFiles(project.fileTree(spineDirectory(project)))

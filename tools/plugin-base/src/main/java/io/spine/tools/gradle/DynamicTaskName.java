@@ -20,40 +20,21 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.annotation.Internal;
+import io.spine.value.StringTypeValue;
 
 /**
- * A name of a Gradle task.
- *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
+ * A name of a task which is not known at compile time.
  */
-@Internal
-public interface TaskName {
+final class DynamicTaskName extends StringTypeValue implements TaskName {
 
-    /**
-     * The value of the name.
-     *
-     * <p>If an enum implements this interface, it is expected to name its constants so that
-     * the {@link Enum#name()} obtains the name of the task.
-     */
-    String name();
+    private static final long serialVersionUID = 0L;
 
-    /**
-     * Obtains this task name as a path.
-     *
-     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
-     *
-     * @return the name with a colon symbol ({@code :}) at the beginning
-     */
-    default String path() {
-        return ':' + name();
+    DynamicTaskName(String value) {
+        super(value);
+    }
+
+    @Override
+    public String name() {
+        return value();
     }
 }

@@ -29,12 +29,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.tools.gradle.TaskName.compileJava;
-import static io.spine.tools.gradle.TaskName.compileTestJava;
-import static io.spine.tools.gradle.TaskName.formatProtoDoc;
-import static io.spine.tools.gradle.TaskName.formatTestProtoDoc;
-import static io.spine.tools.gradle.TaskName.generateProto;
-import static io.spine.tools.gradle.TaskName.generateTestProto;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
+import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
+import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatProtoDoc;
+import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatTestProtoDoc;
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;

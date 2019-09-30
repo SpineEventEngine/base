@@ -33,7 +33,7 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.build;
+import static io.spine.tools.gradle.BaseTaskName.build;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

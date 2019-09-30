@@ -42,13 +42,13 @@ import java.nio.file.Paths;
 import java.util.Base64;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
+import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
+import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
+import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
-import static io.spine.tools.gradle.TaskName.clean;
-import static io.spine.tools.gradle.TaskName.writeDescriptorReference;
-import static io.spine.tools.gradle.TaskName.writePluginConfiguration;
-import static io.spine.tools.gradle.TaskName.writeTestDescriptorReference;
-import static io.spine.tools.gradle.TaskName.writeTestPluginConfiguration;
 
 /**
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
@@ -143,7 +143,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         }).allowNoDependencies()
           .applyNowTo(protocTask.getProject())
           .getTask()
-          .mustRunAfter(clean.value());
+          .mustRunAfter(clean.name());
     }
 
     private static String base64Encoded(String value) {

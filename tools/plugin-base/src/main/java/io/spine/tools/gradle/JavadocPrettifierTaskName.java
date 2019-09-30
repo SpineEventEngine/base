@@ -23,37 +23,18 @@ package io.spine.tools.gradle;
 import io.spine.annotation.Internal;
 
 /**
- * A name of a Gradle task.
- *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
+ * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
  */
 @Internal
-public interface TaskName {
+public enum JavadocPrettifierTaskName implements TaskName {
 
     /**
-     * The value of the name.
-     *
-     * <p>If an enum implements this interface, it is expected to name its constants so that
-     * the {@link Enum#name()} obtains the name of the task.
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
      */
-    String name();
+    formatProtoDoc,
 
     /**
-     * Obtains this task name as a path.
-     *
-     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
-     *
-     * @return the name with a colon symbol ({@code :}) at the beginning
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
      */
-    default String path() {
-        return ':' + name();
-    }
+    formatTestProtoDoc
 }

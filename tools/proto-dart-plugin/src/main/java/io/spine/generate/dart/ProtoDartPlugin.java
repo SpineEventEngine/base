@@ -38,17 +38,17 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import static io.spine.tools.gradle.JavaTaskName.classes;
+import static io.spine.tools.gradle.JavaTaskName.testClasses;
+import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.generateDartTestTypeRegistry;
+import static io.spine.tools.gradle.ProtoDartTaskName.generateDartTypeRegistry;
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.gradle.TaskName.classes;
-import static io.spine.tools.gradle.TaskName.copyGeneratedDart;
-import static io.spine.tools.gradle.TaskName.copyTestGeneratedDart;
-import static io.spine.tools.gradle.TaskName.generateDartTestTypeRegistry;
-import static io.spine.tools.gradle.TaskName.generateDartTypeRegistry;
-import static io.spine.tools.gradle.TaskName.generateProto;
-import static io.spine.tools.gradle.TaskName.generateTestProto;
-import static io.spine.tools.gradle.TaskName.testClasses;
 import static org.gradle.api.Task.TASK_TYPE;
 
 /**

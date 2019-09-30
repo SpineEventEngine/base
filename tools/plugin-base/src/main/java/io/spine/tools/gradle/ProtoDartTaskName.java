@@ -23,37 +23,40 @@ package io.spine.tools.gradle;
 import io.spine.annotation.Internal;
 
 /**
- * A name of a Gradle task.
- *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
+ * Names of Gradle tasks defined by the Spine Protobuf Dart plugin.
  */
 @Internal
-public interface TaskName {
+public enum ProtoDartTaskName implements TaskName {
 
     /**
-     * The value of the name.
+     * Creates the {@code types.dart} file which contains type mapping for all the production
+     * Protobuf types defined in this project.
      *
-     * <p>If an enum implements this interface, it is expected to name its constants so that
-     * the {@link Enum#name()} obtains the name of the task.
+     * <p>Works only with the {@code main} scope types.
      */
-    String name();
+    generateDartTypeRegistry,
 
     /**
-     * Obtains this task name as a path.
+     * Creates the {@code types.dart} file which contains type mapping for all the test Protobuf
+     * types defined in this project.
      *
-     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
-     *
-     * @return the name with a colon symbol ({@code :}) at the beginning
+     * <p>Works only with the {@code test} scope types.
      */
-    default String path() {
-        return ':' + name();
-    }
+    generateDartTestTypeRegistry,
+
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code lib}
+     * directory.
+     *
+     * <p>Works only with the {@code main} scope files.
+     */
+    copyGeneratedDart,
+
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code test}
+     * directory.
+     *
+     * <p>Works only with the {@code test} scope files.
+     */
+    copyTestGeneratedDart
 }

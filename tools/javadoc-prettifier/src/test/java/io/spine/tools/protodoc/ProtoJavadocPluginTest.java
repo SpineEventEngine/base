@@ -36,11 +36,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
+import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
+import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatProtoDoc;
+import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatTestProtoDoc;
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.gradle.TaskName.compileJava;
-import static io.spine.tools.gradle.TaskName.compileTestJava;
-import static io.spine.tools.gradle.TaskName.generateProto;
-import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
@@ -84,19 +86,19 @@ class ProtoJavadocPluginTest {
     @Test
     @DisplayName("add formatProtoDoc task")
     void add_task_formatProtoDoc() {
-        Task formatProtoDoc = task(TaskName.formatProtoDoc);
-        assertNotNull(formatProtoDoc);
-        assertTrue(dependsOn(formatProtoDoc, generateProto));
-        assertTrue(dependsOn(task(compileJava), formatProtoDoc));
+        Task task = task(formatProtoDoc);
+        assertNotNull(task);
+        assertTrue(dependsOn(task, generateProto));
+        assertTrue(dependsOn(task(compileJava), task));
     }
 
     @Test
     @DisplayName("add formatTestProtoDoc task")
     void add_task_formatTestProtoDoc() {
-        Task formatTestProtoDoc = task(TaskName.formatTestProtoDoc);
-        assertNotNull(formatTestProtoDoc);
-        assertTrue(dependsOn(formatTestProtoDoc, generateTestProto));
-        assertTrue(dependsOn(task(compileTestJava), formatTestProtoDoc));
+        Task task = task(formatTestProtoDoc);
+        assertNotNull(task);
+        assertTrue(dependsOn(task, generateTestProto));
+        assertTrue(dependsOn(task(compileTestJava), task));
     }
 
     @Test
@@ -146,16 +148,16 @@ class ProtoJavadocPluginTest {
 
     private Task task(TaskName taskName) {
         return project.getTasks()
-                      .getByName(taskName.value());
+                      .getByName(taskName.name());
     }
 
     private static Project newProject() {
         Project project = ProjectBuilder.builder()
                                         .build();
-        project.task(compileJava.value());
-        project.task(compileTestJava.value());
-        project.task(generateProto.value());
-        project.task(generateTestProto.value());
+        project.task(compileJava.name());
+        project.task(compileTestJava.name());
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
         return project;
     }
 }

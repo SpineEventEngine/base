@@ -17,43 +17,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.tools.gradle;
 
 import io.spine.annotation.Internal;
 
 /**
- * A name of a Gradle task.
+ * Names of Gradle tasks defined by the {@code base} plugin.
  *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
+ * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">See
+ *         the plugin doc.</a>
  */
 @Internal
-public interface TaskName {
+public enum BaseTaskName implements TaskName {
 
     /**
-     * The value of the name.
-     *
-     * <p>If an enum implements this interface, it is expected to name its constants so that
-     * the {@link Enum#name()} obtains the name of the task.
+     * Deletes the temporary build artifacts.
      */
-    String name();
+    clean,
 
     /**
-     * Obtains this task name as a path.
-     *
-     * <p>It is expected that the referred task belongs to the root project (a.k.a {@code :}).
-     *
-     * @return the name with a colon symbol ({@code :}) at the beginning
+     * Aggregate task that assembles all the artifacts of this project.
      */
-    default String path() {
-        return ':' + name();
-    }
+    assemble,
+
+    /**
+     * A lifecycle task which marks the project verification routines, such as static code analysis,
+     * executing tests, etc.
+     */
+    check,
+
+    /**
+     * A lifecycle task which builds everything in the project, including running tests, producing
+     * production artifacts, and generating documentation.
+     */
+    build
 }

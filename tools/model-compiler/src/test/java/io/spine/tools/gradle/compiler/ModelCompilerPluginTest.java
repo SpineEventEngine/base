@@ -29,16 +29,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.gradle.TaskName.annotateProto;
-import static io.spine.tools.gradle.TaskName.annotateTestProto;
-import static io.spine.tools.gradle.TaskName.clean;
-import static io.spine.tools.gradle.TaskName.compileJava;
-import static io.spine.tools.gradle.TaskName.compileTestJava;
-import static io.spine.tools.gradle.TaskName.generateRejections;
-import static io.spine.tools.gradle.TaskName.generateTestRejections;
-import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
-import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
-import static io.spine.tools.gradle.TaskName.preClean;
+import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
+import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
+import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
+import static io.spine.tools.gradle.ModelCompilerTaskName.annotateTestProto;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateRejections;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestRejections;
+import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
+import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
@@ -122,7 +122,7 @@ class ModelCompilerPluginTest {
         }
 
         private Task task(TaskName taskName) {
-            Task task = tasks.getByName(taskName.value());
+            Task task = tasks.getByName(taskName.name());
             assertThat(task).isNotNull();
             return task;
         }
