@@ -26,8 +26,6 @@ import io.spine.code.proto.SourceFile;
 
 import java.nio.file.Path;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A predicate determining if the given Protobuf file was compiled to JavaScript
  * and belongs to the specified module.
