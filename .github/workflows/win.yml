@@ -23,14 +23,11 @@ jobs:
 #      - name: Run tests with Gradle
 #        run: gradlew.bat build
 
-      - name: Set up Dart SDK
-        run: choco install dart-sdk
-
         # GitHub Actions reset environment variables upon each step. Therefore, update the env and
         # run checks in a single step.
-      - name: Install Dart Protoc plugin & run smoke tests with Gradle
+      - name: Install Dart & run smoke tests with Gradle
         run: >
-          setx PATH "%PATH%;%APPDATA%\Pub\Cache\bin"
+          choco install dart-sdk
           & refreshenv
           & pub global activate protoc_plugin
           & cd tools\smoke-tests & gradlew.bat build
