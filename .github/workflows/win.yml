@@ -30,7 +30,7 @@ jobs:
         run: setx PATH "%PATH%;%APPDATA%\Pub\Cache\bin" & refreshenv
 
       - name: Install Dart Protoc plugin
-        run: pub global activate protoc_plugin
+        run: echo %PATH% & pub global activate protoc_plugin
 
       - name: Run smoke tests with Gradle
         run: cd tools\smoke-tests & gradlew.bat build
