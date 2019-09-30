@@ -41,7 +41,6 @@ import static io.spine.tools.gradle.TaskName.compileJava;
 import static io.spine.tools.gradle.TaskName.generateProto;
 import static io.spine.tools.gradle.TaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskName.preClean;
-import static io.spine.tools.gradle.TaskName.scanClassPath;
 import static io.spine.tools.gradle.TaskName.verifyModel;
 import static io.spine.tools.gradle.testing.GradleProject.javaPlugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -133,7 +132,7 @@ class SpinePluginBuilderTest {
     @Test
     @DisplayName("not allow tasks without any connection to task graph")
     void notAllowTasksWithoutAnyConnectionToTaskGraph() {
-        GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(scanClassPath,
+        GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(verifyModel,
                                                                  NoOp.action());
         assertThrows(IllegalStateException.class,
                      () -> builder.applyNowTo(project));

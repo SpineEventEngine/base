@@ -19,100 +19,185 @@
  */
 package io.spine.tools.gradle;
 
+import io.spine.annotation.Internal;
+
 /**
- * Task names in Gradle build lifecycle.
+ * Names of well-known Gradle tasks.
  *
- * <p>Spine `tools` library uses some of 3rd-party Gradle tasks as anchors for own execution.
+ * <p>This enumeration includes the tasks from:
+ * <ul>
+ *     <li><a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">the {@code base} plugin</a>;
+ *     <li><a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">the {@code java} plugin</a>;
+ *     <li><a href="https://github.com/google/protobuf-gradle-plugin">the {@code com.google.protobuf} plugin</a>;
+ *     <li>the Spine Model Compiler plugin;
+ *     <li>the Spine Model Verifier plugin;
+ *     <li>the Spine ProtoJS plugin;
+ *     <li>the Spine ProtoDart plugin.
+ * </ul>
  */
+@Internal
 public enum TaskName {
 
-    /*
-     * Gradle-own and 3rd-party task names
-     **************************************/
-
+    /**
+     * Deletes the temporary build artifacts.
+     *
+     * <p>Defined by the {@code base} plugin.
+     */
     clean,
 
+    /**
+     * Aggregate task that assembles all the artifacts of this project.
+     *
+     * <p>Defined by the {@code base} plugin.
+     */
     assemble,
-    testClasses,
+
+    /**
+     * A lifecycle task which marks the project verification routines, such as static code analysis,
+     * executing tests, etc.
+     *
+     * <p>Defined by the {@code base} plugin.
+     */
+    check,
+
+    /**
+     * A lifecycle task which builds everything in the project, including running tests, producing
+     * production artifacts, and generating documentation.
+     *
+     * <p>Defined by the {@code base} plugin.
+     */
     build,
 
+    /**
+     * Compiles production Java source files using the JDK compiler.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
     compileJava,
+
+    /**
+     * Compiles test Java source files using the JDK compiler.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
     compileTestJava,
+
+    /**
+     * A lifecycle task which marks processing of all the classes and resources in this project.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
     classes,
 
-    generateProto,
-    generateTestProto,
+    /**
+     * A lifecycle task which marks processing of all the test classes and resources in this
+     * project.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
+    testClasses,
 
+    /**
+     * Copies production resources into the production resources directory.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
     processResources,
+
+    /**
+     * Copies test resources into the test resources directory.
+     *
+     * <p>Defined by the {@code java} plugin.
+     */
     processTestResources,
 
-    /*
-     * Tasks added by Spine
-     ************************/
+    /**
+     * Generates production code from Protobuf.
+     *
+     * <p>Note that this task is not a public API of the plugin. Users should be conscious and
+     * cautious when depending on it.
+     *
+     * <p>Defined by the Protobuf Gradle plugin.
+     */
+    generateProto,
+
+    /**
+     * Generates test code from Protobuf.
+     *
+     * <p>Note that this task is not a public API of the plugin. Users should be conscious and
+     * cautious when depending on it.
+     *
+     * <p>Defined by the Protobuf Gradle plugin.
+     */
+    generateTestProto,
 
     /**
      * Additional cleanup task added to the Gradle lifecycle.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     preClean,
 
     /**
      * Generates source code of rejections in the {@code main} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     generateRejections,
 
     /**
      * Generates source code of rejections in the {@code test} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     generateTestRejections,
 
     /**
-     * The name of the class path scan task added to the Gradle lifecycle.
-     */
-    scanClassPath,
-
-    /**
      * Annotates the Java sources generated from {@code .proto} files the {@code main} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     annotateProto,
 
     /**
      * Annotates the Java sources generated from {@code .proto} files the {@code test} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     annotateTestProto,
 
     /**
      * Formats Javadocs in sources generated from {@code .proto} files in the {@code main} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     formatProtoDoc,
 
     /**
      * Formats Javadocs in sources generated from {@code .proto} files in the {@code test} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     formatTestProtoDoc,
 
     /**
-     * Verifies correctness of the domain model definition.
-     */
-    verifyModel,
-
-    /**
      * Merges all the known type descriptors of the module into one in the {@code main} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     mergeDescriptorSet,
 
     /**
      * Merges all the known type descriptors of the module into one in the {@code test} scope.
+     * 
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     mergeTestDescriptorSet,
 
     /**
-     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
-     * {@code main} and {@code test} scopes.
-     */
-    generateJsonParsers,
-
-    /**
      * Downloads the Protobuf compiler plugin executable JAR into the required paths in the project.
+     *
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     copyPluginJar,
 
@@ -120,11 +205,15 @@ public enum TaskName {
      * Creates the Protobuf compiler plugin configuration.
      *
      * <p>Works only with the {@code main} scope.
+     *
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     writePluginConfiguration,
 
     /**
      * Creates the Protobuf compiler plugin test configuration.
+     *
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     writeTestPluginConfiguration,
 
@@ -133,6 +222,8 @@ public enum TaskName {
      * the known types.
      *
      * <p>Works only with the {@code main} scope descriptors.
+     *
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     writeDescriptorReference,
 
@@ -141,15 +232,64 @@ public enum TaskName {
      * the known types.
      *
      * <p>Works only with the {@code test} scope descriptors.
+     *
+     * <p>Defined by the Spine Model Compiler plugin.
      */
     writeTestDescriptorReference,
 
+    /**
+     * Verifies correctness of the domain model definition.
+     *
+     * <p>Defined by the Spine Model Verifier plugin.
+     */
+    verifyModel,
+
+    /**
+     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
+     * {@code main} and {@code test} scopes.
+     *
+     * <p>Defined by the Spine ProtoJs plugin.
+     */
+    generateJsonParsers,
+
+    /**
+     * Creates the {@code types.dart} file which contains type mapping for all the production
+     * Protobuf types defined in this project.
+     *
+     * <p>Works only with the {@code main} scope types.
+     * 
+     * <p>Defined by the Spine ProtoDart plugin.
+     */
     generateDartTypeRegistry,
 
+    /**
+     * Creates the {@code types.dart} file which contains type mapping for all the test Protobuf
+     * types defined in this project.
+     *
+     * <p>Works only with the {@code test} scope types.
+     *
+     * <p>Defined by the Spine ProtoDart plugin.
+     */
     generateDartTestTypeRegistry,
 
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code lib}
+     * directory.
+     *
+     * <p>Works only with the {@code main} scope files.
+     *
+     * <p>Defined by the Spine ProtoDart plugin.
+     */
     copyGeneratedDart,
 
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code test}
+     * directory.
+     *
+     * <p>Works only with the {@code test} scope files.
+     *
+     * <p>Defined by the Spine ProtoDart plugin.
+     */
     copyTestGeneratedDart;
 
     /**
