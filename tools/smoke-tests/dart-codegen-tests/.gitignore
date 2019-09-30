@@ -1,7 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Dart template
-# See https://www.dartlang.org/guides/libraries/private-files
-
 # Files and directories created by pub
 .dart_tool/
 .packages
