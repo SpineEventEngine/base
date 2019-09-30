@@ -24,12 +24,18 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.value.StringTypeValue;
 
 import java.util.Optional;
 
 import static io.spine.type.TypeName.NESTED_TYPE_SEPARATOR;
 
-public final class NestedTypeName {
+/**
+ * A simple name of a nested Protobuf type.
+ */
+public final class NestedTypeName extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
 
     private static final Joiner simpleNameJoiner = Joiner.on(NESTED_TYPE_SEPARATOR);
     private static final Joiner underscoreNameJoiner = Joiner.on("_");
@@ -37,9 +43,13 @@ public final class NestedTypeName {
     private final ImmutableList<String> names;
 
     private NestedTypeName(ImmutableList<String> names) {
+        super(simpleNameJoiner.join(names));
         this.names = names;
     }
 
+    /**
+     * Obtains the {@code NestedTypeName} of the given type.
+     */
     static NestedTypeName of(Type<?, ?> type) {
         ImmutableList.Builder<String> names = ImmutableList.builder();
         String unqualified = type.descriptor()
@@ -57,16 +67,11 @@ public final class NestedTypeName {
         return new NestedTypeName(fullSimpleName);
     }
 
-    public String value() {
-        return simpleNameJoiner.join(names);
-    }
-
+    /**
+     * Obtains the name joined with underscores ({@code _}), as used in generated code some
+     * languages.
+     */
     public String joinWithUnderscore() {
         return underscoreNameJoiner.join(names);
-    }
-
-    @Override
-    public String toString() {
-        return value();
     }
 }
