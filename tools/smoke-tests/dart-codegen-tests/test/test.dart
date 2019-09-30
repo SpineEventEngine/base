@@ -18,12 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'dart:math';
-
-import 'package:test/test.dart';
-import 'types.dart' as types;
-import 'spine/test/tools/dart/test.pb.dart';
 import 'package:protobuf/protobuf.dart';
+import 'package:test/test.dart';
+
+import 'spine/test/tools/dart/test.pb.dart';
+import 'types.dart' as types;
 
 const dartSmokeTestType = 'type.spine.io/spine.test.tools.DartSmokeTest';
 const nestedType = 'type.spine.io/spine.test.tools.First.Second.Third';
@@ -49,7 +48,7 @@ void main() {
 
         test('generate type URL to BuilderInfo mapping for nested types', () {
             var info = types.typeUrlToInfo[nestedType];
-            expect(info, isA<First_Second_Third>());
+            expect(info, isA<BuilderInfo>());
             expect(info.qualifiedMessageName, equals('spine.test.tools.First.Second.Third'));
         });
 
