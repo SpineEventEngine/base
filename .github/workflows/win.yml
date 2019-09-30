@@ -20,8 +20,8 @@ jobs:
       - name: Pull config
         run: git submodule update --init --recursive
 
-#      - name: Run tests with Gradle
-#        run: gradlew.bat build
+      - name: Run tests with Gradle
+        run: gradlew.bat build
 
         # GitHub Actions reset environment variables upon each step. Therefore, update the env and
         # run checks in a single step.
