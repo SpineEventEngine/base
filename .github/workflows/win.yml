@@ -27,7 +27,7 @@ jobs:
         run: choco install dart-sdk
 
       - name: Set up PATH varaible for Dart
-        run: setx path "%path%;%APPDATA%\Pub\Cache\bin" & refreshenv
+        run: setx PATH "%PATH%;%APPDATA%\Pub\Cache\bin" & refreshenv
 
       - name: Install Dart Protoc plugin
         run: pub global activate protoc_plugin
