@@ -17,7 +17,7 @@ before_install:
   - chmod +x gradlew
 
   # Install Dart, `pub`, and the `protoc_plugin` pub package.
-  - cmdod +x ./config/scripts/update-apt.sh
+  - chmod +x ./config/scripts/update-apt.sh
   - ./config/scripts/update-apt.sh
   - sudo apt-get install dart
   - pub global activate protoc_plugin
