@@ -22,3 +22,8 @@ jobs:
 
       - name: Run tests with Gradle
         run: gradlew.bat build
+
+      - name: Run smoke tests with Gradle
+        run:
+         - cd tools\smoke-tests
+         - gradlew.bat build
