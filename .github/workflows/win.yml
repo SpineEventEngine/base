@@ -29,7 +29,7 @@ jobs:
         # GitHub Actions reset environment variables upon each step. Therefore, update the env and
         # run checks in a single step.
       - name: Install Dart Protoc plugin & run smoke tests with Gradle
-        run: |
+        run: >
           setx PATH "%PATH%;%APPDATA%\Pub\Cache\bin"
           & refreshenv
           & pub global activate protoc_plugin
