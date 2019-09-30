@@ -24,10 +24,10 @@ jobs:
 #        run: gradlew.bat build
 
       - name: Set up Dart SDK
-        run: choco install dart-sdk & refreshenv
+        run: choco install dart-sdk
 
       - name: Set up PATH varaible for Dart
-        run: $Env:path += (%APPDATA% + "\Pub\Cache\bin") & refreshenv
+        run: $Env:path += (";" + %APPDATA% + "\Pub\Cache\bin") & refreshenv
 
       - name: Install Dart Protoc plugin
         run: pub global activate protoc_plugin
