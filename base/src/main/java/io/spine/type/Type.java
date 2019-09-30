@@ -132,10 +132,19 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         return javaClassName().toSimple();
     }
 
+    /**
+     * Obtains the name of this type including the names of all the containing types but excluding
+     * the package.
+     */
     public final NestedTypeName nestedSimpleName() {
         return NestedTypeName.of(this);
     }
 
+    /**
+     * Obtains the type which contains the declaration of this type.
+     *
+     * @return the containing type or {@code Optional.empty()} is this type is top level
+     */
     public abstract Optional<Type<Descriptor, DescriptorProto>> containingType();
 
     /**
