@@ -20,11 +20,11 @@ jobs:
       - name: Pull config
         run: git submodule update --init --recursive
 
-      - name: Set up Dart SDK
-        run: choco install dart-sdk
-
       - name: Run tests with Gradle
         run: gradlew.bat build
+
+      - name: Set up Dart SDK
+        run: choco install dart-sdk & refreshenv
 
       - name: Install Dart Protoc plugin
         run: pub.bat global activate protoc_plugin
