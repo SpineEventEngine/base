@@ -30,4 +30,5 @@ jobs:
           choco install dart-sdk
           & refreshenv
           & pub global activate protoc_plugin
-          & cd tools\smoke-tests & gradlew.bat build
+          & cd tools\smoke-tests
+          & gradlew.bat build --stacktrace
