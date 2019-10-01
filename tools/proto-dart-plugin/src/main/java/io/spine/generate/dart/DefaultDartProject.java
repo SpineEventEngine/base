@@ -20,11 +20,13 @@
 
 package io.spine.generate.dart;
 
-import io.spine.code.AbstractDirectory;
 import io.spine.code.fs.DefaultProject;
 
 import java.nio.file.Path;
 
+/**
+ * A default project layout for a Dart project.
+ */
 final class DefaultDartProject extends DefaultProject {
 
     private DefaultDartProject(Path path) {
@@ -33,34 +35,5 @@ final class DefaultDartProject extends DefaultProject {
 
     static DefaultDartProject at(Path root) {
         return new DefaultDartProject(root);
-    }
-
-    DartScrRoot src() {
-        return new DartScrRoot(this);
-    }
-
-    static final class DartScrRoot extends SourceRoot {
-
-        private DartScrRoot(DefaultProject parent) {
-            super(parent, "src");
-        }
-
-        SourceSetWithProtobuf mainProto() {
-            return new SourceSetWithProtobuf(getMain());
-        }
-
-        SourceSetWithProtobuf testProto() {
-            return new SourceSetWithProtobuf(getTest());
-        }
-    }
-
-    static final class SourceSetWithProtobuf extends SourceDir {
-
-        @SuppressWarnings("DuplicateStringLiteralInspection")
-        private static final String NAME = "proto";
-
-        private SourceSetWithProtobuf(AbstractDirectory parent) {
-            super(parent, NAME);
-        }
     }
 }

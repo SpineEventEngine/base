@@ -25,7 +25,7 @@ import io.spine.annotation.Internal;
 /**
  * Names of Gradle tasks defined by the Protobuf Gradle plugin.
  *
- * @see <a href="https://github.com/google/protobuf-gradle-plugin">See the plugin doc.</a>
+ * @see <a href="https://github.com/google/protobuf-gradle-plugin">the plugin doc</a>
  */
 @Internal
 public enum ProtobufTaskName implements TaskName {

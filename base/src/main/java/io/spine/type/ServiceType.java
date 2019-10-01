@@ -82,7 +82,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
 
     @Override
     public Optional<Type<Descriptor, DescriptorProto>> containingType() {
-        // Services are now allowed to be nested in Protobuf.
+        // Services are not allowed to be nested in Protobuf.
         return Optional.empty();
     }
 }

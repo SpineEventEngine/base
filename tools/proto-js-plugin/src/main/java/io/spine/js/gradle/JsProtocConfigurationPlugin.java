@@ -37,12 +37,12 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
 
     @Override
     protected void configureDescriptorSetGeneration(GenerateProtoTask task, File descriptor) {
-        /* Nop, the parent configuration is sufficient. */
+        /* NO-OP, the parent configuration is sufficient. */
     }
 
     @Override
     protected void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
-        /* Nop, the parent configuration is sufficient. */
+        /* NO-OP, the parent configuration is sufficient. */
     }
 
     @Override

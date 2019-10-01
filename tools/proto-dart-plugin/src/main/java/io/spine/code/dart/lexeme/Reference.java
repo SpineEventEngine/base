@@ -20,8 +20,6 @@
 
 package io.spine.code.dart.lexeme;
 
-import io.spine.code.dart.lexeme.Expression;
-
 /**
  * A reference to an object.
  */

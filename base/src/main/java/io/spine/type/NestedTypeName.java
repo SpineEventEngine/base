@@ -70,7 +70,7 @@ public final class NestedTypeName extends StringTypeValue {
     }
 
     /**
-     * Obtains the name joined with underscores ({@code _}), as used in generated code some
+     * Obtains the name joined with underscores ({@code _}), as used in generated code in some
      * languages.
      */
     public String joinWithUnderscore() {

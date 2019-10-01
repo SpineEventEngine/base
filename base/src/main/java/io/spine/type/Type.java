@@ -143,7 +143,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains the type which contains the declaration of this type.
      *
-     * @return the containing type or {@code Optional.empty()} is this type is top level
+     * @return the containing type or {@code Optional.empty()} if this type is top level
      */
     public abstract Optional<Type<Descriptor, DescriptorProto>> containingType();
 
