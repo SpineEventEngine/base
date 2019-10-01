@@ -18,22 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
-
-import io.spine.code.fs.DefaultProject;
-
-import java.nio.file.Path;
-
 /**
- * A default project layout for a Dart project.
+ * This package contains tools for working with the structure of a Dart project.
  */
-final class DefaultDartProject extends DefaultProject {
 
-    private DefaultDartProject(Path path) {
-        super(path);
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.fs.dart;
 
-    static DefaultDartProject at(Path root) {
-        return new DefaultDartProject(root);
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

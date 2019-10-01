@@ -18,10 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.dart;
+package io.spine.code.fs.dart;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.code.fs.DefaultProject;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.nio.file.Path;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * A default project layout for a Dart project.
+ */
+public final class DefaultDartProject extends DefaultProject {
+
+    private DefaultDartProject(Path path) {
+        super(path);
+    }
+
+    public static DefaultDartProject at(Path root) {
+        checkNotNull(root);
+        return new DefaultDartProject(root);
+    }
+}
