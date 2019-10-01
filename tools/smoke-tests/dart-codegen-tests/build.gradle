@@ -40,6 +40,7 @@ protobuf {
     generateProtoTasks {
         all().each { final task ->
             task.builtins {
+                remove java
             }
             task.plugins {
                 dart {}
@@ -50,10 +51,6 @@ protobuf {
                     : "${file(protoDart.mainDescriptorSet.get())}"
         }
     }
-}
-
-protoDart {
-
 }
 
 tasks.withType(JavaCompile)*.enabled false
