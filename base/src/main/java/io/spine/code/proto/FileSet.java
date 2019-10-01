@@ -28,7 +28,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
 
@@ -56,7 +55,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  */
-@Internal
 public final class FileSet {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();

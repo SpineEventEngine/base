@@ -29,7 +29,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
-import io.spine.annotation.Internal;
 import io.spine.type.EnumType;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;
@@ -50,7 +49,6 @@ import static java.util.stream.Collectors.joining;
 /**
  * A set of Protobuf types.
  */
-@Internal
 @Immutable
 public final class TypeSet {
 

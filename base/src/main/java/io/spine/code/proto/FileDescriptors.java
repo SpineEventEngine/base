@@ -23,7 +23,6 @@ import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
 import io.spine.io.Resource;
 
 import java.io.File;
@@ -49,7 +48,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
  */
-@Internal
 public final class FileDescriptors {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
