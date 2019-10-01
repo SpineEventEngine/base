@@ -22,11 +22,9 @@ package io.spine.generate.dart;
 
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
-import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -38,16 +36,6 @@ import static io.spine.tools.gradle.ProtocPluginName.dart;
  * projects.
  */
 public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlugin {
-
-    @Override
-    protected void configureDescriptorSetGeneration(GenerateProtoTask task, File descriptor) {
-        /* NO-OP, the parent configuration is sufficient. */
-    }
-
-    @Override
-    protected void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
-        /* NO-OP, the parent configuration is sufficient. */
-    }
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
