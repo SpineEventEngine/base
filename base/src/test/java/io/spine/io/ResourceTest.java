@@ -20,6 +20,7 @@
 
 package io.spine.io;
 
+import com.google.common.io.CharStreams;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +29,12 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import static com.google.common.base.Charsets.US_ASCII;
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junitpioneer.jupiter.TempDirectory.TempDir;
@@ -38,6 +42,8 @@ import static org.junitpioneer.jupiter.TempDirectory.TempDir;
 @ExtendWith(TempDirectory.class)
 @DisplayName("Resource should")
 class ResourceTest {
+
+    private static final String EXISTING_RESOURCE = "test_resource.txt";
 
     @Test
     @DisplayName("throw ISE if queried for a non-existing file")
@@ -54,7 +60,7 @@ class ResourceTest {
     @Test
     @DisplayName("correctly identify a file that is contained under the resources directory")
     void correctlyPickUrlsUp() throws IOException {
-        Resource resource = Resource.file("test_resource.txt");
+        Resource resource = Resource.file(EXISTING_RESOURCE);
         assertThat(resource).isNotNull();
         assertThat(resource.exists()).isTrue();
         assertThat(resource.locate()).isNotNull();
@@ -62,5 +68,33 @@ class ResourceTest {
         try (InputStream stream = resource.open()) {
             assertThat(stream.available()).isGreaterThan(0);
         }
+    }
+
+    @Test
+    @DisplayName("open as a byte stream")
+    void openAsBytes() throws IOException {
+        Resource resource = Resource.file(EXISTING_RESOURCE);
+        try (InputStream stream = resource.open()) {
+            assertThat(stream.available()).isGreaterThan(0);
+        }
+    }
+
+    @Test
+    @DisplayName("open as a char stream")
+    void openAsChars() throws IOException {
+        Resource resource = Resource.file(EXISTING_RESOURCE);
+        try (Reader reader = resource.openAsText(US_ASCII)) {
+            String content = CharStreams.toString(reader);
+            assertThat(content).isNotEmpty();
+        }
+    }
+
+    @Test
+    @DisplayName("open as UTF-8")
+    void openAsUtf8() throws IOException {
+        Resource resource = Resource.file(EXISTING_RESOURCE);
+        String defaultEncodedString = CharStreams.toString(resource.openAsText());
+        String utf8EncodedString = CharStreams.toString(resource.openAsText(UTF_8));
+        assertThat(defaultEncodedString).isEqualTo(utf8EncodedString);
     }
 }
