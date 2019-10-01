@@ -48,8 +48,8 @@ public final class Project {
     }
 
     /**
-     * Configures the project to contain the {@code mavenCentral()} and {@code mavenLocal()}
-     * repositories for proper dependency resolution.
+     * Configures the project to contain the {@code mavenLocal()} and {@code jcenter()} repositories
+     * for proper dependency resolution.
      *
      * @return self for method chaining
      */
