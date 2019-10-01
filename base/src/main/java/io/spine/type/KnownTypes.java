@@ -32,7 +32,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.security.InvocationGuard;
-import io.spine.type.ref.TypeRef;
 import io.spine.validate.ExternalConstraints;
 
 import java.io.Serializable;
@@ -42,7 +41,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
@@ -167,18 +165,6 @@ public class KnownTypes implements Serializable {
                                        .filter(url -> url.toTypeName()
                                                          .belongsTo(packageName))
                                        .collect(toSet());
-        return result;
-    }
-
-    /**
-     * Obtains all types matching the passed type reference.
-     */
-    public ImmutableSet<MessageType> allMatching(TypeRef typeRef) {
-        ImmutableSet<MessageType> result =
-                asTypeSet().messageTypes()
-                           .stream()
-                           .filter(m -> typeRef.test(m.descriptor()))
-                           .collect(toImmutableSet());
         return result;
     }
 
