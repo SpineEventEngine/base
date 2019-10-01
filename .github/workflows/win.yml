@@ -28,7 +28,7 @@ jobs:
         # run checks in a single step.
       - name: Install Dart & run smoke tests with Gradle
         run: >
-          choco install dart-sdk
+          choco install dart-sdk --limitoutput
           & refreshenv
           & pub global activate protoc_plugin
           & cd tools\smoke-tests
