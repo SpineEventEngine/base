@@ -29,6 +29,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Import extends Lexeme {
 
+    private static final long serialVersionUID = 0L;
+
     /**
      * Creates a new {@code Import}.
      *

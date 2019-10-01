@@ -20,14 +20,16 @@
 
 package io.spine.code.dart.lexeme;
 
-import com.google.common.base.Objects;
+import io.spine.value.StringTypeValue;
+
+import static java.lang.String.format;
 
 /**
  * A part of Dart language.
  */
-public abstract class Lexeme {
+public abstract class Lexeme extends StringTypeValue {
 
-    private final String dartCode;
+    private static final long serialVersionUID = 0L;
 
     /**
      * Creates a new lexeme.
@@ -38,35 +40,13 @@ public abstract class Lexeme {
      *         formatting arguments
      */
     Lexeme(String template, Object... formatArgs) {
-        this.dartCode = String.format(template, formatArgs);
+        super(format(template, formatArgs));
     }
 
     /**
      * Prints this lexeme to string.
      */
     public final String dartCode() {
-        return dartCode;
-    }
-
-    @Override
-    public final String toString() {
-        return dartCode;
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Lexeme)) {
-            return false;
-        }
-        Lexeme lexeme = (Lexeme) o;
-        return Objects.equal(dartCode, lexeme.dartCode);
-    }
-
-    @Override
-    public final int hashCode() {
-        return Objects.hashCode(dartCode);
+        return value();
     }
 }

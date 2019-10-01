@@ -25,6 +25,8 @@ package io.spine.code.dart.lexeme;
  */
 public class Reference extends Expression {
 
+    private static final long serialVersionUID = 0L;
+
     public Reference(String name) {
         super(name);
     }

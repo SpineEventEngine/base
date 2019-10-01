@@ -25,6 +25,8 @@ package io.spine.code.dart.lexeme;
  */
 public final class StringLiteral extends Expression {
 
+    private static final long serialVersionUID = 0L;
+
     public StringLiteral(String literalValue) {
         super("'%s'", literalValue);
     }

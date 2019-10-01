@@ -27,6 +27,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Call extends Expression {
 
+    private static final long serialVersionUID = 0L;
+
     public Call(Expression receiver, String methodName) {
         super("%s.%s()", checkNotNull(receiver), checkNotNull(methodName));
     }

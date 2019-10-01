@@ -34,6 +34,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class GeneratedAlias extends Reference {
 
+    private static final long serialVersionUID = 0L;
+
     private static final Splitter partSplitter = Splitter.on(anyOf("/\\"));
     private static final char ESCAPE_DELIMITER = '_';
 
