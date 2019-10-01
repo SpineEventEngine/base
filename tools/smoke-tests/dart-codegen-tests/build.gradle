@@ -44,6 +44,7 @@ protobuf {
             }
             task.plugins {
                 dart {}
+                remove spineProtoc
             }
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = task.sourceSet.name.equals('test')
