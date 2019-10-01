@@ -19,14 +19,13 @@
  */
 
 /**
- * This package provides classes referencing domain model elements from a proto code options.
+ * This package contains tools for working with the structure of a Dart project.
  */
-@Internal
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.type.ref;
+package io.spine.code.fs.dart;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

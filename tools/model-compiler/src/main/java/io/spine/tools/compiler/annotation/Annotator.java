@@ -111,7 +111,7 @@ public abstract class Annotator {
      */
     static <T extends JavaSource<T>>
     void rewriteSource(Path sourcePathPrefix, SourceFile sourceFile, SourceVisitor<T> visitor) {
-        Path absoluteSourcePath = sourcePathPrefix.resolve(sourceFile.getPath());
+        Path absoluteSourcePath = sourcePathPrefix.resolve(sourceFile.path());
         if (exists(absoluteSourcePath)) {
             @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
                                              for `AbstractJavaSource.class` value. */)

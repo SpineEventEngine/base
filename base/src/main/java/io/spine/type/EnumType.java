@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -27,6 +28,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -53,6 +56,13 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
     @Override
     public ClassName javaClassName() {
         return ClassName.from(descriptor());
+    }
+
+    @Override
+    public Optional<Type<Descriptor, DescriptorProto>> containingType() {
+        Descriptor parent = descriptor().getContainingType();
+        return Optional.ofNullable(parent)
+                       .map(MessageType::new);
     }
 
     public static EnumType create(EnumDescriptor descriptor) {

@@ -18,44 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type.ref;
+package io.spine.tools.gradle;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.Optional;
+import io.spine.annotation.Internal;
 
 /**
- * Attempts to parse the passed value by sequentially invoking provider functions.
+ * Names of Gradle tasks defined by the Protobuf Gradle plugin.
+ *
+ * @see <a href="https://github.com/google/protobuf-gradle-plugin">the plugin doc</a>
  */
-final class ParsingChain {
-
-    private final String value;
-    private final ImmutableList<Parser> parsers;
-
-    ParsingChain(String value, Parser... parser) {
-        this.value = value;
-        this.parsers = ImmutableList.copyOf(parser);
-    }
-
-    Optional<TypeRef> parse() {
-        for (Parser parser : parsers) {
-            Optional<TypeRef> found = parser.parse(value);
-            if (found.isPresent()) {
-                return found;
-            }
-        }
-        return Optional.empty();
-    }
+@Internal
+public enum ProtobufTaskName implements TaskName {
 
     /**
-     * Provides a type reference <em>if</em> the passed string matches the format
-     * requirements of the provider, otherwise returns an empty {@code Optional}.
+     * Generates production code from Protobuf.
      *
-     * @see CompositeTypeRef#doParse(String)
-     * @see TypeRef#parse(String)
+     * <p>Note that this task is not a public API of the plugin. Users should be conscious and
+     * cautious when depending on it.
      */
-    @FunctionalInterface
-    interface Parser {
-        Optional<TypeRef> parse(String reference);
-    }
+    generateProto,
+
+    /**
+     * Generates test code from Protobuf.
+     *
+     * <p>Note that this task is not a public API of the plugin. Users should be conscious and
+     * cautious when depending on it.
+     */
+    generateTestProto
 }

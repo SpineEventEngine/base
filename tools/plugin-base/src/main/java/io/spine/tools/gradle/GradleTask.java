@@ -60,7 +60,8 @@ public final class GradleTask {
 
     /** Creates a new instance from the specified {@code Task}. */
     public static GradleTask from(Task task) {
-        TaskName taskName = TaskName.valueOf(task.getName());
+        checkNotNull(task);
+        TaskName taskName = new DynamicTaskName(task.getName());
         Project project = task.getProject();
         return new GradleTask(task, taskName, project);
     }
@@ -271,7 +272,7 @@ public final class GradleTask {
                 throw new IllegalStateException(exceptionMsg);
             }
 
-            Task newTask = project.task(name.value())
+            Task newTask = project.task(name.name())
                                   .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
@@ -291,11 +292,11 @@ public final class GradleTask {
 
         private void dependTask(Task task, Project project) {
             if (previousTask != null) {
-                task.dependsOn(previousTask.value());
+                task.dependsOn(previousTask.name());
             }
             if (followingTask != null) {
                 TaskContainer existingTasks = project.getTasks();
-                existingTasks.getByPath(followingTask.value())
+                existingTasks.getByPath(followingTask.name())
                              .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {
@@ -305,7 +306,7 @@ public final class GradleTask {
         }
 
         private void dependTaskOnAllProjects(Task task, Project rootProject) {
-            String prevTaskName = previousTaskOfAllProjects.value();
+            String prevTaskName = previousTaskOfAllProjects.name();
             ProjectHierarchy.applyToAll(rootProject, project -> {
                 Task existingTask = project.getTasks()
                                            .findByName(prevTaskName);
@@ -347,7 +348,6 @@ public final class GradleTask {
         return Objects.hash(name, project);
     }
 
-    @SuppressWarnings("EqualsCalledOnEnumConstant") // for consistency
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -357,7 +357,7 @@ public final class GradleTask {
             return false;
         }
         GradleTask other = (GradleTask) obj;
-        return Objects.equals(this.name, other.name)
+        return Objects.equals(this.name.name(), other.name.name())
                 && Objects.equals(this.project, other.project);
     }
 }

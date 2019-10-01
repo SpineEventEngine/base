@@ -52,7 +52,7 @@ public final class Directory extends SourceCodeDirectory {
      */
     public static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
-        Path path = parent.getPath()
+        Path path = parent.path()
                           .resolve(ROOT_NAME);
         return at(path);
     }

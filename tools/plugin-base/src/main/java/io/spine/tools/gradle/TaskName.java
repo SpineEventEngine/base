@@ -17,137 +17,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.gradle;
 
+import io.spine.annotation.Internal;
+
 /**
- * Task names in Gradle build lifecycle.
+ * A name of a Gradle task.
  *
- * <p>Spine `tools` library uses some of 3rd-party Gradle tasks as anchors for own execution.
+ * @see BaseTaskName
+ * @see JavaTaskName
+ * @see ProtobufTaskName
+ * @see ModelCompilerTaskName
+ * @see JavadocPrettifierTaskName
+ * @see ModelVerifierTaskName
+ * @see ProtoJsTaskName
+ * @see ProtoDartTaskName
+ * @see DynamicTaskName
  */
-public enum TaskName {
-
-    /*
-     * Gradle-own and 3rd-party task names
-     **************************************/
-
-    clean,
-
-    build,
-
-    compileJava,
-    compileTestJava,
-    classes,
-
-    generateProto,
-    generateTestProto,
-
-    processResources,
-    processTestResources,
-
-    /*
-     * Tasks added by Spine
-     ************************/
+@Internal
+public interface TaskName {
 
     /**
-     * Additional cleanup task added to the Gradle lifecycle.
-     */
-    preClean,
-
-    /**
-     * Generates source code of rejections in the {@code main} scope.
-     */
-    generateRejections,
-
-    /**
-     * Generates source code of rejections in the {@code test} scope.
-     */
-    generateTestRejections,
-
-    /**
-     * The name of the class path scan task added to the Gradle lifecycle.
-     */
-    scanClassPath,
-
-    /**
-     * Annotates the Java sources generated from {@code .proto} files the {@code main} scope.
-     */
-    annotateProto,
-
-    /**
-     * Annotates the Java sources generated from {@code .proto} files the {@code test} scope.
-     */
-    annotateTestProto,
-
-    /**
-     * Formats Javadocs in sources generated from {@code .proto} files in the {@code main} scope.
-     */
-    formatProtoDoc,
-
-    /**
-     * Formats Javadocs in sources generated from {@code .proto} files in the {@code test} scope.
-     */
-    formatTestProtoDoc,
-
-    /**
-     * Verifies correctness of the domain model definition.
-     */
-    verifyModel,
-
-    /**
-     * Merges all the module known type descriptors into one in the {@code main} scope.
-     */
-    mergeDescriptorSet,
-
-    /**
-     * Merges all the module known type descriptors into one in the {@code test} scope.
-     */
-    mergeTestDescriptorSet,
-
-    /**
-     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
-     * {@code main} and {@code test} scopes.
-     */
-    generateJsonParsers,
-
-    /**
-     * Downloads the Protobuf compiler plugin executable JAR into the required paths in the project.
-     */
-    copyPluginJar,
-
-    /**
-     * Creates the Protobuf compiler plugin configuration.
+     * The value of the name.
      *
-     * <p>Works only with the {@code main} scope.
+     * <p>If an enum implements this interface, it is expected to name its constants so that
+     * the {@link Enum#name()} obtains the name of the task.
      */
-    writePluginConfiguration,
-
-    /**
-     * Creates the Protobuf compiler plugin test configuration.
-     */
-    writeTestPluginConfiguration,
-
-    /**
-     * Creates the {@code desc.ref} file containing the reference to the descriptor file(s) with
-     * the known types.
-     *
-     * <p>Works only with the {@code main} scope descriptors.
-     */
-    writeDescriptorReference,
-
-    /**
-     * Creates the {@code desc.ref} file containing the reference to the descriptor file(s) with
-     * the known types.
-     *
-     * <p>Works only with the {@code test} scope descriptors.
-     */
-    writeTestDescriptorReference;
-
-    /**
-     * Obtains the name of the task.
-     */
-    public String value() {
-        return name();
-    }
+    String name();
 
     /**
      * Obtains this task name as a path.
@@ -156,7 +53,7 @@ public enum TaskName {
      *
      * @return the name with a colon symbol ({@code :}) at the beginning
      */
-    public String path() {
+    default String path() {
         return ':' + name();
     }
 }

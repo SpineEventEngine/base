@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -101,6 +101,6 @@ final class JsFile {
     /**
      * A function processing an import statement.
      */
-    interface ProcessImport extends Function<ImportStatement, ImportStatement> {
+    interface ProcessImport extends UnaryOperator<ImportStatement> {
     }
 }

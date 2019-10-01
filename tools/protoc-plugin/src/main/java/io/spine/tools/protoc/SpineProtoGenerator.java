@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -106,7 +105,7 @@ public abstract class SpineProtoGenerator {
         checkNotNull(request);
         checkCompilerVersion(request);
         checkNotEmpty(request);
-        FileSet fileSet = FileSet.ofFiles(ImmutableSet.copyOf(request.getProtoFileList()));
+        FileSet fileSet = FileSet.of(request.getProtoFileList());
         Set<FileName> requestedFileNames = request.getFileToGenerateList()
                                                   .stream()
                                                   .map(FileName::of)

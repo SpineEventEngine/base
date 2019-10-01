@@ -110,7 +110,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
         String fileReference = original.path()
                                        .value();
         String relativePathToRoot = original.sourceDirectory()
-                                            .relativize(generatedRoot().getPath())
+                                            .relativize(generatedRoot().path())
                                             .toString();
         String replacement = relativePathToRoot.isEmpty()
                              ? FileReference.currentDirectory()

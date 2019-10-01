@@ -48,15 +48,15 @@ public final class Project {
     }
 
     /**
-     * Configures the project to contain the {@code mavenCentral()} and {@code mavenLocal()}
-     * repositories for proper dependency resolution.
+     * Configures the project to contain the {@code mavenLocal()} and {@code jcenter()} repositories
+     * for proper dependency resolution.
      *
      * @return self for method chaining
      */
     public Project withMavenRepositories() {
         RepositoryHandler repositories = project.getRepositories();
-        repositories.mavenCentral();
         repositories.mavenLocal();
+        repositories.jcenter();
         return this;
     }
 

@@ -52,6 +52,6 @@ class MemoizingSourceSupersetTest {
         GeneratedSourceRoot sourceRoot = GeneratedSourceRoot.of(project);
         structure.register(sourceRoot);
 
-        assertThat(structure.javaSourceDirs()).contains(sourceRoot.getPath());
+        assertThat(structure.javaSourceDirs()).contains(sourceRoot.path());
     }
 }

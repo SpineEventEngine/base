@@ -26,8 +26,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import static io.spine.tools.gradle.TaskName.clean;
-import static io.spine.tools.gradle.TaskName.preClean;
+import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
 
 /**
  * Plugin which performs additional cleanup of the Spine-generated folders.

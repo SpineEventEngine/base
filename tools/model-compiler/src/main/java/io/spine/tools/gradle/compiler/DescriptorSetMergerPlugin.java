@@ -35,10 +35,10 @@ import java.io.File;
 
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
-import static io.spine.tools.gradle.TaskName.generateProto;
-import static io.spine.tools.gradle.TaskName.generateTestProto;
-import static io.spine.tools.gradle.TaskName.mergeDescriptorSet;
-import static io.spine.tools.gradle.TaskName.mergeTestDescriptorSet;
+import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
+import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 

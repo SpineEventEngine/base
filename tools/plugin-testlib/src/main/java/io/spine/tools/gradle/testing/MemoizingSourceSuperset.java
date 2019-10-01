@@ -38,7 +38,7 @@ public final class MemoizingSourceSuperset implements SourceSuperset {
 
     @Override
     public void register(GeneratedSourceRoot directory) {
-        javaSourceDirs.add(directory.getPath());
+        javaSourceDirs.add(directory.path());
     }
 
     public ImmutableSet<Path> javaSourceDirs() {

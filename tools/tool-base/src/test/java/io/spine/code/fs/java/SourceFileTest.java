@@ -87,6 +87,6 @@ class SourceFileTest {
         FileDescriptorProto file = descriptor.getFile().toProto();
         SourceFile sourceFile = SourceFile.forMessage(message, file);
         Path expectedPath = Paths.get(expectedName);
-        assertEquals(expectedPath, sourceFile.getPath());
+        assertEquals(expectedPath, sourceFile.path());
     }
 }

@@ -27,8 +27,8 @@ import org.gradle.testfixtures.ProjectBuilder;
 import java.io.File;
 import java.util.UUID;
 
-import static io.spine.tools.gradle.TaskName.generateProto;
-import static io.spine.tools.gradle.TaskName.generateTestProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 
 /**
  * A helper class for the test data generation.
@@ -60,8 +60,8 @@ public class ModelCompilerTestEnv {
                                         .build();
         project.getPluginManager()
                .apply("java");
-        project.task(generateProto.value());
-        project.task(generateTestProto.value());
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
         return project;
     }
 

@@ -18,23 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type.ref;
+package io.spine.code.dart.lexeme;
 
-import io.spine.value.StringTypeValue;
+import com.google.common.base.Splitter;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import java.util.List;
+
+import static com.google.common.base.CharMatcher.anyOf;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Abstract base for string-based type references.
+ * An alias for an imported Dart library.
+ *
+ * <p>Consists of the imported file path concatenated with {@code _} (underscore) symbols.
  */
-abstract class AbstractTypeRef extends StringTypeValue implements TypeRef {
+public final class GeneratedAlias extends Reference {
 
     private static final long serialVersionUID = 0L;
 
-    /**
-     * Creates a new instance with a value which is not null, empty, or blank.
-     */
-    AbstractTypeRef(String value) {
-        super(checkNotEmptyOrBlank(value));
+    private static final Splitter partSplitter = Splitter.on(anyOf("/\\"));
+    private static final char ESCAPE_DELIMITER = '_';
+
+    public GeneratedAlias(String pathToFile) {
+        super(escapePathToAlias(pathToFile));
+    }
+
+    private static String escapePathToAlias(String path) {
+        checkNotNull(path);
+        List<String> pathElements = partSplitter.splitToList(path);
+        StringBuilder alias = new StringBuilder(path.length() + 1);
+        for (String element : pathElements) {
+            alias.append(ESCAPE_DELIMITER)
+                 .append(element);
+        }
+        return alias.toString();
     }
 }

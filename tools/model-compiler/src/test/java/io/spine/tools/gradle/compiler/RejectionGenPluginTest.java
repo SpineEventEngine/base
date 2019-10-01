@@ -41,7 +41,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.tools.gradle.TaskName.compileJava;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
