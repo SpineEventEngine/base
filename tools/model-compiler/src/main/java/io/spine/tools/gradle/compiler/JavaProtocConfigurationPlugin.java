@@ -110,7 +110,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         protocTask.finalizedBy(writeRef.getTask());
     }
 
-    private GradleTask createCopyPluginJarTask(Project project) {
+    private Task createCopyPluginJarTask(Project project) {
         Configuration fetch = project.getConfigurations()
                                      .maybeCreate(ConfigurationName.fetch.name());
         Artifact protocPluginArtifact = Artifact
@@ -136,10 +136,9 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                     .withOutputFiles(project.fileTree(spineDirectory(project)))
                     .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
                     .applyNowTo(project);
-            return copyPluginJarBuilder;
-        } else {
-            return GradleTask.from(copyPluginJarTask);
+            copyPluginJarTask = copyPluginJarBuilder.getTask();
         }
+        return copyPluginJarTask;
     }
 
     static File spineDirectory(Project project) {
