@@ -41,25 +41,25 @@ ext {
     credentialsPropertyFile = 'credentials.properties'
 
     projectsToPublish = [
-            'base',
-            'tool-base',
-            'testlib',
-            'mute-logging',
-            'errorprone-checks',
+        'base',
+        'tool-base',
+        'testlib',
+        'mute-logging',
+        'errorprone-checks',
 
-            // Gradle plugins
-            'plugin-base',
-            'javadoc-filter',
-            'javadoc-prettifier',
-            'proto-dart-plugin',
-            'proto-js-plugin',
-            'model-compiler',
+        // Gradle plugins
+        'plugin-base',
+        'javadoc-filter',
+        'javadoc-prettifier',
+        'proto-dart-plugin',
+        'proto-js-plugin',
+        'model-compiler',
 
-            'plugin-testlib',
+        'plugin-testlib',
 
-            // Protoc compiler plugin
-            'protoc-api',
-            'protoc-plugin'
+        // Protoc compiler plugin
+        'protoc-api',
+        'protoc-plugin'
     ]
 }
 
