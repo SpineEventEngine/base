@@ -33,8 +33,6 @@ import java.io.Reader;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import static com.google.common.base.Charsets.US_ASCII;
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junitpioneer.jupiter.TempDirectory.TempDir;
@@ -83,18 +81,9 @@ class ResourceTest {
     @DisplayName("open as a char stream")
     void openAsChars() throws IOException {
         Resource resource = Resource.file(EXISTING_RESOURCE);
-        try (Reader reader = resource.openAsText(US_ASCII)) {
+        try (Reader reader = resource.openAsText()) {
             String content = CharStreams.toString(reader);
             assertThat(content).isNotEmpty();
         }
-    }
-
-    @Test
-    @DisplayName("open as UTF-8")
-    void openAsUtf8() throws IOException {
-        Resource resource = Resource.file(EXISTING_RESOURCE);
-        String defaultEncodedString = CharStreams.toString(resource.openAsText());
-        String utf8EncodedString = CharStreams.toString(resource.openAsText(UTF_8));
-        assertThat(defaultEncodedString).isEqualTo(utf8EncodedString);
     }
 }
