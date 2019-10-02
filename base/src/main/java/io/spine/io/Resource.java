@@ -137,7 +137,7 @@ public final class Resource {
      * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
      * stream.
      */
-    public Reader openAsText(Charset charset) {
+    private Reader openAsText(Charset charset) {
         return new InputStreamReader(open(), charset);
     }
 

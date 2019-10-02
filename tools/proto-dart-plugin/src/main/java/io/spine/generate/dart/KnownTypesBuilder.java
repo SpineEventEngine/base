@@ -20,14 +20,14 @@
 
 package io.spine.generate.dart;
 
-import io.spine.code.proto.TypeSet;
 import io.spine.code.dart.lexeme.Call;
 import io.spine.code.dart.lexeme.FieldAccess;
 import io.spine.code.dart.lexeme.GeneratedAlias;
 import io.spine.code.dart.lexeme.Import;
 import io.spine.code.dart.lexeme.MapEntry;
 import io.spine.code.dart.lexeme.StringLiteral;
-import io.spine.code.dart.FileName;
+import io.spine.code.fs.dart.FileName;
+import io.spine.code.proto.TypeSet;
 import io.spine.type.MessageType;
 import io.spine.type.NestedTypeName;
 import io.spine.type.Type;

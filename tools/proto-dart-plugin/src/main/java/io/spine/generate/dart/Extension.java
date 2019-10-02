@@ -20,6 +20,7 @@
 
 package io.spine.generate.dart;
 
+import io.spine.code.fs.dart.DefaultDartProject;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;

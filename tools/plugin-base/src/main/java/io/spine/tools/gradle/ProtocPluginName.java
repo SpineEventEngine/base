@@ -24,9 +24,52 @@ package io.spine.tools.gradle;
  * Names of known Protobuf compiler plugins.
  */
 public enum ProtocPluginName {
+
+    /**
+     * The standard Java protoc plugin.
+     *
+     * <p>Built into the Protobuf compiler.
+     *
+     * @see <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated">
+     *         Java generated code reference</a>
+     */
     java,
+
+    /**
+     * The standard JavaScript protoc plugin.
+     *
+     * <p>Built into the Protobuf compiler.
+     *
+     * @see <a href="https://developers.google.com/protocol-buffers/docs/reference/javascript-generated">
+     *         Java generated code reference</a>
+     */
     js,
+
+    /**
+     * The gRPC protoc plugin.
+     *
+     * <p>Generates service implementation bases and stubs for remote calls.
+     *
+     * @see <a href="https://grpc.io/docs/reference/java/generated-code/">gRPC generated code
+     *         reference</a>
+     */
     grpc,
+
+    /**
+     * The Spine code generation plugin.
+     *
+     * <p>Generates message interfaces and additional message methods.
+     *
+     * @see <a href="https://github.com/SpineEventEngine/base/tree/master/tools/protoc-plugin">the
+     *         plugin feature overview</a>
+     */
     spineProtoc,
+
+    /**
+     * The Dart code generation plugin.
+     *
+     * @see <a href="https://developers.google.com/protocol-buffers/docs/reference/dart-generated">
+     *         Dart generated code reference</a>
+     */
     dart
 }

@@ -27,6 +27,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class MapEntry extends Lexeme {
 
+    private static final long serialVersionUID = 0L;
+
     public MapEntry(Expression key, Expression value) {
         super("%s: %s,", checkNotNull(key), checkNotNull(value));
     }

@@ -25,6 +25,8 @@ package io.spine.code.dart.lexeme;
  */
 public abstract class Expression extends Lexeme {
 
+    private static final long serialVersionUID = 0L;
+
     /**
      * See {@link Lexeme#Lexeme(String, Object...)}.
      */

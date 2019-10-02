@@ -20,11 +20,8 @@
 
 package io.spine.type;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -37,19 +34,14 @@ import io.spine.option.IfMissingOption;
 import io.spine.test.types.KnownTask;
 import io.spine.test.types.KnownTaskId;
 import io.spine.test.types.KnownTaskName;
-import io.spine.type.ref.TypeRef;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -157,50 +149,5 @@ class KnownTypesTest {
                 UnknownTypeException.class,
                 () -> knownTypes.classNameOf(unexpectedUrl)
         );
-    }
-
-    @Nested
-    @DisplayName("obtain message types")
-    class MessageTypes {
-
-        // See `known_types_test.proto`
-        private final ImmutableSet<Descriptor> packageDescriptors = ImmutableSet.of(
-                KnownTaskId.getDescriptor(),
-                KnownTaskName.getDescriptor(),
-                KnownTask.getDescriptor()
-        );
-
-        private final ImmutableSet<MessageType> packageTypes =
-                packageDescriptors.stream()
-                                  .map(MessageType::new)
-                                  .collect(toImmutableSet());
-
-        @Test
-        @DisplayName("via package type reference")
-        void packageRef() {
-            String packageName = KnownTaskId.getDescriptor()
-                                            .getFile()
-                                            .getPackage();
-            TypeRef typeRef = TypeRef.parse(packageName + ".*");
-            assertContainsAll(typeRef);
-        }
-
-        @Test
-        @DisplayName("via direct type references")
-        void typeEnumRef() {
-            List<String> typeNames =
-                    packageDescriptors.stream()
-                                      .map(Descriptor::getFullName)
-                                      .collect(toList());
-            String ref = Joiner.on(',')
-                               .join(typeNames);
-            TypeRef typeRef = TypeRef.parse(ref);
-            assertContainsAll(typeRef);
-        }
-
-        private void assertContainsAll(TypeRef typeRef) {
-            ImmutableSet<MessageType> types = knownTypes.allMatching(typeRef);
-            assertThat(types).containsAtLeastElementsIn(packageTypes);
-        }
     }
 }

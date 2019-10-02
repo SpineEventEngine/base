@@ -20,11 +20,9 @@
 
 package io.spine.js.gradle;
 
-import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,16 +32,6 @@ import java.nio.file.Path;
  * projects.
  */
 public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin {
-
-    @Override
-    protected void configureDescriptorSetGeneration(GenerateProtoTask task, File descriptor) {
-        /* Nop, the parent configuration is sufficient. */
-    }
-
-    @Override
-    protected void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
-        /* Nop, the parent configuration is sufficient. */
-    }
 
     @Override
     protected File getTestDescriptorSet(Project project) {

@@ -23,7 +23,6 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
-import io.spine.annotation.Internal;
 import io.spine.option.OptionsProto;
 import io.spine.validate.option.ValidatingOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
@@ -37,7 +36,6 @@ import io.spine.validate.option.ValidatingOptionsLoader;
  * @apiNote Use this instead of accessing {@link ExtensionRegistry#newInstance()} directly, since
  * {@code ExtensionRegistry} doesn't have any of the Spine options by default.
  */
-@Internal
 public final class OptionExtensionRegistry {
     private static final ExtensionRegistry EXTENSIONS = optionExtensions();
 

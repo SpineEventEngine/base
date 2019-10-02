@@ -27,13 +27,17 @@ import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.Artifact;
+import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
+import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
@@ -42,7 +46,10 @@ import java.nio.file.Paths;
 import java.util.Base64;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ModelCompilerTaskName.copyPluginJar;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
@@ -56,39 +63,18 @@ import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
  */
 public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
+    private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
+    private static final String JAR_EXTENSION = "jar";
+
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
 
     @Override
-    protected void configureDescriptorSetGeneration(GenerateProtoTask protocTask,
-                                                    File descriptor) {
-        boolean tests = isTestsTask(protocTask);
-        Project project = protocTask.getProject();
-        TaskName writeRefName = tests
-                                ? writeTestDescriptorReference
-                                : writeDescriptorReference;
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
-        Path resourceDirectory = descriptor.toPath()
-                                           .getParent();
-        javaConvention.getSourceSets()
-                      .getByName(sourceScope.name())
-                      .getResources()
-                      .srcDir(resourceDirectory);
-        GradleTask writeRef = newTask(writeRefName, task -> {
-            DescriptorReference reference = DescriptorReference.toOneFile(descriptor);
-            reference.writeTo(resourceDirectory);
-        }).allowNoDependencies()
-          .applyNowTo(project);
-        protocTask.finalizedBy(writeRef.getTask());
-    }
-
-    @Override
-    protected void configureTaskPlugins(GenerateProtoTask protocTask, Task dependency) {
+    protected void customizeTask(GenerateProtoTask protocTask) {
+        customizeDescriptorSetGeneration(protocTask);
         Path spineProtocConfigPath = spineProtocConfigPath(protocTask);
         Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
-        protocTask.dependsOn(dependency, writeConfig);
+        protocTask.dependsOn(createCopyPluginJarTask(protocTask.getProject()), writeConfig);
         protocTask.getPlugins()
                   .create(grpc.name());
         protocTask.getPlugins()
@@ -101,9 +87,72 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                           });
     }
 
+    private void customizeDescriptorSetGeneration(GenerateProtoTask protocTask) {
+        boolean tests = isTestsTask(protocTask);
+        Project project = protocTask.getProject();
+        TaskName writeRefName = tests
+                                ? writeTestDescriptorReference
+                                : writeDescriptorReference;
+        JavaPluginConvention javaConvention = project.getConvention()
+                                                     .getPlugin(JavaPluginConvention.class);
+        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
+        File descriptorFile = new File(protocTask.getDescriptorPath());
+        Path resourceDirectory = descriptorFile.toPath().getParent();
+        javaConvention.getSourceSets()
+                      .getByName(sourceScope.name())
+                      .getResources()
+                      .srcDir(resourceDirectory);
+        GradleTask writeRef = newTask(writeRefName, task -> {
+            DescriptorReference reference = DescriptorReference.toOneFile(descriptorFile);
+            reference.writeTo(resourceDirectory);
+        }).allowNoDependencies()
+          .applyNowTo(project);
+        protocTask.finalizedBy(writeRef.getTask());
+    }
+
+    private Task createCopyPluginJarTask(Project project) {
+        Configuration fetch = project.getConfigurations()
+                                     .maybeCreate(ConfigurationName.fetch.name());
+        Artifact protocPluginArtifact = Artifact
+                .newBuilder()
+                .useSpineToolsGroup()
+                .setName(SPINE_PLUGIN_NAME)
+                .setVersion(VERSIONS.spineBase())
+                .setExtension(JAR_EXTENSION)
+                .build();
+        Dependency protocPluginDependency = project
+                .getDependencies()
+                .add(fetch.getName(), protocPluginArtifact.notation());
+        checkNotNull(protocPluginDependency,
+                     "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
+        Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
+
+        Task copyPluginJarTask = project.getTasks()
+                                        .findByPath(copyPluginJar.name());
+        if (copyPluginJarTask == null) {
+            GradleTask copyPluginJarBuilder = newTask(copyPluginJar, action)
+                    .allowNoDependencies()
+                    .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
+                    .withOutputFiles(project.fileTree(spineDirectory(project)))
+                    .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
+                    .applyNowTo(project);
+            copyPluginJarTask = copyPluginJarBuilder.getTask();
+        }
+        return copyPluginJarTask;
+    }
+
+    static File spineDirectory(Project project) {
+        return at(project.getProjectDir()).tempArtifacts();
+    }
+
+    static File rootSpineDirectory(Project project) {
+        return at(project.getRootDir()).tempArtifacts();
+    }
+
     @OverridingMethodsMustInvokeSuper
     @Override
-    protected final void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    protected void
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
         super.configureProtocPlugins(plugins);
         plugins.create(grpc.name(),
                        locator -> locator.setArtifact(Artifact.newBuilder()
@@ -121,7 +170,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
-        DefaultJavaProject javaProject = DefaultJavaProject.at(project.getProjectDir());
+        DefaultJavaProject javaProject = at(project.getProjectDir());
         GeneratedRoot result = javaProject.generated();
         return result.path();
     }

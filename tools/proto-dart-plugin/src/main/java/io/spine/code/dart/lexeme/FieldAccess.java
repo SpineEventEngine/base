@@ -22,7 +22,14 @@ package io.spine.code.dart.lexeme;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A field access expression.
+ *
+ * <p>Consists of a receiver expression and the field name.
+ */
 public final class FieldAccess extends Expression {
+
+    private static final long serialVersionUID = 0L;
 
     public FieldAccess(Expression receiver, String fieldName) {
         super("%s.%s", checkNotNull(receiver), checkNotNull(fieldName));

@@ -20,12 +20,12 @@
 
 package io.spine.code.dart.lexeme;
 
-import io.spine.code.dart.lexeme.Expression;
-
 /**
  * A reference to an object.
  */
 public class Reference extends Expression {
+
+    private static final long serialVersionUID = 0L;
 
     public Reference(String name) {
         super(name);

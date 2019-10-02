@@ -18,49 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
+package io.spine.code.fs.dart;
 
-import io.spine.code.AbstractDirectory;
 import io.spine.code.fs.DefaultProject;
 
 import java.nio.file.Path;
 
-final class DefaultDartProject extends DefaultProject {
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * A default project layout for a Dart project.
+ */
+public final class DefaultDartProject extends DefaultProject {
 
     private DefaultDartProject(Path path) {
         super(path);
     }
 
-    static DefaultDartProject at(Path root) {
+    public static DefaultDartProject at(Path root) {
+        checkNotNull(root);
         return new DefaultDartProject(root);
-    }
-
-    DartScrRoot src() {
-        return new DartScrRoot(this);
-    }
-
-    static final class DartScrRoot extends SourceRoot {
-
-        private DartScrRoot(DefaultProject parent) {
-            super(parent, "src");
-        }
-
-        SourceSetWithProtobuf mainProto() {
-            return new SourceSetWithProtobuf(getMain());
-        }
-
-        SourceSetWithProtobuf testProto() {
-            return new SourceSetWithProtobuf(getTest());
-        }
-    }
-
-    static final class SourceSetWithProtobuf extends SourceDir {
-
-        @SuppressWarnings("DuplicateStringLiteralInspection")
-        private static final String NAME = "proto";
-
-        private SourceSetWithProtobuf(AbstractDirectory parent) {
-            super(parent, NAME);
-        }
     }
 }

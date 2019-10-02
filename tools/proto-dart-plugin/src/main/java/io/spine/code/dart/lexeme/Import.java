@@ -20,7 +20,7 @@
 
 package io.spine.code.dart.lexeme;
 
-import io.spine.code.dart.FileName;
+import io.spine.code.fs.dart.FileName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,6 +28,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An import of a Dart file.
  */
 public final class Import extends Lexeme {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * Creates a new {@code Import}.

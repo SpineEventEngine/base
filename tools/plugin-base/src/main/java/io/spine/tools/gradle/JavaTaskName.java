@@ -25,8 +25,8 @@ import io.spine.annotation.Internal;
 /**
  * Names of Gradle tasks defined by the {@code java} plugin.
  *
- * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">See
- *         the plugin doc.</a>
+ * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">
+ *         the plugin doc</a>
  */
 @Internal
 public enum JavaTaskName implements TaskName {

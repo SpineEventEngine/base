@@ -144,7 +144,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
         Path targetFile = generatedSourcePath.resolve(TYPES_FILE_NAME);
         List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
         ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedSourcePath);
-        FileSet fileSet = FileSet.ofFiles(fileDescriptors)
+        FileSet fileSet = FileSet.of(fileDescriptors)
                                  .filter(predicate.forDescriptor());
         TypeSet types = TypeSet.from(fileSet);
         _finest().log("There are %d known types.", types.size());

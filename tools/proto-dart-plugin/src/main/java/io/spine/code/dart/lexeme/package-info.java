@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains an object model of some structures of the Dart language.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.dart.lexeme;

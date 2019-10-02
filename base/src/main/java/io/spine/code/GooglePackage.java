@@ -21,7 +21,6 @@
 package io.spine.code;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,7 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A set of utilities for working with the Google packages in Java and Protobuf.
  */
-@Internal
 public final class GooglePackage {
 
     private static final String JAVA_STYLE = "com.google";

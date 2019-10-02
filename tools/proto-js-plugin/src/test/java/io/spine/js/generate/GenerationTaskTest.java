@@ -67,7 +67,7 @@ class GenerationTaskTest {
     @Test
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
-        FileSet emptyFileSet = FileSet.ofFiles(ImmutableSet.of());
+        FileSet emptyFileSet = FileSet.of(ImmutableSet.of());
         TestGenerationTask task = new TestGenerationTask(mainProtoSources());
         assertNotPerformed(task, emptyFileSet);
     }

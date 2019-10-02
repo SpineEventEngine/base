@@ -20,15 +20,15 @@
 
 package io.spine.generate.dart;
 
-import io.spine.code.dart.FileName;
+import io.spine.code.fs.dart.FileName;
 import io.spine.code.proto.ProtoBelongsToModule;
 import io.spine.code.proto.SourceFile;
 
 import java.nio.file.Path;
 
 /**
- * A predicate determining if the given Protobuf file was compiled to JavaScript
- * and belongs to the specified module.
+ * A predicate determining if the given Protobuf file was compiled to Dart and belongs to
+ * the specified module.
  */
 public final class CompiledProtoBelongsToModule extends ProtoBelongsToModule {
 

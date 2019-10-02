@@ -18,15 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.dart;
+package io.spine.code.fs.dart;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 
-import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
+/**
+ * Name of a Dart file generated from Protobuf.
+ *
+ * <p>Always has the {@code .pb.dart} extension.
+ */
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;
@@ -37,22 +38,25 @@ public final class FileName extends AbstractFileName<FileName> {
         super(value);
     }
 
-    private FileName(Path path) {
-        this(path.toString());
-    }
-
+    /**
+     * Constructs a relative file path for a file generated from the given Protobuf file.
+     *
+     * @param file the source Protobuf file
+     * @return new {@code FileName}, relative to the code generation root
+     */
     public static FileName relative(io.spine.code.proto.FileName file) {
         String relativePath = file.nameWithoutExtension() + GENERATED_EXTENSION;
         return new FileName(relativePath);
     }
 
+    /**
+     * Constructs a relative file path for a file generated from the given Protobuf file descriptor.
+     *
+     * @param file the source Protobuf file descriptor
+     * @return new {@code FileName}, relative to the code generation root
+     */
     public static FileName relative(FileDescriptor file) {
         io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
         return relative(protoName);
-    }
-
-    public FileName prefixed(Path filePrefix) {
-        checkNotNull(filePrefix);
-        return new FileName(filePrefix.resolve(this.value()));
     }
 }
