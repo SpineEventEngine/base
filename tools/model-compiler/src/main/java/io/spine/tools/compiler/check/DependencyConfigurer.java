@@ -96,7 +96,7 @@ public final class DependencyConfigurer implements Logging {
      * Adds the {@code spine-erroprone-checks} dependency to the project configuration.
      */
     private void dependOnErrorProneChecks(String version, Configuration configuration) {
-        _debug().log("Adding dependency on %s:%s:%s to the %s configuration",
+        _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
                     SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version,
                     annotationProcessor.value());
         DependencySet dependencies = configuration.getDependencies();
