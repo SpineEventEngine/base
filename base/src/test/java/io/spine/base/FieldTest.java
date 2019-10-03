@@ -23,7 +23,9 @@ package io.spine.base;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import io.spine.test.protobuf.AnyHolder;
 import io.spine.test.protobuf.GenericHolder;
 import io.spine.test.protobuf.GenericHolder.Count;
@@ -288,5 +290,48 @@ class FieldTest {
             Truth8.assertThat(field.findType(GenericHolder.class))
                   .hasValue(GenericHolder.class);
         }
+    }
+
+    @Nested
+    @DisplayName("obtain the name of the field by its number")
+    class ByNumber {
+
+        private final Descriptor message = Timestamp.getDescriptor();
+
+        @Test
+        @DisplayName("returning the short name of the field, if present")
+        void nameValue() {
+            String name = Field.nameOf(Timestamp.NANOS_FIELD_NUMBER, message);
+            assertThat(name).isEqualTo("nanos");
+        }
+
+        @Nested
+        @DisplayName("throwing")
+        class Throwing {
+
+            @Test
+            @DisplayName("`IllegalArgumentException` for non-positive number")
+            void zeroOrNegative() {
+                assertThrows(IllegalArgumentException.class,
+                             () -> Field.nameOf(-1, message));
+                assertThrows(IllegalArgumentException.class,
+                             () -> Field.nameOf(0, message));
+            }
+
+            @Test
+            @DisplayName("`IllegalStateException` if there is no field with such number")
+            void noField() {
+                assertThrows(IllegalStateException.class,
+                             () -> Field.nameOf(100, message));
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("obtain the instance by number in a message type")
+    void byNumber() {
+        Field seconds = Field.withNumberIn(1, Timestamp.getDescriptor());
+        assertThat((Long) seconds.valueIn(Time.currentTime()))
+                .isGreaterThan(0);
     }
 }
