@@ -20,7 +20,7 @@
 
 import java.nio.file.Files
 
-group 'io.spine.tools'
+group = 'io.spine.tools'
 
 dependencies {
     implementation project(':tool-base')
