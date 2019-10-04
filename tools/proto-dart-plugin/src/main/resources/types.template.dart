@@ -10,12 +10,22 @@ import "package:protobuf/protobuf.dart";
 // @import@
 
 
-Map<String, BuilderInfo> typeUrlToInfo = {
+Map<String, BuilderInfo> _typeUrlToInfo = {
   // @type-to-info@
-
 };
 
-Map<GeneratedMessage, String> defaultToTypeUrl = {
+Map<GeneratedMessage, String> _defaultToTypeUrl = {
   // @message-to-type@
-
 };
+
+dynamic types() {
+    return _KnownTypesPart(_typeUrlToInfo, _defaultToTypeUrl);
+}
+
+class _KnownTypesPart {
+
+    final Map<String, BuilderInfo> typeUrlToInfo;
+    final Map<GeneratedMessage, String> defaultToTypeUrl;
+
+    _KnownTypesPart(this.typeUrlToInfo, this.defaultToTypeUrl);
+}
