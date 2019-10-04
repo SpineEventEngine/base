@@ -9,15 +9,19 @@ import "package:protobuf/protobuf.dart";
 
 // @import@
 
-
 Map<String, BuilderInfo> _typeUrlToInfo = {
-  // @type-to-info@
+    // @type-to-info@
 };
 
 Map<GeneratedMessage, String> _defaultToTypeUrl = {
-  // @message-to-type@
+    // @message-to-type@
 };
 
+/// Obtains the known types as a tuple of:
+///   - `typeUrlToInfo` — a map of type URLs to `BuilderInfo`s;
+///   - `defaultToTypeUrl` — a map of default message values to type URLs.
+///
+/// Only for internal use. See `KnownTypes` to access all the known types of a client application.
 dynamic types() {
     return _KnownTypesPart(_typeUrlToInfo, _defaultToTypeUrl);
 }
