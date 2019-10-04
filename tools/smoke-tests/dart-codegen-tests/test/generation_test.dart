@@ -22,13 +22,19 @@ import 'package:protobuf/protobuf.dart';
 import 'package:test/test.dart';
 
 import 'spine/test/tools/dart/test.pb.dart';
-import 'types.dart' as types;
+import 'types.dart' as generatedTypes;
 
 const dartSmokeTestType = 'type.spine.io/spine.test.tools.DartSmokeTest';
 const nestedType = 'type.spine.io/spine.test.tools.First.Second.Third';
 
 void main() {
-    group('Known types generation should', (){
+    group('Known types generation should', () {
+
+        var types;
+
+        setUp(() {
+           types = generatedTypes.types();
+        });
 
         test('generate file', () {
            expect(types.typeUrlToInfo, isNotNull);
