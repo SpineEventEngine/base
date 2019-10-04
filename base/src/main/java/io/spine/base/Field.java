@@ -59,10 +59,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @Immutable
 public final class Field extends ValueHolder<FieldPath> {
 
-    static final String SEPARATOR = ".";
-    static final Joiner joiner = Joiner.on(SEPARATOR);
-    static final Splitter dotSplitter = Splitter.on(SEPARATOR)
-                                                .trimResults();
+    private static final String SEPARATOR = ".";
+    private static final Joiner joiner = Joiner.on(SEPARATOR);
+    private static final Splitter dotSplitter = Splitter.on(SEPARATOR)
+                                                        .trimResults();
     private static final long serialVersionUID = 0L;
 
     private Field(FieldPath path) {
@@ -105,6 +105,52 @@ public final class Field extends ValueHolder<FieldPath> {
         checkName(fieldName);
         FieldPath path = create(fieldName);
         Field result = create(path);
+        return result;
+    }
+
+    /**
+     * Creates a new field reference by taking its number if the passed message type.
+     *
+     * @param number
+     *         the number of the field as defined in the proto message
+     * @param message
+     *         the descriptor of the message
+     * @return the field reference
+     * @throws IllegalStateException
+     *         if there is no field with the passed number in this message type
+     */
+    public static Field withNumberIn(int number, Descriptor message) {
+        String name = nameOf(number, message);
+        Field result = named(name);
+        return result;
+    }
+
+    /**
+     * Obtains the name of the field with the passed number in the message type specified
+     * by the passed descriptor.
+     *
+     * @param fieldNumber
+     *         the number of the field as defined in the proto message
+     * @param message
+     *         the descriptor of the message
+     * @return the name of the field
+     * @throws IllegalStateException
+     *         if there is no field with the passed number in this message type
+     */
+    public static String nameOf(int fieldNumber, Descriptor message) {
+        checkNotNull(message);
+        checkArgument(fieldNumber > 0);
+        String result = message
+                .getFields()
+                .stream()
+                .filter(f -> f.getNumber() == fieldNumber)
+                .findFirst()
+                .map(FieldDescriptor::getName)
+                .orElseThrow(() -> newIllegalStateException(
+                        "Unable to find the field with the number %d in the type `%s`.",
+                        fieldNumber,
+                        message.getFullName()
+                ));
         return result;
     }
 
@@ -174,7 +220,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Creates a new path containing the passed elements. */
-    static FieldPath create(String... elements) {
+    private static FieldPath create(String... elements) {
         checkNotNull(elements);
         return create(ImmutableList.copyOf(elements));
     }
@@ -301,7 +347,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Ensures that the passed filed name does not contain the path separator. */
-    static void checkName(String fieldName) {
+    private static void checkName(String fieldName) {
         checkArgument(
                 !fieldName.contains(SEPARATOR),
                 "A field name cannot contain path separator. Found: `%s`.", fieldName
