@@ -77,12 +77,13 @@ public final class Resource {
      *
      * @param path
      *         the path to the resource file, relative to {@code contextClass}
-     * @param classLoader
- *         the class relative to which the resource is referenced */
-    public static Resource file(String path, ClassLoader classLoader) {
-        checkNotNull(classLoader);
+     * @param customLoader
+     *         the class relative to which the resource is referenced
+     */
+    public static Resource file(String path, ClassLoader customLoader) {
+        checkNotNull(customLoader);
         checkNotEmptyOrBlank(path);
-        return new Resource(path, classLoader);
+        return new Resource(path, customLoader);
     }
 
     private boolean loaderCustomized() {
