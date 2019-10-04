@@ -46,17 +46,19 @@ import static java.lang.String.format;
 /**
  * A resource file in the classpath.
  *
- * <p>The {@code Thread.currentThread().getContextClassLoader()} is used to load the resource from
- * the classpath.
+ * <p>By default the resource will be loaded using the class loader of this class.
+ * In order to use another loader, please use {@link #file(String, ClassLoader)}.
+ * 
+ * @see #file(String)
  */
 public final class Resource {
 
     private final String path;
-    private final @Nullable ClassLoader classLoader;
+    private final @Nullable ClassLoader customLoader;
 
-    private Resource(String path, @Nullable ClassLoader classLoader) {
+    private Resource(String path, @Nullable ClassLoader customLoader) {
         this.path = path;
-        this.classLoader = classLoader;
+        this.customLoader = customLoader;
     }
 
     /**
@@ -83,8 +85,8 @@ public final class Resource {
         return new Resource(path, classLoader);
     }
 
-    private boolean inContext() {
-        return classLoader != null;
+    private boolean loaderCustomized() {
+        return customLoader != null;
     }
 
     private @Nullable URL findUrl() {
@@ -93,24 +95,15 @@ public final class Resource {
     }
 
     private ClassLoader classLoader() {
-        return MoreObjects.firstNonNull(classLoader, Resource.class.getClassLoader());
+        return MoreObjects.firstNonNull(customLoader, Resource.class.getClassLoader());
     }
 
     private String classLoaderDiag() {
         ClassLoader loader = classLoader();
-        String fmt = inContext() ? "the assigned class loader `%s`." : "the class loader `%s`.";
+        String fmt = loaderCustomized()
+                     ? "the assigned class loader `%s`."
+                     : "the class loader `%s`.";
         return format(fmt, loader);
-    }
-
-    private URL toUrl() {
-        URL url = findUrl();
-        if (url == null) {
-            throw newIllegalStateException(
-                    "Unable to find the resource `%s` using `%s`.",
-                    path, classLoaderDiag()
-            );
-        }
-        return url;
     }
 
     /**
@@ -132,8 +125,14 @@ public final class Resource {
      * @return the resource URL
      */
     public URL locate() {
-        URL resource = toUrl();
-        return resource;
+        URL url = findUrl();
+        if (url == null) {
+            throw newIllegalStateException(
+                    "Unable to find the resource `%s` using `%s`.",
+                    path, classLoaderDiag()
+            );
+        }
+        return url;
     }
 
     /**
@@ -173,7 +172,7 @@ public final class Resource {
      * @return new {@link InputStream}
      */
     public InputStream open() {
-        URL resource = toUrl();
+        URL resource = locate();
         try {
             return resource.openStream();
         } catch (IOException e) {
@@ -205,7 +204,7 @@ public final class Resource {
 
     @Override
     public String toString() {
-        return inContext() ? path + " via " + classLoader() : path;
+        return loaderCustomized() ? path + " via " + classLoader() : path;
     }
 
     @Override
