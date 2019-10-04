@@ -20,6 +20,7 @@
 
 package io.spine.io;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -35,9 +36,12 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.lang.String.format;
 
 /**
  * A resource file in the classpath.
@@ -48,20 +52,65 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class Resource {
 
     private final String path;
+    private final @Nullable ClassLoader classLoader;
 
-    private Resource(String path) {
+    private Resource(String path, @Nullable ClassLoader classLoader) {
         this.path = path;
+        this.classLoader = classLoader;
     }
 
     /**
-     * Creates a new instance.
+     * Creates a new resource reference.
      *
      * @param path
-     *         the path to the resource file, relative to the classpath.
+     *         the path to the resource file, relative to the classpath
      */
     public static Resource file(String path) {
         checkNotEmptyOrBlank(path);
-        return new Resource(path);
+        return new Resource(path, null);
+    }
+
+    /**
+     * Creates a new reference to a resource at the context of the given class.
+     *
+     * @param path
+     *         the path to the resource file, relative to {@code contextClass}
+     * @param classLoader
+ *         the class relative to which the resource is referenced */
+    public static Resource file(String path, ClassLoader classLoader) {
+        checkNotNull(classLoader);
+        checkNotEmptyOrBlank(path);
+        return new Resource(path, classLoader);
+    }
+
+    private boolean inContext() {
+        return classLoader != null;
+    }
+
+    private @Nullable URL findUrl() {
+        URL url = classLoader().getResource(path);
+        return url;
+    }
+
+    private ClassLoader classLoader() {
+        return MoreObjects.firstNonNull(classLoader, Resource.class.getClassLoader());
+    }
+
+    private String classLoaderDiag() {
+        ClassLoader loader = classLoader();
+        String fmt = inContext() ? "the assigned class loader `%s`." : "the class loader `%s`.";
+        return format(fmt, loader);
+    }
+
+    private URL toUrl() {
+        URL url = findUrl();
+        if (url == null) {
+            throw newIllegalStateException(
+                    "Unable to find the resource `%s` using `%s`.",
+                    path, classLoaderDiag()
+            );
+        }
+        return url;
     }
 
     /**
@@ -70,7 +119,7 @@ public final class Resource {
      * @return {@code true} if the resource is present, {@code false} otherwise
      */
     public boolean exists() {
-        URL resource = classLoader().getResource(path);
+        URL resource = findUrl();
         return resource != null;
     }
 
@@ -83,8 +132,7 @@ public final class Resource {
      * @return the resource URL
      */
     public URL locate() {
-        URL resource = classLoader().getResource(path);
-        checkFound(resource);
+        URL resource = toUrl();
         return resource;
     }
 
@@ -101,9 +149,8 @@ public final class Resource {
         Enumeration<URL> resources = resourceEnumeration();
         UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
         ImmutableList<URL> result = ImmutableList.copyOf(iterator);
-        checkState(!result.isEmpty(),
-                   "Could not find any resources by path `%s` in classpath.",
-                   path);
+        checkState(!result.isEmpty(), "Could not find any resources `%s` using `%s`.",
+                   path, classLoaderDiag());
         return result;
     }
 
@@ -126,9 +173,12 @@ public final class Resource {
      * @return new {@link InputStream}
      */
     public InputStream open() {
-        InputStream stream = classLoader().getResourceAsStream(path);
-        checkFound(stream);
-        return stream;
+        URL resource = toUrl();
+        try {
+            return resource.openStream();
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     /**
@@ -153,18 +203,9 @@ public final class Resource {
         return openAsText(UTF_8);
     }
 
-    private void checkFound(@Nullable Object resourceHandle) {
-        checkState(resourceHandle != null, "Could not find resource `%s` in classpath.", path);
-    }
-
-    private static ClassLoader classLoader() {
-        return Thread.currentThread()
-                     .getContextClassLoader();
-    }
-
     @Override
     public String toString() {
-        return path;
+        return inContext() ? path + " via " + classLoader() : path;
     }
 
     @Override
