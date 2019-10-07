@@ -32,7 +32,9 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 
 /**
@@ -131,6 +133,18 @@ final class ProtoModule {
      */
     FileCollection testCompiledRejections() {
         String targetDir = getTargetTestGenRejectionsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
+        return files;
+    }
+
+    FileCollection compiledColumns() {
+        String targetDir = getTargetGenColumnsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
+        return files;
+    }
+
+    FileCollection testCompiledColumns() {
+        String targetDir = getTargetTestGenColumnsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }

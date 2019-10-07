@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
@@ -41,7 +40,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
+ * A Protobuf file which also gives access to its {@link FileDescriptor descriptor}.
  */
 public class SourceFile extends AbstractSourceFile implements Logging {
 

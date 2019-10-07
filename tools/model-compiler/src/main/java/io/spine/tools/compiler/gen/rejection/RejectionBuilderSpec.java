@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.rejection;
+package io.spine.tools.compiler.gen.rejection;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
@@ -27,20 +27,26 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.Indent;
+import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.gen.GeneratedTypeSpec;
+import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 import io.spine.validate.Validate;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
+import static io.spine.util.Exceptions.unsupported;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -52,7 +58,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-final class RejectionBuilderWriter {
+final class RejectionBuilderSpec implements GeneratedTypeSpec {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
@@ -62,13 +68,39 @@ final class RejectionBuilderWriter {
     private final ClassName throwableClass;
     private final SimpleClassName name;
 
-    RejectionBuilderWriter(RejectionType rejection,
-                           ClassName messageClass,
-                           ClassName throwableClass) {
+    RejectionBuilderSpec(RejectionType rejection,
+                         ClassName messageClass,
+                         ClassName throwableClass) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
         this.name = SimpleClassName.ofBuilder();
+    }
+
+    @Override
+    public PackageName packageName() {
+        PackageName packageName = rejection.javaPackage();
+        return packageName;
+    }
+
+    @Override
+    public TypeSpec spec() {
+        TypeSpec typeSpec = TypeSpec
+                .classBuilder(name.value())
+                .addModifiers(PUBLIC, STATIC)
+                .addJavadoc(classJavadoc().value())
+                .addField(initializedProtoBuilder())
+                .addMethod(constructor())
+                .addMethods(setters())
+                .addMethod(rejectionMessage())
+                .addMethod(build())
+                .build();
+        return typeSpec;
+    }
+
+    @Override
+    public void write(File outputDir, Indent indent) {
+        throw unsupported("Rejection builder shouldn't be written to a top level file.");
     }
 
     /**
@@ -88,24 +120,6 @@ final class RejectionBuilderWriter {
                 .addJavadoc(javadoc.value())
                 .returns(thisType())
                 .addStatement("return new $L()", name.value())
-                .build();
-    }
-
-    /**
-     * Obtains the declaration for the builder.
-     *
-     * @return the builder type specification
-     */
-    TypeSpec typeDeclaration() {
-        return TypeSpec
-                .classBuilder(name.value())
-                .addModifiers(PUBLIC, STATIC)
-                .addJavadoc(classJavadoc().value())
-                .addField(initializedProtoBuilder())
-                .addMethod(constructor())
-                .addMethods(setters())
-                .addMethod(rejectionMessage())
-                .addMethod(build())
                 .build();
     }
 

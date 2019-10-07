@@ -35,11 +35,13 @@ import io.spine.type.ServiceType;
 import io.spine.type.Type;
 import io.spine.type.TypeName;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.uniqueIndex;
@@ -96,16 +98,29 @@ public final class TypeSet {
         return result;
     }
 
+    public static ImmutableCollection<MessageType> topLevelMessages(FileSet fileSet) {
+        ImmutableSet.Builder<MessageType> builder = ImmutableSet.builder();
+        fileSet.files()
+               .stream()
+               .map(TypeSet::onlyMessages)
+               .flatMap(Collection::stream)
+               .filter(MessageType::isTopLevel)
+               .forEach(builder::add);
+        ImmutableSet<MessageType> result = builder.build();
+        return result;
+    }
+
     /**
      * Obtains message types declared in the passed file set.
      */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
-        TypeSet result = new TypeSet();
-        for (FileDescriptor file : fileSet.files()) {
-            TypeSet messageTypes = MessageType.allFrom(file);
-            result = result.union(messageTypes);
-        }
-        return result.messageTypes.values();
+        ImmutableSet.Builder<MessageType> builder = ImmutableSet.builder();
+        fileSet.files()
+               .stream()
+               .map(TypeSet::onlyMessages)
+               .forEach(builder::addAll);
+        ImmutableSet<MessageType> result = builder.build();
+        return result;
     }
 
     /**
@@ -244,6 +259,15 @@ public final class TypeSet {
      */
     public ImmutableSet<MessageType> messageTypes() {
         return ImmutableSet.copyOf(messageTypes.values());
+    }
+
+    public ImmutableSet<MessageType> topLevelMessageTypes() {
+        ImmutableSet<MessageType> result =
+                messageTypes.values()
+                            .stream()
+                            .filter(MessageType::isTopLevel)
+                            .collect(toImmutableSet());
+        return result;
     }
 
     /**

@@ -18,16 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.gen;
+
+import io.spine.value.StringTypeValue;
+
 /**
- * Classes for generating code for rejections.
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
+ * A reference to a method with no arguments.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.rejection;
+public final class NoArgMethod extends StringTypeValue {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private static final long serialVersionUID = 0L;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public NoArgMethod(String methodName) {
+        super(methodName);
+    }
+
+    public String name() {
+        return value();
+    }
+
+    public String signature() {
+        return value() + "()";
+    }
+}

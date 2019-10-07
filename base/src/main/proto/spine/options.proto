@@ -232,7 +232,9 @@ extend google.protobuf.FieldOptions {
     //
     bool beta = 73853;
 
-    // Reserved 73854 to 73899 for future options.
+    bool column = 73854;
+
+    // Reserved 73855 to 73899 for future options.
 
     // Reserved 73900 for removed `by` option.
 }

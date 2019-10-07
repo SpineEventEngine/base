@@ -43,6 +43,10 @@ public enum ModelCompilerTaskName implements TaskName {
      */
     generateTestRejections,
 
+    generateColumns,
+
+    generateTestColumns,
+
     /**
      * Annotates the Java sources generated from {@code .proto} files the {@code main} scope.
      */

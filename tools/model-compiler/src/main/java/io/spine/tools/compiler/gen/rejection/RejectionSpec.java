@@ -17,28 +17,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.compiler.rejection;
+package io.spine.tools.compiler.gen.rejection;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
-import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.FieldName;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.logging.Logging;
+import io.spine.tools.compiler.gen.GeneratedTypeSpec;
+import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
@@ -50,72 +45,52 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Generates Java code for a rejection based on its Protobuf descriptor.
  */
-public class RejectionWriter implements Logging {
+public final class RejectionSpec implements GeneratedTypeSpec {
 
     private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
     private final RejectionType declaration;
     private final ClassName messageClass;
-    private final File outputDirectory;
 
-    private final RejectionBuilderWriter builder;
-    private final Indent indent;
+    private final RejectionBuilderSpec builder;
 
     /**
      * Creates a new instance.
-     *  @param rejection
+     *
+     *  @param rejectionType
      *         a rejection declaration
-     * @param outputDirectory
-     *         a directory to write a Rejection
-     * @param indent
-     *          the indentation for generated source code
      */
-    public RejectionWriter(RejectionType rejection, File outputDirectory, Indent indent) {
-        this.declaration = rejection;
-        this.messageClass = toJavaPoetName(rejection.messageClass());
-        this.outputDirectory = outputDirectory;
-        this.builder = new RejectionBuilderWriter(
-                rejection, messageClass, toJavaPoetName(rejection.throwableClass())
+    public RejectionSpec(RejectionType rejectionType) {
+        this.declaration = rejectionType;
+        this.messageClass = toJavaPoetName(rejectionType.messageClass());
+        this.builder = new RejectionBuilderSpec(
+                rejectionType, messageClass, toJavaPoetName(rejectionType.throwableClass())
         );
-        this.indent = indent;
     }
 
-    /**
-     * Initiates writing.
-     */
-    public void write() {
-        try {
-            _debug().log("Creating the output directory `%s`.", outputDirectory.getPath());
-            Files.createDirectories(outputDirectory.toPath());
+    @Override
+    public TypeSpec spec() {
+        String className = declaration.simpleJavaClassName()
+                                      .value();
+        TypeSpec rejection =
+                TypeSpec.classBuilder(className)
+                        .addJavadoc(classJavadoc())
+                        .addAnnotation(generatedBySpineModelCompiler())
+                        .addModifiers(PUBLIC)
+                        .superclass(ThrowableMessage.class)
+                        .addField(serialVersionUID())
+                        .addMethod(constructor())
+                        .addMethod(messageThrown())
+                        .addMethod(builder.newBuilder())
+                        .addType(builder.spec())
+                        .build();
+        return rejection;
+    }
 
-            String className = declaration.simpleJavaClassName()
-                                          .value();
-            _debug().log("Constructing the class `%s`.", className);
-            TypeSpec rejection =
-                    TypeSpec.classBuilder(className)
-                            .addJavadoc(classJavadoc())
-                            .addAnnotation(generatedBySpineModelCompiler())
-                            .addModifiers(PUBLIC)
-                            .superclass(ThrowableMessage.class)
-                            .addField(serialVersionUID())
-                            .addMethod(constructor())
-                            .addMethod(messageThrown())
-                            .addMethod(builder.newBuilder())
-                            .addType(builder.typeDeclaration())
-                            .build();
-            JavaFile javaFile =
-                    JavaFile.builder(declaration.javaPackage()
-                                                .value(),
-                                     rejection)
-                            .skipJavaLangImports(true)
-                            .indent(indent.toString())
-                            .build();
-            _debug().log("Writing %s.", className);
-            javaFile.writeTo(outputDirectory);
-            _debug().log("Rejection %s written successfully.", className);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+    @Override
+    public PackageName packageName() {
+        PackageName packageName = declaration.javaPackage();
+        return packageName;
     }
 
     private MethodSpec constructor() {
@@ -144,7 +119,7 @@ public class RejectionWriter implements Logging {
     }
 
     /**
-     * Generates a Javadoc content for the rejection.
+     * A Javadoc content for the rejection.
      *
      * @return the class-level Javadoc content
      */
@@ -171,7 +146,7 @@ public class RejectionWriter implements Logging {
     }
 
     /**
-     * Generates a Javadoc content for the rejection constructor.
+     * A Javadoc content for the rejection constructor.
      *
      * @param builderParameter
      *         the name of a rejection builder parameter
