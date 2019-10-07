@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
 
@@ -35,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Protobuf service type as declared in a proto file.
  */
+@Internal
 public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptorProto> {
 
     private ServiceType(ServiceDescriptor descriptor) {

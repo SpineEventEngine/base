@@ -13,3 +13,4 @@ proto/
 **/*.pbenum.dart
 **/*.pbjson.dart
 **/*.pbserver.dart
+**/types.dart

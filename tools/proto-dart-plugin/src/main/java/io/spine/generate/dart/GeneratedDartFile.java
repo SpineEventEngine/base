@@ -20,6 +20,7 @@
 
 package io.spine.generate.dart;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
 
 import java.io.File;
@@ -56,5 +57,15 @@ public final class GeneratedDartFile {
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    @VisibleForTesting
+    String contents() {
+        return content;
+    }
+
+    @Override
+    public String toString() {
+        return contents();
     }
 }
