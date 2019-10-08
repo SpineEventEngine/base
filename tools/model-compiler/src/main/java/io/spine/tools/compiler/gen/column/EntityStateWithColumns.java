@@ -21,11 +21,21 @@
 package io.spine.tools.compiler.gen.column;
 
 import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.EntityWithColumns;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
+import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.type.MessageType;
+
+import static io.spine.code.proto.ColumnOption.columnsOf;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 public final class EntityStateWithColumns implements GeneratedTypeSpec {
 
@@ -37,21 +47,61 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
         this.columns = columnsOf(messageType);
     }
 
-    private static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
-        return null;
-    }
-
     @Override
     public PackageName packageName() {
-        return null;
+        return messageType.javaPackage();
     }
 
     @Override
     public TypeSpec typeSpec() {
-        return null;
+        TypeSpec.Builder builder =
+                TypeSpec.interfaceBuilder(className())
+                        .addJavadoc(classJavadoc())
+                        .addAnnotation(generatedBySpineModelCompiler())
+                        .addModifiers(PUBLIC)
+                        .superclass(EntityWithColumns.class);
+        addColumns(builder);
+        return builder.build();
+    }
+
+    private void addColumns(TypeSpec.Builder spec) {
+        columns.forEach(column -> addColumn(spec, column));
+    }
+
+    private static void addColumn(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
+        MethodSpec getter = toGetter(fieldDeclaration);
+        spec.addMethod(getter);
+    }
+
+    private static MethodSpec toGetter(FieldDeclaration declaration) {
+        FieldName fieldName = declaration.name();
+        String methodName = "get" + fieldName.toCamelCase();
+        JavaPoetName fieldType = JavaPoetName.of(declaration.javaTypeName());
+        TypeName returnType = fieldType.value();
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .returns(returnType)
+                                      .build();
+        return result;
+    }
+
+    /**
+     * A Javadoc content for the rejection.
+     *
+     * @return the class-level Javadoc content
+     */
+    private CodeBlock classJavadoc() {
+        // TODO:2019-10-08:dmytro.kuzmin:WIP Improve class-level doc.
+        CodeBlock value = CodeBlock
+                .builder()
+                .add("Entity Columns of proto type ")
+                .add("{@code $L.$L}.", packageName(), messageType.simpleJavaClassName())
+                .build();
+        return value;
     }
 
     private String className() {
-        return "";
+        String value = messageType.javaClassName()
+                                  .value();
+        return value;
     }
 }

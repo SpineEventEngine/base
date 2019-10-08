@@ -18,37 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.option.OptionsProto;
-import io.spine.type.MessageType;
-
-import java.util.Optional;
-
-public final class ColumnOption extends FieldOption<Boolean> {
-
-    /**
-     * Prevents instantiation from outside.
-     *
-     * <p>Use the static methods of this class to extract column value(s).
-     */
-    private ColumnOption() {
-        super(OptionsProto.column);
-    }
-
-    public static boolean hasColumns(MessageType messageType) {
-        return !columnsOf(messageType).isEmpty();
-    }
-
-    public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
-        return ImmutableList.of();
-    }
-
-    public static boolean isColumn(FieldDeclaration field) {
-        ColumnOption option = new ColumnOption();
-        Optional<Boolean> value = option.valueFrom(field.descriptor());
-        Boolean isColumn = value.orElse(false);
-        return isColumn;
-    }
+@SuppressWarnings("InterfaceNeverImplemented") // Implemented in generated code.
+public interface EntityWithColumns {
 }

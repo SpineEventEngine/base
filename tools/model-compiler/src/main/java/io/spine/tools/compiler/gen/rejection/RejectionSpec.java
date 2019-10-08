@@ -70,6 +70,12 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
     }
 
     @Override
+    public PackageName packageName() {
+        PackageName packageName = declaration.javaPackage();
+        return packageName;
+    }
+
+    @Override
     public TypeSpec typeSpec() {
         String className = declaration.simpleJavaClassName()
                                       .value();
@@ -86,12 +92,6 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
                         .addType(builder.typeSpec())
                         .build();
         return rejection;
-    }
-
-    @Override
-    public PackageName packageName() {
-        PackageName packageName = declaration.javaPackage();
-        return packageName;
     }
 
     private MethodSpec constructor() {
