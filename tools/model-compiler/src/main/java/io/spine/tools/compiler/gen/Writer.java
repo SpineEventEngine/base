@@ -29,16 +29,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public final class Writer implements Logging {
+final class Writer implements Logging {
 
     private final GeneratedTypeSpec spec;
     private Indent indent = Indent.of4();
 
-    public Writer(GeneratedTypeSpec spec) {
+    Writer(GeneratedTypeSpec spec) {
         this.spec = spec;
     }
 
-    public void write(File outputDir) {
+    void write(File outputDir) {
         try {
             _debug().log("Creating the output directory `%s`.", outputDir.getPath());
             Files.createDirectories(outputDir.toPath());
@@ -61,7 +61,7 @@ public final class Writer implements Logging {
         }
     }
 
-    public void setIndent(Indent indent) {
+    void setIndent(Indent indent) {
         this.indent = indent;
     }
 }
