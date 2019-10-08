@@ -26,12 +26,14 @@ import io.spine.type.MessageType;
 
 import java.util.Optional;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 public final class ColumnOption extends FieldOption<Boolean> {
 
     /**
      * Prevents instantiation from outside.
      *
-     * <p>Use the static methods of this class to extract column value(s).
+     * <p>Use the static methods of this class to extract the column value(s).
      */
     private ColumnOption() {
         super(OptionsProto.column);
@@ -42,7 +44,11 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
-        return ImmutableList.of();
+        ImmutableList<FieldDeclaration> result = messageType.fields()
+                                                            .stream()
+                                                            .filter(ColumnOption::isColumn)
+                                                            .collect(toImmutableList());
+        return result;
     }
 
     public static boolean isColumn(FieldDeclaration field) {
