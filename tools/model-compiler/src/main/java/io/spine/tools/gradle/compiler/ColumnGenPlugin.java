@@ -133,7 +133,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
             types.forEach(type -> {
                 if (hasColumns(type)) {
                     GeneratedTypeSpec spec = new EntityStateWithColumns(type);
-                    spec.write(targetDir(), indent());
+                    spec.writeToFile(targetDir(), indent());
                 }
             });
         }

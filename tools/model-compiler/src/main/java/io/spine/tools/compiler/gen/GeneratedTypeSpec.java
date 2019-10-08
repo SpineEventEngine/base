@@ -32,7 +32,7 @@ public interface GeneratedTypeSpec {
 
     TypeSpec typeSpec();
 
-    default void write(File outputDir, Indent indent) {
+    default void writeToFile(File outputDir, Indent indent) {
         Writer writer = new Writer(this);
         writer.setIndent(indent);
         writer.write(outputDir);
