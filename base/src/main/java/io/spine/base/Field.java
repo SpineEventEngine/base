@@ -364,7 +364,7 @@ public final class Field extends ValueHolder<FieldPath> {
             Class<?> cls = TypeUrl.from(field.getEnumType()).toJavaClass();
             return cls;
         } else {
-            Class<?> result = ScalarType.getJavaType(field.toProto().getType());
+            Class<?> result = ScalarType.javaType(field.toProto().getType());
             return result;
         }
     }

@@ -36,6 +36,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
+import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 import io.spine.validate.Validate;
@@ -64,13 +65,13 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     private static final String BUILDER_FIELD = "builder";
 
     private final RejectionType rejection;
-    private final ClassName messageClass;
-    private final ClassName throwableClass;
+    private final JavaPoetName messageClass;
+    private final JavaPoetName throwableClass;
     private final SimpleClassName name;
 
     RejectionBuilderSpec(RejectionType rejection,
-                         ClassName messageClass,
-                         ClassName throwableClass) {
+                         JavaPoetName messageClass,
+                         JavaPoetName throwableClass) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
@@ -166,8 +167,8 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                 .methodBuilder("rejectionMessage")
                 .addModifiers(PRIVATE)
                 .addJavadoc(javadoc.value())
-                .returns(messageClass)
-                .addStatement("$T message = $L.build()", messageClass, BUILDER_FIELD)
+                .returns(messageClass.value())
+                .addStatement("$T message = $L.build()", messageClass.value(), BUILDER_FIELD)
                 .addStatement("$T.checkValid(message)", Validate.class)
                 .addStatement("return message")
                 .build();
@@ -182,8 +183,8 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                 .methodBuilder("build")
                 .addModifiers(PUBLIC)
                 .addJavadoc(javadoc.value())
-                .returns(throwableClass)
-                .addStatement("return new $T(this)", throwableClass)
+                .returns(throwableClass.value())
+                .addStatement("return new $T(this)", throwableClass.value())
                 .build();
     }
 
@@ -200,11 +201,12 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     }
 
     private FieldSpec initializedProtoBuilder() {
-        ClassName protoBuilderClass = messageClass.nestedClass(SimpleClassName.ofBuilder()
+        ClassName protoBuilderClass = messageClass.className()
+                                                  .nestedClass(SimpleClassName.ofBuilder()
                                                                               .value());
         return FieldSpec
                 .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
-                .initializer("$T.newBuilder()", messageClass)
+                .initializer("$T.newBuilder()", messageClass.value())
                 .build();
     }
 
@@ -245,6 +247,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
      * @return class name for the builder
      */
     private ClassName thisType() {
-        return throwableClass.nestedClass(name.value());
+        return throwableClass.className()
+                             .nestedClass(name.value());
     }
 }

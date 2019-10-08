@@ -25,10 +25,13 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
+import java.lang.reflect.Type;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A value holder for JavaPoet {@link ClassName}.
+ * A value holder of JavaPoet {@link TypeName}.
  */
 public final class JavaPoetName {
 
@@ -38,8 +41,9 @@ public final class JavaPoetName {
         this.value = value;
     }
 
-    public static JavaPoetName of(@FullyQualifiedName String typeName) {
-        return new JavaPoetName(null);
+    public static JavaPoetName of(Type type) {
+        TypeName typeName = TypeName.get(type);
+        return new JavaPoetName(typeName);
     }
 
     public static JavaPoetName of(io.spine.code.java.ClassName className) {
@@ -51,11 +55,18 @@ public final class JavaPoetName {
                                                .skip(1)
                                                .map(SimpleClassName::value)
                                                .toArray(String[]::new);
-        ClassName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
+        TypeName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
         return new JavaPoetName(value);
     }
 
     public TypeName value() {
         return value;
+    }
+
+    public ClassName className() {
+        checkState(value instanceof ClassName,
+                   "The type name is of type `%s`, expected an instance of `%s`.",
+                   value.getClass().getCanonicalName(), ClassName.class.getCanonicalName());
+        return (ClassName) value;
     }
 }

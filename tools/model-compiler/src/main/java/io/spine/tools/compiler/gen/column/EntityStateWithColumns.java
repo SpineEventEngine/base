@@ -21,11 +21,13 @@
 package io.spine.tools.compiler.gen.column;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityWithColumns;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
@@ -34,6 +36,8 @@ import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.type.MessageType;
 
 import static io.spine.code.proto.ColumnOption.columnsOf;
+import static io.spine.code.proto.ScalarType.isScalarType;
+import static io.spine.code.proto.ScalarType.javaType;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -76,11 +80,34 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
     private static MethodSpec toGetter(FieldDeclaration declaration) {
         FieldName fieldName = declaration.name();
         String methodName = "get" + fieldName.toCamelCase();
-        JavaPoetName fieldType = JavaPoetName.of(declaration.javaTypeName());
-        TypeName returnType = fieldType.value();
+        JavaPoetName fieldTypeName = fieldType(declaration);
+        TypeName returnType = fieldTypeName.value();
         MethodSpec result = MethodSpec.methodBuilder(methodName)
                                       .returns(returnType)
                                       .build();
+        return result;
+    }
+
+    private static JavaPoetName fieldType(FieldDeclaration declaration) {
+        if (isScalarType(declaration)) {
+            return scalarTypeName(declaration);
+        }
+        return className(declaration);
+    }
+
+    private static JavaPoetName scalarTypeName(FieldDeclaration declaration) {
+        FieldDescriptorProto.Type protoType = declaration.descriptor()
+                                                         .toProto()
+                                                         .getType();
+        Class<?> scalarType = javaType(protoType);
+        JavaPoetName result = JavaPoetName.of(scalarType);
+        return result;
+    }
+
+    private static JavaPoetName className(FieldDeclaration declaration) {
+        String javaTypeName = declaration.javaTypeName();
+        ClassName className = ClassName.of(javaTypeName);
+        JavaPoetName result = JavaPoetName.of(className);
         return result;
     }
 

@@ -19,20 +19,19 @@
  */
 package io.spine.tools.compiler.gen.rejection;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.java.FieldName;
-import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
+import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 
@@ -51,7 +50,7 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
     private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
     private final RejectionType declaration;
-    private final ClassName messageClass;
+    private final JavaPoetName messageClass;
 
     private final RejectionBuilderSpec builder;
 
@@ -63,9 +62,9 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
      */
     public RejectionSpec(RejectionType rejectionType) {
         this.declaration = rejectionType;
-        this.messageClass = toJavaPoetName(rejectionType.messageClass());
+        this.messageClass = JavaPoetName.of(rejectionType.messageClass());
         this.builder = new RejectionBuilderSpec(
-                rejectionType, messageClass, toJavaPoetName(rejectionType.throwableClass())
+                rejectionType, messageClass, JavaPoetName.of(rejectionType.throwableClass())
         );
     }
 
@@ -110,7 +109,7 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
     private MethodSpec messageThrown() {
         String methodSignature = messageThrown.signature();
         _debug().log("Constructing method `%s`.", methodSignature);
-        ClassName returnType = messageClass;
+        TypeName returnType = messageClass.value();
         return MethodSpec.methodBuilder(messageThrown.name())
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
@@ -174,17 +173,5 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
                                  PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
-    }
-
-    private static ClassName toJavaPoetName(io.spine.code.java.ClassName className) {
-        PackageName packageName = className.packageName();
-        SimpleClassName topLevel = className.topLevelClass();
-        String[] nestingChain = NestedClassName.from(className)
-                                               .split()
-                                               .stream()
-                                               .skip(1)
-                                               .map(SimpleClassName::value)
-                                               .toArray(String[]::new);
-        return ClassName.get(packageName.value(), topLevel.value(), nestingChain);
     }
 }

@@ -143,8 +143,8 @@ public final class FieldDeclaration {
             return enumClassName();
         }
 
-        return ScalarType.getJavaTypeName(field.toProto()
-                                               .getType());
+        return ScalarType.javaTypeName(field.toProto()
+                                            .getType());
     }
 
     private String messageClassName() {
