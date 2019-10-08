@@ -20,39 +20,21 @@
 
 package io.spine.tools.compiler.gen;
 
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.Indent;
 import io.spine.code.java.PackageName;
-import io.spine.logging.Logging;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
-public interface GeneratedTypeSpec extends Logging {
+public interface GeneratedTypeSpec {
 
     PackageName packageName();
 
-    TypeSpec spec();
+    TypeSpec typeSpec();
 
     default void write(File outputDir, Indent indent) {
-        try {
-            _debug().log("Creating the output directory `%s`.", outputDir.getPath());
-            Files.createDirectories(outputDir.toPath());
-
-            String className = spec().name;
-            _debug().log("Writing `%s.java`.", className);
-
-            JavaFile javaFile =
-                    JavaFile.builder(packageName().value(), spec())
-                            .skipJavaLangImports(true)
-                            .indent(indent.toString())
-                            .build();
-            javaFile.writeTo(outputDir);
-            _debug().log("File `%s.java` written successfully.", className);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        Writer writer = new Writer(this);
+        writer.setIndent(indent);
+        writer.write(outputDir);
     }
 }

@@ -31,6 +31,7 @@ import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
@@ -45,7 +46,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Generates Java code for a rejection based on its Protobuf descriptor.
  */
-public final class RejectionSpec implements GeneratedTypeSpec {
+public final class RejectionSpec implements GeneratedTypeSpec, Logging {
 
     private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
@@ -69,7 +70,7 @@ public final class RejectionSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec spec() {
+    public TypeSpec typeSpec() {
         String className = declaration.simpleJavaClassName()
                                       .value();
         TypeSpec rejection =
@@ -82,7 +83,7 @@ public final class RejectionSpec implements GeneratedTypeSpec {
                         .addMethod(constructor())
                         .addMethod(messageThrown())
                         .addMethod(builder.newBuilder())
-                        .addType(builder.spec())
+                        .addType(builder.typeSpec())
                         .build();
         return rejection;
     }

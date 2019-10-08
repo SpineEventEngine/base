@@ -24,6 +24,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.gen.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.SourceProtoBelongsToModule;
+import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.column.EntityStateWithColumns;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
@@ -37,6 +38,7 @@ import java.io.File;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static io.spine.code.proto.ColumnOption.hasColumns;
 import static io.spine.code.proto.TypeSet.topLevelMessages;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
@@ -129,9 +131,9 @@ public class ColumnGenPlugin extends ProtoPlugin {
                                           .filter(belongsToModule);
             ImmutableCollection<MessageType> types = topLevelMessages(fileSet);
             types.forEach(type -> {
-                EntityStateWithColumns generated = new EntityStateWithColumns(type);
-                if (generated.hasColumns()) {
-                    generated.write(targetDir(), indent());
+                if (hasColumns(type)) {
+                    GeneratedTypeSpec spec = new EntityStateWithColumns(type);
+                    spec.write(targetDir(), indent());
                 }
             });
         }

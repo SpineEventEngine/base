@@ -20,7 +20,9 @@
 
 package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
 
 import java.util.Optional;
 
@@ -33,6 +35,14 @@ public final class ColumnOption extends FieldOption<Boolean> {
      */
     private ColumnOption() {
         super(OptionsProto.column);
+    }
+
+    public static boolean hasColumns(MessageType messageType) {
+        return !columnsOf(messageType).isEmpty();
+    }
+
+    public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
+        return ImmutableList.of();
     }
 
     public static boolean isColumn(FieldDeclaration field) {

@@ -22,15 +22,10 @@ package io.spine.tools.compiler.gen.column;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.gen.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.type.MessageType;
-
-import java.io.File;
-
-import static com.google.common.base.Preconditions.checkState;
 
 public final class EntityStateWithColumns implements GeneratedTypeSpec {
 
@@ -52,26 +47,11 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec spec() {
+    public TypeSpec typeSpec() {
         return null;
-    }
-
-    @Override
-    public void write(File outputDir, Indent indent) {
-        checkHasColumns();
-    }
-
-    public boolean hasColumns() {
-        return !columns.isEmpty();
     }
 
     private String className() {
         return "";
-    }
-
-    private void checkHasColumns() {
-        checkState(hasColumns(),
-                   "Trying to generate a class %s for entity state %s which has no columns.",
-                   className(), messageType.javaClassName());
     }
 }

@@ -84,7 +84,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec spec() {
+    public TypeSpec typeSpec() {
         TypeSpec typeSpec = TypeSpec
                 .classBuilder(name.value())
                 .addModifiers(PUBLIC, STATIC)
