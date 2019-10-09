@@ -25,9 +25,9 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.Indent;
 import io.spine.logging.Logging;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 final class Writer implements Logging {
 
@@ -38,10 +38,10 @@ final class Writer implements Logging {
         this.spec = spec;
     }
 
-    void write(File outputDir) {
+    void write(Path outputDir) {
         try {
-            _debug().log("Creating the output directory `%s`.", outputDir.getPath());
-            Files.createDirectories(outputDir.toPath());
+            _debug().log("Creating the output directory `%s`.", outputDir);
+            Files.createDirectories(outputDir);
 
             TypeSpec typeSpec = this.spec.typeSpec();
             String className = typeSpec.name;

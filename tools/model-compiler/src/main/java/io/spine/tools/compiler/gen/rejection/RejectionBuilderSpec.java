@@ -41,7 +41,7 @@ import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 import io.spine.validate.Validate;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +100,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public void writeToFile(File outputDir, Indent indent) {
+    public void writeToFile(Path targetDir, Indent indent) {
         throw unsupported("Rejection builder shouldn't be written to a top level file.");
     }
 

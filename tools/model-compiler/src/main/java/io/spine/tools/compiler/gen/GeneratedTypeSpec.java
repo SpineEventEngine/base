@@ -24,7 +24,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.Indent;
 import io.spine.code.java.PackageName;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface GeneratedTypeSpec {
 
@@ -32,9 +32,9 @@ public interface GeneratedTypeSpec {
 
     TypeSpec typeSpec();
 
-    default void writeToFile(File outputDir, Indent indent) {
+    default void writeToFile(Path targetDir, Indent indent) {
         Writer writer = new Writer(this);
         writer.setIndent(indent);
-        writer.write(outputDir);
+        writer.write(targetDir);
     }
 }

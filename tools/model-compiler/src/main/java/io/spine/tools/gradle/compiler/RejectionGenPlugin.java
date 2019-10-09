@@ -173,7 +173,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
                 // as for the Protobuf message.
                 _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
                 GeneratedTypeSpec spec = new RejectionSpec(rejectionType);
-                spec.writeToFile(targetDir(), indent());
+                spec.writeToFile(targetDir().toPath(), indent());
             }
         }
 
