@@ -18,33 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+group = 'io.spine.tools'
 
-include 'base'
+apply from: "$rootDir/config/gradle/dart/build-tasks.gradle"
 
-include 'testlib'
+dependencies {
+    protobuf deps.build.protobuf
+    protobuf project(':base')
+    implementation project(':tool-base')
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
+    testImplementation project(':testlib')
 }
 
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
+final def generationRoot = "$projectDir/generated"
 
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
+task copyGeneratedDart(type: Copy) {
+    from "$generationRoot/main/dart"
+    into "$projectDir/lib"
+}
 
-module 'proto-js-plugin'
-module 'proto-dart-plugin'
-module 'dart-code-gen'
+assemble.dependsOn 'copyGeneratedDart'
 
-module 'protoc-api'
-module 'protoc-plugin'
+protobuf {
+    generatedFilesBaseDir = generationRoot
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                dart {}
+                remove spineProtoc
+            }
+            task.generateDescriptorSet = false
+            if (task.sourceSet.name.equals('main')) {
+                project.tasks['copyGeneratedDart'].dependsOn task
+            }
+        }
+    }
+}
+
+tasks.withType(JavaCompile)*.enabled false

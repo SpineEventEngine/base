@@ -18,33 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+import 'package:dart_code_gen/spine/net/url.pb.dart';
 
-include 'base'
+import 'foo.dart';
 
-include 'testlib'
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
+main(List<String> arguments) async {
+//  var file = File('/Users/ddashenkov/Desktop/known_types_main.desc');
+//  var bytes = await file.readAsBytes();
+//  var r = ExtensionRegistry();
+//  Options.registerAllExtensions(r);
+//  print(dart_code_gen.generateClassTest(FileDescriptorSet.fromBuffer(bytes, r)));
+    print(validators[Url.getDefault().info_.qualifiedMessageName](Url()..spec = 'spine.io'));
 }
 
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
-
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
-
-module 'proto-js-plugin'
-module 'proto-dart-plugin'
-module 'dart-code-gen'
-
-module 'protoc-api'
-module 'protoc-plugin'
