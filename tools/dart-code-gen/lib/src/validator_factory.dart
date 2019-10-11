@@ -20,9 +20,8 @@
 
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
-import 'package:dart_code_gen/spine/options.pb.dart';
-import 'package:dart_code_gen/src/constraint_violation.dart';
 
+import 'field_validator_factory.dart';
 import 'imports.dart';
 
 const _violations = 'violations';
@@ -37,7 +36,8 @@ class ValidatorFactory {
     ValidatorFactory(this.file, this.type, this.allocator);
 
     String get fullName => '${file.package}.${type.name}';
-    String get _fileName => file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
+    String get fileName => file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
+    Reference get violationList => refer(_violations);
 
     Expression createValidator() {
         var param = Parameter((b) => b
@@ -49,7 +49,6 @@ class ValidatorFactory {
     }
 
     Code _createValidator() {
-        var violation = refer('ConstraintViolation', validationErrorImport);
         var validations = <Code>[];
         for (var field in type.field) {
             var validator = _createFieldValidator(field);
@@ -60,35 +59,47 @@ class ValidatorFactory {
         if (validations.isEmpty) {
             return literalNull.returned.statement;
         } else {
-            var statements = <Code>[];
-            statements.add(literalList([], violation).assignVar(_violations).statement);
-            statements.addAll(validations);
-            var error = 'error';
-            var errorRef = refer(error);
-            statements.add(refer('ValidationError', validationErrorImport).newInstance([]).assignVar(error).statement);
-            statements.add(errorRef.property('constraintViolation').property('addAll').call([refer(_violations)]).statement);
-            statements.add(errorRef.returned.statement);
-            return Block.of(statements);
+            return _collectFieldChecks(validations);
         }
     }
 
+    Block _collectFieldChecks(List<Code> validations) {
+        var statements = <Code>[];
+        statements.add(newViolationList().statement);
+        statements.addAll(validations);
+        var error = 'error';
+        var errorRef = refer(error);
+        statements.add(newValidationError(error).statement);
+        statements.add(fillInViolations(errorRef).statement);
+        statements.add(errorRef.returned.statement);
+      return Block.of(statements);
+    }
+
+    Expression fillInViolations(Reference errorRef) {
+        return errorRef.property('constraintViolation')
+            .property('addAll')
+            .call([refer(_violations)]);
+    }
+
+    Expression newViolationList() {
+        return literalList([], refer('ConstraintViolation', validationErrorImport))
+            .assignVar(_violations);
+    }
+
+    Expression newValidationError(String error) {
+        return refer('ValidationError', validationErrorImport)
+            .newInstance([])
+            .assignVar(error);
+    }
 
     Code _createFieldValidator(FieldDescriptorProto field) {
-        if (field.options.hasExtension(Options.required)) {
-            var fieldValue = refer(_msg).asA(refer(allocator.allocate(refer(type.name, _fileName)))).property(field.name);
-            if (field.type == FieldDescriptorProto_Type.TYPE_STRING) {
-                return Block.of([
-                                    fieldValue.property('isEmpty').conditional(
-                                        refer(_violations).property('add').call([violationRef.call([literalString('Field must be set.'), literalString(fullName), literalList([field.name])])]),
-                                        literalNull)
-                                        .statement
-                                ]);
-            } else {
-                return null;
-            }
+        var validatedMessageType = refer(type.name, fileName);
+        var factory = forField(field, this);
+        if (factory != null) {
+            var fieldValue = refer(_msg).asA(validatedMessageType).property(field.name);
+            return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
     }
-
 }

@@ -33,12 +33,14 @@ createViolationFactory() {
         var msgFormat = 'msgFormat';
         var typeName = 'typeName';
         var fieldPath = 'fieldPath';
+        var actualValue = 'actualValue';
 
         b..name = '_violation'
             ..returns = refer('ConstraintViolation', validationErrorImport)
             ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = msgFormat))
             ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = typeName))
             ..requiredParameters.add(Parameter((b) => b..type = TypeReference((b) => b..symbol = 'List'..types.add(refer('String')))..name = fieldPath))
+            ..optionalParameters.add(Parameter((b) => b..type = refer('Any', protoAnyImport)..name = actualValue))
 
             ..body = Block.of([
                 refer('ConstraintViolation', validationErrorImport).newInstance([]).assignVar(violation).statement,
@@ -47,8 +49,9 @@ createViolationFactory() {
                 refer('FieldPath', 'package:$spinePackage/spine/base/field_path.pb.dart').newInstance([]).assignVar('path').statement,
                 refer('path').property('fieldName').property('addAll').call([refer(fieldPath)]).statement,
                 violationRef.property('fieldPath').assign(refer('path')).statement,
+                violationRef.property('fieldValue').assign(refer(actualValue)).statement,
                 violationRef.returned.statement
-                              ]);
+            ]);
     });
 }
 
