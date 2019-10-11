@@ -20,39 +20,33 @@
 
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
-import 'package:dart_code_gen/spine/options.pb.dart';
+import 'package:dart_code_gen/src/constraint_violation.dart';
+import 'package:dart_code_gen/src/imports.dart';
+import 'package:dart_code_gen/src/validator_factory.dart';
 import 'package:dart_style/dart_style.dart';
 
 String generateClassTest(FileDescriptorSet descriptorSet) {
     var allocator = Allocator.simplePrefixing();
     var code = Library((b) =>
         b..body.add(_createValidatorMap(descriptorSet, allocator))
-         ..body.add(_createViolationFactory())
+         ..body.add(createViolationFactory())
     );
     var emitter = DartEmitter(allocator);
     var formatter = DartFormatter();
     return formatter.format(code.accept(emitter).toString());
 }
 
-const _msg = 'msg';
-const _validationErrorImport = 'package:spine_base/spine/validate/validation_error.pb.dart';
-
 Field _createValidatorMap(FileDescriptorSet descriptorSet, Allocator allocator) {
     var keyType = refer('String');
-    var validationError = refer('ValidationError', _validationErrorImport);
+    var validationError = refer('ValidationError', validationErrorImport);
     var valueType = FunctionType((b) => b
-        ..requiredParameters.add(refer('GeneratedMessage', 'package:protobuf/protobuf.dart'))
+        ..requiredParameters.add(refer('GeneratedMessage', protobufImport))
         ..returnType = validationError);
     var validatorMap = Map<String, Expression>();
     for (var file in descriptorSet.file) {
-        var fileName = file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
         for (var type in file.messageType) {
-            var name = '${file.package}.${type.name}';
-            var lambda = Method((b) => b
-                ..body = _createValidator(type, name, allocator, fileName)
-                ..requiredParameters.add(Parameter((b) => b.name = _msg)))
-                .closure;
-            validatorMap[name] = lambda;
+            var factory = ValidatorFactory(file, type, allocator);
+            validatorMap[factory.fullName] = factory.createValidator();
         }
     }
     return Field((b) => b
@@ -63,76 +57,4 @@ Field _createValidatorMap(FileDescriptorSet descriptorSet, Allocator allocator) 
             ..types.addAll([keyType, valueType]))
         ..assignment = literalMap(validatorMap, keyType, valueType).code
     );
-}
-
-const _violations = 'violations';
-
-Code _createValidator(DescriptorProto descriptor, String fullName, Allocator allocator, String fileName) {
-    var violation = refer('ConstraintViolation', _validationErrorImport);
-    var validations = <Code>[];
-    for (var field in descriptor.field) {
-        var validator = _createFieldValidator(field, fullName, descriptor.name, allocator, fileName);
-        if (validator != null) {
-            validations.add(validator);
-        }
-    }
-    if (validations.isEmpty) {
-        return literalNull.returned.statement;
-    } else {
-        var statements = <Code>[];
-        statements.add(literalList([], violation).assignVar(_violations).statement);
-        statements.addAll(validations);
-        statements.add(refer('ValidationError', _validationErrorImport).newInstance([]).assignVar('error').statement);
-        statements.add(refer('error').property('constraintViolation').property('addAll').call([refer(_violations)]).statement);
-        statements.add(refer('error').returned.statement);
-        return Block.of(statements);
-    }
-}
-
-Code _createFieldValidator(FieldDescriptorProto field, String fullTypeName, String shortTypeName, Allocator allocator, String fileName) {
-    if (field.options.getExtension(Options.required)) {
-        var fieldValue = refer(_msg).asA(refer(allocator.allocate(refer(shortTypeName, fileName)))).property(field.name);
-        if (field.type == FieldDescriptorProto_Type.TYPE_STRING) {
-            return Block.of([
-                fieldValue.property('isEmpty').conditional(
-                    refer(_violations).property('add').call([_violationRef.call([literalString('Field must be set.'), literalString(fullTypeName), literalList([field.name])])]),
-                    literalNull)
-                .statement
-            ]);
-        } else {
-            return null;
-        }
-    } else {
-        return null;
-    }
-}
-
-const _violation = '_violation';
-const _violationRef = Reference(_violation);
-
-_createViolationFactory() {
-    return Method((b) {
-        var violation = 'violation';
-        var violationRef = refer(violation);
-
-        var msgFormat = 'msgFormat';
-        var typeName = 'typeName';
-        var fieldPath = 'fieldPath';
-
-        b..name = '_violation'
-         ..returns = refer('ConstraintViolation', _validationErrorImport)
-         ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = msgFormat))
-         ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = typeName))
-         ..requiredParameters.add(Parameter((b) => b..type = TypeReference((b) => b..symbol = 'List'..types.add(refer('String')))..name = fieldPath))
-
-         ..body = Block.of([
-             refer('ConstraintViolation', _validationErrorImport).newInstance([]).assignVar(violation).statement,
-             violationRef.property('msgFormat').assign(refer(msgFormat)).statement,
-             violationRef.property('typeName').assign(refer(typeName)).statement,
-             refer('FieldPath', 'package:spine_base/spine/base/field_path.pb.dart').newInstance([]).assignVar('path').statement,
-             refer('path').property('fieldName').property('addAll').call([refer(fieldPath)]).statement,
-             violationRef.property('fieldPath').assign(refer('path')).statement,
-             violationRef.returned.statement
-           ]);
-    });
 }
