@@ -24,29 +24,32 @@ import 'package:dart_code_gen/spine/options.pb.dart';
 import 'package:dart_style/dart_style.dart';
 
 String generateClassTest(FileDescriptorSet descriptorSet) {
+    var allocator = Allocator.simplePrefixing();
     var code = Library((b) =>
-        b..body.add(_createValidatorMap(descriptorSet))
+        b..body.add(_createValidatorMap(descriptorSet, allocator))
          ..body.add(_createViolationFactory())
     );
-    var emitter = DartEmitter(Allocator.simplePrefixing());
+    var emitter = DartEmitter(allocator);
     var formatter = DartFormatter();
     return formatter.format(code.accept(emitter).toString());
 }
 
 const _msg = 'msg';
+const _validationErrorImport = 'package:spine_base/spine/validate/validation_error.pb.dart';
 
-Field _createValidatorMap(FileDescriptorSet descriptorSet) {
+Field _createValidatorMap(FileDescriptorSet descriptorSet, Allocator allocator) {
     var keyType = refer('String');
-    var validationError = refer('ValidationError', 'package:spine_base/spine/validate/validation_error.pb.dart');
+    var validationError = refer('ValidationError', _validationErrorImport);
     var valueType = FunctionType((b) => b
         ..requiredParameters.add(refer('GeneratedMessage', 'package:protobuf/protobuf.dart'))
         ..returnType = validationError);
     var validatorMap = Map<String, Expression>();
     for (var file in descriptorSet.file) {
+        var fileName = file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
         for (var type in file.messageType) {
             var name = '${file.package}.${type.name}';
             var lambda = Method((b) => b
-                ..body = _createValidator(type, name)
+                ..body = _createValidator(type, name, allocator, fileName)
                 ..requiredParameters.add(Parameter((b) => b.name = _msg)))
                 .closure;
             validatorMap[name] = lambda;
@@ -64,11 +67,11 @@ Field _createValidatorMap(FileDescriptorSet descriptorSet) {
 
 const _violations = 'violations';
 
-Code _createValidator(DescriptorProto descriptor, String fullName) {
-    var violation = refer('ConstraintViolation', 'package:spine_base/spine/validate/validation_error.pb.dart');
+Code _createValidator(DescriptorProto descriptor, String fullName, Allocator allocator, String fileName) {
+    var violation = refer('ConstraintViolation', _validationErrorImport);
     var validations = <Code>[];
     for (var field in descriptor.field) {
-        var validator = _createFieldValidator(field, fullName, descriptor.name);
+        var validator = _createFieldValidator(field, fullName, descriptor.name, allocator, fileName);
         if (validator != null) {
             validations.add(validator);
         }
@@ -79,16 +82,16 @@ Code _createValidator(DescriptorProto descriptor, String fullName) {
         var statements = <Code>[];
         statements.add(literalList([], violation).assignVar(_violations).statement);
         statements.addAll(validations);
-        statements.add(refer('ValidationError', 'package:spine_base/spine/validate/validation_error.proto').newInstance([]).assignVar('error').statement);
+        statements.add(refer('ValidationError', _validationErrorImport).newInstance([]).assignVar('error').statement);
         statements.add(refer('error').property('constraintViolation').property('addAll').call([refer(_violations)]).statement);
         statements.add(refer('error').returned.statement);
         return Block.of(statements);
     }
 }
 
-Code _createFieldValidator(FieldDescriptorProto field, String fullTypeName, String shortTypeName) {
+Code _createFieldValidator(FieldDescriptorProto field, String fullTypeName, String shortTypeName, Allocator allocator, String fileName) {
     if (field.options.getExtension(Options.required)) {
-        var fieldValue = refer(_msg).asA(refer(shortTypeName)).property(field.name);
+        var fieldValue = refer(_msg).asA(refer(allocator.allocate(refer(shortTypeName, fileName)))).property(field.name);
         if (field.type == FieldDescriptorProto_Type.TYPE_STRING) {
             return Block.of([
                 fieldValue.property('isEmpty').conditional(
@@ -117,13 +120,13 @@ _createViolationFactory() {
         var fieldPath = 'fieldPath';
 
         b..name = '_violation'
-         ..returns = refer('ConstraintViolation', 'package:spine_base/spine/validate/validation_error.pb.dart')
+         ..returns = refer('ConstraintViolation', _validationErrorImport)
          ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = msgFormat))
          ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = typeName))
          ..requiredParameters.add(Parameter((b) => b..type = TypeReference((b) => b..symbol = 'List'..types.add(refer('String')))..name = fieldPath))
 
          ..body = Block.of([
-             refer('ConstraintViolation', 'package:spine_base/spine/validate/validation_error.pb.dart').newInstance([]).assignVar(violation).statement,
+             refer('ConstraintViolation', _validationErrorImport).newInstance([]).assignVar(violation).statement,
              violationRef.property('msgFormat').assign(refer(msgFormat)).statement,
              violationRef.property('typeName').assign(refer(typeName)).statement,
              refer('FieldPath', 'package:spine_base/spine/base/field_path.pb.dart').newInstance([]).assignVar('path').statement,
