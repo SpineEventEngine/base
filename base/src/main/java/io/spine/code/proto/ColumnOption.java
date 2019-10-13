@@ -40,7 +40,10 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     public static boolean hasColumns(MessageType messageType) {
-        return !columnsOf(messageType).isEmpty();
+        boolean result = messageType.fields()
+                                    .stream()
+                                    .anyMatch(ColumnOption::isColumn);
+        return result;
     }
 
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
