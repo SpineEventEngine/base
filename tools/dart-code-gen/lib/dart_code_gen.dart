@@ -25,15 +25,23 @@ import 'package:dart_code_gen/src/imports.dart';
 import 'package:dart_code_gen/src/validator_factory.dart';
 import 'package:dart_style/dart_style.dart';
 
+/// Code generation properties.
+///
 class Properties {
 
+    /// The types to generate code for.
     final FileDescriptorSet types;
+
+    /// The dart package containing standard Protobuf types (Google types and `base` types).
     final String standardPackage;
+
+    /// The path prefix for Dart files generated from [types].
     final String importPrefix;
 
     Properties(this.types, this.standardPackage, this.importPrefix);
 }
 
+/// Generates the message validators and obtains their Dart source code.
 String generateValidators(Properties properties) {
     var allocator = Allocator.simplePrefixing();
     var code = Library((b) =>
