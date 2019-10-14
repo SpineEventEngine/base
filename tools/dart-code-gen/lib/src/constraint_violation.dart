@@ -22,8 +22,12 @@ import 'package:code_builder/code_builder.dart';
 
 import 'imports.dart';
 
+const _violationType = 'ConstraintViolation';
 const _violation = '_violation';
 const violationRef = Reference(_violation);
+
+violationTypeRef(String standardPackage) =>
+    Reference(_violationType, validationErrorImport(standardPackage));
 
 createViolationFactory(String standardPackage) {
     return Method((b) {
@@ -34,23 +38,35 @@ createViolationFactory(String standardPackage) {
         var typeName = 'typeName';
         var fieldPath = 'fieldPath';
         var actualValue = 'actualValue';
-
-        b..name = _violation
-         ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = msgFormat))
-         ..requiredParameters.add(Parameter((b) => b..type = refer('String')..name = typeName))
-         ..requiredParameters.add(Parameter((b) => b..type = TypeReference((b) => b..symbol = 'List'..types.add(refer('String')))..name = fieldPath))
-         ..optionalParameters.add(Parameter((b) => b..type = refer('Any', protoAnyImport(standardPackage))..name = actualValue))
-         ..returns = refer('ConstraintViolation', validationErrorImport(standardPackage))
+        
+        var listOfStrings = TypeReference((b) => b
+            ..symbol = 'List'
+            ..types.add(refer('String')));
+        var fieldPathParam = Parameter((b) => b
+            ..type = listOfStrings
+            ..name = fieldPath);
+        var actualValueParam = Parameter((b) => b
+            ..type = refer('Any', protoAnyImport(standardPackage))
+            ..name = actualValue);
+        b.name = _violation;
+        b.requiredParameters
+            ..add(Parameter((b) => b..type = refer('String')..name = msgFormat))
+            ..add(Parameter((b) => b..type = refer('String')..name = typeName))
+            ..add(fieldPathParam)
+            ..add(actualValueParam);
+        var path = 'path';
+        var type = _violationTypeRef(standardPackage);
+        b..returns = type
          ..body = Block.of([
-                refer('ConstraintViolation', validationErrorImport(standardPackage)).newInstance([]).assignVar(result).statement,
-                resultRef.property('msgFormat').assign(refer(msgFormat)).statement,
-                resultRef.property('typeName').assign(refer(typeName)).statement,
-                refer('FieldPath', 'package:$standardPackage/spine/base/field_path.pb.dart').newInstance([]).assignVar('path').statement,
-                refer('path').property('fieldName').property('addAll').call([refer(fieldPath)]).statement,
-                resultRef.property('fieldPath').assign(refer('path')).statement,
-                resultRef.property('fieldValue').assign(refer(actualValue)).statement,
-                resultRef.returned.statement
-            ]);
+             type.newInstance([]).assignVar(result),
+             resultRef.property('msgFormat').assign(refer(msgFormat)),
+             resultRef.property('typeName').assign(refer(typeName)),
+             refer('FieldPath', fieldPathImport(standardPackage)).newInstance([]).assignVar(path),
+             refer(path).property('fieldName').property('addAll').call([refer(fieldPath)]),
+             resultRef.property('fieldPath').assign(refer(path)),
+             resultRef.property('fieldValue').assign(refer(actualValue)),
+             resultRef.returned
+         ].map((expression) => expression.statement));
     });
 }
 

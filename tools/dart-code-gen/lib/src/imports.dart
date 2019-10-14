@@ -20,11 +20,14 @@
 
 const protobufImport = 'package:protobuf/protobuf.dart';
 
-String validationErrorImport(String spinePackage) =>
-    'package:$spinePackage/spine/validate/validation_error.pb.dart';
+String validationErrorImport(String standardPackage) =>
+    'package:$standardPackage/spine/validate/validation_error.pb.dart';
 
-String protoWrappersImport(String spinePackage) =>
-    'package:$spinePackage/google/protobuf/wrappers.pb.dart';
+String protoWrappersImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/wrappers.pb.dart';
 
-String protoAnyImport(String spinePackage) =>
-    'package:$spinePackage/google/protobuf/any.pb.dart';
+String protoAnyImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/any.pb.dart';
+
+String fieldPathImport(String standardPackage) =>
+    'package:$standardPackage/spine/base/field_path.pb.dart';

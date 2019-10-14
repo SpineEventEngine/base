@@ -19,9 +19,10 @@
  */
 
 import 'package:code_builder/code_builder.dart';
-import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
 
 import '../dart_code_gen.dart';
+import '../google/protobuf/descriptor.pb.dart';
+import 'constraint_violation.dart';
 import 'field_validator_factory.dart';
 import 'imports.dart';
 
@@ -67,29 +68,28 @@ class ValidatorFactory {
 
     Block _collectFieldChecks(List<Code> validations) {
         var statements = <Code>[];
-        statements.add(newViolationList().statement);
+        statements.add(_newViolationList().statement);
         statements.addAll(validations);
         var error = 'error';
         var errorRef = refer(error);
-        statements.add(newValidationError(error).statement);
-        statements.add(fillInViolations(errorRef).statement);
+        statements.add(_newValidationError(error).statement);
+        statements.add(_fillInViolations(errorRef).statement);
         statements.add(errorRef.returned.statement);
       return Block.of(statements);
     }
 
-    Expression fillInViolations(Reference errorRef) {
+    Expression _fillInViolations(Reference errorRef) {
         return errorRef.property('constraintViolation')
             .property('addAll')
             .call([refer(_violations)]);
     }
 
-    Expression newViolationList() {
-        return literalList([], refer('ConstraintViolation', 
-                               validationErrorImport(properties.standardPackage)))
+    Expression _newViolationList() {
+        return literalList([], violationTypeRef(properties.standardPackage))
             .assignVar(_violations);
     }
 
-    Expression newValidationError(String error) {
+    Expression _newValidationError(String error) {
         return refer('ValidationError',
                      validationErrorImport(properties.standardPackage))
             .newInstance([])
@@ -98,8 +98,8 @@ class ValidatorFactory {
 
     Code _createFieldValidator(FieldDescriptorProto field) {
         var prefix = properties.importPrefix;
-        var importUri = prefix.isNotEmpty 
-                        ? '$prefix/$_fileName' 
+        var importUri = prefix.isNotEmpty
+                        ? '$prefix/$_fileName'
                         : _fileName;
         var validatedMessageType = refer(type.name, importUri);
         var factory = forField(field, this);
