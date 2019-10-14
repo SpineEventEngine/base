@@ -25,7 +25,7 @@ import io.spine.code.gen.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.column.EntityStateWithColumns;
+import io.spine.tools.compiler.gen.column.EntityWithColumnsSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
@@ -132,7 +132,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
             ImmutableCollection<MessageType> types = topLevelMessages(fileSet);
             types.forEach(type -> {
                 if (hasColumns(type)) {
-                    GeneratedTypeSpec spec = new EntityStateWithColumns(type);
+                    GeneratedTypeSpec spec = new EntityWithColumnsSpec(type);
                     spec.writeToFile(targetDir().toPath(), indent());
                 }
             });

@@ -43,14 +43,14 @@ import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-public final class EntityStateWithColumns implements GeneratedTypeSpec {
+public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
     private static final String NAME_FORMAT = "%sWithColumns";
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
 
-    public EntityStateWithColumns(MessageType messageType) {
+    public EntityWithColumnsSpec(MessageType messageType) {
         this.messageType = messageType;
         this.columns = columnsOf(messageType);
     }
