@@ -76,7 +76,9 @@ createViolationFactory(String standardPackage) {
         var type = violationTypeRef(standardPackage);
         b..returns = type
          ..body = Block.of(<Expression>[
-             actualValueRef.assign(actualValueRef.notEqualTo(literalNull).conditional(actualValueRef, anyType.newInstance([]))),
+             actualValueRef.assign(actualValueRef.notEqualTo(literalNull).conditional(
+                                       actualValueRef,
+                                       anyType.newInstance([]))),
              type.newInstance([]).assignVar(result),
              resultRef.property('msgFormat').assign(refer(msgFormat)),
              resultRef.property('typeName').assign(refer(typeName)),
