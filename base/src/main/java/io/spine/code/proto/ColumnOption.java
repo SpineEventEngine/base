@@ -57,7 +57,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
     public static boolean isColumn(FieldDeclaration field) {
         ColumnOption option = new ColumnOption();
         Optional<Boolean> value = option.valueFrom(field.descriptor());
-        Boolean isColumn = value.orElse(false);
+        boolean isColumn = value.orElse(false);
         return isColumn;
     }
 }

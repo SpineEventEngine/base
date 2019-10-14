@@ -39,9 +39,13 @@ import static io.spine.code.proto.ColumnOption.columnsOf;
 import static io.spine.code.proto.ScalarType.isScalarType;
 import static io.spine.code.proto.ScalarType.javaType;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public final class EntityStateWithColumns implements GeneratedTypeSpec {
+
+    private static final String NAME_FORMAT = "%sWithColumns";
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
@@ -63,16 +67,16 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
                         .addJavadoc(classJavadoc())
                         .addAnnotation(generatedBySpineModelCompiler())
                         .addModifiers(PUBLIC)
-                        .superclass(EntityWithColumns.class);
-        addColumns(builder);
+                        .addSuperinterface(EntityWithColumns.class);
+        addColumnGetters(builder);
         return builder.build();
     }
 
-    private void addColumns(TypeSpec.Builder spec) {
-        columns.forEach(column -> addColumn(spec, column));
+    private void addColumnGetters(TypeSpec.Builder spec) {
+        columns.forEach(column -> addColumnGetter(spec, column));
     }
 
-    private static void addColumn(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
+    private static void addColumnGetter(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
         MethodSpec getter = toGetter(fieldDeclaration);
         spec.addMethod(getter);
     }
@@ -83,6 +87,7 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
         JavaPoetName fieldTypeName = fieldType(declaration);
         TypeName returnType = fieldTypeName.value();
         MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addModifiers(PUBLIC, ABSTRACT)
                                       .returns(returnType)
                                       .build();
         return result;
@@ -127,8 +132,10 @@ public final class EntityStateWithColumns implements GeneratedTypeSpec {
     }
 
     private String className() {
-        String value = messageType.javaClassName()
-                                  .value();
-        return value;
+        String messageTypeName = messageType.javaClassName()
+                                            .toSimple()
+                                            .value();
+        String result = format(NAME_FORMAT, messageTypeName);
+        return result;
     }
 }
