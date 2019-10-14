@@ -38,6 +38,7 @@ createViolationFactory(String standardPackage) {
         var typeName = 'typeName';
         var fieldPath = 'fieldPath';
         var actualValue = 'actualValue';
+        var actualValueRef = refer(actualValue);
         
         var listOfStrings = TypeReference((b) => b
             ..symbol = 'List'
@@ -45,8 +46,9 @@ createViolationFactory(String standardPackage) {
         var fieldPathParam = Parameter((b) => b
             ..type = listOfStrings
             ..name = fieldPath);
+        var anyType = refer('Any', protoAnyImport(standardPackage));
         var actualValueParam = Parameter((b) => b
-            ..type = refer('Any', protoAnyImport(standardPackage))
+            ..type = anyType
             ..name = actualValue);
         b.name = _violation;
         b.requiredParameters
@@ -58,13 +60,14 @@ createViolationFactory(String standardPackage) {
         var type = violationTypeRef(standardPackage);
         b..returns = type
          ..body = Block.of(<Expression>[
+             actualValueRef.assign(actualValueRef.notEqualTo(literalNull).conditional(actualValueRef, anyType.newInstance([]))),
              type.newInstance([]).assignVar(result),
              resultRef.property('msgFormat').assign(refer(msgFormat)),
              resultRef.property('typeName').assign(refer(typeName)),
              refer('FieldPath', fieldPathImport(standardPackage)).newInstance([]).assignVar(path),
              refer(path).property('fieldName').property('addAll').call([refer(fieldPath)]),
              resultRef.property('fieldPath').assign(refer(path)),
-             resultRef.property('fieldValue').assign(refer(actualValue)),
+             resultRef.property('fieldValue').assign(actualValueRef),
              resultRef.returned
          ].map((expression) => expression.statement));
     });
