@@ -44,13 +44,12 @@ assemble.dependsOn 'copyGeneratedDart'
 protobuf {
     generatedFilesBaseDir = generationRoot
 
-    final def windows = Os.isFamily(Os.FAMILY_WINDOWS)
-    final def dartPluginExe = windows
-                              ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\protoc-gen-dart.bat"
-                              : "${System.getProperty('user.home')}/.pub-cache/bin/protoc-gen-dart"
-
     plugins {
         dart {
+            final def windows = Os.isFamily(Os.FAMILY_WINDOWS)
+            final def dartPluginExe = windows
+                    ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\protoc-gen-dart.bat"
+                    : "${System.getProperty('user.home')}/.pub-cache/bin/protoc-gen-dart"
             path = dartPluginExe
         }
     }
