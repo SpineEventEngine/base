@@ -26,7 +26,7 @@ const _violationType = 'ConstraintViolation';
 const _violation = '_violation';
 const violationRef = Reference(_violation);
 
-violationTypeRef(String standardPackage) =>
+Reference violationTypeRef(String standardPackage) =>
     Reference(_violationType, validationErrorImport(standardPackage));
 
 createViolationFactory(String standardPackage) {
@@ -52,12 +52,12 @@ createViolationFactory(String standardPackage) {
         b.requiredParameters
             ..add(Parameter((b) => b..type = refer('String')..name = msgFormat))
             ..add(Parameter((b) => b..type = refer('String')..name = typeName))
-            ..add(fieldPathParam)
-            ..add(actualValueParam);
+            ..add(fieldPathParam);
+        b.optionalParameters.add(actualValueParam);
         var path = 'path';
-        var type = _violationTypeRef(standardPackage);
+        var type = violationTypeRef(standardPackage);
         b..returns = type
-         ..body = Block.of([
+         ..body = Block.of(<Expression>[
              type.newInstance([]).assignVar(result),
              resultRef.property('msgFormat').assign(refer(msgFormat)),
              resultRef.property('typeName').assign(refer(typeName)),
@@ -69,4 +69,3 @@ createViolationFactory(String standardPackage) {
          ].map((expression) => expression.statement));
     });
 }
-
