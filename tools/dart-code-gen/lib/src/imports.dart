@@ -18,16 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/// The Protobuf runtime library.
 const protobufImport = 'package:protobuf/protobuf.dart';
 
+/// `spine/validate/validation_error.pb.dart`.
 String validationErrorImport(String standardPackage) =>
     'package:$standardPackage/spine/validate/validation_error.pb.dart';
 
+/// `google/protobuf/wrappers.pb.dart`.
 String protoWrappersImport(String standardPackage) =>
     'package:$standardPackage/google/protobuf/wrappers.pb.dart';
 
+/// `google/protobuf/any.pb.dart`.
 String protoAnyImport(String standardPackage) =>
     'package:$standardPackage/google/protobuf/any.pb.dart';
 
+/// `spine/base/field_path.pb.dart`.
 String fieldPathImport(String standardPackage) =>
     'package:$standardPackage/spine/base/field_path.pb.dart';
