@@ -25,27 +25,37 @@ import 'package:dart_code_gen/src/imports.dart';
 import 'package:dart_code_gen/src/validator_factory.dart';
 import 'package:dart_style/dart_style.dart';
 
-String generateClassTest(FileDescriptorSet descriptorSet) {
+class Properties {
+
+    final FileDescriptorSet types;
+    final String standardPackage;
+    final String importPrefix;
+
+    Properties(this.types, this.standardPackage, this.importPrefix);
+}
+
+String generateValidators(Properties properties) {
     var allocator = Allocator.simplePrefixing();
     var code = Library((b) =>
-        b..body.add(_createValidatorMap(descriptorSet, allocator))
-         ..body.add(createViolationFactory())
+        b..body.add(_createValidatorMap(properties, allocator))
+         ..body.add(createViolationFactory(properties.standardPackage))
     );
     var emitter = DartEmitter(allocator);
     var formatter = DartFormatter();
     return formatter.format(code.accept(emitter).toString());
 }
 
-Field _createValidatorMap(FileDescriptorSet descriptorSet, Allocator allocator) {
+Field _createValidatorMap(Properties properties, Allocator allocator) {
     var keyType = refer('String');
-    var validationError = refer('ValidationError', validationErrorImport);
+    var validationError = refer('ValidationError',
+                                validationErrorImport(properties.standardPackage));
     var valueType = FunctionType((b) => b
         ..requiredParameters.add(refer('GeneratedMessage', protobufImport))
         ..returnType = validationError);
     var validatorMap = Map<String, Expression>();
-    for (var file in descriptorSet.file) {
+    for (var file in properties.types.file) {
         for (var type in file.messageType) {
-            var factory = ValidatorFactory(file, type, allocator);
+            var factory = ValidatorFactory(file, type, allocator, properties);
             validatorMap[factory.fullName] = factory.createValidator();
         }
     }

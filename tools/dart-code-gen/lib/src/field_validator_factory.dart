@@ -151,7 +151,8 @@ class _FloatValidatorFactory extends FieldValidatorFactory {
 
     Expression _outOfBound(Expression value) {
         var param = 'v';
-        var floatValue = refer('FloatValue', protoWrappersImport)
+        var standardPackage = validatorFactory.properties.standardPackage;
+        var floatValue = refer('FloatValue', protoWrappersImport(standardPackage))
             .newInstance([])
             .property('copyWith')
             .call([Method((b) => b
@@ -160,7 +161,7 @@ class _FloatValidatorFactory extends FieldValidatorFactory {
                 .property('value')
                 .assign(value)
                 .statement).closure]);
-        var any = refer('Any', protoAnyImport).property('pack').call([floatValue]);
+        var any = refer('Any', protoAnyImport(standardPackage)).property('pack').call([floatValue]);
         return violationRef.call([literalString('Float field is out of bound.'),
                                   literalString(validatorFactory.fullName),
                                   literalList([field.name]),

@@ -21,6 +21,7 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
 
+import '../dart_code_gen.dart';
 import 'field_validator_factory.dart';
 import 'imports.dart';
 
@@ -32,12 +33,13 @@ class ValidatorFactory {
     final FileDescriptorProto file;
     final DescriptorProto type;
     final Allocator allocator;
+    final Properties properties;
 
-    ValidatorFactory(this.file, this.type, this.allocator);
+    ValidatorFactory(this.file, this.type, this.allocator, this.properties);
 
     String get fullName => '${file.package}.${type.name}';
-    String get fileName => file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
     Reference get violationList => refer(_violations);
+    String get _fileName => file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
 
     Expression createValidator() {
         var param = Parameter((b) => b
@@ -82,18 +84,24 @@ class ValidatorFactory {
     }
 
     Expression newViolationList() {
-        return literalList([], refer('ConstraintViolation', validationErrorImport))
+        return literalList([], refer('ConstraintViolation', 
+                               validationErrorImport(properties.standardPackage)))
             .assignVar(_violations);
     }
 
     Expression newValidationError(String error) {
-        return refer('ValidationError', validationErrorImport)
+        return refer('ValidationError',
+                     validationErrorImport(properties.standardPackage))
             .newInstance([])
             .assignVar(error);
     }
 
     Code _createFieldValidator(FieldDescriptorProto field) {
-        var validatedMessageType = refer(type.name, fileName);
+        var prefix = properties.importPrefix;
+        var importUri = prefix.isNotEmpty 
+                        ? '$prefix/$_fileName' 
+                        : _fileName;
+        var validatedMessageType = refer(type.name, importUri);
         var factory = forField(field, this);
         if (factory != null) {
             var fieldValue = refer(_msg).asA(validatedMessageType).property(field.name);

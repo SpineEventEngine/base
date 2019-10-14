@@ -18,9 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-const spinePackage = 'spine_client';
-const validationErrorImport = 'package:$spinePackage/spine/validate/validation_error.pb.dart';
 const protobufImport = 'package:protobuf/protobuf.dart';
-const protoWrappersImport = 'package:$spinePackage/google/protobuf/wrappers.pb.dart';
-const protoAnyImport = 'package:$spinePackage/google/protobuf/any.pb.dart';
+
+String validationErrorImport(String spinePackage) =>
+    'package:$spinePackage/spine/validate/validation_error.pb.dart';
+
+String protoWrappersImport(String spinePackage) =>
+    'package:$spinePackage/google/protobuf/wrappers.pb.dart';
+
+String protoAnyImport(String spinePackage) =>
+    'package:$spinePackage/google/protobuf/any.pb.dart';

@@ -18,16 +18,111 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'package:dart_code_gen/spine/net/url.pb.dart';
+import 'dart:io';
 
-import 'foo.dart';
+import 'package:args/args.dart';
+import 'package:dart_code_gen/dart_code_gen.dart' as dart_code_gen;
+import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
+import 'package:dart_code_gen/spine/options.pb.dart';
+import 'package:protobuf/protobuf.dart';
 
-main(List<String> arguments) async {
-//  var file = File('/Users/ddashenkov/Desktop/known_types_main.desc');
-//  var bytes = await file.readAsBytes();
-//  var r = ExtensionRegistry();
-//  Options.registerAllExtensions(r);
-//  print(dart_code_gen.generateClassTest(FileDescriptorSet.fromBuffer(bytes, r)));
-    print(validators[Url.getDefault().info_.qualifiedMessageName](Url()..spec = 'spine.io'));
+const String descriptorArgument = 'descriptor';
+const String destinationArgument = 'destination';
+const String stdPackageArgument = 'standard-types';
+const String importPrefixArgument = 'import-prefix';
+
+const String stdoutFlag = 'stdout';
+const String helpFlag = 'help';
+
+main(List<String> arguments) {
+    ArgParser parser = _createParser();
+    var args = parser.parse(arguments);
+    var help = args[helpFlag];
+    if (help) {
+        stdout.writeln('dart_code_gen — a command line application for generating Dart validation '
+                       'code based on Spine validation options.');
+        stdout.writeln(parser.usage);
+    } else {
+        var descriptorPath = _getRequired(args, descriptorArgument);
+        var destinationPath = _getRequired(args, destinationArgument);
+        var stdPackage = args[stdPackageArgument];
+        var importPrefix = args[importPrefixArgument];
+
+        var shouldPrint = args.options.contains(stdoutFlag);
+
+        var descFile = File(descriptorPath);
+        _checkFile(descFile);
+        var destinationFile = File(destinationPath);
+        _ensureFile(destinationFile);
+
+        FileDescriptorSet descriptors = _parseDescriptors(descFile);
+        var properties = dart_code_gen.Properties(descriptors, stdPackage, importPrefix);
+        var dartCode = dart_code_gen.generateValidators(properties);
+        destinationFile.writeAsStringSync(dartCode, flush: true);
+        if (shouldPrint) {
+            stdout.write(dartCode);
+        }
+    }
 }
+
+dynamic _getRequired(ArgResults args, String name) {
+    var result = args[name];
+    if (result == null) {
+        throw ArgumentError('Option `$name` is required. Run with `--help` for the option list.');
+    } else {
+        return result;
+    }
+}
+
+void _ensureFile(File file) {
+  if (!file.existsSync()) {
+      file.createSync(recursive: true);
+  }
+}
+
+void _checkFile(File file) {
+    if (!file.existsSync()) {
+        throw ArgumentError('Descriptor file `${file.path}` does not exist.');
+    }
+}
+
+FileDescriptorSet _parseDescriptors(File descFile) {
+    var bytes = descFile.readAsBytesSync();
+    ExtensionRegistry registry = _optionExtensions();
+    var descriptors = FileDescriptorSet.fromBuffer(bytes, registry);
+    return descriptors;
+}
+
+ExtensionRegistry _optionExtensions() {
+    var registry = ExtensionRegistry();
+    Options.registerAllExtensions(registry);
+    return registry;
+}
+
+
+ArgParser _createParser() {
+    var parser = ArgParser();
+    parser.addOption(descriptorArgument,
+                     help: 'Path to the file descriptor set file. This argument is required.');
+    parser.addOption(destinationArgument,
+                     help: 'Path to the destination file. This argument is required.');
+    parser.addOption(stdPackageArgument,
+                     help: 'Dart package which contains the standard Google Protobuf types '
+                           'and basic Spine types.',
+                     defaultsTo: 'spine_client');
+    parser.addOption(importPrefixArgument,
+                     help: 'Path prefix for imports of types which are vaidated.',
+                     defaultsTo: '');
+    parser.addFlag(stdoutFlag,
+                   defaultsTo: false,
+                   negatable: true,
+                   help: 'If set, the Dart code is also witten into the standard output.');
+    parser.addFlag(helpFlag,
+                   abbr: 'h',
+                   defaultsTo: false,
+                   negatable: false,
+                   hide: true);
+    return parser;
+}
+
 
