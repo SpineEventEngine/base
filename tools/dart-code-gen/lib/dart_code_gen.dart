@@ -56,7 +56,7 @@ Field _createValidatorMap(Properties properties, Allocator allocator) {
     for (var file in properties.types.file) {
         for (var type in file.messageType) {
             var factory = ValidatorFactory(file, type, allocator, properties);
-            validatorMap[factory.fullName] = factory.createValidator();
+            validatorMap[factory.fullTypeName] = factory.createValidator();
         }
     }
     return Field((b) => b

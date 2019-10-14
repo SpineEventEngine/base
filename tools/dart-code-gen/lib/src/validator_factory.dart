@@ -29,6 +29,15 @@ import 'imports.dart';
 const _violations = 'violations';
 const _msg = 'msg';
 
+/// Factory of message validation code for a Protobuf type.
+/// 
+/// For a given Protobuf message type, generates a lambda which accepts a single message and creates
+/// a `spine.validate.ValidationError`. If the given message is valid, the lambda returns `null`.
+/// Otherwise, it returns all `ConstraintViolation`s for the message as a single error.
+///
+/// Note that the type of the input message is not checked. Users should wrap calls to validators
+/// in type-aware abstractions instead of referring to them directly.
+/// 
 class ValidatorFactory {
 
     final FileDescriptorProto file;
@@ -38,10 +47,18 @@ class ValidatorFactory {
 
     ValidatorFactory(this.file, this.type, this.allocator, this.properties);
 
-    String get fullName => '${file.package}.${type.name}';
+    String get fullTypeName => '${file.package}.${type.name}';
+    
     Reference get violationList => refer(_violations);
-    String get _fileName => file.name.substring(0, file.name.length - 'proto'.length) + 'pb.dart';
+    
+    String get _fileName {
+        var endIndex = file.name.length - '.proto'.length;
+        var filePathWithoutExtension = file.name.substring(0, endIndex);
+        return filePathWithoutExtension + '.pb.dart';
+    }
 
+    /// Creates a validator expression.
+    ///
     Expression createValidator() {
         var param = Parameter((b) => b
             ..type = refer('GeneratedMessage', protobufImport)
@@ -75,7 +92,7 @@ class ValidatorFactory {
         statements.add(_newValidationError(error).statement);
         statements.add(_fillInViolations(errorRef).statement);
         statements.add(errorRef.returned.statement);
-      return Block.of(statements);
+        return Block.of(statements);
     }
 
     Expression _fillInViolations(Reference errorRef) {
@@ -96,13 +113,19 @@ class ValidatorFactory {
             .assignVar(error);
     }
 
+    /// Generates validation code for a given field.
+    ///
+    /// For this, the message is cast to the expected type and the field value is obtained.
+    ///
+    /// See [FieldValidatorFactory] for more on field validation.
+    ///
     Code _createFieldValidator(FieldDescriptorProto field) {
         var prefix = properties.importPrefix;
         var importUri = prefix.isNotEmpty
                         ? '$prefix/$_fileName'
                         : _fileName;
         var validatedMessageType = refer(type.name, importUri);
-        var factory = forField(field, this);
+        var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
             var fieldValue = refer(_msg).asA(validatedMessageType).property(field.name);
             return factory.createFieldValidator(fieldValue);
