@@ -165,32 +165,42 @@ class _FloatValidatorFactory extends FieldValidatorFactory {
         var rules = <_Rule>[];
         var options = field.options;
         if (options.hasExtension(Options.min)) {
-            var min = options.getExtension(Options.min) as MinOption;
-            var bound = double.parse(min.value);
-            var exclusive = min.exclusive;
-            var literal = literalNum(bound);
-            var check = exclusive
-                        ? (Expression v) => v.lessOrEqualTo(literal)
-                        : (Expression v) => v.lessThan(literal);
-            var requiredString = _Rule((v) => check(v),
-                                       _outOfBound,
-                                       validatorFactory.violationList);
-            rules.add(requiredString);
+            _Rule min = _minRule(options);
+            rules.add(min);
         }
         if (options.hasExtension(Options.max)) {
-            var max = options.getExtension(Options.max) as MaxOption;
-            var bound = double.parse(max.value);
-            var exclusive = max.exclusive;
-            var literal = literalNum(bound);
-            var check = exclusive
-                        ? (Expression v) => v.greaterOrEqualTo(literal)
-                        : (Expression v) => v.greaterThan(literal);
-            var requiredString = _Rule((v) => check(v),
-                                       _outOfBound,
-                                       validatorFactory.violationList);
-            rules.add(requiredString);
+            _Rule max = _maxRule(options);
+            rules.add(max);
         }
         return rules;
+    }
+
+    _Rule _minRule(FieldOptions options) {
+      var min = options.getExtension(Options.min) as MinOption;
+      var bound = double.parse(min.value);
+      var exclusive = min.exclusive;
+      var literal = literalNum(bound);
+      var check = exclusive
+                  ? (Expression v) => v.lessOrEqualTo(literal)
+                  : (Expression v) => v.lessThan(literal);
+      var requiredString = _Rule((v) => check(v),
+                                 _outOfBound,
+                                 validatorFactory.violationList);
+      return requiredString;
+    }
+
+    _Rule _maxRule(FieldOptions options) {
+      var max = options.getExtension(Options.max) as MaxOption;
+      var bound = double.parse(max.value);
+      var exclusive = max.exclusive;
+      var literal = literalNum(bound);
+      var check = exclusive
+                  ? (Expression v) => v.greaterOrEqualTo(literal)
+                  : (Expression v) => v.greaterThan(literal);
+      var requiredString = _Rule((v) => check(v),
+                                 _outOfBound,
+                                 validatorFactory.violationList);
+      return requiredString;
     }
 
     // TODO:2019-10-14:dmytro.dashenkov: Support custom error messages based on the option value.
