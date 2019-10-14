@@ -11,10 +11,10 @@ The generator accepts several command line arguments:
    for which the tool must generate validation code.
  - Required option `--destination` specifies the path to the file into which the validation code
    must be written. If the file does not exist, it is created.
- - Option `--standard-types` specifies a Dart package which contains standard Protobuf type:
-    - declared in `google.protobuf.*` package;
-    - declared in the base module in Spine.
-   The default value of this option is `spine_client`.
+ - Option `--standard-types` specifies a Dart package which contains standard Protobuf types. 
+   The default value of this option is `spine_client`. The package should contain types:
+     - declared in the `google.protobuf.*` package;
+     - declared in the base module in Spine.
  - Option `--import-prefix` specifies the path prefix for `.pb.dart` files generated for types
    listed in the `descriptor`. Defaults to an empty path, implying that the generated files are
    located in the same directory as the `destination`.
