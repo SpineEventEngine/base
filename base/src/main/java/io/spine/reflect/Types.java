@@ -21,7 +21,6 @@
 package io.spine.reflect;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Message;
@@ -34,7 +33,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * Utility class for working with {@code Type}s.
@@ -121,17 +119,6 @@ public final class Types {
             return isMessage;
         }
         return false;
-    }
-
-    public static ImmutableSet<Class<?>> allImplementedInterfaces(Type type) {
-        ImmutableSet<Class<?>> typeSet =
-                TypeToken.of(type)
-                         .getTypes()
-                         .interfaces()
-                         .rawTypes()
-                         .stream()
-                         .collect(toImmutableSet());
-        return typeSet;
     }
 
     /**
