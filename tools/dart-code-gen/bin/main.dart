@@ -34,6 +34,8 @@ const String importPrefixArgument = 'import-prefix';
 const String stdoutFlag = 'stdout';
 const String helpFlag = 'help';
 
+/// Launches the Dart validation code generator.
+///
 main(List<String> arguments) {
     ArgParser parser = _createParser();
     var args = parser.parse(arguments);
