@@ -45,25 +45,29 @@ main(List<String> arguments) {
                        'code based on Spine validation options.');
         stdout.writeln(parser.usage);
     } else {
-        var descriptorPath = _getRequired(args, descriptorArgument);
-        var destinationPath = _getRequired(args, destinationArgument);
-        var stdPackage = args[stdPackageArgument];
-        var importPrefix = args[importPrefixArgument];
+        _launch_code_gen(args);
+    }
+}
 
-        var shouldPrint = args.options.contains(stdoutFlag);
+void _launch_code_gen(ArgResults args) {
+    var descriptorPath = _getRequired(args, descriptorArgument);
+    var destinationPath = _getRequired(args, destinationArgument);
+    var stdPackage = args[stdPackageArgument];
+    var importPrefix = args[importPrefixArgument];
 
-        var descFile = File(descriptorPath);
-        _checkFile(descFile);
-        var destinationFile = File(destinationPath);
-        _ensureFile(destinationFile);
+    var shouldPrint = args.options.contains(stdoutFlag);
 
-        FileDescriptorSet descriptors = _parseDescriptors(descFile);
-        var properties = dart_code_gen.Properties(descriptors, stdPackage, importPrefix);
-        var dartCode = dart_code_gen.generateValidators(properties);
-        destinationFile.writeAsStringSync(dartCode, flush: true);
-        if (shouldPrint) {
-            stdout.write(dartCode);
-        }
+    var descFile = File(descriptorPath);
+    _checkFile(descFile);
+    var destinationFile = File(destinationPath);
+    _ensureFile(destinationFile);
+
+    FileDescriptorSet descriptors = _parseDescriptors(descFile);
+    var properties = dart_code_gen.Properties(descriptors, stdPackage, importPrefix);
+    var dartCode = dart_code_gen.generateValidators(properties);
+    destinationFile.writeAsStringSync(dartCode, flush: true);
+    if (shouldPrint) {
+        stdout.write(dartCode);
     }
 }
 
@@ -101,7 +105,6 @@ ExtensionRegistry _optionExtensions() {
     return registry;
 }
 
-
 ArgParser _createParser() {
     var parser = ArgParser();
     parser.addOption(descriptorArgument,
@@ -126,5 +129,3 @@ ArgParser _createParser() {
                    hide: true);
     return parser;
 }
-
-
