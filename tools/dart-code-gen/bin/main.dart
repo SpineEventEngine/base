@@ -58,9 +58,9 @@ void _launch_code_gen(ArgResults args) {
     var shouldPrint = args.options.contains(stdoutFlag);
 
     var descFile = File(descriptorPath);
-    _checkFile(descFile);
+    _checkExists(descFile);
     var destinationFile = File(destinationPath);
-    _ensureFile(destinationFile);
+    _ensureExists(destinationFile);
 
     FileDescriptorSet descriptors = _parseDescriptors(descFile);
     var properties = dart_code_gen.Properties(descriptors, stdPackage, importPrefix);
@@ -80,13 +80,13 @@ dynamic _getRequired(ArgResults args, String name) {
     }
 }
 
-void _ensureFile(File file) {
+void _ensureExists(File file) {
   if (!file.existsSync()) {
       file.createSync(recursive: true);
   }
 }
 
-void _checkFile(File file) {
+void _checkExists(File file) {
     if (!file.existsSync()) {
         throw ArgumentError('Descriptor file `${file.path}` does not exist.');
     }
@@ -121,7 +121,7 @@ ArgParser _createParser() {
     parser.addFlag(stdoutFlag,
                    defaultsTo: false,
                    negatable: true,
-                   help: 'If set, the Dart code is also witten into the standard output.');
+                   help: 'If set, the Dart code is also written into the standard output.');
     parser.addFlag(helpFlag,
                    abbr: 'h',
                    defaultsTo: false,
