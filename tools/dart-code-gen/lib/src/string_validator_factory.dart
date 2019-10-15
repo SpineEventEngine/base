@@ -58,13 +58,13 @@ class StringValidatorFactory extends FieldValidatorFactory {
 
     /// Creates a validation rule which matches a string upon a regular expression.
     ///
-    /// The whole string must match the regex. To check that, the generated code applies the `RegEx`
-    /// to the string and compares the first match to the value of the initial string. If the values
-    /// are identical, the check passes.
+    /// The whole string must match the regex. To check that, the generated code applies
+    /// the `RegExp` to the string and compares the first match to the value of the initial string.
+    /// If the values are identical, the check passes.
     ///
     Rule _patternRule(FieldOptions options) {
         PatternOption pattern = options.getExtension(Options.pattern);
-        var rule = newRule((v) => refer('RegEx').newInstance([literalString(pattern.regex)])
+        var rule = newRule((v) => refer('RegExp').newInstance([literalString(pattern.regex)])
                                                 .property('stringMatch')
                                                 .call([v])
                                                 .equalTo(v),
