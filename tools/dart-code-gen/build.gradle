@@ -72,3 +72,4 @@ protobuf {
 }
 
 tasks.withType(JavaCompile)*.enabled false
+tasks['testDart'].enabled false
