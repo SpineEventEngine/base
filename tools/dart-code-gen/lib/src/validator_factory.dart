@@ -30,14 +30,14 @@ const _violations = 'violations';
 const _msg = 'msg';
 
 /// Factory of message validation code for a Protobuf type.
-/// 
+///
 /// For a given Protobuf message type, generates a lambda which accepts a single message and creates
 /// a `spine.validate.ValidationError`. If the given message is valid, the lambda returns `null`.
 /// Otherwise, it returns all `ConstraintViolation`s for the message as a single error.
 ///
 /// Note that the type of the input message is not checked. Users should wrap calls to validators
 /// in type-aware abstractions instead of referring to them directly.
-/// 
+///
 class ValidatorFactory {
 
     final FileDescriptorProto file;
