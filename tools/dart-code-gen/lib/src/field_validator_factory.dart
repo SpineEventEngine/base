@@ -70,6 +70,10 @@ class FieldValidatorFactory {
     /// Obtains validation rules to apply to the field..
     Iterable<_Rule> _rules() => null;
 
+    _Rule _rule(LazyCondition condition, LazyViolation violation) {
+        return _Rule(condition, violation, validatorFactory.violationList);
+    }
+
     /// Generates an expression which constructs a `ConstraintViolation` for a missing required
     /// field.
     Expression _requiredMissing() {
@@ -141,14 +145,30 @@ class _StringValidatorFactory extends FieldValidatorFactory {
         : super._(validatorFactory, field);
 
     Iterable<_Rule> _rules() {
+        var options = field.options;
         var rules = <_Rule>[];
-        if (field.options.hasExtension(Options.required)) {
-            var requiredString = _Rule((v) => v.property('isEmpty'),
-                                       (v) => _requiredMissing(),
-                                       validatorFactory.violationList);
+        if (options.hasExtension(Options.required) && options.getExtension(Options.required)) {
+            var requiredString = _rule((v) => v.property('isEmpty'),
+                                       (v) => _requiredMissing());
             rules.add(requiredString);
         }
+        if (options.hasExtension(Options.pattern)) {
+            PatternOption pattern = options.getExtension(Options.pattern);
+            var rule = _rule((v) => refer('RegEx').newInstance([literalString(pattern.regex)])
+                                                  .property('stringMatch')
+                                                  .call([v])
+                                                  .equalTo(v),
+                             (v) => _patternMismatch(pattern.regex));
+            rules.add(rule);
+        }
         return rules;
+    }
+
+    Expression _patternMismatch(String pattern) {
+        var message = 'String must match the regular expression `$pattern`';
+        return violationRef.call([literalString(message),
+                                  literalString(validatorFactory.fullTypeName),
+                                  literalList([field.name])]);
     }
 }
 
@@ -183,9 +203,7 @@ class _FloatValidatorFactory extends FieldValidatorFactory {
       var check = exclusive
                   ? (Expression v) => v.lessOrEqualTo(literal)
                   : (Expression v) => v.lessThan(literal);
-      var requiredString = _Rule((v) => check(v),
-                                 _outOfBound,
-                                 validatorFactory.violationList);
+      var requiredString = _rule((v) => check(v), _outOfBound);
       return requiredString;
     }
 
@@ -197,9 +215,7 @@ class _FloatValidatorFactory extends FieldValidatorFactory {
       var check = exclusive
                   ? (Expression v) => v.greaterOrEqualTo(literal)
                   : (Expression v) => v.greaterThan(literal);
-      var requiredString = _Rule((v) => check(v),
-                                 _outOfBound,
-                                 validatorFactory.violationList);
+      var requiredString = _rule((v) => check(v), _outOfBound);
       return requiredString;
     }
 
