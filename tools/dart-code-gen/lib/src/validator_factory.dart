@@ -127,10 +127,31 @@ class ValidatorFactory {
         var validatedMessageType = refer(type.name, importUri);
         var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
-            var fieldValue = refer(_msg).asA(validatedMessageType).property(field.name);
+            var fieldValue = refer(_msg).asA(validatedMessageType).property(_fieldName(field));
             return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
+    }
+
+    /// Obtains a Dart name of the given Protobuf field.
+    ///
+    /// Dart Protobuf plugin also supports custom names generated from the custom `(dart_name)`
+    /// option. However, since the Protobuf sources for that option are not published, there is
+    /// no easy way to use this option. Thus, Spine code generation does not support it.
+    ///
+    String _fieldName(FieldDescriptorProto field) {
+        var protoName = field.name;
+        var words = protoName.split('_');
+        var first = words[0];
+        var capitalized = List.of(words.map(_capitalize));
+        capitalized[0] = first;
+        return capitalized.join('');
+    }
+
+    String _capitalize(String word) {
+        return word.isEmpty
+               ? word
+               : '${word[0].toUpperCase()}${word.substring(1)}';
     }
 }
