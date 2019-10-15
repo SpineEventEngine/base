@@ -1,5 +1,3 @@
-import org.codehaus.plexus.util.Os
-
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -19,6 +17,8 @@ import org.codehaus.plexus.util.Os
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import org.codehaus.plexus.util.Os
 
 group = 'io.spine.tools'
 
