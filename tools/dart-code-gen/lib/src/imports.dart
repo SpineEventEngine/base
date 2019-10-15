@@ -18,33 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+/// The Protobuf runtime library.
+const protobufImport = 'package:protobuf/protobuf.dart';
 
-include 'base'
+/// `spine/validate/validation_error.pb.dart`.
+String validationErrorImport(String standardPackage) =>
+    'package:$standardPackage/spine/validate/validation_error.pb.dart';
 
-include 'testlib'
+/// `google/protobuf/wrappers.pb.dart`.
+String protoWrappersImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/wrappers.pb.dart';
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
-}
+/// `google/protobuf/any.pb.dart`.
+String protoAnyImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/any.pb.dart';
 
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
-
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
-
-module 'proto-js-plugin'
-module 'proto-dart-plugin'
-module 'dart-code-gen'
-
-module 'protoc-api'
-module 'protoc-plugin'
+/// `spine/base/field_path.pb.dart`.
+String fieldPathImport(String standardPackage) =>
+    'package:$standardPackage/spine/base/field_path.pb.dart';

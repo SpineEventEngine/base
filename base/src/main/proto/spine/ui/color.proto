@@ -154,13 +154,13 @@ import "google/protobuf/wrappers.proto";
 message Color {
 
     // The amount of red in the color as a value in the interval [0, 1].
-    float red = 1;
+    float red = 1 [(min).value = "0.0", (max).value = "1.0"];
 
     // The amount of green in the color as a value in the interval [0, 1].
-    float green = 2;
+    float green = 2 [(min).value = "0.0", (max).value = "1.0"];
 
     // The amount of blue in the color as a value in the interval [0, 1].
-    float blue = 3;
+    float blue = 3 [(min).value = "0.0", (max).value = "1.0"];
 
     // The fraction of this color that should be applied to the pixel. That is,
     // the final pixel color is defined by the equation:
