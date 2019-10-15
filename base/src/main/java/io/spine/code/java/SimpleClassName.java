@@ -35,7 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A {@link Class#getSimpleName() simple name} of a class.
  */
-public final class SimpleClassName extends StringTypeValue {
+public final class SimpleClassName extends StringTypeValue implements CamelCasedName {
 
     static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
