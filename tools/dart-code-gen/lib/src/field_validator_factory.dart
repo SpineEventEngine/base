@@ -20,8 +20,12 @@
 
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
+import 'package:dart_code_gen/spine/options.pb.dart';
+import 'package:dart_code_gen/src/bytes_validator_factory.dart';
 
 import 'constraint_violation.dart';
+import 'enum_validator_factory.dart';
+import 'message_validator_factory.dart';
 import 'number_validator_factory.dart';
 import 'string_validator_factory.dart';
 import 'validator_factory.dart';
@@ -62,6 +66,12 @@ class FieldValidatorFactory {
                 return IntValidatorFactory.forUInt32(factory, field);
             case FieldDescriptorProto_Type.TYPE_UINT64:
                 return IntValidatorFactory.forUInt64(factory, field);
+            case FieldDescriptorProto_Type.TYPE_BYTES:
+                return BytesValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_ENUM:
+                return EnumValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_MESSAGE:
+                return MessageValidatorFactory(factory, field);
         }
         return null;
     }
@@ -90,9 +100,19 @@ class FieldValidatorFactory {
         return Rule._(condition, violation, validatorFactory.violationList);
     }
 
+    bool isRequired() {
+        var options = field.options;
+        return options.hasExtension(Options.required)
+            && options.getExtension(Options.required);
+    }
+
+    Rule createRequiredRule(LazyCondition condition) {
+        return newRule(condition, (v) => _requiredMissing());
+    }
+
     /// Generates an expression which constructs a `ConstraintViolation` for a missing required
     /// field.
-    Expression requiredMissing() {
+    Expression _requiredMissing() {
         return violationRef.call([literalString('Field must be set.'),
                                   literalString(validatorFactory.fullTypeName),
                                   literalList([field.name])]);

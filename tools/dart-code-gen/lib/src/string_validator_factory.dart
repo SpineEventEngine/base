@@ -39,9 +39,8 @@ class StringValidatorFactory extends FieldValidatorFactory {
     Iterable<Rule> rules() {
         var options = field.options;
         var rules = <Rule>[];
-        if (options.hasExtension(Options.required) && options.getExtension(Options.required)) {
-            Rule requiredString = _requiredRule();
-            rules.add(requiredString);
+        if (isRequired()) {
+            rules.add(_requiredRule());
         }
         if (options.hasExtension(Options.pattern)) {
             Rule rule = _patternRule(options);
@@ -50,11 +49,7 @@ class StringValidatorFactory extends FieldValidatorFactory {
         return rules;
     }
 
-    Rule _requiredRule() {
-        var requiredString = newRule((v) => v.property('isEmpty'),
-                                     (v) => requiredMissing());
-        return requiredString;
-    }
+    Rule _requiredRule() => createRequiredRule((v) => v.property('isEmpty'));
 
     /// Creates a validation rule which matches a string upon a regular expression.
     ///
