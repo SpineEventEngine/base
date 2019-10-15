@@ -22,7 +22,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
 
 import 'constraint_violation.dart';
-import 'float_validator_factory.dart';
+import 'number_validator_factory.dart';
 import 'string_validator_factory.dart';
 import 'validator_factory.dart';
 
@@ -43,9 +43,25 @@ class FieldValidatorFactory {
         var type = field.type;
         switch (type) {
             case FieldDescriptorProto_Type.TYPE_STRING:
-                return new StringValidatorFactory(factory, field);
+                return StringValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_DOUBLE:
+                return DoubleValidatorFactory.forDouble(factory, field);
             case FieldDescriptorProto_Type.TYPE_FLOAT:
-                return new FloatValidatorFactory(factory, field);
+                return DoubleValidatorFactory.forFloat(factory, field);
+            case FieldDescriptorProto_Type.TYPE_INT32:
+            case FieldDescriptorProto_Type.TYPE_SINT32:
+            case FieldDescriptorProto_Type.TYPE_FIXED32:
+            case FieldDescriptorProto_Type.TYPE_SFIXED32:
+                return IntValidatorFactory.forInt32(factory, field);
+            case FieldDescriptorProto_Type.TYPE_INT64:
+            case FieldDescriptorProto_Type.TYPE_SINT64:
+            case FieldDescriptorProto_Type.TYPE_FIXED64:
+            case FieldDescriptorProto_Type.TYPE_SFIXED64:
+                return IntValidatorFactory.forInt64(factory, field);
+            case FieldDescriptorProto_Type.TYPE_UINT32:
+                return IntValidatorFactory.forUInt32(factory, field);
+            case FieldDescriptorProto_Type.TYPE_UINT64:
+                return IntValidatorFactory.forUInt64(factory, field);
         }
         return null;
     }

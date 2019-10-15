@@ -28,15 +28,20 @@ import 'field_validator_factory.dart';
 import 'imports.dart';
 import 'validator_factory.dart';
 
-/// A [FieldValidatorFactory] for `float` fields.
+/// A [FieldValidatorFactory] for number fields.
 ///
-/// Currently, the supported options are `(min)` and `(max)`.
+/// Supports options `(min)`, `(max)`.
 ///
-class FloatValidatorFactory extends FieldValidatorFactory {
+class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
+    
+    final String _wrapperType;
 
-    FloatValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+    NumberValidatorFactory(ValidatorFactory validatorFactory,
+                           FieldDescriptorProto field,
+                           this._wrapperType)
         : super(validatorFactory, field);
 
+    @override
     Iterable<Rule> rules() {
         var rules = <Rule>[];
         var options = field.options;
@@ -53,7 +58,7 @@ class FloatValidatorFactory extends FieldValidatorFactory {
 
     Rule _minRule(FieldOptions options) {
         var min = options.getExtension(Options.min) as MinOption;
-        var bound = double.parse(min.value);
+        var bound = parse(min.value);
         var exclusive = min.exclusive;
         var literal = literalNum(bound);
         var check = exclusive
@@ -65,7 +70,7 @@ class FloatValidatorFactory extends FieldValidatorFactory {
 
     Rule _maxRule(FieldOptions options) {
         var max = options.getExtension(Options.max) as MaxOption;
-        var bound = double.parse(max.value);
+        var bound = parse(max.value);
         var exclusive = max.exclusive;
         var literal = literalNum(bound);
         var check = exclusive
@@ -74,13 +79,15 @@ class FloatValidatorFactory extends FieldValidatorFactory {
         var requiredString = newRule((v) => check(v), _outOfBound);
         return requiredString;
     }
+    
+    N parse(String value) => null;
 
     // TODO:2019-10-14:dmytro.dashenkov: Support custom error messages based on the option value.
     // https://github.com/SpineEventEngine/base/issues/482
     Expression _outOfBound(Expression value) {
         var param = 'v';
         var standardPackage = validatorFactory.properties.standardPackage;
-        var floatValue = refer('FloatValue', protoWrappersImport(standardPackage))
+        var floatValue = refer(_wrapperType, protoWrappersImport(standardPackage))
             .newInstance([])
             .property('copyWith')
             .call([Method((b) => b
@@ -91,8 +98,60 @@ class FloatValidatorFactory extends FieldValidatorFactory {
                 .statement).closure]);
         var any = refer('Any', protoAnyImport(standardPackage)).property('pack').call([floatValue]);
         return violationRef.call([literalString('Float field is out of bound.'),
-                                     literalString(validatorFactory.fullTypeName),
-                                     literalList([field.name]),
-                                     any]);
+                                  literalString(validatorFactory.fullTypeName),
+                                  literalList([field.name]),
+                                  any]);
+    }
+}
+
+class DoubleValidatorFactory extends NumberValidatorFactory<double> {
+
+    DoubleValidatorFactory._(ValidatorFactory validatorFactory,
+                             FieldDescriptorProto field,
+                             String wrapperType)
+        : super(validatorFactory, field, wrapperType);
+
+    factory DoubleValidatorFactory.forFloat(ValidatorFactory validatorFactory,
+                                            FieldDescriptorProto field) {
+        return DoubleValidatorFactory._(validatorFactory, field, 'FloatValue');
+    }
+
+    factory DoubleValidatorFactory.forDouble(ValidatorFactory validatorFactory,
+                                             FieldDescriptorProto field) {
+        return DoubleValidatorFactory._(validatorFactory, field, 'DoubleValue');
+    }
+
+    @override
+    double parse(String value) => double.parse(value);
+}
+
+class IntValidatorFactory extends NumberValidatorFactory<int> {
+
+    IntValidatorFactory._(ValidatorFactory validatorFactory,
+                          FieldDescriptorProto field,
+                          String wrapperType)
+        : super(validatorFactory, field, wrapperType);
+
+    @override
+    int parse(String value) => int.parse(value);
+
+    factory IntValidatorFactory.forInt32(ValidatorFactory validatorFactory,
+                                         FieldDescriptorProto field) {
+        return IntValidatorFactory._(validatorFactory, field, 'Int32Value');
+    }
+
+    factory IntValidatorFactory.forInt64(ValidatorFactory validatorFactory,
+                                         FieldDescriptorProto field) {
+        return IntValidatorFactory._(validatorFactory, field, 'Int64Value');
+    }
+
+    factory IntValidatorFactory.forUInt32(ValidatorFactory validatorFactory,
+                                          FieldDescriptorProto field) {
+        return IntValidatorFactory._(validatorFactory, field, 'UInt32Value');
+    }
+
+    factory IntValidatorFactory.forUInt64(ValidatorFactory validatorFactory,
+                                          FieldDescriptorProto field) {
+        return IntValidatorFactory._(validatorFactory, field, 'UInt64Value');
     }
 }

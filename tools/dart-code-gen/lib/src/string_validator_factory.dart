@@ -35,6 +35,7 @@ class StringValidatorFactory extends FieldValidatorFactory {
     StringValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
 
+    @override
     Iterable<Rule> rules() {
         var options = field.options;
         var rules = <Rule>[];
@@ -51,7 +52,7 @@ class StringValidatorFactory extends FieldValidatorFactory {
 
     Rule _requiredRule() {
         var requiredString = newRule((v) => v.property('isEmpty'),
-                                  (v) => requiredMissing());
+                                     (v) => requiredMissing());
         return requiredString;
     }
 
