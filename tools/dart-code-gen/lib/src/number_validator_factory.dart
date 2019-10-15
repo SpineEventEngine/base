@@ -28,9 +28,11 @@ import 'field_validator_factory.dart';
 import 'imports.dart';
 import 'validator_factory.dart';
 
+const _numericRange = '([\[\)])\s*([\d\.]+)\s*\.\.\s*([\d\.]+)\s*([\]\)])';
+
 /// A [FieldValidatorFactory] for number fields.
 ///
-/// Supports options `(min)`, `(max)`.
+/// Supports options `(min)`, `(max)`, and `(range)`.
 ///
 class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
     
@@ -41,6 +43,10 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
                            this._wrapperType)
         : super(validatorFactory, field);
 
+    N _parse(String value) => _doParse(value.trim());
+
+    N _doParse(String value) => null;
+    
     @override
     Iterable<Rule> rules() {
         var rules = <Rule>[];
@@ -53,13 +59,21 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
             Rule max = _maxRule(options);
             rules.add(max);
         }
+        if (options.hasExtension(Options.range)) {
+            Iterable<Rule> range = _rangeRules(options);
+            rules.addAll(range);
+        }
         return rules;
     }
 
     Rule _minRule(FieldOptions options) {
         var min = options.getExtension(Options.min) as MinOption;
-        var bound = parse(min.value);
+        var bound = _parse(min.value);
         var exclusive = min.exclusive;
+        return _constructMinRule(bound, exclusive);
+    }
+    
+    Rule _constructMinRule(N bound, bool exclusive) {
         var literal = literalNum(bound);
         var check = exclusive
                     ? (Expression v) => v.lessOrEqualTo(literal)
@@ -70,17 +84,37 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
 
     Rule _maxRule(FieldOptions options) {
         var max = options.getExtension(Options.max) as MaxOption;
-        var bound = parse(max.value);
+        var bound = _parse(max.value);
         var exclusive = max.exclusive;
-        var literal = literalNum(bound);
-        var check = exclusive
-                    ? (Expression v) => v.greaterOrEqualTo(literal)
-                    : (Expression v) => v.greaterThan(literal);
-        var requiredString = newRule((v) => check(v), _outOfBound);
-        return requiredString;
+        return _constructMaxRule(bound, exclusive);
+    }
+
+    Rule _constructMaxRule(bound, bool exclusive) {
+      var literal = literalNum(bound);
+      var check = exclusive
+                  ? (Expression v) => v.greaterOrEqualTo(literal)
+                  : (Expression v) => v.greaterThan(literal);
+      var rule = newRule((v) => check(v), _outOfBound);
+      return rule;
     }
     
-    N parse(String value) => null;
+    Iterable<Rule> _rangeRules(FieldOptions options) {
+        var rangeNotation = options.getExtension(Options.range) as String;
+        var rangePattern = RegExp(_numericRange);
+        var match = rangePattern.firstMatch(rangeNotation.trim());
+        if (match == null) {
+            throw ArgumentError('Malformed range: `$rangeNotation`. '
+                                'See doc of (range) for the proper format.');
+        }
+        var startOpen = match.group(1) == '(';
+        var start = _parse(match.group(2));
+        var end = _parse(match.group(3));
+        var endOpen = match.group(4) == ')';
+
+        var minRule = _constructMinRule(start, startOpen);
+        var maxRule = _constructMaxRule(end, endOpen);
+        return [minRule, maxRule];
+    }
 
     // TODO:2019-10-14:dmytro.dashenkov: Support custom error messages based on the option value.
     // https://github.com/SpineEventEngine/base/issues/482
@@ -97,7 +131,7 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
                 .assign(value)
                 .statement).closure]);
         var any = refer('Any', protoAnyImport(standardPackage)).property('pack').call([floatValue]);
-        return violationRef.call([literalString('Float field is out of bound.'),
+        return violationRef.call([literalString('Number is out of bound.'),
                                   literalString(validatorFactory.fullTypeName),
                                   literalList([field.name]),
                                   any]);
@@ -122,7 +156,7 @@ class DoubleValidatorFactory extends NumberValidatorFactory<double> {
     }
 
     @override
-    double parse(String value) => double.parse(value);
+    double _doParse(String value) => double.parse(value);
 }
 
 class IntValidatorFactory extends NumberValidatorFactory<int> {
@@ -133,7 +167,7 @@ class IntValidatorFactory extends NumberValidatorFactory<int> {
         : super(validatorFactory, field, wrapperType);
 
     @override
-    int parse(String value) => int.parse(value);
+    int _doParse(String value) => int.parse(value);
 
     factory IntValidatorFactory.forInt32(ValidatorFactory validatorFactory,
                                          FieldDescriptorProto field) {
