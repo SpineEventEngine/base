@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -28,7 +27,7 @@ import 'field_validator_factory.dart';
 import 'imports.dart';
 import 'validator_factory.dart';
 
-const _numericRange = '([\[\)])\s*([\d\.]+)\s*\.\.\s*([\d\.]+)\s*([\]\)])';
+const _numericRange = '([\[(])\s*([\d.]+)\s*\.\.\s*([\d.]+)\s*([\])])';
 
 /// A [FieldValidatorFactory] for number fields.
 ///
