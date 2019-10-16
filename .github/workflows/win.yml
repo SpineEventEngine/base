@@ -26,6 +26,7 @@ jobs:
       - name: Run tests with Gradle
         run: >
           choco install dart-sdk --limitoutput
+          & PATH="%PATH%;%APPDATA%\Pub\Cache\bin"
           & refreshenv
           & pub global activate protoc_plugin
           & gradlew.bat build
