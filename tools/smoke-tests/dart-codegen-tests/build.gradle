@@ -31,6 +31,11 @@ buildscript {
 apply plugin: 'io.spine.tools.proto-dart-plugin'
 apply from: "$baseRoot/config/gradle/dart/build-tasks.gradle"
 
+dependencies {
+    // TODO:2019-10-16:dmytro.dashenkov: Delete once https://github.com/dart-lang/protobuf/issues/295 is fixed.
+    testProtobuf "io.spine:spine-base:$spineVersion"
+}
+
 sourceSets {
     main.proto.srcDirs "$projectDir/src/main/proto"
     test.proto.srcDirs "$projectDir/src/test/proto"
