@@ -59,18 +59,19 @@ class StringValidatorFactory extends FieldValidatorFactory {
     ///
     Rule _patternRule(FieldOptions options) {
         PatternOption pattern = options.getExtension(Options.pattern);
-        var rule = newRule((v) => refer('RegExp').newInstance([literalString(pattern.regex)])
-                                                .property('stringMatch')
-                                                .call([v])
-                                                .equalTo(v),
+        var rule = newRule((v) => refer('RegExp')
+            .newInstance([literalString(pattern.regex, raw: true)])
+            .property('stringMatch')
+            .call([v])
+            .notEqualTo(v),
                            (v) => _patternMismatch(pattern.regex));
         return rule;
     }
 
     Expression _patternMismatch(String pattern) {
         var message = 'String must match the regular expression `$pattern`';
-        return violationRef.call([literalString(message),
-                                     literalString(validatorFactory.fullTypeName),
-                                     literalList([field.name])]);
+        return violationRef.call([literalString(message, raw: true),
+                                  literalString(validatorFactory.fullTypeName),
+                                  literalList([field.name])]);
     }
 }
