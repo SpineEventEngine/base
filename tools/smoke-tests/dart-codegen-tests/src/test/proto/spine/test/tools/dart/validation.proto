@@ -18,7 +18,7 @@ message PhoneNumber {
 
 message Contact {
 
-    people.PersonName = 1 [(required) = true];
+    people.PersonName name = 1 [(required) = true];
 
     PhoneNumber phone = 2 [(required) = false];
 
