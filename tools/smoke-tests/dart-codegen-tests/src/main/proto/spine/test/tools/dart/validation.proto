@@ -39,7 +39,7 @@ message LocalTime {
 
     uint32 minutes = 2 [(range) = "[0..60)"];
 
-    int32 seconds = 3 [(range) = "(-1..59]"];
+    int32 seconds = 3 [(range) = "(-1..+59]"];
 
     int32 millis = 4 [(min).value = "0", (max).value = "999"];
 }
