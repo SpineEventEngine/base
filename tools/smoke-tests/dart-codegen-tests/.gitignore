@@ -5,9 +5,6 @@ build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
-# Temp difectory for sources generated from Protobuf.
-proto/
-
 # Dart code generated from Protobuf.
 **/*.pb.dart
 **/*.pbenum.dart
