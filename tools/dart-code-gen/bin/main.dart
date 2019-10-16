@@ -55,7 +55,7 @@ void _launch_code_gen(ArgResults args) {
     var stdPackage = args[stdPackageArgument];
     var importPrefix = args[importPrefixArgument];
 
-    var shouldPrint = args.options.contains(stdoutFlag);
+    var shouldPrint = args[stdoutFlag];
 
     var descFile = File(descriptorPath);
     _checkExists(descFile);
