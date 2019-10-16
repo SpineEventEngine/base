@@ -33,13 +33,23 @@ apply from: "$baseRoot/config/gradle/dart/build-tasks.gradle"
 
 dependencies {
     // TODO:2019-10-16:dmytro.dashenkov: Delete once https://github.com/dart-lang/protobuf/issues/295 is fixed.
-    testProtobuf "io.spine:spine-base:$spineVersion"
+    protobuf "io.spine:spine-base:$spineVersion"
 }
 
 sourceSets {
     main.proto.srcDirs "$projectDir/src/main/proto"
     test.proto.srcDirs "$projectDir/src/test/proto"
 }
+
+task generateTestValidators(type: Exec) {
+    commandLine('dart_code_gen',
+                '--descriptor', "${file(protoDart.mainDescriptorSet.get())}",
+                '--destination', "$projectDir/test/validators.dart",
+                '--standard-types', 'codegen_test',
+                '--import-prefix', 'package:codegen_test')
+}
+
+tasks['testDart'].dependsOn 'generateTestValidators'
 
 protobuf {
     generateProtoTasks {
@@ -55,17 +65,9 @@ protobuf {
             task.descriptorSetOptions.path = task.sourceSet.name.equals('test')
                     ? "${file(protoDart.testDescriptorSet.get())}"
                     : "${file(protoDart.mainDescriptorSet.get())}"
+            project.tasks['generateTestValidators'].dependsOn task
         }
     }
 }
 
 tasks.withType(JavaCompile)*.enabled false
-
-task generateTestValidators(type: Exec) {
-    commandLine('dart_code_gen',
-                '--descriptor', "${file(protoDart.testDescriptorSet.get())}",
-                '--destination', "$projectDir/test/validators.dart",
-                '--standard-types', 'codegen_test')
-}
-
-tasks['testDart'].dependsOn 'generateTestValidators'
