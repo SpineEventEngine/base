@@ -56,6 +56,10 @@ class ValidatorFactory {
         var filePathWithoutExtension = file.name.substring(0, endIndex);
         return filePathWithoutExtension + '.pb.dart';
     }
+    
+    Expression get _emptyValidationError =>
+        refer('ValidationError', validationErrorImport(properties.standardPackage))
+            .newInstance([]);
 
     /// Creates a validator expression.
     ///
@@ -83,7 +87,7 @@ class ValidatorFactory {
             }
         }
         if (validations.isEmpty) {
-            return literalNull.returned.statement;
+            return _emptyValidationError.returned.statement;
         } else {
             return _collectFieldChecks(validations);
         }
@@ -113,10 +117,7 @@ class ValidatorFactory {
     }
 
     Expression _newValidationError(String error) {
-        return refer('ValidationError',
-                     validationErrorImport(properties.standardPackage))
-            .newInstance([])
-            .assignVar(error);
+        return _emptyValidationError.assignVar(error);
     }
 
     /// Generates validation code for a given field.
