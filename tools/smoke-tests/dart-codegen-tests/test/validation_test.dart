@@ -79,6 +79,44 @@ void main() {
                 expect(violation.typeName, time.info_.qualifiedMessageName);
                 expect(violation.fieldValue.unpackInto(Int32Value()).value, time.seconds);
             });
+
+            test('out of range uint32', () {
+                var time = LocalTime()
+                    ..hours = 42;
+                var violations = validate(time);
+                expect(violations.length, 1);
+                var violation = violations[0];
+                expect(violation.fieldPath.fieldName[0], 'hours');
+                expect(violation.typeName, time.info_.qualifiedMessageName);
+                expect(violation.fieldValue.unpackInto(UInt32Value()).value, time.hours);
+            });
+
+            test('out of range sfixed32', () {
+                var duration = Duration()
+                    ..nanos = -1024;
+                var violations = validate(duration);
+                expect(violations.length, 1);
+                var violation = violations[0];
+                expect(violation.fieldPath.fieldName[0], 'nanos');
+                expect(violation.typeName, duration.info_.qualifiedMessageName);
+                expect(violation.fieldValue.unpackInto(Int32Value()).value, duration.nanos);
+            });
+
+            test('several fields constraints at once', () {
+                var violations = validate(Contact());
+                expect(violations.length, 2);
+                var emptyName = violations[0];
+                expect(emptyName.fieldPath.fieldName[0], 'name');
+                var emptyCategory = violations[0];
+                expect(emptyCategory.fieldPath.fieldName[0], 'category');
+            });
+
+            test('several constraints on the same field', () {
+                var violations = validate(PhoneNumber());
+                expect(violations.length, 2);
+                expect(violations[0].msgFormat, contains('Field must be set'));
+                expect(violations[1].msgFormat, contains('regular expression'));
+            });
         });
     });
 }
