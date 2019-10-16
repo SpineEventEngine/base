@@ -107,7 +107,7 @@ void main() {
                 expect(violations.length, 2);
                 var emptyName = violations[0];
                 expect(emptyName.fieldPath.fieldName[0], 'name');
-                var emptyCategory = violations[0];
+                var emptyCategory = violations[1];
                 expect(emptyCategory.fieldPath.fieldName[0], 'category');
             });
 
