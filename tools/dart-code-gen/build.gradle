@@ -22,7 +22,8 @@ import org.codehaus.plexus.util.Os
 
 group = 'io.spine.tools'
 
-apply from: "$rootDir/config/gradle/dart/build-tasks.gradle"
+apply from: deps.scripts.dartBuildTasks
+apply from: deps.scripts.pubLishTasks
 
 dependencies {
     protobuf deps.build.protobuf
@@ -73,3 +74,5 @@ protobuf {
 
 tasks.withType(JavaCompile)*.enabled false
 tasks['testDart'].enabled false
+
+tasks['build'].dependsOn 'activateLocally'

@@ -60,3 +60,12 @@ protobuf {
 }
 
 tasks.withType(JavaCompile)*.enabled false
+
+task generateTestValidators(type: Exec) {
+    commandLine('dart_code_gen',
+                '--descriptor', "${file(protoDart.testDescriptorSet.get())}",
+                '--destination', "$projectDir/test/validators.dart",
+                '--standard-types', 'codegen_test')
+}
+
+tasks['testDart'].dependsOn 'generateTestValidators'
