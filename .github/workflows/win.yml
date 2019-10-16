@@ -7,8 +7,10 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
+
+    env:
+      PATH: "%PATH%;%APPDATA%/Pub/Cache/bin"
 
     steps:
       - uses: actions/checkout@v1
@@ -24,8 +26,6 @@ jobs:
         # GitHub Actions reset environment variables upon each step. Therefore, update the env and
         # run checks in a single step.
       - name: Run tests with Gradle
-        env:
-          PATH: "%PATH%;%APPDATA%/Pub/Cache/bin"
         run: >
           choco install dart-sdk --limitoutput
           & refreshenv
