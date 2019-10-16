@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      PATH: "%PATH%;%APPDATA%/Pub/Cache/bin"
-
     steps:
       - uses: actions/checkout@v1
 

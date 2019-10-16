@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.tools.ant.taskdefs.condition.Os
+import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS
+
 buildscript {
     repositories {
         mavenLocal()
@@ -42,6 +45,10 @@ sourceSets {
 }
 
 task generateTestValidators(type: Exec) {
+    final def windows = Os.isFamily(FAMILY_WINDOWS);
+    workingDir = windows
+                 ? "${System.getenv('APPDATA')}/Pub/Cache/bin"
+                 : "${System.getProperty('user.home')}/.pub-cache/bin"
     commandLine('dart_code_gen',
                 '--descriptor', "${file(protoDart.mainDescriptorSet.get())}",
                 '--destination', "$projectDir/test/validators.dart",
