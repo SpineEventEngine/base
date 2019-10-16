@@ -63,9 +63,15 @@ class ValidatorFactory {
         var param = Parameter((b) => b
             ..type = refer('GeneratedMessage', protobufImport)
             ..name = _msg);
-        return Method((b) => b
-            ..requiredParameters.add(param)
-            ..body = _createValidator()).closure;
+        try {
+            return Method((b) => b
+                ..requiredParameters.add(param)
+                ..body = _createValidator()).closure;
+        } catch (e) {
+            throw StateError('Cannot generate validation code for `$fullTypeName`. '
+                             '${e.toString()}');
+        }
+
     }
 
     Code _createValidator() {
