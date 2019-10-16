@@ -49,7 +49,8 @@ task generateTestValidators(type: Exec) {
     workingDir = windows
                  ? "${System.getenv('APPDATA')}/Pub/Cache/bin"
                  : "${System.getProperty('user.home')}/.pub-cache/bin"
-    commandLine('dart_code_gen',
+    final def command = windows ? 'dart_code_gen.bat' : 'dart_code_gen'
+    commandLine(command,
                 '--descriptor', "${file(protoDart.mainDescriptorSet.get())}",
                 '--destination', "$projectDir/test/validators.dart",
                 '--standard-types', 'codegen_test',
