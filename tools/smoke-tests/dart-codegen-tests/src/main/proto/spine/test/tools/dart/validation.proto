@@ -48,7 +48,7 @@ message Duration {
 
     sint64 millis = 1;
 
-    sint32 nanos = 2 [(range) = "(-1000..1000)"];
+    sfixed32 nanos = 2 [(range) = "(-1000..1000)"];
 }
 
 message BinaryFile {
