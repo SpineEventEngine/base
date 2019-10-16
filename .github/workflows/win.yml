@@ -25,7 +25,7 @@ jobs:
         # run checks in a single step.
       - name: Run tests with Gradle
         env:
-          PATH: %PATH%;%APPDATA%\Pub\Cache\bin
+          PATH: "%PATH%;%APPDATA%\Pub\Cache\bin"
         run: >
           choco install dart-sdk --limitoutput
           & refreshenv
