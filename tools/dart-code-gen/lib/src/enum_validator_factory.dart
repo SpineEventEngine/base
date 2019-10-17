@@ -26,8 +26,11 @@ import 'package:dart_code_gen/src/validator_factory.dart';
 import 'field_validator_factory.dart';
 import 'validator_factory.dart';
 
+/// Non-default enum constants start at this number.
 const _minNonEmptyEnumValue = 1;
 
+/// A [FieldValidatorFactory] for `bytes` fields.
+///
 class EnumValidatorFactory extends FieldValidatorFactory {
 
     EnumValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)

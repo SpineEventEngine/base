@@ -25,6 +25,8 @@ import 'package:dart_code_gen/src/validator_factory.dart';
 import 'field_validator_factory.dart';
 import 'validator_factory.dart';
 
+/// A [FieldValidatorFactory] for message fields.
+///
 class MessageValidatorFactory extends FieldValidatorFactory {
 
     MessageValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)

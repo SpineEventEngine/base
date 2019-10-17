@@ -137,6 +137,8 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
     }
 }
 
+/// A [NumberValidatorFactory] for non-integer numbers.
+///
 class DoubleValidatorFactory extends NumberValidatorFactory<double> {
 
     DoubleValidatorFactory._(ValidatorFactory validatorFactory,
@@ -144,11 +146,13 @@ class DoubleValidatorFactory extends NumberValidatorFactory<double> {
                              String wrapperType)
         : super(validatorFactory, field, wrapperType);
 
+    /// Creates a new validator factory for a `float` field.
     factory DoubleValidatorFactory.forFloat(ValidatorFactory validatorFactory,
                                             FieldDescriptorProto field) {
         return DoubleValidatorFactory._(validatorFactory, field, 'FloatValue');
     }
 
+    /// Creates a new validator factory for a `double` field.
     factory DoubleValidatorFactory.forDouble(ValidatorFactory validatorFactory,
                                              FieldDescriptorProto field) {
         return DoubleValidatorFactory._(validatorFactory, field, 'DoubleValue');
@@ -158,6 +162,8 @@ class DoubleValidatorFactory extends NumberValidatorFactory<double> {
     double _doParse(String value) => double.parse(value);
 }
 
+/// A [NumberValidatorFactory] for integer numbers.
+///
 class IntValidatorFactory extends NumberValidatorFactory<int> {
 
     IntValidatorFactory._(ValidatorFactory validatorFactory,
@@ -165,26 +171,38 @@ class IntValidatorFactory extends NumberValidatorFactory<int> {
                           String wrapperType)
         : super(validatorFactory, field, wrapperType);
 
-    @override
-    int _doParse(String value) => int.parse(value);
-
+    /// Creates a new validator factory for a signed 32-bit integer.
+    ///
+    /// `int32`, `sint32`, `fixed32`, and `sfixed32` all should be validated via the code generated
+    /// by this factory.
+    ///
     factory IntValidatorFactory.forInt32(ValidatorFactory validatorFactory,
                                          FieldDescriptorProto field) {
         return IntValidatorFactory._(validatorFactory, field, 'Int32Value');
     }
 
+    /// Creates a new validator factory for a signed 64-bit integer.
+    ///
+    /// `int64`, `sint64`, `fixed64`, and `sfixed64` all should be validated via the code generated
+    /// by this factory.
+    ///
     factory IntValidatorFactory.forInt64(ValidatorFactory validatorFactory,
                                          FieldDescriptorProto field) {
         return IntValidatorFactory._(validatorFactory, field, 'Int64Value');
     }
 
+    /// Creates a new validator factory for a unsigned 32-bit integer.
     factory IntValidatorFactory.forUInt32(ValidatorFactory validatorFactory,
                                           FieldDescriptorProto field) {
         return IntValidatorFactory._(validatorFactory, field, 'UInt32Value');
     }
 
+    /// Creates a new validator factory for a unsigned 64-bit integer.
     factory IntValidatorFactory.forUInt64(ValidatorFactory validatorFactory,
                                           FieldDescriptorProto field) {
         return IntValidatorFactory._(validatorFactory, field, 'UInt64Value');
     }
+
+    @override
+    int _doParse(String value) => int.parse(value);
 }

@@ -25,6 +25,8 @@ import 'package:dart_code_gen/src/validator_factory.dart';
 import 'field_validator_factory.dart';
 import 'validator_factory.dart';
 
+/// A [FieldValidatorFactory] for `bytes` fields.
+///
 class BytesValidatorFactory extends FieldValidatorFactory {
 
     BytesValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)

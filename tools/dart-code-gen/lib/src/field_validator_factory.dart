@@ -43,6 +43,9 @@ class FieldValidatorFactory {
     FieldValidatorFactory(this.validatorFactory, this.field);
 
     /// Creates a new `FieldValidatorFactory` for the given field.
+    ///
+    /// May return `null` to signify that no validation is required for the given field.
+    ///
     factory FieldValidatorFactory.forField(FieldDescriptorProto field, ValidatorFactory factory) {
         var type = field.type;
         switch (type) {
@@ -96,16 +99,26 @@ class FieldValidatorFactory {
     /// Obtains validation rules to apply to the field..
     Iterable<Rule> rules() => null;
 
+    /// Creates a new validation rule with the given parameters.
     Rule newRule(LazyCondition condition, LazyViolation violation) {
         return Rule._(condition, violation, validatorFactory.violationList);
     }
 
+    /// Checks if the validated field is required.
+    ///
+    /// Returns `true` if the field is required and `false` if it is optional.
+    ///
     bool isRequired() {
         var options = field.options;
         return options.hasExtension(Options.required)
             && options.getExtension(Options.required);
     }
 
+    /// Creates a validation for the `(required)` constraint.
+    ///
+    /// The [condition] determines whether or not the field value if set. The conditional expression
+    /// should evaluate into `true` if the field is **NOT** set.
+    ///
     Rule createRequiredRule(LazyCondition condition) {
         return newRule(condition, (v) => _requiredMissing());
     }
@@ -169,4 +182,9 @@ class Rule {
 typedef Expression LazyViolation(Expression fieldValue);
 
 /// A function of a field value expresion to a boolean expression representing a constraint.
+///
+/// The resulting expression should return a `bool`:
+///  - `true` if the constraint is violated;
+///  - `false` if the constraint obeyed.
+///
 typedef Expression LazyCondition(Expression fieldValue);
