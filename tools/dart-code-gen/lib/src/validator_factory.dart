@@ -75,7 +75,6 @@ class ValidatorFactory {
             throw StateError('Cannot generate validation code for `$fullTypeName`. '
                              '${e.toString()}');
         }
-
     }
 
     Code _createValidator() {
