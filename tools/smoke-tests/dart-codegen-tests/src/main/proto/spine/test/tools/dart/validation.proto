@@ -59,5 +59,3 @@ message BinaryFile {
 
     bytes content = 3 [(required) = true];
 }
-
-
