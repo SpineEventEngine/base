@@ -46,10 +46,9 @@ sourceSets {
 
 task generateTestValidators(type: Exec) {
     final def windows = Os.isFamily(FAMILY_WINDOWS);
-    workingDir = windows
-                 ? "${System.getenv('APPDATA')}/Pub/Cache/bin"
-                 : "${System.getProperty('user.home')}/.pub-cache/bin"
-    final def command = windows ? 'dart_code_gen.bat' : 'dart_code_gen'
+    final def command = windows
+                        ? "${System.getenv('APPDATA')}/Pub/Cache/bin/dart_code_gen.bat"
+                        : "${System.getProperty('user.home')}/.pub-cache/bin/dart_code_gen"
     commandLine(command,
                 '--descriptor', "${file(protoDart.mainDescriptorSet.get())}",
                 '--destination', "$projectDir/test/validators.dart",
