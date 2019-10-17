@@ -88,7 +88,7 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
         return _constructMaxRule(bound, exclusive);
     }
 
-    Rule _constructMaxRule(bound, bool exclusive) {
+    Rule _constructMaxRule(N bound, bool exclusive) {
       var literal = literalNum(bound);
       var check = exclusive
                   ? (Expression v) => v.greaterOrEqualTo(literal)
