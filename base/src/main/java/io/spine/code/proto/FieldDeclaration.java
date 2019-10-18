@@ -307,6 +307,12 @@ public final class FieldDeclaration {
         return result;
     }
 
+    public String getterName() {
+        String camelCasedName = name().toCamelCase();
+        String result = format("get%s", camelCasedName);
+        return result;
+    }
+
     /**
      * Obtains comments going before the field.
      *

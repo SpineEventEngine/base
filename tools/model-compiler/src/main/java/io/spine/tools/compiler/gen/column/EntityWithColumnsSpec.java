@@ -30,7 +30,6 @@ import io.spine.base.EntityWithColumns;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.type.MessageType;
@@ -87,8 +86,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
      *         {@code ABSTRACT}, these modifiers are actually absent in the generated code.
      */
     private static MethodSpec getterSpec(FieldDeclaration declaration) {
-        FieldName fieldName = declaration.name();
-        String methodName = "get" + fieldName.toCamelCase();
+        String methodName = declaration.getterName();
         JavaPoetName fieldTypeName = fieldType(declaration);
         TypeName returnType = fieldTypeName.value();
         MethodSpec result = MethodSpec.methodBuilder(methodName)
