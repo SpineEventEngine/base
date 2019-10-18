@@ -72,6 +72,16 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
         return builder.build();
     }
 
+    private void addColumnGetters(TypeSpec.Builder spec) {
+        columns.forEach(column -> addColumnGetter(spec, column));
+    }
+
+    private static void addColumnGetter(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
+        // TODO:2019-10-14:dmytro.kuzmin:WIP Add method doc.
+        MethodSpec getter = toGetter(fieldDeclaration);
+        spec.addMethod(getter);
+    }
+
     private static MethodSpec toGetter(FieldDeclaration declaration) {
         FieldName fieldName = declaration.name();
         String methodName = "get" + fieldName.toCamelCase();
@@ -128,15 +138,5 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
                                             .value();
         String result = format(NAME_FORMAT, messageTypeName);
         return result;
-    }
-
-    private void addColumnGetters(TypeSpec.Builder spec) {
-        columns.forEach(column -> addColumnGetter(spec, column));
-    }
-
-    private static void addColumnGetter(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
-        // TODO:2019-10-14:dmytro.kuzmin:WIP Add method doc.
-        MethodSpec getter = toGetter(fieldDeclaration);
-        spec.addMethod(getter);
     }
 }
