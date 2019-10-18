@@ -23,7 +23,7 @@ import org.codehaus.plexus.util.Os
 group = 'io.spine.tools'
 
 apply from: deps.scripts.dartBuildTasks
-apply from: deps.scripts.pubLishTasks
+apply from: deps.scripts.pubPublishTasks
 
 dependencies {
     protobuf deps.build.protobuf
