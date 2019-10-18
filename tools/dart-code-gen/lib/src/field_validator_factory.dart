@@ -148,8 +148,7 @@ class ScalarFieldValidatorFactory extends FieldValidatorFactory {
     Code createFieldValidator(Expression fieldValue) {
         var statements = rules()
             .map((r) => r._eval(fieldValue))
-            .map((expression) => expression.statement)
-            .toList();
+            .map((expression) => expression.statement);
         return statements.isNotEmpty
                ? Block.of(statements)
                : null;
@@ -172,24 +171,31 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
     Code createFieldValidator(Expression field) {
         var validation = <Expression>[];
         if (isRequired()) {
-            var requiredRule = createRequiredRule((v) => v.property('isEmpty').call([]));
+            var requiredRule = createRequiredRule((v) => v.property('isEmpty'));
             validation.add(requiredRule._eval(field));
         }
-        var values = 'values';
+        var values = 'values_${this.field.name}';
         var valuesRef = refer(values);
         var valueList = field.isA(refer('Map'))
-                             .conditional(field.property('values'), field)
+                             .conditional(field.asA(refer('dynamic')).property('values'), field)
                              .assignVar(values);
         validation.add(valueList);
-        var validatingLambda = Method.returnsVoid((b) {
-            var element = 'element';
-            var elementRef = refer(element);
-            b..requiredParameters.add(Parameter((b) => b..name = element))
-             ..body = _scalar.createFieldValidator(elementRef);
-        });
-        var validateEachElement = valuesRef.property('forEach')
-                                           .call([validatingLambda.closure]);
-        validation.add(validateEachElement);
+        var element = 'element';
+        var elementRef = refer(element);
+        var elementValidation = _scalar.createFieldValidator(elementRef);
+        if (elementValidation != null) {
+            var nonNullCheck = refer('ArgumentError')
+                .property('checkNotNull')
+                .call([elementRef]);
+            var validatingLambda = Method.returnsVoid((b) {
+                b..requiredParameters.add(Parameter((b) => b..name = element))
+                    ..body = Block.of([nonNullCheck.statement, elementValidation])
+                    ..lambda = false;
+            });
+            var validateEachElement = valuesRef.property('forEach')
+                .call([validatingLambda.closure]);
+            validation.add(validateEachElement);
+        }
         return Block.of(validation.map((expression) => expression.statement));
     }
 }

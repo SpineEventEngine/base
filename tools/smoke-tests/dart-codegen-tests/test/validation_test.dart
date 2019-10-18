@@ -20,6 +20,7 @@
 
 import 'package:codegen_test/google/protobuf/empty.pb.dart';
 import 'package:codegen_test/google/protobuf/wrappers.pb.dart';
+import 'package:codegen_test/spine/net/email_address.pb.dart';
 import 'package:codegen_test/spine/people/person_name.pb.dart';
 import 'package:codegen_test/spine/test/tools/dart/validation.pb.dart';
 import 'package:codegen_test/spine/validate/validation_error.pb.dart';
@@ -57,16 +58,55 @@ void main() {
             });
 
             test('missing message', () {
-                checkMissing(Contact()..category = Contact_Category.PERSONAL, 'name');
+                var message = Contact()
+                    ..category = Contact_Category.PERSONAL
+                    ..email.add(EmailAddress()..value = 'mollie@acme.corp');
+                checkMissing(message, 'name');
             });
 
             test('missing enum', () {
                 var name = PersonName()..givenName = 'Albert';
-                checkMissing(Contact()..name = name, 'category');
+                var contact = Contact()
+                    ..name = name
+                    ..email.add(EmailAddress()..value = 'james@acme.corp');
+                checkMissing(contact, 'category');
             });
 
             test('missing bytes', () {
                 checkMissing(BinaryFile()..path = 'foo.bin', 'content');
+            });
+            
+            test('missing repeated messages', () {
+                var name = PersonName()..givenName = 'Bernard';
+                var contact = Contact()
+                    ..name = name
+                    ..category = Contact_Category.PERSONAL;
+                checkMissing(contact, 'email');
+            });
+
+            test('empty required repeated messages', () {
+                var name = PersonName()..givenName = 'William';
+                var contact = Contact()
+                    ..name = name
+                    ..category = Contact_Category.WORK
+                    ..email.addAll([EmailAddress()..value = 'will@example.com', EmailAddress()]);
+                checkMissing(contact, 'email');
+            });
+
+            test('missing requied repeated numbers', () {
+                var ticket = LotteryTicket()
+                    ..magicNumber = 42;
+                checkMissing(ticket, 'numbers');
+            });
+
+            test('out of range repeated numbers', () {
+                var ticket = LotteryTicket()
+                    ..magicNumber = 42
+                    ..numbers.addAll([1, 3, 5, 9000000]);
+                var violations = validate(ticket);
+                expect(violations.length, 1);
+                var violation = violations[0];
+                expect(violation.fieldPath.fieldName[0], 'numbers');
             });
 
             test('out of range int32', () {
@@ -104,11 +144,13 @@ void main() {
 
             test('several fields constraints at once', () {
                 var violations = validate(Contact());
-                expect(violations.length, 2);
+                expect(violations.length, 3);
                 var emptyName = violations[0];
                 expect(emptyName.fieldPath.fieldName[0], 'name');
                 var emptyCategory = violations[1];
                 expect(emptyCategory.fieldPath.fieldName[0], 'category');
+                var emptyEmail = violations[2];
+                expect(emptyEmail.fieldPath.fieldName[0], 'email');
             });
 
             test('several constraints on the same field', () {

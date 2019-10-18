@@ -4,6 +4,7 @@ package spine.test.validation.dart;
 
 import "spine/options.proto";
 import "spine/people/person_name.proto";
+import "spine/net/email_address.proto";
 
 option (type_url_prefix) = "type.spine.io";
 
@@ -23,6 +24,8 @@ message Contact {
     PhoneNumber phone = 2 [(required) = false];
 
     Category category = 3 [(required) = true];
+
+    repeated net.EmailAddress email = 4 [(required) = true];
 
     enum Category {
 
@@ -58,4 +61,11 @@ message BinaryFile {
     string owner = 2 [(required) = false];
 
     bytes content = 3 [(required) = true];
+}
+
+message LotteryTicket {
+
+    repeated uint32 numbers = 1 [(required) = true, (range) = "[1..69]"];
+
+    uint32 magic_number = 2 [(range) = "[1..69]"];
 }
