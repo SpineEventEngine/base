@@ -164,8 +164,6 @@ void main() {
                 expect(violations[0].msgFormat, contains('Field must be set'));
                 expect(violations[1].msgFormat, contains('regular expression'));
             });
-
-
         });
     });
 }

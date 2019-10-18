@@ -98,6 +98,8 @@ class FieldValidatorFactory {
     }
 }
 
+/// A [FieldValidatorFactory] for non-`repeated` fields.
+///
 class ScalarFieldValidatorFactory extends FieldValidatorFactory {
 
     ScalarFieldValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
@@ -158,6 +160,8 @@ class ScalarFieldValidatorFactory extends FieldValidatorFactory {
     Iterable<Rule> rules() => null;
 }
 
+/// A [FieldValidatorFactory] for `repeated` and `map` fields.
+///
 class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
 
     final FieldValidatorFactory _scalar;
@@ -175,11 +179,18 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
             validation.add(requiredRule._eval(field));
         }
         var values = 'values_${this.field.name}';
-        var valuesRef = refer(values);
-        var valueList = field.isA(refer('Map'))
-                             .conditional(field.asA(refer('dynamic')).property('values'), field)
-                             .assignVar(values);
-        validation.add(valueList);
+        var validateElements = validateEachElement(refer(values));
+        if (validateElements != null) {
+            var valueList = field.isA(refer('Map'))
+                                 .conditional(field.asA(refer('dynamic')).property('values'), field)
+                                 .assignVar(values);
+            validation.add(valueList);
+            validation.add(validateElements);
+        }
+        return Block.of(validation.map((expression) => expression.statement));
+    }
+
+    Expression validateEachElement(Reference valuesRef) {
         var element = 'element';
         var elementRef = refer(element);
         var elementValidation = _scalar.createFieldValidator(elementRef);
@@ -187,19 +198,19 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
             var nonNullCheck = refer('ArgumentError')
                 .property('checkNotNull')
                 .call([elementRef]);
-            var validatingLambda = Method.returnsVoid((b) {
-                b..requiredParameters.add(Parameter((b) => b..name = element))
-                    ..body = Block.of([nonNullCheck.statement, elementValidation])
-                    ..lambda = false;
-            });
+            var validatingLambda = Method.returnsVoid((b) => b
+                ..requiredParameters.add(Parameter((b) => b..name = element))
+                ..body = Block.of([nonNullCheck.statement, elementValidation])
+                ..lambda = false
+            );
             var validateEachElement = valuesRef.property('forEach')
-                .call([validatingLambda.closure]);
-            validation.add(validateEachElement);
+                                               .call([validatingLambda.closure]);
+            return validateEachElement;
+        } else {
+            return null;
         }
-        return Block.of(validation.map((expression) => expression.statement));
     }
 }
-
 
 /// A validation rule.
 ///
