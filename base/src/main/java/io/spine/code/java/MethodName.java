@@ -25,6 +25,7 @@ import io.spine.value.StringTypeValue;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 public final class MethodName extends StringTypeValue implements CamelCasedName {
@@ -42,6 +43,7 @@ public final class MethodName extends StringTypeValue implements CamelCasedName 
     }
 
     public static MethodName of(Method method) {
+        checkNotNull(method);
         return new MethodName(method.getName(), method.getDeclaringClass());
     }
 
