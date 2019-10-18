@@ -28,7 +28,7 @@ import 'validator_factory.dart';
 
 /// A [FieldValidatorFactory] for `string` fields.
 ///
-/// Currently, the only supported option is `(required)`.
+/// The only supported options is `(required)` and `(pattern)`.
 ///
 class StringValidatorFactory extends ScalarFieldValidatorFactory {
 
