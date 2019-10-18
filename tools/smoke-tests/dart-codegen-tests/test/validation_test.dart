@@ -164,6 +164,28 @@ void main() {
                 expect(violations[0].msgFormat, contains('Field must be set'));
                 expect(violations[1].msgFormat, contains('regular expression'));
             });
+
+            test('unexpected duplicates', () {
+                var contacts = Contacts()
+                    ..contact.add(Contact()..category = Contact_Category.WORK)
+                    ..contact.add(Contact()..category = Contact_Category.WORK);
+                var violations = validate(contacts);
+                expect(violations.length, 1);
+                expect(violations[0].fieldPath.fieldName[0], 'contact');
+                expect(violations[0].typeName, contacts.info_.qualifiedMessageName);
+            });
+
+            test('unexpected duplicates in a map', () {
+                var contacts = Contacts()
+                    ..contact.add(Contact()..category = Contact_Category.WORK);
+                var book = ContactBook()
+                    ..contactByCategory[Contact_Category.WORK.value] = contacts
+                    ..contactByCategory[Contact_Category.PERSONAL.value] = contacts;
+                var violations = validate(book);
+                expect(violations.length, 1);
+                expect(violations[0].fieldPath.fieldName[0], 'contact_by_category');
+                expect(violations[0].typeName, book.info_.qualifiedMessageName);
+            });
         });
     });
 }

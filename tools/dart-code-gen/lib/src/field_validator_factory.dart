@@ -179,15 +179,41 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
             validation.add(requiredRule._eval(field));
         }
         var values = 'values_${this.field.name}';
-        var validateElements = validateEachElement(refer(values));
-        if (validateElements != null) {
+        var valuesRef = refer(values);
+        var validateDistinctList = validateDistinct(valuesRef);
+        var validateElements = validateEachElement(valuesRef);
+        if (validateElements != null || validateDistinctList != null) {
             var valueList = field.isA(refer('Map'))
                                  .conditional(field.asA(refer('dynamic')).property('values'), field)
                                  .assignVar(values);
             validation.add(valueList);
-            validation.add(validateElements);
+            if (validateDistinctList != null) {
+                validation.add(validateDistinctList);
+            }
+            if (validateElements != null) {
+                validation.add(validateElements);
+            }
         }
         return Block.of(validation.map((expression) => expression.statement));
+    }
+
+    Expression validateDistinct(Reference valuesRef) {
+        var options = field.options;
+        var option = Options.distinct;
+        if (options.hasExtension(option) && options.getExtension(option)) {
+            var length = 'length';
+            LazyCondition condition = (v) =>
+                v.property(length).notEqualTo(
+                    v.property('toSet').call([]).property(length));
+            LazyViolation violation = (v) =>
+                violationRef.call([literalString('Collection must be distinct.'),
+                                      literalString(validatorFactory.fullTypeName),
+                                      literalList([field.name])]);
+            var distinctRule = newRule(condition, violation);
+            return distinctRule._eval(valuesRef);
+        } else {
+            return null;
+        }
     }
 
     Expression validateEachElement(Reference valuesRef) {

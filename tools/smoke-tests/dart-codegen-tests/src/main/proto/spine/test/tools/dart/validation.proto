@@ -38,12 +38,12 @@ message Contact {
 
 message Contacts {
 
-    Contact contact = 1;
+    repeated Contact contact = 1 [(distinct) = true];
 }
 
 message ContactBook {
 
-    map<uint32, Contact> contact_by_category = 1 [(required) = true];
+    map<uint32, Contacts> contact_by_category = 1 [(required) = true, (distinct) = true];
 }
 
 message LocalTime {
