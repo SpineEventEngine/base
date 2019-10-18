@@ -18,15 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Utilities for working with {@code .properties} files.
- */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.properties;
+import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
+import 'package:dart_code_gen/src/field_validator_factory.dart';
+import 'package:dart_code_gen/src/validator_factory.dart';
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
+import 'field_validator_factory.dart';
+import 'validator_factory.dart';
 
-import javax.annotation.ParametersAreNonnullByDefault;
+/// A [FieldValidatorFactory] for `bytes` fields.
+///
+class BytesValidatorFactory extends FieldValidatorFactory {
+
+    BytesValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+        : super(validatorFactory, field);
+
+    @override
+    Iterable<Rule> rules() {
+        var rules = <Rule>[];
+        if (isRequired()) {
+            rules.add(_requiredRule());
+        }
+        return rules;
+    }
+
+    Rule _requiredRule() => createRequiredRule((v) => v.property('isEmpty'));
+}

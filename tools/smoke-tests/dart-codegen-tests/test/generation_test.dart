@@ -18,17 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'package:codegen_test/spine/test/tools/dart/test.pb.dart';
+import 'package:codegen_test/types.dart' as generatedTypes;
 import 'package:protobuf/protobuf.dart';
 import 'package:test/test.dart';
-
-import 'spine/test/tools/dart/test.pb.dart';
-import 'types.dart' as types;
 
 const dartSmokeTestType = 'type.spine.io/spine.test.tools.DartSmokeTest';
 const nestedType = 'type.spine.io/spine.test.tools.First.Second.Third';
 
 void main() {
-    group('Known types generation should', (){
+    group('Known types generation should', () {
+
+        var types;
+
+        setUp(() {
+           types = generatedTypes.types();
+        });
 
         test('generate file', () {
            expect(types.typeUrlToInfo, isNotNull);

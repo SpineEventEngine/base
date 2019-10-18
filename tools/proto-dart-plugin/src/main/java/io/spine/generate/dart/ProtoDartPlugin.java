@@ -61,7 +61,8 @@ import static org.gradle.api.Task.TASK_TYPE;
  */
 public final class ProtoDartPlugin extends SpinePlugin {
 
-    private static final Resource TEMPLATE = Resource.file("types.template.dart");
+    private static final Resource TEMPLATE =
+            Resource.file("types.template.dart", ProtoDartPlugin.class.getClassLoader());
     private static final String TYPES_FILE_NAME = "types.dart";
 
     @Override

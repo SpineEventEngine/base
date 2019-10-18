@@ -18,20 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
+import 'package:dart_code_gen/src/field_validator_factory.dart';
+import 'package:dart_code_gen/src/validator_factory.dart';
 
-/**
- * Describes a method with four parameters.
- *
- * @param <T> the type of the first parameter
- * @param <U> the type of the second parameter
- * @param <V> the type of the third parameter
- * @param <W> the type of the fourth parameter
- * @implNote Is used in these tests for passing method references with one format string and
- *           two arguments.
- * @author Alexander Yevsyukov
- */
-@FunctionalInterface
-interface QuadriConsumer<T, U, V, W> {
-    void accept(T t, U u, V v, W w);
+import 'field_validator_factory.dart';
+import 'validator_factory.dart';
+
+/// A [FieldValidatorFactory] for message fields.
+///
+class MessageValidatorFactory extends FieldValidatorFactory {
+
+    MessageValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+        : super(validatorFactory, field);
+
+    @override
+    Iterable<Rule> rules() {
+        var rules = <Rule>[];
+        if (isRequired()) {
+            rules.add(_requiredRule());
+        }
+        return rules;
+    }
+
+    Rule _requiredRule() =>
+        createRequiredRule((v) => v.property('createEmptyInstance').call([]).equalTo(v));
 }

@@ -18,19 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+/// The Protobuf runtime library.
+const protobufImport = 'package:protobuf/protobuf.dart';
 
-/**
- * Describes a method with three parameters.
- *
- * @param <T> the type of the first parameter
- * @param <U> the type of the second parameter
- * @param <V> the type of the third parameter
- * @implNote Is used in these tests for passing method references with one format string and
- *           two arguments.
- * @author Alexander Yevsyukov
- */
-@FunctionalInterface
-interface TriConsumer<T, U, V> {
-    void accept(T t, U u, V v);
-}
+/// `spine/validate/validation_error.pb.dart`.
+String validationErrorImport(String standardPackage) =>
+    'package:$standardPackage/spine/validate/validation_error.pb.dart';
+
+/// `google/protobuf/wrappers.pb.dart`.
+String protoWrappersImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/wrappers.pb.dart';
+
+/// `google/protobuf/any.pb.dart`.
+String protoAnyImport(String standardPackage) =>
+    'package:$standardPackage/google/protobuf/any.pb.dart';
+
+/// `spine/base/field_path.pb.dart`.
+String fieldPathImport(String standardPackage) =>
+    'package:$standardPackage/spine/base/field_path.pb.dart';

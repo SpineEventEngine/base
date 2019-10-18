@@ -1,0 +1,78 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import org.codehaus.plexus.util.Os
+
+group = 'io.spine.tools'
+
+apply from: deps.scripts.dartBuildTasks
+apply from: deps.scripts.pubPublishTasks
+
+dependencies {
+    protobuf deps.build.protobuf
+    protobuf project(':base')
+    implementation project(':tool-base')
+
+    testImplementation project(':testlib')
+}
+
+final def generationRoot = "$projectDir/generated"
+
+task copyGeneratedDart(type: Copy) {
+    from "$generationRoot/main/dart"
+    into "$projectDir/lib"
+}
+
+assemble.dependsOn 'copyGeneratedDart'
+
+protobuf {
+    generatedFilesBaseDir = generationRoot
+
+    plugins {
+        dart {
+            final def windows = Os.isFamily(Os.FAMILY_WINDOWS)
+            final def dartPluginExe = windows
+                    ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\protoc-gen-dart.bat"
+                    : "${System.getProperty('user.home')}/.pub-cache/bin/protoc-gen-dart"
+            path = dartPluginExe
+        }
+    }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                dart {}
+                remove spineProtoc
+            }
+            task.generateDescriptorSet = false
+            if (task.sourceSet.name.equals('main')) {
+                project.tasks['copyGeneratedDart'].dependsOn task
+            }
+        }
+    }
+}
+
+tasks.withType(JavaCompile)*.enabled false
+tasks['testDart'].enabled false
+
+tasks['build'].dependsOn 'activateLocally'

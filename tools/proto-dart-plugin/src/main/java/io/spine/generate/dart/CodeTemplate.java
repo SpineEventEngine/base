@@ -37,7 +37,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>A code template is lazy. The original resource is not read until {@link #compile()} is called.
  */
-public class CodeTemplate {
+public final class CodeTemplate {
 
     private final Resource template;
     private final Map<String, String> insertions;

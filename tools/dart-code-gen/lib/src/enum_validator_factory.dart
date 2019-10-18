@@ -18,33 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.properties;
+import 'package:code_builder/code_builder.dart';
+import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
+import 'package:dart_code_gen/src/field_validator_factory.dart';
+import 'package:dart_code_gen/src/validator_factory.dart';
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.TreeSet;
+import 'field_validator_factory.dart';
+import 'validator_factory.dart';
 
-/**
- * Customized {@link Properties}, which key set is sorted.
- *
- * <p>The instance of this class is used to maintain the alphanumerical order
- * in the {@code .properties} files generated out of the instance contents.
- *
- * <p>Such a trick simplifies the resulting {@code .properties} file navigation
- * and makes any potential debugging easier.
- */
-@SuppressWarnings("ClassExtendsConcreteCollection")
-// It's the best and still readable way for customization.
-final class SortedProperties extends Properties {
+/// Non-default enum constants start at this number.
+const _minNonEmptyEnumValue = 1;
 
-    // Generated automatically.
-    private static final long serialVersionUID = 0L;
+/// A [FieldValidatorFactory] for `bytes` fields.
+///
+class EnumValidatorFactory extends FieldValidatorFactory {
 
-    @SuppressWarnings("RefusedBequest")
-    // as we replace `keys()` with a completely different behavior.
-    @Override
-    public synchronized Enumeration<Object> keys() {
-        return Collections.enumeration(new TreeSet<>(keySet()));
+    EnumValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+        : super(validatorFactory, field);
+
+    @override
+    Iterable<Rule> rules() {
+        var rules = <Rule>[];
+        if (isRequired()) {
+            rules.add(_requiredRule());
+        }
+        return rules;
     }
+
+    Rule _requiredRule() =>
+        createRequiredRule((v) => v.property('value').lessThan(literalNum(_minNonEmptyEnumValue)));
 }
