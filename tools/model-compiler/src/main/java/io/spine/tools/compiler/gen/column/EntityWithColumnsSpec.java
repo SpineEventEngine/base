@@ -78,11 +78,15 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
     private static void addColumnGetter(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
         // TODO:2019-10-14:dmytro.kuzmin:WIP Add method doc.
-        MethodSpec getter = toGetter(fieldDeclaration);
+        MethodSpec getter = getterSpec(fieldDeclaration);
         spec.addMethod(getter);
     }
 
-    private static MethodSpec toGetter(FieldDeclaration declaration) {
+    /**
+     * @implNote All interface methods in Java Poet have to be marked as {@code PUBLIC} and
+     *         {@code ABSTRACT}, these modifiers are actually absent in the generated code.
+     */
+    private static MethodSpec getterSpec(FieldDeclaration declaration) {
         FieldName fieldName = declaration.name();
         String methodName = "get" + fieldName.toCamelCase();
         JavaPoetName fieldTypeName = fieldType(declaration);
