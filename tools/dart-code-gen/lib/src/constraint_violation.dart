@@ -24,10 +24,9 @@ import 'imports.dart';
 
 const _violationType = 'ConstraintViolation';
 const _violation = '_violation';
-const violationRef = Reference(_violation);
 
-/// Obtains a reference to the method which constructs a `spine.validate.ConstraintViolation` from
-/// given parameters.
+/// The reference to the method which constructs a `spine.validate.ConstraintViolation` from given
+/// parameters.
 ///
 /// To produce an expression which invokes this method, call `call(..)` and pass method arguments:
 ///  1. The error message string.
@@ -35,6 +34,8 @@ const violationRef = Reference(_violation);
 ///  3. A list of strings representing a path to the field as defined in `spine.base.FieldPath`.
 ///  4. Optionally, a `google.protobuf.Any` with the actual value of the field.
 ///
+const violationRef = Reference(_violation);
+
 Reference violationTypeRef(String standardPackage) =>
     Reference(_violationType, validationErrorImport(standardPackage));
 

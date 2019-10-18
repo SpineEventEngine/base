@@ -21,9 +21,13 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
 import 'package:dart_code_gen/spine/options.pb.dart';
+import 'package:dart_code_gen/src/bytes_validator_factory.dart';
 
 import 'constraint_violation.dart';
-import 'imports.dart';
+import 'enum_validator_factory.dart';
+import 'message_validator_factory.dart';
+import 'number_validator_factory.dart';
+import 'string_validator_factory.dart';
 import 'validator_factory.dart';
 
 /// Factory of validation code for a given message field.
@@ -36,16 +40,41 @@ class FieldValidatorFactory {
     /// The field to validate.
     final FieldDescriptorProto field;
 
-    FieldValidatorFactory._(this.validatorFactory, this.field);
+    FieldValidatorFactory(this.validatorFactory, this.field);
 
     /// Creates a new `FieldValidatorFactory` for the given field.
+    ///
+    /// May return `null` to signify that no validation is required for the given field.
+    ///
     factory FieldValidatorFactory.forField(FieldDescriptorProto field, ValidatorFactory factory) {
         var type = field.type;
         switch (type) {
             case FieldDescriptorProto_Type.TYPE_STRING:
-                return new _StringValidatorFactory(factory, field);
+                return StringValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_DOUBLE:
+                return DoubleValidatorFactory.forDouble(factory, field);
             case FieldDescriptorProto_Type.TYPE_FLOAT:
-                return new _FloatValidatorFactory(factory, field);
+                return DoubleValidatorFactory.forFloat(factory, field);
+            case FieldDescriptorProto_Type.TYPE_INT32:
+            case FieldDescriptorProto_Type.TYPE_SINT32:
+            case FieldDescriptorProto_Type.TYPE_FIXED32:
+            case FieldDescriptorProto_Type.TYPE_SFIXED32:
+                return IntValidatorFactory.forInt32(factory, field);
+            case FieldDescriptorProto_Type.TYPE_INT64:
+            case FieldDescriptorProto_Type.TYPE_SINT64:
+            case FieldDescriptorProto_Type.TYPE_FIXED64:
+            case FieldDescriptorProto_Type.TYPE_SFIXED64:
+                return IntValidatorFactory.forInt64(factory, field);
+            case FieldDescriptorProto_Type.TYPE_UINT32:
+                return IntValidatorFactory.forUInt32(factory, field);
+            case FieldDescriptorProto_Type.TYPE_UINT64:
+                return IntValidatorFactory.forUInt64(factory, field);
+            case FieldDescriptorProto_Type.TYPE_BYTES:
+                return BytesValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_ENUM:
+                return EnumValidatorFactory(factory, field);
+            case FieldDescriptorProto_Type.TYPE_MESSAGE:
+                return MessageValidatorFactory(factory, field);
         }
         return null;
     }
@@ -58,8 +87,8 @@ class FieldValidatorFactory {
     /// the [ValidatorFactory.violationList] of the [validatorFactory].
     ///
     Code createFieldValidator(Expression fieldValue) {
-        var statements = _rules()
-            .map((r) => r.eval(fieldValue))
+        var statements = rules()
+            .map((r) => r._eval(fieldValue))
             .map((expression) => expression.statement)
             .toList();
         return statements.isNotEmpty
@@ -68,7 +97,31 @@ class FieldValidatorFactory {
     }
 
     /// Obtains validation rules to apply to the field..
-    Iterable<_Rule> _rules() => null;
+    Iterable<Rule> rules() => null;
+
+    /// Creates a new validation rule with the given parameters.
+    Rule newRule(LazyCondition condition, LazyViolation violation) {
+        return Rule._(condition, violation, validatorFactory.violationList);
+    }
+
+    /// Checks if the validated field is required.
+    ///
+    /// Returns `true` if the field is required and `false` if it is optional.
+    ///
+    bool isRequired() {
+        var options = field.options;
+        return options.hasExtension(Options.required)
+            && options.getExtension(Options.required);
+    }
+
+    /// Creates a validation for the `(required)` constraint.
+    ///
+    /// The [condition] determines whether or not the field value if set. The conditional expression
+    /// should evaluate into `true` if the field is **NOT** set.
+    ///
+    Rule createRequiredRule(LazyCondition condition) {
+        return newRule(condition, (v) => _requiredMissing());
+    }
 
     /// Generates an expression which constructs a `ConstraintViolation` for a missing required
     /// field.
@@ -85,7 +138,7 @@ class FieldValidatorFactory {
 ///
 /// Typically, one rule represents one validation option for a given field type.
 ///
-class _Rule {
+class Rule {
 
     final LazyCondition _condition;
     final LazyViolation _violation;
@@ -102,7 +155,7 @@ class _Rule {
     /// the `ConstraintViolation`s. If the rule is broken, the violation generated by [_violation]
     /// is added to the list.
     ///
-    _Rule(this._condition, this._violation, this._targetViolationList);
+    Rule._(this._condition, this._violation, this._targetViolationList);
 
     /// Produces a ternary operator which creates a new violation if the string is empty.
     ///
@@ -115,7 +168,7 @@ class _Rule {
     /// `code_builder` does not support `if` statements, so a ternary conditional operator has to
     /// be used.
     ///
-    Expression eval(Expression fieldValue) {
+    Expression _eval(Expression fieldValue) {
         var ternaryOperator = _condition(fieldValue).conditional(
             _targetViolationList
                 .property('add')
@@ -129,98 +182,9 @@ class _Rule {
 typedef Expression LazyViolation(Expression fieldValue);
 
 /// A function of a field value expresion to a boolean expression representing a constraint.
+///
+/// The resulting expression should return a `bool`:
+///  - `true` if the constraint is violated;
+///  - `false` if the constraint obeyed.
+///
 typedef Expression LazyCondition(Expression fieldValue);
-
-/// A [FieldValidatorFactory] for `string` fields.
-///
-/// Currently, the only supported option is `(required)`.
-///
-class _StringValidatorFactory extends FieldValidatorFactory {
-
-    _StringValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
-        : super._(validatorFactory, field);
-
-    Iterable<_Rule> _rules() {
-        var rules = <_Rule>[];
-        if (field.options.hasExtension(Options.required)) {
-            var requiredString = _Rule((v) => v.property('isEmpty'),
-                                       (v) => _requiredMissing(),
-                                       validatorFactory.violationList);
-            rules.add(requiredString);
-        }
-        return rules;
-    }
-}
-
-/// A [FieldValidatorFactory] for `float` fields.
-///
-/// Currently, the supported options are `(min)` and `(max)`.
-///
-class _FloatValidatorFactory extends FieldValidatorFactory {
-
-    _FloatValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
-        : super._(validatorFactory, field);
-
-    Iterable<_Rule> _rules() {
-        var rules = <_Rule>[];
-        var options = field.options;
-        if (options.hasExtension(Options.min)) {
-            _Rule min = _minRule(options);
-            rules.add(min);
-        }
-        if (options.hasExtension(Options.max)) {
-            _Rule max = _maxRule(options);
-            rules.add(max);
-        }
-        return rules;
-    }
-
-    _Rule _minRule(FieldOptions options) {
-      var min = options.getExtension(Options.min) as MinOption;
-      var bound = double.parse(min.value);
-      var exclusive = min.exclusive;
-      var literal = literalNum(bound);
-      var check = exclusive
-                  ? (Expression v) => v.lessOrEqualTo(literal)
-                  : (Expression v) => v.lessThan(literal);
-      var requiredString = _Rule((v) => check(v),
-                                 _outOfBound,
-                                 validatorFactory.violationList);
-      return requiredString;
-    }
-
-    _Rule _maxRule(FieldOptions options) {
-      var max = options.getExtension(Options.max) as MaxOption;
-      var bound = double.parse(max.value);
-      var exclusive = max.exclusive;
-      var literal = literalNum(bound);
-      var check = exclusive
-                  ? (Expression v) => v.greaterOrEqualTo(literal)
-                  : (Expression v) => v.greaterThan(literal);
-      var requiredString = _Rule((v) => check(v),
-                                 _outOfBound,
-                                 validatorFactory.violationList);
-      return requiredString;
-    }
-
-    // TODO:2019-10-14:dmytro.dashenkov: Support custom error messages based on the option value.
-    // https://github.com/SpineEventEngine/base/issues/482
-    Expression _outOfBound(Expression value) {
-        var param = 'v';
-        var standardPackage = validatorFactory.properties.standardPackage;
-        var floatValue = refer('FloatValue', protoWrappersImport(standardPackage))
-            .newInstance([])
-            .property('copyWith')
-            .call([Method((b) => b
-            ..requiredParameters.add(Parameter((b) => b.name = param))
-            ..body = refer(param)
-                .property('value')
-                .assign(value)
-                .statement).closure]);
-        var any = refer('Any', protoAnyImport(standardPackage)).property('pack').call([floatValue]);
-        return violationRef.call([literalString('Float field is out of bound.'),
-                                  literalString(validatorFactory.fullTypeName),
-                                  literalList([field.name]),
-                                  any]);
-    }
-}

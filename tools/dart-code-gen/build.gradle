@@ -1,5 +1,3 @@
-import org.codehaus.plexus.util.Os
-
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -20,9 +18,12 @@ import org.codehaus.plexus.util.Os
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.codehaus.plexus.util.Os
+
 group = 'io.spine.tools'
 
-apply from: "$rootDir/config/gradle/dart/build-tasks.gradle"
+apply from: deps.scripts.dartBuildTasks
+apply from: deps.scripts.pubPublishTasks
 
 dependencies {
     protobuf deps.build.protobuf
@@ -73,3 +74,5 @@ protobuf {
 
 tasks.withType(JavaCompile)*.enabled false
 tasks['testDart'].enabled false
+
+tasks['build'].dependsOn 'activateLocally'

@@ -30,14 +30,14 @@ const _violations = 'violations';
 const _msg = 'msg';
 
 /// Factory of message validation code for a Protobuf type.
-/// 
+///
 /// For a given Protobuf message type, generates a lambda which accepts a single message and creates
 /// a `spine.validate.ValidationError`. If the given message is valid, the lambda returns `null`.
 /// Otherwise, it returns all `ConstraintViolation`s for the message as a single error.
 ///
 /// Note that the type of the input message is not checked. Users should wrap calls to validators
 /// in type-aware abstractions instead of referring to them directly.
-/// 
+///
 class ValidatorFactory {
 
     final FileDescriptorProto file;
@@ -56,6 +56,10 @@ class ValidatorFactory {
         var filePathWithoutExtension = file.name.substring(0, endIndex);
         return filePathWithoutExtension + '.pb.dart';
     }
+    
+    Expression get _emptyValidationError =>
+        refer('ValidationError', validationErrorImport(properties.standardPackage))
+            .newInstance([]);
 
     /// Creates a validator expression.
     ///
@@ -63,9 +67,14 @@ class ValidatorFactory {
         var param = Parameter((b) => b
             ..type = refer('GeneratedMessage', protobufImport)
             ..name = _msg);
-        return Method((b) => b
-            ..requiredParameters.add(param)
-            ..body = _createValidator()).closure;
+        try {
+            return Method((b) => b
+                ..requiredParameters.add(param)
+                ..body = _createValidator()).closure;
+        } catch (e) {
+            throw StateError('Cannot generate validation code for `$fullTypeName`. '
+                             '${e.toString()}');
+        }
     }
 
     Code _createValidator() {
@@ -77,7 +86,7 @@ class ValidatorFactory {
             }
         }
         if (validations.isEmpty) {
-            return literalNull.returned.statement;
+            return _emptyValidationError.returned.statement;
         } else {
             return _collectFieldChecks(validations);
         }
@@ -107,10 +116,7 @@ class ValidatorFactory {
     }
 
     Expression _newValidationError(String error) {
-        return refer('ValidationError',
-                     validationErrorImport(properties.standardPackage))
-            .newInstance([])
-            .assignVar(error);
+        return _emptyValidationError.assignVar(error);
     }
 
     /// Generates validation code for a given field.
@@ -127,10 +133,31 @@ class ValidatorFactory {
         var validatedMessageType = refer(type.name, importUri);
         var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
-            var fieldValue = refer(_msg).asA(validatedMessageType).property(field.name);
+            var fieldValue = refer(_msg).asA(validatedMessageType).property(_fieldName(field));
             return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
+    }
+
+    /// Obtains a Dart name of the given Protobuf field.
+    ///
+    /// Dart Protobuf plugin also supports custom names generated from the custom `(dart_name)`
+    /// option. However, since the Protobuf sources for that option are not published, there is
+    /// no easy way to use this option. Thus, Spine code generation does not support it.
+    ///
+    String _fieldName(FieldDescriptorProto field) {
+        var protoName = field.name;
+        var words = protoName.split('_');
+        var first = words[0];
+        var capitalized = List.of(words.map(_capitalize));
+        capitalized[0] = first;
+        return capitalized.join('');
+    }
+
+    String _capitalize(String word) {
+        return word.isEmpty
+               ? word
+               : '${word[0].toUpperCase()}${word.substring(1)}';
     }
 }
