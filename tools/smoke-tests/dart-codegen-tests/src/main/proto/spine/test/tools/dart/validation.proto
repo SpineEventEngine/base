@@ -36,6 +36,16 @@ message Contact {
     }
 }
 
+message Contacts {
+
+    Contact contact = 1;
+}
+
+message ContactBook {
+
+    map<uint32, Contact> contact_by_category = 1 [(required) = true];
+}
+
 message LocalTime {
 
     uint32 hours = 1 [(range) = "[0..23]"];

@@ -99,6 +99,11 @@ void main() {
                 checkMissing(ticket, 'numbers');
             });
 
+            test('missing requied map values', () {
+                var message = ContactBook();
+                checkMissing(message, 'contact_by_category');
+            });
+
             test('out of range repeated numbers', () {
                 var ticket = LotteryTicket()
                     ..magicNumber = 42
@@ -159,6 +164,8 @@ void main() {
                 expect(violations[0].msgFormat, contains('Field must be set'));
                 expect(violations[1].msgFormat, contains('regular expression'));
             });
+
+
         });
     });
 }
