@@ -32,6 +32,9 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A value holder of JavaPoet {@link TypeName}.
+ *
+ * @apiNote Does not extend {@link io.spine.value.ValueHolder} as {@link TypeName} is not
+ *         serializable.
  */
 public final class JavaPoetName {
 
@@ -66,7 +69,8 @@ public final class JavaPoetName {
     public ClassName className() {
         checkState(value instanceof ClassName,
                    "The type name is of type `%s`, expected an instance of `%s`.",
-                   value.getClass().getCanonicalName(), ClassName.class.getCanonicalName());
+                   value.getClass()
+                        .getCanonicalName(), ClassName.class.getCanonicalName());
         return (ClassName) value;
     }
 }
