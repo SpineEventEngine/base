@@ -33,7 +33,7 @@ const _numericRange = r'([\[(])\s*([+\-]?[\d.]+)\s*\.\.\s*([+\-]?[\d.]+)\s*([\])
 ///
 /// Supports options `(min)`, `(max)`, and `(range)`.
 ///
-class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
+class NumberValidatorFactory<N extends num> extends ScalarFieldValidatorFactory {
     
     final String _wrapperType;
 

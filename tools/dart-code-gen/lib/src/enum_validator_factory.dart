@@ -31,7 +31,7 @@ const _minNonEmptyEnumValue = 1;
 
 /// A [FieldValidatorFactory] for `bytes` fields.
 ///
-class EnumValidatorFactory extends FieldValidatorFactory {
+class EnumValidatorFactory extends ScalarFieldValidatorFactory {
 
     EnumValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
