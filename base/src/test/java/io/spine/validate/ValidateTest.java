@@ -43,7 +43,6 @@ import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkBounds;
 import static io.spine.validate.Validate.checkDefault;
-import static io.spine.validate.Validate.checkNotDefault;
 import static io.spine.validate.Validate.checkNotDefaultArg;
 import static io.spine.validate.Validate.checkNotDefaultState;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
@@ -162,7 +161,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
     void returnNonDefaultValueOnCheck() {
         StringValue nonDefault = newUuidValue();
         assertEquals(nonDefault, checkNotDefaultArg(nonDefault));
-        assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
+        assertEquals(nonDefault, checkNotDefaultState(nonDefault, "with error message"));
     }
 
     @Test

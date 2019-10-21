@@ -121,13 +121,59 @@ public final class Validate {
     /**
      * Ensures that the passed object is not in its default state and is not {@code null}.
      *
-     * @param object       the {@code Message} instance to check
-     * @param errorMessage the message for the exception to be thrown;
-     *                     will be converted to a string using {@link String#valueOf(Object)}
-     * @throws IllegalStateException if the object is in its default state
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessage
+     *         the message for the exception to be thrown;
+     *         will be converted to a string using {@link String#valueOf(Object)}
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @deprecated please use {@link #checkNotDefaultArg(Message, Object)} or
+     *         {@link #checkNotDefaultState(Message, Object)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object, @Nullable Object errorMessage) {
+        return checkNotDefaultState(object, errorMessage);
+    }
+
+    /**
+     * Ensures that the passed object is not in its default state and is not {@code null}.
+     *
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessage
+     *         the message for the exception to be thrown;
+     *         will be converted to a string using {@link String#valueOf(Object)}
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @throws NullPointerException
+     *         if the passed message is {@code null}
+     */
+    @CanIgnoreReturnValue
+    public static <M extends Message>
+    M checkNotDefaultArg(M object, @Nullable Object errorMessage) {
+        checkNotNull(object);
+        checkArgument(isNotDefault(object), errorMessage);
+        return object;
+    }
+
+    /**
+     * Ensures that the passed object is not in its default state and is not {@code null}.
+     *
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessage
+     *         the message for the exception to be thrown;
+     *         will be converted to a string using {@link String#valueOf(Object)}
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @throws NullPointerException
+     *         if the passed message is {@code null}
+     */
+    @CanIgnoreReturnValue
+    public static <M extends Message>
+    M checkNotDefaultState(M object, @Nullable Object errorMessage) {
         checkNotNull(object);
         checkState(isNotDefault(object), errorMessage);
         return object;
@@ -140,15 +186,63 @@ public final class Validate {
      * @param errorMessageTemplate a template for the exception message should the check fail
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is in its default state
+     * @deprecated please use {@link #checkNotDefaultState(Message, String, Object...)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkNotDefault(M object,
                                                         String errorMessageTemplate,
                                                         Object... errorMessageArgs) {
+        return checkNotDefaultState(object, errorMessageTemplate, errorMessageArgs);
+    }
+
+    /**
+     * Ensures that the passed object is not in its default state and is not {@code null}.
+     *
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessageTemplate
+     *         a template for the exception message should the check fail
+     * @param errorMessageArgs
+     *         the arguments to be substituted into the message template
+     * @throws IllegalArgumentException
+     *         if the object is in its default state
+     * @throws NullPointerException
+     *          if the passed message is {@code null}
+     */
+    @CanIgnoreReturnValue
+    @SuppressWarnings("OverloadedVarargsMethod")
+    public static <M extends Message>
+    M checkNotDefaultArg(M object,
+                         @Nullable String errorMessageTemplate,
+                         @Nullable Object @Nullable ... errorMessageArgs) {
         checkNotNull(object);
-        checkNotNull(errorMessageTemplate);
-        checkNotNull(errorMessageArgs);
+        checkArgument(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
+        return object;
+    }
+
+    /**
+     * Ensures that the passed object is not in its default state and is not {@code null}.
+     *
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessageTemplate
+     *         a template for the exception message should the check fail
+     * @param errorMessageArgs
+     *         the arguments to be substituted into the message template
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @throws NullPointerException
+     *          if the passed message is {@code null}
+     */
+    @CanIgnoreReturnValue
+    @SuppressWarnings("OverloadedVarargsMethod")
+    public static <M extends Message>
+    M checkNotDefaultState(M object,
+                           @Nullable String errorMessageTemplate,
+                           @Nullable Object @Nullable ... errorMessageArgs) {
+        checkNotNull(object);
         checkState(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
         return object;
     }
@@ -160,9 +254,8 @@ public final class Validate {
      *         the {@code Message} instance to check
      * @throws IllegalStateException
      *         if the object is in its default state
-     * @deprecated please use {@link #checkNotDefaultState(Message)} when intending to throw
-     *         {@code IllegalStateException} or {@link #checkNotDefaultArg(Message)} when intending
-     *         to throw {@code IllegalArgumentException}
+     * @deprecated please use {@link #checkNotDefaultArg(Message)} or
+     *             {@link #checkNotDefaultState(Message)}
      */
     @Deprecated
     @CanIgnoreReturnValue
