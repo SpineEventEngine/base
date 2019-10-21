@@ -36,7 +36,6 @@ import static com.google.common.truth.Fact.simpleFact;
 /**
  * Propositions for {@link LogRecord} subjects.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection") // method names specific to Java Logging
 public class LogRecordSubject extends Subject {
 
     static final String NO_LOG_RECORD = "no log record";
