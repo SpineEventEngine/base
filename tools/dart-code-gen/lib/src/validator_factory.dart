@@ -19,6 +19,8 @@
  */
 
 import 'package:code_builder/code_builder.dart';
+import 'package:dart_code_gen/spine/options.pb.dart';
+import 'package:dart_code_gen/src/field_tuple_validation_factory.dart';
 
 import '../dart_code_gen.dart';
 import '../google/protobuf/descriptor.pb.dart';
@@ -68,16 +70,32 @@ class ValidatorFactory {
             ..type = refer('GeneratedMessage', protobufImport)
             ..name = _msg);
         try {
+            var statements = [_createRequiredFieldValidator(), _createFieldValidators()]
+                             .where((code) => code != null);
             return Method((b) => b
                 ..requiredParameters.add(param)
-                ..body = _createValidator()).closure;
+                ..body = Block.of(statements)
+            ).closure;
         } catch (e) {
             throw StateError('Cannot generate validation code for `$fullTypeName`. '
                              '${e.toString()}');
         }
     }
 
-    Code _createValidator() {
+    Code _createRequiredFieldValidator() {
+        var options = type.options;
+        var option = Options.requiredField;
+        if (options.hasExtension(option)) {
+            var fields = options.getExtension(option);
+            var factory = FieldTupleValidatorFactory.forTuple(fields, this);
+            var validator = factory.generate(_typedMessage);
+            return validator;
+        } else {
+            return null;
+        }
+    }
+    
+    Code _createFieldValidators() {
         var validations = <Code>[];
         for (var field in type.field) {
             var validator = _createFieldValidator(field);
@@ -92,7 +110,7 @@ class ValidatorFactory {
         }
     }
 
-    Block _collectFieldChecks(List<Code> validations) {
+    Code _collectFieldChecks(List<Code> validations) {
         var statements = <Code>[];
         statements.add(_newViolationList().statement);
         statements.addAll(validations);
@@ -126,19 +144,20 @@ class ValidatorFactory {
     /// See [FieldValidatorFactory] for more on field validation.
     ///
     Code _createFieldValidator(FieldDescriptorProto field) {
-        var prefix = properties.importPrefix;
-        var importUri = prefix.isNotEmpty
-                        ? '$prefix/$_fileName'
-                        : _fileName;
-        var validatedMessageType = refer(type.name, importUri);
         var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
-            var fieldValue = refer(_msg).asA(validatedMessageType).property(_fieldName(field));
+            var fieldValue = _typedMessage.property(_fieldName(field));
             return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
     }
+
+    Expression get _typedMessage =>
+        refer(_msg).asA(_typeRef(properties.importPrefix));
+
+    Reference _typeRef(String prefix) =>
+        refer(type.name, prefix.isNotEmpty ? '$prefix/$_fileName' : _fileName);
 
     /// Obtains a Dart name of the given Protobuf field.
     ///
