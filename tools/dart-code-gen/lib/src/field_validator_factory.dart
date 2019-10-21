@@ -47,12 +47,12 @@ class FieldValidatorFactory {
     /// May return `null` to signify that no validation is required for the given field.
     ///
     factory FieldValidatorFactory.forField(FieldDescriptorProto field, ValidatorFactory factory) {
-        var scalarFactory = SingularFieldValidatorFactory._forType(field, factory);
+        var singularFactory = SingularFieldValidatorFactory._forType(field, factory);
         var repeated = field.label == FieldDescriptorProto_Label.LABEL_REPEATED;
         if (repeated) {
-            return RepeatedFieldValidatorFactory(factory, field, scalarFactory);
+            return RepeatedFieldValidatorFactory(factory, field, singularFactory);
         } else {
-            return scalarFactory;
+            return singularFactory;
         }
     }
 
@@ -164,11 +164,11 @@ class SingularFieldValidatorFactory extends FieldValidatorFactory {
 ///
 class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
 
-    final FieldValidatorFactory _scalar;
+    final FieldValidatorFactory _singular;
 
     RepeatedFieldValidatorFactory(ValidatorFactory validatorFactory,
                                   FieldDescriptorProto field,
-                                  this._scalar)
+                                  this._singular)
         : super(validatorFactory, field);
 
     @override
@@ -219,7 +219,7 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
     Expression validateEachElement(Reference valuesRef) {
         var element = 'element';
         var elementRef = refer(element);
-        var elementValidation = _scalar.createFieldValidator(elementRef);
+        var elementValidation = _singular.createFieldValidator(elementRef);
         if (elementValidation != null) {
             var nonNullCheck = refer('ArgumentError')
                 .property('checkNotNull')
