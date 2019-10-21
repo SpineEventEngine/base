@@ -75,6 +75,8 @@ class FieldValidatorFactory {
             && options.getExtension(Options.required);
     }
 
+    bool supportsRequired() => true;
+
     /// Creates a new validation rule with the given parameters.
     Rule newRule(LazyCondition condition, LazyViolation violation) {
         return Rule._(condition, violation, validatorFactory.violationList);
@@ -82,12 +84,11 @@ class FieldValidatorFactory {
 
     /// Creates a validation for the `(required)` constraint.
     ///
-    /// The [condition] determines whether or not the field value if set. The conditional expression
-    /// should evaluate into `true` if the field is **NOT** set.
-    ///
-    Rule createRequiredRule(LazyCondition condition) {
-        return newRule(condition, (v) => _requiredMissing());
+    Rule createRequiredRule() {
+        return newRule(notSetCondition(), (v) => _requiredMissing());
     }
+
+    LazyCondition notSetCondition() => null;
 
     /// Generates an expression which constructs a `ConstraintViolation` for a missing required
     /// field.
@@ -175,13 +176,13 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
     Code createFieldValidator(Expression field) {
         var validation = <Expression>[];
         if (isRequired()) {
-            var requiredRule = createRequiredRule((v) => v.property('isEmpty'));
+            var requiredRule = createRequiredRule();
             validation.add(requiredRule._eval(field));
         }
         var values = 'values_${this.field.name}';
         var valuesRef = refer(values);
-        var validateDistinctList = validateDistinct(valuesRef);
-        var validateElements = validateEachElement(valuesRef);
+        var validateDistinctList = _validateDistinct(valuesRef);
+        var validateElements = _validateEachElement(valuesRef);
         if (validateElements != null || validateDistinctList != null) {
             var valueList = field.isA(refer('Map'))
                                  .conditional(field.asA(refer('dynamic')).property('values'), field)
@@ -197,7 +198,10 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
         return Block.of(validation.map((expression) => expression.statement));
     }
 
-    Expression validateDistinct(Reference valuesRef) {
+    @override
+    LazyCondition notSetCondition() => (v) => v.property('isEmpty');
+
+    Expression _validateDistinct(Reference valuesRef) {
         var options = field.options;
         var option = Options.distinct;
         if (options.hasExtension(option) && options.getExtension(option)) {
@@ -216,7 +220,7 @@ class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
         }
     }
 
-    Expression validateEachElement(Reference valuesRef) {
+    Expression _validateEachElement(Reference valuesRef) {
         var element = 'element';
         var elementRef = refer(element);
         var elementValidation = _singular.createFieldValidator(elementRef);

@@ -65,6 +65,8 @@ class NumberValidatorFactory<N extends num> extends SingularFieldValidatorFactor
         return rules;
     }
 
+    bool supportsRequired() => false;
+
     Rule _minRule(FieldOptions options) {
         var min = options.getExtension(Options.min) as MinOption;
         var bound = _parse(min.value);

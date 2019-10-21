@@ -40,7 +40,7 @@ class StringValidatorFactory extends SingularFieldValidatorFactory {
         var options = field.options;
         var rules = <Rule>[];
         if (isRequired()) {
-            rules.add(_requiredRule());
+            rules.add(createRequiredRule());
         }
         if (options.hasExtension(Options.pattern)) {
             Rule rule = _patternRule(options);
@@ -49,7 +49,8 @@ class StringValidatorFactory extends SingularFieldValidatorFactory {
         return rules;
     }
 
-    Rule _requiredRule() => createRequiredRule((v) => v.property('isEmpty'));
+    @override
+    LazyCondition notSetCondition() => (v) => v.property('isEmpty');
 
     /// Creates a validation rule which matches a string upon a regular expression.
     ///
