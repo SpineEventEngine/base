@@ -20,6 +20,7 @@
 
 package io.spine.code.java;
 
+import io.spine.code.CamelCasedName;
 import io.spine.value.StringTypeValue;
 
 import java.lang.reflect.Method;

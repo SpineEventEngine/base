@@ -23,6 +23,7 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.CamelCasedName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.code;
 
 import java.util.Arrays;
 import java.util.List;
