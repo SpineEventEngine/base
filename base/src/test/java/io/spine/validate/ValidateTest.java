@@ -116,14 +116,6 @@ class ValidateTest extends UtilityClassTest<Validate> {
     }
 
     @Test
-    @DisplayName("check that message is in default state")
-    void checkIfMessageIsInDefault() {
-        StringValue nonDefault = newUuidValue();
-        assertThrows(IllegalStateException.class,
-                     () -> checkDefault(nonDefault));
-    }
-
-    @Test
     @DisplayName("check that message is in default state with a parametrized error message")
     void checkAMessageIsDefaultWithParametrizedErrorMessage() {
         StringValue nonDefault = newUuidValue();

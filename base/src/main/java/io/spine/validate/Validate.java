@@ -39,6 +39,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -92,6 +93,7 @@ public final class Validate {
      * @throws NullPointerException
      *          if the passed message is {@code null}
      */
+    @CanIgnoreReturnValue
     public static <T extends @NonNull Message> T checkNotDefaultArg(T message) {
         checkArgument(!isDefault(message));
         return message;
@@ -110,6 +112,7 @@ public final class Validate {
      * @throws NullPointerException
      *          if the passed message is {@code null}
      */
+    @CanIgnoreReturnValue
     public static <T extends @NonNull Message> T checkNotDefaultState(T message) {
         checkState(!isDefault(message));
         return message;
@@ -153,11 +156,13 @@ public final class Validate {
     /**
      * Ensures that the passed object is not in its default state and is not {@code null}.
      *
-     * @param object the {@code Message} instance to check
-     * @throws IllegalStateException if the object is in its default state
+     * @param object
+     *         the {@code Message} instance to check
+     * @throws IllegalStateException
+     *         if the object is in its default state
      * @deprecated please use {@link #checkNotDefaultState(Message)} when intending to throw
-     *  {@code IllegalStateException} or {@link #checkNotDefaultArg(Message)} when intending to
-     *  throw {@code IllegalArgumentException}
+     *         {@code IllegalStateException} or {@link #checkNotDefaultArg(Message)} when intending
+     *         to throw {@code IllegalArgumentException}
      */
     @Deprecated
     @CanIgnoreReturnValue
@@ -205,14 +210,17 @@ public final class Validate {
      *
      * @param object the {@code Message} instance to check
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is its default state,
+     *  please use {@code checkState(isDefault(msg));}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object) {
         checkNotNull(object);
         if (!isDefault(object)) {
-            String typeName = TypeName.of(object)
-                                      .value();
-            throw newIllegalStateException("The message is not in the default state: %s", typeName);
+            throw newIllegalStateException(
+                    "The message is not in the default state: `%s`.", shortDebugString(object)
+            );
         }
         return object;
     }
@@ -293,8 +301,9 @@ public final class Validate {
     public static void checkBounds(int value, String paramName, int lowBound, int highBound) {
         checkNotNull(paramName);
         if (!isBetween(value, lowBound, highBound)) {
-            throw newIllegalArgumentException("%s (%d) should be in bounds [%d, %d] inclusive",
-                                              paramName, value, lowBound, highBound);
+            throw newIllegalArgumentException(
+                    "`%s` (value: %d) must be in bounds [%d, %d] inclusive.",
+                    paramName, value, lowBound, highBound);
         }
     }
 
@@ -392,8 +401,6 @@ public final class Validate {
         return setOnceValue || requiredByDefault;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Usage in AbstractValidatingBuilder will be removed.
     private static void onSetOnceMisuse(FieldDeclaration field) {
         FieldName fieldName = field.name();
         logger.atSevere()
@@ -402,8 +409,6 @@ public final class Validate {
                    fieldName);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Usage in AbstractValidatingBuilder will be removed.
     private static ConstraintViolation violatedSetOnce(FieldDeclaration declaration) {
         TypeName declaringTypeName = declaration.declaringType().name();
         FieldName fieldName = declaration.name();
