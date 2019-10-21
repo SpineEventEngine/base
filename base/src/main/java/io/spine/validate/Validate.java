@@ -177,7 +177,10 @@ public final class Validate {
      * @param errorMessage the message for the exception to be thrown;
      *                     will be converted to a string using {@link String#valueOf(Object)}
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is in the default state,
+     *             please use {@code checkState(isDefault(object), errorMessage); }
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object, @Nullable Object errorMessage) {
         checkNotNull(object);
@@ -192,7 +195,10 @@ public final class Validate {
      * @param errorMessageTemplate a template for the exception message should the check fail
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is in the default state,
+     *             please use {@code checkState(isDefault(object), template, arg1, arg2, arg3); }
      */
+    @Deprecated
     @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkDefault(M object,
@@ -338,6 +344,8 @@ public final class Validate {
      *         the new state of the message
      * @param <M>
      *         the type of the message
+     * @throws ValidationException
+     *          the the value transition is not valid
      */
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);

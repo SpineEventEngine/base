@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkBounds;
@@ -115,6 +116,20 @@ class ValidateTest extends UtilityClassTest<Validate> {
         assertFalse(isDefault(nonDefault));
     }
 
+    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
+    @Test
+    @DisplayName("check that message is in default state")
+    void checkIfMessageIsInDefault() {
+        StringValue nonDefault = newUuidValue();
+        IllegalStateException exception =
+                assertThrows(IllegalStateException.class,
+                             () -> checkDefault(nonDefault));
+        assertThat(exception)
+                .hasMessageThat()
+                .contains(shortDebugString(nonDefault));
+    }
+
+    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
     @Test
     @DisplayName("check that message is in default state with a parametrized error message")
     void checkAMessageIsDefaultWithParametrizedErrorMessage() {
@@ -126,6 +141,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
                                         TypeName.of(nonDefault)));
     }
 
+    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
     @Test
     @DisplayName("return default value on check")
     void returnDefaultValueOnCheck() {
@@ -179,11 +195,12 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @Test
     @DisplayName("format message from constraint violation")
     void formatMessageFromConstraintViolation() {
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat("test %s test %s")
-                                                           .addParam("1")
-                                                           .addParam("2")
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("test %s test %s")
+                .addParam("1")
+                .addParam("2")
+                .build();
         String formatted = ViolationText.of(violation)
                                         .toString();
 
