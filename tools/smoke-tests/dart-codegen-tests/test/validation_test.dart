@@ -41,6 +41,12 @@ void main() {
             assertValid(msg);
         });
 
+        test('pass mesages with enough required fields as by `(required_field)`', () {
+            var givenNameOnly = PersonName()
+                ..givenName = 'Henry';
+            assertValid(givenNameOnly);
+        });
+
         group('report violations on', () {
             test('mismatched string', () {
                 var msg = PhoneNumber()
@@ -186,6 +192,15 @@ void main() {
                 expect(violations[0].fieldPath.fieldName[0], 'contact_by_category');
                 expect(violations[0].typeName, book.info_.qualifiedMessageName);
             });
+
+            test('required fields as defined by `(required_field)` option are not set', () {
+                var surnameOnly = PersonName()
+                    ..familyName = 'Jones';
+                assertInvalid(surnameOnly);
+                var prefixOnly = PersonName()
+                    ..honorificPrefix = 'Dr.';
+                assertInvalid(prefixOnly);
+            });
         });
     });
 }
@@ -202,6 +217,12 @@ void checkMissing(GeneratedMessage message, String fieldName) {
 void assertValid(GeneratedMessage message) {
     var violations = validate(message);
     expect(violations, isEmpty);
+}
+
+void assertInvalid(GeneratedMessage message) {
+    var violations = validate(message);
+    expect(violations, isNotEmpty);
+    expect(violations[0].typeName, message.info_.qualifiedMessageName);
 }
 
 List<ConstraintViolation> validate(GeneratedMessage message) {
