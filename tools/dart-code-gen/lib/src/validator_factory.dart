@@ -19,14 +19,14 @@
  */
 
 import 'package:code_builder/code_builder.dart';
-import 'package:dart_code_gen/spine/options.pb.dart';
-import 'package:dart_code_gen/src/field_tuple_validation_factory.dart';
 
 import '../dart_code_gen.dart';
 import '../google/protobuf/descriptor.pb.dart';
+import '../spine/options.pb.dart';
 import 'constraint_violation.dart';
 import 'field_validator_factory.dart';
 import 'imports.dart';
+import 'required_field_validation_factory.dart';
 
 const _violations = 'violations';
 const _msg = 'msg';
@@ -50,7 +50,7 @@ class ValidatorFactory {
     ValidatorFactory(this.file, this.type, this.allocator, this.properties);
 
     String get fullTypeName => '${file.package}.${type.name}';
-    
+
     ViolationConsumer get report =>
             (violation) => _violationList.property('add').call([violation]);
 
@@ -101,14 +101,14 @@ class ValidatorFactory {
         var option = Options.requiredField;
         if (options.hasExtension(option)) {
             var fields = options.getExtension(option);
-            var factory = FieldTupleValidatorFactory.forTuple(fields, this, report);
+            var factory = RequiredFieldValidatorFactory.forExpression(fields, this, report);
             var validator = factory.generate();
             return validator;
         } else {
             return Block.of([]);
         }
     }
-    
+
     Code _createFieldValidators() {
         var validations = <Code>[];
         for (var field in type.field) {

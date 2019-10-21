@@ -25,25 +25,29 @@ import 'constraint_violation.dart';
 import 'field_validator_factory.dart';
 import 'validator_factory.dart';
 
-class FieldTupleValidatorFactory {
+/// A factory of validation code for combinations of fields.
+/// 
+/// Generates validation code for checking the `(required_field)` constraint.
+/// 
+class RequiredFieldValidatorFactory {
 
     final ValidatorFactory _validator;
     final List<_Combination> _combinations;
     final ViolationConsumer _consumer;
 
-    FieldTupleValidatorFactory._(this._validator, this._combinations, this._consumer);
+    RequiredFieldValidatorFactory._(this._validator, this._combinations, this._consumer);
 
-    factory FieldTupleValidatorFactory.forTuple(String tuple,
-                                                ValidatorFactory validator,
-                                                ViolationConsumer consumer) {
-        var combinations = tuple
+    factory RequiredFieldValidatorFactory.forExpression(String boolExpression,
+                                                        ValidatorFactory validator,
+                                                        ViolationConsumer consumer) {
+        var combinations = boolExpression
             .split('|')
             .map((c) => c.split('&'))
             .map((fields) => _Combination.ofFields(fields, validator))
             .toList();
-        return FieldTupleValidatorFactory._(validator, combinations, consumer);
+        return RequiredFieldValidatorFactory._(validator, combinations, consumer);
     }
-    
+
     Code generate() {
         if (_combinations.length == 0) {
             return null;
@@ -64,6 +68,8 @@ const Code _bracketOpen = Code('(');
 const Code _bracketClose = Code(')');
 const Code _orOperator = Code(' || ');
 
+/// A conjunctive combination of one or more fields.
+///
 class _Combination {
 
     final List<String> fieldNames;
@@ -74,6 +80,10 @@ class _Combination {
                                 .map((n) => n.trim())
                                 .toList();
 
+    /// Produces an expression which formulates the condition of the combination being not set.
+    ///
+    /// If at least one field in the combination is *NOT* set, the whole combination is *NOT* set.
+    ///
     Expression notSetCondition() {
         Expression complexCondition = fieldNames
             .map(_fieldNotSetCondition)
@@ -86,7 +96,6 @@ class _Combination {
         return CodeExpression(code);
     }
 
-
     Expression _fieldNotSetCondition(String fieldName) {
         var field = _field(fieldName);
         var factory = _validatorFactory(field);
@@ -96,7 +105,7 @@ class _Combination {
 
     FieldValidatorFactory _validatorFactory(FieldDescriptorProto field) {
         var factory = FieldValidatorFactory.forField(field, _validator);
-        if (!factory.supportsRequired()) {
+        if (factory == null || !factory.supportsRequired()) {
             throw StateError('Field `${_validator.type.name}.${field}` cannot be required.');
         }
         return factory;

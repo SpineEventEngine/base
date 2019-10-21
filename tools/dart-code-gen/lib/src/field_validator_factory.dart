@@ -75,6 +75,10 @@ class FieldValidatorFactory {
             && options.getExtension(Options.required);
     }
 
+    /// Determines if this field type supports `(required)` and related constrains.
+    ///
+    /// `true` by default.
+    ///
     bool supportsRequired() => true;
 
     /// Creates a new validation rule with the given parameters.
@@ -88,6 +92,10 @@ class FieldValidatorFactory {
         return newRule(notSetCondition(), (v) => _requiredMissing());
     }
 
+    /// Provides the condition under which a field value is considered not set.
+    ///
+    /// Is the field is `(required)`, it has to be set.
+    ///
     LazyCondition notSetCondition() => null;
 
     /// Generates an expression which constructs a `ConstraintViolation` for a missing required
@@ -157,7 +165,7 @@ class SingularFieldValidatorFactory extends FieldValidatorFactory {
                : null;
     }
 
-    /// Obtains validation rules to apply to the field..
+    /// Obtains validation rules to apply to the field.
     Iterable<Rule> rules() => null;
 }
 
