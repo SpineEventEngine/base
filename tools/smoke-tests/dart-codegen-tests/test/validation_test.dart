@@ -93,7 +93,7 @@ void main() {
                 checkMissing(contact, 'email');
             });
 
-            test('missing requied repeated numbers', () {
+            test('missing required repeated numbers', () {
                 var ticket = LotteryTicket()
                     ..magicNumber = 42;
                 checkMissing(ticket, 'numbers');
