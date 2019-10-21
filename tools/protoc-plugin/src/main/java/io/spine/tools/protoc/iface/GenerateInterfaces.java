@@ -27,7 +27,7 @@ import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.checkNotDefault;
+import static io.spine.validate.Validate.checkNotDefaultArg;
 
 /**
  * Generates interfaces for Protobuf messages that match supplied
@@ -39,7 +39,7 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
 
     GenerateInterfaces(ConfigByPattern config) {
         super(config.getValue());
-        checkNotDefault(config.getPattern());
+        checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 

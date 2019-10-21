@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.checkNotDefault;
+import static io.spine.validate.Validate.checkNotDefaultArg;
 
 /**
  * An utility for working with {@link UuidConfig} and {@link ConfigByPattern} code generation task
@@ -55,11 +55,13 @@ public final class ProtocTaskConfigs {
      *
      * @throws NullPointerException
      *         if the class name or pattern is {@code null}
+     * @throws IllegalArgumentException
+     *          if the pattern is empty
      */
     public static ConfigByPattern
     byPatternConfig(ClassName className, FilePattern pattern) {
         checkNotNull(className);
-        checkNotDefault(pattern);
+        checkNotDefaultArg(pattern);
         return ConfigByPattern
                 .newBuilder()
                 .setValue(className.value())

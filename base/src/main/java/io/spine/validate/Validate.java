@@ -29,6 +29,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
 import io.spine.type.TypeName;
 import io.spine.validate.option.SetOnce;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
@@ -44,6 +45,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * This class provides general validation routines.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // OK for this utility class.
 public final class Validate {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -75,6 +77,42 @@ public final class Validate {
         checkNotNull(object);
         boolean result = !isDefault(object);
         return result;
+    }
+
+    /**
+     * Ensures that the passed message is not in the default state.
+     *
+     * @param message
+     *         the message to check
+     * @param <T>
+     *         the type of the message
+     * @return the passed message
+     * @throws IllegalArgumentException
+     *          if the passed message has the default state
+     * @throws NullPointerException
+     *          if the passed message is {@code null}
+     */
+    public static <T extends @NonNull Message> T checkNotDefaultArg(T message) {
+        checkArgument(!isDefault(message));
+        return message;
+    }
+
+    /**
+     * Ensures that the passed message is not in the default state.
+     *
+     * @param message
+     *         the message to check
+     * @param <T>
+     *         the type of the message
+     * @return the passed message
+     * @throws IllegalStateException
+     *          if the passed message has the default state
+     * @throws NullPointerException
+     *          if the passed message is {@code null}
+     */
+    public static <T extends @NonNull Message> T checkNotDefaultState(T message) {
+        checkState(!isDefault(message));
+        return message;
     }
 
     /**
@@ -117,14 +155,14 @@ public final class Validate {
      *
      * @param object the {@code Message} instance to check
      * @throws IllegalStateException if the object is in its default state
+     * @deprecated please use {@link #checkNotDefaultState(Message)} when intending to throw
+     *  {@code IllegalStateException} or {@link #checkNotDefaultArg(Message)} when intending to
+     *  throw {@code IllegalArgumentException}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object) {
-        checkNotNull(object);
-        checkNotDefault(object,
-                        "The message is in the default state: %s",
-                        TypeName.of(object));
-        return object;
+        return checkNotDefaultState(object);
     }
 
     /**

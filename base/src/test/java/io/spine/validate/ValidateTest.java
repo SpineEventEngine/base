@@ -43,6 +43,8 @@ import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkBounds;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkNotDefault;
+import static io.spine.validate.Validate.checkNotDefaultArg;
+import static io.spine.validate.Validate.checkNotDefaultState;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static io.spine.validate.Validate.checkPositive;
 import static io.spine.validate.Validate.checkValidChange;
@@ -144,14 +146,14 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @DisplayName("check if message is not in default state")
     void checkIfMessageIsInNotInDefaultStateThrowingExceptionIfNot() {
         assertThrows(IllegalStateException.class,
-                     () -> checkNotDefault(StringValue.getDefaultInstance()));
+                     () -> checkNotDefaultState(StringValue.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("return non-default value on check")
     void returnNonDefaultValueOnCheck() {
         StringValue nonDefault = newUuidValue();
-        assertEquals(nonDefault, checkNotDefault(nonDefault));
+        assertEquals(nonDefault, checkNotDefaultArg(nonDefault));
         assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
     }
 
@@ -177,7 +179,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
     }
 
     @Test
-    @DisplayName("not throw if checked strign is not empty or blank")
+    @DisplayName("not throw if checked string is not empty or blank")
     void doNotThrowExceptionIfCheckedStringIsValid() {
         checkNotEmptyOrBlank("valid_string", "");
     }

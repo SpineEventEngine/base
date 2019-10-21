@@ -27,7 +27,7 @@ import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.checkNotDefault;
+import static io.spine.validate.Validate.checkNotDefaultArg;
 
 /**
  * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
@@ -38,7 +38,7 @@ final class GenerateMethods extends MethodGenerationTask {
 
     GenerateMethods(MethodFactories methodFactories, ConfigByPattern config) {
         super(methodFactories, config.getValue());
-        checkNotDefault(config.getPattern());
+        checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
