@@ -19,29 +19,50 @@
  */
 
 import 'package:code_builder/code_builder.dart';
-import 'package:dart_code_gen/google/protobuf/descriptor.pb.dart';
-import 'package:dart_code_gen/src/field_validator_factory.dart';
 
+import '../google/protobuf/descriptor.pb.dart';
+import 'constraint_violation.dart';
+import 'field_validator_factory.dart';
 import 'validator_factory.dart';
 
 class FieldTupleValidatorFactory {
 
     final ValidatorFactory _validator;
     final List<_Combination> _combinations;
+    final ViolationConsumer _consumer;
 
-    FieldTupleValidatorFactory._(this._validator, this._combinations);
+    FieldTupleValidatorFactory._(this._validator, this._combinations, this._consumer);
 
-    factory FieldTupleValidatorFactory.forTuple(String tuple, ValidatorFactory validator) {
+    factory FieldTupleValidatorFactory.forTuple(String tuple,
+                                                ValidatorFactory validator,
+                                                ViolationConsumer consumer) {
         var combinations = tuple
             .split('|')
             .map((c) => c.split('&'))
             .map((fields) => _Combination.ofFields(fields, validator))
             .toList();
-        return FieldTupleValidatorFactory._(validator, combinations);
+        return FieldTupleValidatorFactory._(validator, combinations, consumer);
     }
     
-    Code generate(Expression message) => null;
+    Code generate() {
+        if (_combinations.length == 0) {
+            return null;
+        }
+        var violationInit = violationRef.call([literalString('Required fields must be set.'),
+                                               literalString(_validator.fullTypeName),
+                                               literalList([])]);
+        var reportViolation = _consumer(violationInit);
+        var expression = _combinations
+            .map((c) => c.notSetCondition())
+            .reduce((l, r) => l.and(r))
+            .conditional(reportViolation, literalNull);
+        return expression.statement;
+    }
 }
+
+const Code _bracketOpen = Code('(');
+const Code _bracketClose = Code(')');
+const Code _orOperator = Code(' || ');
 
 class _Combination {
 
@@ -50,10 +71,30 @@ class _Combination {
 
     _Combination.ofFields(Iterable<String> fieldNames, this._validator)
         : this.fieldNames = List.of(fieldNames)
-                                .map((n) => n.trim());
+                                .map((n) => n.trim())
+                                .toList();
 
-    FieldValidatorFactory _validatorFactory(String fieldName) {
+    Expression notSetCondition() {
+        Expression complexCondition = fieldNames
+            .map(_fieldNotSetCondition)
+            .reduce((l, r) => _or(l, r));
+        return complexCondition;
+    }
+
+    Expression _or(Expression left, Expression right) {
+        var code = Block.of([_bracketOpen, left.code,  _orOperator, right.code, _bracketClose]);
+        return CodeExpression(code);
+    }
+
+
+    Expression _fieldNotSetCondition(String fieldName) {
         var field = _field(fieldName);
+        var factory = _validatorFactory(field);
+        var fieldAccess = _validator.accessField(field);
+        return factory.notSetCondition()(fieldAccess);
+    }
+
+    FieldValidatorFactory _validatorFactory(FieldDescriptorProto field) {
         var factory = FieldValidatorFactory.forField(field, _validator);
         if (!factory.supportsRequired()) {
             throw StateError('Field `${_validator.type.name}.${field}` cannot be required.');

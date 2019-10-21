@@ -51,14 +51,17 @@ class ValidatorFactory {
 
     String get fullTypeName => '${file.package}.${type.name}';
     
-    Reference get violationList => refer(_violations);
-    
+    ViolationConsumer get report =>
+            (violation) => _violationList.property('add').call([violation]);
+
     String get _fileName {
         var endIndex = file.name.length - '.proto'.length;
         var filePathWithoutExtension = file.name.substring(0, endIndex);
         return filePathWithoutExtension + '.pb.dart';
     }
-    
+
+    Reference get _violationList => refer(_violations);
+
     Expression get _emptyValidationError =>
         refer('ValidationError', validationErrorImport(properties.standardPackage))
             .newInstance([]);
@@ -70,11 +73,9 @@ class ValidatorFactory {
             ..type = refer('GeneratedMessage', protobufImport)
             ..name = _msg);
         try {
-            var statements = [_createRequiredFieldValidator(), _createFieldValidators()]
-                             .where((code) => code != null);
             return Method((b) => b
                 ..requiredParameters.add(param)
-                ..body = Block.of(statements)
+                ..body = _collectStatements()
             ).closure;
         } catch (e) {
             throw StateError('Cannot generate validation code for `$fullTypeName`. '
@@ -82,16 +83,29 @@ class ValidatorFactory {
         }
     }
 
+    Code _collectStatements() {
+        var statements = <Code>[];
+        statements.add(_newViolationList().statement);
+        statements.add(_createRequiredFieldValidator());
+        statements.add(_createFieldValidators());
+        var error = 'error';
+        var errorRef = refer(error);
+        statements.add(_newValidationError(error).statement);
+        statements.add(_fillInViolations(errorRef).statement);
+        statements.add(errorRef.returned.statement);
+        return Block.of(statements);
+    }
+
     Code _createRequiredFieldValidator() {
         var options = type.options;
         var option = Options.requiredField;
         if (options.hasExtension(option)) {
             var fields = options.getExtension(option);
-            var factory = FieldTupleValidatorFactory.forTuple(fields, this);
-            var validator = factory.generate(_typedMessage);
+            var factory = FieldTupleValidatorFactory.forTuple(fields, this, report);
+            var validator = factory.generate();
             return validator;
         } else {
-            return null;
+            return Block.of([]);
         }
     }
     
@@ -103,23 +117,7 @@ class ValidatorFactory {
                 validations.add(validator);
             }
         }
-        if (validations.isEmpty) {
-            return _emptyValidationError.returned.statement;
-        } else {
-            return _collectFieldChecks(validations);
-        }
-    }
-
-    Code _collectFieldChecks(List<Code> validations) {
-        var statements = <Code>[];
-        statements.add(_newViolationList().statement);
-        statements.addAll(validations);
-        var error = 'error';
-        var errorRef = refer(error);
-        statements.add(_newValidationError(error).statement);
-        statements.add(_fillInViolations(errorRef).statement);
-        statements.add(errorRef.returned.statement);
-        return Block.of(statements);
+        return Block.of(validations);
     }
 
     Expression _fillInViolations(Reference errorRef) {
@@ -146,12 +144,15 @@ class ValidatorFactory {
     Code _createFieldValidator(FieldDescriptorProto field) {
         var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
-            var fieldValue = _typedMessage.property(_fieldName(field));
+            var fieldValue = accessField(field);
             return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
     }
+
+    Expression accessField(FieldDescriptorProto field) =>
+        _typedMessage.property(_fieldName(field));
 
     Expression get _typedMessage =>
         refer(_msg).asA(_typeRef(properties.importPrefix));
@@ -180,3 +181,5 @@ class ValidatorFactory {
                : '${word[0].toUpperCase()}${word.substring(1)}';
     }
 }
+
+typedef Expression ViolationConsumer(Expression constraintViolation);
