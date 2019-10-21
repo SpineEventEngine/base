@@ -99,7 +99,7 @@ void main() {
                 checkMissing(ticket, 'numbers');
             });
 
-            test('missing requied map values', () {
+            test('missing required map values', () {
                 var message = ContactBook();
                 checkMissing(message, 'contact_by_category');
             });
