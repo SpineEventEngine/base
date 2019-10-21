@@ -185,6 +185,6 @@ class ValidatorFactory {
 /// A functional interface which transforms an expression of [constraintViolation] into an
 /// expression which reports the given violation.
 ///
-/// The violations may be accumulated this way over man y fields of a validated message.
+/// The violations may be accumulated this way over many fields of a validated message.
 ///
 typedef Expression ViolationConsumer(Expression constraintViolation);
