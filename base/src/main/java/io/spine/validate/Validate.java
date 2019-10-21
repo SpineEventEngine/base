@@ -248,9 +248,13 @@ public final class Validate {
     public static String checkNotEmptyOrBlank(String stringToCheck, String fieldName) {
         checkNotNull(stringToCheck);
         checkNotNull(fieldName);
-        checkArgument(!stringToCheck.isEmpty(), "Field %s must not be an empty string.", fieldName);
+        checkArgument(!stringToCheck.isEmpty(),
+                      "The field `%s` must not be an empty string.",
+                      fieldName);
         String trimmed = stringToCheck.trim();
-        checkArgument(trimmed.length() > 0, "Field %s must not be a blank string.", fieldName);
+        checkArgument(trimmed.length() > 0,
+                      "The field `%s` must not be a blank string.",
+                      fieldName);
         return stringToCheck;
     }
 
@@ -262,7 +266,7 @@ public final class Validate {
      */
     public static void checkPositive(long value) {
         if (value <= 0) {
-            throw newIllegalArgumentException("value (%d) must be positive", value);
+            throw newIllegalArgumentException("A positive value expected. Passed: %d.", value);
         }
     }
 
@@ -275,7 +279,7 @@ public final class Validate {
      */
     public static void checkPositive(long value, String argumentName) {
         checkNotNull(argumentName);
-        checkArgument(value > 0L, "%s must be a positive value", argumentName);
+        checkArgument(value > 0L, "`%s` must be a positive value.", argumentName);
     }
 
     /**
