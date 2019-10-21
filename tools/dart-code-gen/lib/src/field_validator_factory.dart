@@ -47,7 +47,7 @@ class FieldValidatorFactory {
     /// May return `null` to signify that no validation is required for the given field.
     ///
     factory FieldValidatorFactory.forField(FieldDescriptorProto field, ValidatorFactory factory) {
-        var scalarFactory = ScalarFieldValidatorFactory._forType(field, factory);
+        var scalarFactory = SingularFieldValidatorFactory._forType(field, factory);
         var repeated = field.label == FieldDescriptorProto_Label.LABEL_REPEATED;
         if (repeated) {
             return RepeatedFieldValidatorFactory(factory, field, scalarFactory);
@@ -100,13 +100,13 @@ class FieldValidatorFactory {
 
 /// A [FieldValidatorFactory] for non-`repeated` fields.
 ///
-class ScalarFieldValidatorFactory extends FieldValidatorFactory {
+class SingularFieldValidatorFactory extends FieldValidatorFactory {
 
-    ScalarFieldValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+    SingularFieldValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
 
-    factory ScalarFieldValidatorFactory._forType(FieldDescriptorProto field,
-                                                 ValidatorFactory factory) {
+    factory SingularFieldValidatorFactory._forType(FieldDescriptorProto field,
+                                                   ValidatorFactory factory) {
         var type = field.type;
         switch (type) {
             case FieldDescriptorProto_Type.TYPE_STRING:

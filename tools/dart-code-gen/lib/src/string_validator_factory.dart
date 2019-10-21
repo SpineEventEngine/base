@@ -30,7 +30,7 @@ import 'validator_factory.dart';
 ///
 /// The only supported options is `(required)` and `(pattern)`.
 ///
-class StringValidatorFactory extends ScalarFieldValidatorFactory {
+class StringValidatorFactory extends SingularFieldValidatorFactory {
 
     StringValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);

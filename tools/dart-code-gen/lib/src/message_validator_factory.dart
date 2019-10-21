@@ -27,7 +27,7 @@ import 'validator_factory.dart';
 
 /// A [FieldValidatorFactory] for message fields.
 ///
-class MessageValidatorFactory extends ScalarFieldValidatorFactory {
+class MessageValidatorFactory extends SingularFieldValidatorFactory {
 
     MessageValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);

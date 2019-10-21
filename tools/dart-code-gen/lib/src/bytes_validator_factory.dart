@@ -27,7 +27,7 @@ import 'validator_factory.dart';
 
 /// A [FieldValidatorFactory] for `bytes` fields.
 ///
-class BytesValidatorFactory extends ScalarFieldValidatorFactory {
+class BytesValidatorFactory extends SingularFieldValidatorFactory {
 
     BytesValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
