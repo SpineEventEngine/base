@@ -113,8 +113,9 @@ public final class Messages {
     /**
      * Verifies if the passed message object is its default state and is not {@code null}.
      *
-     * @param object the message to inspect
-     * @return true if the message is in the default state, false otherwise
+     * @param object
+     *         the message to inspect
+     * @return {@code true} if the message is in the default state, {@code false} otherwise
      */
     public static boolean isDefault(Message object) {
         checkNotNull(object);
@@ -126,8 +127,9 @@ public final class Messages {
     /**
      * Verifies if the passed message object is not its default state and is not {@code null}.
      *
-     * @param object the message to inspect
-     * @return true if the message is not in the default state, false otherwise
+     * @param object
+     *         the message to inspect
+     * @return {@code true} if the message is not in the default state, {@code false} otherwise
      */
     public static boolean isNotDefault(Message object) {
         checkNotNull(object);
