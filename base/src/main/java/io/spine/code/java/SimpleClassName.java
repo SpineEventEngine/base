@@ -23,7 +23,6 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.CamelCasedName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
@@ -36,7 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A {@link Class#getSimpleName() simple name} of a class.
  */
-public final class SimpleClassName extends StringTypeValue implements CamelCasedName {
+public final class SimpleClassName extends StringTypeValue {
 
     static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
