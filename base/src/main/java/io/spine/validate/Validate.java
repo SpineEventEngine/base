@@ -336,7 +336,10 @@ public final class Validate {
      *                           for the parameter name
      * @param parameterName      the name of the parameter
      * @throws IllegalArgumentException if {@code expression} is false
+     * @deprecated please use
+     * {@link com.google.common.base.Preconditions#checkArgument(boolean, String, Object...)}
      */
+    @Deprecated
     public static void checkParameter(boolean expression,
                                       String errorMessageFormat,
                                       String parameterName) {
@@ -423,9 +426,9 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-
-        List<ConstraintViolation> violations = MessageValidator.newInstance(message)
-                                                               .validate();
+        List<ConstraintViolation> violations =
+                MessageValidator.newInstance(message)
+                                .validate();
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
