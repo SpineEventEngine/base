@@ -19,6 +19,7 @@
  */
 
 include 'annotator-tests'
+include 'column-tests'
 include 'dart-codegen-tests'
 include 'known-types-tests'
 include 'model-compiler-tests'
