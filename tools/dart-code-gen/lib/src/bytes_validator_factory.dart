@@ -36,10 +36,11 @@ class BytesValidatorFactory extends SingularFieldValidatorFactory {
     Iterable<Rule> rules() {
         var rules = <Rule>[];
         if (isRequired()) {
-            rules.add(_requiredRule());
+            rules.add(createRequiredRule());
         }
         return rules;
     }
 
-    Rule _requiredRule() => createRequiredRule((v) => v.property('isEmpty'));
+    @override
+    LazyCondition notSetCondition() => (v) => v.property('isEmpty');
 }
