@@ -307,7 +307,7 @@ public final class FieldDeclaration {
         return result;
     }
 
-    public String getterName() {
+    public String javaGetterName() {
         String camelCasedName = name().toCamelCase();
         String result = format("get%s", camelCasedName);
         return result;

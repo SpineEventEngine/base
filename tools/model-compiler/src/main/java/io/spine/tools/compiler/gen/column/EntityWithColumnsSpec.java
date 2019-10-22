@@ -86,7 +86,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
      *         {@code ABSTRACT}, these modifiers are actually absent in the generated code.
      */
     private static MethodSpec getterSpec(FieldDeclaration declaration) {
-        String methodName = declaration.getterName();
+        String methodName = declaration.javaGetterName();
         JavaPoetName fieldTypeName = fieldType(declaration);
         TypeName returnType = fieldTypeName.value();
         MethodSpec result = MethodSpec.methodBuilder(methodName)

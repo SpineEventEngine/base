@@ -22,14 +22,13 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.code.proto.CoProject;
 import io.spine.test.code.proto.CoProjectId;
 import io.spine.type.MessageType;
 import io.spine.value.StringTypeValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
@@ -87,15 +86,10 @@ class ColumnOptionTest {
         assertThat(ColumnOption.isColumn(statusField)).isFalse();
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent") // Checked via assertion.
-    private FieldDeclaration fieldByName(String fieldName) {
-        Optional<FieldDeclaration> field = type.fields()
-                                               .stream()
-                                               .filter(f -> fieldName.equals(f.name()
-                                                                              .value()))
-                                               .findFirst();
-        assertThat(field.isPresent()).isTrue();
-        FieldDeclaration result = field.get();
+    private FieldDeclaration fieldByName(String name) {
+        FieldDescriptor field = type.descriptor()
+                                    .findFieldByName(name);
+        FieldDeclaration result = new FieldDeclaration(field);
         return result;
     }
 }
