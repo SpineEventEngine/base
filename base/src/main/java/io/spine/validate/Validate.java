@@ -259,7 +259,7 @@ public final class Validate {
      * @param value        the value to check
      * @param argumentName the name of the checked value to be used in the error message
      * @throws IllegalArgumentException if requirement is not met
-     * @deprecated please use {@link Preconditions2#checkPositive(long, String)}
+     * @deprecated please use {@link Preconditions2#checkPositive(long, String, Object...)}
      */
     @Deprecated
     public static void checkPositive(long value, String argumentName) {

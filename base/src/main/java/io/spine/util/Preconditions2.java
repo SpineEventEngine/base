@@ -99,14 +99,17 @@ public final class Preconditions2 {
      *
      * @param value
      *         the value to check
-     * @param errorMessage
-     *         the exception message to use if the check fails
+     * @param errorMessageTemplate
+     *         the exception message template to use if the check fails
+     * @param errorMessageArgs
+     *         the arguments to be substituted into the message template
      * @throws IllegalArgumentException
      *         if the value is negative or zero
      */
-    public static long checkPositive(long value, @Nullable String errorMessage) {
-        checkNotNull(errorMessage);
-        checkArgument(value > 0L, errorMessage);
+    public static long checkPositive(long value,
+                                     @Nullable String errorMessageTemplate,
+                                     @Nullable Object @Nullable ... errorMessageArgs) {
+        checkArgument(value > 0L, errorMessageTemplate, errorMessageArgs);
         return value;
     }
 
