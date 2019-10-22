@@ -54,20 +54,18 @@ public final class Preconditions2 {
      */
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String str) {
-        checkNotNull(str);
-        checkArgument(!str.isEmpty());
-        String trimmed = str.trim();
-        checkArgument(trimmed.length() > 0);
-        return str;
+        return checkNotEmptyOrBlank(str, "Encountered: \"%s\".", str);
     }
 
     /**
      * Ensures that the passed string is not {@code null}, empty or blank string.
      *
-     * @param stringToCheck
+     * @param str
      *         the string to check
-     * @param errorMessage
-     *         the exception message to use if the check fails
+     * @param errorMessageTemplate
+     *         the exception message template to use if the check fails
+     * @param errorMessageArgs
+     *         the arguments to be substituted into the message template
      * @return the passed string
      * @throws IllegalArgumentException
      *         if the string is empty or blank
@@ -75,12 +73,12 @@ public final class Preconditions2 {
      *         if the passed string is {@code null}
      */
     @CanIgnoreReturnValue
-    public static String checkNotEmptyOrBlank(String stringToCheck, @Nullable String errorMessage) {
-        checkNotNull(stringToCheck, errorMessage);
-        checkArgument(!stringToCheck.isEmpty(), errorMessage);
-        String trimmed = stringToCheck.trim();
-        checkArgument(trimmed.length() > 0, errorMessage);
-        return stringToCheck;
+    public static String checkNotEmptyOrBlank(String str,
+                                              @Nullable String errorMessageTemplate,
+                                              @Nullable Object @Nullable ... errorMessageArgs) {
+        checkNotNull(str, errorMessageTemplate);
+        checkArgument(!str.trim().isEmpty(), errorMessageTemplate, errorMessageArgs);
+        return str;
     }
 
     /**
@@ -91,7 +89,7 @@ public final class Preconditions2 {
      */
     public static long checkPositive(long value) {
         if (value <= 0) {
-            throw newIllegalArgumentException("A positive value expected. Passed: %d.", value);
+            throw newIllegalArgumentException("A positive value expected. Encountered: %d.", value);
         }
         return value;
     }

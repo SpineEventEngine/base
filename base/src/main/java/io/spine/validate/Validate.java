@@ -231,7 +231,7 @@ public final class Validate {
      *         if the string is empty or blank
      * @throws NullPointerException
      *         if the passed string is {@code null}
-     * @deprecated please use {@link io.spine.util.Preconditions2#checkNotEmptyOrBlank(String, String)}
+     * @deprecated please use {@link Preconditions2#checkNotEmptyOrBlank(String, String, Object...)}
      */
     @Deprecated
     @CanIgnoreReturnValue
