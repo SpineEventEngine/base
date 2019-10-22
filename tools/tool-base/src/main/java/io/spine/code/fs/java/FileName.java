@@ -26,11 +26,8 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractFileName;
 import io.spine.code.java.SimpleClassName;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -41,7 +38,6 @@ public final class FileName extends AbstractFileName<FileName> {
     private static final long serialVersionUID = 0L;
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String EXTENSION = ".java";
-    private static final Pattern EXTENSION_PATTERN = Pattern.compile(EXTENSION, Pattern.LITERAL);
 
     private FileName(String value) {
         super(value);
@@ -106,16 +102,5 @@ public final class FileName extends AbstractFileName<FileName> {
     public static boolean isJava(Path path) {
         return path.toString()
                    .endsWith(EXTENSION);
-    }
-
-    /**
-     * Obtains the name of the file without standard source code extension.
-     */
-    public static String nameOnly(File file) {
-        checkNotNull(file);
-        String nameWithExtension = file.getName();
-        String result = EXTENSION_PATTERN.matcher(nameWithExtension)
-                                         .replaceAll("");
-        return result;
     }
 }

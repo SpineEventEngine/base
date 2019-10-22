@@ -32,13 +32,13 @@ import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
+import io.spine.protobuf.Messages;
 import io.spine.type.EnumType;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
-import io.spine.validate.Validate;
 
 import java.util.List;
 import java.util.Optional;
@@ -113,7 +113,7 @@ public final class FieldDeclaration {
         if (isMessage()) {
             if (fieldValue instanceof Message) {
                 Message message = (Message) fieldValue;
-                return Validate.isDefault(message) && sameMessageType(message);
+                return Messages.isDefault(message) && sameMessageType(message);
             } else {
                 return false;
             }

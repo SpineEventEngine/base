@@ -25,6 +25,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
+import io.spine.protobuf.Messages;
 import io.spine.type.TypeName;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.Valid;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.validate.Validate.isDefault;
 
 /**
  * Validates fields of type {@link Message}, as opposed to primitive
@@ -82,7 +82,7 @@ final class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected boolean isNotSet(Message value) {
-        boolean result = isDefault(value);
+        boolean result = Messages.isDefault(value);
         return result;
     }
 

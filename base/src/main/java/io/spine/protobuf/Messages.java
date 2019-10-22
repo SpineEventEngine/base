@@ -111,6 +111,31 @@ public final class Messages {
     }
 
     /**
+     * Verifies if the passed message object is its default state and is not {@code null}.
+     *
+     * @param object the message to inspect
+     * @return true if the message is in the default state, false otherwise
+     */
+    public static boolean isDefault(Message object) {
+        checkNotNull(object);
+        boolean result = object.getDefaultInstanceForType()
+                               .equals(object);
+        return result;
+    }
+
+    /**
+     * Verifies if the passed message object is not its default state and is not {@code null}.
+     *
+     * @param object the message to inspect
+     * @return true if the message is not in the default state, false otherwise
+     */
+    public static boolean isNotDefault(Message object) {
+        checkNotNull(object);
+        boolean result = !isDefault(object);
+        return result;
+    }
+
+    /**
      * The loader of the cache of default instances per {@link Message} class.
      *
      * <p>Loads an default instance of {@code Message} for the given type passed.

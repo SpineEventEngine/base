@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.checkNotDefaultArg;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * An utility for working with {@link UuidConfig} and {@link ConfigByPattern} code generation task

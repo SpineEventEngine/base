@@ -31,8 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.protobuf.Messages.isDefault;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.validate.Validate.isDefault;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
