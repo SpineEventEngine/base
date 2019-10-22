@@ -35,7 +35,6 @@ import io.spine.type.ServiceType;
 import io.spine.type.Type;
 import io.spine.type.TypeName;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -99,14 +98,10 @@ public final class TypeSet {
     }
 
     public static ImmutableCollection<MessageType> topLevelMessages(FileSet fileSet) {
-        ImmutableSet.Builder<MessageType> builder = ImmutableSet.builder();
-        fileSet.files()
-               .stream()
-               .map(TypeSet::onlyMessages)
-               .flatMap(Collection::stream)
-               .filter(MessageType::isTopLevel)
-               .forEach(builder::add);
-        ImmutableSet<MessageType> result = builder.build();
+        ImmutableSet<MessageType> result = onlyMessages(fileSet)
+                .stream()
+                .filter(MessageType::isTopLevel)
+                .collect(toImmutableSet());
         return result;
     }
 
@@ -114,13 +109,12 @@ public final class TypeSet {
      * Obtains message types declared in the passed file set.
      */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
-        ImmutableSet.Builder<MessageType> builder = ImmutableSet.builder();
-        fileSet.files()
-               .stream()
-               .map(TypeSet::onlyMessages)
-               .forEach(builder::addAll);
-        ImmutableSet<MessageType> result = builder.build();
-        return result;
+        TypeSet result = new TypeSet();
+        for (FileDescriptor file : fileSet.files()) {
+            TypeSet messageTypes = MessageType.allFrom(file);
+            result = result.union(messageTypes);
+        }
+        return result.messageTypes.values();
     }
 
     /**
@@ -259,15 +253,6 @@ public final class TypeSet {
      */
     public ImmutableSet<MessageType> messageTypes() {
         return ImmutableSet.copyOf(messageTypes.values());
-    }
-
-    public ImmutableSet<MessageType> topLevelMessageTypes() {
-        ImmutableSet<MessageType> result =
-                messageTypes.values()
-                            .stream()
-                            .filter(MessageType::isTopLevel)
-                            .collect(toImmutableSet());
-        return result;
     }
 
     /**
