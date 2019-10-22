@@ -194,6 +194,9 @@ public final class Validate {
     public static <M extends Message> M checkNotDefault(M object,
                                                         String errorMessageTemplate,
                                                         Object... errorMessageArgs) {
+        checkNotNull(object);
+        checkNotNull(errorMessageTemplate);
+        checkNotNull(errorMessageArgs);
         return checkNotDefaultState(object, errorMessageTemplate, errorMessageArgs);
     }
 
@@ -243,7 +246,8 @@ public final class Validate {
                            @Nullable String errorMessageTemplate,
                            @Nullable Object @Nullable ... errorMessageArgs) {
         checkNotNull(object);
-        checkState(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
+        boolean value = isNotDefault(object);
+        checkState(value, errorMessageTemplate, errorMessageArgs);
         return object;
     }
 
