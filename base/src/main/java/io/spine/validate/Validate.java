@@ -42,6 +42,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.MessageValidator.validate;
 
 /**
  * This class provides general validation routines.
@@ -426,9 +427,7 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-        List<ConstraintViolation> violations =
-                MessageValidator.newInstance(message)
-                                .validate();
+        List<ConstraintViolation> violations = validate(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }

@@ -38,8 +38,7 @@ public abstract class MessageValidatorTest {
     private List<ConstraintViolation> violations;
 
     protected void validate(Message msg) {
-        MessageValidator validator = MessageValidator.newInstance(msg);
-        violations = validator.validate();
+        violations = MessageValidator.validate(msg);
     }
 
     protected ConstraintViolation firstViolation() {

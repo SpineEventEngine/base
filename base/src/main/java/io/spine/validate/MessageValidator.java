@@ -44,8 +44,36 @@ public class MessageValidator {
     }
 
     /**
-     * Creates a validator for a top-level message.
+     * Validates the passed message against constraints defined in the message type.
+     *
+     * @return the list of violations or empty list if no violations are found.
      */
+    public static List<ConstraintViolation> validate(Message message) {
+        MessageValidator validator = newInstance(message);
+        List<ConstraintViolation> result = validator.validate();
+        return result;
+    }
+
+    /**
+     * Validates a message inside another message.
+     *
+     * @param message
+     *         the message to validate
+     * @param messageContext
+     *         the context of the message
+     */
+    static List<ConstraintViolation> validate(Message message, FieldContext messageContext) {
+        MessageValidator validator = newInstance(message, messageContext);
+        List<ConstraintViolation> result = validator.validate();
+        return result;
+    }
+
+    /**
+     * Creates a validator for a top-level message.
+     *
+     * @deprecated please use {@link #validate(Message)}
+     */
+    @Deprecated
     public static MessageValidator newInstance(Message message) {
         MessageValue messageValue = MessageValue.atTopLevel(message);
         return new MessageValidator(messageValue);
@@ -59,7 +87,7 @@ public class MessageValidator {
      * @param messageContext
      *         the context of the message
      */
-    static MessageValidator newInstance(Message message, FieldContext messageContext) {
+    private static MessageValidator newInstance(Message message, FieldContext messageContext) {
         MessageValue messageValue = MessageValue.nestedIn(messageContext, message);
         return new MessageValidator(messageValue);
     }
@@ -67,7 +95,10 @@ public class MessageValidator {
     /**
      * Validates messages according to Spine custom protobuf options and returns constraint
      * violations found.
+     *
+     * @deprecated please use {@link #validate(Message)}
      */
+    @Deprecated
     public List<ConstraintViolation> validate() {
         validateAlternativeFields();
         validateOneofFields();
