@@ -54,7 +54,9 @@ public final class Preconditions2 {
      */
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String str) {
-        return checkNotEmptyOrBlank(str, "Encountered: \"%s\".", str);
+        return checkNotEmptyOrBlank(
+                str, "Non-empty and non-blank string expected. Encountered: \"%s\".", str
+        );
     }
 
     /**
