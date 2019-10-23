@@ -20,9 +20,11 @@
 
 package io.spine.util;
 
+import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -139,18 +141,37 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     @DisplayName("Check that a message is not in the default state")
     class NotDefaultState {
 
+        private final Message defaultValue = StringValue.getDefaultInstance();
+        private String customErrorMessage;
+
+        @BeforeEach
+        void createCustomErrorMessage() {
+            customErrorMessage = randomString();
+        }
+
         @Test
         @DisplayName("throwing `IllegalStateException` for state transition checks")
         void stateChecking() {
             assertThrows(IllegalStateException.class,
-                         () -> checkNotDefaultState(StringValue.getDefaultInstance()));
+                         () -> checkNotDefaultState(defaultValue));
+
+            IllegalStateException exception =
+                    assertThrows(IllegalStateException.class,
+                                 () -> checkNotDefaultState(defaultValue, customErrorMessage));
+            assertThat(exception).hasMessageThat()
+                                 .contains(customErrorMessage);
         }
 
         @Test
         @DisplayName("throwing `IllegalArgumentException` for argument checks")
         void argumentChecking() {
-            assertThrows(IllegalStateException.class,
-                         () -> checkNotDefaultState(StringValue.getDefaultInstance()));
+            assertThrows(IllegalArgumentException.class, () -> checkNotDefaultArg(defaultValue));
+            IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class,
+                                 () -> checkNotDefaultArg(defaultValue, customErrorMessage));
+            assertThat(exception)
+                    .hasMessageThat()
+                    .contains(customErrorMessage);
         }
 
         @Test
@@ -158,7 +179,9 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         void returnValue() {
             StringValue nonDefault = newUuidValue();
             assertEquals(nonDefault, checkNotDefaultArg(nonDefault));
-            assertEquals(nonDefault, checkNotDefaultState(nonDefault, "with error message"));
+            assertEquals(nonDefault, checkNotDefaultArg(nonDefault, customErrorMessage));
+            assertEquals(nonDefault, checkNotDefaultState(nonDefault));
+            assertEquals(nonDefault, checkNotDefaultState(nonDefault, customErrorMessage));
         }
     }
 }
