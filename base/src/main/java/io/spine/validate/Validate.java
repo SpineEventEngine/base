@@ -27,7 +27,9 @@ import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
+import io.spine.protobuf.Messages;
 import io.spine.type.TypeName;
+import io.spine.util.Preconditions2;
 import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -38,8 +40,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.MessageValidator.validate;
 
 /**
  * This class provides general validation routines.
@@ -57,12 +61,11 @@ public final class Validate {
      *
      * @param object the message to inspect
      * @return true if the message is in the default state, false otherwise
+     * @deprecated please use {@link Messages#isDefault(Message)}
      */
+    @Deprecated
     public static boolean isDefault(Message object) {
-        checkNotNull(object);
-        boolean result = object.getDefaultInstanceForType()
-                               .equals(object);
-        return result;
+        return Messages.isDefault(object);
     }
 
     /**
@@ -70,26 +73,30 @@ public final class Validate {
      *
      * @param object the message to inspect
      * @return true if the message is not in the default state, false otherwise
+     * @deprecated please use {@link Messages#isNotDefault(Message)}
      */
+    @Deprecated
     public static boolean isNotDefault(Message object) {
-        checkNotNull(object);
-        boolean result = !isDefault(object);
-        return result;
+        return Messages.isNotDefault(object);
     }
 
     /**
      * Ensures that the passed object is not in its default state and is not {@code null}.
      *
-     * @param object       the {@code Message} instance to check
-     * @param errorMessage the message for the exception to be thrown;
-     *                     will be converted to a string using {@link String#valueOf(Object)}
-     * @throws IllegalStateException if the object is in its default state
+     * @param object
+     *         the {@code Message} instance to check
+     * @param errorMessage
+     *         the message for the exception to be thrown;
+     *         will be converted to a string using {@link String#valueOf(Object)}
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @deprecated please use {@link Preconditions2#checkNotDefaultArg(Message, Object)} or
+     *         {@link Preconditions2#checkNotDefaultState(Message, Object)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object, @Nullable Object errorMessage) {
-        checkNotNull(object);
-        checkState(isNotDefault(object), errorMessage);
-        return object;
+        return Preconditions2.checkNotDefaultState(object, errorMessage);
     }
 
     /**
@@ -99,7 +106,9 @@ public final class Validate {
      * @param errorMessageTemplate a template for the exception message should the check fail
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is in its default state
+     * @deprecated please use {@link Preconditions2#checkNotDefaultState(Message, String, Object...)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkNotDefault(M object,
@@ -108,23 +117,23 @@ public final class Validate {
         checkNotNull(object);
         checkNotNull(errorMessageTemplate);
         checkNotNull(errorMessageArgs);
-        checkState(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
-        return object;
+        return Preconditions2.checkNotDefaultState(object, errorMessageTemplate, errorMessageArgs);
     }
 
     /**
      * Ensures that the passed object is not in its default state and is not {@code null}.
      *
-     * @param object the {@code Message} instance to check
-     * @throws IllegalStateException if the object is in its default state
+     * @param object
+     *         the {@code Message} instance to check
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @deprecated please use {@link Preconditions2#checkNotDefaultArg(Message)} or
+     *             {@link Preconditions2#checkNotDefaultState(Message)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object) {
-        checkNotNull(object);
-        checkNotDefault(object,
-                        "The message is in the default state: %s",
-                        TypeName.of(object));
-        return object;
+        return Preconditions2.checkNotDefaultState(object);
     }
 
     /**
@@ -134,11 +143,14 @@ public final class Validate {
      * @param errorMessage the message for the exception to be thrown;
      *                     will be converted to a string using {@link String#valueOf(Object)}
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is in the default state,
+     *             please use {@code checkState(isDefault(object), errorMessage); }
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object, @Nullable Object errorMessage) {
         checkNotNull(object);
-        checkState(isDefault(object), errorMessage);
+        checkState(Messages.isDefault(object), errorMessage);
         return object;
     }
 
@@ -149,7 +161,10 @@ public final class Validate {
      * @param errorMessageTemplate a template for the exception message should the check fail
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is in the default state,
+     *             please use {@code checkState(isDefault(object), template, arg1, arg2, arg3); }
      */
+    @Deprecated
     @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkDefault(M object,
@@ -158,7 +173,7 @@ public final class Validate {
         checkNotNull(object);
         checkNotNull(errorMessageTemplate);
         checkNotNull(errorMessageArgs);
-        checkState(isDefault(object), errorMessageTemplate, errorMessageArgs);
+        checkState(Messages.isDefault(object), errorMessageTemplate, errorMessageArgs);
         return object;
     }
 
@@ -167,14 +182,17 @@ public final class Validate {
      *
      * @param object the {@code Message} instance to check
      * @throws IllegalStateException if the object is not in its default state
+     * @deprecated If you really need to check that a message is its default state,
+     *  please use {@code checkState(isDefault(msg));}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object) {
         checkNotNull(object);
-        if (!isDefault(object)) {
-            String typeName = TypeName.of(object)
-                                      .value();
-            throw newIllegalStateException("The message is not in the default state: %s", typeName);
+        if (!Messages.isDefault(object)) {
+            throw newIllegalStateException(
+                    "The message is not in the default state: `%s`.", shortDebugString(object)
+            );
         }
         return object;
     }
@@ -187,7 +205,10 @@ public final class Validate {
      *                           for the parameter name
      * @param parameterName      the name of the parameter
      * @throws IllegalArgumentException if {@code expression} is false
+     * @deprecated please use
+     * {@link com.google.common.base.Preconditions#checkArgument(boolean, String, Object...)}
      */
+    @Deprecated
     public static void checkParameter(boolean expression,
                                       String errorMessageFormat,
                                       String parameterName) {
@@ -201,19 +222,23 @@ public final class Validate {
     /**
      * Ensures that the passed string is not {@code null}, empty or blank string.
      *
-     * @param stringToCheck the string to check
-     * @param fieldName     the name of the string field
+     * @param stringToCheck
+     *         the string to check
+     * @param fieldName
+     *         the name of the string field
      * @return the passed string
-     * @throws IllegalArgumentException if the string is empty or blank
+     * @throws IllegalArgumentException
+     *         if the string is empty or blank
+     * @throws NullPointerException
+     *         if the passed string is {@code null}
+     * @deprecated please use {@link Preconditions2#checkNotEmptyOrBlank(String, String, Object...)}
      */
+    @Deprecated
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String stringToCheck, String fieldName) {
         checkNotNull(stringToCheck);
         checkNotNull(fieldName);
-        checkArgument(!stringToCheck.isEmpty(), "Field %s must not be an empty string.", fieldName);
-        String trimmed = stringToCheck.trim();
-        checkArgument(trimmed.length() > 0, "Field %s must not be a blank string.", fieldName);
-        return stringToCheck;
+        return Preconditions2.checkNotEmptyOrBlank(stringToCheck, fieldName);
     }
 
     /**
@@ -221,11 +246,11 @@ public final class Validate {
      *
      * @param value the value to check
      * @throws IllegalArgumentException if requirement is not met
+     * @deprecated please use {@link Preconditions2#checkPositive(long)}
      */
+    @Deprecated
     public static void checkPositive(long value) {
-        if (value <= 0) {
-            throw newIllegalArgumentException("value (%d) must be positive", value);
-        }
+        Preconditions2.checkPositive(value);
     }
 
     /**
@@ -234,10 +259,12 @@ public final class Validate {
      * @param value        the value to check
      * @param argumentName the name of the checked value to be used in the error message
      * @throws IllegalArgumentException if requirement is not met
+     * @deprecated please use {@link Preconditions2#checkPositive(long, String, Object...)}
      */
+    @Deprecated
     public static void checkPositive(long value, String argumentName) {
         checkNotNull(argumentName);
-        checkArgument(value > 0L, "%s must be a positive value", argumentName);
+        checkArgument(value > 0L, "`%s` must be a positive value.", argumentName);
     }
 
     /**
@@ -247,17 +274,11 @@ public final class Validate {
      * @param paramName value name
      * @param lowBound  lower bound to check
      * @param highBound higher bound
+     * @deprecated please use {@link Preconditions2#checkBounds(int, String, int, int)}
      */
+    @Deprecated
     public static void checkBounds(int value, String paramName, int lowBound, int highBound) {
-        checkNotNull(paramName);
-        if (!isBetween(value, lowBound, highBound)) {
-            throw newIllegalArgumentException("%s (%d) should be in bounds [%d, %d] inclusive",
-                                              paramName, value, lowBound, highBound);
-        }
-    }
-
-    private static boolean isBetween(int value, int lowBound, int highBound) {
-        return lowBound <= value && value <= highBound;
+        Preconditions2.checkBounds(value, paramName, lowBound, highBound);
     }
 
     /**
@@ -269,9 +290,7 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-
-        List<ConstraintViolation> violations = MessageValidator.newInstance(message)
-                                                               .validate();
+        List<ConstraintViolation> violations = validate(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
@@ -287,6 +306,8 @@ public final class Validate {
      *         the new state of the message
      * @param <M>
      *         the type of the message
+     * @throws ValidationException
+     *          the value transition is not valid
      */
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);
@@ -350,8 +371,6 @@ public final class Validate {
         return setOnceValue || requiredByDefault;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Usage in AbstractValidatingBuilder will be removed.
     private static void onSetOnceMisuse(FieldDeclaration field) {
         FieldName fieldName = field.name();
         logger.atSevere()
@@ -360,8 +379,6 @@ public final class Validate {
                    fieldName);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Usage in AbstractValidatingBuilder will be removed.
     private static ConstraintViolation violatedSetOnce(FieldDeclaration declaration) {
         TypeName declaringTypeName = declaration.declaringType().name();
         FieldName fieldName = declaration.name();

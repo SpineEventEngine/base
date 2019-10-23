@@ -63,10 +63,10 @@ final class GenerateMethodsTest {
         }
     }
 
-    @DisplayName("throw IllegalStateException if FilePattern is not set")
+    @DisplayName("reject empty `FilePattern`")
     @Test
-    void throwIllegalStateExceptionIfFilePatternIsNotSet() {
-        assertThrows(IllegalStateException.class, () ->
+    void rejectEmptyFilePattern() {
+        assertThrows(IllegalArgumentException.class, () ->
                 newTask(newTaskConfig("not-empty-name").build()));
     }
 

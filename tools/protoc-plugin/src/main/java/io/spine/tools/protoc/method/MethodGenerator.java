@@ -34,7 +34,7 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.Validate.isNotDefault;
+import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
  * The {@link SpineProtoGenerator} implementation generating additional message methods.

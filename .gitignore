@@ -15,6 +15,10 @@
 
 # Generated source code
 **/generated/**
+**/*.pb.dart
+**/*.pbenum.dart
+**/*.pbserver.dart
+**/*.pbjson.dart
 
 # Gradle build files
 **/build/**
