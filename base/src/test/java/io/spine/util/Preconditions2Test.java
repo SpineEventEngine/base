@@ -139,7 +139,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
 
     @Nested
     @DisplayName("Check that a message is not in the default state")
-    class NotDefaultState {
+    class NotDefaultMessage {
 
         private final Message defaultValue = StringValue.getDefaultInstance();
         private String customErrorMessage;
