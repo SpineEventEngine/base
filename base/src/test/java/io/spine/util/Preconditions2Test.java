@@ -20,6 +20,7 @@
 
 package io.spine.util;
 
+import com.google.common.truth.StringSubject;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.TestValues;
@@ -63,6 +64,26 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
             );
             assertThat(exception).hasMessageThat()
                                  .contains(errorMessage);
+        }
+
+        @Test
+        @DisplayName("null")
+        void nullStr() {
+            assertThrows(NullPointerException.class, () -> checkNotEmptyOrBlank(null));
+
+            String errorTemplateBase = randomString();
+            String[] errorArg = { randomString(), randomString() };
+            String errorTemplate = errorTemplateBase + "%s %s";
+
+            NullPointerException exception = assertThrows(
+                    NullPointerException.class,
+                    () -> checkNotEmptyOrBlank(null, errorTemplate, errorArg[0], errorArg[1])
+            );
+
+            StringSubject assertExceptionMessage = assertThat(exception).hasMessageThat();
+            assertExceptionMessage.contains(errorTemplateBase);
+            assertExceptionMessage.contains(errorArg[0]);
+            assertExceptionMessage.contains(errorArg[1]);
         }
 
         @Test
