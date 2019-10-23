@@ -88,7 +88,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     @DisplayName("Check that a value is positive")
     class PositiveValue {
 
-        void assertThrowsOn(long value) {
+        private void assertThrowsOn(long value) {
             IllegalArgumentException exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkPositive(value));
@@ -97,7 +97,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
                     .contains(String.valueOf(value));
         }
 
-        void assertThrowsWithMessage(long value, String errorMessage) {
+        private void assertThrowsWithMessage(long value, String errorMessage) {
             IllegalArgumentException exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkPositive(value, errorMessage));
