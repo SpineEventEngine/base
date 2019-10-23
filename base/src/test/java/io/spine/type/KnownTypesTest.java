@@ -20,7 +20,7 @@
 
 package io.spine.type;
 
-import com.google.common.truth.IterableSubject;
+import com.google.common.truth.StringSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -35,6 +35,7 @@ import io.spine.test.types.KnownTask;
 import io.spine.test.types.KnownTaskId;
 import io.spine.test.types.KnownTaskName;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -64,37 +65,44 @@ class KnownTypesTest {
         assertFalse(typeUrls.isEmpty());
     }
 
-    @Test
-    @DisplayName("contain types defined by Spine framework")
-    void containsSpineTypes() {
-        assertContainsClass(EntityOption.class);
-        assertContainsClass(Error.class);
-        assertContainsClass(IfMissingOption.class);
-    }
+    @Nested
+    @DisplayName("contain types")
+    class ContainTypes {
 
-    @Test
-    @DisplayName("contain types from Google Protobuf")
-    void containsProtobufTypes() {
-        assertContainsClass(Any.class);
-        assertContainsClass(Timestamp.class);
-        assertContainsClass(Duration.class);
-        assertContainsClass(Empty.class);
-    }
+        @Test
+        @DisplayName("defined by Spine framework")
+        void containsSpineTypes() {
+            assertContainsClass(EntityOption.class);
+            assertContainsClass(Error.class);
+            assertContainsClass(IfMissingOption.class);
+        }
 
-    private void assertContainsClass(Class<? extends Message> msgClass) {
-        TypeUrl typeUrl = TypeUrl.of(msgClass);
-        ClassName className = knownTypes.classNameOf(typeUrl);
+        @Test
+        @DisplayName("from Google Protobuf")
+        void containsProtobufTypes() {
+            assertContainsClass(Any.class);
+            assertContainsClass(Timestamp.class);
+            assertContainsClass(Duration.class);
+            assertContainsClass(Empty.class);
+        }
 
-        assertEquals(ClassName.of(msgClass), className);
-    }
+        private void assertContainsClass(Class<? extends Message> msgClass) {
+            TypeUrl typeUrl = TypeUrl.of(msgClass);
+            ClassName className = knownTypes.classNameOf(typeUrl);
 
-    @Test
-    @DisplayName("contain nested proto types")
-    void containNestedProtoTypes() {
-        TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
-        ClassName className = knownTypes.classNameOf(typeUrl);
+            assertThat(className)
+                    .isEqualTo(ClassName.of(msgClass));
+        }
 
-        assertEquals(ClassName.of(EntityOption.Kind.class), className);
+        @Test
+        @DisplayName("nested into other proto types")
+        void containNestedProtoTypes() {
+            TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
+            ClassName className = knownTypes.classNameOf(typeUrl);
+
+            assertThat(className)
+                    .isEqualTo(ClassName.of(EntityOption.Kind.class));
+        }
     }
 
     @Test
@@ -119,8 +127,8 @@ class KnownTypesTest {
 
         Set<TypeUrl> packageTypes = knownTypes.allFromPackage(packageName);
 
-        IterableSubject assertTypes = assertThat(packageTypes);
-        assertTypes.containsAtLeast(taskId, taskName, task);
+        assertThat(packageTypes)
+                .containsAtLeast(taskId, taskName, task);
     }
 
     @Test
@@ -149,5 +157,29 @@ class KnownTypesTest {
                 UnknownTypeException.class,
                 () -> knownTypes.classNameOf(unexpectedUrl)
         );
+    }
+
+    @Test
+    @DisplayName("print known type URLs in alphabetical order")
+    void printingTypeUrls() {
+        String list = knownTypes.printAllTypes();
+
+        StringSubject assertOutput = assertThat(list);
+        assertOutput.isNotEmpty();
+
+        String anyUrl = TypeUrl.from(Any.getDescriptor()).value();
+        String timestampUrl = TypeUrl.from(Timestamp.getDescriptor()).value();
+        String durationUrl = TypeUrl.from(Duration.getDescriptor()).value();
+
+        assertOutput.contains(anyUrl);
+        assertOutput.contains(timestampUrl);
+        assertOutput.contains(durationUrl);
+
+        int anyIndex = list.indexOf(anyUrl);
+        int durationIndex = list.indexOf(durationUrl);
+        int timestampIndex = list.indexOf(timestampUrl);
+
+        assertTrue(anyIndex < timestampIndex);
+        assertTrue(durationIndex < timestampIndex);
     }
 }
