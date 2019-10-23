@@ -307,7 +307,7 @@ public final class Validate {
      * @param <M>
      *         the type of the message
      * @throws ValidationException
-     *          the the value transition is not valid
+     *          the value transition is not valid
      */
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);
