@@ -241,8 +241,7 @@ public final class Preconditions2 {
                            @Nullable String errorMessageTemplate,
                            @Nullable Object @Nullable ... errorMessageArgs) {
         checkNotNull(object);
-        boolean value = isNotDefault(object);
-        checkState(value, errorMessageTemplate, errorMessageArgs);
+        checkState(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
         return object;
     }
 
