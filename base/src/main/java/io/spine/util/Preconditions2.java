@@ -54,9 +54,12 @@ public final class Preconditions2 {
      */
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String str) {
-        return checkNotEmptyOrBlank(
+        checkNotNull(str);
+        checkArgument(
+                !str.trim().isEmpty(),
                 str, "Non-empty and non-blank string expected. Encountered: \"%s\".", str
         );
+        return str;
     }
 
     /**
@@ -118,9 +121,9 @@ public final class Preconditions2 {
     /**
      * Ensures that the passed message is not in the default state.
      *
-     * @param message
+     * @param object
      *         the message to check
-     * @param <T>
+     * @param <M>
      *         the type of the message
      * @return the passed message
      * @throws IllegalArgumentException
@@ -129,48 +132,27 @@ public final class Preconditions2 {
      *          if the passed message is {@code null}
      */
     @CanIgnoreReturnValue
-    public static <T extends @NonNull Message> T checkNotDefaultArg(T message) {
-        checkArgument(!Messages.isDefault(message));
-        return message;
+    public static <M extends @NonNull Message> M checkNotDefaultArg(M object) {
+        checkArgument(!Messages.isDefault(object));
+        return object;
     }
 
     /**
      * Ensures that the passed message is not in the default state.
      *
-     * @param message
-     *         the message to check
-     * @param <T>
-     *         the type of the message
-     * @return the passed message
-     * @throws IllegalStateException
-     *          if the passed message has the default state
-     * @throws NullPointerException
-     *          if the passed message is {@code null}
-     */
-    @CanIgnoreReturnValue
-    public static <T extends @NonNull Message> T checkNotDefaultState(T message) {
-        checkState(!Messages.isDefault(message));
-        return message;
-    }
-
-    /**
-     * Ensures that the passed object is not in its default state and is not {@code null}.
-     *
      * @param object
      *         the {@code Message} instance to check
-     * @param errorMessage
-     *         the message for the exception to be thrown;
-     *         will be converted to a string using {@link String#valueOf(Object)}
+     * @param <M>
+     *         the type of the message to check
+     * @return the passed message
      * @throws IllegalStateException
-     *         if the object is in its default state
+     *         if the passed message has the default state
      * @throws NullPointerException
      *         if the passed message is {@code null}
      */
     @CanIgnoreReturnValue
-    public static <M extends Message>
-    M checkNotDefaultArg(M object, @Nullable Object errorMessage) {
-        checkNotNull(object);
-        checkArgument(isNotDefault(object), errorMessage);
+    public static <M extends @NonNull Message> M checkNotDefaultState(M object) {
+        checkState(!Messages.isDefault(object));
         return object;
     }
 
@@ -182,6 +164,31 @@ public final class Preconditions2 {
      * @param errorMessage
      *         the message for the exception to be thrown;
      *         will be converted to a string using {@link String#valueOf(Object)}
+     * @param <M>
+     *         the type of the message to check
+     * @throws IllegalStateException
+     *         if the object is in its default state
+     * @throws NullPointerException
+     *         if the passed message is {@code null}
+     */
+    @CanIgnoreReturnValue
+    public static <M extends Message>
+    M checkNotDefaultArg(M object, @Nullable Object errorMessage) {
+        checkNotNull(object, errorMessage);
+        checkArgument(isNotDefault(object), errorMessage);
+        return object;
+    }
+
+    /**
+     * Ensures that the passed object is not in its default state and is not {@code null}.
+     *
+     * @param object
+     *         the {@code Message} instance to check
+     * @param <M>
+     *         the type of the message to check
+     * @param errorMessage
+     *         the message for the exception to be thrown;
+     *         will be converted to a string using {@link String#valueOf(Object)}
      * @throws IllegalStateException
      *         if the object is in its default state
      * @throws NullPointerException
@@ -190,7 +197,7 @@ public final class Preconditions2 {
     @CanIgnoreReturnValue
     public static <M extends Message>
     M checkNotDefaultState(M object, @Nullable Object errorMessage) {
-        checkNotNull(object);
+        checkNotNull(object, errorMessage);
         checkState(isNotDefault(object), errorMessage);
         return object;
     }
@@ -215,7 +222,7 @@ public final class Preconditions2 {
     M checkNotDefaultArg(M object,
                          @Nullable String errorMessageTemplate,
                          @Nullable Object @Nullable ... errorMessageArgs) {
-        checkNotNull(object);
+        checkNotNull(object, errorMessageTemplate, errorMessageArgs);
         checkArgument(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
         return object;
     }
@@ -240,7 +247,7 @@ public final class Preconditions2 {
     M checkNotDefaultState(M object,
                            @Nullable String errorMessageTemplate,
                            @Nullable Object @Nullable ... errorMessageArgs) {
-        checkNotNull(object);
+        checkNotNull(object, errorMessageTemplate, errorMessageArgs);
         checkState(isNotDefault(object), errorMessageTemplate, errorMessageArgs);
         return object;
     }
