@@ -78,7 +78,7 @@ public final class Preconditions2 {
     public static String checkNotEmptyOrBlank(String str,
                                               @Nullable String errorMessageTemplate,
                                               @Nullable Object @Nullable ... errorMessageArgs) {
-        checkNotNull(str, errorMessageTemplate);
+        checkNotNull(str, errorMessageTemplate, errorMessageArgs);
         checkArgument(!str.trim().isEmpty(), errorMessageTemplate, errorMessageArgs);
         return str;
     }
