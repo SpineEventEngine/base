@@ -67,6 +67,25 @@ public final class Preconditions2 {
      *
      * @param str
      *         the string to check
+     * @param errorMessage
+     *         the exception message to use if the check fails
+     * @return the passed string
+     * @throws IllegalArgumentException
+     *         if the string is empty or blank
+     * @throws NullPointerException
+     *         if the passed string is {@code null}
+     */
+    public static String checkNotEmptyOrBlank(String str, @Nullable Object errorMessage) {
+        checkNotNull(str, errorMessage);
+        checkArgument(!str.trim().isEmpty(), errorMessage);
+        return str;
+    }
+
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param str
+     *         the string to check
      * @param errorMessageTemplate
      *         the exception message template to use if the check fails
      * @param errorMessageArgs
