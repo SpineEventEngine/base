@@ -64,13 +64,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>3.9.0</version>
+    <version>3.10.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java-util</artifactId>
-    <version>3.9.0</version>
+    <version>3.10.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -82,7 +82,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.grpc</groupId>
     <artifactId>grpc-core</artifactId>
-    <version>1.22.0</version>
+    <version>1.24.1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -210,7 +210,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protoc</artifactId>
-    <version>3.9.0</version>
+    <version>3.10.0</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
