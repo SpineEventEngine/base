@@ -21,12 +21,15 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
 
 import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.option.EntityOption.Kind.PROCESS_MANAGER;
+import static io.spine.option.EntityOption.Kind.PROJECTION;
 
 public final class ColumnOption extends FieldOption<Boolean> {
 
@@ -40,6 +43,9 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     public static boolean hasColumns(MessageType messageType) {
+        if (!eligibleForColumns(messageType)) {
+            return false;
+        }
         boolean result = messageType.fields()
                                     .stream()
                                     .anyMatch(ColumnOption::isColumn);
@@ -47,6 +53,9 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
+        if (!eligibleForColumns(messageType)) {
+            return ImmutableList.of();
+        }
         ImmutableList<FieldDeclaration> result = messageType.fields()
                                                             .stream()
                                                             .filter(ColumnOption::isColumn)
@@ -59,5 +68,15 @@ public final class ColumnOption extends FieldOption<Boolean> {
         Optional<Boolean> value = option.valueFrom(field.descriptor());
         boolean isColumn = value.orElse(false);
         return isColumn;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
+    private static boolean eligibleForColumns(MessageType messageType) {
+        Optional<EntityOption> entityOption = EntityStateOption.valueOf(messageType.descriptor());
+        if (!entityOption.isPresent()) {
+            return false;
+        }
+        EntityOption.Kind kind = entityOption.get().getKind();
+        return kind == PROJECTION || kind == PROCESS_MANAGER;
     }
 }
