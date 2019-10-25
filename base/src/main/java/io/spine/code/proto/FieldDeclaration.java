@@ -47,6 +47,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 
 /**
  * Declaration of a Protobuf message field.

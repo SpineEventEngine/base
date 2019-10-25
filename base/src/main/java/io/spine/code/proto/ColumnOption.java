@@ -28,6 +28,7 @@ import io.spine.type.MessageType;
 import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.option.EntityOption.Kind.ENTITY;
 import static io.spine.option.EntityOption.Kind.PROCESS_MANAGER;
 import static io.spine.option.EntityOption.Kind.PROJECTION;
 
@@ -70,6 +71,12 @@ public final class ColumnOption extends FieldOption<Boolean> {
         return isColumn;
     }
 
+    /**
+     * ...
+     *
+     * <p>Allows columns for {@linkplain io.spine.option.EntityOption.Kind#ENTITY generic} entities
+     * for convenience for tests.
+     */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
     private static boolean eligibleForColumns(MessageType messageType) {
         Optional<EntityOption> entityOption = EntityStateOption.valueOf(messageType.descriptor());
@@ -77,6 +84,6 @@ public final class ColumnOption extends FieldOption<Boolean> {
             return false;
         }
         EntityOption.Kind kind = entityOption.get().getKind();
-        return kind == PROJECTION || kind == PROCESS_MANAGER;
+        return kind == PROJECTION || kind == PROCESS_MANAGER || kind == ENTITY;
     }
 }
