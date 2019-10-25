@@ -33,7 +33,7 @@ const _numericRange = r'([\[(])\s*([+\-]?[\d.]+)\s*\.\.\s*([+\-]?[\d.]+)\s*([\])
 ///
 /// Supports options `(min)`, `(max)`, and `(range)`.
 ///
-class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
+class NumberValidatorFactory<N extends num> extends SingularFieldValidatorFactory {
     
     final String _wrapperType;
 
@@ -64,6 +64,13 @@ class NumberValidatorFactory<N extends num> extends FieldValidatorFactory {
         }
         return rules;
     }
+
+    /// Numbers can neither be `(required)` nor be a part of `(required_field)`.
+    ///
+    /// Protobuf does not distinguish between the default value of `0` and the domain value of `0`,
+    /// hence it's not possible to tell if a number field is set or not.
+    ///
+    bool supportsRequired() => false;
 
     Rule _minRule(FieldOptions options) {
         var min = options.getExtension(Options.min) as MinOption;

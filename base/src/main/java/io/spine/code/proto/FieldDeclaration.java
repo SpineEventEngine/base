@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -32,15 +31,14 @@ import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
+import io.spine.protobuf.Messages;
 import io.spine.type.EnumType;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
-import io.spine.validate.Validate;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,8 +46,7 @@ import static com.google.protobuf.DescriptorProtos.DescriptorProto.FIELD_FIELD_N
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Declaration of a Protobuf message field.
@@ -113,7 +110,7 @@ public final class FieldDeclaration {
         if (isMessage()) {
             if (fieldValue instanceof Message) {
                 Message message = (Message) fieldValue;
-                return Validate.isDefault(message) && sameMessageType(message);
+                return Messages.isDefault(message) && sameMessageType(message);
             } else {
                 return false;
             }
@@ -155,20 +152,11 @@ public final class FieldDeclaration {
             ClassName className = knownTypes.classNameOf(fieldType);
             return className.value();
         } catch (UnknownTypeException e) {
-            List<String> allUrls =
-                    knownTypes.allUrls()
-                              .stream()
-                              .map(TypeUrl::value)
-                              .sorted()
-                              .collect(toList());
-            String newLine = format(",%n");
-            String message =
-                    format("Cannot find a type %s in the list of known types:%n%s",
-                           typeName,
-                           Joiner.on(newLine)
-                                 .join(allUrls));
-
-            throw new IllegalStateException(message, e);
+            String allTypeUrls = knownTypes.printAllTypes();
+            throw newIllegalStateException(
+                    e,
+                    "Cannot find a type %s in the list of known types:%n%s", typeName, allTypeUrls
+            );
         }
     }
 

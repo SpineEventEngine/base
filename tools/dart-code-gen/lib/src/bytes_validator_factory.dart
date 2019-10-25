@@ -27,7 +27,7 @@ import 'validator_factory.dart';
 
 /// A [FieldValidatorFactory] for `bytes` fields.
 ///
-class BytesValidatorFactory extends FieldValidatorFactory {
+class BytesValidatorFactory extends SingularFieldValidatorFactory {
 
     BytesValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
@@ -36,10 +36,11 @@ class BytesValidatorFactory extends FieldValidatorFactory {
     Iterable<Rule> rules() {
         var rules = <Rule>[];
         if (isRequired()) {
-            rules.add(_requiredRule());
+            rules.add(createRequiredRule());
         }
         return rules;
     }
 
-    Rule _requiredRule() => createRequiredRule((v) => v.property('isEmpty'));
+    @override
+    LazyCondition notSetCondition() => (v) => v.property('isEmpty');
 }

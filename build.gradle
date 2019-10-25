@@ -51,7 +51,6 @@ ext {
         'plugin-base',
         'javadoc-filter',
         'javadoc-prettifier',
-        'proto-dart-plugin',
         'proto-js-plugin',
         'model-compiler',
 

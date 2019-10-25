@@ -4,6 +4,7 @@ package spine.test.validation.dart;
 
 import "spine/options.proto";
 import "spine/people/person_name.proto";
+import "spine/net/email_address.proto";
 
 option (type_url_prefix) = "type.spine.io";
 
@@ -24,6 +25,8 @@ message Contact {
 
     Category category = 3 [(required) = true];
 
+    repeated net.EmailAddress email = 4 [(required) = true];
+
     enum Category {
 
         CC_UNKNOWN = 0;
@@ -31,6 +34,16 @@ message Contact {
         PERSONAL = 2;
         OTHER = 3;
     }
+}
+
+message Contacts {
+
+    repeated Contact contact = 1 [(distinct) = true];
+}
+
+message ContactBook {
+
+    map<uint32, Contacts> contact_by_category = 1 [(required) = true, (distinct) = true];
 }
 
 message LocalTime {
@@ -58,4 +71,11 @@ message BinaryFile {
     string owner = 2 [(required) = false];
 
     bytes content = 3 [(required) = true];
+}
+
+message LotteryTicket {
+
+    repeated uint32 numbers = 1 [(required) = true, (range) = "[1..69]"];
+
+    uint32 magic_number = 2 [(range) = "[1..69]"];
 }

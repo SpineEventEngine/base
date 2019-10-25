@@ -22,9 +22,11 @@ import 'package:code_builder/code_builder.dart';
 
 import '../dart_code_gen.dart';
 import '../google/protobuf/descriptor.pb.dart';
+import '../spine/options.pb.dart';
 import 'constraint_violation.dart';
 import 'field_validator_factory.dart';
 import 'imports.dart';
+import 'required_field_validation_factory.dart';
 
 const _violations = 'violations';
 const _msg = 'msg';
@@ -48,15 +50,18 @@ class ValidatorFactory {
     ValidatorFactory(this.file, this.type, this.allocator, this.properties);
 
     String get fullTypeName => '${file.package}.${type.name}';
-    
-    Reference get violationList => refer(_violations);
-    
+
+    ViolationConsumer get report =>
+            (violation) => _violationList.property('add').call([violation]);
+
     String get _fileName {
         var endIndex = file.name.length - '.proto'.length;
         var filePathWithoutExtension = file.name.substring(0, endIndex);
         return filePathWithoutExtension + '.pb.dart';
     }
-    
+
+    Reference get _violationList => refer(_violations);
+
     Expression get _emptyValidationError =>
         refer('ValidationError', validationErrorImport(properties.standardPackage))
             .newInstance([]);
@@ -70,14 +75,41 @@ class ValidatorFactory {
         try {
             return Method((b) => b
                 ..requiredParameters.add(param)
-                ..body = _createValidator()).closure;
+                ..body = _collectStatements()
+            ).closure;
         } catch (e) {
             throw StateError('Cannot generate validation code for `$fullTypeName`. '
                              '${e.toString()}');
         }
     }
 
-    Code _createValidator() {
+    Code _collectStatements() {
+        var statements = <Code>[];
+        statements.add(_newViolationList().statement);
+        statements.add(_createRequiredFieldValidator());
+        statements.add(_createFieldValidators());
+        var error = 'error';
+        var errorRef = refer(error);
+        statements.add(_newValidationError(error).statement);
+        statements.add(_fillInViolations(errorRef).statement);
+        statements.add(errorRef.returned.statement);
+        return Block.of(statements);
+    }
+
+    Code _createRequiredFieldValidator() {
+        var options = type.options;
+        var option = Options.requiredField;
+        if (options.hasExtension(option)) {
+            var fields = options.getExtension(option);
+            var factory = RequiredFieldValidatorFactory.forExpression(fields, this, report);
+            var validator = factory.generate();
+            return validator;
+        } else {
+            return Block.of([]);
+        }
+    }
+
+    Code _createFieldValidators() {
         var validations = <Code>[];
         for (var field in type.field) {
             var validator = _createFieldValidator(field);
@@ -85,23 +117,7 @@ class ValidatorFactory {
                 validations.add(validator);
             }
         }
-        if (validations.isEmpty) {
-            return _emptyValidationError.returned.statement;
-        } else {
-            return _collectFieldChecks(validations);
-        }
-    }
-
-    Block _collectFieldChecks(List<Code> validations) {
-        var statements = <Code>[];
-        statements.add(_newViolationList().statement);
-        statements.addAll(validations);
-        var error = 'error';
-        var errorRef = refer(error);
-        statements.add(_newValidationError(error).statement);
-        statements.add(_fillInViolations(errorRef).statement);
-        statements.add(errorRef.returned.statement);
-        return Block.of(statements);
+        return Block.of(validations);
     }
 
     Expression _fillInViolations(Reference errorRef) {
@@ -126,19 +142,23 @@ class ValidatorFactory {
     /// See [FieldValidatorFactory] for more on field validation.
     ///
     Code _createFieldValidator(FieldDescriptorProto field) {
-        var prefix = properties.importPrefix;
-        var importUri = prefix.isNotEmpty
-                        ? '$prefix/$_fileName'
-                        : _fileName;
-        var validatedMessageType = refer(type.name, importUri);
         var factory = FieldValidatorFactory.forField(field, this);
         if (factory != null) {
-            var fieldValue = refer(_msg).asA(validatedMessageType).property(_fieldName(field));
+            var fieldValue = accessField(field);
             return factory.createFieldValidator(fieldValue);
         } else {
             return null;
         }
     }
+
+    Expression accessField(FieldDescriptorProto field) =>
+        _typedMessage.property(_fieldName(field));
+
+    Expression get _typedMessage =>
+        refer(_msg).asA(_typeRef(properties.importPrefix));
+
+    Reference _typeRef(String prefix) =>
+        refer(type.name, prefix.isNotEmpty ? '$prefix/$_fileName' : _fileName);
 
     /// Obtains a Dart name of the given Protobuf field.
     ///
@@ -161,3 +181,10 @@ class ValidatorFactory {
                : '${word[0].toUpperCase()}${word.substring(1)}';
     }
 }
+
+/// A functional interface which transforms an expression of [constraintViolation] into an
+/// expression which reports the given violation.
+///
+/// The violations may be accumulated this way over many fields of a validated message.
+///
+typedef Expression ViolationConsumer(Expression constraintViolation);

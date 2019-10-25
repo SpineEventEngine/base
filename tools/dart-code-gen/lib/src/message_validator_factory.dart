@@ -27,7 +27,7 @@ import 'validator_factory.dart';
 
 /// A [FieldValidatorFactory] for message fields.
 ///
-class MessageValidatorFactory extends FieldValidatorFactory {
+class MessageValidatorFactory extends SingularFieldValidatorFactory {
 
     MessageValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
         : super(validatorFactory, field);
@@ -36,11 +36,12 @@ class MessageValidatorFactory extends FieldValidatorFactory {
     Iterable<Rule> rules() {
         var rules = <Rule>[];
         if (isRequired()) {
-            rules.add(_requiredRule());
+            rules.add(createRequiredRule());
         }
         return rules;
     }
 
-    Rule _requiredRule() =>
-        createRequiredRule((v) => v.property('createEmptyInstance').call([]).equalTo(v));
+    @override
+    LazyCondition notSetCondition() =>
+            (v) => v.property('createEmptyInstance').call([]).equalTo(v);
 }

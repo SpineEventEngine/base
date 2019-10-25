@@ -31,6 +31,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
 
 import java.util.Collection;
@@ -232,7 +233,7 @@ public final class FieldValue<@ImmutableTypeParameter T> {
             return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
         }
         Message thisAsMessage = TypeConverter.toMessage(singleValue());
-        return Validate.isDefault(thisAsMessage);
+        return Messages.isDefault(thisAsMessage);
     }
 
     /** Returns the declaration of the value. */

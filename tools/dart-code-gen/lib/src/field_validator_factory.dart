@@ -47,6 +47,75 @@ class FieldValidatorFactory {
     /// May return `null` to signify that no validation is required for the given field.
     ///
     factory FieldValidatorFactory.forField(FieldDescriptorProto field, ValidatorFactory factory) {
+        var singularFactory = SingularFieldValidatorFactory._forType(field, factory);
+        var repeated = field.label == FieldDescriptorProto_Label.LABEL_REPEATED;
+        if (repeated) {
+            return RepeatedFieldValidatorFactory(factory, field, singularFactory);
+        } else {
+            return singularFactory;
+        }
+    }
+
+    /// Generates validator code for the specified field.
+    ///
+    /// The validator obtains the field value via the given [fieldValue] expression.
+    ///
+    /// If any constrains violations are discovered, they are registered with
+    /// the [validatorFactory].
+    ///
+    Code createFieldValidator(Expression fieldValue) => null;
+
+    /// Checks if the validated field is required.
+    ///
+    /// Returns `true` if the field is required and `false` if it is optional.
+    ///
+    bool isRequired() {
+        var options = field.options;
+        return options.hasExtension(Options.required)
+            && options.getExtension(Options.required);
+    }
+
+    /// Determines if this field type supports `(required)` and related constrains.
+    ///
+    /// `true` by default.
+    ///
+    bool supportsRequired() => true;
+
+    /// Creates a new validation rule with the given parameters.
+    Rule newRule(LazyCondition condition, LazyViolation violation) {
+        return Rule._(condition, violation, validatorFactory.report);
+    }
+
+    /// Creates a validation for the `(required)` constraint.
+    ///
+    Rule createRequiredRule() {
+        return newRule(notSetCondition(), (v) => _requiredMissing());
+    }
+
+    /// Provides the condition under which a field value is considered not set.
+    ///
+    /// Is the field is `(required)`, it has to be set.
+    ///
+    LazyCondition notSetCondition() => null;
+
+    /// Generates an expression which constructs a `ConstraintViolation` for a missing required
+    /// field.
+    Expression _requiredMissing() {
+        return violationRef.call([literalString('Field must be set.'),
+                                  literalString(validatorFactory.fullTypeName),
+                                  literalList([field.name])]);
+    }
+}
+
+/// A [FieldValidatorFactory] for non-`repeated` fields.
+///
+class SingularFieldValidatorFactory extends FieldValidatorFactory {
+
+    SingularFieldValidatorFactory(ValidatorFactory validatorFactory, FieldDescriptorProto field)
+        : super(validatorFactory, field);
+
+    factory SingularFieldValidatorFactory._forType(FieldDescriptorProto field,
+                                                   ValidatorFactory factory) {
         var type = field.type;
         switch (type) {
             case FieldDescriptorProto_Type.TYPE_STRING:
@@ -86,49 +155,98 @@ class FieldValidatorFactory {
     /// If any constrains violations are discovered, they are added to
     /// the [ValidatorFactory.violationList] of the [validatorFactory].
     ///
+    @override
     Code createFieldValidator(Expression fieldValue) {
         var statements = rules()
             .map((r) => r._eval(fieldValue))
-            .map((expression) => expression.statement)
-            .toList();
+            .map((expression) => expression.statement);
         return statements.isNotEmpty
                ? Block.of(statements)
                : null;
     }
 
-    /// Obtains validation rules to apply to the field..
+    /// Obtains validation rules to apply to the field.
     Iterable<Rule> rules() => null;
+}
 
-    /// Creates a new validation rule with the given parameters.
-    Rule newRule(LazyCondition condition, LazyViolation violation) {
-        return Rule._(condition, violation, validatorFactory.violationList);
+/// A [FieldValidatorFactory] for `repeated` and `map` fields.
+///
+class RepeatedFieldValidatorFactory extends FieldValidatorFactory {
+
+    final FieldValidatorFactory _singular;
+
+    RepeatedFieldValidatorFactory(ValidatorFactory validatorFactory,
+                                  FieldDescriptorProto field,
+                                  this._singular)
+        : super(validatorFactory, field);
+
+    @override
+    Code createFieldValidator(Expression field) {
+        var validation = <Expression>[];
+        if (isRequired()) {
+            var requiredRule = createRequiredRule();
+            validation.add(requiredRule._eval(field));
+        }
+        var values = 'values_${this.field.name}';
+        var valuesRef = refer(values);
+        var validateDistinctList = _validateDistinct(valuesRef);
+        var validateElements = _validateEachElement(valuesRef);
+        if (validateElements != null || validateDistinctList != null) {
+            var valueList = field.isA(refer('Map'))
+                                 .conditional(field.asA(refer('dynamic')).property('values'), field)
+                                 .assignVar(values);
+            validation.add(valueList);
+            if (validateDistinctList != null) {
+                validation.add(validateDistinctList);
+            }
+            if (validateElements != null) {
+                validation.add(validateElements);
+            }
+        }
+        return Block.of(validation.map((expression) => expression.statement));
     }
 
-    /// Checks if the validated field is required.
-    ///
-    /// Returns `true` if the field is required and `false` if it is optional.
-    ///
-    bool isRequired() {
+    @override
+    LazyCondition notSetCondition() => (v) => v.property('isEmpty');
+
+    Expression _validateDistinct(Reference valuesRef) {
         var options = field.options;
-        return options.hasExtension(Options.required)
-            && options.getExtension(Options.required);
+        var option = Options.distinct;
+        if (options.hasExtension(option) && options.getExtension(option)) {
+            var length = 'length';
+            LazyCondition condition = (v) =>
+                v.property(length).notEqualTo(
+                    v.property('toSet').call([]).property(length));
+            LazyViolation violation = (v) =>
+                violationRef.call([literalString('Collection must be distinct.'),
+                                      literalString(validatorFactory.fullTypeName),
+                                      literalList([field.name])]);
+            var distinctRule = newRule(condition, violation);
+            return distinctRule._eval(valuesRef);
+        } else {
+            return null;
+        }
     }
 
-    /// Creates a validation for the `(required)` constraint.
-    ///
-    /// The [condition] determines whether or not the field value if set. The conditional expression
-    /// should evaluate into `true` if the field is **NOT** set.
-    ///
-    Rule createRequiredRule(LazyCondition condition) {
-        return newRule(condition, (v) => _requiredMissing());
-    }
-
-    /// Generates an expression which constructs a `ConstraintViolation` for a missing required
-    /// field.
-    Expression _requiredMissing() {
-        return violationRef.call([literalString('Field must be set.'),
-                                  literalString(validatorFactory.fullTypeName),
-                                  literalList([field.name])]);
+    Expression _validateEachElement(Reference valuesRef) {
+        var element = 'element';
+        var elementRef = refer(element);
+        var elementValidation = _singular.createFieldValidator(elementRef);
+        if (elementValidation != null) {
+            var nonNullCheck = refer('ArgumentError')
+                .property('checkNotNull')
+                .call([elementRef]);
+            var validatingLambda = Method.returnsVoid((b) => b
+                ..requiredParameters.add(Parameter((b) => b..name = element))
+                ..body = Block.of([nonNullCheck.statement, elementValidation])
+                ..lambda = false
+            );
+            var validateEachElement = valuesRef.property('forEach')
+                                               .call([validatingLambda.closure]);
+            return validateEachElement;
+        } else {
+            return null;
+        }
     }
 }
 
@@ -142,7 +260,7 @@ class Rule {
 
     final LazyCondition _condition;
     final LazyViolation _violation;
-    final Expression _targetViolationList;
+    final ViolationConsumer _violationConsumer;
 
     /// Creates a new rule.
     ///
@@ -151,11 +269,11 @@ class Rule {
     /// The [_violation] expression is evaluated to obtain a `ConstraintViolation` if the rule is
     /// broken.
     ///
-    /// The [_targetViolationList] is an expression which represents a list which accumulates all
-    /// the `ConstraintViolation`s. If the rule is broken, the violation generated by [_violation]
-    /// is added to the list.
+    /// The [_violationConsumer] function accepts an expression representing a single
+    /// `ConstraintViolation` and produces an expression which registers the violation with
+    /// a [ValidatorFactory].
     ///
-    Rule._(this._condition, this._violation, this._targetViolationList);
+    Rule._(this._condition, this._violation, this._violationConsumer);
 
     /// Produces a ternary operator which creates a new violation if the string is empty.
     ///
@@ -170,9 +288,7 @@ class Rule {
     ///
     Expression _eval(Expression fieldValue) {
         var ternaryOperator = _condition(fieldValue).conditional(
-            _targetViolationList
-                .property('add')
-                .call([_violation(fieldValue)]),
+            _violationConsumer(_violation(fieldValue)),
             literalNull);
         return ternaryOperator;
     }

@@ -60,14 +60,14 @@ final class GenerateInterfacesTest {
         }
     }
 
-    @DisplayName("throw IllegalStateException if FilePattern is not set")
+    @DisplayName("reject empty `FilePattern`")
     @Test
-    void throwIllegalStateExceptionIfFilePatternIsNotSet() {
-        assertThrows(IllegalStateException.class, () ->
+    void rejectingEmptyFilePattern() {
+        assertThrows(IllegalArgumentException.class, () ->
                 newTask(newTaskConfig("not-empty-name").build()));
     }
 
-    @DisplayName("throw IllegalArgumentException if interface name is")
+    @DisplayName("throw `IllegalArgumentException` if interface name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String interfaceName) {

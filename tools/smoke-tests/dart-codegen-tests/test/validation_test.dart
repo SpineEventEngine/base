@@ -20,6 +20,7 @@
 
 import 'package:codegen_test/google/protobuf/empty.pb.dart';
 import 'package:codegen_test/google/protobuf/wrappers.pb.dart';
+import 'package:codegen_test/spine/net/email_address.pb.dart';
 import 'package:codegen_test/spine/people/person_name.pb.dart';
 import 'package:codegen_test/spine/test/tools/dart/validation.pb.dart';
 import 'package:codegen_test/spine/validate/validation_error.pb.dart';
@@ -40,6 +41,12 @@ void main() {
             assertValid(msg);
         });
 
+        test('pass mesages with enough required fields as by `(required_field)`', () {
+            var givenNameOnly = PersonName()
+                ..givenName = 'Henry';
+            assertValid(givenNameOnly);
+        });
+
         group('report violations on', () {
             test('mismatched string', () {
                 var msg = PhoneNumber()
@@ -57,16 +64,60 @@ void main() {
             });
 
             test('missing message', () {
-                checkMissing(Contact()..category = Contact_Category.PERSONAL, 'name');
+                var message = Contact()
+                    ..category = Contact_Category.PERSONAL
+                    ..email.add(EmailAddress()..value = 'mollie@acme.corp');
+                checkMissing(message, 'name');
             });
 
             test('missing enum', () {
                 var name = PersonName()..givenName = 'Albert';
-                checkMissing(Contact()..name = name, 'category');
+                var contact = Contact()
+                    ..name = name
+                    ..email.add(EmailAddress()..value = 'james@acme.corp');
+                checkMissing(contact, 'category');
             });
 
             test('missing bytes', () {
                 checkMissing(BinaryFile()..path = 'foo.bin', 'content');
+            });
+            
+            test('missing repeated messages', () {
+                var name = PersonName()..givenName = 'Bernard';
+                var contact = Contact()
+                    ..name = name
+                    ..category = Contact_Category.PERSONAL;
+                checkMissing(contact, 'email');
+            });
+
+            test('empty required repeated messages', () {
+                var name = PersonName()..givenName = 'William';
+                var contact = Contact()
+                    ..name = name
+                    ..category = Contact_Category.WORK
+                    ..email.addAll([EmailAddress()..value = 'will@example.com', EmailAddress()]);
+                checkMissing(contact, 'email');
+            });
+
+            test('missing required repeated numbers', () {
+                var ticket = LotteryTicket()
+                    ..magicNumber = 42;
+                checkMissing(ticket, 'numbers');
+            });
+
+            test('missing required map values', () {
+                var message = ContactBook();
+                checkMissing(message, 'contact_by_category');
+            });
+
+            test('out of range repeated numbers', () {
+                var ticket = LotteryTicket()
+                    ..magicNumber = 42
+                    ..numbers.addAll([1, 3, 5, 9000000]);
+                var violations = validate(ticket);
+                expect(violations.length, 1);
+                var violation = violations[0];
+                expect(violation.fieldPath.fieldName[0], 'numbers');
             });
 
             test('out of range int32', () {
@@ -104,11 +155,13 @@ void main() {
 
             test('several fields constraints at once', () {
                 var violations = validate(Contact());
-                expect(violations.length, 2);
+                expect(violations.length, 3);
                 var emptyName = violations[0];
                 expect(emptyName.fieldPath.fieldName[0], 'name');
                 var emptyCategory = violations[1];
                 expect(emptyCategory.fieldPath.fieldName[0], 'category');
+                var emptyEmail = violations[2];
+                expect(emptyEmail.fieldPath.fieldName[0], 'email');
             });
 
             test('several constraints on the same field', () {
@@ -116,6 +169,37 @@ void main() {
                 expect(violations.length, 2);
                 expect(violations[0].msgFormat, contains('Field must be set'));
                 expect(violations[1].msgFormat, contains('regular expression'));
+            });
+
+            test('unexpected duplicates', () {
+                var contacts = Contacts()
+                    ..contact.add(Contact()..category = Contact_Category.WORK)
+                    ..contact.add(Contact()..category = Contact_Category.WORK);
+                var violations = validate(contacts);
+                expect(violations.length, 1);
+                expect(violations[0].fieldPath.fieldName[0], 'contact');
+                expect(violations[0].typeName, contacts.info_.qualifiedMessageName);
+            });
+
+            test('unexpected duplicates in a map', () {
+                var contacts = Contacts()
+                    ..contact.add(Contact()..category = Contact_Category.WORK);
+                var book = ContactBook()
+                    ..contactByCategory[Contact_Category.WORK.value] = contacts
+                    ..contactByCategory[Contact_Category.PERSONAL.value] = contacts;
+                var violations = validate(book);
+                expect(violations.length, 1);
+                expect(violations[0].fieldPath.fieldName[0], 'contact_by_category');
+                expect(violations[0].typeName, book.info_.qualifiedMessageName);
+            });
+
+            test('required fields as defined by `(required_field)` option are not set', () {
+                var surnameOnly = PersonName()
+                    ..familyName = 'Jones';
+                assertInvalid(surnameOnly);
+                var prefixOnly = PersonName()
+                    ..honorificPrefix = 'Dr.';
+                assertInvalid(prefixOnly);
             });
         });
     });
@@ -133,6 +217,12 @@ void checkMissing(GeneratedMessage message, String fieldName) {
 void assertValid(GeneratedMessage message) {
     var violations = validate(message);
     expect(violations, isEmpty);
+}
+
+void assertInvalid(GeneratedMessage message) {
+    var violations = validate(message);
+    expect(violations, isNotEmpty);
+    expect(violations[0].typeName, message.info_.qualifiedMessageName);
 }
 
 List<ConstraintViolation> validate(GeneratedMessage message) {
