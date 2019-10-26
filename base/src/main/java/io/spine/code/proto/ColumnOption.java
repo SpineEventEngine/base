@@ -35,7 +35,7 @@ import static io.spine.option.EntityOption.Kind.PROJECTION;
 /**
  * An option which marks entity state fields as entity columns.
  *
- * <p>Such fields are stored separately from the entity state and can be specified as criteria for
+ * <p>Such fields are stored separately from the entity record and can be specified as criteria for
  * the entity query filters.
  *
  * <p>See the Protobuf option for details.
