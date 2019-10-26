@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A utility for working with {@linkplain Method method}.
+ * A utility for working with {@linkplain Method methods}.
  */
 public final class Methods {
 
