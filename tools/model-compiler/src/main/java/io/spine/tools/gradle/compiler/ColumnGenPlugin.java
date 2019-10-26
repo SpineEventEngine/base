@@ -53,6 +53,11 @@ import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRo
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
+/**
+ * A plugin that generates helper interfaces for declaring entity columns.
+ *
+ * <p>See the {@code (column)} option in {@code options.proto} for details.
+ */
 public class ColumnGenPlugin extends ProtoPlugin {
 
     /**
@@ -112,7 +117,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
     }
 
     /**
-     * Generates source code of rejections.
+     * Does the code generation.
      */
     private static class GenAction extends CodeGenerationAction {
 

@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * A writer of a {@link GeneratedTypeSpec}.
+ */
 final class Writer implements Logging {
 
     private final GeneratedTypeSpec spec;
@@ -38,6 +41,12 @@ final class Writer implements Logging {
         this.spec = spec;
     }
 
+    /**
+     * Writes the spec to a file.
+     *
+     * @param outputDir
+     *         the root dir to write to
+     */
     void write(Path outputDir) {
         try {
             _debug().log("Creating the output directory `%s`.", outputDir);

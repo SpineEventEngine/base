@@ -42,6 +42,17 @@ import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
+/**
+ * A type spec of the interface which declares entity columns.
+ *
+ * <p>The type inherits {@link EntityWithColumns} and is named {@code _X_WithColumns} where
+ * {@code _X_} is the message type.
+ *
+ * <p>The entity columns then become the interface methods which have to be implemented once the
+ * entity class inherits from the interface.
+ *
+ * <p>See {@code (column)} option in {@code options.proto}.
+ */
 public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
     private static final String NAME_FORMAT = "%sWithColumns";
@@ -71,17 +82,21 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
         return builder.build();
     }
 
+    /**
+     * Adds {@code getX()} methods for all columns of the entity.
+     */
     private void addColumnGetters(TypeSpec.Builder spec) {
         columns.forEach(column -> addColumnGetter(spec, column));
     }
 
     private static void addColumnGetter(TypeSpec.Builder spec, FieldDeclaration fieldDeclaration) {
-        // TODO:2019-10-14:dmytro.kuzmin:WIP Add method doc.
         MethodSpec getter = getterSpec(fieldDeclaration);
         spec.addMethod(getter);
     }
 
     /**
+     * Obtains a getter spec from the given proto field.
+     *
      * @implNote All interface methods in Java Poet have to be marked as {@code PUBLIC} and
      *         {@code ABSTRACT}, these modifiers are actually absent in the generated code.
      */
@@ -90,6 +105,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
         JavaPoetName fieldTypeName = fieldType(declaration);
         TypeName returnType = fieldTypeName.value();
         MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addJavadoc("Entity column `%s`.", declaration.name())
                                       .addModifiers(PUBLIC, ABSTRACT)
                                       .returns(returnType)
                                       .build();
@@ -120,25 +136,20 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * A Javadoc content for the rejection.
-     *
-     * @return the class-level Javadoc content
+     * Obtains a class-level Javadoc.
      */
     private CodeBlock classJavadoc() {
-        // TODO:2019-10-08:dmytro.kuzmin:WIP Improve class-level doc.
         CodeBlock value = CodeBlock
                 .builder()
                 .add("Entity Columns of proto type ")
-                .add("{@code $L.$L}.", packageName(), messageType.simpleJavaClassName())
+                .add("{@code $L}.", messageType.javaClassName())
+                .add("<p>Implement this type to manually override the entity column values.")
                 .build();
         return value;
     }
 
     private String className() {
-        String messageTypeName = messageType.javaClassName()
-                                            .toSimple()
-                                            .value();
-        String result = format(NAME_FORMAT, messageTypeName);
+        String result = format(NAME_FORMAT, messageType.simpleJavaClassName());
         return result;
     }
 }

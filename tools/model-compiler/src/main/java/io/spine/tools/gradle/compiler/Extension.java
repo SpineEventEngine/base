@@ -122,8 +122,14 @@ public class Extension extends GradleExtension {
      */
     public String targetTestGenRejectionsRootDir;
 
+    /**
+     * The absolute path to the main target generated columns root directory.
+     */
     public String targetGenColumnsRootDir;
 
+    /**
+     * The absolute path to the test target generated columns root directory.
+     */
     public String targetTestGenColumnsRootDir;
 
     /**

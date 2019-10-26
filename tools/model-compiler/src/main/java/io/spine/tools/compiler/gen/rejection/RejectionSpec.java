@@ -43,7 +43,10 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * Generates Java code for a rejection based on its Protobuf descriptor.
+ * A spec for a rejection type.
+ *
+ * <p>The generated rejection types extend {@link ThrowableMessage} and enclose an instance of the
+ * corresponding proto message.
  */
 public final class RejectionSpec implements GeneratedTypeSpec, Logging {
 

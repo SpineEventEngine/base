@@ -240,7 +240,7 @@ extend google.protobuf.FieldOptions {
     // The value of a column field can be set in two ways:
     //
     // 1. In the handler methods which alter the entity state, just like for any other entity state
-    // fields.
+    // field.
     // 2. Using the generated "_X_WithColumns" interface. For example:
     //
     // // Assuming a message storing entity state.
@@ -273,8 +273,8 @@ extend google.protobuf.FieldOptions {
     // If both methods of setting entity columns are used simultaneously, the no.2 always
     // overrides the no.1, i.e. the values from implemented methods are always preferred.
     //
-    // The `year_of_registration` column value can then be used as a criteria for target filters
-    // when doing entity querying.
+    // The `year_of_registration` field can then be used as a criteria for target filters when
+    // doing entity querying.
     //
     // Currently, only projections and process managers are eligible for entity columns. For other
     // message types all column declarations are ignored. See `EntityOption`.

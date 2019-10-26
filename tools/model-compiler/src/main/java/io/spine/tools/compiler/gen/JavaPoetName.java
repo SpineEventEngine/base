@@ -66,6 +66,13 @@ public final class JavaPoetName {
         return value;
     }
 
+    /**
+     * Returns this type name as {@link ClassName}.
+     *
+     * @throws IllegalStateException
+     *         if the held value is not actually a {@link ClassName} (e.g. it could be a primitive
+     *         type name instead)
+     */
     public ClassName className() {
         checkState(value instanceof ClassName,
                    "The type name is of type `%s`, expected an instance of `%s`.",

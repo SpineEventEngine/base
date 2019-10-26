@@ -26,12 +26,29 @@ import io.spine.code.java.PackageName;
 
 import java.nio.file.Path;
 
+/**
+ * A JavaPoet-based spec of a generated type.
+ */
 public interface GeneratedTypeSpec {
 
+    /**
+     * The package under which the type will be generated.
+     */
     PackageName packageName();
 
+    /**
+     * A JavaPoet spec of the type.
+     */
     TypeSpec typeSpec();
 
+    /**
+     * Writes the generated type to a file.
+     *
+     * @param targetDir
+     *         the root dir to write to
+     * @param indent
+     *         the indent to use
+     */
     default void writeToFile(Path targetDir, Indent indent) {
         Writer writer = new Writer(this);
         writer.setIndent(indent);

@@ -22,6 +22,7 @@ package io.spine.reflect.given;
 
 public final class MethodsTestEnv {
 
+    /** Prevents instantiation of this test env class. */
     private MethodsTestEnv() {
     }
 
