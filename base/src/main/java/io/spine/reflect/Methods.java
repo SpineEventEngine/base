@@ -25,16 +25,25 @@ import java.lang.reflect.Method;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A utility for working with {@linkplain Method method}.
+ */
 public final class Methods {
 
+    /** Prevents instantiation of this utility class. */
     private Methods() {
     }
 
     /**
+     * Invokes the given argumentless method on the target ignoring the accessibility restrictions.
+     *
+     * <p>The target must be of the type that declares the given method, otherwise an
+     * {@link IllegalArgumentException} is thrown.
      *
      * @throws IllegalArgumentException
-     *         if the target is wrong
+     *         if the target is not of the type that declares the given method
      * @throws IllegalStateException
+     *         if an exception is thrown during the method invocation
      */
     public static Object setAccessibleAndInvoke(Method method, Object target) {
         try {
