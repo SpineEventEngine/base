@@ -20,6 +20,22 @@
 
 package io.spine.base;
 
+import io.spine.annotation.Internal;
+
+/**
+ * A marker interface for entities that manually implement their columns.
+ *
+ * <p>Should never be implemented directly, but rather through the sub-interfaces generated with
+ * {@code ColumnGenPlugin}, for example:
+ * <pre>
+ *     class UserProfileProjection
+ *             extends Projection<UserId, UserProfile, UserProfile.Builder>
+ *             implements UserProfileWithColumns { ... }
+ * </pre>
+ *
+ * <p>See {@code (column)} option in {@code options.proto} for details.
+ */
 @SuppressWarnings("InterfaceNeverImplemented") // Implemented in generated code.
+@Internal
 public interface EntityWithColumns {
 }
