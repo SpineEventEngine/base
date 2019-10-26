@@ -45,7 +45,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
     /**
      * Prevents instantiation from outside.
      *
-     * <p>Use the static methods of this class to extract the column value(s).
+     * <p>Use the static methods of this class to extract the column values.
      */
     private ColumnOption() {
         super(OptionsProto.column);
