@@ -32,9 +32,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A value holder of JavaPoet {@link TypeName}.
- *
- * @apiNote Does not extend {@link io.spine.value.ValueHolder} as {@link TypeName} is not
- *         serializable.
  */
 public final class JavaPoetName {
 

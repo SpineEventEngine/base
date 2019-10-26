@@ -46,7 +46,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * A type spec of the interface which declares entity columns.
  *
  * <p>The type inherits {@link EntityWithColumns} and is named {@code _X_WithColumns} where
- * {@code _X_} is the message type.
+ * {@code _X_} is the message type name.
  *
  * <p>The entity columns then become the interface methods which have to be implemented once the
  * entity class inherits from the interface.
@@ -83,7 +83,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Adds {@code getX()} methods for all columns of the entity.
+     * Adds a {@code getX()} method for each column of the entity.
      */
     private void addColumnGetters(TypeSpec.Builder spec) {
         columns.forEach(column -> addColumnGetter(spec, column));
