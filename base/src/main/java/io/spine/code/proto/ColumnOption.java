@@ -32,6 +32,14 @@ import static io.spine.option.EntityOption.Kind.ENTITY;
 import static io.spine.option.EntityOption.Kind.PROCESS_MANAGER;
 import static io.spine.option.EntityOption.Kind.PROJECTION;
 
+/**
+ * An option which marks entity state fields as entity columns.
+ *
+ * <p>Such fields are stored separately from the entity state and can be specified as criteria for
+ * the entity query filters.
+ *
+ * <p>See the Protobuf option for details.
+ */
 public final class ColumnOption extends FieldOption<Boolean> {
 
     /**
@@ -43,6 +51,12 @@ public final class ColumnOption extends FieldOption<Boolean> {
         super(OptionsProto.column);
     }
 
+    /**
+     * Returns {@code true} if the specified message type has at least one declared column.
+     *
+     * <p>If the message type is not eligible for having columns, returns {@code false} regardless
+     * of how fields are declared.
+     */
     public static boolean hasColumns(MessageType messageType) {
         if (!eligibleForColumns(messageType)) {
             return false;
@@ -53,6 +67,12 @@ public final class ColumnOption extends FieldOption<Boolean> {
         return result;
     }
 
+    /**
+     * Returns all fields of a message type that are declared as columns.
+     *
+     * <p>If the message type is not eligible for having columns, returns empty list regardless of
+     * how fields are declared.
+     */
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
         if (!eligibleForColumns(messageType)) {
             return ImmutableList.of();
@@ -64,7 +84,16 @@ public final class ColumnOption extends FieldOption<Boolean> {
         return result;
     }
 
+    /**
+     * Returns {@code true} if the specified field is an entity column.
+     *
+     * <p>If the declaring message type is not eligible for having columns, returns {@code false}
+     * regardless of how the field is declared.
+     */
     public static boolean isColumn(FieldDeclaration field) {
+        if (!eligibleForColumns(field.declaringType())) {
+            return false;
+        }
         ColumnOption option = new ColumnOption();
         Optional<Boolean> value = option.valueFrom(field.descriptor());
         boolean isColumn = value.orElse(false);
@@ -72,10 +101,12 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     /**
-     * ...
+     * Returns {@code true} if the given message type is eligible for having columns.
      *
-     * <p>Allows columns for {@linkplain io.spine.option.EntityOption.Kind#ENTITY generic} entities
-     * for convenience for tests.
+     * <p>Currently, only projection and process manager types can have columns.
+     *
+     * <p>The column presence for {@linkplain io.spine.option.EntityOption.Kind#ENTITY generic}
+     * entity types is also allowed for convenience of tests.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
     private static boolean eligibleForColumns(MessageType messageType) {

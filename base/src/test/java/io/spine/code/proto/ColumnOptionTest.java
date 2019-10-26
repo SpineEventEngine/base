@@ -24,7 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.code.proto.CoProject;
-import io.spine.test.code.proto.CoProjectId;
+import io.spine.test.code.proto.CoTask;
+import io.spine.test.code.proto.CoTaskDescription;
 import io.spine.type.MessageType;
 import io.spine.value.StringTypeValue;
 import org.junit.jupiter.api.DisplayName;
@@ -55,8 +56,15 @@ class ColumnOptionTest {
     @Test
     @DisplayName("determine that message type has no columns")
     void checkHasNoColumns() {
-        MessageType typeWithoutColumns = new MessageType(CoProjectId.getDescriptor());
+        MessageType typeWithoutColumns = new MessageType(CoTask.getDescriptor());
         assertThat(ColumnOption.hasColumns(typeWithoutColumns)).isFalse();
+    }
+
+    @Test
+    @DisplayName("determine that message type is not eligible for having columns")
+    void checkNotEligibleForColumns() {
+        MessageType nonEligible = new MessageType(CoTaskDescription.getDescriptor());
+        assertThat(ColumnOption.hasColumns(nonEligible)).isFalse();
     }
 
     @Test
@@ -73,17 +81,37 @@ class ColumnOptionTest {
     }
 
     @Test
-    @DisplayName("determine that the passed field is a column")
-    void checkIsColumn() {
-        FieldDeclaration nameField = fieldByName("name");
-        assertThat(ColumnOption.isColumn(nameField)).isTrue();
+    @DisplayName("return empty list of columns for message that is not eligible for having ones")
+    void obtainEmptyColumns() {
+        MessageType nonEligible = new MessageType(CoTaskDescription.getDescriptor());
+        ImmutableList<FieldDeclaration> list = ColumnOption.columnsOf(nonEligible);
+        assertThat(list).isEmpty();
     }
 
     @Test
-    @DisplayName("determina that the passed field is not a column")
+    @DisplayName("determine that the passed field is a column")
+    void checkIsColumn() {
+        FieldDeclaration nameField = fieldByName("name");
+        boolean isColumn = ColumnOption.isColumn(nameField);
+        assertThat(isColumn).isTrue();
+    }
+
+    @Test
+    @DisplayName("determine that the passed field is not a column")
     void checkIsNotColumn() {
         FieldDeclaration statusField = fieldByName("status");
-        assertThat(ColumnOption.isColumn(statusField)).isFalse();
+        boolean isColumn = ColumnOption.isColumn(statusField);
+        assertThat(isColumn).isFalse();
+    }
+
+    @Test
+    @DisplayName("return `false` for fields of type non-eligible for having columns")
+    void checkFieldOfNonEligible() {
+        FieldDescriptor descriptor = CoTaskDescription.getDescriptor()
+                                                 .findFieldByName("value");
+        FieldDeclaration field = new FieldDeclaration(descriptor);
+        boolean isColumn = ColumnOption.isColumn(field);
+        assertThat(isColumn).isFalse();
     }
 
     private FieldDeclaration fieldByName(String name) {

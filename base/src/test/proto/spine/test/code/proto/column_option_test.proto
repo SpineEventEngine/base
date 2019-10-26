@@ -29,6 +29,7 @@ option java_package = "io.spine.test.code.proto";
 option java_outer_classname = "ColumnOptionTestProto";
 option java_multiple_files = true;
 
+// An entity type with columns.
 message CoProject {
     option(entity).kind = PROJECTION;
 
@@ -52,7 +53,22 @@ message CoProject {
     }
 }
 
+// An entity type which declares no columns.
+message CoTask {
+    option(entity).kind = PROJECTION;
+    CoTaskId id = 1;
+    CoTaskDescription description = 2;
+}
+
+// A generic type non-eligible for having columns but nevertheless declaring one.
+message CoTaskDescription {
+    string value = 1 [(column) = true];
+}
+
 message CoProjectId {
     string uuid = 1;
 }
 
+message CoTaskId {
+    string uuid = 1;
+}
