@@ -28,7 +28,7 @@ import io.spine.annotation.Internal;
  * <p>Is used by Spine routines and should never be implemented directly, but rather through the
  * sub-interfaces generated with {@code ColumnGenPlugin}.
  *
- * <p>See the {@code (column)} option in {@code options.proto} for details.
+ * <p>See the {@code (column)} option for details.
  */
 @SuppressWarnings("InterfaceNeverImplemented") // Implemented in generated code.
 @Internal

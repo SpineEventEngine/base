@@ -68,7 +68,7 @@ class ColumnOptionTest {
     }
 
     @Test
-    @DisplayName("obtain columns of entity")
+    @DisplayName("obtain columns of the entity")
     void obtainColumns() {
         ImmutableList<FieldDeclaration> columns = ColumnOption.columnsOf(type);
         assertThat(columns).hasSize(2);
@@ -81,7 +81,7 @@ class ColumnOptionTest {
     }
 
     @Test
-    @DisplayName("return empty list of columns for message that is not eligible for having ones")
+    @DisplayName("return empty list of columns if the message is not eligible for having ones")
     void obtainEmptyColumns() {
         MessageType nonEligible = new MessageType(CoTaskDescription.getDescriptor());
         ImmutableList<FieldDeclaration> list = ColumnOption.columnsOf(nonEligible);

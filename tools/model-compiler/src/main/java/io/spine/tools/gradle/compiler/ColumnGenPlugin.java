@@ -56,7 +56,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 /**
  * A plugin that generates helper interfaces for declaring entity columns.
  *
- * <p>See the {@code (column)} option in {@code options.proto} for details.
+ * <p>See the {@code (column)} option for details.
  */
 public class ColumnGenPlugin extends ProtoPlugin {
 

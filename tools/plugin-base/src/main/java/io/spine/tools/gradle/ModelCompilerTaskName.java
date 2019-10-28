@@ -44,12 +44,12 @@ public enum ModelCompilerTaskName implements TaskName {
     generateTestRejections,
 
     /**
-     * Generates the helper column-declaring types in the {@code main} scope.
+     * Generates the helper types for declaring columns in the {@code main} scope.
      */
     generateColumns,
 
     /**
-     * Generates the helper column-declaring types in the {@code test} scope.
+     * Generates the helper types for declaring columns in the {@code test} scope.
      */
     generateTestColumns,
 

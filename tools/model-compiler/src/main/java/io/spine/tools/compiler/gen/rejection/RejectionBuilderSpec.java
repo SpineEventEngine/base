@@ -101,7 +101,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
 
     @Override
     public void writeToFile(Path targetDir, Indent indent) {
-        throw unsupported("Rejection builder shouldn't be written to a top level file.");
+        throw unsupported("Rejection builder shouldn't be written to a file as a separate spec.");
     }
 
     /**

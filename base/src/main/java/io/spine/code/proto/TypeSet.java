@@ -98,7 +98,7 @@ public final class TypeSet {
     }
 
     /**
-     * Returns the top-level (i.e. non-nested) message declared in the passed file set.
+     * Returns the top-level (i.e. non-nested) messages declared in the passed file set.
      */
     public static ImmutableCollection<MessageType> topLevelMessages(FileSet fileSet) {
         ImmutableSet<MessageType> result = onlyMessages(fileSet)

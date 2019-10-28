@@ -45,8 +45,8 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * A spec for a generated rejection type.
  *
- * <p>The generated rejection types extend {@link ThrowableMessage} and enclose an instance of the
- * corresponding proto message.
+ * <p>The generated type extends {@link ThrowableMessage} and encloses an instance of the
+ * corresponding {@linkplain io.spine.base.RejectionMessage rejection message}.
  */
 public final class RejectionSpec implements GeneratedTypeSpec, Logging {
 
