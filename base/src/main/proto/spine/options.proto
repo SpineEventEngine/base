@@ -262,11 +262,11 @@ extend google.protobuf.FieldOptions {
     //
     //      @Override
     //      public int getYearOfRegistration() {
-    //          return 42;
+    //          return 2019;
     //      }
     // }
     //
-    // In the example above, the value of `year_of_registration` column will always be `42` as a
+    // In the example above, the value of `year_of_registration` column will always be `2019` as a
     // result of `getYearOfRegistration()` execution.
     //
     // If both methods of setting entity columns are used simultaneously, the no.2 always
