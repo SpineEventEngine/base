@@ -29,6 +29,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityWithColumns;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.JavaPoetName;
@@ -104,8 +105,11 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
         String methodName = declaration.javaGetterName();
         JavaPoetName fieldTypeName = fieldType(declaration);
         TypeName returnType = fieldTypeName.value();
+        String methodDoc = format("Entity column `%s`.", declaration.name());
+        JavadocText javadocText = JavadocText.fromEscaped(methodDoc)
+                                             .withNewLine();
         MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addJavadoc("Entity column `%s`.", declaration.name())
+                                      .addJavadoc(javadocText.value())
                                       .addModifiers(PUBLIC, ABSTRACT)
                                       .returns(returnType)
                                       .build();
@@ -139,11 +143,22 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
      * Obtains a class-level Javadoc.
      */
     private CodeBlock classJavadoc() {
-        CodeBlock value = CodeBlock
+        CodeBlock sourceProtoNote = CodeBlock
                 .builder()
                 .add("Entity Columns of proto type ")
                 .add("{@code $L}.", messageType.javaClassName())
-                .add("<p>Implement this type to manually override the entity column values.")
+                .build();
+        JavadocText firstParagraph = JavadocText.fromEscaped(sourceProtoNote.toString())
+                                                .withNewLine()
+                                                .withNewLine();
+        JavadocText secondParagraph = JavadocText.fromEscaped(
+                "Implement this type to manually override the entity column values.")
+                                                 .withPTag()
+                                                 .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraph.value())
+                .add(secondParagraph.value())
                 .build();
         return value;
     }

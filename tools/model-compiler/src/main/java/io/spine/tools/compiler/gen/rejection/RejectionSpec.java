@@ -43,7 +43,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec for a rejection type.
+ * A spec for a generated rejection type.
  *
  * <p>The generated rejection types extend {@link ThrowableMessage} and enclose an instance of the
  * corresponding proto message.

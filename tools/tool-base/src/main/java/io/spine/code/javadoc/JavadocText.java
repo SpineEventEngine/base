@@ -29,6 +29,7 @@ public class JavadocText extends StringTypeValue {
 
     private static final String OPENING_PRE = "<pre>";
     private static final String CLOSING_PRE = "</pre>";
+    private static final String P_TAG = "<p>";
 
     private static final long serialVersionUID = 0L;
 
@@ -68,5 +69,9 @@ public class JavadocText extends StringTypeValue {
 
     public JavadocText withNewLine() {
         return new JavadocText(value() + LINE_SEPARATOR);
+    }
+
+    public JavadocText withPTag() {
+        return new JavadocText(P_TAG + value());
     }
 }
