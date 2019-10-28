@@ -20,13 +20,10 @@ jobs:
       - name: Pull config
         run: git submodule update --init --recursive
 
-        # GitHub Actions reset environment variables upon each step. Therefore, update the env and
-        # run checks in a single step.
       - name: Run tests with Gradle
-        run: >
-          choco install dart-sdk --limitoutput
-          & refreshenv
-          & pub global activate protoc_plugin
-          & gradlew.bat build
-          & cd tools\smoke-tests
-          & gradlew.bat build --stacktrace
+        shell: cmd
+        run: gradlew.bat build
+
+      - name: Run smoke tests with Gradle
+        shell: cmd
+        run: cd tools\smoke-tests & gradlew.bat build --stacktrace

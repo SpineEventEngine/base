@@ -174,5 +174,4 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                          .getName()
                          .contains(SourceScope.test.name());
     }
-
 }

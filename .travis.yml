@@ -11,16 +11,9 @@ env:
     # Encrypted `GCS_SECRET` variable.
     - secure: "i8MhONZu7QjyM2V887A1Tydr1WMqQP5jJZNjIJjc1Uae8F0/z8cJZIZ1hstodN7FpoR4VF92zyhUwbt6fz/dsdPEJFccsiMlEc9vlqecQCd267160wgRZneaB6Xe/y/EUmq9XsGdn/k1Ey+QZwX9au/8RU191v+fDsCtMRYXzyEa/BvbQuSwuYRgQDxTAxuJgTmG5Sxl9jWqKw1BfxUcEoErc/jqymU58w6z2TxKxVzIXT29Jy/Z12VuSiS8opigSrIP8e/1fctC84wI7S52mext2ZfhPYSTHFKS+xg1vQDYPb8m5aomL8E6Of7hVD5BTnEnyjj+/Gr63GAzHXtkHhWoxo+vB+xBFfDu8wxM5Aqna3H7LMDD5kGCxQEz8qmzHBHMAhLnhsRzjNVu2+tLCZdeMN88Ud2uemL2SCAcR8Juleg7DGMj3D0SAbPyUH3+9yYYWzSg6iaxgTdHBnJ+uXUJp0Nu+M2EK6Kl+pYAsCLVfZRPGaajFXVnJEPPeSr2PYzk7F4pIzgn/E8AtYEJ0gcEbjoTItS8EjliJKDXM4HdkluXBFLvzIH1O1nCtxKNv4UkUmPhFbfHrPXDcsYq2zsEe+NkvsJlxjAwYnOMkT4NLiEsec1a7K9bBC+iQA9e8rriMbu6/1w63JErQyx05avPjgO8XRDK8hxTf4rhBmY="
     - GRADLE_OPTS="-Xmx2G"
-    - PATH="$PATH:/usr/lib/dart/bin"
 
 before_install:
   - chmod +x gradlew
-
-  # Install Dart, `pub`, and the `protoc_plugin` pub package.
-  - chmod +x ./config/scripts/update-apt.sh
-  - ./config/scripts/update-apt.sh
-  - sudo apt-get install dart
-  - pub global activate protoc_plugin
 
 script:
   - ./gradlew build check --stacktrace

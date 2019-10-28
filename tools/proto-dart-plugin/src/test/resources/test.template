@@ -1,5 +1,0 @@
-A line without any insertion points.
-
-A line with an insertion point. @END_OF_LINE@
-
-Another line with @MID_LINE@ an insertion point.
