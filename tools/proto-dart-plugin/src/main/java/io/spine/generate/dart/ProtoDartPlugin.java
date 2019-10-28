@@ -21,29 +21,15 @@
 package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.code.proto.FileDescriptors;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.ProtoBelongsToModule;
-import io.spine.code.proto.TypeSet;
-import io.spine.io.Resource;
 import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
 
-import static io.spine.tools.gradle.JavaTaskName.classes;
-import static io.spine.tools.gradle.JavaTaskName.testClasses;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
-import static io.spine.tools.gradle.ProtoDartTaskName.generateDartTestTypeRegistry;
-import static io.spine.tools.gradle.ProtoDartTaskName.generateDartTypeRegistry;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
@@ -61,10 +47,6 @@ import static org.gradle.api.Task.TASK_TYPE;
  */
 public final class ProtoDartPlugin extends SpinePlugin {
 
-    private static final Resource TEMPLATE =
-            Resource.file("types.template.dart", ProtoDartPlugin.class.getClassLoader());
-    private static final String TYPES_FILE_NAME = "types.dart";
-
     @Override
     public void apply(Project project) {
         Extension extension = new Extension(project);
@@ -75,19 +57,6 @@ public final class ProtoDartPlugin extends SpinePlugin {
 
         createMainCopyTask(project, extension);
         createTestCopyTask(project, extension);
-
-        newTask(generateDartTypeRegistry, createAction(extension))
-                .insertAfterTask(copyGeneratedDart)
-                .insertBeforeTask(classes)
-                .withOutputFiles(project.files(extension.getMainGeneratedDir()
-                                                        .file(TYPES_FILE_NAME)))
-                .applyNowTo(project);
-        newTask(generateDartTestTypeRegistry, createTestAction(extension))
-                .insertAfterTask(copyTestGeneratedDart)
-                .insertBeforeTask(testClasses)
-                .withOutputFiles(project.files(extension.getTestGeneratedDir()
-                                                        .file(TYPES_FILE_NAME)))
-                .applyNowTo(project);
     }
 
     private static void createMainCopyTask(Project project, Extension extension) {
@@ -106,58 +75,5 @@ public final class ProtoDartPlugin extends SpinePlugin {
                            .dir(test.name() + File.separator + dart.name()));
         task.into(extension.getTestDir());
         task.dependsOn(generateTestProto.name());
-    }
-
-    private Action<Task> createAction(Extension extension) {
-        return t -> generateTypeRegistry(extension,
-                                         extension.mainDescriptorSetFile(),
-                                         extension.libDir(),
-                                         extension.mainGeneratedDir());
-    }
-
-    private Action<Task> createTestAction(Extension extension) {
-        return t -> generateTypeRegistry(extension,
-                                         extension.testDescriptorSetFile(),
-                                         extension.testDir(),
-                                         extension.testGeneratedDir());
-    }
-
-    private void
-    generateTypeRegistry(Extension extension,
-                         File descriptorsFile,
-                         Path baseSourcePath,
-                         Path generatedSourcePath) {
-        extension.finalizeAll();
-        if (descriptorsFile.exists()) {
-            doGenerateRegistry(descriptorsFile,
-                               baseSourcePath,
-                               generatedSourcePath);
-        } else {
-            logMissingDescriptorSetFile(descriptorsFile);
-        }
-    }
-
-    private void doGenerateRegistry(File descriptorsFile,
-                                    Path baseSourcePath,
-                                    Path generatedSourcePath) {
-        _fine().log("Generating Dart known types registry from descriptor `%s`.",
-                    descriptorsFile);
-        Path targetFile = generatedSourcePath.resolve(TYPES_FILE_NAME);
-        List<FileDescriptorProto> fileDescriptors = FileDescriptors.parse(descriptorsFile);
-        ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedSourcePath);
-        FileSet fileSet = FileSet.of(fileDescriptors)
-                                 .filter(predicate.forDescriptor());
-        TypeSet types = TypeSet.from(fileSet);
-        _finest().log("There are %d known types.", types.size());
-        CodeTemplate template = new CodeTemplate(TEMPLATE);
-        Path relativeSourcePath = baseSourcePath.relativize(generatedSourcePath);
-        GeneratedDartFile file = KnownTypesBuilder
-                .newBuilder()
-                .setKnownTypes(types)
-                .setGeneratedFilesPrefix(relativeSourcePath)
-                .setTemplate(template)
-                .buildAsSourceFile();
-        _fine().log("Storing known types registry to `%s`.", targetFile);
-        file.writeTo(targetFile.toFile());
     }
 }

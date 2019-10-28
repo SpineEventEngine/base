@@ -41,7 +41,7 @@ public final class Extension extends GradleExtension {
     private static final String LIB_DIRECTORY = "lib";
     private static final String TEST_DIRECTORY = "test";
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    private static final String GENERATED_BASE_DIR = "proto";
+    private static final String GENERATED_BASE_DIR = "generated";
 
     private final Property<Object> mainDescriptorSet;
     private final Property<Object> testDescriptorSet;
