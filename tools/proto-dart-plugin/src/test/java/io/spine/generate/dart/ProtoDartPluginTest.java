@@ -1,0 +1,86 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.generate.dart;
+
+import io.spine.tools.gradle.TaskName;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.BaseTaskName.assemble;
+import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
+
+@DisplayName("`ProtoDartPlugin` should")
+class ProtoDartPluginTest {
+
+    private Project project;
+
+    @BeforeEach
+    void setUp(@TempDir File dir) {
+        project = ProjectBuilder
+                .builder()
+                .withName(ProtoDartPluginTest.class.getName())
+                .withProjectDir(dir)
+                .build();
+        project.apply(action -> action.plugin("java"));
+    }
+
+    @Test
+    @DisplayName("create `copyGeneratedDart` task")
+    void createMainTask() {
+        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        plugin.apply(project);
+
+        Task task = task(copyGeneratedDart);
+        assertThat(task.getDependsOn()).isNotEmpty();
+
+        Task assembleTask = task(assemble);
+        assertThat(assembleTask.getDependsOn()).contains(task.getName());
+    }
+
+    @Test
+    @DisplayName("create `copyTestGeneratedDart` task")
+    void createTestTask() {
+        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        plugin.apply(project);
+
+        Task task = task(copyTestGeneratedDart);
+        assertThat(task.getDependsOn()).isNotEmpty();
+
+        Task assembleTask = task(assemble);
+        assertThat(assembleTask.getDependsOn()).contains(task.getName());
+    }
+
+    private Task task(TaskName name) {
+        Task task = project.getTasks()
+                           .findByName(name.name());
+        assertThat(task).isNotNull();
+        return task;
+    }
+}
