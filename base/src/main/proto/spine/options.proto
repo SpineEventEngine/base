@@ -239,7 +239,7 @@ extend google.protobuf.FieldOptions {
     //
     // The value of a column field can be set in two ways:
     //
-    // 1. In the handler methods of the entity, just like any other entity state field.
+    // 1. In the handler methods of the entity, just like any other part of entity state.
     // 2. Using the generated `_X_WithColumns` interface. For example:
     //
     // // Assuming a message storing entity state.
