@@ -21,13 +21,18 @@
 package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.tools.gradle.ProtoDartTaskName;
+import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
 
+import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
@@ -60,20 +65,33 @@ public final class ProtoDartPlugin extends SpinePlugin {
     }
 
     private static void createMainCopyTask(Project project, Extension extension) {
-        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class),
-                                        copyGeneratedDart.name());
-        task.from(extension.getGeneratedBaseDir()
-                           .dir(main.name() + File.separator + dart.name()));
-        task.into(extension.getLibDir());
-        task.dependsOn(generateProto.name());
+        createCopyTask(project, extension, main);
     }
 
     private static void createTestCopyTask(Project project, Extension extension) {
-        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class),
-                                        copyTestGeneratedDart.name());
+        createCopyTask(project, extension, test);
+    }
+
+    private static void createCopyTask(Project project, Extension extension, SourceScope scope) {
+        ProtoDartTaskName taskName;
+        DirectoryProperty targetDir;
+        TaskName runAfter;
+        if (scope == main) {
+            taskName = copyGeneratedDart;
+            targetDir = extension.getLibDir();
+            runAfter = generateProto;
+        } else {
+            taskName = copyTestGeneratedDart;
+            targetDir = extension.getTestDir();
+            runAfter = generateTestProto;
+        }
+        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class), taskName.name());
         task.from(extension.getGeneratedBaseDir()
-                           .dir(test.name() + File.separator + dart.name()));
-        task.into(extension.getTestDir());
-        task.dependsOn(generateTestProto.name());
+                           .dir(scope.name() + File.separator + dart.name()));
+        task.into(targetDir);
+        task.dependsOn(runAfter.name());
+        project.getTasks()
+               .getByName(assemble.name())
+               .dependsOn(copyGeneratedDart);
     }
 }
