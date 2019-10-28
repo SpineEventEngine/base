@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
@@ -35,14 +36,15 @@ import io.spine.security.InvocationGuard;
 import io.spine.validate.ExternalConstraints;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.System.lineSeparator;
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -208,12 +210,27 @@ public class KnownTypes implements Serializable {
         StringBuilder result = new StringBuilder(KnownTypes.class.getSimpleName());
         result.append(':')
               .append(lineSeparator());
-        Object[] sortedUrls = allUrls()
-                .stream()
-                .sorted(comparing(TypeUrl::value))
-                .toArray();
-        NEW_LINE_JOINER.appendTo(result, sortedUrls);
+        NEW_LINE_JOINER.appendTo(result, allUrlList());
         return result.toString();
+    }
+
+    /**
+     * Prints alphabetically sorted URLs of the known types, having each type on a separate line.
+     */
+    public String printAllTypes() {
+        return NEW_LINE_JOINER.join(allUrlList());
+    }
+
+    /**
+     * Obtains alphabetically sorted list of URLs of all known types.
+     */
+    private List<String> allUrlList() {
+        ImmutableList<String> result = allUrls()
+                .stream()
+                .map(TypeUrl::value)
+                .sorted()
+                .collect(toImmutableList());
+        return result;
     }
 
     /**

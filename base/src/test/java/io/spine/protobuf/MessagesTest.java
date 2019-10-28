@@ -33,11 +33,17 @@ import org.junit.jupiter.api.Test;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.protobuf.Messages.ensureMessage;
+import static io.spine.protobuf.Messages.isDefault;
+import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.protobuf.TypeConverter.toAny;
+import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.testing.TestValues.newUuidValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Messages utility class should")
 class MessagesTest extends UtilityClassTest<Messages> {
@@ -83,5 +89,24 @@ class MessagesTest extends UtilityClassTest<Messages> {
         StringValue value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));
+    }
+
+    @Test
+    @DisplayName("verify that message is not in default state")
+    void verifyThatMessageIsNotInDefaultState() {
+        Message msg = toMessage("check_if_message_is_not_in_default_state");
+
+        assertTrue(isNotDefault(msg));
+        assertFalse(isNotDefault(StringValue.getDefaultInstance()));
+    }
+
+
+    @Test
+    @DisplayName("verify that message is in default state")
+    void verifyThatMessageIsInDefaultState() {
+        Message nonDefault = newUuidValue();
+
+        assertTrue(isDefault(StringValue.getDefaultInstance()));
+        assertFalse(isDefault(nonDefault));
     }
 }

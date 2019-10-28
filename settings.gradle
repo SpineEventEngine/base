@@ -43,8 +43,6 @@ module 'javadoc-prettifier'
 module 'model-compiler'
 
 module 'proto-js-plugin'
-module 'proto-dart-plugin'
-module 'dart-code-gen'
 
 module 'protoc-api'
 module 'protoc-plugin'
