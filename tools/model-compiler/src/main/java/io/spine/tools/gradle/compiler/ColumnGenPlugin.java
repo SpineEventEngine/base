@@ -96,5 +96,4 @@ public class ColumnGenPlugin extends ProtoPlugin {
     protected Supplier<File> testDescriptorFile(Project project) {
         return () -> getTestDescriptorSet(project);
     }
-
 }
