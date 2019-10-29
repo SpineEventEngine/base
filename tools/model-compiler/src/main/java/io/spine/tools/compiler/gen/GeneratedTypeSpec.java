@@ -50,8 +50,7 @@ public interface GeneratedTypeSpec {
      *         the indent to use
      */
     default void writeToFile(Path targetDir, Indent indent) {
-        Writer writer = new Writer(this);
-        writer.setIndent(indent);
+        Writer writer = new Writer(this, indent);
         writer.write(targetDir);
     }
 }

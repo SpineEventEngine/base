@@ -35,10 +35,15 @@ import java.nio.file.Path;
 final class Writer implements Logging {
 
     private final GeneratedTypeSpec spec;
-    private Indent indent = Indent.of4();
+    private final Indent indent;
 
     Writer(GeneratedTypeSpec spec) {
+        this(spec, Indent.of4());
+    }
+
+    Writer(GeneratedTypeSpec spec, Indent indent) {
         this.spec = spec;
+        this.indent = indent;
     }
 
     /**
@@ -68,9 +73,5 @@ final class Writer implements Logging {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    void setIndent(Indent indent) {
-        this.indent = indent;
     }
 }
