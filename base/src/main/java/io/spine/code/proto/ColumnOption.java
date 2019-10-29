@@ -89,9 +89,14 @@ public final class ColumnOption extends FieldOption<Boolean> {
      *
      * <p>If the declaring message type is not eligible for having columns, returns {@code false}
      * regardless of how the field is declared.
+     *
+     * <p>The {@code repeated} and {@code map} fields cannot be columns.
      */
     public static boolean isColumn(FieldDeclaration field) {
         if (!eligibleForColumns(field.declaringType())) {
+            return false;
+        }
+        if (field.isCollection()) {
             return false;
         }
         ColumnOption option = new ColumnOption();

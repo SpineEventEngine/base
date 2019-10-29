@@ -258,6 +258,8 @@ extend google.protobuf.FieldOptions {
     // columns (see `EntityOption`). For all other message types the column declarations are
     // ignored.
     //
+    // The `repeated` and `map` fields cannot be columns.
+    //
     bool column = 73854;
 
     // Reserved 73855 to 73899 for future options.
