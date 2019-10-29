@@ -37,10 +37,6 @@ final class Writer implements Logging {
     private final GeneratedTypeSpec spec;
     private final Indent indent;
 
-    Writer(GeneratedTypeSpec spec) {
-        this(spec, Indent.of4());
-    }
-
     Writer(GeneratedTypeSpec spec, Indent indent) {
         this.spec = spec;
         this.indent = indent;
