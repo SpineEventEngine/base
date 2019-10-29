@@ -46,16 +46,18 @@ public final class Methods {
      *         if an exception is thrown during the method invocation
      */
     public static Object setAccessibleAndInvoke(Method method, Object target) {
+        boolean accessible = method.isAccessible();
         try {
             method.setAccessible(true);
             Object result = method.invoke(target);
-            method.setAccessible(false);
             return result;
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw newIllegalStateException(
                     e,
                     "Method `%s` invocation on target `%s` of class `%s` failed.",
                     method.getName(), target, target.getClass().getCanonicalName());
+        } finally {
+            method.setAccessible(accessible);
         }
     }
 }
