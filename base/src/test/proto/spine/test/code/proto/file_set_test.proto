@@ -24,11 +24,11 @@ package spine.test.code.proto;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
 option java_package = "io.spine.test.code.proto";
 option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
+option java_outer_classname = "FileSetTestProto";
 
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
+message MessageDecl {
+    message NestedMessageDecl {
+    }
 }

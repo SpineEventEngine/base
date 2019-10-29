@@ -20,12 +20,8 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.test.code.proto.MessageDecl;
-import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,20 +53,6 @@ class TypeSetTest {
         // We have a number of test service declarations for testing annotations.
         assertThat(typeSet.serviceTypes())
                 .isNotEmpty();
-    }
-
-    @Test
-    @DisplayName("obtain top-level messages of the file")
-    void topLevelMessages() {
-        ImmutableSet<FileName> fileNames =
-                ImmutableSet.of(FileName.of("spine/test/code/proto/type_set_test.proto"));
-        FileSet set = fileSet.find(fileNames);
-        ImmutableCollection<MessageType> types = TypeSet.topLevelMessages(set);
-        assertThat(types).hasSize(1);
-
-        MessageType onlyElement = types.asList()
-                                       .get(0);
-        assertThat(onlyElement.javaClass()).isEqualTo(MessageDecl.class);
     }
 
     void assertNotEmpty(TypeSet typeSet) {

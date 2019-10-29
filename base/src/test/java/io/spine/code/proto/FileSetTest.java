@@ -20,6 +20,9 @@
 
 package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
+import io.spine.test.code.proto.MessageDecl;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +36,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("FileSet should")
+@DisplayName("`FileSet` should")
 class FileSetTest {
 
     private FileSet fileSet;
@@ -47,6 +50,20 @@ class FileSetTest {
     @DisplayName("load mains resources")
     void loadMainResources() {
         assertFalse(fileSet.isEmpty());
+    }
+
+    @Test
+    @DisplayName("return all declared top-level messages")
+    void returnTopLevelMessages() {
+        ImmutableSet<FileName> fileNames =
+                ImmutableSet.of(FileName.of("spine/test/code/proto/file_set_test.proto"));
+        FileSet set = fileSet.find(fileNames);
+        ImmutableCollection<MessageType> types = TypeSet.topLevelMessages(set);
+        assertThat(types).hasSize(1);
+
+        MessageType onlyElement = types.asList()
+                                       .get(0);
+        assertThat(onlyElement.javaClass()).isEqualTo(MessageDecl.class);
     }
 
     @Test

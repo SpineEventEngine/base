@@ -19,7 +19,6 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.gen.Indent;
 import io.spine.code.proto.FileSet;
@@ -35,11 +34,11 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static io.spine.code.proto.ColumnOption.hasColumns;
-import static io.spine.code.proto.TypeSet.topLevelMessages;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.generateColumns;
@@ -134,7 +133,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
                     new SourceProtoBelongsToModule(protoSrcDir()).forDescriptor();
             FileSet fileSet = protoFiles().get()
                                           .filter(belongsToModule);
-            ImmutableCollection<MessageType> types = topLevelMessages(fileSet);
+            List<MessageType> types = fileSet.topLevelMessages();
             types.forEach(type -> {
                 if (hasColumns(type)) {
                     GeneratedTypeSpec spec = new EntityWithColumnsSpec(type);

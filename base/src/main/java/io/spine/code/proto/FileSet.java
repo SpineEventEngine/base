@@ -170,6 +170,19 @@ public final class FileSet {
     }
 
     /**
+     * Returns the top-level (i.e. non-nested) messages declared in the file set.
+     */
+    public List<MessageType> topLevelMessages() {
+        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
+        for (FileDescriptor file : files()) {
+            SourceFile sourceFile = SourceFile.from(file);
+            List<MessageType> declarations = sourceFile.topLevelMessages();
+            result.addAll(declarations);
+        }
+        return result.build();
+    }
+
+    /**
      * Obtains message declarations that match the specified {@link java.util.function.Predicate}.
      *
      * @param predicate the predicate to test a message

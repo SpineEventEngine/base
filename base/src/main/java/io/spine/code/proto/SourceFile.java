@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * A Protobuf file which also gives access to its {@link FileDescriptor descriptor}.
@@ -100,6 +101,14 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      */
     public FileDescriptor descriptor() {
         return descriptor;
+    }
+
+    public List<MessageType> topLevelMessages() {
+        List<MessageType> result = descriptor.getMessageTypes()
+                                             .stream()
+                                             .map(MessageType::new)
+                                             .collect(toImmutableList());
+        return result;
     }
 
     /**
