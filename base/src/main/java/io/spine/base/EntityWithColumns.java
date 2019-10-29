@@ -25,7 +25,7 @@ import io.spine.annotation.Internal;
 /**
  * A marker interface for entities that manually implement their columns.
  *
- * <p>Is used by Spine routines and should never be implemented directly, but rather through the
+ * <p>Used by Spine routines and should never be implemented directly, but rather through the
  * sub-interfaces generated with {@code ColumnGenPlugin}.
  *
  * <p>See the {@code (column)} option for details.
