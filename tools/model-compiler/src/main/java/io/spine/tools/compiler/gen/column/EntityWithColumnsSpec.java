@@ -46,8 +46,8 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 /**
  * A type spec of the interface which declares entity columns.
  *
- * <p>The type inherits {@link EntityWithColumns} and is named {@code _X_WithColumns} where
- * {@code _X_} is the message type name.
+ * <p>The type inherits {@link EntityWithColumns} and is named {@code XWithColumns} where {@code X}
+ * is the message type name.
  *
  * <p>The entity columns then become the interface methods which have to be implemented once the
  * entity class inherits from the interface.
