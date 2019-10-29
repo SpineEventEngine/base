@@ -30,8 +30,8 @@ import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.gradle.ModelCompilerTaskName.generateColumns;
-import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestColumns;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateColumnInterfaces;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestColumnInterfaces;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
@@ -61,7 +61,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
                                     () -> getMainProtoSrcDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
-                newTask(generateColumns, mainScopeAction)
+                newTask(generateColumnInterfaces, mainScopeAction)
                         .insertAfterTask(mergeDescriptorSet)
                         .insertBeforeTask(compileJava)
                         .withInputFiles(module.protoSource())
@@ -74,7 +74,7 @@ public class ColumnGenPlugin extends ProtoPlugin {
                                     () -> getTestProtoSrcDir(project));
 
         GradleTask testTask =
-                newTask(generateTestColumns, testScopeAction)
+                newTask(generateTestColumnInterfaces, testScopeAction)
                         .insertAfterTask(mergeTestDescriptorSet)
                         .insertBeforeTask(compileTestJava)
                         .withInputFiles(module.protoSource())

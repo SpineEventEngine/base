@@ -46,12 +46,12 @@ public enum ModelCompilerTaskName implements TaskName {
     /**
      * Generates the helper types for declaring columns in the {@code main} scope.
      */
-    generateColumns,
+    generateColumnInterfaces,
 
     /**
      * Generates the helper types for declaring columns in the {@code test} scope.
      */
-    generateTestColumns,
+    generateTestColumnInterfaces,
 
     /**
      * Annotates the Java sources generated from {@code .proto} files the {@code main} scope.
