@@ -92,6 +92,6 @@ public final class ProtoDartPlugin extends SpinePlugin {
         task.dependsOn(runAfter.name());
         project.getTasks()
                .getByName(assemble.name())
-               .dependsOn(copyGeneratedDart);
+               .dependsOn(taskName.name());
     }
 }
