@@ -19,26 +19,15 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.gen.Indent;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.column.EntityWithColumnsSpec;
-import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
-import io.spine.type.MessageType;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static io.spine.code.proto.ColumnOption.hasColumns;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.generateColumns;
@@ -55,7 +44,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 /**
  * A plugin that generates helper interfaces for declaring entity columns.
  *
- * <p>See the {@code (column)} option for details.
+ * @see io.spine.base.EntityWithColumns
  */
 public class ColumnGenPlugin extends ProtoPlugin {
 
@@ -66,10 +55,10 @@ public class ColumnGenPlugin extends ProtoPlugin {
     public void apply(Project project) {
 
         Action<Task> mainScopeAction =
-                createAction(project,
-                             mainProtoFiles(project),
-                             () -> getTargetGenColumnsRootDir(project),
-                             () -> getMainProtoSrcDir(project));
+                new ColumnGenAction(project,
+                                    mainProtoFiles(project),
+                                    () -> getTargetGenColumnsRootDir(project),
+                                    () -> getMainProtoSrcDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
                 newTask(generateColumns, mainScopeAction)
@@ -79,10 +68,10 @@ public class ColumnGenPlugin extends ProtoPlugin {
                         .withOutputFiles(module.compiledColumns())
                         .applyNowTo(project);
         Action<Task> testScopeAction =
-                createAction(project,
-                             testProtoFiles(project),
-                             () -> getTargetTestGenColumnsRootDir(project),
-                             () -> getTestProtoSrcDir(project));
+                new ColumnGenAction(project,
+                                    testProtoFiles(project),
+                                    () -> getTargetTestGenColumnsRootDir(project),
+                                    () -> getTestProtoSrcDir(project));
 
         GradleTask testTask =
                 newTask(generateTestColumns, testScopeAction)
@@ -98,13 +87,6 @@ public class ColumnGenPlugin extends ProtoPlugin {
                      mainTask, testTask);
     }
 
-    private static Action<Task> createAction(Project project,
-                                             Supplier<FileSet> files,
-                                             Supplier<String> targetDirPath,
-                                             Supplier<String> protoSrcDir) {
-        return new GenAction(project, files, targetDirPath, protoSrcDir);
-    }
-
     @Override
     protected Supplier<File> mainDescriptorFile(Project project) {
         return () -> getMainDescriptorSet(project);
@@ -115,36 +97,4 @@ public class ColumnGenPlugin extends ProtoPlugin {
         return () -> getTestDescriptorSet(project);
     }
 
-    /**
-     * Does the code generation.
-     */
-    private static class GenAction extends CodeGenerationAction {
-
-        private GenAction(Project project,
-                          Supplier<FileSet> files,
-                          Supplier<String> targetDirPath,
-                          Supplier<String> protoSrcDirPath) {
-            super(project, files, targetDirPath, protoSrcDirPath);
-        }
-
-        @Override
-        public void execute(Task task) {
-            Predicate<FileDescriptor> belongsToModule =
-                    new SourceProtoBelongsToModule(protoSrcDir()).forDescriptor();
-            FileSet fileSet = protoFiles().get()
-                                          .filter(belongsToModule);
-            List<MessageType> types = fileSet.topLevelMessages();
-            types.forEach(type -> {
-                if (hasColumns(type)) {
-                    GeneratedTypeSpec spec = new EntityWithColumnsSpec(type);
-                    spec.writeToFile(targetDir().toPath(), indent());
-                }
-            });
-        }
-
-        @Override
-        protected Indent getIndent(Project project) {
-            return Extension.getIndent(project);
-        }
-    }
 }

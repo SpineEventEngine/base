@@ -52,7 +52,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * <p>The entity columns then become the interface methods which have to be implemented once the
  * entity class inherits from the interface.
  *
- * <p>See {@code (column)} option for details.
+ * @see EntityWithColumns
  */
 public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
