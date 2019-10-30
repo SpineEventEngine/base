@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import io.spine.test.code.proto.MessageDecl;
 import io.spine.type.MessageType;
@@ -58,11 +57,10 @@ class FileSetTest {
         ImmutableSet<FileName> fileNames =
                 ImmutableSet.of(FileName.of("spine/test/code/proto/file_set_test.proto"));
         FileSet set = fileSet.find(fileNames);
-        ImmutableCollection<MessageType> types = TypeSet.topLevelMessages(set);
+        List<MessageType> types = set.topLevelMessages();
         assertThat(types).hasSize(1);
 
-        MessageType onlyElement = types.asList()
-                                       .get(0);
+        MessageType onlyElement = types.get(0);
         assertThat(onlyElement.javaClass()).isEqualTo(MessageDecl.class);
     }
 

@@ -40,7 +40,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.uniqueIndex;
@@ -94,17 +93,6 @@ public final class TypeSet {
         for (FileDescriptor file : fileSet.files()) {
             result = result.union(from(file));
         }
-        return result;
-    }
-
-    /**
-     * Returns the top-level (i.e. non-nested) messages declared in the passed file set.
-     */
-    public static ImmutableCollection<MessageType> topLevelMessages(FileSet fileSet) {
-        ImmutableSet<MessageType> result = onlyMessages(fileSet)
-                .stream()
-                .filter(MessageType::isTopLevel)
-                .collect(toImmutableSet());
         return result;
     }
 
