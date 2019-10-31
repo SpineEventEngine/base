@@ -103,6 +103,9 @@ public class SourceFile extends AbstractSourceFile implements Logging {
         return descriptor;
     }
 
+    /**
+     * Obtains all top-level (i.e. non-nested) message types declared in this file set.
+     */
     public List<MessageType> topLevelMessages() {
         List<MessageType> result = descriptor.getMessageTypes()
                                              .stream()
