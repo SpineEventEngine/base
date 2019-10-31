@@ -30,14 +30,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * A writer of a {@link GeneratedTypeSpec}.
+ * Writes the {@link GeneratedTypeSpec} to a file.
  */
-final class Writer implements Logging {
+final class TypeSpecWriter implements Logging {
 
     private final GeneratedTypeSpec spec;
     private final Indent indent;
 
-    Writer(GeneratedTypeSpec spec, Indent indent) {
+    TypeSpecWriter(GeneratedTypeSpec spec, Indent indent) {
         this.spec = spec;
         this.indent = indent;
     }
