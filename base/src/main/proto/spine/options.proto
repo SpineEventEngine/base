@@ -232,7 +232,37 @@ extend google.protobuf.FieldOptions {
     //
     bool beta = 73853;
 
-    // Reserved 73854 to 73899 for future options.
+    // Marks an entity state field as column.
+    //
+    // The column fields are stored separately from the entity record and can be specified as
+    // filtering criteria during entity querying.
+    //
+    // The column field should be declared as follows:
+    //
+    // message UserProfile {
+    //    ...
+    //    int32 year_of_registration = 8 [(column) = true];
+    // }
+    //
+    // The `year_of_registration` field value can then be used as query parameter when reading
+    // entities of `UserProfile` type from the server side.
+    //
+    // The value of a column field can be updated in two ways:
+    //
+    // 1. In the handler methods of the entity, just like any other part of entity state.
+    // 2. Using the language-specific tools like `EntityWithColumns` interface in Java.
+    //
+    // All column fields are considered optional by the framework.
+    //
+    // Currently, only entities of projection and process manager type are eligible for having
+    // columns (see `EntityOption`). For all other message types the column declarations are
+    // ignored.
+    //
+    // The `repeated` and `map` fields cannot be columns.
+    //
+    bool column = 73854;
+
+    // Reserved 73855 to 73899 for future options.
 
     // Reserved 73900 for removed `by` option.
 }

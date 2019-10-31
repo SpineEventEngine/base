@@ -63,20 +63,22 @@ public enum ScalarType {
     /**
      * Returns the name of the corresponding Java type for the Protobuf scalar type.
      *
-     * @param protoScalar the Protobuf scalar type
+     * @param protoScalar
+     *         the Protobuf scalar type
      * @return the name of the corresponding Java type
      */
-    public static String getJavaTypeName(Type protoScalar) {
-        return getJavaType(protoScalar).getName();
+    public static String javaTypeName(Type protoScalar) {
+        return javaType(protoScalar).getName();
     }
 
     /**
      * Returns the the corresponding Java type for the Protobuf scalar type.
      *
-     * @param protoScalar the Protobuf scalar type
+     * @param protoScalar
+     *         the Protobuf scalar type
      * @return the corresponding Java type
      */
-    public static Class<?> getJavaType(Type protoScalar) {
+    public static Class<?> javaType(Type protoScalar) {
         for (ScalarType scalarType : ScalarType.values()) {
             if (scalarType.protoScalarType == protoScalar) {
                 return scalarType.javaClass;
@@ -89,18 +91,27 @@ public enum ScalarType {
     /**
      * Verifies if the passed field has scalar type.
      */
-    public static boolean isScalarType(FieldDescriptorProto field) {
-        boolean isScalarType = false;
-        Type type = field.getType();
-        for (ScalarType scalarType : values()) {
-            if (scalarType.getProtoScalarType() == type) {
-                isScalarType = true;
-            }
-        }
-        return isScalarType;
+    public static boolean isScalarType(FieldDeclaration field) {
+        FieldDescriptorProto descriptorProto = field.descriptor()
+                                                    .toProto();
+        boolean result = isScalarType(descriptorProto);
+        return result;
     }
 
-    public Type getProtoScalarType() {
+    /**
+     * Verifies if the passed field has scalar type.
+     */
+    public static boolean isScalarType(FieldDescriptorProto field) {
+        Type type = field.getType();
+        for (ScalarType scalarType : values()) {
+            if (scalarType.protoScalarType() == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Type protoScalarType() {
         return protoScalarType;
     }
 }

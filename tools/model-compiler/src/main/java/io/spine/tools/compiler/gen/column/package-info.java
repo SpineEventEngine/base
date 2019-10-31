@@ -17,18 +17,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.code.proto;
+/**
+ * Classes for generating code for entity columns.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.gen.column;
 
-import "spine/options.proto";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
-option java_package = "io.spine.test.code.proto";
-option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
-
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
-}
+import javax.annotation.ParametersAreNonnullByDefault;

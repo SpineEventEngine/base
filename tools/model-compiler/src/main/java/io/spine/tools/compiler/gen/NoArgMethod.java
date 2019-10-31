@@ -17,18 +17,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.code.proto;
+package io.spine.tools.compiler.gen;
 
-import "spine/options.proto";
+import io.spine.value.StringTypeValue;
 
-option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
-option java_package = "io.spine.test.code.proto";
-option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
+/**
+ * A reference to a method with no arguments.
+ */
+public final class NoArgMethod extends StringTypeValue {
 
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
+    private static final long serialVersionUID = 0L;
+
+    public NoArgMethod(String methodName) {
+        super(methodName);
+    }
+
+    public String name() {
+        return value();
+    }
+
+    public String signature() {
+        return value() + "()";
+    }
 }

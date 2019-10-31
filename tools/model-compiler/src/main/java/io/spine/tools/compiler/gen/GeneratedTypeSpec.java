@@ -18,16 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.gen;
+
+import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.Indent;
+import io.spine.code.java.PackageName;
+
+import java.nio.file.Path;
+
 /**
- * Classes for generating code for rejections.
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
+ * A JavaPoet-based spec of a generated type.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.rejection;
+public interface GeneratedTypeSpec {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * The package under which the type will be generated.
+     */
+    PackageName packageName();
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * A JavaPoet spec of the type.
+     */
+    TypeSpec typeSpec();
+
+    /**
+     * Writes the generated type to a file.
+     *
+     * @param targetDir
+     *         the root dir to write to
+     * @param indent
+     *         the indent to use
+     */
+    default void writeToFile(Path targetDir, Indent indent) {
+        TypeSpecWriter writer = new TypeSpecWriter(this, indent);
+        writer.write(targetDir);
+    }
+}

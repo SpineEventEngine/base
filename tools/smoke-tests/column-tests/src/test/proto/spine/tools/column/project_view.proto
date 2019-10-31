@@ -19,16 +19,32 @@
  */
 syntax = "proto3";
 
-package spine.test.code.proto;
+package spine.tools.column;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
-option java_package = "io.spine.test.code.proto";
+option java_package = "io.spine.tools.column";
+option java_outer_classname = "ProjectViewProto";
 option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
 
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
+message ProjectView {
+    option (entity).kind = PROJECTION;
+
+    ProjectViewId id = 1;
+
+    string project_name = 2 [(.column) = true];
+
+    Status status = 3 [(.column) = true];
+
+    enum Status {
+        UNDEFINED = 0;
+        CREATED = 1;
+        STARTED = 2;
+        DONE = 3;
+    }
+}
+
+message ProjectViewId {
+    string uuid = 1;
 }

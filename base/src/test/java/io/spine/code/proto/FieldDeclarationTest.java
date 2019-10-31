@@ -167,4 +167,14 @@ class FieldDeclarationTest {
             assertThat(typeName).isEqualTo(Uri.Schema.class.getName());
         }
     }
+
+    @Test
+    @DisplayName("obtain a name of the getter generated for the field by Protobuf Java")
+    void obtainJavaGetterName() {
+        FieldDescriptor field = Uri.Authorization.getDescriptor()
+                                                 .findFieldByName("user_name");
+        FieldDeclaration declaration = new FieldDeclaration(field);
+        String javaGetterName = declaration.javaGetterName();
+        assertThat(javaGetterName).isEqualTo("getUserName");
+    }
 }

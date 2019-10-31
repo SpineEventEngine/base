@@ -17,6 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 syntax = "proto3";
 
 package spine.test.code.proto;
@@ -24,11 +25,50 @@ package spine.test.code.proto;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
 option java_package = "io.spine.test.code.proto";
+option java_outer_classname = "ColumnOptionTestProto";
 option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
 
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
+// An entity type with columns.
+message CoProject {
+    option(entity).kind = PROJECTION;
+
+    CoProjectId id = 1;
+
+    string name = 2 [(column) = true];
+
+    Estimate estimate = 3 [(column) = true];
+
+    Status status = 4;
+
+    message Estimate {
+        int32 man_hours = 1;
+    }
+
+    enum Status {
+        UNDEFINED = 0;
+        CREATED = 1;
+        STARTED = 2;
+        DONE = 3;
+    }
+}
+
+// An entity type which declares no columns.
+message CoTask {
+    option(entity).kind = PROJECTION;
+    CoTaskId id = 1;
+    CoTaskDescription description = 2;
+}
+
+// A generic type non-eligible for having columns but nevertheless declaring one.
+message CoTaskDescription {
+    string value = 1 [(column) = true];
+}
+
+message CoProjectId {
+    string uuid = 1;
+}
+
+message CoTaskId {
+    string uuid = 1;
 }

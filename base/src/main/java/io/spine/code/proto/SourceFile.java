@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
@@ -39,9 +38,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
- * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
+ * A Protobuf file which also gives access to its {@link FileDescriptor descriptor}.
  */
 public class SourceFile extends AbstractSourceFile implements Logging {
 
@@ -101,6 +101,17 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      */
     public FileDescriptor descriptor() {
         return descriptor;
+    }
+
+    /**
+     * Obtains all top-level (i.e. non-nested) message types declared in this file set.
+     */
+    public List<MessageType> topLevelMessages() {
+        List<MessageType> result = descriptor.getMessageTypes()
+                                             .stream()
+                                             .map(MessageType::new)
+                                             .collect(toImmutableList());
+        return result;
     }
 
     /**

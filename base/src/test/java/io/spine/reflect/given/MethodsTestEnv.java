@@ -17,18 +17,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.code.proto;
+package io.spine.reflect.given;
 
-import "spine/options.proto";
+public final class MethodsTestEnv {
 
-option (type_url_prefix) = "type.spine.io";
-option (SPI_all) = true;
-option java_package = "io.spine.test.code.proto";
-option java_multiple_files = true;
-option java_outer_classname = "TypeSetTestProto";
+    /** Prevents instantiation of this test env class. */
+    private MethodsTestEnv() {
+    }
 
-// This is a service declaration so that we can test collecting `ServiceType`s.
-service StubServiceDecl {
+    @SuppressWarnings({"unused", "MethodMayBeStatic"}) // Used reflectively.
+    public static class ClassWithPrivateMethod {
+
+        public static final String METHOD_RESULT = "the-result-string";
+
+        private String privateMethod() {
+            return METHOD_RESULT;
+        }
+
+        private Object throwingMethod() {
+            throw new RuntimeException("Throw an error.");
+        }
+    }
 }

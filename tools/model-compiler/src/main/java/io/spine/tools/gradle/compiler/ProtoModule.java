@@ -32,7 +32,9 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 
 /**
@@ -65,8 +67,8 @@ final class ProtoModule {
      * Obtains a {@linkplain FileCollection collection of files} containing all the production
      * Protobuf sources defined in this module.
      *
-     * <p>The returned collection is a live view on the files, i.e. as the source directory is
-     * changing, the contents of the collection are mutated.
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection protoSource() {
         return protoSource(main);
@@ -76,8 +78,8 @@ final class ProtoModule {
      * Obtains a {@linkplain FileCollection collection of files} containing all the test Protobuf
      * sources defined in this module.
      *
-     * <p>The returned collection is a live view on the files, i.e. as the source directory is
-     * changing, the contents of the collection are mutated.
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection testProtoSource() {
         return protoSource(test);
@@ -113,8 +115,8 @@ final class ProtoModule {
      * Obtains a {@linkplain FileCollection collection of files} containing all the production
      * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
      *
-     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
-     * changing, the contents of the collection are mutated.
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection compiledRejections() {
         String targetDir = getTargetGenRejectionsRootDir(project);
@@ -126,11 +128,37 @@ final class ProtoModule {
      * Obtains a {@linkplain FileCollection collection of files} containing all the test
      * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
      *
-     * <p>The returned collection is a live view on the files, i.e. as the generated directory is
-     * changing, the contents of the collection are mutated.
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection testCompiledRejections() {
         String targetDir = getTargetTestGenRejectionsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
+        return files;
+    }
+
+    /**
+     * Obtains a {@linkplain FileCollection file collection} of all generated column-declaring
+     * types for {@code main} source set.
+     *
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
+     */
+    FileCollection compiledColumns() {
+        String targetDir = getTargetGenColumnsRootDir(project);
+        FileCollection files = project.fileTree(targetDir);
+        return files;
+    }
+
+    /**
+     * Obtains a {@linkplain FileCollection file collection} of all generated column-declaring
+     * types for {@code test} source set.
+     *
+     * @apiNote The returned collection is a live view on the files, i.e. as the generated
+     *        directory is changing, the contents of the collection are mutated.
+     */
+    FileCollection testCompiledColumns() {
+        String targetDir = getTargetTestGenColumnsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }

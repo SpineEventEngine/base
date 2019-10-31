@@ -19,7 +19,6 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
@@ -31,75 +30,61 @@ import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.gradle.ModelCompilerTaskName.generateRejections;
-import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestRejections;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateColumnInterfaces;
+import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestColumnInterfaces;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenColumnsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSet;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 
 /**
- * Plugin which generates Rejections declared in {@code rejections.proto} files.
+ * A plugin that generates helper interfaces for declaring entity columns.
  *
- * <p>Uses generated proto descriptors.
- *
- * <p>Logs a warning if there are no protobuf descriptors generated.
+ * @see io.spine.base.EntityWithColumns
  */
-public class RejectionGenPlugin extends ProtoPlugin {
+public class ColumnGenPlugin extends ProtoPlugin {
 
     /**
      * Applies the plug-in to a project.
-     *
-     * <p>Adds {@code :generateRejections} and {@code :generateTestRejections} tasks.
-     *
-     * <p>Tasks depend on corresponding {@code :generateProto} tasks and are executed
-     * before corresponding {@code :compileJava} tasks.
      */
     @Override
     public void apply(Project project) {
 
         Action<Task> mainScopeAction =
-                createAction(project,
-                             mainProtoFiles(project),
-                             () -> getTargetGenRejectionsRootDir(project),
-                             () -> getMainProtoSrcDir(project));
+                new ColumnGenAction(project,
+                                    mainProtoFiles(project),
+                                    () -> getTargetGenColumnsRootDir(project),
+                                    () -> getMainProtoSrcDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
-                newTask(generateRejections, mainScopeAction)
+                newTask(generateColumnInterfaces, mainScopeAction)
                         .insertAfterTask(mergeDescriptorSet)
                         .insertBeforeTask(compileJava)
                         .withInputFiles(module.protoSource())
-                        .withOutputFiles(module.compiledRejections())
+                        .withOutputFiles(module.compiledColumns())
                         .applyNowTo(project);
         Action<Task> testScopeAction =
-                createAction(project,
-                             testProtoFiles(project),
-                             () -> getTargetTestGenRejectionsRootDir(project),
-                             () -> getTestProtoSrcDir(project));
+                new ColumnGenAction(project,
+                                    testProtoFiles(project),
+                                    () -> getTargetTestGenColumnsRootDir(project),
+                                    () -> getTestProtoSrcDir(project));
 
         GradleTask testTask =
-                newTask(generateTestRejections, testScopeAction)
+                newTask(generateTestColumnInterfaces, testScopeAction)
                         .insertAfterTask(mergeTestDescriptorSet)
                         .insertBeforeTask(compileTestJava)
                         .withInputFiles(module.protoSource())
                         .withInputFiles(module.testProtoSource())
                         .withOutputFiles(module.compiledRejections())
-                        .withOutputFiles(module.testCompiledRejections())
+                        .withOutputFiles(module.testCompiledColumns())
                         .applyNowTo(project);
 
-        _debug().log("Rejection generation phase initialized with tasks: `%s`, `%s`.",
+        _debug().log("Column generation phase initialized with tasks: `%s`, `%s`.",
                      mainTask, testTask);
-    }
-
-    private static Action<Task> createAction(Project project,
-                                             Supplier<FileSet> files,
-                                             Supplier<String> targetDirPath,
-                                             Supplier<String> protoSrcDir) {
-        return new RejectionGenAction(project, files, targetDirPath, protoSrcDir);
     }
 
     @Override
