@@ -18,18 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.tools.protoc.iface;
 
-final def SPINE_VERSION = '1.1.11'
+import com.google.common.collect.ImmutableList;
+import io.spine.code.proto.EntityStateOption;
+import io.spine.option.EntityOption;
+import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.type.MessageType;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import java.util.Optional;
 
-    versionToPublish = SPINE_VERSION
+import static com.google.common.base.Preconditions.checkNotNull;
+
+final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
+
+    GenerateEntityStateInterfaces(EntityStateConfig entityStateConfig) {
+        super(entityStateConfig.getValue());
+    }
+
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        Optional<EntityOption> entityOption = EntityStateOption.valueOf(type.descriptor());
+        if (!entityOption.isPresent()) {
+            return ImmutableList.of();
+        }
+        return generateInterfacesFor(type);
+    }
 }

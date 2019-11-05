@@ -71,6 +71,9 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
         for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
             tasks.add(new GenerateInterfaces(byPattern));
         }
+        if (isNotDefault(config.getEntityStateInterface())) {
+            tasks.add(new GenerateEntityStateInterfaces(config.getEntityStateInterface()));
+        }
         return new InterfaceGenerator(tasks.build());
     }
 

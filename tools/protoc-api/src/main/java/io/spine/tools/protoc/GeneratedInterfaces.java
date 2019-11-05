@@ -26,6 +26,7 @@ import io.spine.code.java.ClassName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
@@ -34,6 +35,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
+    private EntityStateConfig entityStateInterface = EntityStateConfig.getDefaultInstance();
 
     public GeneratedInterfaces() {
         super();
@@ -116,6 +118,11 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
         uuidInterface = uuidConfig(interfaceName);
     }
 
+    public final void mark(EntityState entityState, ClassName interfaceName) {
+        checkNotNull(entityState);
+        entityStateInterface = entityStateConfig(interfaceName);
+    }
+
     /**
      * A syntax sugar method used for a more natural Gradle DSL.
      */
@@ -130,7 +137,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     public AddInterfaces asProtocConfig() {
         AddInterfaces.Builder result = AddInterfaces
                 .newBuilder()
-                .setUuidInterface(uuidInterface);
+                .setUuidInterface(uuidInterface)
+                .setEntityStateInterface(entityStateInterface);
         patternConfigurations()
                 .stream()
                 .map(GeneratedConfigurations::toPatternConfig)

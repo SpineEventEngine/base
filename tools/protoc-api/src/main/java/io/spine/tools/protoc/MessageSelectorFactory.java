@@ -55,6 +55,10 @@ public final class MessageSelectorFactory {
         return new UuidMessage();
     }
 
+    public EntityState entityState() {
+        return new EntityState();
+    }
+
     /**
      * Creates a {@link PatternSelector} out of the supplied configuration.
      *

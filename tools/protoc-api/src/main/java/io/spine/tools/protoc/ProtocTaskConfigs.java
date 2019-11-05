@@ -49,6 +49,14 @@ public final class ProtocTaskConfigs {
                 .build();
     }
 
+    public static EntityStateConfig entityStateConfig(ClassName className) {
+        checkNotNull(className);
+        return EntityStateConfig
+                .newBuilder()
+                .setValue(className.value())
+                .build();
+    }
+
     /**
      * Creates a new {@link ConfigByPattern} instance from the supplied {@code className} and
      * {@code pattern}.
