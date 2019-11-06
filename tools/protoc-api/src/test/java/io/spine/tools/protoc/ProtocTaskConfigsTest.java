@@ -27,9 +27,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ProtocTaskConfigs should")
+@DisplayName("`ProtocTaskConfigs` should")
 final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
 
     ProtocTaskConfigsTest() {
@@ -42,26 +42,34 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         nullTester.setDefault(ClassName.class, ClassName.of("not-empty"));
     }
 
-    @DisplayName("create valid")
     @Nested
+    @DisplayName("create valid")
     class CreateValid {
 
-        @DisplayName("UuidConfig")
         @Test
+        @DisplayName("`UuidConfig`")
         void uuidConfig() {
             ClassName className = ClassName.of("test-value");
             UuidConfig actual = ProtocTaskConfigs.uuidConfig(className);
-            assertEquals(className.value(), actual.getValue());
+            assertThat(actual.getValue()).isEqualTo(className.value());
         }
 
-        @DisplayName("ConfigByPattern")
         @Test
+        @DisplayName("`EntityStateConfig`")
+        void entityStateConfig() {
+            ClassName className = ClassName.of("TestEntityState");
+            EntityStateConfig actual = ProtocTaskConfigs.entityStateConfig(className);
+            assertThat(actual.getValue()).isEqualTo(className.value());
+        }
+
+        @Test
+        @DisplayName("`ConfigByPattern`")
         void configByPattern() {
             ClassName className = ClassName.of("test-value");
             FilePattern pattern = FilePatterns.filePrefix("test");
             ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(className, pattern);
-            assertEquals(className.value(), actual.getValue());
-            assertEquals(pattern, actual.getPattern());
+            assertThat(actual.getValue()).isEqualTo(className.value());
+            assertThat(actual.getPattern()).isEqualTo(pattern);
         }
     }
 }
