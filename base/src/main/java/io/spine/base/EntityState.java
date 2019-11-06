@@ -30,6 +30,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * @see io.spine.code.proto.EntityStateOption
  */
+@SuppressWarnings("InterfaceNeverImplemented") // Implemented in the generated code.
 @Immutable
 public interface EntityState extends SerializableMessage {
 }
