@@ -55,6 +55,9 @@ public final class MessageSelectorFactory {
         return new UuidMessage();
     }
 
+    /**
+     * Creates a new {@link EntityState} selector.
+     */
     public EntityState entityState() {
         return new EntityState();
     }

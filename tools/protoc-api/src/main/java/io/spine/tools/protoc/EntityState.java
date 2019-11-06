@@ -20,6 +20,9 @@
 
 package io.spine.tools.protoc;
 
+/**
+ * Selects messages that represent an entity state.
+ */
 final class EntityState extends MessageSelector {
 
     EntityState() {

@@ -99,8 +99,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except for
-     * several differences:
+     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except
+     * for several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
      *     <li>nested definitions are affected as well as top-level ones.
@@ -118,6 +118,23 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
         uuidInterface = uuidConfig(interfaceName);
     }
 
+    /**
+     * Configures an interface generation for messages that represent an entity state.
+     *
+     * <p>All messages marked with {@code (entity)} option and with a valid {@code (kind)}
+     * specified will be marked with the given interface name.
+     *
+     * <p>Sample usage is:
+     * <pre>
+     *      {@code
+     *      mark messages().entityState(), asType("my.custom.EntityState")
+     *      }
+     * </pre>
+     *
+     * <p>Note that it is required for the provided interface to extend the
+     * {@link io.spine.base.EntityState} interface, otherwise the inner Spine routines will work
+     * incorrectly.
+     */
     public final void mark(EntityState entityState, ClassName interfaceName) {
         checkNotNull(entityState);
         entityStateInterface = entityStateConfig(interfaceName);

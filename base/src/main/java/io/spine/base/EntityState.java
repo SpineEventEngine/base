@@ -22,6 +22,14 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 
+/**
+ * A common interface for entity state messages.
+ *
+ * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
+ * this interface by the Model Compiler.
+ *
+ * @see io.spine.code.proto.EntityStateOption
+ */
 @Immutable
 public interface EntityState extends SerializableMessage {
 }

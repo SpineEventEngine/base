@@ -34,6 +34,7 @@ message AddInterfaces {
     // Pattern-based interfaces.
     repeated ConfigByPattern interface_by_pattern = 2;
 
+    // Entity state interface.
     EntityStateConfig entity_state_interface = 3;
 }
 
@@ -75,11 +76,11 @@ message ConfigByPattern {
     FilePattern pattern = 2;
 }
 
-// The entity state code generation configuration.
+// The code generation configuration for entity state messages.
 //
 message EntityStateConfig {
 
-    // A fully-qualified name of the interface to mark the entity state with.
+    // A fully-qualified name of the interface to mark the entity states with.
     //
     string value = 1;
 }
