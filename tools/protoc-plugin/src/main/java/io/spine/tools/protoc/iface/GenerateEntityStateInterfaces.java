@@ -34,7 +34,7 @@ import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 
 /**
- * Marks the provided message type with {@link io.spine.base.EntityState EntityState} interface
+ * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
  * if the type is recognized as entity state.
  */
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {

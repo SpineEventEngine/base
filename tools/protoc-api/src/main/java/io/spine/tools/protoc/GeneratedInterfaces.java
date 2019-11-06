@@ -122,7 +122,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * Configures an interface generation for messages that represent an entity state.
      *
      * <p>All messages marked with {@code (entity)} option and with a valid {@code (kind)}
-     * specified will be marked with the given interface name.
+     * will be marked with the given interface name.
      *
      * <p>Sample usage is:
      * <pre>

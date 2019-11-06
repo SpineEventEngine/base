@@ -80,7 +80,7 @@ message ConfigByPattern {
 //
 message EntityStateConfig {
 
-    // A fully-qualified name of the interface to mark the entity states with.
+    // A fully-qualified name of the interface to mark the entity state messages with.
     //
     string value = 1;
 }
