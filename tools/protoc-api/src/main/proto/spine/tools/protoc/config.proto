@@ -24,7 +24,7 @@ message SpineProtocConfig {
     // Methods generation tasks.
     AddMethods add_methods = 2;
 
-    // Should the plugin skip generating `ValidatingBuilder` implementations.
+    // Should the plugin skip generating `ValidatingBuilder` implementations?
     //
     // If set to `true`, message builder classes will NOT implement
     // `io.spine.protobuf.ValidatingBuilder`. Default value is `false`, i.e. the message classes
