@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package spine.test.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.protoc";
+option java_outer_classname = "BuilderTestProto";
+option java_multiple_files = true;
+
+message Point {
+
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}

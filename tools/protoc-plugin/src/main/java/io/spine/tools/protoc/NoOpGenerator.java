@@ -18,49 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.builder;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.NoOpGenerator;
-import io.spine.tools.protoc.SpineProtoGenerator;
-import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.util.Collection;
 
-import static io.spine.tools.protoc.builder.BuilderImplements.implementValidatingBuilder;
-
 /**
- * A code generator which makes the generated message builders implement
- * {@link io.spine.protobuf.ValidatingBuilder}.
+ * A {@link SpineProtoGenerator} which generates no code.
  */
-public final class BuilderGenerator extends SpineProtoGenerator {
+public final class NoOpGenerator extends SpineProtoGenerator {
+
+    private static final SpineProtoGenerator instance = new NoOpGenerator();
 
     /**
      * Prevents direct instantiation.
      */
-    private BuilderGenerator() {
+    private NoOpGenerator() {
         super();
     }
 
-    /**
-     * Creates a new instance of the generator.
-     */
-    public static SpineProtoGenerator instance(SpineProtocConfig config) {
-        return config.getSkipValidatingBuilders()
-               ? NoOpGenerator.instance()
-               : new BuilderGenerator();
+    public static SpineProtoGenerator instance() {
+        return instance;
     }
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        if (type instanceof MessageType) {
-            CompilerOutput insertionPoint = implementValidatingBuilder((MessageType) type);
-            return ImmutableSet.of(insertionPoint);
-        } else {
-            return ImmutableSet.of();
-        }
+        return ImmutableSet.of();
     }
 }
