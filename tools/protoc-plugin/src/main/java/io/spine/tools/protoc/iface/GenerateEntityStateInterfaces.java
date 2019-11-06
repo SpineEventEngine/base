@@ -30,6 +30,8 @@ import io.spine.type.MessageType;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
+import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
 
@@ -42,6 +44,11 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         checkNotNull(type);
         Optional<EntityOption> entityOption = EntityStateOption.valueOf(type.descriptor());
         if (!entityOption.isPresent()) {
+            return ImmutableList.of();
+        }
+        EntityOption.Kind kind = entityOption.get()
+                                             .getKind();
+        if (kind == UNRECOGNIZED || kind == KIND_UNKNOWN) {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);
