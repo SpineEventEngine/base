@@ -44,7 +44,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     /**
      * Configures an interface generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
      *     {@code
      *     mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
@@ -106,7 +106,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *     <li>nested definitions are affected as well as top-level ones.
      * </ul>
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
      *      {@code
      *      mark messages().uuid(), asType("my.custom.Identifier")
@@ -124,7 +124,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * <p>All messages marked with {@code (entity)} option and with a valid {@code (kind)}
      * will be marked with the given interface name.
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
      *      {@code
      *      mark messages().entityState(), asType("my.custom.EntityState")
