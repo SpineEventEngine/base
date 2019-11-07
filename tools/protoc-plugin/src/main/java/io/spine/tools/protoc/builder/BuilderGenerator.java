@@ -22,7 +22,9 @@ package io.spine.tools.protoc.builder;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -46,8 +48,10 @@ public final class BuilderGenerator extends SpineProtoGenerator {
     /**
      * Creates a new instance of the generator.
      */
-    public static BuilderGenerator instance() {
-        return new BuilderGenerator();
+    public static SpineProtoGenerator instance(SpineProtocConfig config) {
+        return config.getSkipValidatingBuilders()
+               ? NoOpGenerator.instance()
+               : new BuilderGenerator();
     }
 
     @Override

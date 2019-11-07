@@ -41,6 +41,7 @@ import java.util.Set;
 
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
+import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidatingBuilders;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -85,6 +86,7 @@ final class ProtocPluginConfiguration {
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
         GeneratedInterfaces interfaces = getInterfaces(project);
         GeneratedMethods methods = getMethods(project);
+        boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()
@@ -94,6 +96,7 @@ final class ProtocPluginConfiguration {
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methodsGeneration)
+                .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .build();
         return result;
     }

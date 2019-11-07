@@ -18,42 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.testing;
+package io.spine.tools.protoc;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
+import io.spine.type.Type;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Collection;
 
 /**
- * Creates {@link #FILE_NAME} file in the root of the test project, copying it from resources.
+ * A {@link SpineProtoGenerator} which generates no code.
  */
-final class BuildGradle {
+public final class NoOpGenerator extends SpineProtoGenerator {
+
+    private static final SpineProtoGenerator instance = new NoOpGenerator();
 
     /**
-     * The name of the build file.
+     * Prevents direct instantiation.
      */
-    @VisibleForTesting
-    static final String FILE_NAME = "build.gradle";
-
-    private final Path testProjectRoot;
-
-    BuildGradle(Path root) {
-        testProjectRoot = root;
+    private NoOpGenerator() {
+        super();
     }
 
-    void createFile() throws IOException {
-        Path resultingPath = testProjectRoot.resolve(FILE_NAME);
+    public static SpineProtoGenerator instance() {
+        return instance;
+    }
 
-        try (InputStream fileContent = getClass().getClassLoader()
-                                                 .getResourceAsStream(FILE_NAME)) {
-            Files.createDirectories(resultingPath.getParent());
-            checkNotNull(fileContent);
-            Files.copy(fileContent, resultingPath);
-        }
+    @Override
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        return ImmutableSet.of();
     }
 }

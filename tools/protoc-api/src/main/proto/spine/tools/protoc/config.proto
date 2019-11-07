@@ -23,6 +23,14 @@ message SpineProtocConfig {
 
     // Methods generation tasks.
     AddMethods add_methods = 2;
+
+    // Determines if the generation of `ValidatingBuilder` should be skipped.
+    //
+    // If set to `true`, message builder classes will NOT implement
+    // `io.spine.protobuf.ValidatingBuilder`. Default value is `false`, i.e. the message classes
+    // should implement the `ValidatingBuilder` interface.
+    //
+    bool skip_validating_builders = 3;
 }
 
 // Interfaces generation configuration.
