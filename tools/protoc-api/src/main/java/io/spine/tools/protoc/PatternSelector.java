@@ -26,7 +26,8 @@ import com.google.common.base.Objects;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Selects messages by a pattern.
+ * A selector which signalizes that the configuration should be applied to all messages declared in
+ * proto files matching some pattern.
  *
  * @see PrefixSelector
  * @see RegexSelector

@@ -20,8 +20,13 @@
 
 package io.spine.tools.protoc;
 
+import io.spine.code.java.ClassName;
+
 /**
- * Selects messages that represent an entity state.
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent an entity state.
+ *
+ * @see GeneratedInterfaces#mark(EntityState, ClassName)
  */
 final class EntityState extends MessageSelector {
 

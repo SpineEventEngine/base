@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A file pattern matching file names which end with a certain postfix.
+ * A selector of proto files whose names end with a certain postfix.
  */
 public final class SuffixSelector extends PatternSelector {
 
