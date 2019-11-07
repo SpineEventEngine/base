@@ -26,7 +26,7 @@ package io.spine.tools.protoc;
  * <p>Is used as a marker for selecting the required protoc configuration when creating the
  * {@link GeneratedConfigurations}.
  *
- * <p>An example of using selector in Gradle is as follows:
+ * <p>An example of using selector in Gradle:
  * <pre>
  *     mark messages().uuid(), asType("my.custom.Identifier")
  * </pre>
