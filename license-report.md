@@ -321,7 +321,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:27 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:53 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -852,7 +852,7 @@ This report was generated on **Wed Nov 06 18:27:27 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:28 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:54 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1240,7 +1240,7 @@ This report was generated on **Wed Nov 06 18:27:28 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:29 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:55 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1702,7 +1702,7 @@ This report was generated on **Wed Nov 06 18:27:29 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:30 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:56 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2180,7 +2180,7 @@ This report was generated on **Wed Nov 06 18:27:30 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:30 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:56 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2559,7 +2559,7 @@ This report was generated on **Wed Nov 06 18:27:30 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:31 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:57 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3021,7 +3021,7 @@ This report was generated on **Wed Nov 06 18:27:31 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:32 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:58 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3542,7 +3542,7 @@ This report was generated on **Wed Nov 06 18:27:32 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:32 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:16:59 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4004,7 +4004,7 @@ This report was generated on **Wed Nov 06 18:27:32 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:33 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:00 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4466,7 +4466,7 @@ This report was generated on **Wed Nov 06 18:27:33 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:34 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:01 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4786,7 +4786,7 @@ This report was generated on **Wed Nov 06 18:27:34 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:34 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:01 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5114,7 +5114,7 @@ This report was generated on **Wed Nov 06 18:27:34 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:35 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:02 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5493,7 +5493,7 @@ This report was generated on **Wed Nov 06 18:27:35 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:35 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:02 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5821,4 +5821,4 @@ This report was generated on **Wed Nov 06 18:27:35 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Nov 06 18:27:36 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 19:17:03 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

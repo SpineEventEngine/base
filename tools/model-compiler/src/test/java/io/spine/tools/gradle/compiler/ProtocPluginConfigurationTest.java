@@ -66,8 +66,10 @@ class ProtocPluginConfigurationTest {
         configuration.writeTo(configFile.toPath());
         assertThat(configFile.exists()).isTrue();
 
-        SpineProtocConfig actualConfig =
-                SpineProtocConfig.parseFrom(new FileInputStream(configFile));
-        assertThat(actualConfig.getSkipValidatingBuilders()).isTrue();
+        try (FileInputStream fileContent = new FileInputStream(configFile)) {
+            SpineProtocConfig actualConfig =
+                    SpineProtocConfig.parseFrom(fileContent);
+            assertThat(actualConfig.getSkipValidatingBuilders()).isTrue();
+        }
     }
 }
