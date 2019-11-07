@@ -21,7 +21,7 @@
 package io.spine.tools.protoc;
 
 /**
- * An abstract {@link com.google.protobuf.Message Message} selector base.
+ * An abstract base for selectors targeting {@link com.google.protobuf.Message messages}.
  */
 class MessageSelector implements Selector {
 

@@ -21,6 +21,7 @@
 package io.spine.tools.protoc.given;
 
 import io.spine.base.CommandMessage;
+import io.spine.base.EntityState;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
@@ -71,6 +72,7 @@ public final class SpineProtocConfigGiven {
         config.mark(messages.inFiles(suffix(REJECTIONS.suffix())),
                     ClassName.of(RejectionMessage.class));
         config.mark(messages.uuid(), ClassName.of(UuidValue.class));
+        config.mark(messages.entityState(), ClassName.of(EntityState.class));
         return config;
     }
 

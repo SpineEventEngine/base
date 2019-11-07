@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A file pattern matching file names that qualifies supplied regex.
+ * A selector of proto files whose names qualify the supplied regex.
  */
 public final class RegexSelector extends PatternSelector {
 

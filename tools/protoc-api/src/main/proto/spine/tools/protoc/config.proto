@@ -41,6 +41,9 @@ message AddInterfaces {
 
     // Pattern-based interfaces.
     repeated ConfigByPattern interface_by_pattern = 2;
+
+    // Entity state interface.
+    EntityStateConfig entity_state_interface = 3;
 }
 
 // Methods generation configuration.
@@ -55,7 +58,7 @@ message AddMethods {
     Classpath factory_classpath = 3;
 }
 
-// UUID value code generation configuration
+// UUID value code generation configuration.
 //
 message UuidConfig {
 
@@ -79,6 +82,15 @@ message ConfigByPattern {
 
     // A file pattern that defines for which message types code should be generated.
     FilePattern pattern = 2;
+}
+
+// The code generation configuration for entity state messages.
+//
+message EntityStateConfig {
+
+    // A fully-qualified name of the interface to mark the entity state messages with.
+    //
+    string value = 1;
 }
 
 // File pattern which is used to filter messages.

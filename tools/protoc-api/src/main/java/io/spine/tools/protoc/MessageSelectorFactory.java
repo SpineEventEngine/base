@@ -56,6 +56,13 @@ public final class MessageSelectorFactory {
     }
 
     /**
+     * Creates a new {@link EntityState} selector.
+     */
+    public EntityState entityState() {
+        return new EntityState();
+    }
+
+    /**
      * Creates a {@link PatternSelector} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:

@@ -23,7 +23,7 @@ package io.spine.tools.protoc;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A file pattern matching file names which start with a certain prefix.
+ * A selector of proto files whose names start with a certain prefix.
  */
 public final class PrefixSelector extends PatternSelector {
 

@@ -22,6 +22,17 @@ package io.spine.tools.protoc;
 
 /**
  * Represents a Protoc Spine plugin configuration selector.
+ *
+ * <p>Is used as a marker for selecting the required protoc configuration when creating the
+ * {@link GeneratedConfigurations}.
+ *
+ * <p>An example of using selector in Gradle:
+ * <pre>
+ *     mark messages().uuid(), asType("my.custom.Identifier")
+ * </pre>
+ * where {@code messages().uuid()} is a {@linkplain UuidMessage selector} for the UUID messages
+ * configuration and the rest of the expression are the additional params provided for the
+ * configuration.
  */
 public interface Selector {
 

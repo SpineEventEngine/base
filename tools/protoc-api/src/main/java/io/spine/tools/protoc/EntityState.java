@@ -23,16 +23,14 @@ package io.spine.tools.protoc;
 import io.spine.code.java.ClassName;
 
 /**
- * A selector which signalizes that the configuration should be applied to all UUID messages.
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent an entity state.
  *
- * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
- *
- * @see GeneratedInterfaces#mark(UuidMessage, ClassName)
- * @see GeneratedMethods#applyFactory(String, UuidMessage)
+ * @see GeneratedInterfaces#mark(EntityState, ClassName)
  */
-public final class UuidMessage extends MessageSelector {
+final class EntityState extends MessageSelector {
 
-    UuidMessage() {
+    EntityState() {
         super();
     }
 }

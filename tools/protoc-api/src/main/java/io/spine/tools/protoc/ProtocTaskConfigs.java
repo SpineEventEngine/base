@@ -37,9 +37,6 @@ public final class ProtocTaskConfigs {
 
     /**
      * Creates a new {@link UuidConfig} instance from the supplied {@code className}.
-     *
-     * @throws NullPointerException
-     *         if the class name is {@code null}
      */
     public static UuidConfig uuidConfig(ClassName className) {
         checkNotNull(className);
@@ -50,11 +47,20 @@ public final class ProtocTaskConfigs {
     }
 
     /**
+     * Creates a new {@link EntityStateConfig} instances from the supplied {@code className}.
+     */
+    public static EntityStateConfig entityStateConfig(ClassName className) {
+        checkNotNull(className);
+        return EntityStateConfig
+                .newBuilder()
+                .setValue(className.value())
+                .build();
+    }
+
+    /**
      * Creates a new {@link ConfigByPattern} instance from the supplied {@code className} and
      * {@code pattern}.
      *
-     * @throws NullPointerException
-     *         if the class name or pattern is {@code null}
      * @throws IllegalArgumentException
      *          if the pattern is empty
      */

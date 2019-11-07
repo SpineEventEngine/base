@@ -17,22 +17,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.protoc;
+package spine.tools.protoc.iface;
 
-import io.spine.code.java.ClassName;
+import "spine/options.proto";
 
-/**
- * A selector which signalizes that the configuration should be applied to all UUID messages.
- *
- * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
- *
- * @see GeneratedInterfaces#mark(UuidMessage, ClassName)
- * @see GeneratedMethods#applyFactory(String, UuidMessage)
- */
-public final class UuidMessage extends MessageSelector {
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "EntityStatesProto";
+option java_package = "io.spine.tools.protoc.iface";
 
-    UuidMessage() {
-        super();
-    }
+message ProtocProject {
+    option (entity).kind = PROJECTION;
+
+    ProtocProjectId id = 1;
+}
+
+message ProtocProjectId {
+    string uuid = 1;
+}
+
+message ProtocTask {
+    option (entity) = {};
+
+    string id = 1;
 }

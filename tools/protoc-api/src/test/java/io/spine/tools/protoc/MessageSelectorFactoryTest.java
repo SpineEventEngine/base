@@ -21,55 +21,71 @@
 package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.testing.NullPointerTester;
 import io.spine.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("MessageSelectorFactory should")
+@DisplayName("`MessageSelectorFactory` should")
 final class MessageSelectorFactoryTest {
 
     private final MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
 
-    @DisplayName("create UuidMessage selector")
     @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        NullPointerTester tester = new NullPointerTester();
+        tester.testAllPublicStaticMethods(MessageSelectorFactory.class);
+        tester.testAllPublicInstanceMethods(factory);
+    }
+
+    @Test
+    @DisplayName("create `UuidMessage` selector")
     void createUuidSelector() {
         assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
     }
 
-    @DisplayName("create all messages selector")
     @Test
+    @DisplayName("create `EntityState` selector")
+    void createEntityStateSelector() {
+        assertThat(factory.entityState()).isInstanceOf(EntityState.class);
+    }
+
+    @Test
+    @DisplayName("create all messages selector")
     void createAllSelector() {
         PatternSelector allSelector = factory.all();
         assertThat(allSelector).isInstanceOf(SuffixSelector.class);
         assertThat(allSelector.getPattern()).isEqualTo(FileName.EXTENSION);
     }
 
-    @DisplayName("create PatternSelector out of")
     @Nested
+    @DisplayName("create `PatternSelector` out of")
     final class CreatePatternSelector {
 
-        @DisplayName("suffix")
         @Test
+        @DisplayName("suffix")
         void suffix() {
             String suffix = "_documents.proto";
             assertThat(factory.inFiles(MessageSelectorFactory.suffix(suffix)))
                     .isInstanceOf(SuffixSelector.class);
         }
 
-        @DisplayName("prefix")
         @Test
+        @DisplayName("prefix")
         void prefix() {
             String prefix = "io/spine/test/orders_";
             assertThat(factory.inFiles(MessageSelectorFactory.prefix(prefix)))
                     .isInstanceOf(PrefixSelector.class);
         }
 
-        @DisplayName("regex")
         @Test
+        @DisplayName("regex")
         void regex() {
             String regex = ".*test.*";
             assertThat(factory.inFiles(MessageSelectorFactory.regex(regex)))
@@ -77,29 +93,22 @@ final class MessageSelectorFactoryTest {
         }
     }
 
-    @DisplayName("throw IllegalArgumentException if inFiles configuration has")
     @Nested
+    @DisplayName("throw `IllegalArgumentException` if inFiles configuration has")
     final class ThrowIEA {
 
-        @DisplayName("more than one element")
         @Test
+        @DisplayName("more than one element")
         void moreThanOneElement() {
             assertThrows(IllegalArgumentException.class, () ->
                     factory.inFiles(ImmutableMap.of("first", "v1", "second", "v2")));
         }
 
-        @DisplayName("non supported parameter")
         @Test
+        @DisplayName("non supported parameter")
         void nonSupportParameter() {
             assertThrows(IllegalArgumentException.class, () ->
                     factory.inFiles(ImmutableMap.of("NON_SUPPORTED", "v1")));
         }
-    }
-
-    @DisplayName("throw NullPointerException if a null value is supplied to inFiles method")
-    @Test
-    void throwNPE() {
-        assertThrows(NullPointerException.class, () ->
-                factory.inFiles(null));
     }
 }

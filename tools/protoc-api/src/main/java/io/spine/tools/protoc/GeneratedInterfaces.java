@@ -26,6 +26,7 @@ import io.spine.code.java.ClassName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
@@ -34,6 +35,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
+    private EntityStateConfig entityStateInterface = EntityStateConfig.getDefaultInstance();
 
     public GeneratedInterfaces() {
         super();
@@ -42,7 +44,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     /**
      * Configures an interface generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
      *     {@code
      *     mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
@@ -97,14 +99,14 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except for
-     * several differences:
+     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except
+     * for several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
      *     <li>nested definitions are affected as well as top-level ones.
      * </ul>
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
      *      {@code
      *      mark messages().uuid(), asType("my.custom.Identifier")
@@ -114,6 +116,28 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     public final void mark(UuidMessage uuidMessage, ClassName interfaceName) {
         checkNotNull(uuidMessage);
         uuidInterface = uuidConfig(interfaceName);
+    }
+
+    /**
+     * Configures an interface generation for messages that represent an entity state.
+     *
+     * <p>All messages marked with {@code (entity)} option and with a valid {@code (kind)}
+     * will be marked with the given interface name.
+     *
+     * <p>Sample usage is as follows:
+     * <pre>
+     *      {@code
+     *      mark messages().entityState(), asType("my.custom.EntityState")
+     *      }
+     * </pre>
+     *
+     * <p>Note that it is required for the provided interface to extend the
+     * {@link io.spine.base.EntityState} interface, otherwise the inner Spine routines will work
+     * incorrectly.
+     */
+    public final void mark(EntityState entityState, ClassName interfaceName) {
+        checkNotNull(entityState);
+        entityStateInterface = entityStateConfig(interfaceName);
     }
 
     /**
@@ -130,7 +154,8 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
     public AddInterfaces asProtocConfig() {
         AddInterfaces.Builder result = AddInterfaces
                 .newBuilder()
-                .setUuidInterface(uuidInterface);
+                .setUuidInterface(uuidInterface)
+                .setEntityStateInterface(entityStateInterface);
         patternConfigurations()
                 .stream()
                 .map(GeneratedConfigurations::toPatternConfig)

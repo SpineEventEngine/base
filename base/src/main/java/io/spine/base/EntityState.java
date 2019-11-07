@@ -18,21 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.base;
 
-import io.spine.code.java.ClassName;
+import com.google.errorprone.annotations.Immutable;
 
 /**
- * A selector which signalizes that the configuration should be applied to all UUID messages.
+ * A common interface for entity state messages.
  *
- * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
+ * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
+ * this interface by the Model Compiler.
  *
- * @see GeneratedInterfaces#mark(UuidMessage, ClassName)
- * @see GeneratedMethods#applyFactory(String, UuidMessage)
+ * @see io.spine.code.proto.EntityStateOption
  */
-public final class UuidMessage extends MessageSelector {
-
-    UuidMessage() {
-        super();
-    }
+@SuppressWarnings("InterfaceNeverImplemented") // Implemented in the dependent repos.
+@Immutable
+public interface EntityState extends SerializableMessage {
 }
