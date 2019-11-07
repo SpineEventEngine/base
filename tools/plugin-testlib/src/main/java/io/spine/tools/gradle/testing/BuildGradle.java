@@ -49,10 +49,11 @@ final class BuildGradle {
     void createFile() throws IOException {
         Path resultingPath = testProjectRoot.resolve(FILE_NAME);
 
-        InputStream fileContent = getClass().getClassLoader()
-                                            .getResourceAsStream(FILE_NAME);
-        Files.createDirectories(resultingPath.getParent());
-        checkNotNull(fileContent);
-        Files.copy(fileContent, resultingPath);
+        try (InputStream fileContent = getClass().getClassLoader()
+                                                 .getResourceAsStream(FILE_NAME)) {
+            Files.createDirectories(resultingPath.getParent());
+            checkNotNull(fileContent);
+            Files.copy(fileContent, resultingPath);
+        }
     }
 }

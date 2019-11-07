@@ -65,7 +65,7 @@ public final class Plugin {
                 .builder()
                 .add(InterfaceGenerator.instance(config))
                 .add(MethodGenerator.instance(config))
-                .add(BuilderGenerator.instance())
+                .add(BuilderGenerator.instance(config))
                 .build();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);

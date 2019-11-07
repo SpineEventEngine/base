@@ -18,18 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc;
+
+import com.google.common.collect.ImmutableSet;
+import io.spine.type.Type;
+
+import java.util.Collection;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * A {@link SpineProtoGenerator} which generates no code.
  */
+public final class NoOpGenerator extends SpineProtoGenerator {
 
-final def SPINE_VERSION = '1.1.11'
+    private static final SpineProtoGenerator instance = new NoOpGenerator();
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    /**
+     * Prevents direct instantiation.
+     */
+    private NoOpGenerator() {
+        super();
+    }
 
-    versionToPublish = SPINE_VERSION
+    public static SpineProtoGenerator instance() {
+        return instance;
+    }
+
+    @Override
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        return ImmutableSet.of();
+    }
 }

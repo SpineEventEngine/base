@@ -167,6 +167,8 @@ public class Extension extends GradleExtension {
 
     public final GeneratedMethods methods = new GeneratedMethods();
 
+    public boolean generateValidatingBuilders = true;
+
     public List<String> internalClassPatterns = new ArrayList<>();
 
     public List<String> internalMethodNames = new ArrayList<>();
@@ -364,6 +366,11 @@ public class Extension extends GradleExtension {
     public static GeneratedMethods getMethods(Project project) {
         GeneratedMethods methods = extension(project).methods;
         return methods;
+    }
+
+    public static boolean shouldGenerateValidatingBuilders(Project project) {
+        boolean shouldGenerate = extension(project).generateValidatingBuilders;
+        return shouldGenerate;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
