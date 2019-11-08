@@ -48,7 +48,6 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
 import static io.spine.tools.protoc.MessageSelectorFactory.regex;
@@ -170,16 +169,21 @@ final class PluginTest {
                 .setParameter(protocConfigPath)
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
-        File insertionPoint = getOnlyElement(response.getFileList());
-        assertThat(insertionPoint.getContent()).isEqualTo(BUILDER_INTERFACE);
+
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String expectedPointName = InsertionPoint.builder_implements.forType(type);
-        assertThat(insertionPoint.getInsertionPoint()).isEqualTo(expectedPointName);
-        SourceFile expectedFile = SourceFile.forType(type);
+
+        SourceFile expectedSourceFile = SourceFile.forType(type);
         @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
-        String expectedFileInsertionPoint = expectedFile.toString()
-                                                        .replaceAll("\\\\", "/");
-        assertThat(insertionPoint.getName()).isEqualTo(expectedFileInsertionPoint);
+        String expectedFileName = expectedSourceFile.toString()
+                                                    .replaceAll("\\\\", "/");
+        File expectedFile = File
+                .newBuilder()
+                .setName(expectedFileName)
+                .setInsertionPoint(expectedPointName)
+                .setContent(BUILDER_INTERFACE)
+                .build();
+        assertThat(response.getFileList()).contains(expectedFile);
     }
 
     private static List<File> filterMethods(CodeGeneratorResponse response,
@@ -222,9 +226,9 @@ final class PluginTest {
 
     private static void checkGenerated(CodeGeneratorResponse response) {
         List<File> responseFiles = response.getFileList();
-        assertThat(responseFiles).hasSize(3);
+        assertThat(responseFiles.size()).isAtLeast(3);
         List<String> fileContents = contentsOf(responseFiles);
-        assertThat(fileContents).containsExactly(
+        assertThat(fileContents).containsAtLeast(
                 TestInterface.class.getName() + ',',
                 TestMethodFactory.TEST_METHOD.value(),
                 BUILDER_INTERFACE
