@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -18,11 +19,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.validation;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    testImplementation project(':testlib')
-}
+import javax.annotation.ParametersAreNonnullByDefault;
