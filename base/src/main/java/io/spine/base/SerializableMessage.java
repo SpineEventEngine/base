@@ -22,16 +22,19 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
+import io.spine.type.TypeUrl;
 
 import java.io.Serializable;
 
 /**
  * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
  * standard serialization mechanism.
- *
- * <p>This interface deliberately declares no methods. Its purpose is to be used in the Proto
- * message interfaces. See the known subtypes for more details.
  */
 @Immutable
 public interface SerializableMessage extends Message, Serializable {
+
+    /** Obtains the type URL of this message. */
+    default TypeUrl typeUrl() {
+        return TypeUrl.of(this);
+    }
 }
