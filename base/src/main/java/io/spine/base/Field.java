@@ -46,6 +46,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A reference to a Protobuf message field.
@@ -348,6 +349,7 @@ public final class Field extends ValueHolder<FieldPath> {
 
     /** Ensures that the passed filed name does not contain the path separator. */
     private static void checkName(String fieldName) {
+        checkNotEmptyOrBlank(fieldName);
         checkArgument(
                 !fieldName.contains(SEPARATOR),
                 "A field name cannot contain path separator. Found: `%s`.", fieldName
