@@ -37,7 +37,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -78,7 +78,7 @@ class RejectionGenPluginTest {
 
     @Test
     @DisplayName("generate rejection Javadoc")
-    void generateRejectionJavadoc() throws FileNotFoundException {
+    void generateRejectionJavadoc() throws IOException {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(compileJava);
         String projectAbsolutePath = testProjectDir.getAbsolutePath();
