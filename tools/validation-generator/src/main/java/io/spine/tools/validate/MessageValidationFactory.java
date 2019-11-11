@@ -36,6 +36,7 @@ import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -71,10 +72,16 @@ public final class MessageValidationFactory {
                 .builder(Generated.class)
                 .addMember(bySpine.fieldName(), bySpine.codeBlock())
                 .build();
+        MethodSpec ctor = MethodSpec
+                .constructorBuilder()
+                .addModifiers(PRIVATE)
+                .addJavadoc("Prevents utility class instantiation.")
+                .build();
         TypeSpec classSpec = TypeSpec
                 .classBuilder(validatorClassName.value())
                 .addModifiers(FINAL)
                 .addAnnotation(generatedAnnotation)
+                .addMethod(ctor)
                 .addMethod(validateMethod)
                 .build();
         return JavaFile.builder(packageName.value(), classSpec)
