@@ -87,7 +87,7 @@ sourceSets {
 }
 
 final def copyPluginJarAction = {
-    final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile
+    final def from = configurations.testCompileClasspath.fileCollection(protocPluginDependency).singleFile
     final def srcPath = from.toPath()
     final def dest = project.spineFolder.toPath().resolve(from.name)
     dest.toFile().mkdirs()
