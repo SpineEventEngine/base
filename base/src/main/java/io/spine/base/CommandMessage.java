@@ -30,5 +30,5 @@ import com.google.errorprone.annotations.Immutable;
  * with {@code commands.proto}.
  */
 @Immutable
-public interface CommandMessage extends SerializableMessage {
+public interface CommandMessage extends KnownMessage {
 }

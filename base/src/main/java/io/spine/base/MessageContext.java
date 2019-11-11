@@ -26,5 +26,5 @@ import com.google.errorprone.annotations.Immutable;
  * Base interface for message contexts.
  */
 @Immutable
-public interface MessageContext extends SerializableMessage {
+public interface MessageContext extends KnownMessage {
 }
