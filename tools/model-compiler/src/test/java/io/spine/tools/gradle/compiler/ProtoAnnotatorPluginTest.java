@@ -49,7 +49,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.util.List;
@@ -88,99 +88,99 @@ class ProtoAnnotatorPluginTest {
 
     @Test
     @DisplayName("annotate if file option is true")
-    void annotateIfFileOptionIsTrue() throws FileNotFoundException {
+    void annotateIfFileOptionIsTrue() throws IOException {
         assertNestedTypesAnnotations(INTERNAL_ALL, true);
     }
 
     @Test
     @DisplayName("annotate service if file option if true")
-    void annotateServiceIfFileOptionIsTrue() throws FileNotFoundException {
+    void annotateServiceIfFileOptionIsTrue() throws IOException {
         assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
     }
 
     @Test
     @DisplayName("not annotate if file option if false")
-    void notAnnotateIfFileOptionIfFalse() throws FileNotFoundException {
+    void notAnnotateIfFileOptionIfFalse() throws IOException {
         assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("not annotate service if file option is false")
-    void notAnnotateServiceIfFileOptionIfFalse() throws FileNotFoundException {
+    void notAnnotateServiceIfFileOptionIfFalse() throws IOException {
         assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if file option is true")
-    void annotateMultipleFilesIfFileOptionIsTrue() throws FileNotFoundException {
+    void annotateMultipleFilesIfFileOptionIsTrue() throws IOException {
         assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if file option is false")
-    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws IOException {
         assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate if message option is true")
-    void annotateIfMessageOptionIsTrue() throws FileNotFoundException {
+    void annotateIfMessageOptionIsTrue() throws IOException {
         assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
     }
 
     @Test
     @DisplayName("not annotate if message option is false")
-    void notAnnotateIfMessageOptionIsFalse() throws FileNotFoundException {
+    void notAnnotateIfMessageOptionIsFalse() throws IOException {
         assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate multiple files if message option is true")
-    void annotateMultipleFilesIfMessageOptionIsTrue() throws FileNotFoundException {
+    void annotateMultipleFilesIfMessageOptionIsTrue() throws IOException {
         assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate multiple files if message option is false")
-    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws FileNotFoundException {
+    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws IOException {
         assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate accessors if field option is true")
-    void annotateAccessorsIfFieldOptionIsTrue() throws FileNotFoundException {
+    void annotateAccessorsIfFieldOptionIsTrue() throws IOException {
         assertFieldAnnotations(INTERNAL_FIELD, true);
     }
 
     @Test
     @DisplayName("not annotate accessors if field option is false")
-    void notAnnotateAccessorsIfFieldOptionIsFalse() throws FileNotFoundException {
+    void notAnnotateAccessorsIfFieldOptionIsFalse() throws IOException {
         assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
     @Test
     @DisplayName("annotate accessors in multiple files if field option is true")
     void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
-            throws FileNotFoundException {
+            throws IOException {
         assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
     }
 
     @Test
     @DisplayName("not annotate accessors in multiple files if field option is false")
     void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
-            throws FileNotFoundException {
+            throws IOException {
         assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     @DisplayName("annotate GRPC services if section option is true")
-    void annotateGrpcServicesIfServiceOptionIsTrue() throws FileNotFoundException {
+    void annotateGrpcServicesIfServiceOptionIsTrue() throws IOException {
         assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
     }
 
     @Test
     @DisplayName("not annotate GRPC services if service option is false")
-    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws FileNotFoundException {
+    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws IOException {
         assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
     }
 
@@ -191,14 +191,14 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         assertServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
     }
 
     private void assertServiceAnnotations(FileName testFile,
                                           Class<? extends Annotation> expectedAnnotation,
                                           boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         List<ServiceDescriptor> services = fileDescriptor.getServices();
         for (ServiceDescriptor serviceDescriptor : services) {
@@ -211,7 +211,7 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
                                                      .get(0);
@@ -223,7 +223,7 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
                                                      .get(0);
@@ -235,7 +235,7 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void assertMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
             DescriptorProto messageProto = messageDescriptor.toProto();
@@ -247,13 +247,13 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void assertNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
-            throws FileNotFoundException {
+            throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         Path sourcePath = forOuterClassOf(fileDescriptor.toProto()).path();
         check(sourcePath, new NestedTypesAnnotationCheck(shouldBeAnnotated));
     }
 
-    private void check(Path sourcePath, SourceCheck check) throws FileNotFoundException {
+    private void check(Path sourcePath, SourceCheck check) throws IOException {
         Path filePath = DefaultJavaProject.at(testProjectDir)
                                           .generated()
                                           .mainJava()
@@ -265,7 +265,7 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
-            throws FileNotFoundException {
+            throws IOException {
         Path fullPath = DefaultJavaProject.at(testProjectDir)
                                           .generated()
                                           .mainGrpc()

@@ -32,7 +32,6 @@ import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,7 +133,7 @@ public abstract class Annotator {
     private static AbstractJavaSource<?> parse(Path sourcePath) {
         try {
             return Roaster.parse(AbstractJavaSource.class, sourcePath.toFile());
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
