@@ -65,6 +65,13 @@ class MessageClassTest {
         reserializeAndAssert(new TestMessageClass(MSG_CLASS));
     }
 
+    @Test
+    @DisplayName("obtain the name of the type")
+    void typeName() {
+        assertThat(new TestMessageClass(MSG_CLASS).typeName())
+                .isEqualTo(MSG_TYPE.toTypeName());
+    }
+
     /**
      * Cursory test obtaining interfaces extending {@code Message}.
      *
@@ -110,6 +117,7 @@ class MessageClassTest {
     /**
      * Stub implementation for {@link MessageClassTest#interfaces()}.
      */
+    @SuppressWarnings("ReturnOfNull")
     private static final class StubMessage implements SubSubMessage {
 
         @Override
