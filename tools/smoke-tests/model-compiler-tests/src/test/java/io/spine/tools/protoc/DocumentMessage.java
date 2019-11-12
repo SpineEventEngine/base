@@ -20,7 +20,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.base.SerializableMessage;
+import io.spine.base.KnownMessage;
 
-public interface DocumentMessage extends SerializableMessage {
+public interface DocumentMessage extends KnownMessage {
 }

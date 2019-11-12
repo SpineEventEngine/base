@@ -109,7 +109,20 @@ class FieldTest {
         @Test
         @DisplayName("rejecting `.` in the field name")
         void noSeparatorInName() {
-            assertThrows(IllegalArgumentException.class, () -> Field.named("with.dot"));
+            assertRejects("with.dot");
+        }
+
+        @Test
+        @DisplayName("rejecting empty, null or blank names")
+        void rejectEmpty() {
+            assertRejects("");
+            assertRejects(" ");
+            assertRejects("  ");
+            assertThrows(NullPointerException.class, () -> Field.named(null));
+        }
+
+        void assertRejects(String illegalValue) {
+            assertThrows(IllegalArgumentException.class, () -> Field.named(illegalValue));
         }
     }
 

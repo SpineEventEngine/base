@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -46,6 +47,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A reference to a Protobuf message field.
@@ -103,7 +105,7 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public static Field named(String fieldName) {
         checkName(fieldName);
-        FieldPath path = create(fieldName);
+        FieldPath path = create(ImmutableList.of(fieldName));
         Field result = create(path);
         return result;
     }
@@ -220,15 +222,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Creates a new path containing the passed elements. */
-    private static FieldPath create(String... elements) {
-        checkNotNull(elements);
-        return create(ImmutableList.copyOf(elements));
-    }
-
-    /** Creates a new path containing the passed elements. */
-    static FieldPath create(List<String> elements) {
-        checkNotNull(elements);
-        checkArgument(!elements.isEmpty(), "A field path must contain at least one element.");
+    private static FieldPath create(List<String> elements) {
         elements.forEach(Field::checkName);
         FieldPath result = FieldPath
                 .newBuilder()
@@ -238,6 +232,7 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Creates a path instance by parsing the passed non-empty string. */
+    @VisibleForTesting
     static FieldPath doParse(String fieldPath) {
         checkArgument(!fieldPath.isEmpty(), "A field path must not be empty.");
         List<String> pathElements = dotSplitter.splitToList(fieldPath);
@@ -261,7 +256,7 @@ public final class Field extends ValueHolder<FieldPath> {
      * @throws IllegalArgumentException
      *          if the call is {@code strict} and the value not found
      */
-    static @Nullable Object doGetValue(FieldPath path, Message holder, boolean strict) {
+    private static @Nullable Object doGetValue(FieldPath path, Message holder, boolean strict) {
         Message message = holder;
         Object currentValue = message;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
@@ -310,6 +305,8 @@ public final class Field extends ValueHolder<FieldPath> {
      * the value of the enum. This method converts this value into an instance of a generated
      * Java {@link Enum} which corresponds to the enum proto type of the field.
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+        // The generic arg. of the enum is of no importance here.
     private static Object convertIfEnum(Object currentValue) {
         if (!(currentValue instanceof EnumValueDescriptor)) {
             return currentValue;
@@ -318,7 +315,6 @@ public final class Field extends ValueHolder<FieldPath> {
         EnumDescriptor enumType = value.getType();
         TypeName typeName = TypeName.of(enumType.getFullName());
         Class<? extends Enum> cls = typeName.toEnumClass();
-        @SuppressWarnings("unchecked") // The generic arg. of the enum is of no importance here.
         Enum enumValue = Enum.valueOf(cls, value.getName());
         return enumValue;
     }
@@ -328,7 +324,7 @@ public final class Field extends ValueHolder<FieldPath> {
      *
      * @return the descriptor or {@code null} if the message type does not declare this field
      */
-    static @Nullable FieldDescriptor fieldIn(FieldPath path, Descriptor message) {
+    private static @Nullable FieldDescriptor fieldIn(FieldPath path, Descriptor message) {
         Descriptor current = message;
         FieldDescriptor field = null;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
@@ -348,6 +344,7 @@ public final class Field extends ValueHolder<FieldPath> {
 
     /** Ensures that the passed filed name does not contain the path separator. */
     private static void checkName(String fieldName) {
+        checkNotEmptyOrBlank(fieldName);
         checkArgument(
                 !fieldName.contains(SEPARATOR),
                 "A field name cannot contain path separator. Found: `%s`.", fieldName
@@ -370,14 +367,14 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /** Ensures that the passed path has at least one element. */
-    static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
+    private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
         checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
     }
 
     /**
      * Joins the passed path elements into the string representation of the path.
      */
-    static String join(Iterable<String> elements) {
+    private static String join(Iterable<String> elements) {
         String result = joiner.join(elements);
         return result;
     }

@@ -30,5 +30,5 @@ import com.google.errorprone.annotations.Immutable;
  * with {@code events.proto}.
  */
 @Immutable
-public interface EventMessage extends SerializableMessage {
+public interface EventMessage extends KnownMessage {
 }

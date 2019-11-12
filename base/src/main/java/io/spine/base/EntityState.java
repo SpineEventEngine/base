@@ -32,5 +32,5 @@ import com.google.errorprone.annotations.Immutable;
  */
 @SuppressWarnings("InterfaceNeverImplemented") // Implemented in the dependent repos.
 @Immutable
-public interface EntityState extends SerializableMessage {
+public interface EntityState extends KnownMessage {
 }

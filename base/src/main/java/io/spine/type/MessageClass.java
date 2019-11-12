@@ -37,24 +37,31 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
 
     private static final long serialVersionUID = 0L;
 
-    /** The name of the type of proto messages represented by this class. */
-    private final TypeName typeName;
+    /** The URL of the type of proto messages represented by this class. */
+    private final TypeUrl typeUrl;
 
     protected MessageClass(Class<? extends M> value) {
         super(value);
-        this.typeName = TypeName.of(value);
+        this.typeUrl = TypeUrl.of(value);
     }
 
     protected MessageClass(Class<? extends M> value, TypeUrl typeUrl) {
         super(value);
-        this.typeName = TypeName.from(typeUrl);
+        this.typeUrl = checkNotNull(typeUrl);
+    }
+
+    /**
+     * Obtains the type URL of messages of this class.
+     */
+    public TypeUrl typeUrl() {
+        return typeUrl;    
     }
 
     /**
      * Obtains a type name of the messages of this class.
      */
     public TypeName typeName() {
-        return typeName;
+        return typeUrl.toTypeName();
     }
 
     /**
