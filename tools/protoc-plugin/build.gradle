@@ -27,6 +27,7 @@ dependencies {
             project(':tool-base'),
             project(':protoc-api'),
             project(':validation-generator'),
+            deps.gen.javaPoet
     )
 
     testCompile project(':base')
