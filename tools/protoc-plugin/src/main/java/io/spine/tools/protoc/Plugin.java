@@ -67,7 +67,7 @@ public final class Plugin {
                 .add(InterfaceGenerator.instance(config))
                 .add(MethodGenerator.instance(config))
                 .add(BuilderGenerator.instance(config))
-                .add(new ValidatorGenerator())
+                .add(ValidatorGenerator.instance(config))
                 .build();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);

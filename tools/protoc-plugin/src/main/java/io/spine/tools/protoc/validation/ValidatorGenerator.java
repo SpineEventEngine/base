@@ -24,36 +24,58 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.kotlinpoet.FileSpec;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtoGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.validate.MessageValidatorFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.util.Collection;
 
-import static java.lang.String.format;
+import static io.spine.tools.protoc.InsertionPoint.builder_scope;
+import static io.spine.tools.protoc.InsertionPoint.class_scope;
 
-public class ValidatorGenerator extends SpineProtoGenerator {
+public final class ValidatorGenerator extends SpineProtoGenerator {
+
+    /**
+     * Prevents direct instantiation.
+     */
+    private ValidatorGenerator() {
+        super();
+    }
+
+    public static SpineProtoGenerator instance(SpineProtocConfig config) {
+        return config.getSkipValidatingBuilders() || !config.getGenerateKotlinValidation()
+               ? NoOpGenerator.instance()
+               : new ValidatorGenerator();
+    }
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         if (type instanceof MessageType) {
             MessageValidatorFactory factory = new MessageValidatorFactory((MessageType) type);
             FileSpec kotlinClass = factory.generateClass();
-            String validatorClassFile = kotlinClass.toJavaFileObject().getName();
+            String validatorClassFile = kotlinClass.toJavaFileObject()
+                                                   .getName();
             File file = ProtocPluginFiles
                     .prepareFile(validatorClassFile)
                     .setContent(kotlinClass.toString())
                     .build();
-            String insertionPointName = format("builder_scope:%s", type.name());
-            String vBuildMethod = factory.generateValidationMethod();
-            File insertionPoint = ProtocPluginFiles
+            File builderInsertionPoint = ProtocPluginFiles
                     .prepareFile(type)
-                    .setInsertionPoint(insertionPointName)
-                    .setContent(vBuildMethod)
+                    .setInsertionPoint(builder_scope.forType(type))
+                    .setContent(factory.generateJavaVBuild())
                     .build();
-            return ImmutableSet.of(() -> file, () -> insertionPoint);
+            File messageInsertionPoint = ProtocPluginFiles
+                    .prepareFile(type)
+                    .setInsertionPoint(class_scope.forType(type))
+                    .setContent(factory.generateJavaValidate())
+                    .build();
+            return ImmutableSet.of(() -> file,
+                                   () -> builderInsertionPoint,
+                                   () -> messageInsertionPoint);
         } else {
             return ImmutableSet.of();
         }

@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
+import io.spine.annotation.Experimental;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
@@ -168,6 +169,9 @@ public class Extension extends GradleExtension {
     public final GeneratedMethods methods = new GeneratedMethods();
 
     public boolean generateValidatingBuilders = true;
+
+    @Experimental
+    public boolean generateKotlinValidation = false;
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -370,6 +374,11 @@ public class Extension extends GradleExtension {
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {
         boolean shouldGenerate = extension(project).generateValidatingBuilders;
+        return shouldGenerate;
+    }
+
+    public static boolean shouldGenerateKotlinValidation(Project project) {
+        boolean shouldGenerate = extension(project).generateKotlinValidation;
         return shouldGenerate;
     }
 

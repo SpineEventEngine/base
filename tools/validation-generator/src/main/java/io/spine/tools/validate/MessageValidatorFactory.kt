@@ -21,26 +21,28 @@
 package io.spine.tools.validate
 
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName.VOID
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier.FINAL
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.TypeSpec
-import io.spine.code.java.ClassName
-import io.spine.code.java.PackageName
-import io.spine.code.java.SimpleClassName
 import io.spine.type.MessageType
+import io.spine.validate.ValidationException
 import javax.lang.model.element.Modifier.PUBLIC
 import com.squareup.javapoet.ClassName as JavaClassName
 import com.squareup.javapoet.CodeBlock as JavaCode
 import com.squareup.kotlinpoet.ClassName as KotlinClassName
 
+private fun validatorNameFor(type: MessageType) =
+        type.nestedSimpleName().joinWithUnderscore() + "_Validator"
+
 class MessageValidatorFactory(type: MessageType) {
 
-    private val packageName: PackageName = type.javaPackage()
-    private val messageClassName: ClassName = type.javaClassName()
-    private val validatorClassName: SimpleClassName = messageClassName
-            .toSimple()
-            .with("_Validator")
+    private val packageName = type.javaPackage()
+    private val messageClassName = type.javaClassName()
+    private val validatorClassName = validatorNameFor(type)
+    private val validatorTypeName = JavaClassName.bestGuess(validatorClassName)
 
     fun generateClass(): FileSpec {
         val validatedType = KotlinClassName.bestGuess(messageClassName.canonicalName())
@@ -51,28 +53,39 @@ class MessageValidatorFactory(type: MessageType) {
                 .addParameter("msg", validatedType)
                 .build()
         val classSpec = TypeSpec
-                .objectBuilder(validatorClassName.value())
-                .addModifiers(INTERNAL)
+                .objectBuilder(validatorClassName)
+                .addModifiers(INTERNAL, FINAL)
                 .addFunction(validateMethod)
                 .build()
         return FileSpec.get(packageName.value(), classSpec)
     }
 
-    fun generateValidationMethod(): String {
+    fun generateJavaVBuild(): String {
         val msg = "msg"
         val className = JavaClassName.bestGuess(messageClassName.toSimple().value())
-        val validatorName = JavaClassName.bestGuess(validatorClassName.value())
         val body = JavaCode
                 .builder()
                 .addStatement("\$T \$N = build()", className, msg)
-                .addStatement("\$T.validate(\$N)", validatorName, msg)
+                .addStatement("\$T.validate(\$N)", validatorTypeName, msg)
                 .addStatement("return \$N", msg)
                 .build()
         return MethodSpec.methodBuilder("vBuild")
                 .addAnnotation(Override::class.java)
-                .returns(className)
-                .addCode(body)
                 .addModifiers(PUBLIC)
+                .returns(className)
+                .addException(ValidationException::class.java)
+                .addCode(body)
+                .build()
+                .toString()
+    }
+
+    fun generateJavaValidate(): String {
+        val body = JavaCode.of("\$T.validate(this);", validatorTypeName)
+        return MethodSpec.methodBuilder("validate")
+                .addModifiers(PUBLIC)
+                .returns(VOID)
+                .addException(ValidationException::class.java)
+                .addCode(body)
                 .build()
                 .toString()
     }
