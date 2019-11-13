@@ -25,7 +25,7 @@ import com.squareup.javapoet.TypeName.VOID
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.FINAL
-import com.squareup.kotlinpoet.KModifier.INTERNAL
+import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.TypeSpec
 import io.spine.type.MessageType
 import io.spine.validate.ValidationException
@@ -54,7 +54,7 @@ class MessageValidatorFactory(type: MessageType) {
                 .build()
         val classSpec = TypeSpec
                 .objectBuilder(validatorClassName)
-                .addModifiers(INTERNAL, FINAL)
+                .addModifiers(PRIVATE, FINAL)
                 .addFunction(validateMethod)
                 .build()
         return FileSpec.get(packageName.value(), classSpec)
