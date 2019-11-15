@@ -58,6 +58,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * on this package. Thus, {@code GeneratedMixin} cannot be used for augmenting generated classes
  * that belong to it.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // A lot of field-related utilities.
 @Immutable
 public final class Field extends ValueHolder<FieldPath> {
 
@@ -188,6 +189,15 @@ public final class Field extends ValueHolder<FieldPath> {
     }
 
     /**
+     * Checks if the field is present (as top-level or nested) in the given message type.
+     */
+    public boolean presentIn(Descriptor message) {
+        Optional<FieldDescriptor> descriptor = findDescriptor(message);
+        boolean result = descriptor.isPresent();
+        return result;
+    }
+
+    /**
      * Obtains a descriptor of the referenced field in the passed message type.
      *
      * @return the descriptor, if there is such a field in the passed type, or empty
@@ -208,6 +218,15 @@ public final class Field extends ValueHolder<FieldPath> {
         }
         Class<?> result = classOf(field);
         return Optional.of(result);
+    }
+
+    /**
+     * Checks if the field is a nested field.
+     */
+    public boolean isNested() {
+        int pathComponents = path().getFieldNameCount();
+        boolean result = pathComponents > 1;
+        return result;
     }
 
     /**

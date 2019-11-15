@@ -240,6 +240,22 @@ class FieldTest {
         }
     }
 
+    @Test
+    @DisplayName("check that the field is present in the message type")
+    void checkPresent() {
+        Field field = Field.parse("val");
+        Descriptor message = StringHolder.getDescriptor();
+        assertThat(field.presentIn(message)).isTrue();
+    }
+
+    @Test
+    @DisplayName("check that the field is not present in the message type")
+    void checkNotPresent() {
+        Field field = Field.parse("some_other_field");
+        Descriptor message = StringHolder.getDescriptor();
+        assertThat(field.presentIn(message)).isFalse();
+    }
+
     @Nested
     @DisplayName("obtain the descriptor of the field")
     class GettingDescriptor {
@@ -346,5 +362,19 @@ class FieldTest {
         Field seconds = Field.withNumberIn(1, Timestamp.getDescriptor());
         assertThat((Long) seconds.valueIn(Time.currentTime()))
                 .isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("check that the field is a nested field")
+    void checkNested() {
+        Field field = Field.parse("some.nested.field");
+        assertThat(field.isNested()).isTrue();
+    }
+
+    @Test
+    @DisplayName("check that the field is not a nested field")
+    void checkTopLevel() {
+        Field field = Field.parse("top_level_field");
+        assertThat(field.isNested()).isFalse();
     }
 }
