@@ -22,7 +22,7 @@ package io.spine.tools.protoc.validation;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import com.squareup.kotlinpoet.FileSpec;
+import com.squareup.javapoet.JavaFile;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
@@ -56,22 +56,22 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         if (type instanceof MessageType) {
             MessageValidatorFactory factory = new MessageValidatorFactory((MessageType) type);
-            FileSpec kotlinClass = factory.generateClass();
-            String validatorClassFile = kotlinClass.toJavaFileObject()
-                                                   .getName();
+            JavaFile validatorClass = factory.generateClass();
+            String validatorClassFile = validatorClass.toJavaFileObject()
+                                                      .getName();
             File file = ProtocPluginFiles
                     .prepareFile(validatorClassFile)
-                    .setContent(kotlinClass.toString())
+                    .setContent(validatorClass.toString())
                     .build();
             File builderInsertionPoint = ProtocPluginFiles
                     .prepareFile(type)
                     .setInsertionPoint(builder_scope.forType(type))
-                    .setContent(factory.generateJavaVBuild())
+                    .setContent(factory.generateVBuild().toString())
                     .build();
             File messageInsertionPoint = ProtocPluginFiles
                     .prepareFile(type)
                     .setInsertionPoint(class_scope.forType(type))
-                    .setContent(factory.generateJavaValidate())
+                    .setContent(factory.generateValidate().toString())
                     .build();
             return ImmutableSet.of(() -> file,
                                    () -> builderInsertionPoint,
