@@ -21,10 +21,12 @@
 package io.spine.tools.validate;
 
 import com.google.gson.reflect.TypeToken;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedBySpine;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
@@ -34,6 +36,7 @@ import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
 
+import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Function;
@@ -79,8 +82,14 @@ public final class MessageValidatorFactory {
                 .addModifiers(PRIVATE)
                 .addJavadoc("Prevents validator class instantiation.")
                 .build();
+        GeneratedBySpine bySpine = GeneratedBySpine.instance();
+        AnnotationSpec generated = AnnotationSpec
+                .builder(Generated.class)
+                .addMember(bySpine.fieldName(), bySpine.codeBlock())
+                .build();
         TypeSpec type = TypeSpec
                 .classBuilder(validatorSimpleName)
+                .addAnnotation(generated)
                 .addModifiers(FINAL)
                 .addMethod(ctor)
                 .addMethod(validateMethod)
