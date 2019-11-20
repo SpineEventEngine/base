@@ -61,4 +61,11 @@ public abstract class AbstractFieldValidatorFactory implements FieldValidatorFac
     protected final FieldDeclaration field() {
         return field;
     }
+
+    protected ViolationTemplate.Builder violationTemplate() {
+        return ViolationTemplate
+                .newBuilder()
+                .setType(field().declaringType())
+                .setField(field().name().value());
+    }
 }

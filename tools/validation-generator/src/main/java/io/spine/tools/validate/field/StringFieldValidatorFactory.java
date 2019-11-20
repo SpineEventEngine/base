@@ -21,13 +21,18 @@
 package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.option.PatternOption;
 import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
 
 import java.util.function.Function;
 
+import static io.spine.option.OptionsProto.pattern;
+import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
+import static java.lang.String.format;
 
 public final class StringFieldValidatorFactory extends AbstractFieldValidatorFactory {
 
@@ -37,18 +42,39 @@ public final class StringFieldValidatorFactory extends AbstractFieldValidatorFac
 
     @Override
     protected ImmutableList<Rule> rules() {
-        return ImmutableList.of(required());
+        ImmutableList.Builder<Rule> builder = ImmutableList.builder();
+        FieldOptions options = field().descriptor().getOptions();
+        if (options.getExtension(required)) {
+            builder.add(required());
+        }
+        if (options.hasExtension(pattern)) {
+            PatternOption option = options.getExtension(pattern);
+            builder.add(pattern(option));
+        }
+        return builder.build();
     }
 
     private Rule required() {
         Function<Expression, Expression> condition =
                 field -> formatted("%s.isEmpty()", field);
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
         Function<Expression, ViolationTemplate> violationFactory =
-                field -> ViolationTemplate
-                        .newBuilder()
+                field -> violationTemplate()
                         .setMessage("Field must be set.")
-                        .setType(field().declaringType())
-                        .setField(field().name().value())
+                        .build();
+        return new Rule(
+                condition,
+                violationFactory
+        );
+    }
+
+    private Rule pattern(PatternOption pattern) {
+        String regex = pattern.getRegex();
+        Function<Expression, Expression> condition =
+                field -> formatted("%s.matches(\"%s\")", field, regex);
+        Function<Expression, ViolationTemplate> violationFactory =
+                field -> violationTemplate()
+                        .setMessage(format("String must match %s.", regex))
                         .build();
         return new Rule(
                 condition,

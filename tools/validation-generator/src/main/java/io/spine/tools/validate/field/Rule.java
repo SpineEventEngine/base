@@ -28,13 +28,13 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class Rule {
+final class Rule {
 
     private final Function<Expression, Expression> condition;
     private final Function<Expression, ViolationTemplate> violationFactory;
 
-    public Rule(Function<Expression, Expression> condition,
-                Function<Expression, ViolationTemplate> violationFactory) {
+    Rule(Function<Expression, Expression> condition,
+         Function<Expression, ViolationTemplate> violationFactory) {
         this.condition = checkNotNull(condition);
         this.violationFactory = checkNotNull(violationFactory);
     }
