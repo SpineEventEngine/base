@@ -20,13 +20,23 @@
 
 package io.spine.tools.validate;
 
+import com.google.gson.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.PackageName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.field.FieldValidatorFactories;
+import io.spine.tools.validate.field.FieldValidatorFactory;
 import io.spine.type.MessageType;
+import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Function;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
 import static javax.lang.model.element.Modifier.FINAL;
@@ -37,6 +47,10 @@ import static javax.lang.model.element.Modifier.STATIC;
 public final class MessageValidatorFactory {
 
     private static final String VALIDATE_METHOD = "validate";
+    private static final String MESSAGE_PARAMETER = "msg";
+    private static final String MESSAGE_VARIABLE = "msg";
+    private static final TypeToken<ArrayList<ConstraintViolation>> listOfViolations =
+            new TypeToken<ArrayList<ConstraintViolation>>() {};
 
     private final MessageType type;
     private final PackageName packageName;
@@ -57,7 +71,8 @@ public final class MessageValidatorFactory {
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(STATIC)
                 .returns(void.class)
-                .addParameter(bestGuess(messageSimpleName), "msg")
+                .addParameter(bestGuess(messageSimpleName), MESSAGE_PARAMETER)
+                .addCode(validator())
                 .build();
         MethodSpec ctor = MethodSpec
                 .constructorBuilder()
@@ -74,6 +89,22 @@ public final class MessageValidatorFactory {
                        .build();
     }
 
+    private CodeBlock validator() {
+        CodeBlock.Builder body = CodeBlock
+                .builder()
+                .addStatement("$1T violations = new $1T()", listOfViolations.getType());
+        Function<ViolationTemplate, Expression> violationAccumulator =
+                violation -> Expression.of("violations.add(" + violation + ')');
+        Expression msg = Expression.of(MESSAGE_PARAMETER);
+        FieldValidatorFactories factories = new FieldValidatorFactories(msg);
+        for (FieldDeclaration field : type.fields()) {
+            FieldValidatorFactory factory = factories.forField(field);
+            Optional<CodeBlock> fieldValidation = factory.generate(violationAccumulator);
+            fieldValidation.ifPresent(body::add);
+        }
+        return body.build();
+    }
+
     public MethodSpec generateValidate() {
         CodeBlock body = CodeBlock.of("$T.validate(this);", bestGuess(validatorSimpleName));
         return MethodSpec
@@ -86,12 +117,13 @@ public final class MessageValidatorFactory {
     }
 
     public MethodSpec generateVBuild() {
-        String msg = "msg";
         CodeBlock body = CodeBlock
                 .builder()
-                .addStatement("$T $N = build()", bestGuess(messageSimpleName), msg)
-                .addStatement("$T." + VALIDATE_METHOD + "($N)", bestGuess(validatorSimpleName), msg)
-                .addStatement("return $N", msg)
+                .addStatement("$T $N = build()",
+                              bestGuess(messageSimpleName), MESSAGE_VARIABLE)
+                .addStatement("$T." + VALIDATE_METHOD + "($N)",
+                              bestGuess(validatorSimpleName), MESSAGE_VARIABLE)
+                .addStatement("return $N", MESSAGE_VARIABLE)
                 .build();
         return MethodSpec
                 .methodBuilder("vBuild")
