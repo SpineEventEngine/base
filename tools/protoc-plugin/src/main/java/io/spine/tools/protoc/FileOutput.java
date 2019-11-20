@@ -20,29 +20,11 @@
 
 package io.spine.tools.protoc;
 
-import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import static io.spine.tools.protoc.ProtocPluginFiles.prepareFile;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
-/**
- * Output of the Protobuf compiler plugin.
- */
-public interface CompilerOutput {
+final class FileOutput extends AbstractCompilerOutput {
 
-    /**
-     * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
-     *
-     * @return compiler output as a {@link File}
-     */
-    File asFile();
-
-    static CompilerOutput from(File file) {
-        return new FileOutput(file);
-    }
-
-    static CompilerOutput from(String fileName, String content) {
-        File file = prepareFile(fileName)
-                .setContent(content)
-                .build();
-        return from(file);
+    FileOutput(File file) {
+        super(file);
     }
 }

@@ -21,9 +21,10 @@
 package io.spine.tools.protoc.validation;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtoGenerator;
@@ -54,30 +55,30 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        if (type instanceof MessageType) {
-            MessageValidatorFactory factory = new MessageValidatorFactory((MessageType) type);
-            JavaFile validatorClass = factory.generateClass();
-            String validatorClassFile = validatorClass.toJavaFileObject()
-                                                      .getName();
-            File file = ProtocPluginFiles
-                    .prepareFile(validatorClassFile)
-                    .setContent(validatorClass.toString())
-                    .build();
-            File builderInsertionPoint = ProtocPluginFiles
-                    .prepareFile(type)
-                    .setInsertionPoint(builder_scope.forType(type))
-                    .setContent(factory.generateVBuild().toString())
-                    .build();
-            File messageInsertionPoint = ProtocPluginFiles
-                    .prepareFile(type)
-                    .setInsertionPoint(class_scope.forType(type))
-                    .setContent(factory.generateValidate().toString())
-                    .build();
-            return ImmutableSet.of(() -> file,
-                                   () -> builderInsertionPoint,
-                                   () -> messageInsertionPoint);
-        } else {
-            return ImmutableSet.of();
-        }
+        return type instanceof MessageType
+               ? compileValidation((MessageType) type)
+               : ImmutableSet.of();
+    }
+
+    private static Collection<CompilerOutput> compileValidation(MessageType type) {
+        MessageValidatorFactory factory = new MessageValidatorFactory(type);
+        JavaFile validatorClass = factory.generateClass();
+        String validatorClassFile = validatorClass.toJavaFileObject()
+                                                  .getName();
+        CompilerOutput file = CompilerOutput.from(validatorClassFile, validatorClass.toString());
+        CompilerOutput builderInsertionPoint =
+                insertMethod(type, builder_scope, factory.generateVBuild());
+        CompilerOutput messageInsertionPoint =
+                insertMethod(type, class_scope, factory.generateValidate());
+        return ImmutableSet.of(file, builderInsertionPoint, messageInsertionPoint);
+    }
+
+    private static CompilerOutput
+    insertMethod(Type<?, ?> type, InsertionPoint target, MethodSpec spec) {
+        return CompilerOutput.from(ProtocPluginFiles
+                                           .prepareFile(type)
+                                           .setInsertionPoint(target.forType(type))
+                                           .setContent(spec.toString())
+                                           .build());
     }
 }
