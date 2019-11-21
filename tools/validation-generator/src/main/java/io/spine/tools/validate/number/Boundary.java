@@ -18,40 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.validate.number;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import io.spine.value.StringTypeValue;
-
-import java.util.List;
+import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * A simple name of a Java class including all the simple names of the nesting classes.
- */
-public final class NestedClassName extends StringTypeValue {
+public final class Boundary {
 
-    private static final long serialVersionUID = 0L;
+    private final Number value;
+    private final boolean inclusive;
 
-    private static final Joiner classNameJoiner = Joiner.on('.');
-    private static final Joiner underscoreNameJoiner = Joiner.on('_');
-
-    private final ImmutableList<String> names;
-
-    private NestedClassName(List<String> names, String joined) {
-        super(checkNotNull(joined));
-        this.names = ImmutableList.copyOf(names);
+    public Boundary(Number value, boolean inclusive) {
+        this.value = checkNotNull(value);
+        this.inclusive = inclusive;
     }
 
-    static NestedClassName from(List<String> names) {
-        checkNotNull(names);
-        String name = classNameJoiner.join(names);
-        return new NestedClassName(names, name);
+    public Number value() {
+        return value;
     }
 
-    public String joinWithUnderscore() {
-        return underscoreNameJoiner.join(names);
+    public boolean inclusive() {
+        return inclusive;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Boundary)) {
+            return false;
+        }
+        Boundary boundary = (Boundary) o;
+        return inclusive == boundary.inclusive &&
+                Objects.equal(value, boundary.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value, inclusive);
     }
 }

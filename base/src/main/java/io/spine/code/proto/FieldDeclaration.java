@@ -22,10 +22,12 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Extension;
 import com.google.protobuf.Message;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
@@ -90,6 +92,11 @@ public final class FieldDeclaration {
      */
     public FieldDescriptor descriptor() {
         return field;
+    }
+
+    public <T> T findOption(Extension<DescriptorProtos.FieldOptions, T> option) {
+        return field.getOptions()
+                    .getExtension(option);
     }
 
     /**
@@ -355,5 +362,10 @@ public final class FieldDeclaration {
     @Override
     public int hashCode() {
         return Objects.hashCode(declaringMessage, field.getFullName());
+    }
+
+    @Override
+    public String toString() {
+        return field.getFullName();
     }
 }
