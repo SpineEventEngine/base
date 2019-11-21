@@ -22,11 +22,13 @@ package io.spine.tools.validate;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedBySpine;
+import io.spine.code.java.NestedClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
@@ -58,15 +60,14 @@ public final class MessageValidatorFactory {
     private final MessageType type;
     private final PackageName packageName;
     private final String validatorSimpleName;
-    private final String messageSimpleName;
+    private final NestedClassName messageSimpleName;
 
     public MessageValidatorFactory(MessageType type) {
         this.type = type;
         this.packageName = type.javaPackage();
-        this.validatorSimpleName = type.nestedSimpleName()
-                                       .joinWithUnderscore() + "_Validator";
-        this.messageSimpleName = type.nestedSimpleName()
-                                     .toString();
+        this.messageSimpleName = type.javaClassName()
+                                     .asNested();
+        this.validatorSimpleName = messageSimpleName.joinWithUnderscore() + "_Validator";
     }
 
     public JavaFile generateClass() {
@@ -74,7 +75,7 @@ public final class MessageValidatorFactory {
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(STATIC)
                 .returns(void.class)
-                .addParameter(bestGuess(messageSimpleName), MESSAGE_PARAMETER)
+                .addParameter(bestGuess(messageSimpleName.value()), MESSAGE_PARAMETER)
                 .addCode(validator())
                 .build();
         MethodSpec ctor = MethodSpec
@@ -126,19 +127,19 @@ public final class MessageValidatorFactory {
     }
 
     public MethodSpec generateVBuild() {
+        ClassName messageClass = bestGuess(messageSimpleName.value());
+        ClassName validatorClass = bestGuess(validatorSimpleName);
         CodeBlock body = CodeBlock
                 .builder()
-                .addStatement("$T $N = build()",
-                              bestGuess(messageSimpleName), MESSAGE_VARIABLE)
-                .addStatement("$T." + VALIDATE_METHOD + "($N)",
-                              bestGuess(validatorSimpleName), MESSAGE_VARIABLE)
+                .addStatement("$T $N = build()", messageClass, MESSAGE_VARIABLE)
+                .addStatement("$T." + VALIDATE_METHOD + "($N)", validatorClass, MESSAGE_VARIABLE)
                 .addStatement("return $N", MESSAGE_VARIABLE)
                 .build();
         return MethodSpec
                 .methodBuilder("vBuild")
                 .addAnnotation(Override.class)
                 .addModifiers(PUBLIC)
-                .returns(bestGuess(messageSimpleName))
+                .returns(messageClass)
                 .addException(ValidationException.class)
                 .addCode(body)
                 .build();

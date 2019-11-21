@@ -23,3 +23,7 @@
     No additional config is required. 
     See smoke-tests/build.gradle for all the config of the project.
 */
+
+modelCompiler {
+    generateValidation = true
+}
