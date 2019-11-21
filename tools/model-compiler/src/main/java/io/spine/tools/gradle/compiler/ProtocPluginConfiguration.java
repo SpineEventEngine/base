@@ -41,8 +41,8 @@ import java.util.Set;
 
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
-import static io.spine.tools.gradle.compiler.Extension.shouldGenerateKotlinValidation;
 import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidatingBuilders;
+import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidation;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -88,7 +88,7 @@ final class ProtocPluginConfiguration {
         GeneratedInterfaces interfaces = getInterfaces(project);
         GeneratedMethods methods = getMethods(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
-        boolean shouldGenerateKValidation = shouldGenerateKotlinValidation(project);
+        boolean shouldGenerateValidation = shouldGenerateValidation(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()
@@ -99,7 +99,7 @@ final class ProtocPluginConfiguration {
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methodsGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
-                .setGenerateKotlinValidation(shouldGenerateKValidation)
+                .setGenerateValidation(shouldGenerateValidation)
                 .build();
         return result;
     }

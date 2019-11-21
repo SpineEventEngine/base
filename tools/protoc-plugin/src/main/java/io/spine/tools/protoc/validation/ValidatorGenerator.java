@@ -48,7 +48,7 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
     }
 
     public static SpineProtoGenerator instance(SpineProtocConfig config) {
-        return config.getSkipValidatingBuilders() || !config.getGenerateKotlinValidation()
+        return config.getSkipValidatingBuilders() || !config.getGenerateValidation()
                ? NoOpGenerator.instance()
                : new ValidatorGenerator();
     }

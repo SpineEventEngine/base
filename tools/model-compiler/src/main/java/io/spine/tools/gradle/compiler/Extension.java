@@ -171,7 +171,7 @@ public class Extension extends GradleExtension {
     public boolean generateValidatingBuilders = true;
 
     @Experimental
-    public boolean generateKotlinValidation = false;
+    public boolean generateValidation = false;
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -377,8 +377,8 @@ public class Extension extends GradleExtension {
         return shouldGenerate;
     }
 
-    public static boolean shouldGenerateKotlinValidation(Project project) {
-        boolean shouldGenerate = extension(project).generateKotlinValidation;
+    public static boolean shouldGenerateValidation(Project project) {
+        boolean shouldGenerate = extension(project).generateValidation;
         return shouldGenerate;
     }
 
