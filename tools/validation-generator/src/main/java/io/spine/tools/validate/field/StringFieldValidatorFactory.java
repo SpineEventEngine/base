@@ -71,10 +71,10 @@ public final class StringFieldValidatorFactory extends AbstractFieldValidatorFac
     private Rule pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
         Function<Expression, Expression> condition =
-                field -> formatted("%s.matches(\"%s\")", field, regex);
+                field -> formatted("!%s.matches(\"%s\")", field, regex);
         Function<Expression, ViolationTemplate> violationFactory =
                 field -> violationTemplate()
-                        .setMessage(format("String must match %s.", regex))
+                        .setMessage(format("String must match pattern: '%s'.", regex))
                         .build();
         return new Rule(
                 condition,
