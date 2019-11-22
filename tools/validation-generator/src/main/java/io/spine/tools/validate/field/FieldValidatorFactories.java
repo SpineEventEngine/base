@@ -54,6 +54,7 @@ public final class FieldValidatorFactories {
             case LONG:
             case FLOAT:
             case DOUBLE:
+                return new NumberFieldValidatorFactory(field, fieldAccess);
             case BOOLEAN:
             case BYTE_STRING:
             case ENUM:
