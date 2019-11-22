@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
@@ -33,8 +34,10 @@ import io.spine.util.Preconditions2;
 import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -395,5 +398,12 @@ public final class Validate {
                                         .value())
                 .build();
         return violation;
+    }
+
+    @Internal
+    public static boolean containsDuplicates(Collection<?> collection) {
+        checkNotNull(collection);
+        Set<?> asSet = ImmutableSet.copyOf(collection);
+        return asSet.size() != collection.size();
     }
 }

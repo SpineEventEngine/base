@@ -223,16 +223,19 @@ public final class FieldValue<@ImmutableTypeParameter T> {
 
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
     public boolean isDefault() {
-        return values.isEmpty() || (declaration.isNotCollection() &&
-                isSingleValueDefault());
+        return values.isEmpty() || allDefault();
     }
 
-    @SuppressWarnings("OverlyStrongTypeCast") // Casting to a sensible public class.
-    private boolean isSingleValueDefault() {
-        if (this.singleValue() instanceof EnumValueDescriptor) {
-            return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
+    private boolean allDefault() {
+        return values.stream()
+                     .allMatch(FieldValue::isDefault);
+    }
+
+    private static boolean isDefault(Object singleValue) {
+        if (singleValue instanceof EnumValueDescriptor) {
+            return ((EnumValueDescriptor) singleValue).getNumber() == 0;
         }
-        Message thisAsMessage = TypeConverter.toMessage(singleValue());
+        Message thisAsMessage = TypeConverter.toMessage(singleValue);
         return Messages.isDefault(thisAsMessage);
     }
 
