@@ -21,31 +21,18 @@
 package io.spine.tools.validate.field;
 
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
-
-import java.util.function.Function;
-
-import static io.spine.tools.validate.code.Expression.formatted;
 
 abstract class AbstractSequenceFieldValidatorFactory extends AbstractFieldValidatorFactory {
 
-    protected AbstractSequenceFieldValidatorFactory(FieldDeclaration field,
-                                                    Expression fieldAccess) {
-        super(field, fieldAccess);
+    AbstractSequenceFieldValidatorFactory(FieldDeclaration field,
+                                          Expression fieldAccess,
+                                          FieldCardinality cardinality) {
+        super(field, fieldAccess, cardinality);
     }
 
-    final Rule required() {
-        Function<Expression, Expression> condition =
-                field -> formatted("%s.isEmpty()", field);
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
-                Function<Expression, ViolationTemplate> violationFactory =
-                field -> violationTemplate()
-                        .setMessage("Field must be set.")
-                        .build();
-        return new Rule(
-                condition,
-                violationFactory
-        );
+    @Override
+    public Expression isNotSet() {
+        return NotEmptyRule.isEmpty(fieldAccess());
     }
 }

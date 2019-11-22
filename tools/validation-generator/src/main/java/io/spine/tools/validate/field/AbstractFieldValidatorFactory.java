@@ -35,11 +35,14 @@ public abstract class AbstractFieldValidatorFactory implements FieldValidatorFac
 
     private final FieldDeclaration field;
     private final Expression fieldAccess;
+    private final FieldCardinality cardinality;
 
-    protected AbstractFieldValidatorFactory(FieldDeclaration field,
-                                            Expression fieldAccess) {
+    AbstractFieldValidatorFactory(FieldDeclaration field,
+                                  Expression fieldAccess,
+                                  FieldCardinality cardinality) {
         this.field = checkNotNull(field);
-        this.fieldAccess = fieldAccess;
+        this.fieldAccess = checkNotNull(fieldAccess);
+        this.cardinality = checkNotNull(cardinality);
     }
 
     protected abstract ImmutableList<Rule> rules();
@@ -58,14 +61,26 @@ public abstract class AbstractFieldValidatorFactory implements FieldValidatorFac
                : Optional.of(code);
     }
 
+    protected final Rule requiredRule() {
+        return new Rule(field -> isNotSet(),
+                        field -> violationTemplate()
+                                .setMessage("Field must be set.")
+                                .build());
+    }
+
     protected final FieldDeclaration field() {
         return field;
     }
 
-    protected ViolationTemplate.Builder violationTemplate() {
-        return ViolationTemplate
-                .newBuilder()
-                .setType(field().declaringType())
-                .setField(field().name().value());
+    protected final FieldCardinality cardinality() {
+        return cardinality;
+    }
+
+    protected final Expression fieldAccess() {
+        return fieldAccess;
+    }
+
+    ViolationTemplate.Builder violationTemplate() {
+        return ViolationTemplate.forField(field);
     }
 }

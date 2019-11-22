@@ -30,4 +30,6 @@ import java.util.function.Function;
 public interface FieldValidatorFactory {
 
     Optional<CodeBlock> generate(Function<ViolationTemplate, Expression> onViolation);
+
+    Expression isNotSet();
 }

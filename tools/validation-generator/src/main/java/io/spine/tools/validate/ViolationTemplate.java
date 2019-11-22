@@ -22,6 +22,7 @@ package io.spine.tools.validate;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
@@ -74,6 +75,13 @@ public final class ViolationTemplate {
      */
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public static Builder forField(FieldDeclaration field) {
+        checkNotNull(field);
+        return newBuilder()
+                .setType(field.declaringType())
+                .setField(field.name().value());
     }
 
     /**

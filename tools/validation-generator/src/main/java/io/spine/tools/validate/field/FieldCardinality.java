@@ -17,37 +17,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.base;
+package io.spine.tools.validate.field;
 
-import "spine/options.proto";
+enum FieldCardinality {
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.base";
-option java_outer_classname = "FieldPathProto";
-option java_multiple_files = true;
-
-// Field path provides field names of nested messages.
-//
-// The first entry in the names list is a name of a field in the root message.
-// The second entry is the name of the field in the nested message, and so on.
-//
-// For example, consider the following message declarations:
-//
-//     message CustomerAccount {
-//       User user = 1;
-//     }
-//
-//     message User {
-//       string name = 1;
-//     }
-//
-// The field path for `name` field of the `User` message enclosed into the `CustomerAccount`
-// is ["user", "name"].
-//
-message FieldPath {
-
-    // Unqualified field names.
-    repeated string field_name = 1 [(required) = true];
+    SINGULAR,
+    REPEATED
 }

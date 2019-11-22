@@ -20,37 +20,34 @@
 
 package io.spine.tools.validate.field;
 
-import com.google.common.collect.ImmutableList;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.protobuf.Messages;
+import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
 
-import static io.spine.option.OptionsProto.required;
+import java.util.function.Function;
+
 import static io.spine.tools.validate.code.Expression.formatted;
-import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 
-final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
+final class NotEmptyRule {
 
-    MessageFieldValidatorFactory(FieldDeclaration field,
-                                 Expression fieldAccess,
-                                 FieldCardinality cardinality) {
-        super(field, fieldAccess, cardinality);
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private NotEmptyRule() {
     }
 
-    @Override
-    protected ImmutableList<Rule> rules() {
-        if (field().findOption(required) && cardinality() == SINGULAR) {
-            return ImmutableList.of(requiredRule());
-        } else {
-            return ImmutableList.of();
-        }
+    static Rule forField(ViolationTemplate.Builder violation) {
+        Function<Expression, Expression> condition = NotEmptyRule::isEmpty;
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
+                Function<Expression, ViolationTemplate> violationFactory =
+                field -> violation.setMessage("Field must be set.")
+                                  .build();
+        return new Rule(
+                condition,
+                violationFactory
+        );
     }
 
-    @Override
-    public Expression isNotSet() {
-        CodeBlock isDefaultCall = CodeBlock.of("$T.isDefault", ClassName.get(Messages.class));
-        return formatted("%s(%s)", isDefaultCall, fieldAccess());
+    static Expression isEmpty(Expression field) {
+        return formatted("%s.isEmpty()", field);
     }
 }

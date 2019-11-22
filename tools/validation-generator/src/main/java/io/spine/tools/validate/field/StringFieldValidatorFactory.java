@@ -32,20 +32,23 @@ import java.util.function.Function;
 import static io.spine.option.OptionsProto.pattern;
 import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 import static java.lang.String.format;
 
 public final class StringFieldValidatorFactory extends AbstractSequenceFieldValidatorFactory {
 
-    StringFieldValidatorFactory(FieldDeclaration field, Expression fieldAccess) {
-        super(field, fieldAccess);
+    StringFieldValidatorFactory(FieldDeclaration field,
+                                Expression fieldAccess,
+                                FieldCardinality cardinality) {
+        super(field, fieldAccess, cardinality);
     }
 
     @Override
     protected ImmutableList<Rule> rules() {
         ImmutableList.Builder<Rule> builder = ImmutableList.builder();
         FieldOptions options = field().descriptor().getOptions();
-        if (options.getExtension(required)) {
-            builder.add(required());
+        if (options.getExtension(required)  && cardinality() == SINGULAR) {
+            builder.add(requiredRule());
         }
         if (options.hasExtension(pattern)) {
             PatternOption option = options.getExtension(pattern);

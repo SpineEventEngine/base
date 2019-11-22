@@ -20,11 +20,19 @@
 
 package io.spine.tools.validate.field;
 
+import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.field.FieldCardinality.REPEATED;
+import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 import static java.util.Optional.empty;
 
 public final class FieldValidatorFactories {
@@ -36,33 +44,62 @@ public final class FieldValidatorFactories {
     }
 
     public FieldValidatorFactory forField(FieldDeclaration field) {
-        if (!field.isCollection()) {
-            return forScalarField(field);
-        } else {
-            return onViolation -> empty();
-        }
+        return field.isCollection()
+               ? forCollections(field)
+               : forScalarField(field, SINGULAR);
+    }
+
+    @NotNull
+    private FieldValidatorFactory forCollections(FieldDeclaration field) {
+        FieldValidatorFactory singularFactory =
+                forScalarField(field, REPEATED, CollectionFieldValidatorFactory.element);
+        String suffix = field.isMap() ? "Map().values()" : "List()";
+        Expression fieldAccess =
+                formatted("%s.get%s%s", messageAccess, field.name().toCamelCase(), suffix);
+        return new CollectionFieldValidatorFactory(field, fieldAccess, singularFactory);
     }
 
     private FieldValidatorFactory
-    forScalarField(FieldDeclaration field) {
+    forScalarField(FieldDeclaration field, FieldCardinality cardinality) {
         Expression fieldAccess =
                 formatted("%s.get%s()", messageAccess, field.name().toCamelCase());
+        return forScalarField(field, cardinality, fieldAccess);
+    }
+
+    @NotNull
+    private static FieldValidatorFactory
+    forScalarField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
         switch (field.javaType()) {
             case STRING:
-                return new StringFieldValidatorFactory(field, fieldAccess);
+                return new StringFieldValidatorFactory(field, fieldAccess, cardinality);
             case INT:
             case LONG:
             case FLOAT:
             case DOUBLE:
-                return new NumberFieldValidatorFactory(field, fieldAccess);
+                return new NumberFieldValidatorFactory(field, fieldAccess, cardinality);
             case ENUM:
             case MESSAGE:
-                return new MessageFieldValidatorFactory(field, fieldAccess);
+                return new MessageFieldValidatorFactory(field, fieldAccess, cardinality);
             case BYTE_STRING:
-                return new ByteStringFieldValidatorFactory(field, fieldAccess);
+                return new ByteStringFieldValidatorFactory(field, fieldAccess, cardinality);
             case BOOLEAN:
             default:
-                return onViolation -> empty();
+                return NoOpFactory.INSTANCE;
+        }
+    }
+
+    private enum NoOpFactory implements FieldValidatorFactory {
+
+        INSTANCE;
+
+        @Override
+        public Optional<CodeBlock> generate(Function<ViolationTemplate, Expression> onViolation) {
+            return empty();
+        }
+
+        @Override
+        public Expression isNotSet() {
+            return Expression.of(String.valueOf(false));
         }
     }
 }

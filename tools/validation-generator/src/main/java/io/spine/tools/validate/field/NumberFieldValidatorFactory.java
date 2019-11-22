@@ -40,6 +40,7 @@ import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.validate.code.Expression.formatted;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFactory {
 
@@ -48,8 +49,10 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
 
     private final NumberKind numberKind;
 
-    NumberFieldValidatorFactory(FieldDeclaration field, Expression fieldAccess) {
-        super(field, fieldAccess);
+    NumberFieldValidatorFactory(FieldDeclaration field,
+                                Expression fieldAccess,
+                                FieldCardinality cardinality) {
+        super(field, fieldAccess, cardinality);
         this.numberKind = NumberKind.forField(field);
     }
 
@@ -68,6 +71,11 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
             rules.add(rule);
         }
         return rules.build();
+    }
+
+    @Override
+    public Expression isNotSet() {
+        return Expression.of(valueOf(false));
     }
 
     private Rule boundaryRule(Boundary boundary,
