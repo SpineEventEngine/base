@@ -55,10 +55,12 @@ public final class FieldValidatorFactories {
             case FLOAT:
             case DOUBLE:
                 return new NumberFieldValidatorFactory(field, fieldAccess);
-            case BOOLEAN:
-            case BYTE_STRING:
             case ENUM:
             case MESSAGE:
+                return new MessageFieldValidatorFactory(field, fieldAccess);
+            case BYTE_STRING:
+                return new ByteStringFieldValidatorFactory(field, fieldAccess);
+            case BOOLEAN:
             default:
                 return onViolation -> empty();
         }

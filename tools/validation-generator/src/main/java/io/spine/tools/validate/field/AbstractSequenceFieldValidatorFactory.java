@@ -20,47 +20,28 @@
 
 package io.spine.tools.validate.field;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.option.PatternOption;
 import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
 
 import java.util.function.Function;
 
-import static io.spine.option.OptionsProto.pattern;
-import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
-import static java.lang.String.format;
 
-public final class StringFieldValidatorFactory extends AbstractSequenceFieldValidatorFactory {
+abstract class AbstractSequenceFieldValidatorFactory extends AbstractFieldValidatorFactory {
 
-    StringFieldValidatorFactory(FieldDeclaration field, Expression fieldAccess) {
+    protected AbstractSequenceFieldValidatorFactory(FieldDeclaration field,
+                                                    Expression fieldAccess) {
         super(field, fieldAccess);
     }
 
-    @Override
-    protected ImmutableList<Rule> rules() {
-        ImmutableList.Builder<Rule> builder = ImmutableList.builder();
-        FieldOptions options = field().descriptor().getOptions();
-        if (options.getExtension(required)) {
-            builder.add(required());
-        }
-        if (options.hasExtension(pattern)) {
-            PatternOption option = options.getExtension(pattern);
-            builder.add(pattern(option));
-        }
-        return builder.build();
-    }
-
-    private Rule pattern(PatternOption pattern) {
-        String regex = pattern.getRegex();
+    final Rule required() {
         Function<Expression, Expression> condition =
-                field -> formatted("!%s.matches(\"%s\")", field, regex);
-        Function<Expression, ViolationTemplate> violationFactory =
+                field -> formatted("%s.isEmpty()", field);
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
+                Function<Expression, ViolationTemplate> violationFactory =
                 field -> violationTemplate()
-                        .setMessage(format("String must match pattern: '%s'.", regex))
+                        .setMessage("Field must be set.")
                         .build();
         return new Rule(
                 condition,
