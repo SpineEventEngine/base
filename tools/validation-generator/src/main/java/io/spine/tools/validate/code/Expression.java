@@ -50,11 +50,6 @@ public final class Expression extends StringTypeValue {
     }
 
     public CodeBlock toCode() {
-        return CodeBlock.of(value());
-    }
-
-    @Override
-    public String toString() {
-        return toCode().toString();
+        return CodeBlock.of("$L", value());
     }
 }
