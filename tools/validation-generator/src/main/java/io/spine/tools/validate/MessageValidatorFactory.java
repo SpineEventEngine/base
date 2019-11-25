@@ -102,7 +102,7 @@ public final class MessageValidatorFactory {
     public TypeSpec generateClass() {
         MethodSpec validateMethod = MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
-                .addModifiers(STATIC)
+                .addModifiers(PRIVATE, STATIC)
                 .returns(listOfViolations)
                 .addParameter(bestGuess(messageSimpleName.value()), MESSAGE_PARAMETER)
                 .addCode(validator())
@@ -120,7 +120,7 @@ public final class MessageValidatorFactory {
         TypeSpec type = TypeSpec
                 .classBuilder(validatorSimpleName)
                 .addAnnotation(generated)
-                .addModifiers(PRIVATE, FINAL)
+                .addModifiers(PRIVATE, STATIC, FINAL)
                 .addMethod(ctor)
                 .addMethod(validateMethod)
                 .build();
