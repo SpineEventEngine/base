@@ -24,7 +24,6 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -49,7 +48,6 @@ public final class FieldValidatorFactories {
                : forScalarField(field, SINGULAR);
     }
 
-    @NotNull
     private FieldValidatorFactory forCollections(FieldDeclaration field) {
         FieldValidatorFactory singularFactory =
                 forScalarField(field, REPEATED, CollectionFieldValidatorFactory.element);
@@ -66,7 +64,6 @@ public final class FieldValidatorFactories {
         return forScalarField(field, cardinality, fieldAccess);
     }
 
-    @NotNull
     private static FieldValidatorFactory
     forScalarField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
         switch (field.javaType()) {
