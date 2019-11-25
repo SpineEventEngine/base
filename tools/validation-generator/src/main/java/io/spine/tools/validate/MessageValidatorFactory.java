@@ -24,12 +24,10 @@ import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedBySpine;
 import io.spine.code.java.NestedClassName;
-import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.field.FieldValidatorFactories;
@@ -67,19 +65,43 @@ public final class MessageValidatorFactory {
             new TypeToken<ArrayList<ConstraintViolation>>() {}.getType();
 
     private final MessageType type;
-    private final PackageName packageName;
-    private final String validatorSimpleName;
     private final NestedClassName messageSimpleName;
+    private final String validatorSimpleName;
 
     public MessageValidatorFactory(MessageType type) {
         this.type = type;
-        this.packageName = type.javaPackage();
         this.messageSimpleName = type.javaClassName()
                                      .asNested();
-        this.validatorSimpleName = messageSimpleName.joinWithUnderscore() + "_Validator";
+        this.validatorSimpleName = nameForValidator(type);
     }
 
-    public JavaFile generateClass() {
+    private static String nameForValidator(MessageType type) {
+        @SuppressWarnings("NonConstantStringShouldBeStringBuffer")
+            // `candidate` has to be converted to a String upon each iteration.
+        String candidate = "Validator";
+        while (nameClashes(type, candidate)) {
+            candidate = candidate + '$';
+        }
+        return candidate;
+    }
+
+    private static boolean nameClashes(MessageType type, String name) {
+        boolean withOwnName = type.simpleJavaClassName()
+                                  .value()
+                                  .equals(name);
+        if (withOwnName) {
+            return true;
+        }
+        boolean withNestedName = type
+                .nestedDeclarations()
+                .stream()
+                .anyMatch(nested -> nested.simpleJavaClassName()
+                                          .value()
+                                          .equals(name));
+        return withNestedName;
+    }
+
+    public TypeSpec generateClass() {
         MethodSpec validateMethod = MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(STATIC)
@@ -100,12 +122,11 @@ public final class MessageValidatorFactory {
         TypeSpec type = TypeSpec
                 .classBuilder(validatorSimpleName)
                 .addAnnotation(generated)
-                .addModifiers(FINAL)
+                .addModifiers(PRIVATE, FINAL)
                 .addMethod(ctor)
                 .addMethod(validateMethod)
                 .build();
-        return JavaFile.builder(packageName.value(), type)
-                       .build();
+        return type;
     }
 
     private CodeBlock validator() {

@@ -21,7 +21,6 @@
 package io.spine.tools.protoc;
 
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import static io.spine.tools.protoc.ProtocPluginFiles.prepareFile;
 
 /**
  * Output of the Protobuf compiler plugin.
@@ -37,12 +36,5 @@ public interface CompilerOutput {
 
     static CompilerOutput from(File file) {
         return new FileOutput(file);
-    }
-
-    static CompilerOutput from(String fileName, String content) {
-        File file = prepareFile(fileName)
-                .setContent(content)
-                .build();
-        return from(file);
     }
 }

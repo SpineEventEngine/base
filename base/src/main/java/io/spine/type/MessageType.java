@@ -40,10 +40,12 @@ import io.spine.option.OptionsProto;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Streams.concat;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 
 /**
@@ -217,6 +219,19 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                             .map(MessageType::new)
                             .collect(toImmutableList());
         return result;
+    }
+
+    public ImmutableList<Type<?, ?>> nestedDeclarations() {
+        Stream<Type<?, ?>> messageTypes = descriptor()
+                .getNestedTypes()
+                .stream()
+                .map(MessageType::new);
+        Stream<Type<?, ?>> enumTypes = descriptor()
+                .getEnumTypes()
+                .stream()
+                .map(EnumType::create);
+        return concat(messageTypes, enumTypes)
+                .collect(toImmutableList());
     }
 
     /**

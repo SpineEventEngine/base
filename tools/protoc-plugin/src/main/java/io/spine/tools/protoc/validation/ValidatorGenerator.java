@@ -21,8 +21,6 @@
 package io.spine.tools.protoc.validation;
 
 import com.google.common.collect.ImmutableSet;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
 import io.spine.code.java.ClassName;
 import io.spine.protobuf.ValidatableMessage;
 import io.spine.tools.protoc.CompilerOutput;
@@ -72,29 +70,27 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
 
     private static Collection<CompilerOutput> compileValidation(MessageType type) {
         MessageValidatorFactory factory = new MessageValidatorFactory(type);
-        JavaFile validatorClass = factory.generateClass();
-        String validatorClassFile = validatorClass.toJavaFileObject()
-                                                  .getName();
-        CompilerOutput file = CompilerOutput.from(validatorClassFile, validatorClass.toString());
         CompilerOutput builderInsertionPoint =
-                insertMethod(type, builder_scope, factory.generateVBuild());
-        CompilerOutput messageInsertionPoint =
-                insertMethod(type, class_scope, factory.generateValidate());
+                insertCode(type, builder_scope, factory.generateVBuild().toString());
+        CompilerOutput validateMethod =
+                insertCode(type, class_scope, factory.generateValidate().toString());
+        CompilerOutput validatorClass =
+                insertCode(type, class_scope, factory.generateClass().toString());
         MessageImplements messageInterface = implementInterface(type, VALIDATABLE_MESSAGE);
         return ImmutableSet.of(
-                file,
                 builderInsertionPoint,
-                messageInsertionPoint,
+                validateMethod,
+                validatorClass,
                 messageInterface
         );
     }
 
     private static CompilerOutput
-    insertMethod(Type<?, ?> type, InsertionPoint target, MethodSpec spec) {
+    insertCode(Type<?, ?> type, InsertionPoint target, String javaCode) {
         return CompilerOutput.from(ProtocPluginFiles
                                            .prepareFile(type)
                                            .setInsertionPoint(target.forType(type))
-                                           .setContent(spec.toString())
+                                           .setContent(javaCode)
                                            .build());
     }
 }
