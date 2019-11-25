@@ -32,7 +32,7 @@ import io.spine.type.Type;
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
  * message class to implement a given interface.
  */
-final class MessageImplements extends AbstractCompilerOutput {
+public final class MessageImplements extends AbstractCompilerOutput {
 
     private MessageImplements(File file) {
         super(file);
@@ -47,8 +47,8 @@ final class MessageImplements extends AbstractCompilerOutput {
      *         the interface to implement
      * @return new instance of {@code MessageImplements}
      */
-    static MessageImplements implementInterface(MessageType type,
-                                                MessageInterface messageInterface) {
+    public static MessageImplements implementInterface(MessageType type,
+                                                       MessageInterface messageInterface) {
         String insertionPoint = InsertionPoint.message_implements.forType(type);
         String content = buildContent(type, messageInterface);
         File.Builder file = ProtocPluginFiles.prepareFile(type);

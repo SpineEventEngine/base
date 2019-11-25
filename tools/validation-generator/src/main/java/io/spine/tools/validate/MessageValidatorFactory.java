@@ -20,7 +20,7 @@
 
 package io.spine.tools.validate;
 
-import com.google.gson.reflect.TypeToken;
+import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -39,7 +39,9 @@ import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
 
 import javax.annotation.Generated;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -54,8 +56,15 @@ public final class MessageValidatorFactory {
     private static final String VALIDATE_METHOD = "validate";
     private static final String MESSAGE_PARAMETER = "msg";
     private static final String MESSAGE_VARIABLE = "msg";
-    private static final TypeToken<ArrayList<ConstraintViolation>> listOfViolations =
-            new TypeToken<ArrayList<ConstraintViolation>>() {};
+    private static final String RETURN_N = "return $N";
+    private static final String VIOLATIONS = "violations";
+
+    @SuppressWarnings("UnstableApiUsage")
+    private static final Type listOfViolations =
+            new TypeToken<List<ConstraintViolation>>() {}.getType();
+    @SuppressWarnings("UnstableApiUsage")
+    private static final Type arrayListOfViolations =
+            new TypeToken<ArrayList<ConstraintViolation>>() {}.getType();
 
     private final MessageType type;
     private final PackageName packageName;
@@ -74,7 +83,7 @@ public final class MessageValidatorFactory {
         MethodSpec validateMethod = MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(STATIC)
-                .returns(void.class)
+                .returns(listOfViolations)
                 .addParameter(bestGuess(messageSimpleName.value()), MESSAGE_PARAMETER)
                 .addCode(validator())
                 .build();
@@ -102,7 +111,7 @@ public final class MessageValidatorFactory {
     private CodeBlock validator() {
         CodeBlock.Builder body = CodeBlock
                 .builder()
-                .addStatement("$1T violations = new $1T()", listOfViolations.getType());
+                .addStatement("$1T $2N = new $1T()", arrayListOfViolations, VIOLATIONS);
         Function<ViolationTemplate, Expression> violationAccumulator =
                 violation -> Expression.of("violations.add(" + violation + ')');
         Expression msg = Expression.of(MESSAGE_PARAMETER);
@@ -112,35 +121,43 @@ public final class MessageValidatorFactory {
             Optional<CodeBlock> fieldValidation = factory.generate(violationAccumulator);
             fieldValidation.ifPresent(body::add);
         }
+        body.addStatement(RETURN_N, VIOLATIONS);
         return body.build();
     }
 
     public MethodSpec generateValidate() {
-        CodeBlock body = CodeBlock.of("$T.validate(this);", bestGuess(validatorSimpleName));
+        CodeBlock body = CodeBlock.of("return $T.validate(this);", bestGuess(validatorSimpleName));
         return MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(PUBLIC)
-                .returns(void.class)
-                .addException(ValidationException.class)
+                .addAnnotation(Override.class)
+                .returns(listOfViolations)
                 .addCode(body)
                 .build();
     }
 
     public MethodSpec generateVBuild() {
         ClassName messageClass = bestGuess(messageSimpleName.value());
-        ClassName validatorClass = bestGuess(validatorSimpleName);
+        Class<ValidationException> exceptionClass = ValidationException.class;
         CodeBlock body = CodeBlock
                 .builder()
-                .addStatement("$T $N = build()", messageClass, MESSAGE_VARIABLE)
-                .addStatement("$T." + VALIDATE_METHOD + "($N)", validatorClass, MESSAGE_VARIABLE)
-                .addStatement("return $N", MESSAGE_VARIABLE)
+                .addStatement("$T $N = build()",
+                              messageClass, MESSAGE_VARIABLE)
+                .addStatement("$T $N = $N.validate()",
+                              listOfViolations,
+                              VIOLATIONS,
+                              MESSAGE_VARIABLE)
+                .beginControlFlow("if (!$N.isEmpty())", VIOLATIONS)
+                .addStatement("throw new $T($N)", exceptionClass, VIOLATIONS)
+                .endControlFlow()
+                .addStatement(RETURN_N, MESSAGE_VARIABLE)
                 .build();
         return MethodSpec
                 .methodBuilder("vBuild")
                 .addAnnotation(Override.class)
                 .addModifiers(PUBLIC)
                 .returns(messageClass)
-                .addException(ValidationException.class)
+                .addException(exceptionClass)
                 .addCode(body)
                 .build();
     }

@@ -23,12 +23,18 @@ package io.spine.tools.protoc.validation;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.java.ClassName;
+import io.spine.protobuf.ValidatableMessage;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.iface.MessageImplements;
+import io.spine.tools.protoc.iface.MessageInterface;
+import io.spine.tools.protoc.iface.PredefinedInterface;
 import io.spine.tools.validate.MessageValidatorFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -37,8 +43,12 @@ import java.util.Collection;
 
 import static io.spine.tools.protoc.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
+import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
 public final class ValidatorGenerator extends SpineProtoGenerator {
+
+    private static final MessageInterface VALIDATABLE_MESSAGE =
+            new PredefinedInterface(ClassName.of(ValidatableMessage.class), TypeParameters.empty());
 
     /**
      * Prevents direct instantiation.
@@ -70,7 +80,13 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
                 insertMethod(type, builder_scope, factory.generateVBuild());
         CompilerOutput messageInsertionPoint =
                 insertMethod(type, class_scope, factory.generateValidate());
-        return ImmutableSet.of(file, builderInsertionPoint, messageInsertionPoint);
+        MessageImplements messageInterface = implementInterface(type, VALIDATABLE_MESSAGE);
+        return ImmutableSet.of(
+                file,
+                builderInsertionPoint,
+                messageInsertionPoint,
+                messageInterface
+        );
     }
 
     private static CompilerOutput

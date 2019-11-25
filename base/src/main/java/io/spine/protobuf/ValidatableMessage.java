@@ -18,31 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.protobuf;
 
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.TypeParameters;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.base.KnownMessage;
+import io.spine.validate.ConstraintViolation;
+
+import java.util.List;
 
 /**
- * An interface which already exists.
+ * A message which can be validated.
  */
-public final class PredefinedInterface implements MessageInterface {
+@Immutable
+public interface ValidatableMessage extends KnownMessage {
 
-    private final ClassName name;
-    private final TypeParameters parameters;
-
-    public PredefinedInterface(ClassName name, TypeParameters parameters) {
-        this.name = name;
-        this.parameters = parameters;
-    }
-
-    @Override
-    public String name() {
-        return name.value();
-    }
+    /**
+     * Validates this message according to the rules in the Protobuf definition.
+     *
+     * @return a list of {@link ConstraintViolation}s or an empty list if the message is valid
+     */
+    List<ConstraintViolation> validate();
 
     @Override
-    public TypeParameters parameters() {
-        return parameters;
-    }
+    ValidatingBuilder<?> toBuilder();
 }
