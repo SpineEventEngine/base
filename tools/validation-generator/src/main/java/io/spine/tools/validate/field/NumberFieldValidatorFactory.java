@@ -81,7 +81,7 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
     private Rule boundaryRule(Boundary boundary,
                               String exclusiveOperator,
                               String inclusiveOperator) {
-        String operator = boundary.inclusive() ? inclusiveOperator : exclusiveOperator;
+        String operator = boundary.inclusive() ? exclusiveOperator : inclusiveOperator;
         Rule rule = new Rule(
                 field -> formatted("%s %s %s", field, operator, boundary.value()),
                 field -> violationTemplate()
@@ -93,10 +93,17 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
     }
 
     private NumberBoundaries parseBoundaries() {
+        checkNotTooMuchOptions();
         NumberBoundaries boundaries = minMaxBoundaries();
         return boundaries.isBound()
                ? boundaries
                : rangeBoundaries();
+    }
+
+    private void checkNotTooMuchOptions() {
+        FieldDeclaration field = field();
+        checkState(!(field.hasOption(range) && (field.hasOption(min) || field.hasOption(max))),
+                   "Detected usage of (range) alongside with (min) or (max) at `%s`.", field);
     }
 
     private NumberBoundaries minMaxBoundaries() {

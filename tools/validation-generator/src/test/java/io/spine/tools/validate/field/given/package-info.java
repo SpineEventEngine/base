@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.validate.field.given;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testCompile project(':base')
-    testImplementation project(':testlib')
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

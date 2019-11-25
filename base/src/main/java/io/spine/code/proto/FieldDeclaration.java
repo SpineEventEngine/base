@@ -22,8 +22,8 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -94,9 +94,14 @@ public final class FieldDeclaration {
         return field;
     }
 
-    public <T> T findOption(Extension<DescriptorProtos.FieldOptions, T> option) {
+    public <T> T findOption(Extension<FieldOptions, T> option) {
         return field.getOptions()
                     .getExtension(option);
+    }
+
+    public boolean hasOption(Extension<FieldOptions, ?> option) {
+        return field.getOptions()
+                .hasExtension(option);
     }
 
     /**

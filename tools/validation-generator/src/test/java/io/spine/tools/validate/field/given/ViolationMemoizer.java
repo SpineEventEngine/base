@@ -18,11 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.tools.validate.field.given;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testCompile project(':base')
-    testImplementation project(':testlib')
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.validate.ViolationTemplate;
+import io.spine.tools.validate.code.Expression;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+public final class ViolationMemoizer implements Function<ViolationTemplate, Expression> {
+
+    private final List<ViolationTemplate> violations = new ArrayList<>();
+
+    @Override
+    public Expression apply(ViolationTemplate violation) {
+        violations.add(violation);
+        return Expression.of("");
+    }
+
+    public List<ViolationTemplate> violations() {
+        return ImmutableList.copyOf(violations);
+    }
 }
