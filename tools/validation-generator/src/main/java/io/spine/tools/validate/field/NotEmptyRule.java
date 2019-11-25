@@ -20,8 +20,8 @@
 
 package io.spine.tools.validate.field;
 
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.ViolationTemplate;
 
 import java.util.function.Function;
 
@@ -36,9 +36,9 @@ final class NotEmptyRule {
     }
 
     static Rule forField(ViolationTemplate.Builder violation) {
-        Function<Expression, Expression> condition = NotEmptyRule::isEmpty;
+        Function<Expression<?>, Expression<Boolean>> condition = NotEmptyRule::isEmpty;
         @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
-                Function<Expression, ViolationTemplate> violationFactory =
+        Function<Expression<?>, ViolationTemplate> violationFactory =
                 field -> violation.setMessage("Field must be set.")
                                   .build();
         return new Rule(
@@ -47,7 +47,7 @@ final class NotEmptyRule {
         );
     }
 
-    static Expression isEmpty(Expression field) {
+    static Expression<Boolean> isEmpty(Expression<?> field) {
         return formatted("%s.isEmpty()", field);
     }
 }

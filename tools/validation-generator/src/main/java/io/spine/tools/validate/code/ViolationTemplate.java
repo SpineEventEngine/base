@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
-import io.spine.tools.validate.code.Expression;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
-public final class ViolationTemplate {
+public final class ViolationTemplate implements Expression<ConstraintViolation> {
 
     private final String message;
     private final @Nullable Expression fieldValue;
@@ -46,6 +45,7 @@ public final class ViolationTemplate {
         this.field = builder.field;
     }
 
+    @Override
     public CodeBlock toCode() {
         CodeBlock.Builder builder = CodeBlock
                 .builder()

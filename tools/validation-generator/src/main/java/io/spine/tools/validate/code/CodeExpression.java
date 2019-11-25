@@ -18,28 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field.given;
+package io.spine.tools.validate.code;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.validate.code.Expression;
-import io.spine.validate.ConstraintViolation;
+import com.squareup.javapoet.CodeBlock;
+import io.spine.value.StringTypeValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+final class CodeExpression<R> extends StringTypeValue implements Expression<R> {
 
-public final class ViolationMemoizer
-        implements Function<Expression<ConstraintViolation>, Expression<?>> {
+    private static final long serialVersionUID = 0L;
 
-    private final List<Expression<ConstraintViolation>> violations = new ArrayList<>();
-
-    @Override
-    public Expression<?> apply(Expression<ConstraintViolation> violation) {
-        violations.add(violation);
-        return Expression.of("");
+    CodeExpression(String value) {
+        super(value);
     }
 
-    public List<Expression<ConstraintViolation>> violations() {
-        return ImmutableList.copyOf(violations);
+    @Override
+    public CodeBlock toCode() {
+        return CodeBlock.of("$L", value());
     }
 }

@@ -74,7 +74,7 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
     }
 
     @Override
-    public Expression isNotSet() {
+    public Expression<Boolean> isNotSet() {
         return Expression.of(valueOf(false));
     }
 

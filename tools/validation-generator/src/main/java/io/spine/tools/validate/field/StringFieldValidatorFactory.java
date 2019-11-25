@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.ViolationTemplate;
 
 import java.util.function.Function;
 
@@ -59,9 +59,9 @@ public final class StringFieldValidatorFactory extends AbstractSequenceFieldVali
 
     private Rule pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
-        Function<Expression, Expression> condition =
+        Function<Expression<?>, Expression<Boolean>> condition =
                 field -> formatted("!%s.matches(\"%s\")", field, regex);
-        Function<Expression, ViolationTemplate> violationFactory =
+        Function<Expression<?>, ViolationTemplate> violationFactory =
                 field -> violationTemplate()
                         .setMessage(format("String must match pattern: '%s'.", regex))
                         .build();

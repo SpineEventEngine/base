@@ -23,8 +23,9 @@ package io.spine.tools.validate.field;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.ViolationTemplate;
+import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Validate;
 
 import java.util.Optional;
@@ -40,10 +41,10 @@ import static java.util.Optional.empty;
 
 final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
 
-    static final Expression element = Expression.of("element");
+    static final Expression<?> element = Expression.of("element");
 
     private final FieldDeclaration field;
-    private final Expression fieldAccess;
+    private final Expression<?> fieldAccess;
     private final FieldValidatorFactory singular;
     private final boolean isRequired;
 
@@ -57,7 +58,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Optional<CodeBlock> generate(Function<ViolationTemplate, Expression> onViolation) {
+    public Optional<CodeBlock> generate(
+            Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         CodeBlock.Builder validation = CodeBlock.builder();
         addCollectionValidation(validation, onViolation);
         addElementValidation(validation, onViolation);
@@ -67,12 +69,13 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Expression isNotSet() {
+    public Expression<Boolean> isNotSet() {
         return NotEmptyRule.isEmpty(fieldAccess);
     }
 
-    private void addElementValidation(CodeBlock.Builder validation,
-                                      Function<ViolationTemplate, Expression> onViolation) {
+    private void
+    addElementValidation(CodeBlock.Builder validation,
+                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         Optional<CodeBlock> elementValidation = singular.generate(onViolation);
         Expression isNotSet = singular.isNotSet();
         if (elementValidation.isPresent() || isRequired) {
@@ -81,8 +84,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             validation.addStatement("boolean $N = false", notSet);
             validation.beginControlFlow("for ($T $N: $L)",
                                         bestGuess(field.javaTypeName()),
-                                        element.value(),
-                                        fieldAccess.value());
+                                        element.toString(),
+                                        fieldAccess.toCode());
             validation.add(validationCode);
             validation.addStatement("$N |= $L", notSet, isNotSet);
             validation.endControlFlow();
@@ -99,8 +102,9 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         }
     }
 
-    private void addCollectionValidation(CodeBlock.Builder validation,
-                                         Function<ViolationTemplate, Expression> onViolation) {
+    private void
+    addCollectionValidation(CodeBlock.Builder validation,
+                            Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         if (isRequired) {
             Rule required = NotEmptyRule.forField(violation());
             append(validation, required, onViolation);
@@ -113,8 +117,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
 
     private void append(CodeBlock.Builder code,
                         Rule validation,
-                        Function<ViolationTemplate, Expression> onViolation) {
-        Function<Expression, CodeBlock> ruleFactory = validation.compile(onViolation);
+                        Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+        Function<Expression<?>, CodeBlock> ruleFactory = validation.compile(onViolation);
         CodeBlock ruleCode = ruleFactory.apply(fieldAccess);
         code.add(ruleCode);
     }

@@ -23,29 +23,28 @@ package io.spine.tools.validate.code;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import com.squareup.javapoet.CodeBlock;
-import io.spine.value.StringTypeValue;
 
 import static java.lang.String.format;
 
-public final class Expression extends StringTypeValue {
+/**
+ * A Java code structure which may yield a value.
+ *
+ * @param <R>
+ *         the type of the value yielded by this expression; the type parameter is unused and serves
+ *         for clarification purposes only
+ */
+@SuppressWarnings("unused") // Unused type param <R>.
+public interface Expression<R> {
 
-    private static final long serialVersionUID = 0L;
+    CodeBlock toCode();
 
-    private Expression(String value) {
-        super(value);
-    }
-
-    public static Expression of(String code) {
-        return new Expression(code);
+    static <R> Expression<R> of(String code) {
+        return new CodeExpression<>(code);
     }
 
     @FormatMethod
-    public static Expression formatted(@FormatString String template, Object... args) {
+    static <R> Expression<R> formatted(@FormatString String template, Object... args) {
         String code = format(template, args);
         return of(code);
-    }
-
-    public CodeBlock toCode() {
-        return CodeBlock.of("$L", value());
     }
 }

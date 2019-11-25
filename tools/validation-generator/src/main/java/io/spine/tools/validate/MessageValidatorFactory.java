@@ -44,6 +44,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
+import static io.spine.tools.validate.code.Expression.formatted;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -131,8 +132,8 @@ public final class MessageValidatorFactory {
         CodeBlock.Builder body = CodeBlock
                 .builder()
                 .addStatement("$1T $2N = new $1T()", arrayListOfViolations, VIOLATIONS);
-        Function<ViolationTemplate, Expression> violationAccumulator =
-                violation -> Expression.of("violations.add(" + violation + ')');
+        Function<Expression<ConstraintViolation>, Expression<?>> violationAccumulator =
+                violation -> formatted("violations.add(%s)", violation);
         Expression msg = Expression.of(MESSAGE_PARAMETER);
         FieldValidatorFactories factories = new FieldValidatorFactories(msg);
         for (FieldDeclaration field : type.fields()) {

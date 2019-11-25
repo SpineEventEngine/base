@@ -25,9 +25,15 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
+import io.spine.protobuf.ValidatableMessage;
 import io.spine.tools.validate.code.Expression;
+import io.spine.validate.ConstraintViolation;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 import static io.spine.option.OptionsProto.required;
+import static io.spine.option.OptionsProto.validate;
 import static io.spine.tools.validate.code.Expression.formatted;
 import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 
@@ -49,7 +55,36 @@ final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
     }
 
     @Override
-    public Expression isNotSet() {
+    public Optional<CodeBlock>
+    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+        CodeBlock.Builder code = super.generate(onViolation)
+                                      .map(CodeBlock::toBuilder)
+                                      .orElseGet(CodeBlock::builder);
+        if (field().isMessage() && field().findOption(validate)) {
+            validateRecursively(code, onViolation);
+        }
+        return code.isEmpty()
+               ? Optional.empty()
+               : Optional.of(code.build());
+    }
+
+    private void
+    validateRecursively(CodeBlock.Builder code,
+                        Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+        code.beginControlFlow("if (%L instanceof %T)",
+                              fieldAccess(), ValidatableMessage.class);
+        String violation = "violation";
+        code.beginControlFlow("for ($T $N : $L.validate())",
+                              ConstraintViolation.class, violation, fieldAccess());
+        Expression<ConstraintViolation> violationExpression = Expression.of(violation);
+        Expression violationHandler = onViolation.apply(violationExpression);
+        code.add(violationHandler.toCode());
+        code.endControlFlow();
+        code.endControlFlow();
+    }
+
+    @Override
+    public Expression<Boolean> isNotSet() {
         CodeBlock isDefaultCall = CodeBlock.of("$T.isDefault", ClassName.get(Messages.class));
         return formatted("%s(%s)", isDefaultCall, fieldAccess());
     }

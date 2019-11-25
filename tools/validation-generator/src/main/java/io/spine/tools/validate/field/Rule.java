@@ -21,8 +21,8 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import io.spine.validate.ConstraintViolation;
 
 import java.util.function.Function;
 
@@ -30,23 +30,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 final class Rule {
 
-    private final Function<Expression, Expression> condition;
-    private final Function<Expression, ViolationTemplate> violationFactory;
+    private final Function<? super Expression<?>, ? extends Expression<Boolean>> condition;
+    private final
+    Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory;
 
-    Rule(Function<Expression, Expression> condition,
-         Function<Expression, ViolationTemplate> violationFactory) {
+    Rule(Function<? super Expression<?>, ? extends Expression<Boolean>> condition,
+         Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory) {
         this.condition = checkNotNull(condition);
         this.violationFactory = checkNotNull(violationFactory);
     }
 
-    Function<Expression, CodeBlock>
-    compile(Function<ViolationTemplate, Expression> onViolation) {
+    Function<Expression<?>, CodeBlock>
+    compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         return field -> {
-            ViolationTemplate violation = violationFactory.apply(field);
-            CodeBlock ifViolation = onViolation.apply(violation)
-                                               .toCode();
+            Expression<ConstraintViolation> violation = violationFactory.apply(field);
             CodeBlock fieldIsInvalid = condition.apply(field)
                                                 .toCode();
+            CodeBlock ifViolation = onViolation.apply(violation)
+                                               .toCode();
             return CodeBlock
                     .builder()
                     .beginControlFlow("if($L)", fieldIsInvalid)

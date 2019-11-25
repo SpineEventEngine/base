@@ -22,8 +22,8 @@ package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationTemplate;
 import io.spine.tools.validate.code.Expression;
+import io.spine.validate.ConstraintViolation;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -90,12 +90,13 @@ public final class FieldValidatorFactories {
         INSTANCE;
 
         @Override
-        public Optional<CodeBlock> generate(Function<ViolationTemplate, Expression> onViolation) {
+        public Optional<CodeBlock> generate(
+                Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
             return empty();
         }
 
         @Override
-        public Expression isNotSet() {
+        public Expression<Boolean> isNotSet() {
             return Expression.of(String.valueOf(false));
         }
     }

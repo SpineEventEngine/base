@@ -32,7 +32,7 @@ abstract class AbstractSequenceFieldValidatorFactory extends AbstractFieldValida
     }
 
     @Override
-    public Expression isNotSet() {
+    public Expression<Boolean> isNotSet() {
         return NotEmptyRule.isEmpty(fieldAccess());
     }
 }
