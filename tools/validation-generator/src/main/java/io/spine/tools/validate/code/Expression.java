@@ -45,10 +45,6 @@ public final class Expression extends StringTypeValue {
         return of(code);
     }
 
-    public Expression statement() {
-        return new Expression(value() + ';');
-    }
-
     public CodeBlock toCode() {
         return CodeBlock.of("$L", value());
     }
