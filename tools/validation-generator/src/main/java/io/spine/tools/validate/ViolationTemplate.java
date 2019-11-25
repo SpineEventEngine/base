@@ -23,6 +23,7 @@ package io.spine.tools.validate;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.protobuf.TypeConverter;
 import io.spine.tools.validate.code.Expression;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
@@ -57,7 +58,7 @@ public final class ViolationTemplate {
         }
         builder.add(".build())");
         if (fieldValue != null) {
-            builder.add(".setFieldValue($L)", fieldValue.toCode());
+            builder.add(".setFieldValue($T.toAny($L))", TypeConverter.class, fieldValue.toCode());
         }
         builder.add(".build()");
         return builder.build();

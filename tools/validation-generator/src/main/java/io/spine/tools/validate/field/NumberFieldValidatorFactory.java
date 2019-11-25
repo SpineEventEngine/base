@@ -86,6 +86,7 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
                 field -> formatted("%s %s %s", field, operator, boundary.value()),
                 field -> violationTemplate()
                         .setMessage(format("Field must be %s %s.", operator, boundary.value()))
+                        .setFieldValue(field)
                         .build()
         );
         return rule;
