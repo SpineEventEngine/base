@@ -71,14 +71,14 @@ final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
     private void
     validateRecursively(CodeBlock.Builder code,
                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        code.beginControlFlow("if (%L instanceof %T)",
+        code.beginControlFlow("if ($L instanceof $T)",
                               fieldAccess(), ValidatableMessage.class);
         String violation = "violation";
         code.beginControlFlow("for ($T $N : $L.validate())",
                               ConstraintViolation.class, violation, fieldAccess());
         Expression<ConstraintViolation> violationExpression = Expression.of(violation);
         Expression violationHandler = onViolation.apply(violationExpression);
-        code.add(violationHandler.toCode());
+        code.addStatement(violationHandler.toCode());
         code.endControlFlow();
         code.endControlFlow();
     }
