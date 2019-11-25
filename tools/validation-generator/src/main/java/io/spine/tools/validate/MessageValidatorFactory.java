@@ -76,13 +76,11 @@ public final class MessageValidatorFactory {
     }
 
     private static String nameForValidator(MessageType type) {
-        @SuppressWarnings("NonConstantStringShouldBeStringBuffer")
-            // `candidate` has to be converted to a String upon each iteration.
-        String candidate = "Validator";
-        while (nameClashes(type, candidate)) {
-            candidate = candidate + '$';
+        StringBuilder candidate = new StringBuilder("Validator");
+        while (nameClashes(type, candidate.toString())) {
+            candidate.append('$');
         }
-        return candidate;
+        return candidate.toString();
     }
 
     private static boolean nameClashes(MessageType type, String name) {
