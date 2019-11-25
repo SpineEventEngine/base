@@ -58,10 +58,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.50"
-}
-
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'io.spine.tools.spine-model-compiler'
@@ -84,7 +80,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compileOnly deps.build.protobuf
     compileOnly deps.build.guava
     compileOnly deps.build.flogger
