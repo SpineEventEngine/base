@@ -21,16 +21,18 @@
 package io.spine.protobuf;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.KnownMessage;
+import com.google.protobuf.Message;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.List;
 
 /**
- * A message which can be validated.
+ * A message with validation constraints.
+ *
+ * <p>See {@code spine/options.proto} for the validation options definitions.
  */
 @Immutable
-public interface ValidatableMessage extends KnownMessage {
+public interface MessageWithConstraints extends Message {
 
     /**
      * Validates this message according to the rules in the Protobuf definition.
@@ -38,7 +40,4 @@ public interface ValidatableMessage extends KnownMessage {
      * @return a list of {@link ConstraintViolation}s or an empty list if the message is valid
      */
     List<ConstraintViolation> validate();
-
-    @Override
-    ValidatingBuilder<?> toBuilder();
 }

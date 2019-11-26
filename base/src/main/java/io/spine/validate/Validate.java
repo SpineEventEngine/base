@@ -28,6 +28,7 @@ import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
+import io.spine.protobuf.MessageWithConstraints;
 import io.spine.protobuf.Messages;
 import io.spine.type.TypeName;
 import io.spine.util.Preconditions2;
@@ -293,10 +294,23 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-        List<ConstraintViolation> violations = validate(message);
+        List<ConstraintViolation> violations = violations(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
+    }
+
+    /**
+     * Validates the given message according to its definition and returns the constrain violations
+     * if any.
+     *
+     * @return violations of the validation rules or an empty list if the message is valid
+     */
+    @Internal
+    public static List<ConstraintViolation> violations(Message message) {
+        return message instanceof MessageWithConstraints
+               ? ((MessageWithConstraints) message).validate()
+               : validate(message);
     }
 
     /**

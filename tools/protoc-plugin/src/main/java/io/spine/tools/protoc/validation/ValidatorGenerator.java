@@ -22,7 +22,7 @@ package io.spine.tools.protoc.validation;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.java.ClassName;
-import io.spine.protobuf.ValidatableMessage;
+import io.spine.protobuf.MessageWithConstraints;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.NoOpGenerator;
@@ -46,7 +46,7 @@ import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 public final class ValidatorGenerator extends SpineProtoGenerator {
 
     private static final MessageInterface VALIDATABLE_MESSAGE =
-            new PredefinedInterface(ClassName.of(ValidatableMessage.class), TypeParameters.empty());
+            new PredefinedInterface(ClassName.of(MessageWithConstraints.class), TypeParameters.empty());
 
     /**
      * Prevents direct instantiation.

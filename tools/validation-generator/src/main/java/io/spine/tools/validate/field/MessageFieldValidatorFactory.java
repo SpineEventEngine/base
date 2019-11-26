@@ -25,9 +25,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
-import io.spine.protobuf.ValidatableMessage;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
+import io.spine.validate.Validate;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -70,15 +70,12 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
     private void
     validateRecursively(CodeBlock.Builder code,
                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        code.beginControlFlow("if ($L instanceof $T)",
-                              fieldAccess(), ValidatableMessage.class);
         String violation = "violation";
-        code.beginControlFlow("for ($T $N : $L.validate())",
-                              ConstraintViolation.class, violation, fieldAccess());
+        code.beginControlFlow("for ($T $N : $T.violations($L))",
+                              ConstraintViolation.class, violation, Validate.class, fieldAccess());
         Expression<ConstraintViolation> violationExpression = Expression.of(violation);
         Expression violationHandler = onViolation.apply(violationExpression);
         code.addStatement(violationHandler.toCode());
-        code.endControlFlow();
         code.endControlFlow();
     }
 
