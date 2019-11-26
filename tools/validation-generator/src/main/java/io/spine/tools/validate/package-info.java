@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains utilities for generating Java message validation code.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.validate;

@@ -27,6 +27,9 @@ import java.util.function.Function;
 
 import static io.spine.tools.validate.code.Expression.formatted;
 
+/**
+ * Constructs the validation rule which checks if a value if {@code .isEmpty()}.
+ */
 final class NotEmptyRule {
 
     /**
@@ -35,6 +38,9 @@ final class NotEmptyRule {
     private NotEmptyRule() {
     }
 
+    /**
+     * Creates a {@link Rule} which ensures that a value is not empty.
+     */
     static Rule forField(ViolationTemplate.Builder violation) {
         Function<Expression<?>, Expression<Boolean>> condition = NotEmptyRule::isEmpty;
         @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates are in generated code.
@@ -47,6 +53,9 @@ final class NotEmptyRule {
         );
     }
 
+    /**
+     * Obtains the expression which calls {@code isEmpty()} method on the given {@code field}.
+     */
     static Expression<Boolean> isEmpty(Expression<?> field) {
         return formatted("%s.isEmpty()", field);
     }

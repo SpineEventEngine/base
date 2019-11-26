@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains types which work with field validation.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.validate.field;

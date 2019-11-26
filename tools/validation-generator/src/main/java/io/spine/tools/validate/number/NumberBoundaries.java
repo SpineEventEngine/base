@@ -25,6 +25,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Set of numerical boundaries for a certain number.
+ */
 public final class NumberBoundaries {
 
     private final @Nullable Boundary min;
@@ -36,6 +39,9 @@ public final class NumberBoundaries {
         this.max = max;
     }
 
+    /**
+     * {@code NumberBoundaries} which apply no constraints to the number.
+     */
     public static NumberBoundaries unbound() {
         return new NumberBoundaries(null, null);
     }
