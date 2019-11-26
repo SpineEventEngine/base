@@ -61,6 +61,9 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
         this.cardinality = checkNotNull(cardinality);
     }
 
+    /**
+     * Creates the validation {@link Rule}s to generate code for.
+     */
     protected abstract ImmutableList<Rule> rules();
 
     @Override

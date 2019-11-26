@@ -35,6 +35,9 @@ import java.util.function.Function;
 import static io.spine.option.OptionsProto.validate;
 import static io.spine.tools.validate.code.Expression.formatted;
 
+/**
+ * A {@link FieldValidatorFactory} for message and enum fields.
+ */
 final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
 
     MessageFieldValidatorFactory(FieldDeclaration field,

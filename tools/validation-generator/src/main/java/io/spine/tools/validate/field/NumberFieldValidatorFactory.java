@@ -44,6 +44,9 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
+/**
+ * A {@link FieldValidatorFactory} for number fields.
+ */
 public final class NumberFieldValidatorFactory
         extends SingularFieldValidatorFactory
         implements Logging {
@@ -62,7 +65,7 @@ public final class NumberFieldValidatorFactory
 
     @Override
     protected ImmutableList<Rule> rules() {
-
+        checkNotRequired();
         NumberBoundaries boundaries = parseBoundaries();
         ImmutableList.Builder<Rule> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
@@ -78,12 +81,6 @@ public final class NumberFieldValidatorFactory
         return rules.build();
     }
 
-    @Override
-    public Expression<Boolean> isNotSet() {
-        checkNotRequired();
-        return Expression.of(valueOf(false));
-    }
-
     private void checkNotRequired() {
         if (field().hasOption(required)) {
             _warn().log(
@@ -91,6 +88,11 @@ public final class NumberFieldValidatorFactory
                     field()
             );
         }
+    }
+
+    @Override
+    public Expression<Boolean> isNotSet() {
+        return Expression.of(valueOf(false));
     }
 
     private Rule boundaryRule(Boundary boundary,
