@@ -23,6 +23,11 @@ package io.spine.tools.validate.code;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.value.StringTypeValue;
 
+/**
+ * A simple code expression.
+ *
+ * @param <R> the type of the expression value
+ */
 final class CodeExpression<R> extends StringTypeValue implements Expression<R> {
 
     private static final long serialVersionUID = 0L;

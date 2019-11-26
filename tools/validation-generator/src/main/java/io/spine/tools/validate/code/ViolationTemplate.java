@@ -31,6 +31,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
+/**
+ * An {@link Expression} which creates a new {@link ConstraintViolation}.
+ */
 public final class ViolationTemplate implements Expression<ConstraintViolation> {
 
     private final String message;
