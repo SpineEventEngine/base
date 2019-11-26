@@ -147,7 +147,7 @@ public final class Messages {
      */
     public static boolean isDefault(ProtocolMessageEnum messageEnum) {
         checkNotNull(messageEnum);
-        return messageEnum.getNumber() > 0;
+        return messageEnum.getNumber() == 0;
     }
 
     /**
