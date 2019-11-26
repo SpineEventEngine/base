@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
@@ -43,8 +44,11 @@ import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkValidChange;
+import static io.spine.validate.Validate.containsDuplicates;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Validate utility class should")
 class ValidateTest extends UtilityClassTest<Validate> {
@@ -108,6 +112,13 @@ class ValidateTest extends UtilityClassTest<Validate> {
                                         .toString();
 
         assertEquals("test 1 test 2", formatted);
+    }
+
+    @Test
+    @DisplayName("check a given collection for duplicates")
+    void duplicates() {
+        assertFalse(containsDuplicates(ImmutableList.of("", "111", "232")));
+        assertTrue(containsDuplicates(ImmutableList.of(3.14, 2.72, 3.14)));
     }
 
     @MuteLogging
