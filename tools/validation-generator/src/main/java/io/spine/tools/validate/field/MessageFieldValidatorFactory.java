@@ -46,15 +46,6 @@ final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
     }
 
     @Override
-    protected ImmutableList<Rule> rules() {
-        if (field().findOption(required) && cardinality() == SINGULAR) {
-            return ImmutableList.of(requiredRule());
-        } else {
-            return ImmutableList.of();
-        }
-    }
-
-    @Override
     public Optional<CodeBlock>
     generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         CodeBlock.Builder code = super.generate(onViolation)
@@ -66,6 +57,15 @@ final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
         return code.isEmpty()
                ? Optional.empty()
                : Optional.of(code.build());
+    }
+
+    @Override
+    protected ImmutableList<Rule> rules() {
+        if (field().findOption(required) && cardinality() == SINGULAR) {
+            return ImmutableList.of(requiredRule());
+        } else {
+            return ImmutableList.of();
+        }
     }
 
     private void
