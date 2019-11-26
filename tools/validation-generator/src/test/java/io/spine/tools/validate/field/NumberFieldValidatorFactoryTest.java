@@ -84,7 +84,7 @@ class NumberFieldValidatorFactoryTest {
         private StringSubject checkFieldConstraints(String fieldName, ViolationMemoizer memoizer) {
             FieldDeclaration field = field(fieldName);
             NumberFieldValidatorFactory factory =
-                    new NumberFieldValidatorFactory(field, access, SINGULAR);
+                    new NumberFieldValidatorFactory(field, field.javaType(), access, SINGULAR);
             Optional<CodeBlock> validationCode = factory.generate(memoizer);
             assertThat(validationCode).isPresent();
             CodeBlock code = validationCode.get();
@@ -119,7 +119,7 @@ class NumberFieldValidatorFactoryTest {
         private void checkInvalid(String fieldName) {
             FieldDeclaration field = field(fieldName);
             NumberFieldValidatorFactory factory =
-                    new NumberFieldValidatorFactory(field, access, SINGULAR);
+                    new NumberFieldValidatorFactory(field, field.javaType(), access, SINGULAR);
             assertThrows(IllegalStateException.class,
                          () -> factory.generate(new ViolationMemoizer()));
         }

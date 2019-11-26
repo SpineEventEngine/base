@@ -20,6 +20,7 @@
 
 package io.spine.tools.validate.field;
 
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
@@ -81,14 +82,17 @@ public final class FieldValidatorFactories {
 
     private static FieldValidatorFactory
     forSingularField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
-        switch (field.javaType()) {
+        JavaType type = field.isMap()
+                        ? field.valueDeclaration().javaType()
+                        : field.javaType();
+        switch (type) {
             case STRING:
                 return new StringFieldValidatorFactory(field, fieldAccess, cardinality);
             case INT:
             case LONG:
             case FLOAT:
             case DOUBLE:
-                return new NumberFieldValidatorFactory(field, fieldAccess, cardinality);
+                return new NumberFieldValidatorFactory(field, type, fieldAccess, cardinality);
             case ENUM:
             case MESSAGE:
                 return new MessageFieldValidatorFactory(field, fieldAccess, cardinality);

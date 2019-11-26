@@ -29,7 +29,8 @@ import io.spine.tools.validate.code.Expression;
  */
 final class ByteStringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
-    ByteStringFieldValidatorFactory(FieldDeclaration field, Expression fieldAccess,
+    ByteStringFieldValidatorFactory(FieldDeclaration field,
+                                    Expression fieldAccess,
                                     FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }

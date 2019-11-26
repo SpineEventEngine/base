@@ -57,10 +57,11 @@ public final class NumberFieldValidatorFactory
     private final NumberKind numberKind;
 
     NumberFieldValidatorFactory(FieldDeclaration field,
+                                JavaType type,
                                 Expression fieldAccess,
                                 FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
-        this.numberKind = NumberKind.forField(field);
+        this.numberKind = NumberKind.forField(type);
     }
 
     @Override
@@ -211,8 +212,7 @@ public final class NumberFieldValidatorFactory
          */
         @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
         // `default` covers everything else.
-        static NumberKind forField(FieldDeclaration field) {
-            JavaType type = field.javaType();
+        static NumberKind forField(JavaType type) {
             switch (type) {
                 case INT:
                 case LONG:

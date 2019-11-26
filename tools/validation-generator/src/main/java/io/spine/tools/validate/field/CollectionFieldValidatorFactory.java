@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.squareup.javapoet.ClassName.bestGuess;
 import static io.spine.option.OptionsProto.distinct;
 import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
@@ -99,8 +98,11 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             CodeBlock validationCode = elementValidation.orElse(CodeBlock.of(""));
             String notSet = "notSet";
             validation.addStatement("boolean $N = false", notSet);
-            validation.beginControlFlow("for ($T $N: $L)",
-                                        bestGuess(field.javaTypeName()),
+            String javaTypeName = field.isMap()
+                                  ? field.valueDeclaration().javaTypeName()
+                                  : field.javaTypeName();
+            validation.beginControlFlow("for ($L $N: $L)",
+                                        javaTypeName,
                                         element.toString(),
                                         fieldAccess.toCode());
             validation.add(validationCode);

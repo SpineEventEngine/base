@@ -51,7 +51,7 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
      * @param fieldAccess
      *         the value of the validated field
      * @param cardinality
-     *         whether or not this value is an element of a repeated field
+     *         whether or not the value is an element of a repeated field
      */
     SingularFieldValidatorFactory(FieldDeclaration field,
                                   Expression fieldAccess,
