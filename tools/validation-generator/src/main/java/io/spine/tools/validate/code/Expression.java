@@ -36,12 +36,22 @@ import static java.lang.String.format;
 @SuppressWarnings("unused") // Unused type param <R>.
 public interface Expression<R> {
 
+    /**
+     * Prints this expression as a {@link CodeBlock}.
+     */
     CodeBlock toCode();
 
+    /**
+     * Creates an {@code Expression} from the given value.
+     */
     static <R> Expression<R> of(String code) {
         return new CodeExpression<>(code);
     }
 
+    /**
+     * Creates an {@code Expression} by formatting the given template string by the rules of
+     * {@code String.format()}.
+     */
     @FormatMethod
     static <R> Expression<R> formatted(@FormatString String template, Object... args) {
         String code = format(template, args);
