@@ -39,7 +39,7 @@ message Uri {
     Protocol protocol = 1;
 
     // User's email and password (both optional).
-    Authorization auth = 2;
+    Authorization auth = 2 [(validate) = true, (required) = false];
 
     // Domain name.
     string host = 3;
@@ -89,7 +89,7 @@ message Uri {
     message Authorization {
 
         // User name.
-        string user_name = 1;
+        string user_name = 1 [(required) = true];
 
         // Corresponding password.
         string password = 2;
