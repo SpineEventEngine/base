@@ -21,8 +21,10 @@
 package io.spine.tools.validate.number;
 
 import com.google.common.base.Objects;
+import io.spine.validate.ComparableNumber;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -37,6 +39,17 @@ public final class NumberBoundaries {
                             @Nullable Boundary max) {
         this.min = min;
         this.max = max;
+        checkConsistentBoundaries();
+    }
+
+    private void checkConsistentBoundaries() {
+        if (min != null && max != null) {
+            ComparableNumber comparableMin = new ComparableNumber(min.value());
+            checkArgument(comparableMin.compareTo(max.value()) <= 0,
+                          "Lower bound (%s) is greater than the higher bound (%s).",
+                          min.value(),
+                          max.value());
+        }
     }
 
     /**
