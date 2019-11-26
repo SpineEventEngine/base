@@ -49,5 +49,5 @@ option java_multiple_files = true;
 message FieldPath {
 
     // Unqualified field names.
-    repeated string field_name = 1 [(required) = true];
+    repeated string field_name = 1;
 }
