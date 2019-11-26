@@ -27,10 +27,31 @@ import io.spine.validate.ConstraintViolation;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * A factory of validation code for a field in a Protobuf message.
+ */
 public interface FieldValidatorFactory {
 
+    /**
+     * Generates validation code for the associated field.
+     *
+     * <p>After constructing a {@link ConstraintViolation}, yields the violation via an expression
+     * produced by the {@code onViolation} function.
+     *
+     * @param onViolation
+     *         a function which transforms the constraint violation into an {@link Expression} which
+     *         stores the violation
+     * @return the validation code or {@code Optional.empty()} if no validation is needed for
+     *         the field
+     */
     Optional<CodeBlock>
     generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation);
 
+    /**
+     * Obtains a boolean expression which checks if the field is set or not.
+     *
+     * @return expression which evaluates to {@code true} if the field is NOT set and {@code false}
+     *         if the field is set
+     */
     Expression<Boolean> isNotSet();
 }

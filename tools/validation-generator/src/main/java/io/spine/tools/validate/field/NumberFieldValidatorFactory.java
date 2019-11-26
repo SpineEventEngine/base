@@ -23,6 +23,7 @@ package io.spine.tools.validate.field;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.logging.Logging;
 import io.spine.option.MaxOption;
 import io.spine.option.MinOption;
 import io.spine.tools.validate.code.Expression;
@@ -36,13 +37,16 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.max;
 import static io.spine.option.OptionsProto.min;
 import static io.spine.option.OptionsProto.range;
+import static io.spine.option.OptionsProto.required;
 import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.validate.code.Expression.formatted;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
-public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFactory {
+public final class NumberFieldValidatorFactory
+        extends SingularFieldValidatorFactory
+        implements Logging {
 
     private static final Pattern NUMBER_RANGE =
             Pattern.compile("([\\[(])\\s*([+\\-]?[\\d.]+)\\s*\\.\\.\\s*([+\\-]?[\\d.]+)\\s*([])])");
@@ -58,6 +62,7 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
 
     @Override
     protected ImmutableList<Rule> rules() {
+
         NumberBoundaries boundaries = parseBoundaries();
         ImmutableList.Builder<Rule> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
@@ -75,7 +80,17 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
 
     @Override
     public Expression<Boolean> isNotSet() {
+        checkNotRequired();
         return Expression.of(valueOf(false));
+    }
+
+    private void checkNotRequired() {
+        if (field().hasOption(required)) {
+            _warn().log(
+                    "Option (required) is not applicable to number fields. Found at %s.",
+                    field()
+            );
+        }
     }
 
     private Rule boundaryRule(Boundary boundary,
@@ -142,14 +157,39 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
         }
     }
 
+    /**
+     * The representation of the number.
+     *
+     * <p>Each element corresponds to multiple types in Java and multiple types in Protobuf.
+     */
     private enum NumberKind {
 
+        /**
+         * Integer number fields.
+         *
+         * <p>In Java, represented by {@code int} and {@code long}.
+         *
+         * <p>In Protobuf, represented by 32-bit and 64-bit {@code int}, {@code uint}, {@code sint},
+         * {@code fixed}, and {@code sfixed}.
+         *
+         * <p>String representations are parsed into {@link Long} for maximum precision.
+         */
         INTEGER {
             @Override
             Number parse(String value) {
                 return Long.parseLong(value);
             }
         },
+
+        /**
+         * Fraction number fields with a floating point.
+         *
+         * <p>In Java, represented by {@code float} and {@code double}.
+         *
+         * <p>In Protobuf, represented by {@code float} and {@code double}.
+         *
+         * <p>String representations are parsed into {@link Double} for maximum precision.
+         */
         FLOAT {
             @Override
             Number parse(String value) {
@@ -157,8 +197,16 @@ public final class NumberFieldValidatorFactory extends AbstractFieldValidatorFac
             }
         };
 
+        /**
+         * Parses the given string as a number.
+         */
         abstract Number parse(String value);
 
+        /**
+         * Chooses a {@code NumberKind} for the given field.
+         *
+         * <p>Throws an {@code IllegalArgumentException} if the field is not a number field.
+         */
         @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
         // `default` covers everything else.
         static NumberKind forField(FieldDeclaration field) {

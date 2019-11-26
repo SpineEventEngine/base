@@ -32,12 +32,10 @@ import io.spine.validate.ConstraintViolation;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.spine.option.OptionsProto.required;
 import static io.spine.option.OptionsProto.validate;
 import static io.spine.tools.validate.code.Expression.formatted;
-import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 
-final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
+final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
 
     MessageFieldValidatorFactory(FieldDeclaration field,
                                  Expression fieldAccess,
@@ -61,11 +59,9 @@ final class MessageFieldValidatorFactory extends AbstractFieldValidatorFactory {
 
     @Override
     protected ImmutableList<Rule> rules() {
-        if (field().findOption(required) && cardinality() == SINGULAR) {
-            return ImmutableList.of(requiredRule());
-        } else {
-            return ImmutableList.of();
-        }
+        return isRequired()
+               ? ImmutableList.of(requiredRule())
+               : ImmutableList.of();
     }
 
     private void

@@ -39,8 +39,14 @@ import static io.spine.tools.validate.code.Expression.formatted;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 
+/**
+ * A factory of validation code for {@code repeated} and {@code map} fields.
+ */
 final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
 
+    /**
+     * The reference to an element in the validated field during iteration.
+     */
     static final Expression<?> element = Expression.of("element");
 
     private final FieldDeclaration field;
@@ -48,8 +54,19 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     private final FieldValidatorFactory singular;
     private final boolean isRequired;
 
+    /**
+     * Creates a new {@code CollectionFieldValidatorFactory}.
+     *
+     * @param field
+     *         the declaration of the validated field
+     * @param fieldAccess
+     *         the {@link Expression} which evaluates into the field value
+     * @param singular
+     *         a {@link FieldValidatorFactory} for singular fields of this type; used to generate
+     *         validation code for elements of the collection
+     */
     CollectionFieldValidatorFactory(FieldDeclaration field,
-                                    Expression fieldAccess,
+                                    Expression<?> fieldAccess,
                                     FieldValidatorFactory singular) {
         this.field = checkNotNull(field);
         this.fieldAccess = checkNotNull(fieldAccess);
@@ -58,8 +75,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Optional<CodeBlock> generate(
-            Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    public Optional<CodeBlock>
+    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         CodeBlock.Builder validation = CodeBlock.builder();
         addCollectionValidation(validation, onViolation);
         addElementValidation(validation, onViolation);

@@ -31,14 +31,29 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.option.OptionsProto.required;
+import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 
-public abstract class AbstractFieldValidatorFactory implements FieldValidatorFactory {
+/**
+ * The implementation base for {@link FieldValidatorFactory}s for singular (not repeated) fields.
+ */
+abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
 
     private final FieldDeclaration field;
     private final Expression fieldAccess;
     private final FieldCardinality cardinality;
 
-    AbstractFieldValidatorFactory(FieldDeclaration field,
+    /**
+     * Creates a new {@code SingularFieldValidatorFactory}.
+     *
+     * @param field
+     *         the declaration of the field to validate
+     * @param fieldAccess
+     *         the value of the validated field
+     * @param cardinality
+     *         whether or not this value is an element of a repeated field
+     */
+    SingularFieldValidatorFactory(FieldDeclaration field,
                                   Expression fieldAccess,
                                   FieldCardinality cardinality) {
         this.field = checkNotNull(field);
@@ -63,26 +78,26 @@ public abstract class AbstractFieldValidatorFactory implements FieldValidatorFac
                : Optional.of(code);
     }
 
-    protected final Rule requiredRule() {
+    final boolean isRequired() {
+        return field.findOption(required) && cardinality == SINGULAR;
+    }
+
+    final Rule requiredRule() {
         return new Rule(field -> isNotSet(),
                         field -> violationTemplate()
                                 .setMessage("Field must be set.")
                                 .build());
     }
 
-    protected final FieldDeclaration field() {
+    final FieldDeclaration field() {
         return field;
     }
 
-    protected final FieldCardinality cardinality() {
-        return cardinality;
-    }
-
-    protected final Expression fieldAccess() {
+    final Expression fieldAccess() {
         return fieldAccess;
     }
 
-    ViolationTemplate.Builder violationTemplate() {
+    final ViolationTemplate.Builder violationTemplate() {
         return ViolationTemplate.forField(field);
     }
 }

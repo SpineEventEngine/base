@@ -30,12 +30,13 @@ import io.spine.tools.validate.code.ViolationTemplate;
 import java.util.function.Function;
 
 import static io.spine.option.OptionsProto.pattern;
-import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
-import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 import static java.lang.String.format;
 
-public final class StringFieldValidatorFactory extends AbstractSequenceFieldValidatorFactory {
+/**
+ * A {@link FieldValidatorFactory} for {@code string} fields.
+ */
+final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     StringFieldValidatorFactory(FieldDeclaration field,
                                 Expression fieldAccess,
@@ -47,7 +48,7 @@ public final class StringFieldValidatorFactory extends AbstractSequenceFieldVali
     protected ImmutableList<Rule> rules() {
         ImmutableList.Builder<Rule> builder = ImmutableList.builder();
         FieldOptions options = field().descriptor().getOptions();
-        if (options.getExtension(required)  && cardinality() == SINGULAR) {
+        if (isRequired()) {
             builder.add(requiredRule());
         }
         if (options.hasExtension(pattern)) {

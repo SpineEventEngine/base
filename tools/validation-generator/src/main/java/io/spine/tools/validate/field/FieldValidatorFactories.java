@@ -34,23 +34,38 @@ import static io.spine.tools.validate.field.FieldCardinality.REPEATED;
 import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 import static java.util.Optional.empty;
 
+/**
+ * A factory of {@link FieldValidatorFactory}s.
+ */
 public final class FieldValidatorFactories {
 
-    private final Expression messageAccess;
+    private final Expression<?> messageAccess;
 
-    public FieldValidatorFactories(Expression messageAccess) {
+    /**
+     * Creates a new {@code FieldValidatorFactories}.
+     *
+     * @param messageAccess an expression which evaluates into the validated message value
+     */
+    public FieldValidatorFactories(Expression<?> messageAccess) {
         this.messageAccess = checkNotNull(messageAccess);
     }
 
+    /**
+     * Creates a new {@link FieldValidatorFactory} for the given field.
+     *
+     * @param field
+     *         the field to validate
+     * @return validator factory
+     */
     public FieldValidatorFactory forField(FieldDeclaration field) {
         return field.isCollection()
                ? forCollections(field)
-               : forScalarField(field, SINGULAR);
+               : forSingularField(field);
     }
 
     private FieldValidatorFactory forCollections(FieldDeclaration field) {
         FieldValidatorFactory singularFactory =
-                forScalarField(field, REPEATED, CollectionFieldValidatorFactory.element);
+                forSingularField(field, REPEATED, CollectionFieldValidatorFactory.element);
         String suffix = field.isMap() ? "Map().values()" : "List()";
         Expression fieldAccess =
                 formatted("%s.get%s%s", messageAccess, field.name().toCamelCase(), suffix);
@@ -58,14 +73,14 @@ public final class FieldValidatorFactories {
     }
 
     private FieldValidatorFactory
-    forScalarField(FieldDeclaration field, FieldCardinality cardinality) {
+    forSingularField(FieldDeclaration field) {
         Expression fieldAccess =
                 formatted("%s.get%s()", messageAccess, field.name().toCamelCase());
-        return forScalarField(field, cardinality, fieldAccess);
+        return forSingularField(field, SINGULAR, fieldAccess);
     }
 
     private static FieldValidatorFactory
-    forScalarField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
+    forSingularField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
         switch (field.javaType()) {
             case STRING:
                 return new StringFieldValidatorFactory(field, fieldAccess, cardinality);
@@ -85,13 +100,16 @@ public final class FieldValidatorFactories {
         }
     }
 
+    /**
+     * A {@link FieldValidatorFactory} which never produces any field validation.
+     */
     private enum NoOpFactory implements FieldValidatorFactory {
 
         INSTANCE;
 
         @Override
-        public Optional<CodeBlock> generate(
-                Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+        public Optional<CodeBlock>
+        generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
             return empty();
         }
 

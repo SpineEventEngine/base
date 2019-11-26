@@ -23,11 +23,18 @@ package io.spine.tools.validate.field;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 
-abstract class AbstractSequenceFieldValidatorFactory extends AbstractFieldValidatorFactory {
+/**
+ * An abstract base for {@link FieldValidatorFactory}s which produce validation code for primitive
+ * sequence fields.
+ *
+ * <p>Such fields are {@code string} and {@code bytes}. A {@code string} is a sequence of characters
+ * and {@code bytes} is a sequence of bytes.
+ */
+abstract class SequenceFieldValidatorFactory extends SingularFieldValidatorFactory {
 
-    AbstractSequenceFieldValidatorFactory(FieldDeclaration field,
-                                          Expression fieldAccess,
-                                          FieldCardinality cardinality) {
+    SequenceFieldValidatorFactory(FieldDeclaration field,
+                                  Expression fieldAccess,
+                                  FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }
 

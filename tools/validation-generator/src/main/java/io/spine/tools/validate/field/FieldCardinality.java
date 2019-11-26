@@ -20,8 +20,18 @@
 
 package io.spine.tools.validate.field;
 
+/**
+ * Cardinality of a Protobuf field.
+ */
 enum FieldCardinality {
 
+    /**
+     * A singular field.
+     */
     SINGULAR,
+
+    /**
+     * A {@code repeated} or {@code map} field.
+     */
     REPEATED
 }

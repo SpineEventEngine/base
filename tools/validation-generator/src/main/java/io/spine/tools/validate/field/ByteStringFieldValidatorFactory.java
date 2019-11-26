@@ -24,10 +24,10 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 
-import static io.spine.option.OptionsProto.required;
-import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
-
-final class ByteStringFieldValidatorFactory extends AbstractSequenceFieldValidatorFactory {
+/**
+ * A {@link FieldValidatorFactory} for {@code bytes} fields.
+ */
+final class ByteStringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     ByteStringFieldValidatorFactory(FieldDeclaration field, Expression fieldAccess,
                                     FieldCardinality cardinality) {
@@ -36,10 +36,8 @@ final class ByteStringFieldValidatorFactory extends AbstractSequenceFieldValidat
 
     @Override
     protected ImmutableList<Rule> rules() {
-        if (field().findOption(required) && cardinality() == SINGULAR) {
-            return ImmutableList.of(requiredRule());
-        } else {
-            return ImmutableList.of();
-        }
+        return isRequired()
+               ? ImmutableList.of(requiredRule())
+               : ImmutableList.of();
     }
 }
