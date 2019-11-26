@@ -27,7 +27,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedBySpine;
-import io.spine.code.java.NestedClassName;
+import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.field.FieldValidatorFactories;
@@ -71,8 +71,7 @@ public final class MessageValidatorFactory {
 
     public MessageValidatorFactory(MessageType type) {
         this.type = type;
-        this.messageSimpleName = type.javaClassName()
-                                     .asNested();
+        this.messageSimpleName = NestedClassName.from(type.javaClassName());
         this.validatorSimpleName = nameForValidator(type);
     }
 

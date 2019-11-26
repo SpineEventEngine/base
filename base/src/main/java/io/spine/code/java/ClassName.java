@@ -20,7 +20,6 @@
 
 package io.spine.code.java;
 
-import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -34,7 +33,6 @@ import org.checkerframework.checker.signature.qual.ClassGetName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -60,7 +58,6 @@ public final class ClassName extends StringTypeValue {
      * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
     private static final char OUTER_CLASS_DELIMITER = '$';
-    private static final Splitter nestedBinarySplitter = Splitter.on(OUTER_CLASS_DELIMITER);
 
     private static final String GRPC_POSTFIX = "Grpc";
 
@@ -319,13 +316,6 @@ public final class ClassName extends StringTypeValue {
         int packageEndIndex = packageEndIndex();
         String result = value().substring(0, packageEndIndex);
         return PackageName.of(result);
-    }
-
-    public NestedClassName asNested() {
-        int packageEndIndex = packageEndIndex();
-        String nestedBinaryName = value().substring(packageEndIndex + 1);
-        List<String> names = nestedBinarySplitter.splitToList(nestedBinaryName);
-        return NestedClassName.from(names);
     }
 
     private int packageEndIndex() {
