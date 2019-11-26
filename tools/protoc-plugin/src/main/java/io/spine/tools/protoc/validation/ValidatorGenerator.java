@@ -29,7 +29,6 @@ import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.TypeParameters;
 import io.spine.tools.protoc.iface.MessageImplements;
 import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.tools.protoc.iface.PredefinedInterface;
@@ -41,12 +40,19 @@ import java.util.Collection;
 
 import static io.spine.tools.protoc.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
+import static io.spine.tools.protoc.TypeParameters.empty;
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
+/**
+ * The message validation code generator.
+ *
+ * <p>Generates code which validates message fields upon the constraints, as well as the API which
+ * exposes validation to the user of the message class.
+ */
 public final class ValidatorGenerator extends SpineProtoGenerator {
 
     private static final MessageInterface VALIDATABLE_MESSAGE =
-            new PredefinedInterface(ClassName.of(MessageWithConstraints.class), TypeParameters.empty());
+            new PredefinedInterface(ClassName.of(MessageWithConstraints.class), empty());
 
     /**
      * Prevents direct instantiation.

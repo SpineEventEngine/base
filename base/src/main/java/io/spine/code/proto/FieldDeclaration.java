@@ -94,11 +94,17 @@ public final class FieldDeclaration {
         return field;
     }
 
+    /**
+     * Obtains the given option for this declaration or the option default value if ont set.
+     */
     public <T> T findOption(Extension<FieldOptions, T> option) {
         return field.getOptions()
                     .getExtension(option);
     }
 
+    /**
+     * Checks if the given option is set for this field.
+     */
     public boolean hasOption(Extension<FieldOptions, ?> option) {
         return field.getOptions()
                 .hasExtension(option);

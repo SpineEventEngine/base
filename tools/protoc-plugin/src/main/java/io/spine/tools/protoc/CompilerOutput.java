@@ -34,6 +34,9 @@ public interface CompilerOutput {
      */
     File asFile();
 
+    /**
+     * Creates a new {@code CompilerOutput} with the given file.
+     */
     static CompilerOutput from(File file) {
         return new FileOutput(file);
     }

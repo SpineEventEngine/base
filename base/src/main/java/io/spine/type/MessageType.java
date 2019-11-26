@@ -221,6 +221,12 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return result;
     }
 
+    /**
+     * Obtains all the nested message and enum declarations.
+     *
+     * <p>Includes only the immediate declarations. Types declared inside the types declared inside
+     * this type are not obtained.
+     */
     public ImmutableList<Type<?, ?>> nestedDeclarations() {
         Stream<Type<?, ?>> messageTypes = descriptor()
                 .getNestedTypes()

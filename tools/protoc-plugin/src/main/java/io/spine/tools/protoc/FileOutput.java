@@ -22,6 +22,9 @@ package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
+/**
+ * A {@link CompilerOutput} with a predefined {@link File}.
+ */
 final class FileOutput extends AbstractCompilerOutput {
 
     FileOutput(File file) {

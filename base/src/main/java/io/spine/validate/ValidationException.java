@@ -41,10 +41,6 @@ public class ValidationException extends RuntimeException {
         this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
-    public ValidationException(ValidationError error) {
-        this(error.getConstraintViolationList());
-    }
-
     @SuppressWarnings("unused" /* part of public API of the exception. */)
     public final List<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;

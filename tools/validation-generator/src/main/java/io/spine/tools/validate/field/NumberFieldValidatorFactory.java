@@ -51,6 +51,35 @@ public final class NumberFieldValidatorFactory
         extends SingularFieldValidatorFactory
         implements Logging {
 
+    /**
+     * The regular expression for parsing number ranges.
+     *
+     * <p>Defines four groups:
+     * <ol>
+     *     <li>The opening bracket (a {@code [} or a {@code (}).
+     *     <li>The lower numerical bound.
+     *     <li>The higher numerical bound.
+     *     <li>The closing bracket (a {@code ]} or a {@code )}).
+     * </ol>
+     *
+     * <p>All the groups as well as a {@code ..} divider between the numerical bounds must be
+     * matched. Extra spaces among the groups and the divider are allowed.
+     *
+     * <p>Examples of a valid number range:
+     * <ul>
+     *     <li>{@code [0..1]}
+     *     <li>{@code ( -17.3 .. +146.0 ]}
+     *     <li>{@code [+1..+100)}
+     * </ul>
+     *
+     * <p>Examples of an invalid number range:
+     * <ul>
+     *     <li>{@code 1..5} - missing brackets.
+     *     <li>{@code [0 - 1]} - wrong divider.
+     *     <li>{@code [0 . . 1]} - divider cannot be split with spaces.
+     *     <li>{@code ( .. 0)} - missing lower bound.
+     * </ul>
+     */
     private static final Pattern NUMBER_RANGE =
             Pattern.compile("([\\[(])\\s*([+\\-]?[\\d.]+)\\s*\\.\\.\\s*([+\\-]?[\\d.]+)\\s*([])])");
 
@@ -141,7 +170,7 @@ public final class NumberFieldValidatorFactory
 
     private NumberBoundaries rangeBoundaries() {
         String rangeOption = field().findOption(range);
-        Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption);
+        Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
         if (!rangeOption.isEmpty()) {
             checkState(rangeMatcher.matches(),
                        "Range '%s' on field %s is invalid.", rangeOption, field());

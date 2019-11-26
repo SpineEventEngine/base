@@ -36,6 +36,7 @@ import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -414,10 +415,15 @@ public final class Validate {
         return violation;
     }
 
+    /**
+     * Checks if the given collection contains duplicate entries.
+     *
+     * @return {@code true} if {@code collection} has duplicates, {@code false} otherwise
+     */
     @Internal
     public static boolean containsDuplicates(Collection<?> collection) {
         checkNotNull(collection);
-        Set<?> asSet = ImmutableSet.copyOf(collection);
+        Set<?> asSet = new HashSet<>(collection);
         return asSet.size() != collection.size();
     }
 }
