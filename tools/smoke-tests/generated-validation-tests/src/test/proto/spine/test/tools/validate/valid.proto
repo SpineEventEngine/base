@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package spine.test.tools.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.tools.validate";
+option java_outer_classname = "ValidProto";
+option java_multiple_files = true;
+
+import "spine/people/person_name.proto";
+import "spine/net/email_address.proto";
+
+message ZipCode {
+
+    string digits = 1 [(pattern).regex = "[\\d\\w]+"];
+}
+
+message Town {
+
+    string city = 1 [(required) = true];
+
+    string region = 2;
+
+    string county = 3;
+
+    string state = 4;
+
+    string country = 5 [(required) = true];
+}
+
+message Address {
+
+    string first_line = 1 [(required) = true];
+
+    string second_line = 2 [(required) = false];
+
+    ZipCode zip_code = 3 [(required) = false, (.validate) = true];
+
+    Town town = 4 [(required) = true, (.validate) = true];
+}
+
+message DeliveryReceiver {
+
+    spine.people.PersonName name = 1 [(required) = true, (.validate) = true];
+
+    Address address = 2 [(required) = true, (.validate) = true];
+
+    repeated spine.net.EmailAddress email = 3 [(.validate) = true];
+}
