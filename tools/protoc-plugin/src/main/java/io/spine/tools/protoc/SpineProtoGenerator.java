@@ -29,6 +29,7 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
+import io.spine.tools.type.MoreKnownTypes;
 import io.spine.type.Type;
 
 import java.util.Collection;
@@ -106,6 +107,7 @@ public abstract class SpineProtoGenerator {
         checkCompilerVersion(request);
         checkNotEmpty(request);
         FileSet fileSet = FileSet.of(request.getProtoFileList());
+        MoreKnownTypes.extendWith(fileSet);
         Set<FileName> requestedFileNames = request.getFileToGenerateList()
                                                   .stream()
                                                   .map(FileName::of)
