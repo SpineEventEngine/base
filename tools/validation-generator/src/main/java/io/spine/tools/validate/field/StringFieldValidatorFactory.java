@@ -22,6 +22,7 @@ package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
 import io.spine.tools.validate.code.Expression;
@@ -30,7 +31,6 @@ import io.spine.tools.validate.code.ViolationTemplate;
 import java.util.function.Function;
 
 import static io.spine.option.OptionsProto.pattern;
-import static io.spine.tools.validate.code.Expression.formatted;
 import static java.lang.String.format;
 
 /**
@@ -61,7 +61,7 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
     private Rule pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
         Function<Expression<?>, Expression<Boolean>> condition =
-                field -> formatted("!%s.matches(\"%s\")", field, regex);
+                field -> Expression.of(CodeBlock.of("!$L.matches($S)", field, regex));
         Function<Expression<?>, ViolationTemplate> violationFactory =
                 field -> violationTemplate()
                         .setMessage(format("String must match pattern: '%s'.", regex))

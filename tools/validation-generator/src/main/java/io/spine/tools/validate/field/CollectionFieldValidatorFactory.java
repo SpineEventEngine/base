@@ -96,7 +96,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         Expression isNotSet = singular.isNotSet();
         if (elementValidation.isPresent() || isRequired) {
             CodeBlock validationCode = elementValidation.orElse(CodeBlock.of(""));
-            String notSet = "notSet";
+            String notSet = field.name().javaCase() + "NotSet";
             validation.addStatement("boolean $N = false", notSet);
             String javaTypeName = field.isMap()
                                   ? field.valueDeclaration().javaTypeName()

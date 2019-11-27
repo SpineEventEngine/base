@@ -49,6 +49,13 @@ public interface Expression<R> {
     }
 
     /**
+     * Creates an {@code Expression} from the given value.
+     */
+    static <R> Expression<R> of(CodeBlock code) {
+        return new CodeExpression<>(code.toString());
+    }
+
+    /**
      * Creates an {@code Expression} by formatting the given template string by the rules of
      * {@code String.format()}.
      */

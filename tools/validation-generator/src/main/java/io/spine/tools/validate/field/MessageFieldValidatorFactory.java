@@ -32,6 +32,7 @@ import io.spine.validate.Validate;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static io.spine.option.OptionsProto.required;
 import static io.spine.option.OptionsProto.validate;
 import static io.spine.tools.validate.code.Expression.formatted;
 
@@ -53,7 +54,14 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
                                       .map(CodeBlock::toBuilder)
                                       .orElseGet(CodeBlock::builder);
         if (field().isMessage() && field().findOption(validate)) {
+            boolean optional = !field().findOption(required);
+            if (optional) {
+                code.beginControlFlow("if ($T.isNotDefault($L))", Messages.class, fieldAccess());
+            }
             validateRecursively(code, onViolation);
+            if (optional) {
+                code.endControlFlow();
+            }
         }
         return code.isEmpty()
                ? Optional.empty()
