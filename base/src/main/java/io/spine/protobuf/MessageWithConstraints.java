@@ -22,6 +22,7 @@ package io.spine.protobuf;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
+import io.spine.annotation.Beta;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
  *
  * <p>See {@code spine/options.proto} for the validation options definitions.
  */
+@Beta
 @Immutable
 public interface MessageWithConstraints extends Message {
 

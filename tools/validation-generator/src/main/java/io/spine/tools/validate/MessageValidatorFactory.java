@@ -26,6 +26,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.annotation.Beta;
 import io.spine.code.gen.java.GeneratedBySpine;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.proto.FieldDeclaration;
@@ -193,6 +194,7 @@ public final class MessageValidatorFactory {
         return MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(PUBLIC)
+                .addAnnotation(Beta.class)
                 .addAnnotation(Override.class)
                 .returns(listOfViolations)
                 .addCode(body)
