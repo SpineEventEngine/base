@@ -21,11 +21,11 @@
 package io.spine.tools.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Empty;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.test.tools.validate.NotValidator;
 import io.spine.test.tools.validate.Validator;
+import io.spine.test.tools.validate.avocado.Greenhouse;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class MessageValidatorFactoryTest {
     @Test
     @DisplayName("generate `Validator` class")
     void generateClass() {
-        MessageType type = new MessageType(Empty.getDescriptor());
+        MessageType type = new MessageType(Greenhouse.getDescriptor());
         MessageValidatorFactory factory = new MessageValidatorFactory(type);
         TypeSpec validatorClass = factory.generateClass();
         assertThat(isName(validatorClass.name))
@@ -54,7 +54,7 @@ class MessageValidatorFactoryTest {
     @Test
     @DisplayName("generate `validate()` method")
     void generateValidate() {
-        MessageType type = new MessageType(Empty.getDescriptor());
+        MessageType type = new MessageType(Greenhouse.getDescriptor());
         MessageValidatorFactory factory = new MessageValidatorFactory(type);
         MethodSpec validateMethod = factory.generateValidate();
         assertThat(isName(validateMethod.name))
@@ -66,7 +66,7 @@ class MessageValidatorFactoryTest {
     @Test
     @DisplayName("generate `vBuild()` method")
     void generateVBuild() {
-        MessageType type = new MessageType(Empty.getDescriptor());
+        MessageType type = new MessageType(Greenhouse.getDescriptor());
         MessageValidatorFactory factory = new MessageValidatorFactory(type);
         MethodSpec validateMethod = factory.generateVBuild();
         assertThat(isName(validateMethod.name))
