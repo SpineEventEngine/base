@@ -100,12 +100,13 @@ public final class NumberFieldValidatorFactory
         ImmutableList.Builder<Rule> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
             Boundary min = boundaries.min();
-            Rule rule = boundaryRule(min, "<", "<=");
+            @SuppressWarnings("DuplicateStringLiteralInspection") // In tests.
+            Constraint rule = boundaryRule(min, "<", "<=", "greater");
             rules.add(rule);
         }
         if (boundaries.hasMax()) {
             Boundary max = boundaries.max();
-            Rule rule = boundaryRule(max, ">", ">=");
+            Constraint rule = boundaryRule(max, ">", ">=", "less");
             rules.add(rule);
         }
         return rules.build();
@@ -130,14 +131,20 @@ public final class NumberFieldValidatorFactory
         return false;
     }
 
-    private Rule boundaryRule(Boundary boundary,
-                              String exclusiveOperator,
-                              String inclusiveOperator) {
-        String operator = boundary.inclusive() ? exclusiveOperator : inclusiveOperator;
-        Rule rule = new Rule(
+    private Constraint boundaryRule(Boundary boundary,
+                                    String exclusiveOperator,
+                                    String inclusiveOperator,
+                                    String englishDescription) {
+        boolean inclusive = boundary.inclusive();
+        String operator = inclusive ? exclusiveOperator : inclusiveOperator;
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+        Constraint rule = new Constraint(
                 field -> formatted("%s %s %s", field, operator, boundary.value()),
                 field -> violationTemplate()
-                        .setMessage(format("Field must be %s %s.", operator, boundary.value()))
+                        .setMessage(format("Field must be %s%s %s.",
+                                           englishDescription,
+                                           inclusive ? "or equal to" : "",
+                                           boundary.value()))
                         .setFieldValue(field)
                         .build()
         );

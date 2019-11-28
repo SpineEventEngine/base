@@ -53,6 +53,7 @@ abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Compa
                                 @ImmutableTypeParameter T>
         extends NumericFieldConstraint<V, T> {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String OR_EQUAL_TO = "or equal to";
 
     private final Range<ComparableNumber> range;
