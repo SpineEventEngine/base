@@ -61,4 +61,33 @@ class ValidateConstraintTest {
                                    .getFieldName(0))
                 .isEqualTo("town");
     }
+
+    @Test
+    @DisplayName("repeated message fields are validated and violations are stored separately")
+    void validateRepeated() {
+        DeliveryReceiver msg = DeliveryReceiver
+                .newBuilder()
+                .setName(PersonName.newBuilder()
+                                   .setGivenName("Eve"))
+                .setAddress(Address.newBuilder()
+                                   .setFirstLine("Strand 42")
+                                   .setTown(Town.newBuilder()
+                                                .setCity("London")
+                                                .setCountry("UK")))
+                .addContact(PhoneNumber.getDefaultInstance())
+                .addContact(PhoneNumber.newBuilder().setDigits("not a number"))
+                .buildPartial();
+        List<ConstraintViolation> violations = msg.validate();
+        assertThat(violations).hasSize(2);
+        ConstraintViolation notSetViolation = violations.get(0);
+        assertThat(notSetViolation.getFieldPath().getFieldName(0))
+                .isEqualTo("contact");
+        assertThat(notSetViolation.getMsgFormat())
+                .contains("must be set");
+        ConstraintViolation invalidFormatViolation = violations.get(0);
+        assertThat(invalidFormatViolation.getFieldPath().getFieldName(0))
+                .isEqualTo("contact");
+        assertThat(invalidFormatViolation.getMsgFormat())
+                .contains("must match pattern");
+    }
 }

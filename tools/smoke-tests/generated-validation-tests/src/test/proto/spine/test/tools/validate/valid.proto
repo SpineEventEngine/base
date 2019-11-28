@@ -41,11 +41,16 @@ message Address {
     Town town = 4 [(required) = true, (.validate) = true];
 }
 
+message PhoneNumber {
+
+    string digits = 1 [(pattern).regex = "\\d+", (required) = true];
+}
+
 message DeliveryReceiver {
 
     spine.people.PersonName name = 1 [(required) = true, (.validate) = true];
 
     Address address = 2 [(required) = true, (.validate) = true];
 
-    repeated spine.net.EmailAddress email = 3 [(.validate) = true];
+    repeated PhoneNumber contact = 3 [(.validate) = true];
 }
