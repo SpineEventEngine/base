@@ -125,6 +125,11 @@ public final class NumberFieldValidatorFactory
         return Expression.of(valueOf(false));
     }
 
+    @Override
+    public boolean supportsRequired() {
+        return false;
+    }
+
     private Rule boundaryRule(Boundary boundary,
                               String exclusiveOperator,
                               String inclusiveOperator) {

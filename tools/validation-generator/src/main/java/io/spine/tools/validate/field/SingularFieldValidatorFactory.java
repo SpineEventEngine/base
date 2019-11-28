@@ -85,6 +85,7 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
         return field.findOption(required) && cardinality == SINGULAR;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.k
     final Rule requiredRule() {
         return new Rule(field -> isNotSet(),
                         field -> violationTemplate()
@@ -102,5 +103,10 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
 
     final ViolationTemplate.Builder violationTemplate() {
         return ViolationTemplate.forField(field);
+    }
+
+    @Override
+    public boolean supportsRequired() {
+        return true;
     }
 }

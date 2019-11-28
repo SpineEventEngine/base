@@ -121,5 +121,10 @@ public final class FieldValidatorFactories {
         public Expression<Boolean> isNotSet() {
             return Expression.of(String.valueOf(false));
         }
+
+        @Override
+        public boolean supportsRequired() {
+            return false;
+        }
     }
 }

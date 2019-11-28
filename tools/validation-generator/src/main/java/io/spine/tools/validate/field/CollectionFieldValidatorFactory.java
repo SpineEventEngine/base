@@ -51,7 +51,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     private final FieldDeclaration field;
     private final Expression<?> fieldAccess;
     private final FieldValidatorFactory singular;
-    private final boolean isRequired;
+    private final boolean eachElementRequired;
 
     /**
      * Creates a new {@code CollectionFieldValidatorFactory}.
@@ -70,18 +70,37 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         this.field = checkNotNull(field);
         this.fieldAccess = checkNotNull(fieldAccess);
         this.singular = checkNotNull(singular);
-        this.isRequired = field.findOption(required);
+        this.eachElementRequired = field.findOption(required) && singular.supportsRequired();
     }
 
     @Override
     public Optional<CodeBlock>
     generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         CodeBlock.Builder validation = CodeBlock.builder();
-        addCollectionValidation(validation, onViolation);
+        boolean isRequired = field.findOption(required);
+        if (isRequired) {
+            validation.beginControlFlow("if ($L)", NotEmptyRule.isEmpty(fieldAccess));
+            collectionIsEmpty(onViolation, validation);
+            validation.nextControlFlow("else");
+        }
         addElementValidation(validation, onViolation);
+        if (isRequired) {
+            validation.endControlFlow();
+        }
+        addDuplicateCheck(validation, onViolation);
         return validation.isEmpty()
                ? empty()
                : Optional.of(validation.build());
+    }
+
+    private void
+    collectionIsEmpty(Function<Expression<ConstraintViolation>, Expression<?>> onViolation,
+                      CodeBlock.Builder validation) {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
+        ViolationTemplate violation = violation()
+                .setMessage("Collection must not be empty.")
+                .build();
+        validation.addStatement(onViolation.apply(violation).toCode());
     }
 
     @Override
@@ -89,15 +108,22 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         return NotEmptyRule.isEmpty(fieldAccess);
     }
 
+    @Override
+    public boolean supportsRequired() {
+        return true;
+    }
+
     private void
     addElementValidation(CodeBlock.Builder validation,
                          Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         Optional<CodeBlock> elementValidation = singular.generate(onViolation);
         Expression isNotSet = singular.isNotSet();
-        if (elementValidation.isPresent() || isRequired) {
+        if (elementValidation.isPresent() || eachElementRequired) {
             CodeBlock validationCode = elementValidation.orElse(CodeBlock.of(""));
-            String notSet = field.name().javaCase() + "NotSet";
-            validation.addStatement("boolean $N = false", notSet);
+            String isSet = field.name().javaCase() + "IsSet";
+            if (eachElementRequired) {
+                validation.addStatement("boolean $N = false", isSet);
+            }
             String javaTypeName = field.isMap()
                                   ? field.valueDeclaration().javaTypeName()
                                   : field.javaTypeName();
@@ -106,10 +132,13 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
                                         element.toString(),
                                         fieldAccess.toCode());
             validation.add(validationCode);
-            validation.addStatement("$N |= $L", notSet, isNotSet);
+            if (eachElementRequired) {
+                validation.addStatement("$N |= !$L", isSet, isNotSet);
+            }
             validation.endControlFlow();
-            if (isRequired) {
-                Rule rule = new Rule(field -> Expression.of(notSet),
+            if (eachElementRequired) {
+                @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
+                Rule rule = new Rule(field -> formatted("!%s", isSet),
                                      field -> ViolationTemplate
                                              .forField(this.field)
                                              .setMessage("At least one element must be set.")
@@ -122,12 +151,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     private void
-    addCollectionValidation(CodeBlock.Builder validation,
-                            Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        if (isRequired) {
-            Rule required = NotEmptyRule.forField(violation());
-            append(validation, required, onViolation);
-        }
+    addDuplicateCheck(CodeBlock.Builder validation,
+                      Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         if (field.findOption(distinct)) {
             Rule distinct = distinct();
             append(validation, distinct, onViolation);

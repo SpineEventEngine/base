@@ -54,4 +54,11 @@ public interface FieldValidatorFactory {
      *         if the field is set
      */
     Expression<Boolean> isNotSet();
+
+    /**
+     * Defines if this type of fields supports {@code (required)} constraint.
+     *
+     * @return {@code true} if the associated field can be required, {@code false} otherwise
+     */
+    boolean supportsRequired();
 }

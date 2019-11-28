@@ -71,7 +71,7 @@ final class Rule {
                                                .toCode();
             return CodeBlock
                     .builder()
-                    .beginControlFlow("if($L)", fieldIsInvalid)
+                    .beginControlFlow("if ($L)", fieldIsInvalid)
                     .addStatement(ifViolation)
                     .endControlFlow()
                     .build();
