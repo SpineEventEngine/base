@@ -30,6 +30,8 @@ import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.option.EntityOption.Kind.ENTITY;
+import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.protobuf.Messages.ensureMessage;
@@ -108,5 +110,18 @@ class MessagesTest extends UtilityClassTest<Messages> {
 
         assertTrue(isDefault(StringValue.getDefaultInstance()));
         assertFalse(isDefault(nonDefault));
+    }
+
+    @Test
+    @DisplayName("verify that an enum is not the default instance")
+    void verifyNotDefaultEnum() {
+        assertTrue(isNotDefault(ENTITY));
+    }
+
+
+    @Test
+    @DisplayName("verify that an enum is the default instance")
+    void verifyDefaultEnum() {
+        assertTrue(isDefault(KIND_UNKNOWN));
     }
 }
