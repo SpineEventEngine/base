@@ -21,6 +21,8 @@
 package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.reflect.TypeToken;
+import com.google.protobuf.Message;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
@@ -29,6 +31,8 @@ import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Validate;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -75,13 +79,31 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
                : ImmutableList.of();
     }
 
+    /**
+     * Validates the message field according to the constraints of the message.
+     *
+     * @param code
+     *         the validation code to append to
+     * @param onViolation
+     *         violation transformer function
+     * @see Validate#violations(Message)
+     */
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private void
     validateRecursively(CodeBlock.Builder code,
                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        String violation = "violation";
-        code.beginControlFlow("for ($T $N : $T.violations($L))",
-                              ConstraintViolation.class, violation, Validate.class, fieldAccess());
-        Expression<ConstraintViolation> violationExpression = Expression.of(violation);
+        Type listOfViolations = new TypeToken<List<ConstraintViolation>>() {}.getType();
+        String varName = field().name().javaCase() + "Violations";
+        code.addStatement("$T $N = $T.violations($L)",
+                          listOfViolations,
+                          varName,
+                          Validate.class,
+                          fieldAccess());
+        code.beginControlFlow("if (!$N.isEmpty())", varName);
+        Expression<ConstraintViolation> violationExpression = violationTemplate()
+                .setMessage("Message must have valid fields.")
+                .setNestedViolations(Expression.of(varName))
+                .build();
         Expression violationHandler = onViolation.apply(violationExpression);
         code.addStatement(violationHandler.toCode());
         code.endControlFlow();

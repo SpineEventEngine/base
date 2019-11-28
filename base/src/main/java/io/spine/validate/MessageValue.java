@@ -216,7 +216,7 @@ public final class MessageValue {
         FieldContext fieldContext = context.forChild(field);
         Object rawValue = readValue(field);
         @SuppressWarnings("Immutable") // field values are immutable
-                FieldValue<?> value = FieldValue.of(rawValue, fieldContext);
+        FieldValue<?> value = FieldValue.of(rawValue, fieldContext);
         return value;
     }
 

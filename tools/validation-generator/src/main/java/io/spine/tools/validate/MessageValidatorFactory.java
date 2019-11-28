@@ -210,6 +210,7 @@ public final class MessageValidatorFactory {
     public MethodSpec generateVBuild() {
         ClassName messageClass = bestGuess(messageSimpleName.value());
         Class<ValidationException> exceptionClass = ValidationException.class;
+        @SuppressWarnings("DuplicateStringLiteralInspection")
         CodeBlock body = CodeBlock
                 .builder()
                 .addStatement("$T $N = build()",

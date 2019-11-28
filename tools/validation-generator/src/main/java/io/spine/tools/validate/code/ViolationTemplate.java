@@ -40,12 +40,14 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
     private final @Nullable Expression fieldValue;
     private final MessageType type;
     private final FieldPath field;
+    private final @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
 
     private ViolationTemplate(Builder builder) {
         this.message = builder.message;
         this.fieldValue = builder.fieldValue;
         this.type = builder.type;
         this.field = builder.field;
+        this.nestedViolations = builder.nestedViolations;
     }
 
     @Override
@@ -62,6 +64,9 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
         builder.add(".build())");
         if (fieldValue != null) {
             builder.add(".setFieldValue($T.toAny($L))", TypeConverter.class, fieldValue.toCode());
+        }
+        if (nestedViolations != null) {
+            builder.add(".addAllViolation($L)", nestedViolations.toCode());
         }
         builder.add(".build()");
         return builder.build();
@@ -97,6 +102,7 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
         private @Nullable Expression fieldValue;
         private MessageType type;
         private FieldPath field;
+        private @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
 
         /**
          * Prevents direct instantiation.
@@ -124,6 +130,12 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
                     .newBuilder()
                     .addAllFieldName(asList(fieldNames))
                     .build();
+            return this;
+        }
+
+        public Builder
+        setNestedViolations(Expression<Iterable<ConstraintViolation>> nestedViolations) {
+            this.nestedViolations = checkNotNull(nestedViolations);
             return this;
         }
 
