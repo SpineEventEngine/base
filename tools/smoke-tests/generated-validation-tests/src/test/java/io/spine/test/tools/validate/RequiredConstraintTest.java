@@ -34,7 +34,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.stream.Collectors.toList;
 
-@DisplayName("`(required)` constrained should be compiled so that")
+@DisplayName("`(required)` constraint should be compiled so that")
 class RequiredConstraintTest {
 
     @Test
