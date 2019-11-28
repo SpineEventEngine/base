@@ -21,22 +21,12 @@
 package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.reflect.TypeToken;
-import com.google.protobuf.Message;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.validate.code.Expression;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.Validate;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
-import static io.spine.option.OptionsProto.required;
 import static io.spine.option.OptionsProto.validate;
 import static io.spine.tools.validate.code.Expression.formatted;
 
@@ -52,61 +42,16 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
     }
 
     @Override
-    public Optional<CodeBlock>
-    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        CodeBlock.Builder code = super.generate(onViolation)
-                                      .map(CodeBlock::toBuilder)
-                                      .orElseGet(CodeBlock::builder);
-        if (field().isMessage() && field().findOption(validate)) {
-            boolean optional = !field().findOption(required);
-            if (optional) {
-                code.beginControlFlow("if ($T.isNotDefault($L))", Messages.class, fieldAccess());
-            }
-            validateRecursively(code, onViolation);
-            if (optional) {
-                code.endControlFlow();
-            }
-        }
-        return code.isEmpty()
-               ? Optional.empty()
-               : Optional.of(code.build());
-    }
-
-    @Override
     protected ImmutableList<Rule> rules() {
-        return isRequired()
-               ? ImmutableList.of(requiredRule())
-               : ImmutableList.of();
-    }
-
-    /**
-     * Validates the message field according to the constraints of the message.
-     *
-     * @param code
-     *         the validation code to append to
-     * @param onViolation
-     *         violation transformer function
-     * @see Validate#violations(Message)
-     */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    private void
-    validateRecursively(CodeBlock.Builder code,
-                        Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        Type listOfViolations = new TypeToken<List<ConstraintViolation>>() {}.getType();
-        String varName = field().name().javaCase() + "Violations";
-        code.addStatement("$T $N = $T.violations($L)",
-                          listOfViolations,
-                          varName,
-                          Validate.class,
-                          fieldAccess());
-        code.beginControlFlow("if (!$N.isEmpty())", varName);
-        Expression<ConstraintViolation> violationExpression = violationTemplate()
-                .setMessage("Message must have valid fields.")
-                .setNestedViolations(Expression.of(varName))
-                .build();
-        Expression violationHandler = onViolation.apply(violationExpression);
-        code.addStatement(violationHandler.toCode());
-        code.endControlFlow();
+        ImmutableList.Builder<Rule> rules = ImmutableList.builder();
+        if (isRequired()) {
+            rules.add(requiredRule());
+        }
+        FieldDeclaration field = field();
+        if (field.isMessage() && field.findOption(validate)) {
+            rules.add(new RecursiveValidation(field));
+        }
+        return rules.build();
     }
 
     @Override

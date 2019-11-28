@@ -35,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.distinct;
 import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.field.IsEmpty.isEmpty;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 
@@ -79,7 +80,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         CodeBlock.Builder validation = CodeBlock.builder();
         boolean isRequired = field.findOption(required);
         if (isRequired) {
-            validation.beginControlFlow("if ($L)", NotEmptyRule.isEmpty(fieldAccess));
+            validation.beginControlFlow("if ($L)", isEmpty(fieldAccess));
             collectionIsEmpty(onViolation, validation);
             validation.nextControlFlow("else");
         }
@@ -105,7 +106,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
 
     @Override
     public Expression<Boolean> isNotSet() {
-        return NotEmptyRule.isEmpty(fieldAccess);
+        return isEmpty(fieldAccess);
     }
 
     @Override
@@ -138,7 +139,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             validation.endControlFlow();
             if (eachElementRequired) {
                 @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
-                Rule rule = new Rule(field -> formatted("!%s", isSet),
+                        Constraint rule = new Constraint(field -> formatted("!%s", isSet),
                                      field -> ViolationTemplate
                                              .forField(this.field)
                                              .setMessage("At least one element must be set.")
@@ -154,23 +155,23 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     addDuplicateCheck(CodeBlock.Builder validation,
                       Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         if (field.findOption(distinct)) {
-            Rule distinct = distinct();
+            Constraint distinct = distinct();
             append(validation, distinct, onViolation);
         }
     }
 
     private void append(CodeBlock.Builder code,
-                        Rule validation,
+                        Constraint validation,
                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
         Function<Expression<?>, CodeBlock> ruleFactory = validation.compile(onViolation);
         CodeBlock ruleCode = ruleFactory.apply(fieldAccess);
         code.add(ruleCode);
     }
 
-    private Rule distinct() {
+    private Constraint distinct() {
         CodeBlock isDefaultCall =
                 CodeBlock.of("$T.containsDuplicates", ClassName.get(Validate.class));
-        Rule rule = new Rule(field -> formatted("%s(%s)", isDefaultCall, field),
+        Constraint rule = new Constraint(field -> formatted("%s(%s)", isDefaultCall, field),
                              field -> violation()
                                      .setMessage(format("%s should not contain duplicates.", field))
                                      .build());

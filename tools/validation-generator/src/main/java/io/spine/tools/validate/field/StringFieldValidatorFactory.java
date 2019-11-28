@@ -58,7 +58,7 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
         return builder.build();
     }
 
-    private Rule pattern(PatternOption pattern) {
+    private Constraint pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
         Function<Expression<?>, Expression<Boolean>> condition =
                 field -> Expression.of(CodeBlock.of("!$L.matches($S)", field, regex));
@@ -66,7 +66,7 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
                 field -> violationTemplate()
                         .setMessage(format("String must match pattern: '%s'.", regex))
                         .build();
-        return new Rule(
+        return new Constraint(
                 condition,
                 violationFactory
         );

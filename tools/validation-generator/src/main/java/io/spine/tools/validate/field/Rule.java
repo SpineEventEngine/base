@@ -26,32 +26,10 @@ import io.spine.validate.ConstraintViolation;
 
 import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A validation rule.
  */
-final class Rule {
-
-    private final Function<? super Expression<?>, ? extends Expression<Boolean>> condition;
-    private final
-    Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory;
-
-    /**
-     * Creates a new {@code Rule}.
-     *
-     * @param condition
-     *         a function which accepts the field value and yields a boolean expression which
-     *         evaluates into {@code true} when the rule is broken
-     * @param violationFactory
-     *         a function which accepts the field and yields an expression which evaluates into
-     *         a {@link ConstraintViolation} which describes the broken rule
-     */
-    Rule(Function<? super Expression<?>, ? extends Expression<Boolean>> condition,
-         Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory) {
-        this.condition = checkNotNull(condition);
-        this.violationFactory = checkNotNull(violationFactory);
-    }
+public interface Rule {
 
     /**
      * Compiles this rule into the Java validation code.
@@ -61,20 +39,21 @@ final class Rule {
      *         violations are accumulated for the validated message
      * @return a function which accepts the field value and returns the validation code
      */
-    Function<Expression<?>, CodeBlock>
+    default Function<Expression<?>, CodeBlock>
     compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
-        return field -> {
-            Expression<ConstraintViolation> violation = violationFactory.apply(field);
-            CodeBlock fieldIsInvalid = condition.apply(field)
-                                                .toCode();
-            CodeBlock ifViolation = onViolation.apply(violation)
-                                               .toCode();
-            return CodeBlock
-                    .builder()
-                    .beginControlFlow("if ($L)", fieldIsInvalid)
-                    .addStatement(ifViolation)
-                    .endControlFlow()
-                    .build();
-        };
+        return compile(onViolation, CodeBlock.of(""));
     }
+
+    /**
+     * Compiles this rule into the Java validation code.
+     *
+     * @param onViolation
+     *         a function which accept a {@link ConstraintViolation} and yields it to where the
+     *         violations are accumulated for the validated message
+     * @param orElse
+     *         if the rule does not add a violation, this code will be invoked
+     * @return a function which accepts the field value and returns the validation code
+     */
+    Function<Expression<?>, CodeBlock>
+    compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation, CodeBlock orElse);
 }

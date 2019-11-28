@@ -23,6 +23,8 @@ package io.spine.tools.validate.field;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 
+import static io.spine.tools.validate.field.IsEmpty.isEmpty;
+
 /**
  * An abstract base for {@link FieldValidatorFactory}s which produce validation code for primitive
  * sequence fields.
@@ -40,6 +42,6 @@ abstract class SequenceFieldValidatorFactory extends SingularFieldValidatorFacto
 
     @Override
     public Expression<Boolean> isNotSet() {
-        return NotEmptyRule.isEmpty(fieldAccess());
+        return isEmpty(fieldAccess());
     }
 }
