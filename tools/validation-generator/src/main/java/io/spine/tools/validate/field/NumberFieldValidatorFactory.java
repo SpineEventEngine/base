@@ -137,13 +137,12 @@ public final class NumberFieldValidatorFactory
                                     String englishDescription) {
         boolean inclusive = boundary.inclusive();
         String operator = inclusive ? exclusiveOperator : inclusiveOperator;
-        @SuppressWarnings("DuplicateStringLiteralInspection")
         Constraint rule = new Constraint(
                 field -> formatted("%s %s %s", field, operator, boundary.value()),
                 field -> violationTemplate()
-                        .setMessage(format("Field must be %s%s %s.",
+                        .setMessage(format("Field must be %s than%s %s.",
                                            englishDescription,
-                                           inclusive ? "or equal to" : "",
+                                           inclusive ? " or equal to" : "",
                                            boundary.value()))
                         .setFieldValue(field)
                         .build()
