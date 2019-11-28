@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A message with validation constraints.
  *
- * <p>See {@code spine/options.proto} for the validation options definitions.
+ * <p>See {@code spine/options.proto} for the validation option definitions.
  */
 @Beta
 @Immutable
