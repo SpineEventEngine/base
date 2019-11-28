@@ -76,18 +76,15 @@ class ValidateConstraintTest {
                                                 .setCountry("UK")))
                 .addContact(PhoneNumber.getDefaultInstance())
                 .addContact(PhoneNumber.newBuilder().setDigits("not a number"))
+                .addContact(PhoneNumber.newBuilder().setDigits("definitely not a number"))
                 .buildPartial();
         List<ConstraintViolation> violations = msg.validate();
         assertThat(violations).hasSize(2);
-        ConstraintViolation notSetViolation = violations.get(0);
-        assertThat(notSetViolation.getFieldPath().getFieldName(0))
-                .isEqualTo("contact");
-        assertThat(notSetViolation.getMsgFormat())
-                .contains("must be set");
-        ConstraintViolation invalidFormatViolation = violations.get(0);
-        assertThat(invalidFormatViolation.getFieldPath().getFieldName(0))
-                .isEqualTo("contact");
-        assertThat(invalidFormatViolation.getMsgFormat())
-                .contains("must match pattern");
+        for (ConstraintViolation invalidPhone : violations) {
+            assertThat(invalidPhone.getFieldPath().getFieldName(0))
+                    .isEqualTo("contact");
+            assertThat(invalidPhone.getViolationList())
+                    .hasSize(1);
+        }
     }
 }
