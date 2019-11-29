@@ -35,68 +35,94 @@ class NumberConstraintTest {
     @Test
     @DisplayName("min value is checked")
     void min() {
-        assertViolation(InterestRate
-                                .newBuilder()
-                                .setPercent(-3)
-                                .buildPartial(),
-                        "greater than 0.0");
-        assertValid(InterestRate
-                            .newBuilder()
-                            .setPercent(117.3F)
-                            .build());
+        assertViolation(
+                InterestRate
+                        .newBuilder()
+                        .setPercent(-3)
+                        .buildPartial(),
+                "greater than 0.0"
+        );
+        assertValid(
+                InterestRate
+                        .newBuilder()
+                        .setPercent(117.3F)
+                        .build()
+        );
     }
 
     @Test
     @DisplayName("min and max values are checked")
     void minMax() {
-        assertViolation(Year.newBuilder()
-                            .setDayCount(42)
-                            .buildPartial(),
-                        "greater than or equal to 365");
-        assertViolation(Year.newBuilder()
-                            .setDayCount(420)
-                            .buildPartial(),
-                        "less than or equal to 366");
-        assertValid(Year.newBuilder()
+        assertViolation(
+                Year
+                        .newBuilder()
+                        .setDayCount(42)
+                        .buildPartial(),
+                "greater than or equal to 365"
+        );
+        assertViolation(
+                Year
+                        .newBuilder()
+                        .setDayCount(420)
+                        .buildPartial(),
+                "less than or equal to 366"
+        );
+        assertValid(
+                Year
+                        .newBuilder()
                         .setDayCount(365)
-                        .buildPartial());
-        assertValid(Year.newBuilder()
+                        .buildPartial()
+        );
+        assertValid(
+                Year
+                        .newBuilder()
                         .setDayCount(366)
-                        .buildPartial());
+                        .buildPartial()
+        );
     }
 
     @Test
     @DisplayName("numerical range is checked")
     void range() {
-        assertViolation(Probability
-                                .newBuilder()
-                                .setValue(1.1)
-                                .buildPartial(),
-                        "less than or equal to 1.0");
-        assertViolation(Probability
-                                .newBuilder()
-                                .setValue(-0.1)
-                                .buildPartial(),
-                        "greater than or equal to 0.0");
-        assertValid(Probability
-                            .newBuilder()
-                            .setValue(0.0)
-                            .buildPartial());
-        assertValid(Probability
-                            .newBuilder()
-                            .setValue(1.0)
-                            .buildPartial());
+        assertViolation(
+                Probability
+                        .newBuilder()
+                        .setValue(1.1)
+                        .buildPartial(),
+                "less than or equal to 1.0"
+        );
+        assertViolation(
+                Probability
+                        .newBuilder()
+                        .setValue(-0.1)
+                        .buildPartial(),
+                "greater than or equal to 0.0"
+        );
+        assertValid(
+                Probability
+                        .newBuilder()
+                        .setValue(0.0)
+                        .buildPartial()
+        );
+        assertValid(
+                Probability
+                        .newBuilder()
+                        .setValue(1.0)
+                        .buildPartial()
+        );
     }
 
     private static void assertViolation(MessageWithConstraints message, String error) {
         List<ConstraintViolation> violations = message.validate();
-        assertThat(violations).hasSize(1);
-        assertThat(violations.get(0)
-                             .getMsgFormat()).contains(error);
+        assertThat(violations)
+                .hasSize(1);
+        assertThat(violations.get(0).getMsgFormat())
+                .contains(error);
     }
 
     private static void assertValid(MessageWithConstraints message) {
         List<ConstraintViolation> violations = message.validate();
-        assertThat(violations).isEmpty();
+        assertThat(violations)
+                .isEmpty();
     }
 }
