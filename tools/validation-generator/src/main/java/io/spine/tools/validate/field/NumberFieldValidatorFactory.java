@@ -168,15 +168,19 @@ public final class NumberFieldValidatorFactory
         Boundary low = null;
         MinOption minOption = field().findOption(min);
         if (isNotDefault(minOption)) {
-            low = new Boundary(numberKind.parse(minOption.getValue()), !minOption.getExclusive());
+            low = boundary(minOption.getValue(), minOption.getExclusive());
 
         }
         Boundary high = null;
         MaxOption maxOption = field().findOption(max);
         if (isNotDefault(maxOption)) {
-            high = new Boundary(numberKind.parse(maxOption.getValue()), !maxOption.getExclusive());
+            high = boundary(maxOption.getValue(), maxOption.getExclusive());
         }
         return new NumberBoundaries(low, high);
+    }
+
+    private Boundary boundary(String value, boolean exclusive) {
+        return new Boundary(numberKind.parse(value), !exclusive);
     }
 
     private NumberBoundaries rangeBoundaries() {
