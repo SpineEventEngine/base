@@ -23,6 +23,7 @@ package io.spine.tools.validate.field;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.ViolationTemplate;
 import io.spine.validate.ConstraintViolation;
@@ -75,8 +76,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Optional<CodeBlock>
-    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
         CodeBlock.Builder validation = CodeBlock.builder();
         boolean isRequired = field.findOption(required);
         if (isRequired) {
@@ -114,9 +114,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         return true;
     }
 
-    private void
-    addElementValidation(CodeBlock.Builder validation,
-                         Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    private void addElementValidation(CodeBlock.Builder validation,
+                                      ViolationAccumulator onViolation) {
         Optional<CodeBlock> elementValidation = singular.generate(onViolation);
         Expression isNotSet = singular.isNotSet();
         if (elementValidation.isPresent() || eachElementRequired) {

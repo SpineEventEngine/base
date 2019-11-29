@@ -23,12 +23,11 @@ package io.spine.tools.validate.field;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.ViolationTemplate;
-import io.spine.validate.ConstraintViolation;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.required;
@@ -67,8 +66,7 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
     protected abstract ImmutableList<Rule> rules();
 
     @Override
-    public Optional<CodeBlock>
-    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
         CodeBlock code = CodeBlock.of("");
         for (Rule rule : rules().reverse()) {
             code = rule.compile(onViolation, code)

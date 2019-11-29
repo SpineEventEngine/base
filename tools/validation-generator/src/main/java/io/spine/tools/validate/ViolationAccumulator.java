@@ -18,27 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field.given;
+package io.spine.tools.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Function;
 
-public final class ViolationMemoizer implements ViolationAccumulator {
-
-    private final List<Expression<ConstraintViolation>> violations = new ArrayList<>();
-
-    @Override
-    public Expression<?> apply(Expression<ConstraintViolation> violation) {
-        violations.add(violation);
-        return Expression.of("");
-    }
-
-    public List<Expression<ConstraintViolation>> violations() {
-        return ImmutableList.copyOf(violations);
-    }
+/**
+ * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
+ * an expression of the violation being saved.
+ *
+ * <p>Typically, one accumulator is used many times for different violations.
+ */
+@FunctionalInterface
+public interface ViolationAccumulator
+        extends Function<Expression<ConstraintViolation>, Expression<?>> {
 }

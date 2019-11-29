@@ -21,11 +21,11 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * A factory of validation code for a field in a Protobuf message.
@@ -44,8 +44,7 @@ public interface FieldValidatorFactory {
      * @return the validation code or {@code Optional.empty()} if no validation is needed for
      *         the field
      */
-    Optional<CodeBlock>
-    generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation);
+    Optional<CodeBlock> generate(ViolationAccumulator onViolation);
 
     /**
      * Obtains a boolean expression which checks if the field is set or not.

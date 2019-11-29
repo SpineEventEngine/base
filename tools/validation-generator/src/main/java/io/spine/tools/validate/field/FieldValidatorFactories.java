@@ -23,11 +23,10 @@ package io.spine.tools.validate.field;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
-import io.spine.validate.ConstraintViolation;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.code.Expression.formatted;
@@ -112,8 +111,7 @@ public final class FieldValidatorFactories {
         INSTANCE;
 
         @Override
-        public Optional<CodeBlock>
-        generate(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+        public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
             return empty();
         }
 

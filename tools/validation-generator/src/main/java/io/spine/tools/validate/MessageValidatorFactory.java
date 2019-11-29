@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
 import static io.spine.tools.validate.code.Expression.formatted;
@@ -166,17 +165,23 @@ public final class MessageValidatorFactory {
         CodeBlock.Builder body = CodeBlock
                 .builder()
                 .addStatement("$1T $2N = new $1T()", arrayListOfViolations, VIOLATIONS);
-        Function<Expression<ConstraintViolation>, Expression<?>> violationAccumulator =
+        ViolationAccumulator violationAccumulator =
                 violation -> formatted("violations.add(%s)", violation);
         Expression msg = Expression.of(MESSAGE_PARAMETER);
-        FieldValidatorFactories factories = new FieldValidatorFactories(msg);
+        fieldOptionValidation(body, violationAccumulator, msg);
+        body.addStatement(RETURN_N, VIOLATIONS);
+        return body.build();
+    }
+
+    private void fieldOptionValidation(CodeBlock.Builder code,
+                                       ViolationAccumulator violationAccumulator,
+                                       Expression msgAccess) {
+        FieldValidatorFactories factories = new FieldValidatorFactories(msgAccess);
         for (FieldDeclaration field : type.fields()) {
             FieldValidatorFactory factory = factories.forField(field);
             Optional<CodeBlock> fieldValidation = factory.generate(violationAccumulator);
-            fieldValidation.ifPresent(body::add);
+            fieldValidation.ifPresent(code::add);
         }
-        body.addStatement(RETURN_N, VIOLATIONS);
-        return body.build();
     }
 
     /**
