@@ -39,7 +39,6 @@ import static io.spine.option.OptionsProto.min;
 import static io.spine.option.OptionsProto.range;
 import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.validate.code.Expression.formatted;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
@@ -193,69 +192,4 @@ public final class NumberFieldValidatorFactory
         }
     }
 
-    /**
-     * The representation of the number.
-     *
-     * <p>Each element corresponds to multiple types in Java and multiple types in Protobuf.
-     */
-    private enum NumberKind {
-
-        /**
-         * Integer number fields.
-         *
-         * <p>In Java, represented by {@code int} and {@code long}.
-         *
-         * <p>In Protobuf, represented by 32-bit and 64-bit {@code int}, {@code uint}, {@code sint},
-         * {@code fixed}, and {@code sfixed}.
-         *
-         * <p>String representations are parsed into {@link Long} for maximum precision.
-         */
-        INTEGER {
-            @Override
-            Number parse(String value) {
-                return Long.parseLong(value);
-            }
-        },
-
-        /**
-         * Fraction number fields with a floating point.
-         *
-         * <p>In Java, represented by {@code float} and {@code double}.
-         *
-         * <p>In Protobuf, represented by {@code float} and {@code double}.
-         *
-         * <p>String representations are parsed into {@link Double} for maximum precision.
-         */
-        FLOAT {
-            @Override
-            Number parse(String value) {
-                return Double.parseDouble(value);
-            }
-        };
-
-        /**
-         * Parses the given string as a number.
-         */
-        abstract Number parse(String value);
-
-        /**
-         * Chooses a {@code NumberKind} for the given field.
-         *
-         * <p>Throws an {@code IllegalArgumentException} if the field is not a number field.
-         */
-        @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
-        // `default` covers everything else.
-        static NumberKind forField(JavaType type) {
-            switch (type) {
-                case INT:
-                case LONG:
-                    return INTEGER;
-                case FLOAT:
-                case DOUBLE:
-                    return FLOAT;
-                default:
-                    throw newIllegalArgumentException("Unexpected type of field: %s.", type);
-            }
-        }
-    }
 }
