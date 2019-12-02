@@ -47,7 +47,7 @@ final class GoesWithValidatorTest {
         assertThat(validator.validate()).isEmpty();
     }
 
-    @DisplayName("validate all (goes) field options and produce no constraint violations")
+    @DisplayName("validate all (goes) field options and produce no constraint violationsOf")
     @Test
     void validateAllGoesFieldOptionsAndProduceNoViolations() {
         PaymentId id = PaymentId
@@ -63,7 +63,7 @@ final class GoesWithValidatorTest {
         assertThat(validator.validate()).isEmpty();
     }
 
-    @DisplayName("validate all (goes) field options and produce violations")
+    @DisplayName("validate all (goes) field options and produce violationsOf")
     @Test
     void validateAllGoesFieldOptionsAndProduceViolations() {
         PaymentId id = PaymentId

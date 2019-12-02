@@ -42,12 +42,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class RecursiveValidation implements Rule {
 
+    private static final Type listOfViolations =
+            new TypeToken<List<ConstraintViolation>>() {}.getType();
+
     private final FieldDeclaration field;
 
     RecursiveValidation(FieldDeclaration field) {
         this.field = checkNotNull(field);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Produces validation code for checking constraints of a message field.
+     *
+     * <p>Violations for the field are obtained via {@link Validate#violationsOf}.
+     */
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Override
     public Function<Expression<?>, CodeBlock>
@@ -56,9 +66,8 @@ final class RecursiveValidation implements Rule {
         return fieldAccess -> {
             CodeBlock.Builder code = CodeBlock.builder();
             code.beginControlFlow("if ($T.isNotDefault($L))", Validate.class, fieldAccess);
-            Type listOfViolations = new TypeToken<List<ConstraintViolation>>() {}.getType();
             String varName = field.name().javaCase() + "Violations";
-            code.addStatement("$T $N = $T.violations($L)",
+            code.addStatement("$T $N = $T.violationsOf($L)",
                               listOfViolations,
                               varName,
                               Validate.class,

@@ -20,12 +20,11 @@
 
 package io.spine.protobuf;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
 import io.spine.annotation.Beta;
 import io.spine.validate.ConstraintViolation;
-
-import java.util.List;
 
 /**
  * A message with validation constraints.
@@ -41,5 +40,5 @@ public interface MessageWithConstraints extends Message {
      *
      * @return a list of {@link ConstraintViolation}s or an empty list if the message is valid
      */
-    List<ConstraintViolation> validate();
+    ImmutableList<ConstraintViolation> validate();
 }

@@ -20,6 +20,7 @@
 
 package io.spine.tools.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -39,8 +40,6 @@ import io.spine.validate.ValidationException;
 
 import javax.annotation.Generated;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
@@ -58,15 +57,14 @@ public final class MessageValidatorFactory {
     private static final String VALIDATE_METHOD = "validate";
     private static final String MESSAGE_PARAMETER = "msg";
     private static final String MESSAGE_VARIABLE = "msg";
-    private static final String RETURN_N = "return $N";
     private static final String VIOLATIONS = "violations";
 
     @SuppressWarnings("UnstableApiUsage")
-    private static final Type listOfViolations =
-            new TypeToken<List<ConstraintViolation>>() {}.getType();
+    private static final Type immutableListOfViolations =
+            new TypeToken<ImmutableList<ConstraintViolation>>() {}.getType();
     @SuppressWarnings("UnstableApiUsage")
-    private static final Type arrayListOfViolations =
-            new TypeToken<ArrayList<ConstraintViolation>>() {}.getType();
+    private static final Type listBuilderOfViolations =
+            new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {}.getType();
 
     private final MessageType type;
     private final NestedClassName messageSimpleName;
@@ -137,7 +135,7 @@ public final class MessageValidatorFactory {
         MethodSpec validateMethod = MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(PRIVATE, STATIC)
-                .returns(listOfViolations)
+                .returns(immutableListOfViolations)
                 .addParameter(bestGuess(messageSimpleName.value()), MESSAGE_PARAMETER)
                 .addCode(validator())
                 .build();
@@ -164,12 +162,15 @@ public final class MessageValidatorFactory {
     private CodeBlock validator() {
         CodeBlock.Builder body = CodeBlock
                 .builder()
-                .addStatement("$1T $2N = new $1T()", arrayListOfViolations, VIOLATIONS);
+                .addStatement("$T $N = $T.builder()",
+                              listBuilderOfViolations,
+                              VIOLATIONS,
+                              ImmutableList.class);
         ViolationAccumulator violationAccumulator =
-                violation -> formatted("violations.add(%s)", violation);
+                violation -> formatted("%s.add(%s)", VIOLATIONS, violation);
         Expression msg = Expression.of(MESSAGE_PARAMETER);
         fieldOptionValidation(body, violationAccumulator, msg);
-        body.addStatement(RETURN_N, VIOLATIONS);
+        body.addStatement("return $N.build()", VIOLATIONS);
         return body.build();
     }
 
@@ -201,7 +202,7 @@ public final class MessageValidatorFactory {
                 .addModifiers(PUBLIC)
                 .addAnnotation(Beta.class)
                 .addAnnotation(Override.class)
-                .returns(listOfViolations)
+                .returns(immutableListOfViolations)
                 .addCode(body)
                 .build();
     }
@@ -221,14 +222,14 @@ public final class MessageValidatorFactory {
                 .addStatement("$T $N = build()",
                               messageClass, MESSAGE_VARIABLE)
                 .addStatement("$T $N = $N.$N()",
-                              listOfViolations,
+                              immutableListOfViolations,
                               VIOLATIONS,
                               MESSAGE_VARIABLE,
                               VALIDATE_METHOD)
                 .beginControlFlow("if (!$N.isEmpty())", VIOLATIONS)
                 .addStatement("throw new $T($N)", exceptionClass, VIOLATIONS)
                 .endControlFlow()
-                .addStatement(RETURN_N, MESSAGE_VARIABLE)
+                .addStatement("return $N", MESSAGE_VARIABLE)
                 .build();
         return MethodSpec
                 .methodBuilder("vBuild")

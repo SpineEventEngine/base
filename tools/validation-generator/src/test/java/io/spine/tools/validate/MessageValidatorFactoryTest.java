@@ -60,7 +60,7 @@ class MessageValidatorFactoryTest {
         assertThat(isName(validateMethod.name))
                 .isTrue();
         assertThat(validateMethod.returnType.toString())
-                .isEqualTo("java.util.List<io.spine.validate.ConstraintViolation>");
+                .isEqualTo("com.google.common.collect.ImmutableList<io.spine.validate.ConstraintViolation>");
     }
 
     @Test

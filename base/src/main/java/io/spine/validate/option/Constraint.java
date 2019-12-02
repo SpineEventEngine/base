@@ -44,7 +44,7 @@ public interface Constraint<@ImmutableTypeParameter T> {
      *
      * @param value
      *         value that is being checked against this constraint
-     * @return violations of this constraint
+     * @return violationsOf of this constraint
      */
     ImmutableList<ConstraintViolation> check(T value);
 }

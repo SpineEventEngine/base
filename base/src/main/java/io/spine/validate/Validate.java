@@ -295,7 +295,7 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-        List<ConstraintViolation> violations = violations(message);
+        List<ConstraintViolation> violations = violationsOf(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
@@ -308,7 +308,7 @@ public final class Validate {
      * @return violations of the validation rules or an empty list if the message is valid
      */
     @Internal
-    public static List<ConstraintViolation> violations(Message message) {
+    public static List<ConstraintViolation> violationsOf(Message message) {
         return message instanceof MessageWithConstraints
                ? ((MessageWithConstraints) message).validate()
                : validate(message);
