@@ -37,7 +37,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.max;
 import static io.spine.option.OptionsProto.min;
 import static io.spine.option.OptionsProto.range;
-import static io.spine.option.OptionsProto.required;
 import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.validate.code.Expression.formatted;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -95,7 +94,6 @@ public final class NumberFieldValidatorFactory
 
     @Override
     protected ImmutableList<Rule> rules() {
-        checkNotRequired();
         NumberBoundaries boundaries = parseBoundaries();
         ImmutableList.Builder<Rule> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
@@ -110,15 +108,6 @@ public final class NumberFieldValidatorFactory
             rules.add(rule);
         }
         return rules.build();
-    }
-
-    private void checkNotRequired() {
-        if (field().hasOption(required)) {
-            _warn().log(
-                    "Option (required) is not applicable to number fields. Found at %s.",
-                    field()
-            );
-        }
     }
 
     @Override
