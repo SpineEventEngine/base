@@ -28,12 +28,18 @@ import io.spine.validate.ConstraintViolation;
 import java.util.function.Function;
 
 /**
- * A validation rule.
+ * A message validation rule.
+ *
+ * <p>A {@code Rule} may represent one or several validation constraints applied to a message. In
+ * general, a notion of being followed or broken is present for a rule.
  */
 public interface Rule {
 
     /**
      * Compiles this rule into the Java validation code.
+     *
+     * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
+     * the {@link ViolationAccumulator}.
      *
      * @param onViolation
      *         a function which accept a {@link ConstraintViolation} and yields it to where the
@@ -46,6 +52,10 @@ public interface Rule {
 
     /**
      * Compiles this rule into the Java validation code.
+     *
+     * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
+     * the {@link ViolationAccumulator}. If the message follows the rule, no violations are produced
+     * and the {@code orElse} code block is executed.
      *
      * @param onViolation
      *         a function which accept a {@link ConstraintViolation} and yields it to where the

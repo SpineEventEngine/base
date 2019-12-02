@@ -36,7 +36,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A validation rule which checks that a message field is valid.
+ * A validation rule which checks that a message field does not violate its own constraints.
  *
  * <p>If a field message is invalid, the message's {@link ConstraintViolation}s are wrapped into
  * a single violation and added to the rest of the violations of the top-level message.
