@@ -66,4 +66,11 @@ class ClassNameTest {
         assertThat(className.binaryName()).isEqualTo(cls.getName());
         assertThat(className.canonicalName()).isEqualTo(cls.getCanonicalName());
     }
+
+    @Test
+    @DisplayName("throw ISE when parsing an invalid name")
+    void throwOnInvalid() {
+        ClassName className = ClassName.of("NotQualifiedName");
+        assertThrows(IllegalStateException.class, className::packageName);
+    }
 }
