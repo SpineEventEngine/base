@@ -29,6 +29,15 @@ import static java.lang.String.format;
 /**
  * A Java code structure which may yield a value.
  *
+ * <p>The type parameter {@code R} is not used directly in the definition of {@code Expression} API.
+ * {@code R} signifies the return type of the Java code expression represented by a given instance
+ * of {@code Expression} type. For example, if the Java code constructs a list of strings,
+ * the expression should be parametrized as {@code Expression<List<String>>}.
+ *
+ * <p>Descendants may choose to utilize the type parameter. In such a case, the party relying on
+ * the type parameter value must check for an absent parameter (i.e. bound by
+ * {@code java.lang.Object}).
+ *
  * @param <R>
  *         the type of the value yielded by this expression; the type parameter is unused and serves
  *         for clarification purposes only
