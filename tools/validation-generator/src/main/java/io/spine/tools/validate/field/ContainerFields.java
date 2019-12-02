@@ -25,14 +25,16 @@ import io.spine.tools.validate.code.Expression;
 import static io.spine.tools.validate.code.Expression.formatted;
 
 /**
- * Constructs the validation rule which checks if a value if {@code .isEmpty()}.
+ * Set of utilities for working with fields of container types.
+ *
+ * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
  */
-final class IsEmpty {
+final class ContainerFields {
 
     /**
      * Prevents the utility class instantiation.
      */
-    private IsEmpty() {
+    private ContainerFields() {
     }
 
     /**

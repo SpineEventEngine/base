@@ -23,7 +23,7 @@ package io.spine.tools.validate.field;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
 
-import static io.spine.tools.validate.field.IsEmpty.isEmpty;
+import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 
 /**
  * An abstract base for {@link FieldValidatorFactory}s which produce validation code for primitive

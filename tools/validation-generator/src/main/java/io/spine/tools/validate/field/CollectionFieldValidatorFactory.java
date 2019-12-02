@@ -36,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.distinct;
 import static io.spine.option.OptionsProto.required;
 import static io.spine.tools.validate.code.Expression.formatted;
-import static io.spine.tools.validate.field.IsEmpty.isEmpty;
+import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 
