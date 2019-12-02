@@ -91,10 +91,10 @@ public final class ValidatorGenerator extends CodeGenerator {
 
     private static CompilerOutput
     insertCode(Type<?, ?> type, InsertionPoint target, String javaCode) {
-        return CompilerOutput.from(ProtocPluginFiles
-                                           .prepareFile(type)
-                                           .setInsertionPoint(target.forType(type))
-                                           .setContent(javaCode)
-                                           .build());
+        return CompilerOutput.wrapping(ProtocPluginFiles
+                                               .prepareFile(type)
+                                               .setInsertionPoint(target.forType(type))
+                                               .setContent(javaCode)
+                                               .build());
     }
 }
