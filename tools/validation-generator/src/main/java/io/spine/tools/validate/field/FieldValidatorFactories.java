@@ -21,18 +21,13 @@
 package io.spine.tools.validate.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.code.Expression.formatted;
 import static io.spine.tools.validate.field.FieldCardinality.REPEATED;
 import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
-import static java.util.Optional.empty;
 
 /**
  * A factory of {@link FieldValidatorFactory}s.
@@ -100,29 +95,6 @@ public final class FieldValidatorFactories {
             case BOOLEAN:
             default:
                 return NoOpFactory.INSTANCE;
-        }
-    }
-
-    /**
-     * A {@link FieldValidatorFactory} which never produces any field validation.
-     */
-    private enum NoOpFactory implements FieldValidatorFactory {
-
-        INSTANCE;
-
-        @Override
-        public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
-            return empty();
-        }
-
-        @Override
-        public Expression<Boolean> isNotSet() {
-            return Expression.of(String.valueOf(false));
-        }
-
-        @Override
-        public boolean supportsRequired() {
-            return false;
         }
     }
 }
