@@ -86,7 +86,7 @@ extend google.protobuf.FieldOptions {
     // If the field type is a `message`, it must be set to a non-default instance.
     // If it is `string` or `bytes`, the value must not be an empty string or an array.
     // Other field types are not applicable.
-    // If the field is repeated, it must have at least one value set.
+    // If the field is repeated, it must have at least one element.
     //
     // Unlike the `required` keyword used in Protobuf 2, the option does not affect the transfer
     // layer. Even if a message content violates the requirement set by the option, it would still

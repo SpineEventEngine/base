@@ -38,7 +38,7 @@ public interface MessageWithConstraints extends Message {
     /**
      * Validates this message according to the rules in the Protobuf definition.
      *
-     * @return a list of {@link ConstraintViolation}s or an empty list if the message is valid
+     * @return a list of {@code ConstraintViolation}s or an empty list if the message is valid
      */
     ImmutableList<ConstraintViolation> validate();
 }

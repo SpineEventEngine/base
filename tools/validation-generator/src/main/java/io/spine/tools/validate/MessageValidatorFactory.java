@@ -119,9 +119,7 @@ public final class MessageValidatorFactory {
      *
      * <p>The only method of the class is:
      * <pre>
-     *     {@code
-     *     private static {@literal List<ConstraintViolation>} validate(MyMsg msg)
-     *     }
+     * private static {@literal List<ConstraintViolation>} validate(MyMsg msg) { ... }
      * </pre>
      *
      * <p>In this example, {@code MyMsg} is the type of the validated message.

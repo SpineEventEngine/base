@@ -35,7 +35,7 @@ message SpineProtocConfig {
     // Determines if the validation code should be generated for the message types.
     //
     // The benefit of the generated validation code is performance. It is not required to assemble
-    // metadata over all the combinations of fields and options.
+    // metadata over all the combinations of fields and options at the program runtime.
     //
     bool generate_validation = 4;
 }
