@@ -375,6 +375,11 @@ public final class FieldDeclaration {
         return Objects.hashCode(declaringMessage, field.getFullName());
     }
 
+    /**
+     * Obtains qualified name of this field.
+     *
+     * <p>Example: {@code spine.net.Uri.protocol}.
+     */
     @Override
     public String toString() {
         return field.getFullName();
