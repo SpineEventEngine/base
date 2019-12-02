@@ -41,14 +41,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>If a field message is invalid, the message's {@link ConstraintViolation}s are wrapped into
  * a single violation and added to the rest of the violations of the top-level message.
  */
-final class RecursiveValidation implements Rule {
+final class NestedConstraints implements Rule {
 
     private static final Type listOfViolations =
             new TypeToken<List<ConstraintViolation>>() {}.getType();
 
     private final FieldDeclaration field;
 
-    RecursiveValidation(FieldDeclaration field) {
+    NestedConstraints(FieldDeclaration field) {
         this.field = checkNotNull(field);
     }
 

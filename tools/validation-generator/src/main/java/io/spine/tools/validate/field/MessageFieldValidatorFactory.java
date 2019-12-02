@@ -49,7 +49,7 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
         }
         FieldDeclaration field = field();
         if (field.isMessage() && field.findOption(validate)) {
-            rules.add(new RecursiveValidation(field));
+            rules.add(new NestedConstraints(field));
         }
         return rules.build();
     }
