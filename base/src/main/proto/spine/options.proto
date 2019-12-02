@@ -118,7 +118,7 @@ extend google.protobuf.FieldOptions {
     // See `PatternOption`.
     PatternOption pattern = 73820;
 
-    // Turns validation constraint checking for a value of a message, a map, or a repeated field.
+    // Turns on validation constraint checking for a value of a message, a map, or a repeated field.
     //
     // Default value is `false`.
     //
