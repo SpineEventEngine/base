@@ -25,9 +25,9 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
- * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
+ * The {@link CodeGenerator} implementation generating the specific interfaces implemented by
  * some message types.
  *
  * <p>The generator produces two types of {@link File CodeGeneratorResponse.File} instances
@@ -49,7 +49,7 @@ import static io.spine.protobuf.Messages.isNotDefault;
  *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
  */
-public final class InterfaceGenerator extends SpineProtoGenerator {
+public final class InterfaceGenerator extends CodeGenerator {
 
     private final CodeGenerationTasks codeGenerationTasks;
 
@@ -61,7 +61,7 @@ public final class InterfaceGenerator extends SpineProtoGenerator {
     /**
      * Retrieves the single instance of the {@code InterfaceGenerator}.
      */
-    public static SpineProtoGenerator instance(SpineProtocConfig spineProtocConfig) {
+    public static CodeGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
         AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();

@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("SpineProtoGenerator should")
-final class SpineProtoGeneratorTest {
+final class CodeGeneratorTest {
 
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
@@ -183,7 +183,7 @@ final class SpineProtoGeneratorTest {
 
     }
 
-    private static class TestGenerator extends SpineProtoGenerator {
+    private static class TestGenerator extends CodeGenerator {
 
         private final ImmutableList<CompilerOutput> compilerOutputs;
 

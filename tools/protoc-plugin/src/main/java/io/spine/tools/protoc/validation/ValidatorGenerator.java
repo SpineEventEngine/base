@@ -23,11 +23,11 @@ package io.spine.tools.protoc.validation;
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.java.ClassName;
 import io.spine.protobuf.MessageWithConstraints;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.iface.MessageImplements;
 import io.spine.tools.protoc.iface.MessageInterface;
@@ -44,12 +44,10 @@ import static io.spine.tools.protoc.TypeParameters.empty;
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
 /**
- * The message validation code generator.
- *
- * <p>Generates code which validates message fields upon the constraints, as well as the API which
+ * Generates code which validates message fields upon the constraints, as well as the API which
  * exposes validation to the user of the message class.
  */
-public final class ValidatorGenerator extends SpineProtoGenerator {
+public final class ValidatorGenerator extends CodeGenerator {
 
     private static final MessageInterface VALIDATABLE_MESSAGE =
             new PredefinedInterface(ClassName.of(MessageWithConstraints.class), empty());
@@ -61,7 +59,7 @@ public final class ValidatorGenerator extends SpineProtoGenerator {
         super();
     }
 
-    public static SpineProtoGenerator instance(SpineProtocConfig config) {
+    public static CodeGenerator instance(SpineProtocConfig config) {
         return config.getSkipValidatingBuilders() || !config.getGenerateValidation()
                ? NoOpGenerator.instance()
                : new ValidatorGenerator();

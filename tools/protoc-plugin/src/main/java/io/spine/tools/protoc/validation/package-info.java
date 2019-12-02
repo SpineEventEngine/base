@@ -19,6 +19,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains components for generating validation code for given message types.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.protoc.validation;

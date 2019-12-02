@@ -35,8 +35,8 @@ import io.spine.code.fs.java.Directory;
 import io.spine.code.fs.java.FileName;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.PackageName;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.GeneratedInterfaces;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.given.SpineProtocConfigGiven;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +79,7 @@ final class InterfaceGeneratorTest {
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
             compile("Customer(Command|Event)");
 
-    private SpineProtoGenerator codeGenerator;
+    private CodeGenerator codeGenerator;
 
     private static Version version() {
         return Version.newBuilder()

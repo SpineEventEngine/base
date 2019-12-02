@@ -26,11 +26,11 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 /**
- * A {@link SpineProtoGenerator} which generates no code.
+ * A {@link CodeGenerator} which generates no code.
  */
-public final class NoOpGenerator extends SpineProtoGenerator {
+public final class NoOpGenerator extends CodeGenerator {
 
-    private static final SpineProtoGenerator instance = new NoOpGenerator();
+    private static final CodeGenerator instance = new NoOpGenerator();
 
     /**
      * Prevents direct instantiation.
@@ -39,7 +39,7 @@ public final class NoOpGenerator extends SpineProtoGenerator {
         super();
     }
 
-    public static SpineProtoGenerator instance() {
+    public static CodeGenerator instance() {
         return instance;
     }
 

@@ -47,7 +47,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * An abstract base for the Protobuf code generator.
+ * An abstract base for the Protobuf to Java code generator.
  *
  * <p>A generator consumes a {@link DescriptorProto DescriptorProto} for each message type and
  * optionally generates some Java code in response to it regarding {@linkplain FileDescriptorProto
@@ -79,9 +79,9 @@ import static java.util.stream.Collectors.toSet;
  * <p>If the {@code insertionPoint} field is present, the {@code name} field must also be present.
  * The {@code content} field contains the value to insert into the insertion point is this case.
  */
-public abstract class SpineProtoGenerator {
+public abstract class CodeGenerator {
 
-    protected SpineProtoGenerator() {
+    protected CodeGenerator() {
     }
 
     /**
@@ -201,7 +201,7 @@ public abstract class SpineProtoGenerator {
         List<File> merged = insertionPoints
                 .stream()
                 .collect(groupingBy(File::getInsertionPoint,
-                                    reducing(SpineProtoGenerator::concatContent)))
+                                    reducing(CodeGenerator::concatContent)))
                 .values()
                 .stream()
                 .map(file -> file.orElse(emptyFile))
