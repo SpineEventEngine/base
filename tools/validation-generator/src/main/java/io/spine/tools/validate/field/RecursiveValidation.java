@@ -23,6 +23,7 @@ package io.spine.tools.validate.field;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.ViolationTemplate;
 import io.spine.validate.ConstraintViolation;
@@ -61,8 +62,7 @@ final class RecursiveValidation implements Rule {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Override
     public Function<Expression<?>, CodeBlock>
-    compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation,
-            CodeBlock orElse) {
+    compile(ViolationAccumulator onViolation, CodeBlock orElse) {
         return fieldAccess -> {
             CodeBlock.Builder code = CodeBlock.builder();
             code.beginControlFlow("if ($T.isNotDefault($L))", Validate.class, fieldAccess);

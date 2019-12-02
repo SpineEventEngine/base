@@ -21,6 +21,7 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
@@ -39,8 +40,7 @@ public interface Rule {
      *         violations are accumulated for the validated message
      * @return a function which accepts the field value and returns the validation code
      */
-    default Function<Expression<?>, CodeBlock>
-    compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    default Function<Expression<?>, CodeBlock> compile(ViolationAccumulator onViolation) {
         return compile(onViolation, CodeBlock.of(""));
     }
 
@@ -54,6 +54,5 @@ public interface Rule {
      *         if the rule does not add a violation, this code will be invoked
      * @return a function which accepts the field value and returns the validation code
      */
-    Function<Expression<?>, CodeBlock>
-    compile(Function<Expression<ConstraintViolation>, Expression<?>> onViolation, CodeBlock orElse);
+    Function<Expression<?>, CodeBlock> compile(ViolationAccumulator onViolation, CodeBlock orElse);
 }

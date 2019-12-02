@@ -52,6 +52,7 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
 
     @Override
     public CodeBlock toCode() {
+        @SuppressWarnings("DuplicateStringLiteralInspection")
         CodeBlock.Builder builder = CodeBlock
                 .builder()
                 .add("$T.newBuilder()", ConstraintViolation.class)

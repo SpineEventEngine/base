@@ -151,8 +151,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     private void
-    addDuplicateCheck(CodeBlock.Builder validation,
-                      Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+    addDuplicateCheck(CodeBlock.Builder validation, ViolationAccumulator onViolation) {
         if (field.findOption(distinct)) {
             Constraint distinct = distinct();
             append(validation, distinct, onViolation);
@@ -161,7 +160,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
 
     private void append(CodeBlock.Builder code,
                         Constraint validation,
-                        Function<Expression<ConstraintViolation>, Expression<?>> onViolation) {
+                        ViolationAccumulator onViolation) {
         Function<Expression<?>, CodeBlock> ruleFactory = validation.compile(onViolation);
         CodeBlock ruleCode = ruleFactory.apply(fieldAccess);
         code.add(ruleCode);

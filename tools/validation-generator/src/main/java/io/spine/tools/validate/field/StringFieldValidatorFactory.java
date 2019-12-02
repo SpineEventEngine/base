@@ -26,9 +26,6 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
 import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.ViolationTemplate;
-
-import java.util.function.Function;
 
 import static io.spine.option.OptionsProto.pattern;
 import static java.lang.String.format;
@@ -60,9 +57,9 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     private Constraint pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
-        Function<Expression<?>, Expression<Boolean>> condition =
+        Condition condition =
                 field -> Expression.of(CodeBlock.of("!$L.matches($S)", field, regex));
-        Function<Expression<?>, ViolationTemplate> violationFactory =
+        ViolationFactory violationFactory =
                 field -> violationTemplate()
                         .setMessage(format("String must match pattern: '%s'.", regex))
                         .build();

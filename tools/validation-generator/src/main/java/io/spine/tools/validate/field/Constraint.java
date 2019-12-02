@@ -21,6 +21,7 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.tools.validate.ViolationAccumulator;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
@@ -33,9 +34,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class Constraint implements Rule {
 
-    private final Function<? super Expression<?>, ? extends Expression<Boolean>> condition;
-    private final
-    Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory;
+    private final Condition condition;
+    private final ViolationFactory violationFactory;
 
     /**
      * Creates a new {@code Rule}.
@@ -47,17 +47,14 @@ final class Constraint implements Rule {
      *         a function which accepts the field and yields an expression which evaluates into
      *         a {@link ConstraintViolation} which describes the broken rule
      */
-    Constraint(
-    Function<? super Expression<?>, ? extends Expression<Boolean>> condition,
-    Function<? super Expression<?>, ? extends Expression<ConstraintViolation>> violationFactory) {
+    Constraint(Condition condition, ViolationFactory violationFactory) {
         this.condition = checkNotNull(condition);
         this.violationFactory = checkNotNull(violationFactory);
     }
 
     @Override
     public Function<Expression<?>, CodeBlock>
-    compile(Function<Expression<ConstraintViolation>,
-            Expression<?>> onViolation, CodeBlock orElse) {
+    compile(ViolationAccumulator onViolation, CodeBlock orElse) {
         return field -> {
             Expression<ConstraintViolation> violation = violationFactory.apply(field);
             CodeBlock fieldIsInvalid = condition.apply(field)
