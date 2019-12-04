@@ -25,7 +25,7 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.code.GetterExpression;
-import io.spine.tools.validate.code.ViolationTemplate;
+import io.spine.tools.validate.code.NewViolation;
 
 import java.util.Optional;
 
@@ -96,8 +96,8 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
         return fieldAccess;
     }
 
-    final ViolationTemplate.Builder violationTemplate() {
-        return ViolationTemplate.forField(field);
+    final NewViolation.Builder violationTemplate() {
+        return NewViolation.forField(field);
     }
 
     @Override

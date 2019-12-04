@@ -27,7 +27,7 @@ import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.GetterExpression;
-import io.spine.tools.validate.code.ViolationTemplate;
+import io.spine.tools.validate.code.NewViolation;
 import io.spine.validate.Validate;
 
 import java.util.Optional;
@@ -97,7 +97,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     private void
     collectionIsEmpty(AccumulateViolations onViolation, CodeBlock.Builder validation) {
         @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
-        ViolationTemplate violation = violation()
+                NewViolation violation = violation()
                 .setMessage("Collection must not be empty.")
                 .build();
         validation.addStatement(onViolation.apply(violation).toCode());
@@ -139,7 +139,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
                 @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
                 FieldConstraint fieldConstraint = new FieldConstraint(
                         formatted("!%s", isSet),
-                        ViolationTemplate
+                        NewViolation
                                 .forField(field)
                                 .setMessage("At least one element must be set.")
                                 .build()
@@ -171,7 +171,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
         return rule;
     }
 
-    private ViolationTemplate.Builder violation() {
-        return ViolationTemplate.forField(this.field);
+    private NewViolation.Builder violation() {
+        return NewViolation.forField(this.field);
     }
 }

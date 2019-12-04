@@ -28,7 +28,7 @@ import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.ConditionalStatement;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.GetterExpression;
-import io.spine.tools.validate.code.ViolationTemplate;
+import io.spine.tools.validate.code.NewViolation;
 import io.spine.tools.validate.code.VoidExpression;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Validate;
@@ -100,8 +100,8 @@ final class MessageConstraints implements Constraint {
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    private ViolationTemplate violationExpression() {
-        return ViolationTemplate
+    private NewViolation violationExpression() {
+        return NewViolation
                 .forField(field)
                 .setMessage("Message must have valid fields.")
                 .setNestedViolations(violationsList)

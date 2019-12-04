@@ -34,7 +34,7 @@ import static java.util.Arrays.asList;
 /**
  * An {@link Expression} which creates a new {@link ConstraintViolation}.
  */
-public final class ViolationTemplate implements Expression<ConstraintViolation> {
+public final class NewViolation implements Expression<ConstraintViolation> {
 
     private final String message;
     private final @Nullable Expression fieldValue;
@@ -42,7 +42,7 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
     private final FieldPath field;
     private final @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
 
-    private ViolationTemplate(Builder builder) {
+    private NewViolation(Builder builder) {
         this.message = builder.message;
         this.fieldValue = builder.fieldValue;
         this.type = builder.type;
@@ -79,17 +79,15 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code ViolationTemplate} instances.
+     * Creates a new instance of {@code Builder} for {@code NewViolation} instances.
+     *
+     * <p>The builder is preset with the declaring type and name of the given field.
      *
      * @return new instance of {@code Builder}
      */
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
     public static Builder forField(FieldDeclaration field) {
         checkNotNull(field);
-        return newBuilder()
+        return new Builder()
                 .setType(field.declaringType())
                 .setField(field.name().value());
     }
@@ -145,11 +143,11 @@ public final class ViolationTemplate implements Expression<ConstraintViolation> 
          *
          * @return new instance of {@code ViolationTemplate}
          */
-        public ViolationTemplate build() {
+        public NewViolation build() {
             checkNotNull(message);
             checkNotNull(type);
             checkNotNull(field);
-            return new ViolationTemplate(this);
+            return new NewViolation(this);
         }
     }
 }
