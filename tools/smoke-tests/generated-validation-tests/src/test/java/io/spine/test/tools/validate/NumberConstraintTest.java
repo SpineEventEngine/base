@@ -36,17 +36,15 @@ class NumberConstraintTest {
     @DisplayName("min value is checked")
     void min() {
         assertViolation(
-                InterestRate
-                        .newBuilder()
-                        .setPercent(-3)
-                        .buildPartial(),
+                InterestRate.newBuilder()
+                            .setPercent(-3)
+                            .buildPartial(),
                 "greater than 0.0"
         );
         assertValid(
-                InterestRate
-                        .newBuilder()
-                        .setPercent(117.3F)
-                        .build()
+                InterestRate.newBuilder()
+                            .setPercent(117.3F)
+                            .build()
         );
     }
 
@@ -54,30 +52,26 @@ class NumberConstraintTest {
     @DisplayName("min and max values are checked")
     void minMax() {
         assertViolation(
-                Year
-                        .newBuilder()
-                        .setDayCount(42)
-                        .buildPartial(),
+                Year.newBuilder()
+                    .setDayCount(42)
+                    .buildPartial(),
                 "greater than or equal to 365"
         );
         assertViolation(
-                Year
-                        .newBuilder()
-                        .setDayCount(420)
-                        .buildPartial(),
+                Year.newBuilder()
+                    .setDayCount(420)
+                    .buildPartial(),
                 "less than or equal to 366"
         );
         assertValid(
-                Year
-                        .newBuilder()
-                        .setDayCount(365)
-                        .buildPartial()
+                Year.newBuilder()
+                    .setDayCount(365)
+                    .buildPartial()
         );
         assertValid(
-                Year
-                        .newBuilder()
-                        .setDayCount(366)
-                        .buildPartial()
+                Year.newBuilder()
+                    .setDayCount(366)
+                    .buildPartial()
         );
     }
 
@@ -85,30 +79,26 @@ class NumberConstraintTest {
     @DisplayName("numerical range is checked")
     void range() {
         assertViolation(
-                Probability
-                        .newBuilder()
-                        .setValue(1.1)
-                        .buildPartial(),
+                Probability.newBuilder()
+                           .setValue(1.1)
+                           .buildPartial(),
                 "less than or equal to 1.0"
         );
         assertViolation(
-                Probability
-                        .newBuilder()
-                        .setValue(-0.1)
-                        .buildPartial(),
+                Probability.newBuilder()
+                           .setValue(-0.1)
+                           .buildPartial(),
                 "greater than or equal to 0.0"
         );
         assertValid(
-                Probability
-                        .newBuilder()
-                        .setValue(0.0)
-                        .buildPartial()
+                Probability.newBuilder()
+                           .setValue(0.0)
+                           .buildPartial()
         );
         assertValid(
-                Probability
-                        .newBuilder()
-                        .setValue(1.0)
-                        .buildPartial()
+                Probability.newBuilder()
+                           .setValue(1.0)
+                           .buildPartial()
         );
     }
 
@@ -116,7 +106,8 @@ class NumberConstraintTest {
         List<ConstraintViolation> violations = message.validate();
         assertThat(violations)
                 .hasSize(1);
-        assertThat(violations.get(0).getMsgFormat())
+        assertThat(violations.get(0)
+                             .getMsgFormat())
                 .contains(error);
     }
 
