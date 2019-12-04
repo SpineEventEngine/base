@@ -29,7 +29,7 @@ import io.spine.validate.ConstraintViolation;
 /**
  * A message with validation constraints.
  *
- * <p>See {@code spine/options.proto} for the validation option definitions.
+ * <p>Please see {@code spine/options.proto} for the definitions of validation options.
  */
 @Beta
 @Immutable
