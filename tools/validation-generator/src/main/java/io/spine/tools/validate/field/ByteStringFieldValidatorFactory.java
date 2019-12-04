@@ -22,7 +22,7 @@ package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 
 /**
  * A {@link FieldValidatorFactory} for {@code bytes} fields.
@@ -30,7 +30,7 @@ import io.spine.tools.validate.code.Expression;
 final class ByteStringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     ByteStringFieldValidatorFactory(FieldDeclaration field,
-                                    Expression fieldAccess,
+                                    GetterExpression fieldAccess,
                                     FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }

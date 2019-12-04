@@ -23,9 +23,12 @@ package io.spine.tools.validate.field;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.GetterExpression.mapField;
+import static io.spine.tools.validate.code.GetterExpression.repeatedField;
+import static io.spine.tools.validate.code.GetterExpression.singularField;
 import static io.spine.tools.validate.field.FieldCardinality.REPEATED;
 import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 
@@ -61,21 +64,22 @@ public final class FieldValidatorFactories {
     private FieldValidatorFactory forCollections(FieldDeclaration field) {
         FieldValidatorFactory singularFactory =
                 forSingularField(field, REPEATED, CollectionFieldValidatorFactory.element);
-        String suffix = field.isMap() ? "Map().values()" : "List()";
-        Expression fieldAccess =
-                formatted("%s.get%s%s", messageAccess, field.name().toCamelCase(), suffix);
-        return new CollectionFieldValidatorFactory(field, fieldAccess, singularFactory);
+        GetterExpression getter = field.isMap()
+                                  ? mapField(messageAccess, field.name())
+                                  : repeatedField(messageAccess, field.name());
+        return new CollectionFieldValidatorFactory(field, getter, singularFactory);
     }
 
     private FieldValidatorFactory
     forSingularField(FieldDeclaration field) {
-        Expression fieldAccess =
-                formatted("%s.get%s()", messageAccess, field.name().toCamelCase());
+        GetterExpression fieldAccess = singularField(messageAccess, field.name());
         return forSingularField(field, SINGULAR, fieldAccess);
     }
 
     private static FieldValidatorFactory
-    forSingularField(FieldDeclaration field, FieldCardinality cardinality, Expression fieldAccess) {
+    forSingularField(FieldDeclaration field,
+                     FieldCardinality cardinality,
+                     GetterExpression fieldAccess) {
         JavaType type = field.isMap()
                         ? field.valueDeclaration().javaType()
                         : field.javaType();

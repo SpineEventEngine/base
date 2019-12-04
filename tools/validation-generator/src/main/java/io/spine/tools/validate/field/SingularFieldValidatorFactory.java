@@ -23,8 +23,8 @@ package io.spine.tools.validate.field;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationAccumulator;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.code.ViolationTemplate;
 
 import java.util.Optional;
@@ -39,7 +39,7 @@ import static io.spine.tools.validate.field.FieldCardinality.SINGULAR;
 abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
 
     private final FieldDeclaration field;
-    private final Expression fieldAccess;
+    private final GetterExpression fieldAccess;
     private final FieldCardinality cardinality;
 
     /**
@@ -53,7 +53,7 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
      *         whether or not the value is an element of a repeated field
      */
     SingularFieldValidatorFactory(FieldDeclaration field,
-                                  Expression fieldAccess,
+                                  GetterExpression fieldAccess,
                                   FieldCardinality cardinality) {
         this.field = checkNotNull(field);
         this.fieldAccess = checkNotNull(fieldAccess);
@@ -66,11 +66,10 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
     protected abstract ImmutableList<Rule> rules();
 
     @Override
-    public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
+    public Optional<CodeBlock> generate(AccumulateViolations onViolation) {
         CodeBlock code = CodeBlock.of("");
         for (Rule rule : rules().reverse()) {
-            code = rule.compile(onViolation, code)
-                       .apply(fieldAccess);
+            code = rule.compile(onViolation, code);
         }
         return code.isEmpty()
                ? Optional.empty()
@@ -83,8 +82,8 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
     final Constraint requiredRule() {
-        return new Constraint(field -> isNotSet(),
-                              field -> violationTemplate()
+        return new Constraint(isNotSet(),
+                              violationTemplate()
                                       .setMessage("Field must be set.")
                                       .build());
     }
@@ -93,7 +92,7 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
         return field;
     }
 
-    final Expression fieldAccess() {
+    final GetterExpression fieldAccess() {
         return fieldAccess;
     }
 

@@ -21,11 +21,8 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.validate.ViolationAccumulator;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.AccumulateViolations;
 import io.spine.validate.ConstraintViolation;
-
-import java.util.function.Function;
 
 /**
  * A message validation rule.
@@ -39,14 +36,14 @@ public interface Rule {
      * Compiles this rule into the Java validation code.
      *
      * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
-     * the {@link ViolationAccumulator}.
+     * the {@link AccumulateViolations}.
      *
      * @param onViolation
      *         a function which accept a {@link ConstraintViolation} and yields it to where the
      *         violations are accumulated for the validated message
      * @return a function which accepts the field value and returns the validation code
      */
-    default Function<Expression<?>, CodeBlock> compile(ViolationAccumulator onViolation) {
+    default CodeBlock compile(AccumulateViolations onViolation) {
         return compile(onViolation, CodeBlock.of(""));
     }
 
@@ -54,7 +51,7 @@ public interface Rule {
      * Compiles this rule into the Java validation code.
      *
      * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
-     * the {@link ViolationAccumulator}. If the message follows the rule, no violations are produced
+     * the {@link AccumulateViolations}. If the message follows the rule, no violations are produced
      * and the {@code orElse} code block is executed.
      *
      * @param onViolation
@@ -64,5 +61,5 @@ public interface Rule {
      *         if the rule does not add a violation, this code will be invoked
      * @return a function which accepts the field value and returns the validation code
      */
-    Function<Expression<?>, CodeBlock> compile(ViolationAccumulator onViolation, CodeBlock orElse);
+    CodeBlock compile(AccumulateViolations onViolation, CodeBlock orElse);
 }

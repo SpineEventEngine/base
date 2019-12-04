@@ -25,10 +25,11 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.GetterExpression;
 
 import static io.spine.option.OptionsProto.validate;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.formatted;
 
 /**
  * A {@link FieldValidatorFactory} for message and enum fields.
@@ -36,7 +37,7 @@ import static io.spine.tools.validate.code.Expression.formatted;
 final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
 
     MessageFieldValidatorFactory(FieldDeclaration field,
-                                 Expression fieldAccess,
+                                 GetterExpression fieldAccess,
                                  FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }
@@ -49,13 +50,13 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
         }
         FieldDeclaration field = field();
         if (field.isMessage() && field.findOption(validate)) {
-            rules.add(new NestedConstraints(field));
+            rules.add(new NestedConstraints(field, fieldAccess()));
         }
         return rules.build();
     }
 
     @Override
-    public Expression<Boolean> isNotSet() {
+    public BooleanExpression isNotSet() {
         CodeBlock isDefaultCall = CodeBlock.of("$T.isDefault", ClassName.get(Messages.class));
         return formatted("%s(%s)", isDefaultCall, fieldAccess());
     }

@@ -26,7 +26,8 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.MaxOption;
 import io.spine.option.MinOption;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.number.Boundary;
 import io.spine.tools.validate.number.NumberBoundaries;
 
@@ -38,9 +39,9 @@ import static io.spine.option.OptionsProto.max;
 import static io.spine.option.OptionsProto.min;
 import static io.spine.option.OptionsProto.range;
 import static io.spine.protobuf.Messages.isNotDefault;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.falseLiteral;
+import static io.spine.tools.validate.code.BooleanExpression.formatted;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 
 /**
  * A {@link FieldValidatorFactory} for number fields.
@@ -85,7 +86,7 @@ public final class NumberFieldValidatorFactory
 
     NumberFieldValidatorFactory(FieldDeclaration field,
                                 JavaType type,
-                                Expression fieldAccess,
+                                GetterExpression fieldAccess,
                                 FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
         this.numberKind = NumberKind.forField(type);
@@ -110,8 +111,8 @@ public final class NumberFieldValidatorFactory
     }
 
     @Override
-    public Expression<Boolean> isNotSet() {
-        return Expression.of(valueOf(false));
+    public BooleanExpression isNotSet() {
+        return falseLiteral();
     }
 
     @Override
@@ -126,13 +127,13 @@ public final class NumberFieldValidatorFactory
         boolean inclusive = boundary.inclusive();
         String operator = inclusive ? exclusiveOperator : inclusiveOperator;
         Constraint rule = new Constraint(
-                field -> formatted("%s %s %s", field, operator, boundary.value()),
-                field -> violationTemplate()
+                formatted("%s %s %s", fieldAccess(), operator, boundary.value()),
+                violationTemplate()
                         .setMessage(format("Field must be %s than%s %s.",
                                            englishDescription,
                                            inclusive ? " or equal to" : "",
                                            boundary.value()))
-                        .setFieldValue(field)
+                        .setFieldValue(fieldAccess())
                         .build()
         );
         return rule;

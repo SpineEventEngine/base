@@ -43,7 +43,7 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -164,8 +164,8 @@ public final class MessageValidatorFactory {
                               listBuilderOfViolations,
                               VIOLATIONS,
                               ImmutableList.class);
-        ViolationAccumulator violationAccumulator =
-                violation -> formatted("%s.add(%s)", VIOLATIONS, violation);
+        AccumulateViolations violationAccumulator =
+                violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
         Expression msg = Expression.of(MESSAGE_PARAMETER);
         fieldOptionValidation(body, violationAccumulator, msg);
         body.addStatement("return $N.build()", VIOLATIONS);
@@ -173,7 +173,7 @@ public final class MessageValidatorFactory {
     }
 
     private void fieldOptionValidation(CodeBlock.Builder code,
-                                       ViolationAccumulator violationAccumulator,
+                                       AccumulateViolations violationAccumulator,
                                        Expression msgAccess) {
         FieldValidatorFactories factories = new FieldValidatorFactories(msgAccess);
         for (FieldDeclaration field : type.fields()) {
@@ -214,7 +214,6 @@ public final class MessageValidatorFactory {
     public MethodSpec generateVBuild() {
         ClassName messageClass = bestGuess(messageSimpleName.value());
         Class<ValidationException> exceptionClass = ValidationException.class;
-        @SuppressWarnings("DuplicateStringLiteralInspection")
         CodeBlock body = CodeBlock
                 .builder()
                 .addStatement("$T $N = build()",

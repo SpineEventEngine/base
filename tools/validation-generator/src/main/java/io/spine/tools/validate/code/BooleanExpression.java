@@ -21,23 +21,38 @@
 package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.value.StringTypeValue;
 
-/**
- * A simple code expression.
- *
- * @param <R> the type of the expression value
- */
-class CodeExpression<R> extends StringTypeValue implements Expression<R> {
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+
+public final class BooleanExpression
+        extends CodeExpression<Boolean> {
 
     private static final long serialVersionUID = 0L;
 
-    CodeExpression(String value) {
+    private static final BooleanExpression FALSE = new BooleanExpression(valueOf(false));
+
+    private BooleanExpression(String value) {
         super(value);
     }
 
-    @Override
-    public CodeBlock toCode() {
-        return CodeBlock.of("$L", value());
+    public static BooleanExpression formatted(String template, Object... args) {
+        return new BooleanExpression(format(template, args));
+    }
+
+    public static BooleanExpression fromCode(String code, Object... args) {
+        CodeBlock block = CodeBlock.of(code, args);
+        return new BooleanExpression(block.toString());
+    }
+
+    public static BooleanExpression falseLiteral() {
+        return FALSE;
+    }
+
+    public ConditionalStatement ifTrue(CodeBlock branch) {
+        CodeBlock.Builder code = CodeBlock.builder();
+        code.beginControlFlow("if ($L)", value());
+        code.add(branch);
+        return new ConditionalStatement(code);
     }
 }

@@ -23,19 +23,19 @@ package io.spine.tools.validate.field;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationAccumulator;
+import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.code.ViolationTemplate;
-import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Validate;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.distinct;
 import static io.spine.option.OptionsProto.required;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.formatted;
 import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
@@ -48,7 +48,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     /**
      * The reference to an element in the validated field during iteration.
      */
-    static final Expression<?> element = Expression.of("element");
+    static final GetterExpression element = GetterExpression.of("element");
 
     private final FieldDeclaration field;
     private final Expression<?> fieldAccess;
@@ -76,7 +76,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
+    public Optional<CodeBlock> generate(AccumulateViolations onViolation) {
         CodeBlock.Builder validation = CodeBlock.builder();
         boolean isRequired = field.findOption(required);
         if (isRequired) {
@@ -95,8 +95,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     private void
-    collectionIsEmpty(Function<Expression<ConstraintViolation>, Expression<?>> onViolation,
-                      CodeBlock.Builder validation) {
+    collectionIsEmpty(AccumulateViolations onViolation, CodeBlock.Builder validation) {
         @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
         ViolationTemplate violation = violation()
                 .setMessage("Collection must not be empty.")
@@ -105,7 +104,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @Override
-    public Expression<Boolean> isNotSet() {
+    public BooleanExpression isNotSet() {
         return isEmpty(fieldAccess);
     }
 
@@ -115,7 +114,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     private void addElementValidation(CodeBlock.Builder validation,
-                                      ViolationAccumulator onViolation) {
+                                      AccumulateViolations onViolation) {
         Optional<CodeBlock> elementValidation = singular.generate(onViolation);
         Expression isNotSet = singular.isNotSet();
         if (elementValidation.isPresent() || eachElementRequired) {
@@ -138,41 +137,37 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             validation.endControlFlow();
             if (eachElementRequired) {
                 @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
-                        Constraint rule = new Constraint(field -> formatted("!%s", isSet),
-                                     field -> ViolationTemplate
-                                             .forField(this.field)
-                                             .setMessage("At least one element must be set.")
-                                             .build());
-                CodeBlock check = rule.compile(onViolation)
-                                      .apply(fieldAccess);
+                Constraint constraint = new Constraint(
+                        formatted("!%s", isSet),
+                        ViolationTemplate
+                                .forField(field)
+                                .setMessage("At least one element must be set.")
+                                .build()
+                );
+                CodeBlock check = constraint.compile(onViolation);
                 validation.add(check);
             }
         }
     }
 
     private void
-    addDuplicateCheck(CodeBlock.Builder validation, ViolationAccumulator onViolation) {
+    addDuplicateCheck(CodeBlock.Builder validation, AccumulateViolations onViolation) {
         if (field.findOption(distinct)) {
             Constraint distinct = distinct();
-            append(validation, distinct, onViolation);
+            CodeBlock ruleCode = distinct.compile(onViolation);
+            validation.add(ruleCode);
         }
-    }
-
-    private void append(CodeBlock.Builder code,
-                        Constraint validation,
-                        ViolationAccumulator onViolation) {
-        Function<Expression<?>, CodeBlock> ruleFactory = validation.compile(onViolation);
-        CodeBlock ruleCode = ruleFactory.apply(fieldAccess);
-        code.add(ruleCode);
     }
 
     private Constraint distinct() {
         CodeBlock isDefaultCall =
                 CodeBlock.of("$T.containsDuplicates", ClassName.get(Validate.class));
-        Constraint rule = new Constraint(field -> formatted("%s(%s)", isDefaultCall, field),
-                             field -> violation()
-                                     .setMessage(format("%s should not contain duplicates.", field))
-                                     .build());
+        Constraint rule = new Constraint(
+                formatted("%s(%s)", isDefaultCall, field),
+                violation()
+                        .setMessage(format("%s should not contain duplicates.", field))
+                        .build()
+        );
         return rule;
     }
 

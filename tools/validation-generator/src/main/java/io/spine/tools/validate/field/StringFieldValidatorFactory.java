@@ -22,12 +22,12 @@ package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 
 import static io.spine.option.OptionsProto.pattern;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static java.lang.String.format;
 
 /**
@@ -36,7 +36,7 @@ import static java.lang.String.format;
 final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     StringFieldValidatorFactory(FieldDeclaration field,
-                                Expression fieldAccess,
+                                GetterExpression fieldAccess,
                                 FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }
@@ -57,15 +57,11 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
 
     private Constraint pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
-        Condition condition =
-                field -> Expression.of(CodeBlock.of("!$L.matches($S)", field, regex));
-        ViolationFactory violationFactory =
-                field -> violationTemplate()
-                        .setMessage(format("String must match pattern: '%s'.", regex))
-                        .build();
         return new Constraint(
-                condition,
-                violationFactory
+                fromCode("!$L.matches($S)", fieldAccess(), regex),
+                violationTemplate()
+                        .setMessage(format("String must match pattern: '%s'.", regex))
+                        .build()
         );
     }
 }

@@ -18,20 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.tools.validate.code;
 
-import io.spine.tools.validate.code.Expression;
+import com.google.common.annotations.VisibleForTesting;
 
-import java.util.function.Function;
+import static java.lang.String.format;
 
-/**
- * A function which, given a field value, produces a boolean expression with that value.
- *
- * <p>For example, a string {@code field} transformed into an invocation of {@code isEmpty()} method
- * on the {@code field} value.
- *
- * <p>The output expression is required to be a one-line Java expression which returns
- * a {@code boolean} and never returns {@code null}.
- */
-interface Condition extends Function<Expression<?>, Expression<Boolean>> {
+public final class VoidExpression extends CodeExpression<Void> {
+
+    private static final long serialVersionUID = 0L;
+
+    private VoidExpression(String value) {
+        super(value);
+    }
+
+    public static VoidExpression formatted(String template, Object... args) {
+        return new VoidExpression(format(template, args));
+    }
+
+    @VisibleForTesting
+    public static VoidExpression empty() {
+        return new VoidExpression("");
+    }
 }

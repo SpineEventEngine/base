@@ -21,7 +21,8 @@
 package io.spine.tools.validate.field;
 
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.GetterExpression;
 
 import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 
@@ -35,13 +36,13 @@ import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 abstract class SequenceFieldValidatorFactory extends SingularFieldValidatorFactory {
 
     SequenceFieldValidatorFactory(FieldDeclaration field,
-                                  Expression fieldAccess,
+                                  GetterExpression fieldAccess,
                                   FieldCardinality cardinality) {
         super(field, fieldAccess, cardinality);
     }
 
     @Override
-    public Expression<Boolean> isNotSet() {
+    public BooleanExpression isNotSet() {
         return isEmpty(fieldAccess());
     }
 }

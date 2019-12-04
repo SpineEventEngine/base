@@ -21,7 +21,8 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.validate.ViolationAccumulator;
+import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
@@ -44,7 +45,7 @@ public interface FieldValidatorFactory {
      * @return the validation code or {@code Optional.empty()} if no validation is needed for
      *         the field
      */
-    Optional<CodeBlock> generate(ViolationAccumulator onViolation);
+    Optional<CodeBlock> generate(AccumulateViolations onViolation);
 
     /**
      * Obtains a boolean expression which checks if the field is set or not.
@@ -52,7 +53,7 @@ public interface FieldValidatorFactory {
      * @return expression which evaluates to {@code true} if the field is NOT set and {@code false}
      *         if the field is set
      */
-    Expression<Boolean> isNotSet();
+    BooleanExpression isNotSet();
 
     /**
      * Defines if this type of fields supports {@code (required)} constraint.

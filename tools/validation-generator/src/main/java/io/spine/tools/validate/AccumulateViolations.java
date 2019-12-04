@@ -18,19 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.tools.validate;
 
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.VoidExpression;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.function.Function;
 
 /**
- * A function which transforms a field value into a {@link ConstraintViolation} featuring
- * the given field.
+ * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
+ * an expression of the violation being saved.
  *
- * <p>The output expression is required to be a one-line Java expression which returns
- * a {@link ConstraintViolation} and never returns {@code null}.
+ * <p>Typically, one accumulator is used many times for different violations.
  */
-interface ViolationFactory extends Function<Expression<?>, Expression<ConstraintViolation>> {
+@FunctionalInterface
+public interface AccumulateViolations
+        extends Function<Expression<ConstraintViolation>, VoidExpression> {
 }

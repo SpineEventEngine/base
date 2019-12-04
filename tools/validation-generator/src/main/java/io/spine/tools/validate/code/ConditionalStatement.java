@@ -21,23 +21,41 @@
 package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.value.StringTypeValue;
 
-/**
- * A simple code expression.
- *
- * @param <R> the type of the expression value
- */
-class CodeExpression<R> extends StringTypeValue implements Expression<R> {
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
-    private static final long serialVersionUID = 0L;
+public final class ConditionalStatement {
 
-    CodeExpression(String value) {
-        super(value);
+    private final CodeBlock.Builder code;
+    private boolean complete = false;
+
+    ConditionalStatement(CodeBlock.Builder code) {
+        this.code = checkNotNull(code);
     }
 
-    @Override
     public CodeBlock toCode() {
-        return CodeBlock.of("$L", value());
+        complete();
+        code.endControlFlow();
+        return code.build();
+    }
+
+    public CodeBlock orElse(CodeBlock branch) {
+        return branch.isEmpty()
+               ? toCode()
+               : alternativeBranch(branch);
+    }
+
+    private CodeBlock alternativeBranch(CodeBlock branch) {
+        complete();
+        code.nextControlFlow("else");
+        code.add(branch);
+        code.endControlFlow();
+        return code.build();
+    }
+
+    private void complete() {
+        checkState(!complete, "%s cannot be reused.", ConditionalStatement.class.getSimpleName());
+        complete = true;
     }
 }

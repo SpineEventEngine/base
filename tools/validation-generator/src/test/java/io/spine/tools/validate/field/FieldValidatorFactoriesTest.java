@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
+import static io.spine.tools.validate.code.VoidExpression.empty;
 import static org.junit.jupiter.params.ParameterizedTest.ARGUMENTS_PLACEHOLDER;
 
 @DisplayName("`FieldValidatorFactories` should")
@@ -50,7 +51,7 @@ class FieldValidatorFactoriesTest {
     void generateValidation(String fieldName) {
         FieldValidatorFactory factory = create(AllFields.getDescriptor(), fieldName);
         assertThat(factory.isNotSet()).isNotNull();
-        Optional<CodeBlock> validationCode = factory.generate(v -> v);
+        Optional<CodeBlock> validationCode = factory.generate(v -> empty());
         assertThat(validationCode)
                 .isNotNull();
         assertThat(validationCode)
@@ -67,7 +68,7 @@ class FieldValidatorFactoriesTest {
         assertThat(factory).isNotNull();
         assertThat(factory.isNotSet().toString())
                 .isEqualTo("false");
-        assertThat(factory.generate(v -> v))
+        assertThat(factory.generate(v -> empty()))
                 .isEmpty();
     }
 

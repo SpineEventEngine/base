@@ -21,21 +21,22 @@
 package io.spine.tools.validate.field.given;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.validate.ViolationAccumulator;
+import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.VoidExpression;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ViolationMemoizer implements ViolationAccumulator {
+public final class ViolationMemoizer implements AccumulateViolations {
 
     private final List<Expression<ConstraintViolation>> violations = new ArrayList<>();
 
     @Override
-    public Expression<?> apply(Expression<ConstraintViolation> violation) {
+    public VoidExpression apply(Expression<ConstraintViolation> violation) {
         violations.add(violation);
-        return Expression.of("");
+        return VoidExpression.empty();
     }
 
     public List<Expression<ConstraintViolation>> violations() {

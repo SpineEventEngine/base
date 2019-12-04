@@ -23,17 +23,22 @@ package io.spine.tools.validate.field;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.ViolationAccumulator;
+import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.ConditionalStatement;
 import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.code.ViolationTemplate;
+import io.spine.tools.validate.code.VoidExpression;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Validate;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
+import static io.spine.tools.validate.code.Expression.formatted;
 
 /**
  * A validation rule which checks that a message field does not violate its own constraints.
@@ -47,9 +52,13 @@ final class NestedConstraints implements Rule {
             new TypeToken<List<ConstraintViolation>>() {}.getType();
 
     private final FieldDeclaration field;
+    private final GetterExpression fieldAccess;
+    private final Expression<Iterable<ConstraintViolation>> violationsList;
 
-    NestedConstraints(FieldDeclaration field) {
+    NestedConstraints(FieldDeclaration field, GetterExpression fieldAccess) {
         this.field = checkNotNull(field);
+        this.fieldAccess = checkNotNull(fieldAccess);
+        this.violationsList = formatted("%sViolations", field.name().javaCase());
     }
 
     /**
@@ -58,36 +67,44 @@ final class NestedConstraints implements Rule {
      * <p>Produces validation code for checking constraints of a message field.
      *
      * <p>Violations for the field are obtained via {@link Validate#violationsOf}.
+     * @return
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Override
-    public Function<Expression<?>, CodeBlock>
-    compile(ViolationAccumulator onViolation, CodeBlock orElse) {
-        return fieldAccess -> {
-            CodeBlock.Builder code = CodeBlock.builder();
-            code.beginControlFlow("if ($T.isNotDefault($L))", Validate.class, fieldAccess);
-            String varName = field.name().javaCase() + "Violations";
-            code.addStatement("$T $N = $T.violationsOf($L)",
+    public CodeBlock
+    compile(AccumulateViolations onViolation, CodeBlock orElse) {
+        return CodeBlock
+                .builder()
+                .addStatement("$T $N = $T.violationsOf($L)",
                               listOfViolations,
-                              varName,
+                              violationsList.toString(),
                               Validate.class,
-                              fieldAccess);
-            code.beginControlFlow("if (!$N.isEmpty())", varName);
-            Expression<ConstraintViolation> violationExpression = ViolationTemplate
-                    .forField(field)
-                    .setMessage("Message must have valid fields.")
-                    .setNestedViolations(Expression.of(varName))
-                    .build();
-            Expression violationHandler = onViolation.apply(violationExpression);
-            code.addStatement(violationHandler.toCode());
-            if (!orElse.isEmpty()) {
-                code.nextControlFlow("else");
-                code.add(orElse);
-            }
-            return code
-                    .endControlFlow()
-                    .endControlFlow()
-                    .build();
-        };
+                              fieldAccess)
+                .add(violationsCheck(onViolation, orElse))
+                .build();
+    }
+
+    private CodeBlock violationsCheck(AccumulateViolations onViolation, CodeBlock orElse) {
+        BooleanExpression notDefault =
+                fromCode("$T.isNotDefault($L)", Validate.class, fieldAccess);
+        CodeBlock validation = collectViolations(onViolation, orElse);
+        return notDefault.ifTrue(validation).toCode();
+    }
+
+    private CodeBlock collectViolations(AccumulateViolations onViolation, CodeBlock orElse) {
+        BooleanExpression notEmptyViolations =
+                fromCode("!$N.isEmpty()", violationsList.toString());
+        VoidExpression violationHandler = onViolation.apply(violationExpression());
+        ConditionalStatement violationsArePresent =
+                notEmptyViolations.ifTrue(violationHandler.toCode());
+        return violationsArePresent.orElse(orElse);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private ViolationTemplate violationExpression() {
+        return ViolationTemplate
+                .forField(field)
+                .setMessage("Message must have valid fields.")
+                .setNestedViolations(violationsList)
+                .build();
     }
 }

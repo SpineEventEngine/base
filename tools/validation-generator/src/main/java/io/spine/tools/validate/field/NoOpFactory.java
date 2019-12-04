@@ -21,11 +21,12 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.validate.ViolationAccumulator;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.code.BooleanExpression;
 
 import java.util.Optional;
 
+import static io.spine.tools.validate.code.BooleanExpression.falseLiteral;
 import static java.util.Optional.empty;
 
 /**
@@ -36,13 +37,13 @@ enum NoOpFactory implements FieldValidatorFactory {
     INSTANCE;
 
     @Override
-    public Optional<CodeBlock> generate(ViolationAccumulator onViolation) {
+    public Optional<CodeBlock> generate(AccumulateViolations onViolation) {
         return empty();
     }
 
     @Override
-    public Expression<Boolean> isNotSet() {
-        return Expression.of(String.valueOf(false));
+    public BooleanExpression isNotSet() {
+        return falseLiteral();
     }
 
     @Override

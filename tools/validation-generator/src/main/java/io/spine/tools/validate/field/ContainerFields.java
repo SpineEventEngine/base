@@ -20,9 +20,10 @@
 
 package io.spine.tools.validate.field;
 
+import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.formatted;
 
 /**
  * Set of utilities for working with fields of container types.
@@ -40,7 +41,7 @@ final class ContainerFields {
     /**
      * Obtains the expression which calls {@code isEmpty()} method on the given {@code field}.
      */
-    static Expression<Boolean> isEmpty(Expression<?> field) {
+    static BooleanExpression isEmpty(Expression<?> field) {
         return formatted("%s.isEmpty()", field);
     }
 }

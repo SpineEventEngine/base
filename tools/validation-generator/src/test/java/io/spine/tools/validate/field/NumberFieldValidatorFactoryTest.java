@@ -24,7 +24,7 @@ import com.google.common.truth.StringSubject;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.test.validate.field.Numbers;
-import io.spine.tools.validate.code.Expression;
+import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.field.given.ViolationMemoizer;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.Assertions;
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class NumberFieldValidatorFactoryTest {
 
     private final MessageType type = new MessageType(Numbers.getDescriptor());
-    private final Expression access = Expression.of("field");
+    private final GetterExpression access = GetterExpression.of("field");
 
     @Nested
     @DisplayName("compile a constraint for")
