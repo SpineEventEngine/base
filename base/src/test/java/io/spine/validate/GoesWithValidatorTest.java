@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 
-@DisplayName("GoesWithValidator should")
+@DisplayName("`GoesWithValidator` should")
 final class GoesWithValidatorTest {
 
-    @DisplayName("ignore messages without (goes) option")
+    @DisplayName("ignore messages without `(goes)` option")
     @Test
     void ignoreMessagesWithoutGoesOption() {
         PaymentData msg = PaymentData
@@ -47,7 +47,7 @@ final class GoesWithValidatorTest {
         assertThat(validator.validate()).isEmpty();
     }
 
-    @DisplayName("validate all (goes) field options and produce no constraint violationsOf")
+    @DisplayName("validate all `(goes)` field options and produce no constraint violations")
     @Test
     void validateAllGoesFieldOptionsAndProduceNoViolations() {
         PaymentId id = PaymentId
@@ -63,7 +63,7 @@ final class GoesWithValidatorTest {
         assertThat(validator.validate()).isEmpty();
     }
 
-    @DisplayName("validate all (goes) field options and produce violationsOf")
+    @DisplayName("validate all `(goes)` field options and produce violations")
     @Test
     void validateAllGoesFieldOptionsAndProduceViolations() {
         PaymentId id = PaymentId
