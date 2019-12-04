@@ -36,7 +36,7 @@ final class ByteStringFieldValidatorFactory extends SequenceFieldValidatorFactor
     }
 
     @Override
-    protected ImmutableList<Rule> rules() {
+    protected ImmutableList<Constraint> constraints() {
         return isRequired()
                ? ImmutableList.of(requiredRule())
                : ImmutableList.of();

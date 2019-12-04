@@ -137,14 +137,14 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             validation.endControlFlow();
             if (eachElementRequired) {
                 @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
-                Constraint constraint = new Constraint(
+                FieldConstraint fieldConstraint = new FieldConstraint(
                         formatted("!%s", isSet),
                         ViolationTemplate
                                 .forField(field)
                                 .setMessage("At least one element must be set.")
                                 .build()
                 );
-                CodeBlock check = constraint.compile(onViolation);
+                CodeBlock check = fieldConstraint.compile(onViolation);
                 validation.add(check);
             }
         }
@@ -153,16 +153,16 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     private void
     addDuplicateCheck(CodeBlock.Builder validation, AccumulateViolations onViolation) {
         if (field.findOption(distinct)) {
-            Constraint distinct = distinct();
+            FieldConstraint distinct = distinct();
             CodeBlock ruleCode = distinct.compile(onViolation);
             validation.add(ruleCode);
         }
     }
 
-    private Constraint distinct() {
+    private FieldConstraint distinct() {
         CodeBlock isDefaultCall =
                 CodeBlock.of("$T.containsDuplicates", ClassName.get(Validate.class));
-        Constraint rule = new Constraint(
+        FieldConstraint rule = new FieldConstraint(
                 formatted("%s(%s)", isDefaultCall, field),
                 violation()
                         .setMessage(format("%s should not contain duplicates.", field))

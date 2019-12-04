@@ -42,8 +42,8 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
     }
 
     @Override
-    protected ImmutableList<Rule> rules() {
-        ImmutableList.Builder<Rule> builder = ImmutableList.builder();
+    protected ImmutableList<Constraint> constraints() {
+        ImmutableList.Builder<Constraint> builder = ImmutableList.builder();
         FieldOptions options = field().descriptor().getOptions();
         if (isRequired()) {
             builder.add(requiredRule());
@@ -55,9 +55,9 @@ final class StringFieldValidatorFactory extends SequenceFieldValidatorFactory {
         return builder.build();
     }
 
-    private Constraint pattern(PatternOption pattern) {
+    private FieldConstraint pattern(PatternOption pattern) {
         String regex = pattern.getRegex();
-        return new Constraint(
+        return new FieldConstraint(
                 fromCode("!$L.matches($S)", fieldAccess(), regex),
                 violationTemplate()
                         .setMessage(format("String must match pattern: '%s'.", regex))

@@ -93,18 +93,18 @@ public final class NumberFieldValidatorFactory
     }
 
     @Override
-    protected ImmutableList<Rule> rules() {
+    protected ImmutableList<Constraint> constraints() {
         NumberBoundaries boundaries = parseBoundaries();
-        ImmutableList.Builder<Rule> rules = ImmutableList.builder();
+        ImmutableList.Builder<Constraint> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
             Boundary min = boundaries.min();
             @SuppressWarnings("DuplicateStringLiteralInspection") // In tests.
-            Constraint rule = boundaryRule(min, "<", "<=", "greater");
+                    FieldConstraint rule = boundaryRule(min, "<", "<=", "greater");
             rules.add(rule);
         }
         if (boundaries.hasMax()) {
             Boundary max = boundaries.max();
-            Constraint rule = boundaryRule(max, ">", ">=", "less");
+            FieldConstraint rule = boundaryRule(max, ">", ">=", "less");
             rules.add(rule);
         }
         return rules.build();
@@ -120,13 +120,13 @@ public final class NumberFieldValidatorFactory
         return false;
     }
 
-    private Constraint boundaryRule(Boundary boundary,
-                                    String exclusiveOperator,
-                                    String inclusiveOperator,
-                                    String englishDescription) {
+    private FieldConstraint boundaryRule(Boundary boundary,
+                                         String exclusiveOperator,
+                                         String inclusiveOperator,
+                                         String englishDescription) {
         boolean inclusive = boundary.inclusive();
         String operator = inclusive ? exclusiveOperator : inclusiveOperator;
-        Constraint rule = new Constraint(
+        FieldConstraint rule = new FieldConstraint(
                 formatted("%s %s %s", fieldAccess(), operator, boundary.value()),
                 violationTemplate()
                         .setMessage(format("Field must be %s than%s %s.",

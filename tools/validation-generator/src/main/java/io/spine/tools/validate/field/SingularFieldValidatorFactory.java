@@ -61,15 +61,15 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     /**
-     * Creates the validation {@link Constraint}s to generate code for.
+     * Creates the validation {@link FieldConstraint}s to generate code for.
      */
-    protected abstract ImmutableList<Rule> rules();
+    protected abstract ImmutableList<Constraint> constraints();
 
     @Override
     public Optional<CodeBlock> generate(AccumulateViolations onViolation) {
         CodeBlock code = CodeBlock.of("");
-        for (Rule rule : rules().reverse()) {
-            code = rule.compile(onViolation, code);
+        for (Constraint constraint : constraints().reverse()) {
+            code = constraint.compile(onViolation, code);
         }
         return code.isEmpty()
                ? Optional.empty()
@@ -81,9 +81,9 @@ abstract class SingularFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
-    final Constraint requiredRule() {
-        return new Constraint(isNotSet(),
-                              violationTemplate()
+    final FieldConstraint requiredRule() {
+        return new FieldConstraint(isNotSet(),
+                                   violationTemplate()
                                       .setMessage("Field must be set.")
                                       .build());
     }

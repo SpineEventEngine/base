@@ -43,14 +43,14 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
     }
 
     @Override
-    protected ImmutableList<Rule> rules() {
-        ImmutableList.Builder<Rule> rules = ImmutableList.builder();
+    protected ImmutableList<Constraint> constraints() {
+        ImmutableList.Builder<Constraint> rules = ImmutableList.builder();
         if (isRequired()) {
             rules.add(requiredRule());
         }
         FieldDeclaration field = field();
         if (field.isMessage() && field.findOption(validate)) {
-            rules.add(new NestedConstraints(field, fieldAccess()));
+            rules.add(new MessageConstraints(field, fieldAccess()));
         }
         return rules.build();
     }

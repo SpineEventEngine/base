@@ -22,39 +22,44 @@ package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.tools.validate.AccumulateViolations;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ConstraintViolation;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * A validation constraint based on a Protobuf option.
+ * A message validation constraint.
+ *
+ * <p>A {@code Constraint} may represent one or several validation  applied to a message. In
+ * general, a notion of being followed or broken is present for a rule.
  */
-final class Constraint implements Rule {
-
-    private final BooleanExpression condition;
-    private final Expression<ConstraintViolation> violation;
+public interface Constraint {
 
     /**
-     * Creates a new {@code Rule}.
-     *  @param condition
-     *         a function which accepts the field value and yields a boolean expression which
-     *         evaluates into {@code true} when the rule is broken
-     * @param violation
-     *         a function which accepts the field and yields an expression which evaluates into
-     *         a {@link ConstraintViolation} which describes the broken rule
+     * Compiles this rule into the Java validation code.
+     *
+     * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
+     * the {@link AccumulateViolations}.
+     *
+     * @param onViolation
+     *         a function which accept a {@link ConstraintViolation} and yields it to where the
+     *         violations are accumulated for the validated message
+     * @return a function which accepts the field value and returns the validation code
      */
-    Constraint(BooleanExpression condition, Expression<ConstraintViolation> violation) {
-        this.condition = checkNotNull(condition);
-        this.violation = checkNotNull(violation);
+    default CodeBlock compile(AccumulateViolations onViolation) {
+        return compile(onViolation, CodeBlock.of(""));
     }
 
-    @Override
-    public CodeBlock compile(AccumulateViolations onViolation, CodeBlock orElse) {
-        CodeBlock ifViolation = onViolation.apply(this.violation)
-                                           .toCode();
-        return condition.ifTrue(ifViolation)
-                        .orElse(orElse);
-    }
+    /**
+     * Compiles this constraint into the Java validation code.
+     *
+     * <p>If the constraint is violated, one or more {@link ConstraintViolation}s are passed to
+     * the {@link AccumulateViolations}. If the message follows the rule, no violations are produced
+     * and the {@code orElse} code block is executed.
+     *
+     * @param onViolation
+     *         a function which accept a {@link ConstraintViolation} and yields it to where the
+     *         violations are accumulated for the validated message
+     * @param orElse
+     *         if the rule does not add a violation, this code will be invoked
+     * @return a function which accepts the field value and returns the validation code
+     */
+    CodeBlock compile(AccumulateViolations onViolation, CodeBlock orElse);
 }
