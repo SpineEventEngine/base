@@ -47,7 +47,7 @@ import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
  * Generates code which validates message fields upon the constraints, as well as the API which
  * exposes validation to the user of the message class.
  */
-public final class ValidatorGenerator extends CodeGenerator {
+public final class ValidatorCode extends CodeGenerator {
 
     private static final MessageInterface VALIDATABLE_MESSAGE =
             new PredefinedInterface(ClassName.of(MessageWithConstraints.class), empty());
@@ -55,14 +55,14 @@ public final class ValidatorGenerator extends CodeGenerator {
     /**
      * Prevents direct instantiation.
      */
-    private ValidatorGenerator() {
+    private ValidatorCode() {
         super();
     }
 
     public static CodeGenerator instance(SpineProtocConfig config) {
         return config.getSkipValidatingBuilders() || !config.getGenerateValidation()
                ? NoOpGenerator.instance()
-               : new ValidatorGenerator();
+               : new ValidatorCode();
     }
 
     @Override
