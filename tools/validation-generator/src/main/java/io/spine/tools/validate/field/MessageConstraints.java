@@ -41,7 +41,8 @@ import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static io.spine.tools.validate.code.Expression.formatted;
 
 /**
- * A validation rule which checks that a message field does not violate its own constraints.
+ * A validation constraint which checks that a message field does not violate constraints defined in
+ * the message type.
  *
  * <p>If a field message is invalid, the message's {@link ConstraintViolation}s are wrapped into
  * a single violation and added to the rest of the violations of the top-level message.
