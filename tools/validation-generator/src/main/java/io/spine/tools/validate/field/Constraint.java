@@ -25,10 +25,22 @@ import io.spine.tools.validate.AccumulateViolations;
 import io.spine.validate.ConstraintViolation;
 
 /**
- * A message validation constraint.
+ * A validation rule applied to a message type.
  *
- * <p>A {@code Constraint} may represent one or several validation  applied to a message. In
- * general, a notion of being followed or broken is present for a rule.
+ * <p>May represent a limitation on acceptable values of a field, a rule describing a field
+ * relationship, etc.
+ *
+ * <p>Examples:
+ * <ul>
+ *     <li>Field {@code spec} in {@code spine.net.Url} must be set.
+ *     <li>String field {@code phone_number} in {@code com.acme.ContactInfo} must match regular
+ *         expression {@code "\+?\d+"}.
+ *     <li>Message of type {@code spine.people.PersonName} must have at least {@code given_name} or
+ *         both {@code honorific_prefix} and {@code family_name} fields set.
+ * </ul>
+ *
+ * <p>In Protobuf, validation constraints are expressed with options.
+ * See {@code spine/options.proto} for the definitions of validation options.
  */
 public interface Constraint {
 
