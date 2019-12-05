@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A builder for conditional statements.
+ * A builder for {@code if} - {@code else} statements.
  *
  * <p>An instance of {@code ConditionalStatement} is not reusable. See {@link #toCode()} and
  * {@link #orElse(CodeBlock)} doc for the details.
