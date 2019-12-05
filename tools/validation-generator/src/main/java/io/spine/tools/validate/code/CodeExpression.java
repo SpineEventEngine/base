@@ -24,7 +24,7 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.value.StringTypeValue;
 
 /**
- * A simple code expression.
+ * A simple expression based on a fragment of source code.
  *
  * @param <R> the type of the expression value
  */
