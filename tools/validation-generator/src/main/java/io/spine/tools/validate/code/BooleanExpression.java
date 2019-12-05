@@ -22,9 +22,12 @@ package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
 
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 
+/**
+ * An expression which yields a {@code boolean} value.
+ */
 public final class BooleanExpression
         extends CodeExpression<Boolean> {
 
@@ -36,23 +39,36 @@ public final class BooleanExpression
         super(value);
     }
 
-    public static BooleanExpression formatted(String template, Object... args) {
-        return new BooleanExpression(format(template, args));
-    }
-
+    /**
+     * Creates a {@code BooleanExpression} from the given code.
+     *
+     * @param code
+     *         Java code formatted as for {@link CodeBlock#of(String, Object...)}
+     * @param args
+     *         formatting arguments as for {@link CodeBlock#of(String, Object...)}
+     * @return new expression
+     */
     public static BooleanExpression fromCode(String code, Object... args) {
         CodeBlock block = CodeBlock.of(code, args);
         return new BooleanExpression(block.toString());
     }
 
+    /**
+     * Obtains a {@code BooleanExpression} representing literal {@code false}.
+     */
     public static BooleanExpression falseLiteral() {
         return FALSE;
     }
 
+    /**
+     * Creates an {@code if} statement this expression as a condition and the given code as
+     * the conditional code.
+     *
+     * @param branch
+     *         the code which should execute if this expression yields {@code true}
+     * @return a new conditional statement
+     */
     public ConditionalStatement ifTrue(CodeBlock branch) {
-        CodeBlock.Builder code = CodeBlock.builder();
-        code.beginControlFlow("if ($L)", value());
-        code.add(branch);
-        return new ConditionalStatement(code);
+        return new ConditionalStatement(this, checkNotNull(branch));
     }
 }

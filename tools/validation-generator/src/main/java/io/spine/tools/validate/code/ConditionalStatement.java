@@ -25,21 +25,61 @@ import com.squareup.javapoet.CodeBlock;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * A builder for conditional statements.
+ *
+ * <p>An instance of {@code ConditionalStatement} is not reusable. See {@link #toCode()} and
+ * {@link #orElse(CodeBlock)} doc for the details.
+ */
 public final class ConditionalStatement {
 
     private final CodeBlock.Builder code;
     private boolean complete = false;
 
-    ConditionalStatement(CodeBlock.Builder code) {
+    /**
+     * Creates a new {@code ConditionalStatement}.
+     *
+     * @param condition
+     *         the {@code if} condition
+     * @param positiveBranch
+     *         the code which should be executed if {@code condition} is {@code true}
+     */
+    ConditionalStatement(BooleanExpression condition, CodeBlock positiveBranch) {
+        checkNotNull(condition);
+        checkNotNull(positiveBranch);
+        CodeBlock.Builder code = startStatement(condition, positiveBranch);
         this.code = checkNotNull(code);
     }
 
+    private static CodeBlock.Builder startStatement(BooleanExpression condition,
+                                                    CodeBlock positiveBranch) {
+        CodeBlock.Builder code = CodeBlock.builder();
+        code.beginControlFlow("if ($L)", condition.value());
+        code.add(positiveBranch);
+        return code;
+    }
+
+    /**
+     * Converts this statement into Java code.
+     *
+     * <p>Completes this statement. If the statement is already complete, throws
+     * an {@link IllegalStateException}.
+     */
     public CodeBlock toCode() {
         complete();
         code.endControlFlow();
         return code.build();
     }
 
+    /**
+     * Adds the {@code else} block and converts this statement into Java code.
+     *
+     * <p>Completes this statement. If the statement is already complete, throws
+     * an {@link IllegalStateException}.
+     *
+     * @param branch
+     *         the code which should be executed if the {@code if} condition is {@code false}
+     */
     public CodeBlock orElse(CodeBlock branch) {
         return branch.isEmpty()
                ? toCode()
@@ -55,7 +95,9 @@ public final class ConditionalStatement {
     }
 
     private void complete() {
-        checkState(!complete, "%s cannot be reused.", ConditionalStatement.class.getSimpleName());
+        checkState(!complete,
+                   "%s is already complete.",
+                   ConditionalStatement.class.getSimpleName());
         complete = true;
     }
 }

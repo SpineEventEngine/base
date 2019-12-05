@@ -40,7 +40,7 @@ import static io.spine.option.OptionsProto.min;
 import static io.spine.option.OptionsProto.range;
 import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.validate.code.BooleanExpression.falseLiteral;
-import static io.spine.tools.validate.code.BooleanExpression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static java.lang.String.format;
 
 /**
@@ -127,7 +127,7 @@ public final class NumberFieldValidatorFactory
         boolean inclusive = boundary.inclusive();
         String operator = inclusive ? exclusiveOperator : inclusiveOperator;
         FieldConstraint rule = new FieldConstraint(
-                formatted("%s %s %s", fieldAccess(), operator, boundary.value()),
+                fromCode("$L $L $L", fieldAccess(), operator, boundary.value()),
                 violationTemplate()
                         .setMessage(format("Field must be %s than%s %s.",
                                            englishDescription,

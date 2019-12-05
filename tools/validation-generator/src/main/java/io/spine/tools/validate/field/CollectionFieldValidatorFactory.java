@@ -20,7 +20,6 @@
 
 package io.spine.tools.validate.field;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.AccumulateViolations;
@@ -35,7 +34,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.distinct;
 import static io.spine.option.OptionsProto.required;
-import static io.spine.tools.validate.code.BooleanExpression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static io.spine.tools.validate.field.ContainerFields.isEmpty;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
@@ -138,7 +137,7 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
             if (eachElementRequired) {
                 @SuppressWarnings("DuplicateStringLiteralInspection") // In generated code.
                 FieldConstraint fieldConstraint = new FieldConstraint(
-                        formatted("!%s", isSet),
+                        fromCode("!$N", isSet),
                         NewViolation
                                 .forField(field)
                                 .setMessage("At least one element must be set.")
@@ -160,10 +159,8 @@ final class CollectionFieldValidatorFactory implements FieldValidatorFactory {
     }
 
     private FieldConstraint distinct() {
-        CodeBlock isDefaultCall =
-                CodeBlock.of("$T.containsDuplicates", ClassName.get(Validate.class));
         FieldConstraint rule = new FieldConstraint(
-                formatted("%s(%s)", isDefaultCall, field),
+                fromCode("$T.containsDuplicates($L)", Validate.class, field),
                 violation()
                         .setMessage(format("%s should not contain duplicates.", field))
                         .build()

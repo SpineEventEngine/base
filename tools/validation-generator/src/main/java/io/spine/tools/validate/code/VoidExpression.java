@@ -24,6 +24,14 @@ import com.google.common.annotations.VisibleForTesting;
 
 import static java.lang.String.format;
 
+/**
+ * An expression which does not yield a value.
+ *
+ * <p>The actual generated code might formally be non-void. In this case, by using
+ * {@code VoidExpression} we state that the value of the expression is irrelevant. Example of such
+ * an expression is {@code collection.add(element)}, which returns a {@code boolean} value, but it
+ * is not used.
+ */
 public final class VoidExpression extends CodeExpression<Void> {
 
     private static final long serialVersionUID = 0L;

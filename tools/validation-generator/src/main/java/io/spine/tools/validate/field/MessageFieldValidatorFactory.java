@@ -21,15 +21,13 @@
 package io.spine.tools.validate.field;
 
 import com.google.common.collect.ImmutableList;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.GetterExpression;
 
 import static io.spine.option.OptionsProto.validate;
-import static io.spine.tools.validate.code.BooleanExpression.formatted;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 
 /**
  * A {@link FieldValidatorFactory} for message and enum fields.
@@ -57,7 +55,6 @@ final class MessageFieldValidatorFactory extends SingularFieldValidatorFactory {
 
     @Override
     public BooleanExpression isNotSet() {
-        CodeBlock isDefaultCall = CodeBlock.of("$T.isDefault", ClassName.get(Messages.class));
-        return formatted("%s(%s)", isDefaultCall, fieldAccess());
+        return fromCode("$T.isDefault($L)", Messages.class, fieldAccess());
     }
 }
