@@ -49,7 +49,7 @@ public final class Goes<@ImmutableTypeParameter F>
     }
 
     @Override
-    public Constraint<FieldValue<F>> constraintFor(FieldValue<F> value) {
-        return new GoesConstraint<>(messageValue, optionValue(value));
+    public Constraint constraintFor(FieldValue value) {
+        return new GoesConstraint(value.declaration(), optionValue(value));
     }
 }

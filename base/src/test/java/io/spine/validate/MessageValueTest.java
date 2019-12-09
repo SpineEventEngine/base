@@ -69,7 +69,7 @@ class MessageValueTest {
         }
 
         private void assertOneofValue(MessageValue message, Object expectedValue) {
-            Optional<FieldValue<?>> optionalValue = message.valueOf(VALUE_ONEOF);
+            Optional<FieldValue> optionalValue = message.valueOf(VALUE_ONEOF);
             assertTrue(optionalValue.isPresent());
             FieldValue value = optionalValue.get();
             assertEquals(singletonList(expectedValue), value.asList());

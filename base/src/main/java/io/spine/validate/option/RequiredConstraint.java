@@ -20,71 +20,62 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
-import io.spine.type.TypeName;
-import io.spine.validate.ConstraintViolation;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.FieldValue;
 
-import java.util.Optional;
-
+import static com.google.common.flogger.FluentLogger.forEnclosingClass;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint that, when applied to a field, checks whether the field is set to a non-default
  * value.
- *
- * @param <T>
- *         type of the value that the constrained field holds
  */
 @Immutable
-final class RequiredConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
+public final class RequiredConstraint extends FieldConstraint<Boolean> {
 
-    private static final String ERROR_MESSAGE = "Value must be set.";
-    /**
-     * Types for which field presence of the field value can be checked.
-     */
-    private final ImmutableSet<JavaType> allowedTypes;
+    private static final FluentLogger log = forEnclosingClass();
 
-    RequiredConstraint(ImmutableSet<JavaType> allowedTypes) {
-        this.allowedTypes = allowedTypes;
+    RequiredConstraint(boolean required,
+                       FieldDeclaration declaration,
+                       ImmutableSet<JavaType> allowedTypes) {
+        super(consistentRequired(required, declaration, allowedTypes), declaration);
+    }
+
+    private static boolean consistentRequired(boolean requiredRequested,
+                                              FieldDeclaration declaration,
+                                              ImmutableSet<JavaType> allowedTypes) {
+        if (requiredRequested) {
+            JavaType type = declaration.javaType();
+            boolean expectedType = allowedTypes.contains(type);
+            if (!expectedType) {
+                log.atWarning()
+                   .log("Field `%s` of type `%s` should not be declared as `(required)`.",
+                        declaration,
+                        type);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
-        boolean canNotCheckPresence = !allowedTypes.contains(value.javaType());
-        if (canNotCheckPresence) {
-            return ImmutableList.of();
-        }
-        return value.isDefault()
-               ? requiredViolated(value)
-               : ImmutableList.of();
-    }
-
-    private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
-        FieldPath path = fieldValue.context()
-                                   .fieldPath();
-        TypeName declaringType = fieldValue.declaration()
-                                           .declaringType()
-                                           .name();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msgFormat(fieldValue))
-                .setTypeName(declaringType.value())
-                .setFieldPath(path)
-                .build();
-        return ImmutableList.of(violation);
-    }
-
-    private String msgFormat(FieldValue<T> fieldValue) {
+    public String errorMessage(FieldValue value) {
         IfMissing ifMissing = new IfMissing();
-        Optional<IfMissingOption> ifMissingValue = ifMissing.valueFrom(fieldValue.descriptor());
-        return ifMissingValue.isPresent()
-               ? ifMissingValue.get().getMsgFormat()
-               : ERROR_MESSAGE;
+        IfMissingOption option = ifMissing.valueOrDefault(value.descriptor());
+        return errorMsgFormat(option, option.getMsgFormat());
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitRequired(this);
     }
 }

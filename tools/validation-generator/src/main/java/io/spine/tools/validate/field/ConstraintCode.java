@@ -25,7 +25,7 @@ import io.spine.tools.validate.AccumulateViolations;
 import io.spine.validate.ConstraintViolation;
 
 /**
- * A validation rule applied to a message type.
+ * A factory of validation code for a message type.
  *
  * <p>May represent a limitation on acceptable values of a field, a rule describing a field
  * relationship, etc.
@@ -42,7 +42,7 @@ import io.spine.validate.ConstraintViolation;
  * <p>In Protobuf, validation constraints are expressed with options.
  * See {@code spine/options.proto} for the definitions of validation options.
  */
-public interface Constraint {
+public interface ConstraintCode {
 
     /**
      * Compiles this rule into the Java validation code.

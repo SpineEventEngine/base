@@ -38,7 +38,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      * @param fieldValue
      *         the value to validate
      */
-    NumberFieldValidator(FieldValue<V> fieldValue) {
+    NumberFieldValidator(FieldValue fieldValue) {
         super(fieldValue, false);
     }
 

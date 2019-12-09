@@ -61,7 +61,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 @SuppressWarnings("ClassWithTooManyMethods") // OK for this central class.
 public abstract class FieldValidator<V> implements Logging {
 
-    private final FieldValue<V> value;
+    private final FieldValue value;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
 
@@ -92,10 +92,10 @@ public abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field is required regardless
      *         of the {@code required} Protobuf option value
      */
-    protected FieldValidator(FieldValue<V> value, boolean assumeRequired) {
+    protected FieldValidator(FieldValue value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
-        this.values = value.asList();
+        this.values = (ImmutableList<V>) value.asList();
         this.assumeRequired = assumeRequired;
         this.fieldValidatingOptions = validatingOptions();
     }
@@ -181,9 +181,9 @@ public abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     * <li>check the field to be set if it is {@code required};
-     * <li>validate the field as an Entity ID if required;
-     * <li>perform type-specific validation according to validation options.
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>perform type-specific validation according to validation options.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} if any
@@ -194,11 +194,12 @@ public abstract class FieldValidator<V> implements Logging {
         }
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         result.addAll(violations);
+
         while (fieldValidatingOptions.hasNext()) {
             FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
             if (option.shouldValidate(value)) {
-                Constraint<FieldValue<V>> constraint = option.constraintFor(value);
-                ImmutableList<ConstraintViolation> violations = constraint.check(value);
+                Constraint constraint = option.constraintFor(value);
+                ImmutableList<ConstraintViolation> violations = ImmutableList.of(); // constraint.check(value);
                 result.addAll(violations);
             }
         }
@@ -237,7 +238,7 @@ public abstract class FieldValidator<V> implements Logging {
         }
     }
 
-    protected FieldValue<V> fieldValue() {
+    protected FieldValue fieldValue() {
         return value;
     }
 
@@ -337,7 +338,7 @@ public abstract class FieldValidator<V> implements Logging {
         return ifMissing.valueOrDefault(descriptor());
     }
 
-    private static <V> FieldDescriptor descriptor(FieldValue<V> value) {
+    private static <V> FieldDescriptor descriptor(FieldValue value) {
         return value.declaration()
                     .descriptor();
     }

@@ -49,7 +49,7 @@ final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
      * @param value
      */
     @Override
-    public boolean shouldValidate(FieldValue<T> value) {
+    public boolean shouldValidate(FieldValue value) {
         checkUsage(value.descriptor());
         return true;
     }

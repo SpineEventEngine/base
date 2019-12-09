@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -55,7 +54,7 @@ import static java.lang.String.format;
  */
 @Immutable
 @Internal
-public final class FieldValue<@ImmutableTypeParameter T> {
+public final class FieldValue {
 
     /**
      * Actual field values.
@@ -68,11 +67,12 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      * For a map fields, a list contains a list of values, since the map values are being validated,
      * not the keys.
      */
-    private final ImmutableList<T> values;
+    @SuppressWarnings("Immutable")
+    private final ImmutableList<?> values;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Collection<T> values, FieldContext context, FieldDeclaration declaration) {
+    private FieldValue(Collection<?> values, FieldContext context, FieldDeclaration declaration) {
         this.values = ImmutableList.copyOf(values);
         this.context = context;
         this.declaration = declaration;
@@ -87,18 +87,16 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *         the context of the field
      * @return a new instance
      */
-    // Object to T is always safe since validating builders only receive `T`s.
-    @SuppressWarnings("unchecked")
-    static <@ImmutableTypeParameter T> FieldValue<T> of(Object rawValue, FieldContext context) {
+    static FieldValue of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
-        T value = rawValue instanceof ProtocolMessageEnum
-                  ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
-                  : (T) rawValue;
+        Object value = rawValue instanceof ProtocolMessageEnum
+                  ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
+                  : rawValue;
         FieldDescriptor fieldDescriptor = context.target();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
-        FieldValue<T> result = resolveType(declaration, context, value);
+        FieldValue result = resolveType(declaration, context, value);
         return result;
     }
 
@@ -111,20 +109,17 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *
      * @return a properly typed {@code FieldValue} instance.
      */
-    @SuppressWarnings({
-            "unchecked", // Raw value is always of a correct type, see Javadoc for details.
-            "ChainOfInstanceofChecks" // No common ancestors.
-    })
-    private static <@ImmutableTypeParameter T>
-    FieldValue<T> resolveType(FieldDeclaration field, FieldContext context, T value) {
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    private static
+    FieldValue resolveType(FieldDeclaration field, FieldContext context, Object value) {
         if (value instanceof List) {
-            List<T> values = (List<T>) value;
-            return new FieldValue<>(values, context, field);
+            List<?> values = (List<?>) value;
+            return new FieldValue(values, context, field);
         } else if (value instanceof Map) {
-            Map<?, T> map = (Map<?, T>) value;
-            return new FieldValue<>(map.values(), context, field);
+            Map<?, ?> map = (Map<?, ?>) value;
+            return new FieldValue(map.values(), context, field);
         } else {
-            return new FieldValue<>(ImmutableList.of(value), context, field);
+            return new FieldValue(ImmutableList.of(value), context, field);
         }
     }
 
@@ -148,39 +143,26 @@ public final class FieldValue<@ImmutableTypeParameter T> {
         JavaType fieldType = javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(castThis(), assumeRequired);
+                return new MessageFieldValidator(this, assumeRequired);
             case INT:
-                return new IntegerFieldValidator(castThis());
+                return new IntegerFieldValidator(this);
             case LONG:
-                return new LongFieldValidator(castThis());
+                return new LongFieldValidator(this);
             case FLOAT:
-                return new FloatFieldValidator(castThis());
+                return new FloatFieldValidator(this);
             case DOUBLE:
-                return new DoubleFieldValidator(castThis());
+                return new DoubleFieldValidator(this);
             case STRING:
-                return new StringFieldValidator(castThis(), assumeRequired);
+                return new StringFieldValidator(this, assumeRequired);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(castThis());
+                return new ByteStringFieldValidator(this);
             case BOOLEAN:
-                return new BooleanFieldValidator(castThis());
+                return new BooleanFieldValidator(this);
             case ENUM:
-                return new EnumFieldValidator(castThis());
+                return new EnumFieldValidator(this);
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }
-    }
-
-    /**
-     * Casts this value to a more accurately typed {@code FieldValue}.
-     */
-    @SuppressWarnings("unchecked"
-            /* Casting is safe since {@link JavaType}, that is being checked by
-            * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
-            * is always going to be fitting validator.
-            */
-    )
-    private <S> FieldValue<S> castThis() {
-        return (FieldValue<S>) this;
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
@@ -213,11 +195,11 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *
      * @return the value as a list
      */
-    public final ImmutableList<T> asList() {
+    public final ImmutableList<?> asList() {
         return values;
     }
 
-    public T singleValue() {
+    public Object singleValue() {
         return values.get(0);
     }
 

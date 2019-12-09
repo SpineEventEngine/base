@@ -22,20 +22,24 @@ package io.spine.validate.option;
 
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.MaxOption;
 import io.spine.validate.ComparableNumber;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.NumberText;
+
+import static io.spine.validate.FieldValidator.errorMsgFormat;
+import static java.lang.String.format;
 
 /**
  * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
 @Immutable
-final class MaxConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
-        extends RangedConstraint<V, MaxOption> {
+public final class MaxConstraint
+        extends RangedConstraint<MaxOption> {
 
-    MaxConstraint(MaxOption optionValue) {
-        super(optionValue, maxRange(optionValue));
+    MaxConstraint(MaxOption optionValue, FieldDeclaration field) {
+        super(optionValue, maxRange(optionValue), field);
     }
 
     private static Range<ComparableNumber> maxRange(MaxOption option) {
@@ -44,5 +48,17 @@ final class MaxConstraint<@ImmutableTypeParameter V extends Number & Comparable<
         return inclusive
                ? Range.atMost(maxValue.toNumber())
                : Range.lessThan(maxValue.toNumber());
+    }
+
+    @Override
+    protected String compileErrorMessage(Range<ComparableNumber> range) {
+        MaxOption max = optionValue();
+        String template = errorMsgFormat(max, max.getMsgFormat());
+        return format(template, orEqualTo(range.upperBoundType()), range.lowerEndpoint());
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitRange(this);
     }
 }

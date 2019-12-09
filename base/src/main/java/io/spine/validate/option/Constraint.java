@@ -20,31 +20,18 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.validate.ConstraintViolation;
+import io.spine.type.MessageType;
+import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.FieldValue;
 
-/**
- * A rule that limits the set of possible values for {@code T} and produces
- * {@code ConstraintViolations} upon finding values of {@code T} which do not fit into the
- * set limits.
- *
- * @param <T>
- *         a type of values that this constraint is applicable to
- */
+// TODO:2019-12-05:dmytro.dashenkov: Document.
 @Immutable
-public interface Constraint<@ImmutableTypeParameter T> {
+public interface Constraint {
 
-    /**
-     * Checks the specified value against this constraint.
-     *
-     * <p>If the value has breaks the rules imposed by this constraint, {@code ConstraintViolations}
-     * are produced and returned.
-     *
-     * @param value
-     *         value that is being checked against this constraint
-     * @return violations of this constraint
-     */
-    ImmutableList<ConstraintViolation> check(T value);
+    MessageType targetType();
+
+    String errorMessage(FieldValue value);
+
+    void accept(ConstraintTranslator<?> visitor);
 }

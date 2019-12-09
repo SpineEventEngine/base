@@ -50,7 +50,7 @@ public final class Distinct<@ImmutableTypeParameter T> extends FieldValidatingOp
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        return new DistinctConstraint<>(optionValue(fieldValue));
+    public Constraint constraintFor(FieldValue fieldValue) {
+        return new DistinctConstraint(optionValue(fieldValue), fieldValue.declaration());
     }
 }

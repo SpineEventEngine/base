@@ -46,7 +46,7 @@ final class Min<@ImmutableTypeParameter V extends Number & Comparable<V>>
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
-        return new MinConstraint<>(optionValue(fieldValue));
+    public Constraint constraintFor(FieldValue fieldValue) {
+        return new MinConstraint(optionValue(fieldValue), fieldValue.declaration());
     }
 }

@@ -61,7 +61,7 @@ class BooleanFieldValidatorTest {
                     .getFields()
                     .get(0);
             FieldContext context = FieldContext.create(descriptor);
-            FieldValue<Boolean> fieldValue = FieldValue.of(true, context);
+            FieldValue fieldValue = FieldValue.of(true, context);
             BooleanFieldValidator validator = new BooleanFieldValidator(fieldValue);
 
             List<ConstraintViolation> violations = validator.validate();

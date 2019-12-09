@@ -18,30 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.option;
+package io.spine.validate;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.option.OptionsProto;
-import io.spine.option.PatternOption;
-import io.spine.validate.FieldValue;
+public interface Constraint {
 
-/**
- * An option defining a pattern that a field value has to match.
- */
-@Immutable
-final class Pattern extends FieldValidatingOption<PatternOption, String> {
-
-    private Pattern() {
-        super(OptionsProto.pattern);
-    }
-
-    /** Returns a new instance of this option. */
-    public static Pattern create() {
-        return new Pattern();
-    }
-
-    @Override
-    public Constraint constraintFor(FieldValue fieldValue) {
-        return new PatternConstraint(optionValue(fieldValue), fieldValue.declaration());
-    }
+    void accept(ConstraintTranslator<?> visitor);
 }

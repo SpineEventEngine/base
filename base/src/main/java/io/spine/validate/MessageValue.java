@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -80,7 +81,7 @@ public final class MessageValue {
      * <p>Do not contain {@code oneof} fields, as they are rarely accessed.
      */
     @SuppressWarnings("Immutable")  // cached field values are effectively immutable.
-    private @MonotonicNonNull ImmutableList<FieldValue<?>> nonOneofValues;
+    private @MonotonicNonNull ImmutableList<FieldValue> nonOneofValues;
 
     private MessageValue(Message message, FieldContext context) {
         this.message = checkNotNull(message);
@@ -131,19 +132,19 @@ public final class MessageValue {
      * @implNote The values are computed in lazy mode and cached in this
      *         {@code MessageValue} instance to improve the performance of the repeated calls.
      */
-    ImmutableList<FieldValue<?>> fieldsExceptOneofs() {
+    ImmutableList<FieldValue> fieldsExceptOneofs() {
         if(nonOneofValues == null) {
             nonOneofValues = readNonOneofs();
         }
         return nonOneofValues;
     }
 
-    private ImmutableList<FieldValue<?>> readNonOneofs() {
-        ImmutableList.Builder<FieldValue<?>> builder = ImmutableList.builder();
+    private ImmutableList<FieldValue> readNonOneofs() {
+        ImmutableList.Builder<FieldValue> builder = ImmutableList.builder();
         List<FieldDescriptor> fields = descriptor.getFields();
         for (FieldDescriptor field : fields) {
             if (isNotOneof(field)) {
-                FieldValue<?> value = valueOfField(field);
+                FieldValue value = valueOfField(field);
                 builder.add(value);
             }
         }
@@ -158,7 +159,7 @@ public final class MessageValue {
      * @return a value of the field
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
-    public Optional<FieldValue<?>> valueOf(String fieldName) {
+    public Optional<FieldValue> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
         return valueOf(field);
     }
@@ -171,8 +172,13 @@ public final class MessageValue {
      * @return a value of the field
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
-    public Optional<FieldValue<?>> valueOf(FieldDescriptor fieldDescriptor) {
+    public Optional<FieldValue> valueOf(FieldDescriptor fieldDescriptor) {
         return valueOfNullable(fieldDescriptor);
+    }
+
+    public FieldValue valueOf(FieldDeclaration field) {
+        checkNotNull(field);
+        return valueOfField(field.descriptor());
     }
 
     /**
@@ -185,7 +191,7 @@ public final class MessageValue {
      * @throws IllegalArgumentException
      *         if the if the message doesn't declare this oneof
      */
-    public Optional<FieldValue<?>> valueOf(OneofDescriptor oneof) {
+    public Optional<FieldValue> valueOf(OneofDescriptor oneof) {
         checkArgument(descriptor.getOneofs()
                                 .contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
@@ -204,19 +210,19 @@ public final class MessageValue {
         return context;
     }
 
-    private Optional<FieldValue<?>> valueOfNullable(@Nullable FieldDescriptor field) {
+    private Optional<FieldValue> valueOfNullable(@Nullable FieldDescriptor field) {
         if (field == null) {
             return Optional.empty();
         }
-        FieldValue<?> fieldValue = valueOfField(field);
+        FieldValue fieldValue = valueOfField(field);
         return Optional.of(fieldValue);
     }
 
-    private FieldValue<?> valueOfField(FieldDescriptor field) {
+    private FieldValue valueOfField(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
         Object rawValue = readValue(field);
         @SuppressWarnings("Immutable") // field values are immutable
-        FieldValue<?> value = FieldValue.of(rawValue, fieldContext);
+        FieldValue value = FieldValue.of(rawValue, fieldContext);
         return value;
     }
 

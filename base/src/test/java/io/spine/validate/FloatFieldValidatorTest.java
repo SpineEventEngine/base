@@ -42,7 +42,7 @@ class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatField
                                                             .getFields()
                                                             .get(0);
         FieldContext context = FieldContext.create(descriptor);
-        FieldValue<Float> value = FieldValue.of(HALF, context);
+        FieldValue value = FieldValue.of(HALF, context);
         FloatFieldValidator requiredValidator = new FloatFieldValidator(value);
         return requiredValidator;
     }

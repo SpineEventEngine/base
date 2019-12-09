@@ -36,7 +36,7 @@ import static io.spine.test.options.BytesDirectionOptionProto.direction;
  */
 public final class Direction extends FieldValidatingOption<BytesDirection, ByteString> {
 
-    private static final Constraint<FieldValue<ByteString>> NO_OP_CONSTRAINT =
+    private static final Constraint<FieldValue> NO_OP_CONSTRAINT =
             byteString -> ImmutableList.of();
 
     Direction() {
@@ -44,7 +44,7 @@ public final class Direction extends FieldValidatingOption<BytesDirection, ByteS
     }
 
     @Override
-    public Constraint<FieldValue<ByteString>> constraintFor(FieldValue<ByteString> value) {
+    public Constraint<FieldValue> constraintFor(FieldValue value) {
         return NO_OP_CONSTRAINT;
     }
 }

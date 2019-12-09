@@ -23,7 +23,9 @@ package io.spine.validate.option;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.FieldValidator;
 import io.spine.validate.FieldValue;
@@ -38,7 +40,7 @@ import java.util.regex.Pattern;
  * has non-default values.
  */
 @Immutable
-final class RequiredFieldConstraint implements Constraint<MessageValue> {
+final class RequiredFieldConstraint implements Constraint {
 
     /**
      * The pattern to remove whitespace from the option field value.
@@ -61,7 +63,6 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
         this.optionValue = optionValue;
     }
 
-    @Override
     public ImmutableList<ConstraintViolation> check(MessageValue value) {
         if (optionValue.isEmpty()) {
             return ImmutableList.of();
@@ -69,6 +70,21 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
 
         Check check = new Check(value);
         return check.perform();
+    }
+
+    @Override
+    public MessageType targetType() {
+        return null;
+    }
+
+    @Override
+    public String errorMessage(FieldValue value) {
+        return null;
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+
     }
 
     /**
@@ -123,7 +139,7 @@ final class RequiredFieldConstraint implements Constraint<MessageValue> {
         }
 
         private boolean checkField(String fieldName) {
-            Optional<FieldValue<?>> fieldValue = value.valueOf(fieldName);
+            Optional<FieldValue> fieldValue = value.valueOf(fieldName);
             if (!fieldValue.isPresent()) {
                 ConstraintViolation notFound = ConstraintViolation
                         .newBuilder()

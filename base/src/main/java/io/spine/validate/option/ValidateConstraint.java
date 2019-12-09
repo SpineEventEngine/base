@@ -20,39 +20,32 @@
 
 package io.spine.validate.option;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.option.IfInvalidOption;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.FieldValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.validate.FieldValidator.errorMsgFormat;
 
-/**
- * A rule that limits a set of values that a Protobuf field can have.
- *
- * @param <T>
- *         a type of value of the field that this constraint is applied to
- * @param <V>
- *         a type of value that describes the constraints
- */
-@Immutable
-public abstract class FieldValueConstraint<@ImmutableTypeParameter T, @ImmutableTypeParameter V>
-        implements Constraint<FieldValue<T>> {
+public final class ValidateConstraint extends FieldConstraint<Boolean> {
 
-    private final V optionValue;
-
-    /**
-     * Creates a new instance of this constraint.
-     *
-     * @param optionValue
-     *         a value that describes the field constraints
-     */
-    protected FieldValueConstraint(V optionValue) {
-        checkNotNull(optionValue);
-        this.optionValue = optionValue;
+    ValidateConstraint(Boolean optionValue, FieldDeclaration field) {
+        super(optionValue, field);
     }
 
-    /** Returns a value that describes the constraint.*/
-    public V optionValue() {
-        return optionValue;
+    public boolean shouldBeValid() {
+        return optionValue();
+    }
+
+    @Override
+    public String errorMessage(FieldValue value) {
+        IfInvalid option = new IfInvalid();
+        IfInvalidOption ifInvalid = option.valueOrDefault(value.descriptor());
+        return errorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitValidate(this);
     }
 }

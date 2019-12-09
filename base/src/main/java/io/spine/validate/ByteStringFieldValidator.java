@@ -37,7 +37,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      * @param fieldValue
      *         the value to validate
      */
-    ByteStringFieldValidator(FieldValue<ByteString> fieldValue) {
+    ByteStringFieldValidator(FieldValue fieldValue) {
         super(fieldValue, false);
     }
 

@@ -1,0 +1,266 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.validate;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Range;
+import com.google.protobuf.Message;
+import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.option.PatternOption;
+import io.spine.type.TypeName;
+import io.spine.validate.option.Constraint;
+import io.spine.validate.option.DistinctConstraint;
+import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.PatternConstraint;
+import io.spine.validate.option.RangedConstraint;
+import io.spine.validate.option.RequiredConstraint;
+import io.spine.validate.option.ValidateConstraint;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.protobuf.TypeConverter.toAny;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.MessageValue.atTopLevel;
+import static io.spine.validate.Validate.violationsOf;
+import static java.util.stream.Collectors.toList;
+
+final class ConstraintInterpreter implements ConstraintTranslator<Optional<ValidationError>> {
+
+    private final MessageValue message;
+    private final List<ConstraintViolation> violations;
+
+    ConstraintInterpreter(Message message) {
+        this.message = atTopLevel(checkNotNull(message));
+        this.violations = new ArrayList<>();
+    }
+
+    @Override
+    public void visitRange(RangedConstraint<?> constraint) {
+        checkNumberRange(constraint);
+    }
+
+    @Override
+    public void visitRequired(RequiredConstraint constraint) {
+        if (constraint.optionValue()) {
+            FieldValue fieldValue = message.valueOf(constraint.field());
+            if (fieldValue.isDefault()) {
+                violations.add(violation(constraint, fieldValue));
+            }
+        }
+    }
+
+    @Override
+    public void visitPattern(PatternConstraint constraint) {
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        PatternOption pattern = constraint.optionValue();
+        String regex = pattern.getRegex();
+        ImmutableList<?> values = fieldValue.asList();
+        values.stream()
+              .filter(value -> !((String) value).matches(regex))
+              .map(value -> violation(constraint, fieldValue, value))
+              .forEach(violations::add);
+    }
+
+    @Override
+    public void visitDistinct(DistinctConstraint constraint) {
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        ImmutableList<?> values = fieldValue.asList();
+        Set<?> duplicates = findDuplicates(values);
+        violations.addAll(
+                duplicates.stream()
+                          .map(duplicate -> violation(constraint, fieldValue, duplicate))
+                          .collect(toImmutableList())
+        );
+    }
+
+    @Override
+    public void visitGoesWith(GoesConstraint constraint) {
+        FieldValue value = message.valueOf(constraint.field());
+        Optional<FieldDeclaration> declaration = withField(message, constraint);
+        if (declaration.isPresent()) {
+            FieldDeclaration withField = declaration.get();
+            if (!value.isDefault() && fieldValueNotSet(withField)) {
+                ConstraintViolation withFieldNotSet = violation(constraint, value,
+                                                                value.singleValue());
+                violations.add(withFieldNotSet);
+            }
+        } else {
+            ConstraintViolation fieldNotFound = fieldNotFoundViolation(constraint, value);
+            violations.add(fieldNotFound);
+        }
+    }
+
+    @Override
+    public void visitValidate(ValidateConstraint constraint) {
+        if (constraint.shouldBeValid()) {
+            FieldValue fieldValue = message.valueOf(constraint.field());
+            List<ConstraintViolation> childViolations = fieldValue
+                    .asList()
+                    .stream()
+                    .flatMap(msg -> violationsOf((Message) msg).stream())
+                    .collect(toList());
+            ConstraintViolation parentViolation = violation(constraint, fieldValue)
+                    .toBuilder()
+                    .addAllViolation(childViolations)
+                    .build();
+            violations.add(parentViolation);
+        }
+    }
+
+    @Override
+    public Optional<ValidationError> translate() {
+        if (violations.isEmpty()) {
+            return Optional.empty();
+        } else {
+            ValidationError error = ValidationError
+                    .newBuilder()
+                    .addAllConstraintViolation(violations)
+                    .build();
+            return Optional.of(error);
+        }
+    }
+
+    private void checkNumberRange(RangedConstraint<?> constraint) {
+        FieldValue value = message.valueOf(constraint.field());
+        Range<ComparableNumber> range = constraint.range();
+        checkTypeConsistency(range, value);
+        value.asList()
+             .stream()
+             .map(num -> new ComparableNumber((Number) num))
+             .filter(range.negate())
+             .map(number -> violation(constraint, value, number.value()))
+             .forEach(violations::add);
+    }
+
+    private static void checkTypeConsistency(Range<ComparableNumber> range, FieldValue value) {
+        if (range.hasLowerBound() && range.hasUpperBound()) {
+            NumberText upper = range.upperEndpoint()
+                                    .toText();
+            NumberText lower = range.lowerEndpoint()
+                                    .toText();
+            if (!upper.isOfSameType(lower)) {
+                String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
+                throw newIllegalStateException(errorMessage, upper, lower);
+            }
+            checkBoundaryAndValue(upper, value);
+        } else {
+            checkSingleBoundary(range, value);
+        }
+    }
+
+    private static void checkSingleBoundary(Range<ComparableNumber> range, FieldValue value) {
+        NumberText singleBoundary = range.hasLowerBound()
+                                    ? range.lowerEndpoint()
+                                           .toText()
+                                    : range.upperEndpoint()
+                                           .toText();
+        checkBoundaryAndValue(singleBoundary, value);
+    }
+
+    private static void checkBoundaryAndValue(NumberText boundary, FieldValue value) {
+        ComparableNumber boundaryNumber = boundary.toNumber();
+        Number valueNumber = (Number) value.singleValue();
+        if (!NumberConversionChecker.check(boundaryNumber, valueNumber)) {
+            String errorMessage =
+                    "Boundary values must have types consistent with values they bind: " +
+                            "boundary %s, value %s";
+            throw newIllegalStateException(errorMessage, boundary, valueNumber);
+        }
+    }
+
+    private static <T> Set<T> findDuplicates(Iterable<T> potentialDuplicates) {
+        Set<T> uniques = new HashSet<>();
+        ImmutableSet.Builder<T> duplicates = ImmutableSet.builder();
+        for (T potentialDuplicate : potentialDuplicates) {
+            if (uniques.contains(potentialDuplicate)) {
+                duplicates.add(potentialDuplicate);
+            } else {
+                uniques.add(potentialDuplicate);
+            }
+        }
+        return duplicates.build();
+    }
+
+    private boolean fieldValueNotSet(FieldDeclaration field) {
+        return message
+                .valueOf(field.descriptor())
+                .map(FieldValue::isDefault)
+                .orElse(false);
+    }
+
+    private static ConstraintViolation
+    fieldNotFoundViolation(GoesConstraint constraint, FieldValue value) {
+        return ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Field `%s` noted in `(goes).with` option is not found.")
+                .addParam(constraint.option()
+                                    .getWith())
+                .setFieldPath(value.context()
+                                   .fieldPath())
+                .setFieldValue(toAny(value.singleValue()))
+                .build();
+    }
+
+    private static Optional<FieldDeclaration>
+    withField(MessageValue messageValue, GoesConstraint constraint) {
+        FieldName withField = FieldName.of(constraint.option()
+                                                     .getWith());
+        for (FieldDeclaration field : messageValue.declaration()
+                                                  .fields()) {
+            if (withField.equals(field.name())) {
+                return Optional.of(field);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static ConstraintViolation violation(Constraint constraint, FieldValue value) {
+        return violation(constraint, value, null);
+    }
+
+    private static ConstraintViolation violation(Constraint constraint,
+                                                 FieldValue value,
+                                                 @Nullable Object violatingValue) {
+        FieldPath fieldPath = value.context()
+                                   .fieldPath();
+        TypeName typeName = constraint.targetType()
+                                      .name();
+        ConstraintViolation.Builder violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(constraint.errorMessage(value))
+                .setFieldPath(fieldPath)
+                .setTypeName(typeName.value());
+        if (violatingValue != null) {
+            violation.setFieldValue(toAny(violatingValue));
+        }
+        return violation.build();
+    }
+}

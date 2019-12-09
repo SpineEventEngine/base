@@ -47,7 +47,7 @@ import static io.spine.tools.validate.code.Expression.formatted;
  * <p>If a field message is invalid, the message's {@link ConstraintViolation}s are wrapped into
  * a single violation and added to the rest of the violations of the top-level message.
  */
-final class MessageConstraints implements Constraint {
+final class MessageConstraintsCode implements ConstraintCode {
 
     private static final Type listOfViolations =
             new TypeToken<List<ConstraintViolation>>() {}.getType();
@@ -56,7 +56,7 @@ final class MessageConstraints implements Constraint {
     private final GetterExpression fieldAccess;
     private final Expression<Iterable<ConstraintViolation>> violationsList;
 
-    MessageConstraints(FieldDeclaration field, GetterExpression fieldAccess) {
+    MessageConstraintsCode(FieldDeclaration field, GetterExpression fieldAccess) {
         this.field = checkNotNull(field);
         this.fieldAccess = checkNotNull(fieldAccess);
         this.violationsList = formatted("%sViolations", field.name().javaCase());

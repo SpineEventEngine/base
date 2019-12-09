@@ -38,7 +38,7 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
      * @param fieldValue
      *         the value to validate
      */
-    LongFieldValidator(FieldValue<Long> fieldValue) {
+    LongFieldValidator(FieldValue fieldValue) {
         super(fieldValue);
     }
 

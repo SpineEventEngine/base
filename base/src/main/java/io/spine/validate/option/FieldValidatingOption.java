@@ -47,7 +47,7 @@ import static java.lang.String.format;
 @Immutable
 public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @ImmutableTypeParameter F>
         extends FieldOption<T>
-        implements ValidatingOption<T, FieldDescriptor, FieldValue<F>> {
+        implements ValidatingOption<T, FieldDescriptor, FieldValue> {
 
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {
@@ -61,7 +61,7 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
      *         the option. For all other cases please refer to
      *         {@link #valueFrom(com.google.protobuf.Descriptors.FieldDescriptor, FieldContext)}.
      */
-    protected T optionValue(FieldValue<F> value) throws IllegalStateException {
+    protected T optionValue(FieldValue value) throws IllegalStateException {
         FieldDescriptor field = value.declaration()
                                      .descriptor();
         FieldContext context = value.context();
@@ -121,7 +121,7 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
      * @param value
      *         the value to be validated
      */
-    public boolean shouldValidate(FieldValue<F> value) {
+    public boolean shouldValidate(FieldValue value) {
         Optional<T> externalConstraint =
                 ExternalConstraintOptions.getOptionValue(value.context(), extension());
         return externalConstraint.isPresent() || valueFrom(value.descriptor()).isPresent();

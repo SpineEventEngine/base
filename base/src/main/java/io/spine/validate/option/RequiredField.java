@@ -60,7 +60,7 @@ public final class RequiredField implements ValidatingOption<String, Descriptor,
     }
 
     @Override
-    public Constraint<MessageValue> constraintFor(MessageValue message) {
+    public Constraint constraintFor(MessageValue message) {
         Descriptor field = message.declaration()
                                   .descriptor();
         String expression = valueFrom(field).orElse("");

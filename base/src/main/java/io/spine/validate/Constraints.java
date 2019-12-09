@@ -21,40 +21,36 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.OneofDescriptor;
+import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
-/**
- * Validates a {@linkplain OneofDescriptor Oneof}.
- *
- * <p>Only a single field from a {@code Oneof} is validated — the field that is actually set.
- * If none of fields is set, a constraint violation is created.
- *
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">
- *         Oneof documentation</a>
- */
-class OneofValidator {
+public final class Constraints {
 
-    private final OneofDescriptor oneof;
-    private final MessageValue message;
+    private final ImmutableList<Constraint> constraints;
 
-    OneofValidator(OneofDescriptor oneof, MessageValue message) {
-        this.oneof = checkNotNull(oneof);
-        this.message = checkNotNull(message);
+    private Constraints(ImmutableList<Constraint> constraints) {
+        this.constraints = constraints;
     }
 
-    ImmutableList<ConstraintViolation> validate() {
-        ImmutableList<ConstraintViolation> violations =
-                message.valueOf(oneof)
-                       .map(OneofValidator::validateField)
-                       .orElseGet(ImmutableList::of);   // Create a `List` instance on-demand.
-
-        return violations;
+    public static Constraints of(MessageType type) {
+        checkNotNull(type);
+        ImmutableList<Constraint> constraints = parse(type);
+        return new Constraints(constraints);
     }
 
-    private static ImmutableList<ConstraintViolation> validateField(FieldValue field) {
-        FieldValidator<?> validator = field.createValidator();
-        return validator.validate();
+    private static ImmutableList<Constraint> parse(MessageType type) {
+        ImmutableList<Constraint> constraints = type
+                .fields()
+                .stream()
+                .flatMap(FieldConstraints::of)
+                .collect(toImmutableList());
+        return constraints;
+    }
+
+    public <T> T runThrough(ConstraintTranslator<T> constraintTranslator) {
+        constraints.forEach(c -> c.accept(constraintTranslator));
+        return constraintTranslator.translate();
     }
 }

@@ -79,7 +79,7 @@ public class Required<@ImmutableTypeParameter T>
     }
 
     @Override
-    public boolean shouldValidate(FieldValue<T> value) {
+    public boolean shouldValidate(FieldValue value) {
         return notAssumingRequired(value.descriptor());
     }
 
@@ -105,8 +105,9 @@ public class Required<@ImmutableTypeParameter T>
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
+    public Constraint constraintFor(FieldValue fieldValue) {
         checkUsage(fieldValue.descriptor());
-        return new RequiredConstraint<>(CAN_BE_REQUIRED);
+        boolean value = notAssumingRequired(fieldValue.descriptor());
+        return new RequiredConstraint(value, fieldValue.declaration(), CAN_BE_REQUIRED);
     }
 }

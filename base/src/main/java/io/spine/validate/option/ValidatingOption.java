@@ -43,5 +43,5 @@ interface ValidatingOption<@ImmutableTypeParameter T,
                            @ImmutableTypeParameter V>
         extends Option<T, K> {
 
-    Constraint<V> constraintFor(V value);
+    Constraint constraintFor(V value);
 }

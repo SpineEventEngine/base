@@ -45,7 +45,7 @@ final class Range<@ImmutableTypeParameter V extends Number & Comparable<V>>
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> value) {
-        return new RangeConstraint<>(optionValue(value));
+    public Constraint constraintFor(FieldValue value) {
+        return new RangeConstraint(optionValue(value), value.declaration());
     }
 }

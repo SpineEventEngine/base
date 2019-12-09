@@ -39,7 +39,7 @@ final class StringFieldValidator extends FieldValidator<String> {
      *         if {@code true}, the validator would assume that the field is required even
      *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldValue<String> fieldValue, boolean assumeRequired) {
+    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired);
     }
 

@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A validation constraint based on a Protobuf option of a message field.
  */
-final class FieldConstraint implements Constraint {
+final class FieldConstraintCode implements ConstraintCode {
 
     private final BooleanExpression condition;
     private final Expression<ConstraintViolation> violation;
@@ -45,7 +45,7 @@ final class FieldConstraint implements Constraint {
      *         a function which accepts the field and yields an expression which evaluates into
      *         a {@link ConstraintViolation} which describes the broken rule
      */
-    FieldConstraint(BooleanExpression condition, Expression<ConstraintViolation> violation) {
+    FieldConstraintCode(BooleanExpression condition, Expression<ConstraintViolation> violation) {
         this.condition = checkNotNull(condition);
         this.violation = checkNotNull(violation);
     }

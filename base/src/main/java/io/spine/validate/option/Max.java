@@ -46,7 +46,7 @@ final class Max<@ImmutableTypeParameter V extends Number & Comparable<V>>
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
-        return new MaxConstraint<>(optionValue(fieldValue));
+    public Constraint constraintFor(FieldValue fieldValue) {
+        return new MaxConstraint(optionValue(fieldValue), fieldValue.declaration());
     }
 }

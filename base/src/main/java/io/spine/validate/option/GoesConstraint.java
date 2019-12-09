@@ -20,102 +20,52 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.option.GoesOption;
-import io.spine.validate.ConstraintViolation;
+import io.spine.type.MessageType;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.FieldValue;
-import io.spine.validate.MessageValue;
 
-import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint which checks whether a field is set only if the specific related field is also set.
- *
- * @param <T>
- *         type of the field value being checked
  */
 @Immutable
-public class GoesConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
+public final class GoesConstraint implements Constraint {
 
-    private final MessageValue messageValue;
+    private final FieldDeclaration declaringField;
     private final GoesOption option;
 
     /**
      * Creates a constraint for the supplied {@code message} with a specified {@code goes} option.
      */
-    GoesConstraint(MessageValue messageValue, GoesOption option) {
-        this.messageValue = messageValue;
+    GoesConstraint(FieldDeclaration declaringField, GoesOption option) {
+        this.declaringField = declaringField;
         this.option = option;
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
-        checkNotNull(value);
-        ImmutableList<ConstraintViolation> result = getWithField(messageValue, option)
-                .map(withField -> {
-                    if (!value.isDefault() && fieldValueNotSet(withField)) {
-                        ConstraintViolation withFieldNotSet = withFieldNotSetViolation(value);
-                        return ImmutableList.of(withFieldNotSet);
-                    }
-                    return ImmutableList.<ConstraintViolation>of();
-                })
-                .orElseGet(() -> {
-                    ConstraintViolation fieldNotFound = fieldNotFoundViolation(value);
-                    return ImmutableList.of(fieldNotFound);
-                });
-        return result;
+    public MessageType targetType() {
+        return declaringField.declaringType();
     }
 
-    private boolean fieldValueNotSet(FieldDeclaration field) {
-        return messageValue
-                .valueOf(field.descriptor())
-                .map(FieldValue::isDefault)
-                .orElse(false);
+    @Override
+    public String errorMessage(FieldValue value) {
+        return errorMsgFormat(option, option.getMsgFormat());
     }
 
-    private ConstraintViolation withFieldNotSetViolation(FieldValue<T> value) {
-        String msgFormat = errorMsgFormat(option, option.getMsgFormat());
-        return ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msgFormat)
-                .addParam(value.declaration()
-                               .name()
-                               .value())
-                .addParam(option.getWith())
-                .setFieldPath(value.context()
-                                   .fieldPath())
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitGoesWith(this);
     }
 
-    private ConstraintViolation fieldNotFoundViolation(FieldValue<T> value) {
-        return ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Field `%s` noted in `(goes).with` option is not found.")
-                .addParam(option.getWith())
-                .setFieldPath(value.context()
-                                   .fieldPath())
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
+    public GoesOption option() {
+        return option;
     }
 
-    private static Optional<FieldDeclaration>
-    getWithField(MessageValue messageValue, GoesOption goesOption) {
-        FieldName withField = FieldName.of(goesOption.getWith());
-        for (FieldDeclaration field : messageValue.declaration()
-                                                  .fields()) {
-            if (withField.equals(field.name())) {
-                return Optional.of(field);
-            }
-        }
-        return Optional.empty();
+    public FieldDeclaration field() {
+        return declaringField;
     }
 }

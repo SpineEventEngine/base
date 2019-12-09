@@ -51,7 +51,7 @@ final class MessageFieldValidator extends FieldValidator<Message> {
      *         if {@code true} the validator would assume that the field is required even if
      *         such constraint is not explicitly set
      */
-    MessageFieldValidator(FieldValue<Message> fieldValue, boolean assumeRequired) {
+    MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired);
     }
 

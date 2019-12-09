@@ -53,7 +53,7 @@ class FieldValueTest {
         @DisplayName("a map to values")
         void map() {
             Map<String, String> map = ImmutableMap.of(newUuid(), newUuid(), newUuid(), newUuid());
-            FieldValue<ImmutableMap<String, String>> fieldValue = FieldValue.of(map, mapContext());
+            FieldValue> fieldValue = FieldValue.of(map, mapContext());
             assertConversion(map.values(), fieldValue);
         }
 
@@ -61,7 +61,7 @@ class FieldValueTest {
         @DisplayName("a repeated field")
         void repeated() {
             List<String> repeated = ImmutableList.of(newUuid(), newUuid());
-            FieldValue<ImmutableList<String>> fieldValue =
+            FieldValue> fieldValue =
                     FieldValue.of(repeated, repeatedContext());
             assertConversion(repeated, fieldValue);
         }
@@ -70,7 +70,7 @@ class FieldValueTest {
         @DisplayName("a scalar field")
         void scalar() {
             String scalar = newUuid();
-            FieldValue<String> fieldValue = FieldValue.of(scalar, scalarContext());
+            FieldValue fieldValue = FieldValue.of(scalar, scalarContext());
             assertConversion(singletonList(scalar), fieldValue);
         }
     }
@@ -82,7 +82,7 @@ class FieldValueTest {
         @Test
         @DisplayName("a map")
         void map() {
-            FieldValue<ImmutableMap<String, String>> mapValue =
+            FieldValue> mapValue =
                     FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
             assertEquals(STRING, mapValue.javaType());
         }
@@ -90,7 +90,7 @@ class FieldValueTest {
         @Test
         @DisplayName("a repeated")
         void repeated() {
-            FieldValue<ImmutableList<String>> repeatedValue =
+            FieldValue> repeatedValue =
                     FieldValue.of(ImmutableList.<String>of(), repeatedContext());
             assertEquals(STRING, repeatedValue.javaType());
         }
@@ -100,7 +100,7 @@ class FieldValueTest {
     @DisplayName("handle Enum value")
     void enumValue() {
         Syntax rawValue = SYNTAX_PROTO3;
-        FieldValue<Syntax> enumValue = FieldValue.of(rawValue, scalarContext());
+        FieldValue enumValue = FieldValue.of(rawValue, scalarContext());
         List<EnumValueDescriptor> expectedValues = singletonList(rawValue.getValueDescriptor());
         assertConversion(expectedValues, enumValue);
     }
@@ -134,11 +134,11 @@ class FieldValueTest {
             assertNotDefault(FieldValue.of(" ", scalarContext()));
         }
 
-        private void assertDefault(FieldValue<?> value) {
+        private void assertDefault(FieldValue value) {
             assertThat(value.isDefault()).isTrue();
         }
 
-        private void assertNotDefault(FieldValue<?> value) {
+        private void assertNotDefault(FieldValue value) {
             assertThat(value.isDefault()).isFalse();
         }
     }

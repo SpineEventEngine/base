@@ -38,7 +38,7 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
      * @param fieldValue
      *         the value to validate
      */
-    IntegerFieldValidator(FieldValue<Integer> fieldValue) {
+    IntegerFieldValidator(FieldValue fieldValue) {
         super(fieldValue);
     }
 

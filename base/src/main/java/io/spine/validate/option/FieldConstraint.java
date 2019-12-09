@@ -20,44 +20,49 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValue;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.type.MessageType;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A constraint that is applicable to numeric fields only.
+ * A rule that limits a set of values that a Protobuf field can have.
  *
  * @param <V>
- *         a type of values that this constraint is applicable to.
+ *         a type of value that describes the constraints
  */
 @Immutable
-public abstract class NumericFieldConstraint<@ImmutableTypeParameter V extends Number & Comparable,
-                                             @ImmutableTypeParameter T>
-        extends FieldValueConstraint<V, T> {
+public abstract class FieldConstraint<@ImmutableTypeParameter V> implements Constraint {
 
-    NumericFieldConstraint(T optionValue) {
-        super(optionValue);
+    private final V optionValue;
+    private final FieldDeclaration field;
+
+    /**
+     * Creates a new instance of this constraint.
+     *
+     * @param optionValue
+     *         a value that describes the field constraints
+     * @param field
+     *         the field which declares the constraint
+     */
+    protected FieldConstraint(V optionValue, FieldDeclaration field) {
+        this.optionValue = checkNotNull(optionValue);
+        this.field = checkNotNull(field);
+    }
+
+    /** Returns a value that describes the constraint.*/
+    public final V optionValue() {
+        return optionValue;
+    }
+
+    public final FieldDeclaration field() {
+        return field;
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<V> value) {
-        if (!satisfies(value)) {
-            return constraintViolated(value);
-        }
-        return ImmutableList.of();
+    public MessageType targetType() {
+        return field.declaringType();
     }
-
-    /**
-     * Checks if the actual value of the field satisfies this constraint.
-     *
-     * @param value
-     *         a value of the field.
-     * @return {@code true} the specified does not satisfy this constraint
-     */
-    abstract boolean satisfies(FieldValue<V> value);
-
-    /** Violations that should be produced if this constraint is not satisfied. */
-    abstract ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value);
 }

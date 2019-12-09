@@ -93,18 +93,18 @@ public final class NumberFieldValidatorFactory
     }
 
     @Override
-    protected ImmutableList<Constraint> constraints() {
+    protected ImmutableList<ConstraintCode> constraints() {
         NumberBoundaries boundaries = parseBoundaries();
-        ImmutableList.Builder<Constraint> rules = ImmutableList.builder();
+        ImmutableList.Builder<ConstraintCode> rules = ImmutableList.builder();
         if (boundaries.hasMin()) {
             Boundary min = boundaries.min();
             @SuppressWarnings("DuplicateStringLiteralInspection") // In tests.
-                    FieldConstraint rule = boundaryRule(min, "<", "<=", "greater");
+                    FieldConstraintCode rule = boundaryRule(min, "<", "<=", "greater");
             rules.add(rule);
         }
         if (boundaries.hasMax()) {
             Boundary max = boundaries.max();
-            FieldConstraint rule = boundaryRule(max, ">", ">=", "less");
+            FieldConstraintCode rule = boundaryRule(max, ">", ">=", "less");
             rules.add(rule);
         }
         return rules.build();
@@ -120,13 +120,13 @@ public final class NumberFieldValidatorFactory
         return false;
     }
 
-    private FieldConstraint boundaryRule(Boundary boundary,
-                                         String exclusiveOperator,
-                                         String inclusiveOperator,
-                                         String englishDescription) {
+    private FieldConstraintCode boundaryRule(Boundary boundary,
+                                             String exclusiveOperator,
+                                             String inclusiveOperator,
+                                             String englishDescription) {
         boolean inclusive = boundary.inclusive();
         String operator = inclusive ? exclusiveOperator : inclusiveOperator;
-        FieldConstraint rule = new FieldConstraint(
+        FieldConstraintCode rule = new FieldConstraintCode(
                 fromCode("$L $L $L", fieldAccess(), operator, boundary.value()),
                 violationTemplate()
                         .setMessage(format("Field must be %s than%s %s.",
