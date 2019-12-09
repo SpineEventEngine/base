@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.validate.option.Constraint;
 import io.spine.validate.option.Goes;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,15 +47,15 @@ final class GoesWithValidator {
     @SuppressWarnings({"unchecked", "Immutable"}) // types are effectively immutable and type-safe
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Goes<?> goesFieldOption = Goes.create(messageValue);
+        Goes goesFieldOption = Goes.create();
 
         ImmutableList<FieldValue> values = messageValue.fieldsExceptOneofs();
-        for (FieldValue value : values) {
-            if (goesFieldOption.shouldValidate(value)) {
-                Constraint constraint = goesFieldOption.constraintFor(value);
-//                violations.addAll(constraint.check(value));
-            }
-        }
+//        for (FieldValue value : values) {
+//            if (goesFieldOption.shouldValidate(value)) {
+//                Constraint constraint = goesFieldOption.constraintFor(value);
+////                violations.addAll(constraint.check(value));
+//            }
+//        }
         return violations.build();
     }
 }

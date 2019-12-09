@@ -55,7 +55,7 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, Double>> createMoreOptions(
+    protected Set<FieldValidatingOption<?>> createMoreOptions(
             ValidatingOptionFactory factory) {
         return factory.forDouble();
     }

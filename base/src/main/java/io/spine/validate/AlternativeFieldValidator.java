@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.validate.option.Constraint;
 import io.spine.validate.option.RequiredField;
 
 import java.util.List;
@@ -47,7 +46,7 @@ final class AlternativeFieldValidator {
 
     List<ConstraintViolation> validate() {
         RequiredField requiredFieldOption = new RequiredField();
-        Constraint required = requiredFieldOption.constraintFor(message);
+//        Constraint required = requiredFieldOption.constraintFor(message);
 //        return required.check(message);
         return ImmutableList.of();
     }

@@ -33,7 +33,6 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
-import io.spine.validate.option.Constraint;
 import io.spine.validate.option.Distinct;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.IfInvalid;
@@ -67,7 +66,7 @@ public abstract class FieldValidator<V> implements Logging {
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final UnmodifiableIterator<FieldValidatingOption<?, V>> fieldValidatingOptions;
+    private final UnmodifiableIterator<FieldValidatingOption<?>> fieldValidatingOptions;
 
     /**
      * If set the validator would assume that the field is required even
@@ -112,8 +111,8 @@ public abstract class FieldValidator<V> implements Logging {
      *         to Protobuf data attempting to read the missing option values.
      */
     @SuppressWarnings("Immutable") // message field values are immutable
-    private UnmodifiableIterator<FieldValidatingOption<?, V>> validatingOptions() {
-        List<FieldValidatingOption<?, V>> allOptions = new ArrayList<>();
+    private UnmodifiableIterator<FieldValidatingOption<?>> validatingOptions() {
+        List<FieldValidatingOption<?>> allOptions = new ArrayList<>();
 
         if (assumeRequired) {
             allOptions.add(Required.create(true));
@@ -132,7 +131,7 @@ public abstract class FieldValidator<V> implements Logging {
             ImmutableSet<ValidatingOptionFactory> factories =
                     ValidatingOptionsLoader.INSTANCE.implementations();
             for (ValidatingOptionFactory factory : factories) {
-                Set<FieldValidatingOption<?, V>> options = createMoreOptions(factory);
+                Set<FieldValidatingOption<?>> options = createMoreOptions(factory);
                 allOptions.addAll(options);
             }
         }
@@ -145,7 +144,7 @@ public abstract class FieldValidator<V> implements Logging {
                       .hasOptions();
     }
 
-    protected abstract Set<FieldValidatingOption<?, V>> createMoreOptions(
+    protected abstract Set<FieldValidatingOption<?>> createMoreOptions(
             ValidatingOptionFactory factory);
 
     /**
@@ -195,14 +194,14 @@ public abstract class FieldValidator<V> implements Logging {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         result.addAll(violations);
 
-        while (fieldValidatingOptions.hasNext()) {
-            FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
-            if (option.shouldValidate(value)) {
-                Constraint constraint = option.constraintFor(value);
-                ImmutableList<ConstraintViolation> violations = ImmutableList.of(); // constraint.check(value);
-                result.addAll(violations);
-            }
-        }
+//        while (fieldValidatingOptions.hasNext()) {
+//            FieldValidatingOption<?, V> option = fieldValidatingOptions.next();
+//            if (option.shouldValidate(value)) {
+//                Constraint constraint = option.constraintFor(value.context());
+//                ImmutableList<ConstraintViolation> violations = ImmutableList.of(); // constraint.check(value);
+//                result.addAll(violations);
+//            }
+//        }
         return result.build();
     }
 
@@ -247,7 +246,7 @@ public abstract class FieldValidator<V> implements Logging {
      */
     @SuppressWarnings("Immutable") // message field values are immutable
     protected boolean isRequiredField() {
-        Required<V> requiredOption = Required.create(assumeRequired);
+        Required requiredOption = Required.create(assumeRequired);
         boolean required = requiredOption.valueFrom(descriptor())
                                          .orElse(assumeRequired);
         return required;
@@ -321,7 +320,7 @@ public abstract class FieldValidator<V> implements Logging {
      */
     @SuppressWarnings("Immutable") // message field values are immutable
     private boolean isRequiredEntityId() {
-        Required<V> requiredOption = Required.create(assumeRequired);
+        Required requiredOption = Required.create(assumeRequired);
         Optional<Boolean> requiredOptionValue = requiredOption.valueFrom(descriptor());
         boolean notRequired = requiredOptionValue.isPresent() && !requiredOptionValue.get();
         return declaration.isEntityId() && !notRequired;

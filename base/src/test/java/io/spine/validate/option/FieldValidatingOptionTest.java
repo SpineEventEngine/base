@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.StringValue;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.option.ATestMessage;
 import io.spine.test.validate.option.ATestMessageConstraint;
 import io.spine.test.validate.option.ATestMessageWithConstraint;
@@ -158,21 +159,21 @@ final class FieldValidatingOptionTest {
 
     @Immutable
     private static final class MaxLength
-            extends FieldValidatingOption<Integer, StringValue> {
+            extends FieldValidatingOption<Integer> {
 
         private MaxLength() {
             super(TestFieldOptionProto.maxLength);
         }
 
         @Override
-        public Constraint<FieldValue> constraintFor(FieldValue value) {
-            return new MaxLengthConstraint(optionValue(value));
+        public Constraint<FieldValue> constraintFor(FieldContext field) {
+            return new MaxLengthConstraint(optionValue(field));
         }
     }
 
     @Immutable
     private static final class MaxLengthConstraint
-            extends FieldConstraint<StringValue, Integer> {
+            extends FieldConstraint<StringValue> {
 
         /**
          * Creates a new instance of this constraint.

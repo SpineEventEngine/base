@@ -22,9 +22,6 @@ package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Message;
 import io.spine.annotation.SPI;
 
 import java.util.ServiceLoader;
@@ -49,7 +46,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Boolean>> forBoolean() {
+    default Set<FieldValidatingOption<?>> forBoolean() {
         return ImmutableSet.of();
     }
 
@@ -59,7 +56,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, ByteString>> forByteString() {
+    default Set<FieldValidatingOption<?>> forByteString() {
         return ImmutableSet.of();
     }
 
@@ -69,7 +66,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Double>> forDouble() {
+    default Set<FieldValidatingOption<?>> forDouble() {
         return ImmutableSet.of();
     }
 
@@ -79,7 +76,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, EnumValueDescriptor>> forEnum() {
+    default Set<FieldValidatingOption<?>> forEnum() {
         return ImmutableSet.of();
     }
 
@@ -89,7 +86,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Float>> forFloat() {
+    default Set<FieldValidatingOption<?>> forFloat() {
         return ImmutableSet.of();
     }
 
@@ -100,7 +97,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Integer>> forInt() {
+    default Set<FieldValidatingOption<?>> forInt() {
         return ImmutableSet.of();
     }
 
@@ -111,7 +108,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Long>> forLong() {
+    default Set<FieldValidatingOption<?>> forLong() {
         return ImmutableSet.of();
     }
 
@@ -121,7 +118,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, Message>> forMessage() {
+    default Set<FieldValidatingOption<?>> forMessage() {
         return ImmutableSet.of();
     }
 
@@ -131,7 +128,7 @@ public interface ValidatingOptionFactory {
      * @return the set of additional options
      * @implSpec By default, obtains an empty set.
      */
-    default Set<FieldValidatingOption<?, String>> forString() {
+    default Set<FieldValidatingOption<?>> forString() {
         return ImmutableSet.of();
     }
 
@@ -140,9 +137,9 @@ public interface ValidatingOptionFactory {
      *
      * @return the set of all additional options
      */
-    default Set<FieldValidatingOption<?, ?>> all() {
+    default Set<FieldValidatingOption<?>> all() {
         return ImmutableSet
-                .<FieldValidatingOption<?, ?>>builder()
+                .<FieldValidatingOption<?>>builder()
                 .addAll(forBoolean())
                 .addAll(forByteString())
                 .addAll(forDouble())

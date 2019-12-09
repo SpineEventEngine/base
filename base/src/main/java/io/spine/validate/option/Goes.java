@@ -21,35 +21,27 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.GoesOption;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
-import io.spine.validate.MessageValue;
 
 /**
  * An option that defines field bond to another field within the message.
- *
- * @param <F>
- *         type of field that this option is applied to
  */
 @Immutable
-public final class Goes<@ImmutableTypeParameter F>
-        extends FieldValidatingOption<GoesOption, F> {
+public final class Goes
+        extends FieldValidatingOption<GoesOption> {
 
-    private final MessageValue messageValue;
-
-    private Goes(MessageValue messageValue) {
+    private Goes() {
         super(OptionsProto.goes);
-        this.messageValue = messageValue;
     }
 
-    public static <@ImmutableTypeParameter T> Goes<T> create(MessageValue messageValue) {
-        return new Goes<>(messageValue);
+    public static Goes create() {
+        return new Goes();
     }
 
     @Override
-    public Constraint constraintFor(FieldValue value) {
-        return new GoesConstraint(value.declaration(), optionValue(value));
+    public Constraint constraintFor(FieldContext field) {
+        return new GoesConstraint(field.targetDeclaration(), optionValue(field));
     }
 }

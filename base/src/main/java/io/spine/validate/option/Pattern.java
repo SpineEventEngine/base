@@ -21,15 +21,15 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
-import io.spine.validate.FieldValue;
 
 /**
  * An option defining a pattern that a field value has to match.
  */
 @Immutable
-final class Pattern extends FieldValidatingOption<PatternOption, String> {
+final class Pattern extends FieldValidatingOption<PatternOption> {
 
     private Pattern() {
         super(OptionsProto.pattern);
@@ -41,7 +41,7 @@ final class Pattern extends FieldValidatingOption<PatternOption, String> {
     }
 
     @Override
-    public Constraint constraintFor(FieldValue fieldValue) {
-        return new PatternConstraint(optionValue(fieldValue), fieldValue.declaration());
+    public Constraint constraintFor(FieldContext fieldValue) {
+        return new PatternConstraint(optionValue(fieldValue), fieldValue.targetDeclaration());
     }
 }

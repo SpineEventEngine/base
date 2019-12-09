@@ -21,18 +21,14 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.validate.FieldValue;
+import io.spine.code.proto.FieldContext;
 
 /**
  * A special case of {@code Required} option that assumes that the option is present regardless
  * of the actual field declaration.
- *
- * @param <T>
- *         type of value that this option is applied to
  */
 @Immutable
-final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
+final class AlwaysRequired extends Required {
 
     /**
      * Creates a new instance of this option.
@@ -46,11 +42,11 @@ final class AlwaysRequired<@ImmutableTypeParameter T> extends Required<T> {
      *
      * <p>For {@code AlwaysRequired}, validation happens every time.
      *
-     * @param value
+     * @param context
      */
     @Override
-    public boolean shouldValidate(FieldValue value) {
-        checkUsage(value.descriptor());
+    public boolean shouldValidate(FieldContext context) {
+        checkUsage(context.target());
         return true;
     }
 }

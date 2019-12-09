@@ -55,7 +55,7 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
     }
 
     @Override
-    protected Set<FieldValidatingOption<?, Float>> createMoreOptions(ValidatingOptionFactory factory) {
+    protected Set<FieldValidatingOption<?>> createMoreOptions(ValidatingOptionFactory factory) {
         return factory.forFloat();
     }
 }

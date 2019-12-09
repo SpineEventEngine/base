@@ -42,39 +42,39 @@ import java.util.Set;
 @Immutable
 public final class PrimitiveValidatingOptionFactory implements ValidatingOptionFactory {
 
-    private static final ImmutableSet<FieldValidatingOption<?, String>> STRING_OPTIONS =
+    private static final ImmutableSet<FieldValidatingOption<?>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());
-    private static final ImmutableSet<FieldValidatingOption<?, Integer>> INT_OPTIONS =
+    private static final ImmutableSet<FieldValidatingOption<?>> INT_OPTIONS =
             ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?, Long>> LONG_OPTIONS =
+    private static final ImmutableSet<FieldValidatingOption<?>> LONG_OPTIONS =
             ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?, Float>> FLOAT_OPTIONS =
+    private static final ImmutableSet<FieldValidatingOption<?>> FLOAT_OPTIONS =
             ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?, Double>> DOUBLE_OPTIONS =
+    private static final ImmutableSet<FieldValidatingOption<?>> DOUBLE_OPTIONS =
             ImmutableSet.of(Max.create(), Min.create(), Range.create());
 
     @Override
-    public Set<FieldValidatingOption<?, String>> forString() {
+    public Set<FieldValidatingOption<?>> forString() {
         return STRING_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Integer>> forInt() {
+    public Set<FieldValidatingOption<?>> forInt() {
         return INT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Long>> forLong() {
+    public Set<FieldValidatingOption<?>> forLong() {
         return LONG_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Float>> forFloat() {
+    public Set<FieldValidatingOption<?>> forFloat() {
         return FLOAT_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?, Double>> forDouble() {
+    public Set<FieldValidatingOption<?>> forDouble() {
         return DOUBLE_OPTIONS;
     }
 }

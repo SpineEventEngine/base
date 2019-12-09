@@ -22,7 +22,7 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.validate.MessageValue;
+import io.spine.code.proto.FieldContext;
 
 import java.util.Optional;
 
@@ -48,7 +48,7 @@ import static io.spine.option.OptionsProto.requiredField;
  * non-default family name, or both honorific prefix and a family name.
  */
 @Immutable
-public final class RequiredField implements ValidatingOption<String, Descriptor, MessageValue> {
+public final class RequiredField implements ValidatingOption<String, Descriptor> {
 
     @Override
     public Optional<String> valueFrom(Descriptor message) {
@@ -60,10 +60,9 @@ public final class RequiredField implements ValidatingOption<String, Descriptor,
     }
 
     @Override
-    public Constraint constraintFor(MessageValue message) {
-        Descriptor field = message.declaration()
-                                  .descriptor();
-        String expression = valueFrom(field).orElse("");
+    public Constraint constraintFor(FieldContext context) {
+        Descriptor messageType = context.target().getMessageType();
+        String expression = valueFrom(messageType).orElse("");
         return new RequiredFieldConstraint(expression);
     }
 }

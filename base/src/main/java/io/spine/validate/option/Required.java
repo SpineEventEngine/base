@@ -25,9 +25,9 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import io.spine.code.proto.FieldContext;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM;
@@ -40,8 +40,8 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  * <p>If a {@code required} field is missing, an error is produced.
  */
 @Immutable
-public class Required<@ImmutableTypeParameter T>
-        extends FieldValidatingOption<Boolean, T> implements Logging {
+public class Required
+        extends FieldValidatingOption<Boolean> implements Logging {
 
     private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING
@@ -68,10 +68,10 @@ public class Required<@ImmutableTypeParameter T>
      *         type of value that the returned option is applied to
      * @return a new instance of the {@code Required} option
      */
-    public static <@ImmutableTypeParameter T> Required<T> create(boolean strict) {
+    public static <@ImmutableTypeParameter T> Required create(boolean strict) {
         return strict
-               ? new AlwaysRequired<>()
-               : new Required<>();
+               ? new AlwaysRequired()
+               : new Required();
     }
 
     private boolean notAssumingRequired(FieldDescriptor field) {
@@ -79,8 +79,8 @@ public class Required<@ImmutableTypeParameter T>
     }
 
     @Override
-    public boolean shouldValidate(FieldValue value) {
-        return notAssumingRequired(value.descriptor());
+    public boolean shouldValidate(FieldContext context) {
+        return notAssumingRequired(context.target());
     }
 
     /**
@@ -105,9 +105,9 @@ public class Required<@ImmutableTypeParameter T>
     }
 
     @Override
-    public Constraint constraintFor(FieldValue fieldValue) {
-        checkUsage(fieldValue.descriptor());
-        boolean value = notAssumingRequired(fieldValue.descriptor());
-        return new RequiredConstraint(value, fieldValue.declaration(), CAN_BE_REQUIRED);
+    public Constraint constraintFor(FieldContext fieldValue) {
+        checkUsage(fieldValue.target());
+        boolean value = notAssumingRequired(fieldValue.target());
+        return new RequiredConstraint(value, fieldValue.targetDeclaration(), CAN_BE_REQUIRED);
     }
 }

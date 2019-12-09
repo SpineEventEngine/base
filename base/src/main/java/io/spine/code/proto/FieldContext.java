@@ -105,6 +105,11 @@ public final class FieldContext {
         return checkNotNull(target, "Empty context cannot have a target.");
     }
 
+    public FieldDeclaration targetDeclaration() {
+        FieldDescriptor target = target();
+        return new FieldDeclaration(target);
+    }
+
     private Optional<FieldDescriptor> targetParent() {
         return parent == null ? Optional.empty() : Optional.ofNullable(parent.target);
     }
