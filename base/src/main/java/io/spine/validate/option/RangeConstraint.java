@@ -89,7 +89,7 @@ public final class RangeConstraint
         Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
         if (!rangeOption.isEmpty()) {
             checkState(rangeMatcher.matches(),
-                       "Range '%s' on field %s is invalid.", rangeOption, field);
+                       "Range '%s' on field `%s` is invalid.", rangeOption, field);
             boolean minInclusive = rangeMatcher.group(1)
                                                .equals("[");
             ComparableNumber minValue = new NumberText(rangeMatcher.group(2)).toNumber();
