@@ -23,8 +23,11 @@ package io.spine.validate.option;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
+import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.FieldValidator;
@@ -35,12 +38,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+
 /**
  * A constraint that, when applied to a message, checks whether the specified combination of fields
  * has non-default values.
  */
 @Immutable
-final class RequiredFieldConstraint implements Constraint {
+public final class RequiredFieldConstraint implements Constraint {
 
     /**
      * The pattern to remove whitespace from the option field value.
@@ -58,9 +64,11 @@ final class RequiredFieldConstraint implements Constraint {
     private static final Splitter andSplitter = Splitter.on('&');
 
     private final String optionValue;
+    private final FieldDeclaration declaration;
 
-    RequiredFieldConstraint(String optionValue) {
-        this.optionValue = optionValue;
+    RequiredFieldConstraint(String optionValue, FieldDeclaration declaration) {
+        this.optionValue = checkNotNull(optionValue);
+        this.declaration = checkNotNull(declaration);
     }
 
     public ImmutableList<ConstraintViolation> check(MessageValue value) {
@@ -74,17 +82,17 @@ final class RequiredFieldConstraint implements Constraint {
 
     @Override
     public MessageType targetType() {
-        return null;
+        return declaration.declaringType();
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
-        return null;
+    public String errorMessage(FieldContext field) {
+        return format("Field named `%s` is not found.", field.targetDeclaration());
     }
 
     @Override
     public void accept(ConstraintTranslator<?> visitor) {
-
+        visitor.visitRequiredField(this);
     }
 
     /**

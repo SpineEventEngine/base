@@ -23,6 +23,7 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.proto.FieldContext;
+import io.spine.validate.Constraint;
 
 import java.util.Optional;
 
@@ -63,6 +64,6 @@ public final class RequiredField implements ValidatingOption<String, Descriptor>
     public Constraint constraintFor(FieldContext context) {
         Descriptor messageType = context.target().getMessageType();
         String expression = valueFrom(messageType).orElse("");
-        return new RequiredFieldConstraint(expression);
+        return new RequiredFieldConstraint(expression, context.targetDeclaration());
     }
 }

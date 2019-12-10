@@ -23,10 +23,10 @@ package io.spine.validate.option;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
 import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.FieldValue;
 
 import static com.google.common.flogger.FluentLogger.forEnclosingClass;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -68,9 +68,9 @@ public final class RequiredConstraint extends FieldConstraint<Boolean> {
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
+    public String errorMessage(FieldContext field) {
         IfMissing ifMissing = new IfMissing();
-        IfMissingOption option = ifMissing.valueOrDefault(value.descriptor());
+        IfMissingOption option = ifMissing.valueOrDefault(field.target());
         return errorMsgFormat(option, option.getMsgFormat());
     }
 

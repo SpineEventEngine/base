@@ -22,12 +22,12 @@ package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM;
@@ -64,11 +64,9 @@ public class Required
      * @param strict
      *         specifies if a field is assumed to be a required one regardless of the actual
      *         Protobuf option value
-     * @param <T>
-     *         type of value that the returned option is applied to
      * @return a new instance of the {@code Required} option
      */
-    public static <@ImmutableTypeParameter T> Required create(boolean strict) {
+    public static Required create(boolean strict) {
         return strict
                ? new AlwaysRequired()
                : new Required();

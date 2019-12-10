@@ -20,7 +20,17 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
+import io.spine.type.MessageType;
+
+// TODO:2019-12-05:dmytro.dashenkov: Document.
+@Immutable
 public interface Constraint {
+
+    MessageType targetType();
+
+    String errorMessage(FieldContext field);
 
     void accept(ConstraintTranslator<?> visitor);
 }

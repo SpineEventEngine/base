@@ -25,6 +25,7 @@ import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.MaxOption;
 import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
 /**
  * An option that defines a maximum value for a numeric field.

@@ -20,10 +20,10 @@
 
 package io.spine.validate.option;
 
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfInvalidOption;
 import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.FieldValue;
 
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
@@ -38,9 +38,9 @@ public final class ValidateConstraint extends FieldConstraint<Boolean> {
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
+    public String errorMessage(FieldContext field) {
         IfInvalid option = new IfInvalid();
-        IfInvalidOption ifInvalid = option.valueOrDefault(value.descriptor());
+        IfInvalidOption ifInvalid = option.valueOrDefault(field.target());
         return errorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
     }
 

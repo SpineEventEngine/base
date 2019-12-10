@@ -26,6 +26,7 @@ import io.spine.validate.option.GoesConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
+import io.spine.validate.option.RequiredFieldConstraint;
 import io.spine.validate.option.ValidateConstraint;
 
 /**
@@ -52,6 +53,8 @@ public interface ConstraintTranslator<T> {
     void visitGoesWith(GoesConstraint constraint);
 
     void visitValidate(ValidateConstraint constraint);
+
+    void visitRequiredField(RequiredFieldConstraint constraint);
 
     T translate();
 }

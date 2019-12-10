@@ -32,6 +32,7 @@ import io.spine.test.validate.option.ATestMessageWithExternalConstraintOnly;
 import io.spine.test.validate.option.NoValidationTestMessage;
 import io.spine.test.validate.option.TestFieldOptionProto;
 import io.spine.type.MessageType;
+import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ExternalConstraints;
 import io.spine.validate.FieldValue;

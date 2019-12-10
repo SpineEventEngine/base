@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
 /**
  * An option that defines a minimum value for a numeric field.

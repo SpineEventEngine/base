@@ -29,12 +29,12 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.option.PatternOption;
 import io.spine.type.TypeName;
-import io.spine.validate.option.Constraint;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
+import io.spine.validate.option.RequiredFieldConstraint;
 import io.spine.validate.option.ValidateConstraint;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -133,6 +133,11 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
                     .build();
             violations.add(parentViolation);
         }
+    }
+
+    @Override
+    public void visitRequiredField(RequiredFieldConstraint constraint) {
+        // TODO:2019-12-10:dmytro.dashenkov: Impl.
     }
 
     @Override

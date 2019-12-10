@@ -21,17 +21,24 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldOption;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
 /**
  * An option that indicates that the fields internal field should be included into the validation.
  */
 @Immutable
-public final class Valid extends FieldOption<Boolean> {
+public final class Valid extends FieldValidatingOption<Boolean> {
 
     /** Creates a new instance of this option. */
     public Valid() {
         super(OptionsProto.validate);
+    }
+
+    @Override
+    public Constraint constraintFor(FieldContext field) {
+        boolean shouldValidate = optionValue(field);
+        return new ValidateConstraint(shouldValidate, field.targetDeclaration());
     }
 }

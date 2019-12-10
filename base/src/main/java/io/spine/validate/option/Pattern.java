@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
+import io.spine.validate.Constraint;
 
 /**
  * An option defining a pattern that a field value has to match.

@@ -21,11 +21,12 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
 import io.spine.type.MessageType;
+import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.FieldValue;
 
 import static io.spine.validate.FieldValidator.errorMsgFormat;
 
@@ -52,7 +53,7 @@ public final class GoesConstraint implements Constraint {
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
+    public String errorMessage(FieldContext field) {
         return errorMsgFormat(option, option.getMsgFormat());
     }
 

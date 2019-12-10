@@ -23,10 +23,10 @@ package io.spine.validate.option;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.FieldValue;
 import io.spine.validate.NumberText;
 
 import java.util.regex.Matcher;
@@ -107,7 +107,7 @@ public final class RangeConstraint
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
+    public String errorMessage(FieldContext field) {
         return format("Field %s is out of range.", field());
     }
 

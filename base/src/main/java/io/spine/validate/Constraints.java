@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -44,6 +45,7 @@ public final class Constraints {
         ImmutableList<Constraint> constraints = type
                 .fields()
                 .stream()
+                .map(field -> FieldContext.create(field.descriptor()))
                 .flatMap(FieldConstraints::of)
                 .collect(toImmutableList());
         return constraints;

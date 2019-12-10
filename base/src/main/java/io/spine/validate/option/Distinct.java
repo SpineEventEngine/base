@@ -23,6 +23,7 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
 /**
  * An option that can be applied to {@code repeated} Protobuf fields to specify that values

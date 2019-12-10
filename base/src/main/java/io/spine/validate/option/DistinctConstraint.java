@@ -21,9 +21,9 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.FieldValue;
 
 import static java.lang.String.format;
 
@@ -38,8 +38,8 @@ public final class DistinctConstraint extends FieldConstraint<Boolean> {
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
-        return format("`%s` must not duplicates.", field());
+    public String errorMessage(FieldContext field) {
+        return format("`%s` must not duplicates.", field.targetDeclaration());
     }
 
     @Override

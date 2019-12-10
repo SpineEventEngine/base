@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
+import io.spine.validate.Constraint;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

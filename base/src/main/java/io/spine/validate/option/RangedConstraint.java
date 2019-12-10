@@ -24,9 +24,9 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
-import io.spine.validate.FieldValue;
 
 import static com.google.common.collect.BoundType.CLOSED;
 
@@ -56,7 +56,7 @@ public abstract class RangedConstraint<@ImmutableTypeParameter T>
     }
 
     @Override
-    public String errorMessage(FieldValue value) {
+    public String errorMessage(FieldContext field) {
         return compileErrorMessage(range);
     }
 
