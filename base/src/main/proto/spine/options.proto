@@ -610,7 +610,7 @@ message PatternOption {
     //
     // The format parameter is the regular expression to which the value must match.
     //
-    option (default_message) = "String must match the regular expression '%s'.";
+    option (default_message) = "String must match the regular expression `%s`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -662,7 +662,7 @@ message GoesOption {
     // The first parameter is the name of the field for which we specify the option.
     // The second parameter is the name of the field set in the "with" value.
     //
-    option (default_message) = "The field '%s' can only be set when the field '%s' is defined.";
+    option (default_message) = "The field `%s` can only be set when the field `%s` is defined.";
 
     // A name of the field required for presence of the field for which we set the option.
     string with = 1;
