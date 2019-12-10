@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.option.PatternOption;
@@ -254,13 +255,13 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
     private static ConstraintViolation violation(Constraint constraint,
                                                  FieldValue value,
                                                  @Nullable Object violatingValue) {
-        FieldPath fieldPath = value.context()
-                                   .fieldPath();
+        FieldContext context = value.context();
+        FieldPath fieldPath = context.fieldPath();
         TypeName typeName = constraint.targetType()
                                       .name();
         ConstraintViolation.Builder violation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat(constraint.errorMessage(value))
+                .setMsgFormat(constraint.errorMessage(context))
                 .setFieldPath(fieldPath)
                 .setTypeName(typeName.value());
         if (violatingValue != null) {
