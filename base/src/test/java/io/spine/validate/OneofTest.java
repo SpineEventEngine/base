@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "consider Oneof")
+@DisplayName(MESSAGE_VALIDATOR_SHOULD + "consider oneof")
 final class OneofTest extends MessageValidatorTest {
 
     @DisplayName("valid if")
@@ -102,7 +102,7 @@ final class OneofTest extends MessageValidatorTest {
         void requiredNonValidatedFieldSet() {
             RequiredOneofWithValidation requiredWithoutValidationSet = RequiredOneofWithValidation
                     .newBuilder()
-                    .setRawValue(-1)
+                    .setRawValue("o_0")
                     .build();
             assertValid(requiredWithoutValidationSet);
         }
@@ -112,7 +112,7 @@ final class OneofTest extends MessageValidatorTest {
         void requiredValidatedFieldSet() {
             RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
                     .newBuilder()
-                    .setValidValue(1)
+                    .setValidValue("aaa1111")
                     .build();
             assertValid(requiredWithValidationSet);
         }
@@ -153,7 +153,7 @@ final class OneofTest extends MessageValidatorTest {
         void requiredFieldIsNotValid() {
             RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
                     .newBuilder()
-                    .setValidValue(0)
+                    .setValidValue("###")
                     .build();
             assertNotValid(requiredWithValidationSet);
         }

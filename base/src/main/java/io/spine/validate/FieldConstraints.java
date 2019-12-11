@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.option.Distinct;
+import io.spine.validate.option.Goes;
 import io.spine.validate.option.Required;
 import io.spine.validate.option.Valid;
 import io.spine.validate.option.ValidatingOptionFactory;
@@ -50,6 +51,7 @@ final class FieldConstraints {
         Required required = Required.create(false);
         Valid validate = new Valid();
         Distinct distinct = Distinct.create();
+        Goes goes = Goes.create();
         FieldDeclaration declaration = field.targetDeclaration();
         JavaType type = declaration.javaType();
         switch (type) {
@@ -75,22 +77,22 @@ final class FieldConstraints {
                                       .forField(field);
             case STRING:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forString)
-                                      .and(required)
+                                      .and(required, goes)
                                       .andForCollections(distinct)
                                       .forField(field);
             case BYTE_STRING:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forByteString)
-                                      .and(required)
+                                      .and(required, goes)
                                       .andForCollections(distinct)
                                       .forField(field);
             case ENUM:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forEnum)
-                                      .and(required)
+                                      .and(required, goes)
                                       .andForCollections(distinct)
                                       .forField(field);
             case MESSAGE:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forMessage)
-                                      .and(required, validate)
+                                      .and(required, goes, validate)
                                       .andForCollections(distinct)
                                       .forField(field);
             default:

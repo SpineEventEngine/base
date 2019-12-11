@@ -127,8 +127,12 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         if (declaration.isPresent()) {
             FieldDeclaration withField = declaration.get();
             if (!value.isDefault() && fieldValueNotSet(withField)) {
-                ConstraintViolation withFieldNotSet = violation(constraint, value,
-                                                                value.singleValue());
+                ConstraintViolation withFieldNotSet =
+                        violation(constraint, value)
+                                .toBuilder()
+                                .addParam(constraint.field().name().value())
+                                .addParam(constraint.optionValue().getWith())
+                                .build();
                 violations.add(withFieldNotSet);
             }
         } else {

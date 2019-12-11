@@ -20,6 +20,7 @@
 
 package io.spine.validate.option;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.util.Timestamps;
 import io.spine.test.validate.Payment;
 import io.spine.test.validate.PaymentData;
@@ -87,7 +88,7 @@ final class GoesTest extends MessageValidatorTest {
         WithFieldNotFound msg = WithFieldNotFound
                 .newBuilder()
                 .setId(newUuid())
-                .setCredits(1444L)
+                .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
         assertNotValid(msg);
     }

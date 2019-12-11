@@ -93,24 +93,25 @@ public abstract class MessageValidatorTest {
         assertFalse(format.isEmpty());
         boolean noParams = violation.getParamList()
                                     .isEmpty();
-        if (format.contains("%s")) {
-            assertFalse(noParams);
+        if (noParams) {
+            assertThat(format)
+                    .doesNotContain("%s");
         } else {
-            assertTrue(noParams);
+            assertThat(format)
+                    .contains("%s");
         }
     }
 
     private static void assertHasFieldPath(ConstraintViolation violation) {
-        assertFalse(violation.getFieldPath()
-                             .getFieldNameList()
-                             .isEmpty());
+        assertThat(violation.getFieldPath().getFieldNameList())
+                .isNotEmpty();
     }
 
     protected void assertSingleViolation(Message message,
                                          String expectedErrMsg,
                                          String invalidFieldName) {
         assertNotValid(message);
-        assertEquals(1, violations.size());
+        assertThat(violations).hasSize(1);
         assertSingleViolation(expectedErrMsg, invalidFieldName);
     }
 
