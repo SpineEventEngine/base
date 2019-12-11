@@ -54,7 +54,7 @@ public final class MaxConstraint
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MaxOption max = optionValue();
         String template = errorMsgFormat(max, max.getMsgFormat());
-        return format(template, orEqualTo(range.upperBoundType()), range.lowerEndpoint());
+        return format(template, orEqualTo(range.upperBoundType()), range.upperEndpoint());
     }
 
     @Override

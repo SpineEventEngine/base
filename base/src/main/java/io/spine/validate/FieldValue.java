@@ -36,6 +36,7 @@ import io.spine.protobuf.TypeConverter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -197,6 +198,12 @@ public final class FieldValue {
      */
     public final ImmutableList<?> asList() {
         return values;
+    }
+
+    public final Stream<?> nonDefault() {
+        return values
+                .stream()
+                .filter(val -> !isDefault(val));
     }
 
     public Object singleValue() {

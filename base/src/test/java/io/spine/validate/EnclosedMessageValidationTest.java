@@ -92,12 +92,14 @@ class EnclosedMessageValidationTest extends MessageValidatorTest {
     @Test
     @DisplayName("provide valid violations if enclosed message field is not valid")
     void provideValidViolationsIfEnclosedMessageFieldIsNotValid() {
-        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
-                                                                     .setEmail("invalid email")
-                                                                     .build();
-        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
-                                                                 .setOuterMsgField(enclosedMsg)
-                                                                 .build();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue
+                .newBuilder()
+                .setEmail("invalid email")
+                .build();
+        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue
+                .newBuilder()
+                .setOuterMsgField(enclosedMsg)
+                .build();
         validate(msg);
 
         ConstraintViolation violation = singleViolation();

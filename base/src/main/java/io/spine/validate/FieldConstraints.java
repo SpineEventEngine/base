@@ -24,6 +24,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.validate.option.Distinct;
 import io.spine.validate.option.Required;
 import io.spine.validate.option.Valid;
 import io.spine.validate.option.ValidatingOptionFactory;
@@ -48,39 +49,49 @@ final class FieldConstraints {
         checkNotNull(field);
         Required required = Required.create(false);
         Valid validate = new Valid();
+        Distinct distinct = Distinct.create();
         FieldDeclaration declaration = field.targetDeclaration();
         JavaType type = declaration.javaType();
         switch (type) {
             case INT:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forInt)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case LONG:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forLong)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case FLOAT:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forFloat)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case DOUBLE:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forDouble)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case BOOLEAN:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forBoolean)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case STRING:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forString)
                                       .and(required)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case BYTE_STRING:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forByteString)
                                       .and(required)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case ENUM:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forEnum)
                                       .and(required)
+                                      .andForCollections(distinct)
                                       .forField(field);
             case MESSAGE:
                 return ConstraintsFrom.factories(ValidatingOptionFactory::forMessage)
                                       .and(required, validate)
+                                      .andForCollections(distinct)
                                       .forField(field);
             default:
                 log.atWarning().log("Unknown field type `%s` at `%s`.", type, declaration);

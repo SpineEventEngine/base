@@ -20,15 +20,14 @@
 
 package io.spine.validate.given;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ProtocolStringList;
 import com.google.protobuf.StringValue;
 import io.spine.base.FieldPath;
 import io.spine.validate.ConstraintViolation;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageValidatorTestEnv {
 
@@ -59,8 +58,8 @@ public class MessageValidatorTestEnv {
     public static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
         FieldPath path = violation.getFieldPath();
         ProtocolStringList actualFields = path.getFieldNameList();
-        assertEquals(expectedFields.length, actualFields.size());
-        assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
+        assertThat(actualFields)
+                .containsExactlyElementsIn(expectedFields);
     }
 
     public static StringValue newStringValue() {

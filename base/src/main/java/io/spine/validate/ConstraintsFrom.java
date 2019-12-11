@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Streams.concat;
 
 /**
  * A builder of {@link Constraint}s for a given field.
@@ -44,6 +45,7 @@ final class ConstraintsFrom {
             ValidatingOptionsLoader.INSTANCE.implementations();
 
     private final List<FieldValidatingOption<?>> options = new ArrayList<>();
+    private final List<FieldValidatingOption<?>> collectionOptions = new ArrayList<>();
 
     static ConstraintsFrom
     factories(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector) {
@@ -58,7 +60,22 @@ final class ConstraintsFrom {
         return this;
     }
 
+    ConstraintsFrom andForCollections(FieldValidatingOption<?>... options) {
+        collectionOptions.addAll(ImmutableList.copyOf(options));
+        return this;
+    }
+
     Stream<Constraint> forField(FieldContext field) {
+        Stream<Constraint> constraints = toConstraints(options, field);
+        if (field.targetDeclaration().isCollection()) {
+            Stream<Constraint> collectionConstraints = toConstraints(collectionOptions, field);
+            constraints = concat(constraints, collectionConstraints);
+        }
+        return constraints;
+    }
+
+    private static Stream<Constraint>
+    toConstraints(List<FieldValidatingOption<?>> options, FieldContext field) {
         return options.stream()
                       .filter(option -> option.shouldValidate(field))
                       .map(option -> option.constraintFor(field));

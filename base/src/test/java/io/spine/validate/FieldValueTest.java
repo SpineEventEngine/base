@@ -53,7 +53,7 @@ class FieldValueTest {
         @DisplayName("a map to values")
         void map() {
             Map<String, String> map = ImmutableMap.of(newUuid(), newUuid(), newUuid(), newUuid());
-            FieldValue> fieldValue = FieldValue.of(map, mapContext());
+            FieldValue fieldValue = FieldValue.of(map, mapContext());
             assertConversion(map.values(), fieldValue);
         }
 
@@ -61,7 +61,7 @@ class FieldValueTest {
         @DisplayName("a repeated field")
         void repeated() {
             List<String> repeated = ImmutableList.of(newUuid(), newUuid());
-            FieldValue> fieldValue =
+            FieldValue fieldValue =
                     FieldValue.of(repeated, repeatedContext());
             assertConversion(repeated, fieldValue);
         }
@@ -82,7 +82,7 @@ class FieldValueTest {
         @Test
         @DisplayName("a map")
         void map() {
-            FieldValue> mapValue =
+            FieldValue mapValue =
                     FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
             assertEquals(STRING, mapValue.javaType());
         }
@@ -90,7 +90,7 @@ class FieldValueTest {
         @Test
         @DisplayName("a repeated")
         void repeated() {
-            FieldValue> repeatedValue =
+            FieldValue repeatedValue =
                     FieldValue.of(ImmutableList.<String>of(), repeatedContext());
             assertEquals(STRING, repeatedValue.javaType());
         }

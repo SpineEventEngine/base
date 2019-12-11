@@ -55,7 +55,7 @@ public final class MinConstraint
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MinOption min = optionValue();
         String template = errorMsgFormat(min, min.getMsgFormat());
-        return format(template, orEqualTo(range.upperBoundType()), range.lowerEndpoint());
+        return format(template, orEqualTo(range.lowerBoundType()), range.lowerEndpoint());
     }
 
     @Override

@@ -72,13 +72,17 @@ public class Required
                : new Required();
     }
 
-    private boolean notAssumingRequired(FieldDescriptor field) {
-        return valueFrom(field).orElse(false);
+    private boolean notAssumingRequired(FieldContext context) {
+        boolean defaultValue = context
+                .targetDeclaration()
+                .isId();
+        return valueFrom(context.target())
+                .orElse(defaultValue);
     }
 
     @Override
     public boolean shouldValidate(FieldContext context) {
-        return notAssumingRequired(context.target());
+        return notAssumingRequired(context);
     }
 
     /**
@@ -103,9 +107,9 @@ public class Required
     }
 
     @Override
-    public Constraint constraintFor(FieldContext fieldValue) {
-        checkUsage(fieldValue.target());
-        boolean value = notAssumingRequired(fieldValue.target());
-        return new RequiredConstraint(value, fieldValue.targetDeclaration(), CAN_BE_REQUIRED);
+    public Constraint constraintFor(FieldContext context) {
+        checkUsage(context.target());
+        boolean value = notAssumingRequired(context);
+        return new RequiredConstraint(value, context.targetDeclaration(), CAN_BE_REQUIRED);
     }
 }

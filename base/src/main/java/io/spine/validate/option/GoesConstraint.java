@@ -24,8 +24,6 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
-import io.spine.type.MessageType;
-import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 
 import static io.spine.validate.FieldValidator.errorMsgFormat;
@@ -34,39 +32,23 @@ import static io.spine.validate.FieldValidator.errorMsgFormat;
  * A constraint which checks whether a field is set only if the specific related field is also set.
  */
 @Immutable
-public final class GoesConstraint implements Constraint {
-
-    private final FieldDeclaration declaringField;
-    private final GoesOption option;
+public final class GoesConstraint extends FieldConstraint<GoesOption> {
 
     /**
      * Creates a constraint for the supplied {@code message} with a specified {@code goes} option.
      */
     GoesConstraint(FieldDeclaration declaringField, GoesOption option) {
-        this.declaringField = declaringField;
-        this.option = option;
-    }
-
-    @Override
-    public MessageType targetType() {
-        return declaringField.declaringType();
+        super(option, declaringField);
     }
 
     @Override
     public String errorMessage(FieldContext field) {
+        GoesOption option = optionValue();
         return errorMsgFormat(option, option.getMsgFormat());
     }
 
     @Override
     public void accept(ConstraintTranslator<?> visitor) {
         visitor.visitGoesWith(this);
-    }
-
-    public GoesOption option() {
-        return option;
-    }
-
-    public FieldDeclaration field() {
-        return declaringField;
     }
 }

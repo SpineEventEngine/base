@@ -23,12 +23,14 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.option.PatternOption;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
@@ -44,13 +46,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.protobuf.AnyPacker.unpackIfPacked;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.validate.MessageValue.atTopLevel;
-import static io.spine.validate.Validate.violationsOf;
+import static io.spine.validate.MessageValue.nestedIn;
 import static java.util.stream.Collectors.toList;
 
 final class ConstraintInterpreter implements ConstraintTranslator<Optional<ValidationError>> {
@@ -59,13 +63,24 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
     private final List<ConstraintViolation> violations;
 
     ConstraintInterpreter(Message message) {
-        this.message = atTopLevel(checkNotNull(message));
+        this(atTopLevel(checkNotNull(message)));
+    }
+
+    private ConstraintInterpreter(MessageValue message) {
+        this.message = message;
         this.violations = new ArrayList<>();
     }
 
     @Override
     public void visitRange(RangedConstraint<?> constraint) {
-        checkNumberRange(constraint);
+        FieldValue value = message.valueOf(constraint.field());
+        Range<ComparableNumber> range = constraint.range();
+        checkTypeConsistency(range, value);
+        value.nonDefault()
+             .map(num -> new ComparableNumber((Number) num))
+             .filter(range.negate())
+             .map(number -> violation(constraint, value, number.value()))
+             .forEach(violations::add);
     }
 
     @Override
@@ -83,11 +98,14 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         FieldValue fieldValue = message.valueOf(constraint.field());
         PatternOption pattern = constraint.optionValue();
         String regex = pattern.getRegex();
-        ImmutableList<?> values = fieldValue.asList();
-        values.stream()
-              .filter(value -> !((String) value).matches(regex))
-              .map(value -> violation(constraint, fieldValue, value))
-              .forEach(violations::add);
+        Pattern compiledPattern = Pattern.compile(regex);
+        fieldValue.nonDefault()
+                  .filter(value -> !compiledPattern.matcher((CharSequence) value).matches())
+                  .map(value -> violation(constraint, fieldValue, value)
+                          .toBuilder()
+                          .addParam(regex)
+                          .build())
+                  .forEach(violations::add);
     }
 
     @Override
@@ -123,16 +141,21 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
     public void visitValidate(ValidateConstraint constraint) {
         if (constraint.shouldBeValid()) {
             FieldValue fieldValue = message.valueOf(constraint.field());
-            List<ConstraintViolation> childViolations = fieldValue
-                    .asList()
-                    .stream()
-                    .flatMap(msg -> violationsOf((Message) msg).stream())
-                    .collect(toList());
-            ConstraintViolation parentViolation = violation(constraint, fieldValue)
-                    .toBuilder()
-                    .addAllViolation(childViolations)
-                    .build();
-            violations.add(parentViolation);
+            if (!fieldValue.isDefault()) {
+                List<ConstraintViolation> childViolations = fieldValue
+                        .asList()
+                        .stream()
+                        .map(val -> unpackIfPacked((Message) val))
+                        .flatMap(msg -> childViolations(fieldValue.descriptor(), msg).stream())
+                        .collect(toList());
+                if (!childViolations.isEmpty()) {
+                    ConstraintViolation parentViolation = violation(constraint, fieldValue)
+                            .toBuilder()
+                            .addAllViolation(childViolations)
+                            .build();
+                    violations.add(parentViolation);
+                }
+            }
         }
     }
 
@@ -154,16 +177,15 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         }
     }
 
-    private void checkNumberRange(RangedConstraint<?> constraint) {
-        FieldValue value = message.valueOf(constraint.field());
-        Range<ComparableNumber> range = constraint.range();
-        checkTypeConsistency(range, value);
-        value.asList()
-             .stream()
-             .map(num -> new ComparableNumber((Number) num))
-             .filter(range.negate())
-             .map(number -> violation(constraint, value, number.value()))
-             .forEach(violations::add);
+    private List<ConstraintViolation> childViolations(FieldDescriptor field, Message msg) {
+        FieldContext context = message.context().forChild(field);
+        MessageValue messageValue = nestedIn(context, msg);
+        ConstraintInterpreter childInterpreter = new ConstraintInterpreter(messageValue);
+        return Constraints
+                .of(MessageType.of(msg))
+                .runThrough(childInterpreter)
+                .map(ValidationError::getConstraintViolationList)
+                .orElse(ImmutableList.of());
     }
 
     private static void checkTypeConsistency(Range<ComparableNumber> range, FieldValue value) {
@@ -227,7 +249,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         return ConstraintViolation
                 .newBuilder()
                 .setMsgFormat("Field `%s` noted in `(goes).with` option is not found.")
-                .addParam(constraint.option()
+                .addParam(constraint.optionValue()
                                     .getWith())
                 .setFieldPath(value.context()
                                    .fieldPath())
@@ -237,7 +259,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
 
     private static Optional<FieldDeclaration>
     withField(MessageValue messageValue, GoesConstraint constraint) {
-        FieldName withField = FieldName.of(constraint.option()
+        FieldName withField = FieldName.of(constraint.optionValue()
                                                      .getWith());
         for (FieldDeclaration field : messageValue.declaration()
                                                   .fields()) {

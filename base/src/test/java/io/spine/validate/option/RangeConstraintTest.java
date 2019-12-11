@@ -24,6 +24,8 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.net.Url;
 import io.spine.validate.ComparableNumber;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName("Range constraint should")
 class RangeConstraintTest {
 
@@ -46,7 +47,7 @@ class RangeConstraintTest {
     @MethodSource("validRanges")
     @DisplayName("be able to parse valid range strings")
     void acceptProperRanges(String range, BoundType expected) {
-        Range<ComparableNumber> result = RangeConstraint.rangeFromOption(range);
+        Range<ComparableNumber> result = RangeConstraint.rangeFromOption(range, aDeclaration());
         assertEquals(expected, result.upperBoundType());
     }
 
@@ -63,7 +64,8 @@ class RangeConstraintTest {
     @MethodSource("badRanges")
     @DisplayName("throw on incorrectly defined ranges")
     void throwOnMalformedRanges(String badRange) {
-        assertThrows(Exception.class, () -> RangeConstraint.rangeFromOption(badRange));
+        assertThrows(Exception.class,
+                     () -> RangeConstraint.rangeFromOption(badRange, aDeclaration()));
     }
 
     private static ImmutableSet<Arguments> badRanges() {
@@ -80,8 +82,6 @@ class RangeConstraintTest {
                 "[3..5 5]",
                 "[3..5,5]",
                 "[3;5]",
-                "[3.5..5)",
-                "[3..5.5)",
                 "[3...5]"
         );
     }
@@ -91,7 +91,7 @@ class RangeConstraintTest {
     @DisplayName("throw on empty ranges")
     void throwOnEmptyRanges(String emptyRange) {
         assertThrows(IllegalArgumentException.class,
-                     () -> RangeConstraint.rangeFromOption(emptyRange));
+                     () -> RangeConstraint.rangeFromOption(emptyRange, aDeclaration()));
     }
 
     private static Set<Arguments> emptyRanges() {
@@ -134,5 +134,13 @@ class RangeConstraintTest {
             builder.add(Arguments.of(element));
         }
         return builder.build();
+    }
+
+    private static FieldDeclaration aDeclaration() {
+        return new FieldDeclaration(
+                Url.getDescriptor()
+                   .getFields()
+                   .get(0)
+        );
     }
 }

@@ -61,6 +61,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         super(descriptor, true);
     }
 
+    public static MessageType of(Message message) {
+        checkNotNull(message);
+        return new MessageType(message.getDescriptorForType());
+    }
+
     /**
      * Collects all message types, including nested one, declared in the passed file.
      */

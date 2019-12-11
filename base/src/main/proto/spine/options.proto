@@ -544,7 +544,7 @@ message MinOption {
     //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
     //   2) the minimum number.
     //
-    option (default_message) = "Number must be greater than %s %s.";
+    option (default_message) = "Number must be greater than %s%s.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -578,7 +578,7 @@ message MaxOption {
     //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
     //   2) the maximum number.
     //
-    option (default_message) = "Number must be less than %s %s.";
+    option (default_message) = "Number must be less than %s%s.";
 
     // The string representation of the maximum field value.
     string value = 1;

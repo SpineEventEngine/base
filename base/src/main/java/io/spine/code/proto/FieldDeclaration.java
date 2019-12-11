@@ -195,9 +195,33 @@ public final class FieldDeclaration {
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
+     * @see #isId()
      */
     public boolean isEntityId() {
         return isFirstField() && isEntityField() && isNotCollection();
+    }
+
+    /**
+     * Determines whether the field is an ID.
+     *
+     * <p>An ID satisfies the following conditions:
+     * <ul>
+     *     <li>Declared as the first field.
+     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message},
+     *         an event message, a command message, or a rejection message.
+     *     <li>Is not a map or a repeated field.
+     * </ul>
+     *
+     * @return {@code true} if the field is an entity ID, {@code false} otherwise
+     * @see #isEntityId()
+     */
+    public boolean isId() {
+        MessageType type = declaringType();
+        boolean typeHasId = isEntityField()
+                         || type.isEvent()
+                         || type.isCommand()
+                         || type.isRejection();
+        return typeHasId && isFirstField() && isNotCollection();
     }
 
     /**
