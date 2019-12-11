@@ -193,14 +193,14 @@ public class KnownTypes implements Serializable {
         return type;
     }
 
-    private Type get(TypeName name) throws UnknownTypeException {
-        Type result = typeSet.find(name)
+    private Type<?, ?> get(TypeName name) throws UnknownTypeException {
+        Type<?, ?> result = typeSet.find(name)
                              .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 
     private ClassName get(TypeUrl typeUrl) {
-        Type type = get(typeUrl.toTypeName());
+        Type<?, ?> type = get(typeUrl.toTypeName());
         ClassName result = type.javaClassName();
         return result;
     }
