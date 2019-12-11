@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.RequiredBooleanFieldValue;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,7 @@ class BooleanFieldValidatorTest {
             assertThat(violations).isEmpty();
         }
 
+        @Disabled
         @Test
         @DisplayName("produce a warning upon finding a required boolean field")
         void warning() {

@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.protobuf.Any;
 import io.spine.code.proto.FieldContext;
 import io.spine.testing.logging.LogRecordSubject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -88,6 +89,7 @@ abstract class NumberFieldValidatorTest<V extends Number & Comparable<V>,
     @Nested
     class RequiredDoubleFieldWarning extends RequiredFieldWarningTest {
 
+        @Disabled
         @Test
         @DisplayName("produce a warning upon finding a required double field")
         void testRequiredDoubleFieldWarning() {
