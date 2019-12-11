@@ -27,8 +27,8 @@ import io.spine.option.MinOption;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.NumberText;
+import io.spine.validate.diags.ViolationText;
 
-import static io.spine.validate.FieldValidator.errorMsgFormat;
 import static java.lang.String.format;
 
 /**
@@ -54,7 +54,7 @@ public final class MinConstraint
     @Override
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MinOption min = optionValue();
-        String template = errorMsgFormat(min, min.getMsgFormat());
+        String template = ViolationText.errorMessage(min, min.getMsgFormat());
         return format(template, orEqualTo(range.lowerBoundType()), range.lowerEndpoint());
     }
 

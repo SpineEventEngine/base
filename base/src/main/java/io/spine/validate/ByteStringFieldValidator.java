@@ -21,10 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.ByteString;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
 
 /**
  * Validates fields of type {@link ByteString}.
@@ -60,9 +56,4 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         addViolation(violation);
     }
 
-    @Override
-    protected Set<FieldValidatingOption<?>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forByteString();
-    }
 }

@@ -21,8 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -31,23 +29,16 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
-import io.spine.option.OptionsProto;
 import io.spine.type.TypeName;
-import io.spine.validate.option.Distinct;
-import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.diags.ViolationText;
 import io.spine.validate.option.IfInvalid;
 import io.spine.validate.option.IfMissing;
 import io.spine.validate.option.Required;
-import io.spine.validate.option.ValidatingOptionFactory;
-import io.spine.validate.option.ValidatingOptionsLoader;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.google.common.collect.Iterators.unmodifiableIterator;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -57,16 +48,13 @@ import static com.google.common.collect.Lists.newLinkedList;
  * @param <V>
  *         a type of field values
  */
-@SuppressWarnings("ClassWithTooManyMethods") // OK for this central class.
+@Deprecated
 public abstract class FieldValidator<V> implements Logging {
 
     private final FieldValue value;
     private final FieldDeclaration declaration;
-    private final ImmutableList<V> values;
 
     private final List<ConstraintViolation> violations = newLinkedList();
-
-    private final UnmodifiableIterator<FieldValidatingOption<?>> fieldValidatingOptions;
 
     /**
      * If set the validator would assume that the field is required even
@@ -94,58 +82,8 @@ public abstract class FieldValidator<V> implements Logging {
     protected FieldValidator(FieldValue value, boolean assumeRequired) {
         this.value = value;
         this.declaration = value.declaration();
-        this.values = (ImmutableList<V>) value.asList();
         this.assumeRequired = assumeRequired;
-        this.fieldValidatingOptions = validatingOptions();
     }
-
-    /**
-     * Collects the validation options to use when reading option values.
-     *
-     * <p>Does not include options from the external constraints.
-     *
-     * @implNote If the {@code Required} option is assumed to be required, it is always
-     *         present in the results. In case no options are defined for the field,
-     *         the result remains empty.
-     *         This is a performance optimization made to avoid redundant reflective calls
-     *         to Protobuf data attempting to read the missing option values.
-     */
-    @SuppressWarnings("Immutable") // message field values are immutable
-    private UnmodifiableIterator<FieldValidatingOption<?>> validatingOptions() {
-        List<FieldValidatingOption<?>> allOptions = new ArrayList<>();
-
-        if (assumeRequired) {
-            allOptions.add(Required.create(true));
-        }
-
-        if (fieldHasOptions()) {
-            if (values.size() > 1) {
-                allOptions.add(Distinct.create());
-            }
-
-            // Add the option if it wasn't added already.
-            if (!assumeRequired) {
-                allOptions.add(Required.create(false));
-            }
-
-            ImmutableSet<ValidatingOptionFactory> factories =
-                    ValidatingOptionsLoader.INSTANCE.implementations();
-            for (ValidatingOptionFactory factory : factories) {
-                Set<FieldValidatingOption<?>> options = createMoreOptions(factory);
-                allOptions.addAll(options);
-            }
-        }
-        return unmodifiableIterator(allOptions.iterator());
-    }
-
-    private boolean fieldHasOptions() {
-        return field().descriptor()
-                      .toProto()
-                      .hasOptions();
-    }
-
-    protected abstract Set<FieldValidatingOption<?>> createMoreOptions(
-            ValidatingOptionFactory factory);
 
     /**
      * Checks if the value of the validated field is not set.
@@ -155,10 +93,7 @@ public abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
     protected final boolean fieldValueNotSet() {
-        boolean valueNotSet =
-                values.isEmpty()
-                        || (declaration.isNotCollection() && isNotSet(values.get(0)));
-        return valueNotSet;
+        return false;
     }
 
     /**
@@ -241,21 +176,9 @@ public abstract class FieldValidator<V> implements Logging {
         return value;
     }
 
-    /**
-     * Returns {@code true} if the field has required attribute or validation is strict.
-     */
-    @SuppressWarnings("Immutable") // message field values are immutable
-    protected boolean isRequiredField() {
-        Required requiredOption = Required.create(assumeRequired);
-        boolean required = requiredOption.valueFrom(descriptor())
-                                         .orElse(assumeRequired);
-        return required;
-    }
-
     /** Returns an immutable list of the field values. */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // is immutable list
     protected ImmutableList<V> values() {
-        return values;
+        return ImmutableList.of();
     }
 
     /**
@@ -269,7 +192,7 @@ public abstract class FieldValidator<V> implements Logging {
     }
 
     private ConstraintViolation newViolation(IfMissingOption option) {
-        String msg = errorMsgFormat(option, option.getMsgFormat());
+        String msg = ViolationText.errorMessage(option, option.getMsgFormat());
         TypeName typeName = value.declaration()
                                  .declaringType()
                                  .name();
@@ -280,25 +203,6 @@ public abstract class FieldValidator<V> implements Logging {
                 .setFieldPath(fieldPath())
                 .build();
         return violation;
-    }
-
-    /**
-     * Returns a validation error message which may have formatting placeholders
-     *
-     * <p>A custom message is returned if it is present in the option. Otherwise,
-     * default message is returned.
-     *
-     * @param option
-     *         a validation option used to get the default message
-     * @param customMsg
-     *         a user-defined error message
-     */
-    public static String errorMsgFormat(Message option, String customMsg) {
-        String defaultMsg = option.getDescriptorForType()
-                                  .getOptions()
-                                  .getExtension(OptionsProto.defaultMessage);
-        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
-        return msg;
     }
 
     /**

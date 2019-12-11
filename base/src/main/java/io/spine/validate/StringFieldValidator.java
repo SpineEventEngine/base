@@ -20,11 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
-
 /**
  * Validates fields of type {@link String}.
  */
@@ -41,12 +36,6 @@ final class StringFieldValidator extends FieldValidator<String> {
      */
     StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
         super(fieldValue, assumeRequired);
-    }
-
-    @Override
-    protected Set<FieldValidatingOption<?>> createMoreOptions(
-            ValidatingOptionFactory factory) {
-        return factory.forString();
     }
 
     @Override

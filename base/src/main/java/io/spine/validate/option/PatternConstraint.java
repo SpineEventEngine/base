@@ -25,8 +25,7 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
 import io.spine.validate.ConstraintTranslator;
-
-import static io.spine.validate.FieldValidator.errorMsgFormat;
+import io.spine.validate.diags.ViolationText;
 
 /**
  * A constraint, which when applied to a string field, checks whether that field matches the
@@ -42,7 +41,7 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
     @Override
     public String errorMessage(FieldContext field) {
         PatternOption option = optionValue();
-        return errorMsgFormat(option, option.getMsgFormat());
+        return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 
     @Override

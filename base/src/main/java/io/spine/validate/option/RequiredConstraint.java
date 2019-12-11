@@ -27,10 +27,10 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
 import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.diags.ViolationText;
 
 import static com.google.common.flogger.FluentLogger.forEnclosingClass;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import static io.spine.validate.FieldValidator.errorMsgFormat;
 
 /**
  * A constraint that, when applied to a field, checks whether the field is set to a non-default
@@ -71,7 +71,7 @@ public final class RequiredConstraint extends FieldConstraint<Boolean> {
     public String errorMessage(FieldContext field) {
         IfMissing ifMissing = new IfMissing();
         IfMissingOption option = ifMissing.valueOrDefault(field.target());
-        return errorMsgFormat(option, option.getMsgFormat());
+        return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 
     @Override

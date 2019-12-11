@@ -20,11 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
-
 /**
  * Validates fields of type {@link Boolean}.
  */
@@ -50,9 +45,4 @@ final class BooleanFieldValidator extends FieldValidator<Boolean> {
         return false;
     }
 
-    @Override
-    protected Set<FieldValidatingOption<?>> createMoreOptions(
-            ValidatingOptionFactory factory) {
-        return factory.forBoolean();
-    }
 }

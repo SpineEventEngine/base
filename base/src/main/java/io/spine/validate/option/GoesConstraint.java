@@ -25,8 +25,7 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
 import io.spine.validate.ConstraintTranslator;
-
-import static io.spine.validate.FieldValidator.errorMsgFormat;
+import io.spine.validate.diags.ViolationText;
 
 /**
  * A constraint which checks whether a field is set only if the specific related field is also set.
@@ -44,7 +43,7 @@ public final class GoesConstraint extends FieldConstraint<GoesOption> {
     @Override
     public String errorMessage(FieldContext field) {
         GoesOption option = optionValue();
-        return errorMsgFormat(option, option.getMsgFormat());
+        return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 
     @Override

@@ -21,10 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.ValidatingOptionFactory;
-
-import java.util.Set;
 
 /**
  * Validates fields of type {@link EnumValueDescriptor}.
@@ -48,9 +44,4 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         return result;
     }
 
-    @Override
-    protected Set<FieldValidatingOption<?>>
-    createMoreOptions(ValidatingOptionFactory factory) {
-        return factory.forEnum();
-    }
 }

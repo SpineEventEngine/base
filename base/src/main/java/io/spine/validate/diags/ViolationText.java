@@ -20,8 +20,11 @@
 
 package io.spine.validate.diags;
 
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.base.Field;
 import io.spine.base.FieldPath;
+import io.spine.option.OptionsProto;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.Collection;
@@ -65,6 +68,26 @@ public final class ViolationText {
                           .map(ViolationText::toString)
                           .collect(joining(lineSeparator()));
         return result;
+    }
+
+    /**
+     * Returns a validation error message which may have formatting placeholders
+     *
+     * <p>A custom message is returned if it is present in the option. Otherwise,
+     * default message is returned.
+     *
+     * @param option
+     *         a validation option used to get the default message
+     * @param customMsg
+     *         a user-defined error message
+     */
+    @Internal
+    public static String errorMessage(Message option, String customMsg) {
+        String defaultMsg = option.getDescriptorForType()
+                                  .getOptions()
+                                  .getExtension(OptionsProto.defaultMessage);
+        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
+        return msg;
     }
 
     @Override

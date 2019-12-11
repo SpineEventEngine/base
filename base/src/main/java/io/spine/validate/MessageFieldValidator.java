@@ -27,12 +27,10 @@ import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.Messages;
 import io.spine.type.TypeName;
-import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.diags.ViolationText;
 import io.spine.validate.option.Valid;
-import io.spine.validate.option.ValidatingOptionFactory;
 
 import java.util.List;
-import java.util.Set;
 
 import static io.spine.protobuf.AnyPacker.pack;
 
@@ -86,12 +84,6 @@ final class MessageFieldValidator extends FieldValidator<Message> {
         return result;
     }
 
-    @Override
-    protected Set<FieldValidatingOption<?>> createMoreOptions(
-            ValidatingOptionFactory factory) {
-        return factory.forMessage();
-    }
-
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
     private boolean isOfType(Class<? extends Message> type) {
         ImmutableList<Message> values = values();
@@ -117,7 +109,7 @@ final class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private void validateSingle(Message message) {
-        List<ConstraintViolation> violations = MessageValidator.validate(message, fieldContext());
+        List<ConstraintViolation> violations = MessageValidator.validate(message);
         if (!violations.isEmpty()) {
             addViolation(newValidViolation(message, violations));
         }
@@ -126,7 +118,7 @@ final class MessageFieldValidator extends FieldValidator<Message> {
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
         IfInvalidOption ifInvalid = ifInvalid();
-        String msg = errorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+        String msg = ViolationText.errorMessage(ifInvalid, ifInvalid.getMsgFormat());
         TypeName validatedType = field().declaringType()
                                         .name();
         ConstraintViolation violation = ConstraintViolation

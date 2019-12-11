@@ -27,8 +27,8 @@ import io.spine.option.MaxOption;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.NumberText;
+import io.spine.validate.diags.ViolationText;
 
-import static io.spine.validate.FieldValidator.errorMsgFormat;
 import static java.lang.String.format;
 
 /**
@@ -53,7 +53,7 @@ public final class MaxConstraint
     @Override
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MaxOption max = optionValue();
-        String template = errorMsgFormat(max, max.getMsgFormat());
+        String template = ViolationText.errorMessage(max, max.getMsgFormat());
         return format(template, orEqualTo(range.upperBoundType()), range.upperEndpoint());
     }
 

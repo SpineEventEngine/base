@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -30,6 +31,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
 import io.spine.protobuf.MessageWithConstraints;
 import io.spine.protobuf.Messages;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.util.Preconditions2;
 import io.spine.validate.option.SetOnce;
@@ -48,7 +50,6 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.validate.MessageValidator.validate;
 
 /**
  * This class provides general validation routines.
@@ -311,7 +312,17 @@ public final class Validate {
     public static List<ConstraintViolation> violationsOf(Message message) {
         return message instanceof MessageWithConstraints
                ? ((MessageWithConstraints) message).validate()
-               : validate(message);
+               : validateAtRuntime(message);
+    }
+
+    private static List<ConstraintViolation> validateAtRuntime(Message message) {
+        Optional<ValidationError> error =
+                Constraints.of(MessageType.of(message))
+                           .runThrough(new ConstraintInterpreter(message));
+        List<ConstraintViolation> violations =
+                error.map(ValidationError::getConstraintViolationList)
+                     .orElse(ImmutableList.of());
+        return violations;
     }
 
     /**
