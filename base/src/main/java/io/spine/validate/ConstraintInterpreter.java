@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
@@ -150,7 +149,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
                         .asList()
                         .stream()
                         .map(val -> unpackIfPacked((Message) val))
-                        .flatMap(msg -> childViolations(fieldValue.descriptor(), msg).stream())
+                        .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
                         .collect(toList());
                 if (!childViolations.isEmpty()) {
                     ConstraintViolation parentViolation = violation(constraint, fieldValue)
@@ -183,12 +182,11 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         }
     }
 
-    private List<ConstraintViolation> childViolations(FieldDescriptor field, Message msg) {
-        FieldContext context = message.context().forChild(field);
-        MessageValue messageValue = nestedIn(context, msg);
+    private static List<ConstraintViolation> childViolations(FieldContext field, Message msg) {
+        MessageValue messageValue = nestedIn(field, msg);
         ConstraintInterpreter childInterpreter = new ConstraintInterpreter(messageValue);
         return Constraints
-                .of(MessageType.of(msg))
+                .of(MessageType.of(msg), field)
                 .runThrough(childInterpreter)
                 .map(ValidationError::getConstraintViolationList)
                 .orElse(ImmutableList.of());

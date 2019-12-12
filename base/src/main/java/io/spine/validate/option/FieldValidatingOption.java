@@ -113,8 +113,6 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
      *         the value to be validated
      */
     public boolean shouldValidate(FieldContext context) {
-        Optional<T> externalConstraint =
-                ExternalConstraintOptions.getOptionValue(context, extension());
-        return externalConstraint.isPresent() || valueFrom(context.target()).isPresent();
+        return valueFrom(context).isPresent();
     }
 }

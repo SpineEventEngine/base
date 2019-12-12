@@ -38,9 +38,14 @@ public final class Constraints {
     }
 
     public static Constraints of(MessageType type) {
+        return of(type, FieldContext.empty());
+    }
+
+    public static Constraints of(MessageType type, FieldContext context) {
         checkNotNull(type);
+        checkNotNull(context);
         ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
-        fieldConstraints(type)
+        fieldConstraints(type, context)
                 .forEach(constraintBuilder::add);
         RequiredField requiredField = new RequiredField();
         if (requiredField.valuePresent(type.descriptor())) {
@@ -50,11 +55,11 @@ public final class Constraints {
         return new Constraints(constraintBuilder.build());
     }
 
-    private static Stream<Constraint> fieldConstraints(MessageType type) {
+    private static Stream<Constraint> fieldConstraints(MessageType type, FieldContext context) {
         return type
                 .fields()
                 .stream()
-                .map(field -> FieldContext.create(field.descriptor()))
+                .map(field -> context.forChild(field.descriptor()))
                 .flatMap(FieldConstraints::of);
     }
 
