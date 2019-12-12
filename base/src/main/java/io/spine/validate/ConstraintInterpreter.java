@@ -165,8 +165,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
 
     @Override
     public void visitRequiredField(RequiredFieldConstraint constraint) {
-        RequiredFieldCheck check = new RequiredFieldCheck(constraint.optionValue(), message,
-                                                          optionValue1);
+        RequiredFieldCheck check = new RequiredFieldCheck(constraint.optionValue(), message);
         Optional<ConstraintViolation> violation = check.perform();
         violation.ifPresent(violations::add);
     }

@@ -29,12 +29,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "validate an entity ID")
-class EntityIdTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "validate an entity ID")
+class EntityIdTest extends ValidationOfConstraintTest {
     
     @Nested
     @DisplayName("in a command file and")

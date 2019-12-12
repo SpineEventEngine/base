@@ -27,15 +27,15 @@ import io.spine.test.validate.PaymentData;
 import io.spine.test.validate.PaymentId;
 import io.spine.test.validate.PaymentWithExternalConstraint;
 import io.spine.test.validate.WithFieldNotFound;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (goes) option and find out that ")
-final class GoesTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (goes) option and find out that ")
+final class GoesTest extends ValidationOfConstraintTest {
 
     @DisplayName("(goes).with fields are both optional")
     @Test

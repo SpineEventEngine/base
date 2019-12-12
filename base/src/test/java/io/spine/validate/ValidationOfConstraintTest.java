@@ -25,19 +25,20 @@ import com.google.protobuf.Message;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.validate.Validate.violationsOf;
 import static io.spine.validate.given.MessageValidatorTestEnv.assertFieldPathIs;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public abstract class MessageValidatorTest {
+public abstract class ValidationOfConstraintTest {
 
-    public static final String MESSAGE_VALIDATOR_SHOULD = "MessageValidator should ";
+    public static final String VALIDATION_SHOULD = "Validation should ";
 
     private List<ConstraintViolation> violations;
 
     protected void validate(Message msg) {
-        violations = MessageValidator.validate(msg);
+        violations = violationsOf(msg);
     }
 
     protected ConstraintViolation firstViolation() {

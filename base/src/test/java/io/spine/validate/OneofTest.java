@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "consider oneof")
-final class OneofTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "consider oneof")
+final class OneofTest extends ValidationOfConstraintTest {
 
     @DisplayName("valid if")
     @Nested

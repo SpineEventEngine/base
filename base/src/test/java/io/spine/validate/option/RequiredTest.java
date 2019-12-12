@@ -30,18 +30,18 @@ import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.RequiredStringFieldValue;
 import io.spine.testing.logging.MuteLogging;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 import static io.spine.validate.given.MessageValidatorTestEnv.newByteString;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (required) option and")
-class RequiredTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (required) option and")
+class RequiredTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("find out that required Message field is set")

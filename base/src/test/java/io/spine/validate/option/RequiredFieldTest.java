@@ -25,7 +25,7 @@ import io.spine.test.validate.requiredfield.EveryFieldOptional;
 import io.spine.test.validate.requiredfield.EveryFieldRequired;
 import io.spine.test.validate.requiredfield.OneofFieldAndOtherFieldRequired;
 import io.spine.test.validate.requiredfield.OneofRequired;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,11 +35,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(
-        MESSAGE_VALIDATOR_SHOULD + "analyze (required_field) message option and consider message")
-final class RequiredFieldTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (required_field) message option and consider message")
+final class RequiredFieldTest extends ValidationOfConstraintTest {
 
     @DisplayName("valid if")
     @Nested
