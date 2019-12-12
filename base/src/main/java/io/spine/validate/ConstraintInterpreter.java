@@ -76,8 +76,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         FieldValue value = message.valueOf(constraint.field());
         Range<ComparableNumber> range = constraint.range();
         checkTypeConsistency(range, value);
-        value.asList()
-             .stream()
+        value.values()
              .map(num -> new ComparableNumber((Number) num))
              .filter(range.negate())
              .map(number -> violation(constraint, value, number.value()))
@@ -112,8 +111,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
     @Override
     public void visitDistinct(DistinctConstraint constraint) {
         FieldValue fieldValue = message.valueOf(constraint.field());
-        ImmutableList<?> values = fieldValue.asList();
-        Set<?> duplicates = findDuplicates(values);
+        Set<?> duplicates = findDuplicates(fieldValue);
         violations.addAll(
                 duplicates.stream()
                           .map(duplicate -> violation(constraint, fieldValue, duplicate))
@@ -146,8 +144,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
             FieldValue fieldValue = message.valueOf(constraint.field());
             if (!fieldValue.isDefault()) {
                 List<ConstraintViolation> childViolations = fieldValue
-                        .asList()
-                        .stream()
+                        .values()
                         .map(val -> unpackIfPacked((Message) val))
                         .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
                         .collect(toList());
@@ -228,16 +225,16 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         }
     }
 
-    private static <T> Set<T> findDuplicates(Iterable<T> potentialDuplicates) {
-        Set<T> uniques = new HashSet<>();
-        ImmutableSet.Builder<T> duplicates = ImmutableSet.builder();
-        for (T potentialDuplicate : potentialDuplicates) {
+    private static Set<?> findDuplicates(FieldValue fieldValue) {
+        Set<? super Object> uniques = new HashSet<>();
+        ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
+        fieldValue.values().forEach(potentialDuplicate -> {
             if (uniques.contains(potentialDuplicate)) {
                 duplicates.add(potentialDuplicate);
             } else {
                 uniques.add(potentialDuplicate);
             }
-        }
+        });
         return duplicates.build();
     }
 

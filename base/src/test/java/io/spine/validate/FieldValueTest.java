@@ -144,6 +144,8 @@ class FieldValueTest {
     }
 
     private static <T> void assertConversion(Collection<T> expectedValues, FieldValue fieldValue) {
-        assertEquals(expectedValues, fieldValue.asList());
+        assertThat(fieldValue.values().toArray())
+                .asList()
+                .containsExactlyElementsIn(expectedValues);
     }
 }

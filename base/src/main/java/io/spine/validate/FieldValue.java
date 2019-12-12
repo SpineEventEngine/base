@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A field value to validate.
@@ -124,11 +124,6 @@ public final class FieldValue {
         }
     }
 
-    private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
-        String msg = format("The field type is not supported for validation: %s", type);
-        throw new IllegalArgumentException(msg);
-    }
-
     public FieldDescriptor descriptor() {
         return context.target();
     }
@@ -138,7 +133,7 @@ public final class FieldValue {
      *
      * <p>For a map, returns the type of the values.
      *
-     * @return {@link JavaType} of {@linkplain #asList() list} elements
+     * @return {@link JavaType} of the field elements
      */
     public JavaType javaType() {
         if (!declaration.isMap()) {
@@ -153,18 +148,50 @@ public final class FieldValue {
      * Converts the value to a list.
      *
      * @return the value as a list
+     * @deprecated Use {@link #values()} instead.
      */
+    @Deprecated
     public final ImmutableList<?> asList() {
         return values;
     }
 
+    /**
+     * Creates a stream of all the values of this field.
+     *
+     * <p>If the field is singular, obtains the only value. If the field is {@code repeated},
+     * obtains all the values of the list. If the field is a {@code map}, obtains all the map values
+     * (but not the keys).
+     */
+    public final Stream<?> values() {
+        return values.stream();
+    }
+
+    /**
+     * Creates a stream of non-default values of this field.
+     *
+     * <p>Behaves similarly to {@link #values()} but also filters out default values.
+     *
+     * <p>{@code 0} number values, {@code false} boolean values, {@code 0}-number enum instances,
+     * empty char and byte strings, and empty messages are considered default values.
+     */
     public final Stream<?> nonDefault() {
-        return values
-                .stream()
+        return values()
                 .filter(val -> !isDefault(val));
     }
 
+    /**
+     * Obtains the single value of this field.
+     *
+     * <p>If the field is a {@linkplain FieldDeclaration#isCollection() collection}, obtains
+     * the first element. If the fist element is not available, throws
+     * an {@code IllegalStateException}.
+     *
+     * @return a single value of this field
+     */
     public Object singleValue() {
+        checkState(!values.isEmpty(),
+                   "Unable to get the first element of an empty collection for the field `%s`.",
+                   declaration());
         return values.get(0);
     }
 

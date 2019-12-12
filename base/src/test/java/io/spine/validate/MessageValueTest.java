@@ -29,8 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -72,7 +71,8 @@ class MessageValueTest {
             Optional<FieldValue> optionalValue = message.valueOf(VALUE_ONEOF);
             assertTrue(optionalValue.isPresent());
             FieldValue value = optionalValue.get();
-            assertEquals(singletonList(expectedValue), value.asList());
+            assertThat(value.singleValue())
+                    .isEqualTo(expectedValue);
         }
     }
 }
