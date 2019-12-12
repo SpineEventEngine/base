@@ -48,6 +48,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.protobuf.AnyPacker.unpackIfPacked;
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -75,7 +76,8 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         FieldValue value = message.valueOf(constraint.field());
         Range<ComparableNumber> range = constraint.range();
         checkTypeConsistency(range, value);
-        value.nonDefault()
+        value.asList()
+             .stream()
              .map(num -> new ComparableNumber((Number) num))
              .filter(range.negate())
              .map(number -> violation(constraint, value, number.value()))
@@ -123,20 +125,18 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
     public void visitGoesWith(GoesConstraint constraint) {
         FieldValue value = message.valueOf(constraint.field());
         Optional<FieldDeclaration> declaration = withField(message, constraint);
-        if (declaration.isPresent()) {
-            FieldDeclaration withField = declaration.get();
-            if (!value.isDefault() && fieldValueNotSet(withField)) {
-                ConstraintViolation withFieldNotSet =
-                        violation(constraint, value)
-                                .toBuilder()
-                                .addParam(constraint.field().name().value())
-                                .addParam(constraint.optionValue().getWith())
-                                .build();
-                violations.add(withFieldNotSet);
-            }
-        } else {
-            ConstraintViolation fieldNotFound = fieldNotFoundViolation(constraint, value);
-            violations.add(fieldNotFound);
+        checkState(declaration.isPresent(),
+                   "Field `%s` noted in `(goes).with` option is not found.",
+                   constraint.optionValue().getWith());
+        FieldDeclaration withField = declaration.get();
+        if (!value.isDefault() && fieldValueNotSet(withField)) {
+            ConstraintViolation withFieldNotSet =
+                    violation(constraint, value)
+                            .toBuilder()
+                            .addParam(constraint.field().name().value())
+                            .addParam(constraint.optionValue().getWith())
+                            .build();
+            violations.add(withFieldNotSet);
         }
     }
 
@@ -246,19 +246,6 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
                 .valueOf(field.descriptor())
                 .map(FieldValue::isDefault)
                 .orElse(false);
-    }
-
-    private static ConstraintViolation
-    fieldNotFoundViolation(GoesConstraint constraint, FieldValue value) {
-        return ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Field `%s` noted in `(goes).with` option is not found.")
-                .addParam(constraint.optionValue()
-                                    .getWith())
-                .setFieldPath(value.context()
-                                   .fieldPath())
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
     }
 
     private static Optional<FieldDeclaration>

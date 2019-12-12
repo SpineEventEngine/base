@@ -31,8 +31,10 @@ import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName(VALIDATION_SHOULD + "analyze (goes) option and find out that ")
 final class GoesTest extends ValidationOfConstraintTest {
@@ -90,7 +92,10 @@ final class GoesTest extends ValidationOfConstraintTest {
                 .setId(newUuid())
                 .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
-        assertNotValid(msg);
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                                                       () -> validate(msg));
+        assertThat(exception).hasMessageThat()
+                             .contains("user_id");
     }
 
     @DisplayName("(goes).with is set as external constraint")

@@ -35,7 +35,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName(VALIDATION_SHOULD + "analyze (required_field) message option and consider message")
 final class RequiredFieldTest extends ValidationOfConstraintTest {
@@ -171,17 +173,12 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         @DisplayName("oneof or other field is not set")
         @Test
         void oneofOrOtherNotSet() {
-            assertNotValid(OneofFieldAndOtherFieldRequired.getDefaultInstance(), false);
-            OneofFieldAndOtherFieldRequired withOneofOnly = OneofFieldAndOtherFieldRequired
-                    .newBuilder()
-                    .setSecond("oneof set")
-                    .build();
-            assertNotValid(withOneofOnly, false);
-            OneofFieldAndOtherFieldRequired withOtherFieldOnly = OneofFieldAndOtherFieldRequired
-                    .newBuilder()
-                    .setThird("other field set")
-                    .build();
-            assertNotValid(withOtherFieldOnly, false);
+            IllegalStateException exception =
+                    assertThrows(IllegalStateException.class,
+                                 () -> validate(OneofFieldAndOtherFieldRequired.getDefaultInstance()));
+            assertThat(exception)
+                    .hasMessageThat()
+                    .contains("(");
         }
 
         @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
