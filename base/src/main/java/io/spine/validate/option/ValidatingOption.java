@@ -23,7 +23,6 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.Option;
 import io.spine.validate.Constraint;
 
@@ -34,13 +33,16 @@ import io.spine.validate.Constraint;
  *         data type that this option holds, e.g.
  *         {@linkplain io.spine.option.OptionsProto#required required option} would hold a {@code
  *         Boolean}
+ * @param <C>
+ *         reflective container which describes the entity this option is applied to
  * @param <K>
  *         kind of entity that this option is applied to
  */
 @Immutable
 interface ValidatingOption<@ImmutableTypeParameter T,
+                           @ImmutableTypeParameter C,
                            @ImmutableTypeParameter K extends GenericDescriptor>
         extends Option<T, K> {
 
-    Constraint constraintFor(FieldContext field);
+    Constraint constraintFor(C field);
 }

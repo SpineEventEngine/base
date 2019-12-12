@@ -44,7 +44,7 @@ import static java.lang.String.format;
 @Immutable
 public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
         extends FieldOption<T>
-        implements ValidatingOption<T, FieldDescriptor> {
+        implements ValidatingOption<T, FieldContext, FieldDescriptor> {
 
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {

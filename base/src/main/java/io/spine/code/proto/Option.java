@@ -48,4 +48,8 @@ public interface Option<@ImmutableTypeParameter T,
      * @return value of this option
      */
     Optional<T> valueFrom(K object);
+
+    default boolean valuePresent(K object) {
+        return valueFrom(object).isPresent();
+    }
 }

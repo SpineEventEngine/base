@@ -29,7 +29,6 @@ import static io.spine.validate.given.MessageValidatorTestEnv.assertFieldPathIs;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class MessageValidatorTest {
 
@@ -71,7 +70,7 @@ public abstract class MessageValidatorTest {
 
     protected void assertIsValid(boolean isValid, boolean checkFieldPath) {
         if (isValid) {
-            assertTrue(violations.isEmpty(), () -> violations.toString());
+            assertThat(violations).isEmpty();
         } else {
             assertViolations(violations, checkFieldPath);
         }
@@ -79,7 +78,8 @@ public abstract class MessageValidatorTest {
 
     private static void assertViolations(List<ConstraintViolation> violations,
                                          boolean checkFieldPath) {
-        assertFalse(violations.isEmpty());
+        assertThat(violations)
+                .isNotEmpty();
         for (ConstraintViolation violation : violations) {
             assertHasCorrectFormat(violation);
             if (checkFieldPath) {
@@ -111,7 +111,8 @@ public abstract class MessageValidatorTest {
                                          String expectedErrMsg,
                                          String invalidFieldName) {
         assertNotValid(message);
-        assertThat(violations).hasSize(1);
+        assertThat(violations)
+                .hasSize(1);
         assertSingleViolation(expectedErrMsg, invalidFieldName);
     }
 
@@ -120,10 +121,10 @@ public abstract class MessageValidatorTest {
         ConstraintViolation violation = firstViolation();
         String actualErrorMessage = format(violation.getMsgFormat(), violation.getParamList()
                                                                               .toArray());
-        assertEquals(expectedErrMsg, actualErrorMessage);
+        assertThat(actualErrorMessage)
+                .isEqualTo(expectedErrMsg);
         assertFieldPathIs(violation, invalidFieldName);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertThat(violation.getViolationList()).isEmpty();
     }
 
     protected void assertSingleViolation(Message message, String invalidFieldName) {

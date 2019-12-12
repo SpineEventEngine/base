@@ -38,9 +38,6 @@ public class MessageValidatorTestEnv {
     public static final double EQUAL_MAX = 64.5;
     public static final double GREATER_THAN_MAX = EQUAL_MAX + 5;
 
-    public static final double INT_DIGIT_COUNT_GREATER_THAN_MAX = 123.5;
-    public static final double INT_DIGIT_COUNT_EQUAL_MAX = 12.5;
-
     public static final String VALUE = "value";
     public static final String EMAIL = "email";
     public static final String OUTER_MSG_FIELD = "outer_msg_field";
@@ -48,7 +45,6 @@ public class MessageValidatorTestEnv {
     public static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
     public static final String MATCH_REGEXP_MSG = "String must match the regular expression '%s'.";
 
-    public static final double INT_DIGIT_COUNT_LESS_THAN_MAX = 1.5;
     public static final double LESS_THAN_MAX = EQUAL_MAX - 5;
 
     /** Prevent instantiation of this test environment. */

@@ -23,9 +23,11 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
+import io.spine.validate.option.RequiredField;
+
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
 
 public final class Constraints {
 
@@ -37,18 +39,23 @@ public final class Constraints {
 
     public static Constraints of(MessageType type) {
         checkNotNull(type);
-        ImmutableList<Constraint> constraints = parse(type);
-        return new Constraints(constraints);
+        ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
+        fieldConstraints(type)
+                .forEach(constraintBuilder::add);
+        RequiredField requiredField = new RequiredField();
+        if (requiredField.valuePresent(type.descriptor())) {
+            Constraint requiredFieldConstraint = requiredField.constraintFor(type);
+            constraintBuilder.add(requiredFieldConstraint);
+        }
+        return new Constraints(constraintBuilder.build());
     }
 
-    private static ImmutableList<Constraint> parse(MessageType type) {
-        ImmutableList<Constraint> constraints = type
+    private static Stream<Constraint> fieldConstraints(MessageType type) {
+        return type
                 .fields()
                 .stream()
                 .map(field -> FieldContext.create(field.descriptor()))
-                .flatMap(FieldConstraints::of)
-                .collect(toImmutableList());
-        return constraints;
+                .flatMap(FieldConstraints::of);
     }
 
     public <T> T runThrough(ConstraintTranslator<T> constraintTranslator) {

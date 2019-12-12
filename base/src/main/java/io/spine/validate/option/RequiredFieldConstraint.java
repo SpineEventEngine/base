@@ -22,7 +22,6 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
@@ -38,16 +37,16 @@ import static java.lang.String.format;
 public final class RequiredFieldConstraint implements Constraint {
 
     private final String optionValue;
-    private final FieldDeclaration declaration;
+    private final MessageType messageType;
 
-    RequiredFieldConstraint(String optionValue, FieldDeclaration declaration) {
+    RequiredFieldConstraint(String optionValue, MessageType messageType) {
         this.optionValue = checkNotNull(optionValue);
-        this.declaration = checkNotNull(declaration);
+        this.messageType = checkNotNull(messageType);
     }
 
     @Override
     public MessageType targetType() {
-        return declaration.declaringType();
+        return messageType;
     }
 
     @Override
