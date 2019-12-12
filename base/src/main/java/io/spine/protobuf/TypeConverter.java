@@ -241,7 +241,6 @@ public final class TypeConverter {
      * best-performant solution among options, such as {@link Class#getCanonicalName()
      * Class.getCanonicalName()}.
      */
-    @SuppressWarnings("OverlyCoupledClass")     // OK, as references a lot of type for casting.
     private static final class PrimitiveTypeCaster<M extends Message, T>
             extends MessageCaster<M, T> {
 
@@ -271,7 +270,8 @@ public final class TypeConverter {
         @Override
         protected T toObject(M input) {
             Class<?> boxedType = input.getClass();
-            @SuppressWarnings("unchecked") Converter<M, T> typeUnpacker =
+            @SuppressWarnings("unchecked")
+            Converter<M, T> typeUnpacker =
                     (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
             checkArgument(typeUnpacker != null,
                           "Could not find a primitive type for %s.",
@@ -283,7 +283,8 @@ public final class TypeConverter {
         @Override
         protected M toMessage(T input) {
             Class<?> cls = input.getClass();
-            @SuppressWarnings("unchecked") Converter<M, T> converter =
+            @SuppressWarnings("unchecked")
+            Converter<M, T> converter =
                     (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
