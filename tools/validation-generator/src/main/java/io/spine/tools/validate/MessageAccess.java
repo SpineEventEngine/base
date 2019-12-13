@@ -18,28 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field.given;
+package io.spine.tools.validate;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.validate.AccumulateViolations;
+import com.google.protobuf.Message;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.VoidExpression;
-import io.spine.validate.ConstraintViolation;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
 
-public final class ViolationMemoizer implements AccumulateViolations {
+public final class MessageAccess {
 
-    private final List<Expression<ConstraintViolation>> violations = new ArrayList<>();
+    private final Expression<? extends Message> expression;
 
-    @Override
-    public VoidExpression apply(Expression<ConstraintViolation> violation) {
-        violations.add(violation);
-        return VoidExpression.empty();
+    public MessageAccess(Expression<? extends Message> expression) {
+        this.expression = checkNotNull(expression);
     }
 
-    public List<Expression<ConstraintViolation>> violations() {
-        return ImmutableList.copyOf(violations);
+    public FieldAccess get(FieldDeclaration field) {
+        return fieldOfMessage(this, field);
+    }
+
+    public Expression<? extends Message> expression() {
+        return expression;
+    }
+
+    @Override
+    public String toString() {
+        return expression.toString();
     }
 }

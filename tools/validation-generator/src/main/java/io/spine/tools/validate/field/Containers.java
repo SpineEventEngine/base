@@ -18,48 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.number;
+package io.spine.tools.validate.field;
 
-import com.google.common.base.Objects;
+import io.spine.protobuf.Messages;
+import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.Expression;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 
 /**
- * A numerical boundary, a min or a max value of a certain number.
+ * Set of utilities for working with values of container types.
+ *
+ * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
  */
-public final class Boundary {
+public final class Containers {
 
-    private final Number value;
-    private final boolean inclusive;
-
-    public Boundary(Number value, boolean inclusive) {
-        this.value = checkNotNull(value);
-        this.inclusive = inclusive;
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Containers() {
     }
 
-    public Number value() {
-        return value;
+    /**
+     * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
+     */
+    public static BooleanExpression isEmpty(Expression<?> value) {
+        return fromCode("$L.isEmpty()", value.toCode());
     }
 
-    public boolean inclusive() {
-        return inclusive;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Boundary)) {
-            return false;
-        }
-        Boundary boundary = (Boundary) o;
-        return inclusive == boundary.inclusive &&
-                Objects.equal(value, boundary.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value, inclusive);
+    public static BooleanExpression isDefault(Expression<?> value) {
+        return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
     }
 }

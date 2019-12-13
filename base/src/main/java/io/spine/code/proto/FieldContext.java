@@ -96,6 +96,10 @@ public final class FieldContext {
         return new FieldContext(this, child);
     }
 
+    public FieldContext forChild(FieldDeclaration child) {
+        return forChild(child.descriptor());
+    }
+
     /**
      * Obtains target of this context.
      *

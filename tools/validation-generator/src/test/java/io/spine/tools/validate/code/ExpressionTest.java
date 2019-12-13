@@ -32,7 +32,7 @@ class ExpressionTest {
     @Test
     @DisplayName("create formatted expressions")
     void format() {
-        Expression expression =
+        Expression<?> expression =
                 Expression.formatted("%s %s %d!", "hello", new StringBuilder("world"), 42);
         CodeBlock code = expression.toCode();
         assertThat(code.toString())

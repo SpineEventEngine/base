@@ -148,19 +148,30 @@ public final class FieldDeclaration {
     /**
      * Obtains fully-qualified name of the Java class that corresponds to the declared type
      * of the field.
+     *
+     * <p>If the field is {@code repeated}, obtains the name of the elements.
+     *
+     * <p>If the field is a {@code map}, obtains the name of the values.
      */
     public String javaTypeName() {
-        FieldDescriptor.Type fieldType = field.getType();
+        return isMap()
+               ? javaTypeName(valueDeclaration())
+               : javaTypeName(this);
+    }
+
+    private static String javaTypeName(FieldDeclaration declaration) {
+        FieldDescriptor.Type fieldType = declaration.field.getType();
         if (fieldType == MESSAGE) {
-            return messageClassName();
+            return declaration.messageClassName();
         }
 
         if (fieldType == ENUM) {
-            return enumClassName();
+            return declaration.enumClassName();
         }
 
-        return ScalarType.javaTypeName(field.toProto()
-                                            .getType());
+        return ScalarType.javaTypeName(declaration.field
+                                               .toProto()
+                                               .getType());
     }
 
     private String messageClassName() {

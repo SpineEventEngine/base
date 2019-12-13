@@ -21,9 +21,9 @@
 package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.valueOf;
 
 /**
  * An expression which yields a {@code boolean} value.
@@ -33,10 +33,19 @@ public final class BooleanExpression
 
     private static final long serialVersionUID = 0L;
 
-    private static final BooleanExpression FALSE = new BooleanExpression(valueOf(false));
+    private static final BooleanExpression TRUE = new BooleanExpression(true);
+    private static final BooleanExpression FALSE = new BooleanExpression(true);
+
+    private final @Nullable Boolean literalValue;
 
     private BooleanExpression(String value) {
         super(value);
+        this.literalValue = null;
+    }
+
+    private BooleanExpression(boolean literalValue) {
+        super(String.valueOf(literalValue));
+        this.literalValue = literalValue;
     }
 
     /**
@@ -51,6 +60,13 @@ public final class BooleanExpression
     public static BooleanExpression fromCode(String code, Object... args) {
         CodeBlock block = CodeBlock.of(code, args);
         return new BooleanExpression(block.toString());
+    }
+
+    /**
+     * Obtains a {@code BooleanExpression} representing literal {@code true}.
+     */
+    public static BooleanExpression trueLiteral() {
+        return TRUE;
     }
 
     /**
@@ -70,5 +86,23 @@ public final class BooleanExpression
      */
     public ConditionalStatement ifTrue(CodeBlock branch) {
         return new ConditionalStatement(this, checkNotNull(branch));
+    }
+
+    public boolean isConstant() {
+        return literalValue != null;
+    }
+
+    public boolean isConstantTrue() {
+        return checkNotNull(literalValue, "`%s` is not a literal.", this);
+    }
+
+    public BooleanExpression negate() {
+        if (this.equals(TRUE)) {
+            return FALSE;
+        } else if (this.equals(FALSE)) {
+            return TRUE;
+        } else {
+            return fromCode("!($L)", this.toCode());
+        }
     }
 }

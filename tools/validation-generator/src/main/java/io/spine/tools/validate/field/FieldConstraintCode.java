@@ -21,6 +21,7 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.logging.Logging;
 import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
@@ -31,30 +32,72 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A validation constraint based on a Protobuf option of a message field.
  */
-final class FieldConstraintCode implements ConstraintCode {
+public final class FieldConstraintCode implements ConstraintCode, Logging {
 
+    private final CodeBlock declarations;
     private final BooleanExpression condition;
     private final Expression<ConstraintViolation> violation;
 
     /**
      * Creates a new {@code Rule}.
-     *  @param condition
+     *
+     * @param condition
      *         a function which accepts the field value and yields a boolean expression which
      *         evaluates into {@code true} when the rule is broken
      * @param violation
      *         a function which accepts the field and yields an expression which evaluates into
      *         a {@link ConstraintViolation} which describes the broken rule
      */
-    FieldConstraintCode(BooleanExpression condition, Expression<ConstraintViolation> violation) {
+    public FieldConstraintCode(BooleanExpression condition,
+                               Expression<ConstraintViolation> violation) {
+        this(CodeBlock.of(""), condition, violation);
+    }
+
+    /**
+     * Creates a new {@code Rule}.
+     *
+     * @param declarations
+     *         code which declares values required for the constraint check
+     * @param condition
+     *         a function which accepts the field value and yields a boolean expression which
+     *         evaluates into {@code true} when the rule is broken
+     * @param violation
+     *         a function which accepts the field and yields an expression which evaluates into
+     *         a {@link ConstraintViolation} which describes the broken rule
+     */
+    public FieldConstraintCode(CodeBlock declarations,
+                               BooleanExpression condition,
+                               Expression<ConstraintViolation> violation) {
+        this.declarations = checkNotNull(declarations);
         this.condition = checkNotNull(condition);
         this.violation = checkNotNull(violation);
     }
 
     @Override
     public CodeBlock compile(AccumulateViolations onViolation, CodeBlock orElse) {
-        CodeBlock ifViolation = onViolation.apply(this.violation)
+        CodeBlock ifViolation = onViolation.apply(violation)
                                            .toCode();
-        return condition.ifTrue(ifViolation)
-                        .orElse(orElse);
+        return condition.isConstant()
+               ? evaluateConstantCondition(ifViolation, orElse)
+               : evaluate(ifViolation, orElse);
+    }
+
+    private CodeBlock evaluate(CodeBlock ifViolation, CodeBlock orElse) {
+        CodeBlock check = condition.ifTrue(ifViolation)
+                                   .orElse(orElse);
+        return CodeBlock.builder()
+                        .add(declarations)
+                        .add(check)
+                        .build();
+    }
+
+    private CodeBlock evaluateConstantCondition(CodeBlock ifViolation, CodeBlock orElse) {
+        if (condition.isConstantTrue()) {
+            _warn().log("Violation is always produced as validation check is a constant." +
+                                " Violation: %s", violation);
+            return ifViolation;
+        } else {
+            return orElse;
+        }
     }
 }

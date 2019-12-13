@@ -18,31 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.validate;
 
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.GetterExpression;
+import com.google.common.collect.ImmutableSet;
 
-import static io.spine.tools.validate.field.ContainerFields.isEmpty;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * An abstract base for {@link FieldValidatorFactory}s which produce validation code for primitive
- * sequence fields.
- *
- * <p>Such fields are {@code string} and {@code bytes}. A {@code string} is a sequence of characters
- * and {@code bytes} is a sequence of bytes.
- */
-abstract class SequenceFieldValidatorFactory extends SingularFieldValidatorFactory {
+public final class Duplicates {
 
-    SequenceFieldValidatorFactory(FieldDeclaration field,
-                                  GetterExpression fieldAccess,
-                                  FieldCardinality cardinality) {
-        super(field, fieldAccess, cardinality);
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Duplicates() {
     }
 
-    @Override
-    public BooleanExpression isNotSet() {
-        return isEmpty(fieldAccess());
+    public static ImmutableSet<?> findIn(Collection<?> elements) {
+        Set<? super Object> uniques = new HashSet<>();
+        ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
+        elements.forEach(potentialDuplicate -> {
+            if (uniques.contains(potentialDuplicate)) {
+                duplicates.add(potentialDuplicate);
+            } else {
+                uniques.add(potentialDuplicate);
+            }
+        });
+        return duplicates.build();
     }
 }

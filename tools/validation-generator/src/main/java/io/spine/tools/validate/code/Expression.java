@@ -25,6 +25,7 @@ import com.google.errorprone.annotations.FormatString;
 import com.squareup.javapoet.CodeBlock;
 
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 
 /**
  * A Java code structure which may yield a value.
@@ -49,6 +50,10 @@ public interface Expression<R> {
      * Prints this expression as a {@link CodeBlock}.
      */
     CodeBlock toCode();
+
+    default CodeBlock returnStatement() {
+        return CodeBlock.of("return $L;$L", this.toCode(), lineSeparator());
+    }
 
     /**
      * Creates an {@code Expression} from the given value.

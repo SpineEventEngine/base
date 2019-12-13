@@ -30,20 +30,16 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.annotation.Beta;
 import io.spine.code.gen.java.GeneratedBySpine;
 import io.spine.code.gen.java.NestedClassName;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.field.FieldValidatorFactories;
-import io.spine.tools.validate.field.FieldValidatorFactory;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
+import io.spine.validate.Constraints;
 import io.spine.validate.ValidationException;
 
 import javax.annotation.Generated;
 import java.lang.reflect.Type;
-import java.util.Optional;
+import java.util.Set;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -55,16 +51,12 @@ import static javax.lang.model.element.Modifier.STATIC;
 public final class MessageValidatorFactory {
 
     private static final String VALIDATE_METHOD = "validate";
-    private static final String MESSAGE_PARAMETER = "msg";
     private static final String MESSAGE_VARIABLE = "msg";
-    private static final String VIOLATIONS = "violations";
+    private static final String VIOLATIONS = "constraintViolations";
 
     @SuppressWarnings("UnstableApiUsage")
-    private static final Type immutableListOfViolations =
+    static final Type immutableListOfViolations =
             new TypeToken<ImmutableList<ConstraintViolation>>() {}.getType();
-    @SuppressWarnings("UnstableApiUsage")
-    private static final Type listBuilderOfViolations =
-            new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {}.getType();
 
     private final MessageType type;
     private final NestedClassName messageSimpleName;
@@ -130,13 +122,6 @@ public final class MessageValidatorFactory {
      * @return the validator class
      */
     public TypeSpec generateClass() {
-        MethodSpec validateMethod = MethodSpec
-                .methodBuilder(VALIDATE_METHOD)
-                .addModifiers(PRIVATE, STATIC)
-                .returns(immutableListOfViolations)
-                .addParameter(bestGuess(messageSimpleName.value()), MESSAGE_PARAMETER)
-                .addCode(validator())
-                .build();
         MethodSpec ctor = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
@@ -152,35 +137,16 @@ public final class MessageValidatorFactory {
                 .addAnnotation(generated)
                 .addModifiers(PRIVATE, STATIC, FINAL)
                 .addMethod(ctor)
-                .addMethod(validateMethod)
+                .addMethods(validatorMethods())
                 .build();
         return type;
     }
 
-    private CodeBlock validator() {
-        CodeBlock.Builder body = CodeBlock
-                .builder()
-                .addStatement("$T $N = $T.builder()",
-                              listBuilderOfViolations,
-                              VIOLATIONS,
-                              ImmutableList.class);
-        AccumulateViolations violationAccumulator =
-                violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
-        Expression msg = Expression.of(MESSAGE_PARAMETER);
-        fieldOptionValidation(body, violationAccumulator, msg);
-        body.addStatement("return $N.build()", VIOLATIONS);
-        return body.build();
-    }
-
-    private void fieldOptionValidation(CodeBlock.Builder code,
-                                       AccumulateViolations violationAccumulator,
-                                       Expression msgAccess) {
-        FieldValidatorFactories factories = new FieldValidatorFactories(msgAccess);
-        for (FieldDeclaration field : type.fields()) {
-            FieldValidatorFactory factory = factories.forField(field);
-            Optional<CodeBlock> fieldValidation = factory.generate(violationAccumulator);
-            fieldValidation.ifPresent(code::add);
-        }
+    private Set<MethodSpec> validatorMethods() {
+        Constraints constraints = Constraints.of(type);
+        Set<MethodSpec> methods = constraints
+                .runThrough(new ConstraintCompiler(VALIDATE_METHOD, type));
+        return methods;
     }
 
     /**

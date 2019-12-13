@@ -22,11 +22,14 @@ package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
@@ -37,7 +40,7 @@ import static java.util.Arrays.asList;
 public final class NewViolation implements Expression<ConstraintViolation> {
 
     private final String message;
-    private final @Nullable Expression fieldValue;
+    private final @Nullable GetterExpression fieldValue;
     private final MessageType type;
     private final FieldPath field;
     private final @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
@@ -93,12 +96,27 @@ public final class NewViolation implements Expression<ConstraintViolation> {
     }
 
     /**
+     * Creates a new instance of {@code Builder} for {@code NewViolation} instances.
+     *
+     * <p>The builder is preset with the declaring type and name of the given field.
+     *
+     * @return new instance of {@code Builder}
+     */
+    public static Builder forField(FieldContext field) {
+        checkNotNull(field);
+        FieldDeclaration declaration = field.targetDeclaration();
+        return new Builder()
+                .setType(declaration.declaringType())
+                .setField(field.fieldPath().getFieldNameList());
+    }
+
+    /**
      * A builder for the {@code ViolationTemplate} instances.
      */
     public static final class Builder {
 
         private String message;
-        private @Nullable Expression fieldValue;
+        private @Nullable GetterExpression fieldValue;
         private MessageType type;
         private FieldPath field;
         private @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
@@ -114,7 +132,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
             return this;
         }
 
-        public Builder setFieldValue(Expression fieldValue) {
+        public Builder setFieldValue(GetterExpression fieldValue) {
             this.fieldValue = checkNotNull(fieldValue);
             return this;
         }
@@ -128,6 +146,14 @@ public final class NewViolation implements Expression<ConstraintViolation> {
             this.field = FieldPath
                     .newBuilder()
                     .addAllFieldName(asList(fieldNames))
+                    .build();
+            return this;
+        }
+
+        public Builder setField(List<String> fieldNames) {
+            this.field = FieldPath
+                    .newBuilder()
+                    .addAllFieldName(fieldNames)
                     .build();
             return this;
         }

@@ -21,6 +21,7 @@
 package io.spine.test.tools.validate;
 
 import io.spine.protobuf.MessageWithConstraints;
+import io.spine.type.TypeName;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,17 +79,18 @@ class NumberConstraintTest {
     @Test
     @DisplayName("numerical range is checked")
     void range() {
+        String errorFragment = TypeName.of(Probability.class) + ".value";
         assertViolation(
                 Probability.newBuilder()
                            .setValue(1.1)
                            .buildPartial(),
-                "less than or equal to 1.0"
+                errorFragment
         );
         assertViolation(
                 Probability.newBuilder()
                            .setValue(-0.1)
                            .buildPartial(),
-                "greater than or equal to 0.0"
+                errorFragment
         );
         assertValid(
                 Probability.newBuilder()
