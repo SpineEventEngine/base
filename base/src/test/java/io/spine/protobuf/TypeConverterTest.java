@@ -175,7 +175,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("if a `EnumValue` has the enum constant ordinal number specified")
+        @DisplayName("if a `EnumValue` has the enum constant number specified")
         void ifHasNumber() {
             EnumValue value = EnumValue.newBuilder()
                                        .setNumber(EXECUTING.getNumber())
@@ -184,7 +184,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("using the constant name if both the name and the ordinal are specified")
+        @DisplayName("using the constant name if both the name and the number are specified")
         void preferringConversionWithName() {
             // Set the different name and number just for the sake of test.
             EnumValue value = EnumValue.newBuilder()
@@ -201,6 +201,21 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
     }
 
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // The method is called to throw exception.
+    @Test
+    @Disabled // TODO:2019-12-13:dmytro.kuzmin:WIP Add a fix for this.
+    @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
+    void throwOnRawValuesForEnum() {
+        Int32Value enumNumber = Int32Value
+                .newBuilder()
+                .setValue(SUCCESS.getNumber())
+                .build();
+        Any packed = AnyPacker.pack(enumNumber);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(packed, TaskStatus.class));
+    }
+
     @Test
     @DisplayName("convert `Enum` to `EnumValue`")
     void convertEnumToEnumValue() {
@@ -212,21 +227,6 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
                 .setNumber(SUCCESS.getNumber())
                 .build();
         assertEquals(expected, restored);
-    }
-
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // The method is called to throw exception.
-    @Test
-    @Disabled // TODO:2019-12-13:dmytro.kuzmin:WIP Add a fix for this.
-    @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
-    void throwOnRawValuesForEnum() {
-        Int32Value enumOrdinal = Int32Value
-                .newBuilder()
-                .setValue(SUCCESS.getNumber())
-                .build();
-        Any packed = AnyPacker.pack(enumOrdinal);
-        assertThrows(IllegalArgumentException.class,
-                     () -> TypeConverter.toObject(packed, TaskStatus.class));
     }
 
     @Nested

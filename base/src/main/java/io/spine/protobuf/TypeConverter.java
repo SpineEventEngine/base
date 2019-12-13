@@ -205,13 +205,13 @@ public final class TypeConverter {
             String name = input.getName();
             if (name.isEmpty()) {
                 int number = input.getNumber();
-                return convertByOrdinal(number);
+                return convertByNumber(number);
             } else {
                 return convertByName(name);
             }
         }
 
-        private Enum<?> convertByOrdinal(int number) {
+        private Enum<?> convertByNumber(int number) {
             Enum<?>[] constants = type.getEnumConstants();
             for (Enum<?> constant : constants) {
                 ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
