@@ -38,6 +38,7 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import io.spine.annotation.Internal;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -65,6 +66,8 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 @Internal
 public final class TypeConverter {
 
+    private static final TypeUrl ENUM_VALUE_TYPE_URL = TypeUrl.of(EnumValue.class);
+
     /** Prevents instantiation of this utility class. */
     private TypeConverter() {
     }
@@ -80,6 +83,7 @@ public final class TypeConverter {
     public static <T> T toObject(Any message, Class<T> target) {
         checkNotNull(message);
         checkNotNull(target);
+        checkNotRawEnum(message, target);
         MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
         Message genericMessage = unpack(message);
         T result = caster.convert(genericMessage);
@@ -131,6 +135,25 @@ public final class TypeConverter {
         checkNotNull(messageClass);
         Message message = toMessage(value);
         return messageClass.cast(message);
+    }
+
+    /**
+     * Makes sure no incorrectly packed enum values are passed to the message caster.
+     *
+     * <p>Currently, the enum values can only be converted from the {@link EnumValue} proto type.
+     * All other enum representations, including plain strings and numbers, are not supported.
+     */
+    private static void checkNotRawEnum(Any message, Class<?> target) {
+        if (!target.isEnum()) {
+            return;
+        }
+        String typeUrl = message.getTypeUrl();
+        String enumValueTypeUrl = ENUM_VALUE_TYPE_URL.value();
+        checkArgument(
+                enumValueTypeUrl.equals(typeUrl),
+                "Currently the conversion of enum types packed as `%s` is not supported. " +
+                        "Please make sure the enum value is wrapped with `%s` on the calling site.",
+                typeUrl, enumValueTypeUrl);
     }
 
     /**

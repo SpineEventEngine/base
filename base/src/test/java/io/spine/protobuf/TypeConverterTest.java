@@ -37,7 +37,6 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import io.spine.test.protobuf.TaskStatus;
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -217,7 +216,6 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
     @Test
-    @Disabled // TODO:2019-12-13:dmytro.kuzmin:WIP Add a fix for this.
     @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
     void throwOnRawValuesForEnum() {
         Int32Value enumNumber = Int32Value
