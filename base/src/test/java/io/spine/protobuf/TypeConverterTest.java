@@ -203,8 +203,21 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
     @Test
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is specified")
+    void throwOnUnknownName() {
+        String unknownName = "some_name";
+        EnumValue value = EnumValue.newBuilder()
+                                   .setName(unknownName)
+                                   .build();
+        Any wrapped = AnyPacker.pack(value);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+    }
+
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
+    @Test
     @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is specified")
-    void throwOnInvalidNumber() {
+    void throwOnUnknownNumber() {
         int unknownValue = 156;
         EnumValue value = EnumValue.newBuilder()
                                    .setNumber(unknownValue)
