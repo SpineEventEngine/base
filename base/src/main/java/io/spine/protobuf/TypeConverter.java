@@ -60,7 +60,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *         the official document</a>.
  *     <li>{@linkplain Enum Java Enum} types - the passed {@link Any} is unpacked into the {@link
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
- *         EnumValue#getName() name}.
+ *         EnumValue#getName() name} or {@linkplain EnumValue#getNumber() number}.
  * </ul>
  */
 @Internal
