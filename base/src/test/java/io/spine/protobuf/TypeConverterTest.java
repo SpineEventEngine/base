@@ -196,13 +196,26 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
         private void checkConverts(EnumValue enumValue, Enum<?> expected) {
             Any wrapped = AnyPacker.pack(enumValue);
-            Object mappedJavaObject = TypeConverter.toObject(wrapped, expected.getDeclaringClass());
+            Object mappedJavaObject =
+                    TypeConverter.toObject(wrapped, expected.getDeclaringClass());
             assertEquals(expected, mappedJavaObject);
         }
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // The method is called to throw exception.
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
+    @Test
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is specified")
+    void throwOnInvalidNumber() {
+        int unknownValue = 156;
+        EnumValue value = EnumValue.newBuilder()
+                                   .setNumber(unknownValue)
+                                   .build();
+        Any wrapped = AnyPacker.pack(value);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+    }
+
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
     @Test
     @Disabled // TODO:2019-12-13:dmytro.kuzmin:WIP Add a fix for this.
     @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
