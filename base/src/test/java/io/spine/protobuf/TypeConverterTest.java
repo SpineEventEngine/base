@@ -35,15 +35,20 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
+import io.spine.test.protobuf.TaskStatus;
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
+import static io.spine.test.protobuf.TaskStatus.EXECUTING;
+import static io.spine.test.protobuf.TaskStatus.FAILED;
+import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("TypeConverter utility class should")
 class TypeConverterTest extends UtilityClassTest<TypeConverter> {
@@ -126,15 +131,6 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("EnumValue to Enum")
-        void map_EnumValue_to_Enum() {
-            Message value = EnumValue.newBuilder()
-                                     .setName(SUCCESS.name())
-                                     .build();
-            checkMapping(SUCCESS, value);
-        }
-
-        @Test
         @DisplayName("UInt32 to int")
         void map_uint32_to_int() {
             int value = 42;
@@ -163,6 +159,74 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
             Message restored = AnyPacker.unpack(restoredWrapped);
             assertEquals(protoObject, restored);
         }
+    }
+
+    @Nested
+    @DisplayName("convert `EnumValue` to `Enum`")
+    class ConvertEnumValueToEnum {
+
+        @Test
+        @DisplayName("if a `EnumValue` has the enum constant name specified")
+        void ifHasName() {
+            EnumValue value = EnumValue.newBuilder()
+                                       .setName(SUCCESS.name())
+                                       .build();
+            checkConverts(value, SUCCESS);
+        }
+
+        @Test
+        @DisplayName("if a `EnumValue` has the enum constant ordinal number specified")
+        void ifHasNumber() {
+            EnumValue value = EnumValue.newBuilder()
+                                       .setNumber(EXECUTING.getNumber())
+                                       .build();
+            checkConverts(value, EXECUTING);
+        }
+
+        @Test
+        @DisplayName("using the constant name if both the name and the ordinal are specified")
+        void preferringConversionWithName() {
+            // Set the different name and number just for the sake of test.
+            EnumValue value = EnumValue.newBuilder()
+                                       .setName(SUCCESS.name())
+                                       .setNumber(FAILED.getNumber())
+                                       .build();
+            checkConverts(value, SUCCESS);
+        }
+
+        private void checkConverts(EnumValue enumValue, Enum<?> expected) {
+            Any wrapped = AnyPacker.pack(enumValue);
+            Object mappedJavaObject = TypeConverter.toObject(wrapped, expected.getDeclaringClass());
+            assertEquals(expected, mappedJavaObject);
+        }
+    }
+
+    @Test
+    @DisplayName("convert `Enum` to `EnumValue`")
+    void convertEnumToEnumValue() {
+        Any restoredWrapped = TypeConverter.toAny(SUCCESS);
+        Message restored = AnyPacker.unpack(restoredWrapped);
+        EnumValue expected = EnumValue
+                .newBuilder()
+                .setName(SUCCESS.name())
+                .setNumber(SUCCESS.getNumber())
+                .build();
+        assertEquals(expected, restored);
+    }
+
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // The method is called to throw exception.
+    @Test
+    @Disabled // TODO:2019-12-13:dmytro.kuzmin:WIP Add a fix for this.
+    @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
+    void throwOnRawValuesForEnum() {
+        Int32Value enumOrdinal = Int32Value
+                .newBuilder()
+                .setValue(SUCCESS.getNumber())
+                .build();
+        Any packed = AnyPacker.pack(enumOrdinal);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(packed, TaskStatus.class));
     }
 
     @Nested

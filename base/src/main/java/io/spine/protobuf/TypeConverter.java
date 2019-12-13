@@ -33,6 +33,7 @@ import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
@@ -41,6 +42,7 @@ import io.spine.annotation.Internal;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
@@ -145,7 +147,7 @@ public final class TypeConverter {
                 caster = new BytesCaster();
             } else if (Enum.class.isAssignableFrom(cls)) {
                 @SuppressWarnings("unchecked") // Checked at runtime.
-                Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
+                Class<? extends Enum<?>> enumCls = (Class<? extends Enum<?>>) cls;
                 caster = new EnumCaster(enumCls);
             } else {
                 caster = new PrimitiveTypeCaster<>();
@@ -188,29 +190,54 @@ public final class TypeConverter {
         }
     }
 
-    private static final class EnumCaster extends MessageCaster<EnumValue, Enum> {
+    private static final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
 
+        @SuppressWarnings("rawtypes") // Needed to be able to pass the value to `Enum.valueOf(...)`.
         private final Class<? extends Enum> type;
 
-        EnumCaster(Class<? extends Enum> type) {
+        EnumCaster(Class<? extends Enum<?>> type) {
             super();
             this.type = type;
         }
 
         @Override
-        protected Enum toObject(EnumValue input) {
+        protected Enum<?> toObject(EnumValue input) {
             String name = input.getName();
-            @SuppressWarnings("unchecked") // Checked at runtime.
-            Enum value = Enum.valueOf(type, name);
-            return value;
+            if (name.isEmpty()) {
+                int number = input.getNumber();
+                return convertByOrdinal(number);
+            } else {
+                return convertByName(name);
+            }
+        }
+
+        private Enum<?> convertByOrdinal(int number) {
+            Enum<?>[] constants = type.getEnumConstants();
+            for (Enum<?> constant : constants) {
+                ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
+                int valueNumber = asProtoEnum.getNumber();
+                if (number == valueNumber) {
+                    return constant;
+                }
+            }
+            throw newIllegalArgumentException(
+                    "Could not find a enum value of type `%s` for number `%d`.",
+                    type.getCanonicalName(), number);
+        }
+
+        @SuppressWarnings("unchecked") // Checked at runtime.
+        private Enum<?> convertByName(String name) {
+            return Enum.valueOf(type, name);
         }
 
         @Override
-        protected EnumValue toMessage(Enum input) {
+        protected EnumValue toMessage(Enum<?> input) {
             String name = input.name();
+            ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) input;
             EnumValue value = EnumValue
                     .newBuilder()
                     .setName(name)
+                    .setNumber(asProtoEnum.getNumber())
                     .build();
             return value;
         }
