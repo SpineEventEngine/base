@@ -243,9 +243,7 @@ public final class TypeConverter {
                     return constant;
                 }
             }
-            throw newIllegalArgumentException(
-                    "Could not find a enum value of type `%s` for number `%d`.",
-                    type.getCanonicalName(), number);
+            throw unknownNumber(number);
         }
 
         @SuppressWarnings("unchecked") // Checked at runtime.
@@ -263,6 +261,12 @@ public final class TypeConverter {
                     .setNumber(asProtoEnum.getNumber())
                     .build();
             return value;
+        }
+
+        private IllegalArgumentException unknownNumber(int number) {
+            throw newIllegalArgumentException(
+                    "Could not find a enum value of type `%s` for number `%d`.",
+                    type.getCanonicalName(), number);
         }
     }
 
