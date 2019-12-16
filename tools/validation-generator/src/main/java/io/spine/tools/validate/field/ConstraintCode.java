@@ -21,57 +21,175 @@
 package io.spine.tools.validate.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.logging.Logging;
 import io.spine.tools.validate.AccumulateViolations;
-import io.spine.validate.ConstraintViolation;
+import io.spine.tools.validate.FieldAccess;
+import io.spine.tools.validate.MessageAccess;
+import io.spine.tools.validate.code.BooleanExpression;
+
+import java.util.function.Function;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.validate.FieldAccess.element;
+import static io.spine.tools.validate.code.Blocks.empty;
 
 /**
- * A factory of validation code for a message type.
- *
- * <p>May represent a limitation on acceptable values of a field, a rule describing a field
- * relationship, etc.
- *
- * <p>Examples:
- * <ul>
- *     <li>Field {@code spec} in {@code spine.net.Url} must be set.
- *     <li>String field {@code phone_number} in {@code com.acme.ContactInfo} must match regular
- *         expression {@code "\+?\d+"}.
- *     <li>Message of type {@code spine.people.PersonName} must have at least {@code given_name} or
- *         both {@code honorific_prefix} and {@code family_name} fields set.
- * </ul>
- *
- * <p>In Protobuf, validation constraints are expressed with options.
- * See {@code spine/options.proto} for the definitions of validation options.
+ * A validation constraint based on a Protobuf option of a message field.
  */
-public interface ConstraintCode {
+public final class ConstraintCode implements Logging {
 
-    /**
-     * Compiles this rule into the Java validation code.
-     *
-     * <p>If the rule is broken, one or more {@link ConstraintViolation}s are passed to
-     * the {@link AccumulateViolations}.
-     *
-     * @param onViolation
-     *         a function which accept a {@link ConstraintViolation} and yields it to where the
-     *         violations are accumulated for the validated message
-     * @return a function which accepts the field value and returns the validation code
-     */
-    default CodeBlock compile(AccumulateViolations onViolation) {
-        return compile(onViolation, CodeBlock.of(""));
+    private final Function<FieldAccess, CodeBlock> declarations;
+    private final Check conditionCheck;
+    private final CreateViolation createViolation;
+    private final FieldAccess fieldAccess;
+    private final Cardinality cardinality;
+    private final AccumulateViolations onViolation;
+    private final CodeBlock onNoViolation;
+
+    private ConstraintCode(Builder builder) {
+        this.declarations = builder.declarations;
+        this.conditionCheck = builder.conditionCheck;
+        this.createViolation = builder.createViolation;
+        this.fieldAccess = builder.fieldAccess();
+        this.cardinality = builder.cardinality();
+        this.onViolation = builder.onViolation;
+        this.onNoViolation = builder.onNoViolation;
+    }
+
+    public CodeBlock compile() {
+        if (cardinality == Cardinality.SINGULAR) {
+            return compileSingular(fieldAccess);
+        } else {
+            CodeBlock elementValidation = compileSingular(element);
+            return CodeBlock
+                    .builder()
+                    .beginControlFlow("$L.forEach($N ->", fieldAccess, element.value())
+                    .add(elementValidation)
+                    .endControlFlow(")")
+                    .build();
+        }
+    }
+
+    private CodeBlock compileSingular(FieldAccess field) {
+        CodeBlock ifViolation = onViolation.apply(createViolation.apply(field))
+                                           .toCode();
+        BooleanExpression condition = conditionCheck.apply(field);
+        return condition.isConstant()
+               ? evaluateConstantCondition(condition, ifViolation)
+               : evaluate(declarations.apply(field), condition, ifViolation);
+    }
+
+    private CodeBlock evaluate(CodeBlock declarations, BooleanExpression condition,
+                               CodeBlock onViolation) {
+        CodeBlock check = condition.ifTrue(onViolation)
+                                   .orElse(onNoViolation);
+        return CodeBlock.builder()
+                        .add(declarations)
+                        .add(check)
+                        .build();
+    }
+
+    private CodeBlock
+    evaluateConstantCondition(BooleanExpression condition, CodeBlock onViolation) {
+        if (condition.isConstantTrue()) {
+            _warn().log("Violation is always produced as validation check is a constant.");
+            return onViolation;
+        } else {
+            return onNoViolation;
+        }
     }
 
     /**
-     * Compiles this constraint into the Java validation code.
+     * Creates a new instance of {@code Builder} for {@code ConstraintCode} instances.
      *
-     * <p>If the constraint is violated, one or more {@link ConstraintViolation}s are passed to
-     * the {@link AccumulateViolations}. If the message follows the rule, no violations are produced
-     * and the {@code orElse} code block is executed.
-     *
-     * @param onViolation
-     *         a function which accept a {@link ConstraintViolation} and yields it to where the
-     *         violations are accumulated for the validated message
-     * @param orElse
-     *         if the rule does not add a violation, this code will be invoked
-     * @return a function which accepts the field value and returns the validation code
+     * @return new instance of {@code Builder}
      */
-    CodeBlock compile(AccumulateViolations onViolation, CodeBlock orElse);
+    public static Builder forField(FieldDeclaration field) {
+        return new Builder(field);
+    }
+
+    /**
+     * A builder for the {@code ConstraintCode} instances.
+     */
+    public static final class Builder {
+
+        private final FieldDeclaration field;
+        private MessageAccess messageAccess;
+        private Function<FieldAccess, CodeBlock> declarations = f -> empty();
+        private Check conditionCheck;
+        private CreateViolation createViolation;
+        private AccumulateViolations onViolation;
+        private CodeBlock onNoViolation = empty();
+        private boolean forceSingular = false;
+
+        private Builder(FieldDeclaration field) {
+            this.field = checkNotNull(field);
+        }
+
+        public Builder messageAccess(MessageAccess messageAccess) {
+            this.messageAccess = checkNotNull(messageAccess);
+            return this;
+        }
+
+        public Builder preparingDeclarations(Function<FieldAccess, CodeBlock> declarations) {
+            this.declarations = checkNotNull(declarations);
+            return this;
+        }
+
+        public Builder conditionCheck(Check conditionCheck) {
+            this.conditionCheck = checkNotNull(conditionCheck);
+            return this;
+        }
+
+        public Builder createViolation(CreateViolation createViolation) {
+            this.createViolation = checkNotNull(createViolation);
+            return this;
+        }
+
+        public Builder onViolation(AccumulateViolations onViolation) {
+            this.onViolation = checkNotNull(onViolation);
+            return this;
+        }
+
+        public Builder onNoViolation(CodeBlock onNoViolation) {
+            this.onNoViolation = checkNotNull(onNoViolation);
+            return this;
+        }
+
+        public Builder validateAsCollection() {
+            this.forceSingular = true;
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@code ConstraintCode}.
+         *
+         * @return new instance of {@code ConstraintCode}
+         */
+        public ConstraintCode build() {
+            checkNotNull(messageAccess);
+            checkNotNull(conditionCheck);
+            checkNotNull(createViolation);
+            checkNotNull(onViolation);
+
+            return new ConstraintCode(this);
+        }
+
+        private FieldAccess fieldAccess() {
+            return messageAccess.get(field);
+        }
+
+        private Cardinality cardinality() {
+            return field.isNotCollection() || forceSingular
+                   ? Cardinality.SINGULAR
+                   : Cardinality.COLLECTION;
+        }
+    }
+
+    private enum Cardinality {
+
+        SINGULAR,
+        COLLECTION
+    }
 }

@@ -102,7 +102,27 @@ public final class BooleanExpression
         } else if (this.equals(FALSE)) {
             return TRUE;
         } else {
-            return fromCode("!($L)", this.toCode());
+            return fromCode("!($L)", this);
         }
+    }
+
+    public BooleanExpression and(BooleanExpression other) {
+        if (this.isConstant()) {
+            return this.isConstantTrue() ? trueLiteral() : other;
+        }
+        if (other.isConstant()) {
+            return other.isConstantTrue() ? trueLiteral() : this;
+        }
+        return fromCode("($L && $L)", this, other);
+    }
+
+    public BooleanExpression or(BooleanExpression other) {
+        if (this.isConstant()) {
+            return this.isConstantTrue() ? other : falseLiteral();
+        }
+        if (other.isConstant()) {
+            return other.isConstantTrue() ? this : falseLiteral();
+        }
+        return fromCode("($L || $L)", this, other);
     }
 }

@@ -20,9 +20,11 @@
 
 package io.spine.validate.option;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
+import io.spine.validate.Alternative;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 
@@ -38,10 +40,13 @@ public final class RequiredFieldConstraint implements Constraint {
 
     private final String optionValue;
     private final MessageType messageType;
+    private final ImmutableSet<Alternative> alternatives;
 
     RequiredFieldConstraint(String optionValue, MessageType messageType) {
         this.optionValue = checkNotNull(optionValue);
         this.messageType = checkNotNull(messageType);
+        checkNotNull(optionValue);
+        this.alternatives = Alternative.parse(optionValue, messageType);
     }
 
     @Override
@@ -61,5 +66,9 @@ public final class RequiredFieldConstraint implements Constraint {
 
     public String optionValue() {
         return optionValue;
+    }
+
+        public ImmutableSet<Alternative> alternatives() {
+        return alternatives;
     }
 }

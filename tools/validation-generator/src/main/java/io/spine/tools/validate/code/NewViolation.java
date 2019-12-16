@@ -20,6 +20,7 @@
 
 package io.spine.tools.validate.code;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
@@ -30,6 +31,7 @@ import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,6 +43,7 @@ import static java.util.Arrays.asList;
 public final class NewViolation implements Expression<ConstraintViolation> {
 
     private final String message;
+    private final ImmutableList<String> params;
     private final @Nullable FieldAccess fieldValue;
     private final MessageType type;
     private final FieldPath field;
@@ -52,6 +55,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         this.type = builder.type;
         this.field = builder.field;
         this.nestedViolations = builder.nestedViolations;
+        this.params = ImmutableList.copyOf(builder.params);
     }
 
     @Override
@@ -61,39 +65,44 @@ public final class NewViolation implements Expression<ConstraintViolation> {
                 .builder()
                 .add("$T.newBuilder()", ConstraintViolation.class)
                 .add(".setMsgFormat($S)", message)
-                .add(".setTypeName($S)", type.name().value())
-                .add(".setFieldPath($T.newBuilder()", FieldPath.class);
+                .add(".setTypeName($S)", type.name().value());
+        addFieldValue(builder);
+        addViolations(builder);
+        addFieldPath(builder);
+        addParams(builder);
+        builder.add(".build()");
+        return builder.build();
+    }
+
+    private void addViolations(CodeBlock.Builder builder) {
+        if (nestedViolations != null) {
+            builder.add(".addAllViolation($L)", nestedViolations.toCode());
+        }
+    }
+
+    private void addFieldValue(CodeBlock.Builder builder) {
+        if (fieldValue != null) {
+            builder.add(".setFieldValue($T.toAny($L))", TypeConverter.class, fieldValue.toCode());
+        }
+    }
+
+    private void addFieldPath(CodeBlock.Builder builder) {
+        builder.add(".setFieldPath($T.newBuilder()", FieldPath.class);
         for (String fieldName : field.getFieldNameList()) {
             builder.add(".addFieldName($S)", fieldName);
         }
         builder.add(".build())");
-        if (fieldValue != null) {
-            builder.add(".setFieldValue($T.toAny($L))", TypeConverter.class, fieldValue.toCode());
+    }
+
+    private void addParams(CodeBlock.Builder builder) {
+        for (String param : params) {
+            builder.add(".addParam($S)", param);
         }
-        if (nestedViolations != null) {
-            builder.add(".addAllViolation($L)", nestedViolations.toCode());
-        }
-        builder.add(".build()");
-        return builder.build();
     }
 
     @Override
     public String toString() {
         return toCode().toString();
-    }
-
-    /**
-     * Creates a new instance of {@code Builder} for {@code NewViolation} instances.
-     *
-     * <p>The builder is preset with the declaring type and name of the given field.
-     *
-     * @return new instance of {@code Builder}
-     */
-    public static Builder forField(FieldDeclaration field) {
-        checkNotNull(field);
-        return new Builder()
-                .setType(field.declaringType())
-                .setField(field.name().value());
     }
 
     /**
@@ -111,6 +120,13 @@ public final class NewViolation implements Expression<ConstraintViolation> {
                 .setField(field.fieldPath().getFieldNameList());
     }
 
+    public static Builder forMessage(FieldContext context, MessageType type) {
+        checkNotNull(context);
+        return new Builder()
+                .setType(type)
+                .setField(context.fieldPath().getFieldNameList());
+    }
+
     /**
      * A builder for the {@code ViolationTemplate} instances.
      */
@@ -121,6 +137,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         private MessageType type;
         private FieldPath field;
         private @Nullable Expression<? extends Iterable<ConstraintViolation>> nestedViolations;
+        private final List<String> params = new ArrayList<>();
 
         /**
          * Prevents direct instantiation.
@@ -162,6 +179,11 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         public Builder
         setNestedViolations(Expression<? extends Iterable<ConstraintViolation>> nestedViolations) {
             this.nestedViolations = checkNotNull(nestedViolations);
+            return this;
+        }
+
+        public Builder addParam(String... value) {
+            params.addAll(asList(value));
             return this;
         }
 

@@ -20,13 +20,11 @@
 
 package io.spine.validate;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldDeclaration;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -40,35 +38,22 @@ final class RequiredFieldCheck {
     private static final String ERROR_MESSAGE =
             "Message must have all the required fields set according to the rule: `%s`.";
 
-    /**
-     * The pattern to remove whitespace from the option field value.
-     */
-    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
-
-    /**
-     * Splits Protobuf field names separated with a logical disjunction (OR) literal {@literal |}.
-     */
-    private static final Splitter orSplitter = Splitter.on('|');
-
-    /**
-     * Splits Protobuf field names separated with a logical conjunction (AND) literal {@literal &}.
-     */
-    private static final Splitter andSplitter = Splitter.on('&');
-
     private final MessageValue message;
-    private final ImmutableList<Alternative> alternatives;
+    private final ImmutableSet<Alternative> alternatives;
     private final String optionValue;
 
-    RequiredFieldCheck(String optionValue, MessageValue value) {
+    RequiredFieldCheck(String optionValue,
+                       ImmutableSet<Alternative> alternatives,
+                       MessageValue value) {
         this.message = checkNotNull(value);
         this.optionValue = checkNotEmptyOrBlank(optionValue.trim());
-        this.alternatives = parse();
+        this.alternatives = checkNotNull(alternatives);
     }
 
     Optional<ConstraintViolation> perform() {
         boolean matches = alternatives
                 .stream()
-                .anyMatch(alternative -> alternative.allPresent(message));
+                .anyMatch(this::allPresent);
         return matches
                ? Optional.empty()
                : Optional.of(ConstraintViolation
@@ -81,6 +66,29 @@ final class RequiredFieldCheck {
         );
     }
 
+    private boolean allPresent(Alternative alternative) {
+        for (FieldDeclaration declaration : alternative.fields()) {
+            String fieldName = declaration.name().value();
+            Optional<FieldValue> field = message.valueOf(fieldName);
+            FieldValue value = field.orElseThrow(
+                    () -> fieldNotFound(message, fieldName)
+            );
+            if (value.isDefault()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static IllegalStateException
+    fieldNotFound(MessageValue containingMessage, String fieldName) {
+        return newIllegalStateException(
+                "Message `%s` declares a constraint with a field `%s`, which does not exist.",
+                containingMessage.declaration(),
+                fieldName
+        );
+    }
+
     private FieldPath fieldPath() {
         return message.context()
                       .fieldPath();
@@ -90,55 +98,5 @@ final class RequiredFieldCheck {
         return message.declaration()
                       .name()
                       .value();
-    }
-
-    private ImmutableList<Alternative> parse() {
-        ImmutableList.Builder<Alternative> alternatives = ImmutableList.builder();
-        String whiteSpaceRemoved = WHITESPACE.matcher(optionValue)
-                                             .replaceAll("");
-        Iterable<String> parts = orSplitter.split(whiteSpaceRemoved);
-        for (String part : parts) {
-            List<String> fieldNames = andSplitter.splitToList(part);
-            alternatives.add(Alternative.ofCombination(fieldNames));
-        }
-        return alternatives.build();
-    }
-
-    /**
-     * Combinations of required fields found in the message value.
-     */
-    private static class Alternative {
-
-        private final ImmutableList<String> fieldNames;
-
-        private Alternative(ImmutableList<String> names) {
-            fieldNames = names;
-        }
-
-        private static Alternative ofCombination(Iterable<String> fieldNames) {
-            return new Alternative(ImmutableList.copyOf(fieldNames));
-        }
-
-        private boolean allPresent(MessageValue containingMessage) {
-            for (String fieldName : fieldNames) {
-                Optional<FieldValue> field = containingMessage.valueOf(fieldName);
-                FieldValue value = field.orElseThrow(
-                        () -> fieldNotFound(containingMessage, fieldName)
-                );
-                if (value.isDefault()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static IllegalStateException
-        fieldNotFound(MessageValue containingMessage, String fieldName) {
-            return newIllegalStateException(
-                    "Message `%s` declares a constraint with a field `%s`, which does not exist.",
-                    containingMessage.declaration(),
-                    fieldName
-            );
-        }
     }
 }

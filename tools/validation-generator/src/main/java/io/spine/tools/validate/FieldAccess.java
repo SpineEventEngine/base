@@ -32,13 +32,10 @@ public final class FieldAccess extends CodeExpression<Object> {
 
     private static final long serialVersionUID = 0L;
 
-    private static final FieldAccess element = new FieldAccess("el", false);
+    public static final FieldAccess element = new FieldAccess("element");
 
-    private final boolean collection;
-
-    private FieldAccess(String value, boolean collection) {
+    private FieldAccess(String value) {
         super(value);
-        this.collection = collection;
     }
 
     public static FieldAccess fieldOfMessage(MessageAccess message, FieldDeclaration field) {
@@ -55,26 +52,22 @@ public final class FieldAccess extends CodeExpression<Object> {
     }
 
     private static FieldAccess singularField(Expression<?> receiver, FieldName field) {
-        return fromTemplate("%s.get%s()", receiver, field, false);
+        return fromTemplate("%s.get%s()", receiver, field);
     }
 
     private static FieldAccess repeatedField(Expression<?> receiver, FieldName field) {
-        return fromTemplate("%s.get%sList()", receiver, field, true);
+        return fromTemplate("%s.get%sList()", receiver, field);
     }
 
     private static FieldAccess mapField(Expression<?> receiver, FieldName field) {
-        return fromTemplate("%s.get%sMap().values()", receiver, field, true);
+        return fromTemplate("%s.get%sMap().values()", receiver, field);
     }
 
     private static FieldAccess
-    fromTemplate(String template, Expression<?> receiver, FieldName field, boolean collection) {
+    fromTemplate(String template, Expression<?> receiver, FieldName field) {
         checkNotNull(receiver);
         checkNotNull(field);
         String expression = format(template, receiver, field.toCamelCase());
-        return new FieldAccess(expression, collection);
-    }
-
-    public FieldAccess validatableValue() {
-        return collection ? element : this;
+        return new FieldAccess(expression);
     }
 }

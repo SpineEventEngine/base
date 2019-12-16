@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
@@ -42,6 +43,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -255,6 +257,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                             .map(field -> new FieldDeclaration(field, this))
                             .collect(toImmutableList());
         return result;
+    }
+
+    public FieldDeclaration field(String name) {
+        FieldDescriptor fieldDescriptor = descriptor()
+                .findFieldByName(name);
+        checkArgument(fieldDescriptor != null, name);
+        return new FieldDeclaration(fieldDescriptor, this);
     }
 
     /**

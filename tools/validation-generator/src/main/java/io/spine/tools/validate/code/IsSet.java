@@ -32,7 +32,6 @@ import io.spine.tools.validate.field.Containers;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
 import static io.spine.tools.validate.code.BooleanExpression.falseLiteral;
 import static io.spine.tools.validate.code.BooleanExpression.trueLiteral;
 import static java.lang.String.format;
@@ -78,7 +77,7 @@ public final class IsSet {
     }
 
     private CodeBlock methodBody() {
-        FieldAccess fieldAccess = fieldOfMessage(MessageAccess.of(MESSAGE), field);
+        FieldAccess fieldAccess = MessageAccess.of(MESSAGE).get(field);
         return field.isCollection()
                ? methodBodyForCollection(fieldAccess)
                : methodBodyForSingular(fieldAccess);
