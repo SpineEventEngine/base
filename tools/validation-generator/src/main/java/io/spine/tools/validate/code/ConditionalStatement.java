@@ -24,6 +24,7 @@ import com.squareup.javapoet.CodeBlock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.System.lineSeparator;
 
 /**
  * A builder for {@code if} - {@code else} statements.
@@ -56,6 +57,7 @@ public final class ConditionalStatement {
         CodeBlock.Builder code = CodeBlock.builder();
         code.beginControlFlow("if ($L)", condition.value());
         code.add(positiveBranch);
+        code.add(lineSeparator());
         return code;
     }
 
@@ -90,6 +92,7 @@ public final class ConditionalStatement {
         complete();
         code.nextControlFlow("else");
         code.add(branch);
+        code.add(lineSeparator());
         code.endControlFlow();
         return code.build();
     }
