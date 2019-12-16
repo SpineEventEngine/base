@@ -44,7 +44,7 @@ public final class Direction extends FieldValidatingOption<BytesDirection> {
     @Override
     public Constraint constraintFor(FieldContext field) {
         FieldDeclaration declaration = field.targetDeclaration();
-        return new FieldConstraint<>(declaration.findOption(direction), declaration) {
+        return new FieldConstraint<BytesDirection>(declaration.findOption(direction), declaration) {
 
             @Override
             public String errorMessage(FieldContext field) {
