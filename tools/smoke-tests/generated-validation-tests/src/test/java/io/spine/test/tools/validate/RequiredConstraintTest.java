@@ -150,7 +150,7 @@ class RequiredConstraintTest {
     @DisplayName("repeated number fields must have at least one value")
     void emptyRepeatedInt() {
         Collections instance = Collections.getDefaultInstance();
-        checkCollectionViolation(instance,"not_empty_list_of_longs");
+        checkViolation(instance, "not_empty_list_of_longs");
     }
 
     @Test
@@ -167,7 +167,7 @@ class RequiredConstraintTest {
     @DisplayName("map number fields must have at least one value")
     void emptyMapOfInts() {
         Collections instance = Collections.getDefaultInstance();
-        checkCollectionViolation(instance,"not_empty_map_of_ints");
+        checkViolation(instance, "not_empty_map_of_ints");
     }
 
     @Test
@@ -184,7 +184,7 @@ class RequiredConstraintTest {
     @DisplayName("map string fields must have at least one value")
     void emptyMapOfStrings() {
         Collections instance = Collections.getDefaultInstance();
-        checkCollectionViolation(instance,"contains_a_non_empty_string_value");
+        checkViolation(instance, "contains_a_non_empty_string_value");
     }
 
     @Test
@@ -211,7 +211,7 @@ class RequiredConstraintTest {
     @DisplayName("an empty repeated field of enums is a violation")
     void emptyRepeatedEnum() {
         Collections instance = Collections.getDefaultInstance();
-        checkCollectionViolation(instance, "at_least_one_piece_of_meat");
+        checkViolation(instance, "at_least_one_piece_of_meat");
     }
 
     @Test
@@ -234,10 +234,6 @@ class RequiredConstraintTest {
                 .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
                 .buildPartial();
         checkNoViolation(instance, "at_least_one_piece_of_meat");
-    }
-
-    private static void checkCollectionViolation(MessageWithConstraints message, String field) {
-        checkViolation(message, field, "must not be empty");
     }
 
     private static void checkViolation(MessageWithConstraints message, String field) {
