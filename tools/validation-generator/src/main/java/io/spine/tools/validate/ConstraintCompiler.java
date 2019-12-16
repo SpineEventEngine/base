@@ -59,7 +59,6 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.BoundType.OPEN;
-import static com.google.common.collect.Lists.reverse;
 import static com.squareup.javapoet.ClassName.bestGuess;
 import static io.spine.tools.validate.MessageValidatorFactory.immutableListOfViolations;
 import static io.spine.tools.validate.code.BooleanExpression.fromCode;
@@ -203,9 +202,9 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     }
 
     private CodeBlock buildValidateBody() {
-        CodeBlock validationCode = CodeBlock.of("");
-        for (ConstraintCode constraintCode : reverse(compiledConstraints)) {
-            validationCode = constraintCode.compile(violationAccumulator, validationCode);
+        CodeBlock.Builder validationCode = CodeBlock.builder();
+        for (ConstraintCode constraintCode : compiledConstraints) {
+            validationCode.add(constraintCode.compile(violationAccumulator));
         }
         return validationCode.isEmpty()
                ? CodeBlock.of("return $T.of();", ImmutableList.class)
@@ -215,7 +214,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                                      listBuilderOfViolations,
                                      VIOLATIONS,
                                      ImmutableList.class)
-                       .add(validationCode)
+                       .add(validationCode.build())
                        .addStatement("return $N.build()", VIOLATIONS)
                        .build();
     }
