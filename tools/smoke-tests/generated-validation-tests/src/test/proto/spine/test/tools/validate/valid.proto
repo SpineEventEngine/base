@@ -10,7 +10,6 @@ option java_outer_classname = "ValidProto";
 option java_multiple_files = true;
 
 import "spine/people/person_name.proto";
-import "spine/net/email_address.proto";
 
 message ZipCode {
 
