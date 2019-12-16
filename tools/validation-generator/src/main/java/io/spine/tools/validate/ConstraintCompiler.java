@@ -35,6 +35,7 @@ import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.IsSet;
 import io.spine.tools.validate.code.NewViolation;
+import io.spine.tools.validate.field.CollectionConstraintCode;
 import io.spine.tools.validate.field.ConstraintCode;
 import io.spine.tools.validate.field.FieldConstraintCode;
 import io.spine.type.MessageType;
@@ -112,7 +113,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         FieldAccess fieldAccess = messageAccess.get(field);
         Range<ComparableNumber> range = constraint.range();
         if (limit.boundExists(range)) {
-            BooleanExpression condition = fromCode("$N $L$L $L", fieldAccess.value(),
+            BooleanExpression condition = fromCode("$L $L$L $L", fieldAccess.validatableValue(),
                                                    limit.sign,
                                                    limit.type(range) == OPEN ? "=" : "",
                                                    limit.endpoint(range));
@@ -142,7 +143,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         String pattern = constraint.optionValue()
                                    .getRegex();
         append(new FieldConstraintCode(
-                fromCode("$L.matches($S)", fieldAccess.toCode(), pattern),
+                fromCode("$L.matches($S)", fieldAccess.validatableValue(), pattern).negate(),
                 newViolation(field, constraint)
                         .setFieldValue(fieldAccess)
                         .build()));
@@ -175,7 +176,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 Expression.formatted("%sViolations", field.name().javaCase());
         CodeBlock nestedViolationDecl = CodeBlock
                 .builder()
-                .addStatement("$T $N = $T.violationsOf($L)", listOfViolations, violationsVar.toString(), Validate.class, fieldAccess.toCode())
+                .addStatement("$T $N = $T.violationsOf($L)", listOfViolations, violationsVar.toString(), Validate.class, fieldAccess.validatableValue())
                 .build();
         BooleanExpression condition = isEmpty(violationsVar).negate();
         IfInvalidOption errorMessageOption = new IfInvalid().valueOrDefault(field.descriptor());
@@ -184,8 +185,10 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 .setMessage(errorMessage)
                 .setNestedViolations(violationsVar)
                 .build();
-        FieldConstraintCode code =
-                new FieldConstraintCode(nestedViolationDecl, condition, violation);
+        ConstraintCode code =
+                field.isCollection()
+                ? new CollectionConstraintCode(nestedViolationDecl, condition, violation, fieldAccess)
+                : new FieldConstraintCode(nestedViolationDecl, condition, violation);
         append(code);
     }
 
