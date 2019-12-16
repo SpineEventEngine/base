@@ -23,7 +23,6 @@ package io.spine.test.options;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.ByteString;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.ValidatingOptionFactory;
 
@@ -34,7 +33,7 @@ import java.util.Set;
 public final class BytesOptions implements ValidatingOptionFactory {
 
     @Override
-    public Set<FieldValidatingOption<?, ByteString>> forByteString() {
+    public Set<FieldValidatingOption<?>> forByteString() {
         return ImmutableSet.of(new Direction());
     }
 }
