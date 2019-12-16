@@ -165,7 +165,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     class ConvertEnumValueToEnum {
 
         @Test
-        @DisplayName("if the `EnumValue` has a enum constant name specified")
+        @DisplayName("if the `EnumValue` has a constant name specified")
         void ifHasName() {
             EnumValue value = EnumValue.newBuilder()
                                        .setName(SUCCESS.name())
@@ -174,7 +174,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("if the `EnumValue` has a enum constant number specified")
+        @DisplayName("if the `EnumValue` has a constant number specified")
         void ifHasNumber() {
             EnumValue value = EnumValue.newBuilder()
                                        .setNumber(EXECUTING.getNumber())
@@ -203,7 +203,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
     @Test
-    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is specified")
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is passed")
     void throwOnUnknownName() {
         String unknownName = "some_name";
         EnumValue value = EnumValue.newBuilder()
@@ -216,7 +216,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
     @Test
-    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is specified")
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is passed")
     void throwOnUnknownNumber() {
         int unknownValue = 156;
         EnumValue value = EnumValue.newBuilder()
