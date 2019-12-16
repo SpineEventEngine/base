@@ -49,7 +49,7 @@ import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("TypeConverter utility class should")
+@DisplayName("`TypeConverter` utility class should")
 class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     TypeConverterTest() {
@@ -68,70 +68,70 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
         @Test
         @DisplayName("arbitrary message to itself")
-        void map_arbitrary_message_to_itself() {
+        void arbitraryMessageToItself() {
             Message message = StringValue.of(newUuid());
             checkMapping(message, message);
         }
 
         @Test
-        @DisplayName("Int32Value to int")
-        void map_Int32Value_to_int() {
+        @DisplayName("`Int32Value` to `int`")
+        void int32ValueToInt() {
             int rawValue = 42;
             Message value = Int32Value.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("Int64Value to int")
-        void map_Int64Value_to_long() {
+        @DisplayName("`Int64Value` to `int`")
+        void int64ValueToLong() {
             long rawValue = 42;
             Message value = Int64Value.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("FloatValue to float")
-        void map_FloatValue_to_float() {
+        @DisplayName("`FloatValue` to `float`")
+        void floatValueToFloat() {
             float rawValue = 42.0f;
             Message value = FloatValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("DoubleValue to double")
-        void map_DoubleValue_to_double() {
+        @DisplayName("`DoubleValue` to `double`")
+        void doubleValueToDouble() {
             double rawValue = 42.0;
             Message value = DoubleValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("BoolValue to boolean")
-        void map_BoolValue_to_boolean() {
+        @DisplayName("`BoolValue` to `boolean`")
+        void boolValueToBoolean() {
             boolean rawValue = true;
             Message value = BoolValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("StringValue to String")
-        void map_StringValue_to_String() {
+        @DisplayName("`StringValue` to `String`")
+        void stringValueToString() {
             String rawValue = "Hello";
             Message value = StringValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("BytesValue to ByteString")
-        void map_BytesValue_to_ByteString() {
+        @DisplayName("`BytesValue` to `ByteString`")
+        void bytesValueToByteString() {
             ByteString rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
             Message value = BytesValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("UInt32 to int")
-        void map_uint32_to_int() {
+        @DisplayName("`UInt32` to `int`")
+        void uint32ToInt() {
             int value = 42;
             UInt32Value wrapped = UInt32Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
@@ -140,8 +140,8 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("UInt64 to int")
-        void map_uint64_to_long() {
+        @DisplayName("`UInt64` to `int`")
+        void uint64ToLong() {
             long value = 42L;
             UInt64Value wrapped = UInt64Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
@@ -165,7 +165,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     class ConvertEnumValueToEnum {
 
         @Test
-        @DisplayName("if a `EnumValue` has the enum constant name specified")
+        @DisplayName("if the `EnumValue` has a enum constant name specified")
         void ifHasName() {
             EnumValue value = EnumValue.newBuilder()
                                        .setName(SUCCESS.name())
@@ -174,7 +174,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("if a `EnumValue` has the enum constant number specified")
+        @DisplayName("if the `EnumValue` has a enum constant number specified")
         void ifHasNumber() {
             EnumValue value = EnumValue.newBuilder()
                                        .setNumber(EXECUTING.getNumber())
