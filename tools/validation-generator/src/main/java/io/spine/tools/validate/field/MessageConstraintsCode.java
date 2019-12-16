@@ -24,10 +24,10 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.AccumulateViolations;
+import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.ConditionalStatement;
 import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.code.NewViolation;
 import io.spine.tools.validate.code.VoidExpression;
 import io.spine.validate.ConstraintViolation;
@@ -53,10 +53,10 @@ final class MessageConstraintsCode implements ConstraintCode {
             new TypeToken<List<ConstraintViolation>>() {}.getType();
 
     private final FieldDeclaration field;
-    private final GetterExpression fieldAccess;
+    private final FieldAccess fieldAccess;
     private final Expression<Iterable<ConstraintViolation>> violationsList;
 
-    MessageConstraintsCode(FieldDeclaration field, GetterExpression fieldAccess) {
+    MessageConstraintsCode(FieldDeclaration field, FieldAccess fieldAccess) {
         this.field = checkNotNull(field);
         this.fieldAccess = checkNotNull(fieldAccess);
         this.violationsList = formatted("%sViolations", field.name().javaCase());

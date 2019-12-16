@@ -132,17 +132,16 @@ public final class MessageValidatorFactory {
                 .builder(Generated.class)
                 .addMember(bySpine.fieldName(), bySpine.codeBlock())
                 .build();
-        TypeSpec type = TypeSpec
+        return TypeSpec
                 .classBuilder(validatorSimpleName)
                 .addAnnotation(generated)
                 .addModifiers(PRIVATE, STATIC, FINAL)
                 .addMethod(ctor)
-                .addMethods(validatorMethods())
+                .addMethods(generateMembers())
                 .build();
-        return type;
     }
 
-    private Set<MethodSpec> validatorMethods() {
+    private Set<MethodSpec> generateMembers() {
         Constraints constraints = Constraints.of(type);
         Set<MethodSpec> methods = constraints
                 .runThrough(new ConstraintCompiler(VALIDATE_METHOD, type));

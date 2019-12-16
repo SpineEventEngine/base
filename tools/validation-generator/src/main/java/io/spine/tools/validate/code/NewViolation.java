@@ -25,6 +25,7 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
+import io.spine.tools.validate.FieldAccess;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -40,10 +41,10 @@ import static java.util.Arrays.asList;
 public final class NewViolation implements Expression<ConstraintViolation> {
 
     private final String message;
-    private final @Nullable GetterExpression fieldValue;
+    private final @Nullable FieldAccess fieldValue;
     private final MessageType type;
     private final FieldPath field;
-    private final @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
+    private final @Nullable Expression<? extends Iterable<ConstraintViolation>> nestedViolations;
 
     private NewViolation(Builder builder) {
         this.message = builder.message;
@@ -116,10 +117,10 @@ public final class NewViolation implements Expression<ConstraintViolation> {
     public static final class Builder {
 
         private String message;
-        private @Nullable GetterExpression fieldValue;
+        private @Nullable FieldAccess fieldValue;
         private MessageType type;
         private FieldPath field;
-        private @Nullable Expression<Iterable<ConstraintViolation>> nestedViolations;
+        private @Nullable Expression<? extends Iterable<ConstraintViolation>> nestedViolations;
 
         /**
          * Prevents direct instantiation.
@@ -132,7 +133,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
             return this;
         }
 
-        public Builder setFieldValue(GetterExpression fieldValue) {
+        public Builder setFieldValue(FieldAccess fieldValue) {
             this.fieldValue = checkNotNull(fieldValue);
             return this;
         }
@@ -159,7 +160,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         }
 
         public Builder
-        setNestedViolations(Expression<Iterable<ConstraintViolation>> nestedViolations) {
+        setNestedViolations(Expression<? extends Iterable<ConstraintViolation>> nestedViolations) {
             this.nestedViolations = checkNotNull(nestedViolations);
             return this;
         }

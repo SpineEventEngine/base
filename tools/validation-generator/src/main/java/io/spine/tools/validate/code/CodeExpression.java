@@ -28,11 +28,11 @@ import io.spine.value.StringTypeValue;
  *
  * @param <R> the type of the expression value
  */
-class CodeExpression<R> extends StringTypeValue implements Expression<R> {
+public class CodeExpression<R> extends StringTypeValue implements Expression<R> {
 
     private static final long serialVersionUID = 0L;
 
-    CodeExpression(String value) {
+    protected CodeExpression(String value) {
         super(value);
     }
 

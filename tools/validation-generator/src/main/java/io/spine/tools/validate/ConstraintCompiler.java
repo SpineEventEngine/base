@@ -30,9 +30,9 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.option.IfInvalidOption;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.GetterExpression;
 import io.spine.tools.validate.code.IsSet;
 import io.spine.tools.validate.code.NewViolation;
 import io.spine.tools.validate.field.ConstraintCode;
@@ -43,9 +43,11 @@ import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Duplicates;
+import io.spine.validate.Validate;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.FieldConstraint;
 import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.IfInvalid;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
@@ -65,6 +67,7 @@ import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static io.spine.tools.validate.field.Containers.isEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.validate.diags.ViolationText.errorMessage;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -74,12 +77,15 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listBuilderOfViolations =
             new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {}.getType();
-    private static final MessageAccess messageAccess = new MessageAccess(Expression.of("msg"));
+    @SuppressWarnings("UnstableApiUsage")
+    private static final Type listOfViolations =
+            new TypeToken<List<ConstraintViolation>>() {}.getType();
+    private static final MessageAccess messageAccess = MessageAccess.of("msg");
 
     private final List<ConstraintCode> compiledConstraints;
     private final AccumulateViolations violationAccumulator;
     private final FieldContext fieldContext;
-    private final ImmutableSet.Builder<MethodSpec> methods;
+    private final ImmutableSet.Builder<MethodSpec> generatedMethods;
     private final String methodName;
     private final MessageType type;
 
@@ -90,7 +96,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         this.compiledConstraints = new ArrayList<>();
         this.violationAccumulator =
                 violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
-        this.methods = ImmutableSet.builder();
+        this.generatedMethods = ImmutableSet.builder();
     }
 
     @Override
@@ -100,22 +106,18 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         checkRange(constraint, field, Limit.UPPER);
     }
 
-
     private void checkRange(RangedConstraint<?> constraint,
                                                     FieldDeclaration field,
                                                     Limit limit) {
         FieldAccess fieldAccess = messageAccess.get(field);
         Range<ComparableNumber> range = constraint.range();
         if (limit.boundExists(range)) {
-            FieldConstraintCode code = fieldAccess.let(getter -> {
-                BooleanExpression condition = fromCode("$N $L$L $L", getter.value(),
-                                                       limit.sign,
-                                                       limit.type(range) == OPEN ? "=" : "",
-                                                       limit.endpoint(range));
-                NewViolation violation = violation(constraint, field, getter);
-                return new FieldConstraintCode(condition, violation);
-            });
-            append(code);
+            BooleanExpression condition = fromCode("$N $L$L $L", fieldAccess.value(),
+                                                   limit.sign,
+                                                   limit.type(range) == OPEN ? "=" : "",
+                                                   limit.endpoint(range));
+            NewViolation violation = violation(constraint, field, fieldAccess);
+            append(new FieldConstraintCode(condition, violation));
         }
     }
 
@@ -126,7 +128,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         BooleanExpression messageIsNotSet = fieldIsSet.invocation(messageAccess)
                                                       .negate();
         if (!messageIsNotSet.isConstant()) {
-            methods.add(fieldIsSet.method());
+            generatedMethods.add(fieldIsSet.method());
         }
         NewViolation violation = violation(constraint, field);
         FieldConstraintCode check = new FieldConstraintCode(messageIsNotSet, violation);
@@ -139,14 +141,11 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         FieldAccess fieldAccess = messageAccess.get(field);
         String pattern = constraint.optionValue()
                                    .getRegex();
-        append(fieldAccess.let(
-                getter -> new FieldConstraintCode(
-                        fromCode("$L.matches($S)", getter, pattern),
-                        newViolation(field, constraint)
-                                .setFieldValue(getter)
-                                .build()
-                )
-        ));
+        append(new FieldConstraintCode(
+                fromCode("$L.matches($S)", fieldAccess.toCode(), pattern),
+                newViolation(field, constraint)
+                        .setFieldValue(fieldAccess)
+                        .build()));
     }
 
     @Override
@@ -170,7 +169,24 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
 
     @Override
     public void visitValidate(ValidateConstraint constraint) {
-        // TBD.
+        FieldDeclaration field = constraint.field();
+        FieldAccess fieldAccess = accessField(constraint);
+        Expression<List<ConstraintViolation>> violationsVar =
+                Expression.formatted("%sViolations", field.name().javaCase());
+        CodeBlock nestedViolationDecl = CodeBlock
+                .builder()
+                .addStatement("$T $N = $T.violationsOf($L)", listOfViolations, violationsVar.toString(), Validate.class, fieldAccess.toCode())
+                .build();
+        BooleanExpression condition = isEmpty(violationsVar).negate();
+        IfInvalidOption errorMessageOption = new IfInvalid().valueOrDefault(field.descriptor());
+        String errorMessage = errorMessage(errorMessageOption, errorMessageOption.getMsgFormat());
+        NewViolation violation = newViolation(field, constraint)
+                .setMessage(errorMessage)
+                .setNestedViolations(violationsVar)
+                .build();
+        FieldConstraintCode code =
+                new FieldConstraintCode(nestedViolationDecl, condition, violation);
+        append(code);
     }
 
     @Override
@@ -183,10 +199,11 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     }
 
     @Override
-    public Set<MethodSpec> translate() {
-        return methods
+    public ImmutableSet<MethodSpec> translate() {
+        ImmutableSet<MethodSpec> methods = generatedMethods
                 .add(buildValidate())
                 .build();
+        return methods;
     }
 
     private MethodSpec buildValidate() {
@@ -236,7 +253,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
 
     private NewViolation violation(Constraint constraint,
                                    FieldDeclaration field,
-                                   GetterExpression getter) {
+                                   FieldAccess getter) {
         return newViolation(field, constraint)
                 .setFieldValue(getter)
                 .build();

@@ -20,51 +20,52 @@
 
 package io.spine.tools.validate;
 
-import com.google.protobuf.Message;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.tools.validate.code.CodeExpression;
 import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.GetterExpression;
-
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.code.GetterExpression.mapField;
-import static io.spine.tools.validate.code.GetterExpression.repeatedField;
-import static io.spine.tools.validate.code.GetterExpression.singularField;
+import static java.lang.String.format;
 
-public final class FieldAccess {
+public final class FieldAccess extends CodeExpression<Object> {
 
-    private final GetterExpression expression;
+    private static final long serialVersionUID = 0L;
 
-    private FieldAccess(GetterExpression expression) {
-        this.expression = checkNotNull(expression);
+    private FieldAccess(String value) {
+        super(value);
     }
 
     public static FieldAccess fieldOfMessage(MessageAccess message, FieldDeclaration field) {
         checkNotNull(message);
         checkNotNull(field);
         FieldName fieldName = field.name();
-        Expression<? extends Message> messageExpression = message.expression();
         if (field.isNotCollection()) {
-            return new FieldAccess(singularField(messageExpression, fieldName));
+            return singularField(message, fieldName);
         } else if (field.isMap()) {
-            return new FieldAccess(mapField(messageExpression, fieldName));
+            return mapField(message, fieldName);
         } else {
-            return new FieldAccess(repeatedField(messageExpression, fieldName));
+            return repeatedField(message, fieldName);
         }
     }
 
-    public <T> T let(Function<GetterExpression, T> actionGenerator) {
-        return actionGenerator.apply(expression);
+    public static FieldAccess singularField(Expression<?> receiver, FieldName field) {
+        return fromTemplate("%s.get%s()", receiver, field);
     }
 
-    public GetterExpression expression() {
-        return expression;
+    public static FieldAccess repeatedField(Expression<?> receiver, FieldName field) {
+        return fromTemplate("%s.get%sList()", receiver, field);
     }
 
-    @Override
-    public String toString() {
-        return expression.toString();
+    public static FieldAccess mapField(Expression<?> receiver, FieldName field) {
+        return fromTemplate("%s.get%sMap().values()", receiver, field);
+    }
+
+    private static FieldAccess
+    fromTemplate(String template, Expression<?> receiver, FieldName field) {
+        checkNotNull(receiver);
+        checkNotNull(field);
+        String expression = format(template, receiver, field.toCamelCase());
+        return new FieldAccess(expression);
     }
 }

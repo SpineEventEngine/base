@@ -50,7 +50,8 @@ public final class IsSet {
 
     public IsSet(FieldDeclaration field) {
         this.field = checkNotNull(field);
-        this.methodName = format("is%sSet", field.name().toCamelCase());
+        this.methodName = format("is%sSet", field.name()
+                                                 .toCamelCase());
         this.methodBody = methodBody();
     }
 
@@ -77,21 +78,21 @@ public final class IsSet {
     }
 
     private CodeBlock methodBody() {
-        FieldAccess fieldAccess = fieldOfMessage(new MessageAccess(Expression.of(MESSAGE)), field);
+        FieldAccess fieldAccess = fieldOfMessage(MessageAccess.of(MESSAGE), field);
         return field.isCollection()
                ? methodBodyForCollection(fieldAccess)
                : methodBodyForSingular(fieldAccess);
     }
 
     private CodeBlock methodBodyForSingular(FieldAccess fieldAccess) {
-        BooleanExpression expression = singularIsSet(fieldAccess.expression());
+        BooleanExpression expression = singularIsSet(fieldAccess);
         alwaysTrue = expression.isConstant() && expression.isConstantTrue();
         return expression.returnStatement();
     }
 
     private CodeBlock methodBodyForCollection(FieldAccess fieldAccess) {
         BooleanExpression collectionIsNotEmpty = Containers
-                .isEmpty(fieldAccess.expression())
+                .isEmpty(fieldAccess)
                 .negate();
         Expression<?> elementAccess = Expression.of("el");
         BooleanExpression elementIsSet = singularIsSet(elementAccess);
@@ -110,7 +111,8 @@ public final class IsSet {
                                       fieldAccess)
                     .addStatement("$N |= $L", nonDefaultField, elementIsSet)
                     .endControlFlow()
-                    .add(Expression.of(nonDefaultField).returnStatement())
+                    .add(Expression.of(nonDefaultField)
+                                   .returnStatement())
                     .nextControlFlow("else")
                     .add(falseLiteral().returnStatement())
                     .endControlFlow()
@@ -120,7 +122,8 @@ public final class IsSet {
 
     private BooleanExpression singularIsSet(Expression<?> fieldAccess) {
         JavaType javaType = field.isMap()
-                            ? field.valueDeclaration().javaType()
+                            ? field.valueDeclaration()
+                                   .javaType()
                             : field.javaType();
         switch (javaType) {
             case STRING:
