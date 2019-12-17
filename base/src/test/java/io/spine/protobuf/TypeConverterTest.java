@@ -35,6 +35,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
+import io.spine.test.protobuf.TaskStatus;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,10 +43,13 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
+import static io.spine.test.protobuf.TaskStatus.EXECUTING;
+import static io.spine.test.protobuf.TaskStatus.FAILED;
+import static io.spine.test.protobuf.TaskStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("TypeConverter utility class should")
+@DisplayName("`TypeConverter` utility class should")
 class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
     TypeConverterTest() {
@@ -64,79 +68,70 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
 
         @Test
         @DisplayName("arbitrary message to itself")
-        void map_arbitrary_message_to_itself() {
+        void arbitraryMessageToItself() {
             Message message = StringValue.of(newUuid());
             checkMapping(message, message);
         }
 
         @Test
-        @DisplayName("Int32Value to int")
-        void map_Int32Value_to_int() {
+        @DisplayName("`Int32Value` to `int`")
+        void int32ValueToInt() {
             int rawValue = 42;
             Message value = Int32Value.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("Int64Value to int")
-        void map_Int64Value_to_long() {
+        @DisplayName("`Int64Value` to `int`")
+        void int64ValueToLong() {
             long rawValue = 42;
             Message value = Int64Value.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("FloatValue to float")
-        void map_FloatValue_to_float() {
+        @DisplayName("`FloatValue` to `float`")
+        void floatValueToFloat() {
             float rawValue = 42.0f;
             Message value = FloatValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("DoubleValue to double")
-        void map_DoubleValue_to_double() {
+        @DisplayName("`DoubleValue` to `double`")
+        void doubleValueToDouble() {
             double rawValue = 42.0;
             Message value = DoubleValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("BoolValue to boolean")
-        void map_BoolValue_to_boolean() {
+        @DisplayName("`BoolValue` to `boolean`")
+        void boolValueToBoolean() {
             boolean rawValue = true;
             Message value = BoolValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("StringValue to String")
-        void map_StringValue_to_String() {
+        @DisplayName("`StringValue` to `String`")
+        void stringValueToString() {
             String rawValue = "Hello";
             Message value = StringValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("BytesValue to ByteString")
-        void map_BytesValue_to_ByteString() {
+        @DisplayName("`BytesValue` to `ByteString`")
+        void bytesValueToByteString() {
             ByteString rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
             Message value = BytesValue.of(rawValue);
             checkMapping(rawValue, value);
         }
 
         @Test
-        @DisplayName("EnumValue to Enum")
-        void map_EnumValue_to_Enum() {
-            Message value = EnumValue.newBuilder()
-                                     .setName(SUCCESS.name())
-                                     .build();
-            checkMapping(SUCCESS, value);
-        }
-
-        @Test
-        @DisplayName("UInt32 to int")
-        void map_uint32_to_int() {
+        @DisplayName("`UInt32` to `int`")
+        void uint32ToInt() {
             int value = 42;
             UInt32Value wrapped = UInt32Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
@@ -145,8 +140,8 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         @Test
-        @DisplayName("UInt64 to int")
-        void map_uint64_to_long() {
+        @DisplayName("`UInt64` to `int`")
+        void uint64ToLong() {
             long value = 42L;
             UInt64Value wrapped = UInt64Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
@@ -163,6 +158,99 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
             Message restored = AnyPacker.unpack(restoredWrapped);
             assertEquals(protoObject, restored);
         }
+    }
+
+    @Nested
+    @DisplayName("convert `EnumValue` to `Enum`")
+    class ConvertEnumValueToEnum {
+
+        @Test
+        @DisplayName("if the `EnumValue` has a constant name specified")
+        void ifHasName() {
+            EnumValue value = EnumValue.newBuilder()
+                                       .setName(SUCCESS.name())
+                                       .build();
+            checkConverts(value, SUCCESS);
+        }
+
+        @Test
+        @DisplayName("if the `EnumValue` has a constant number specified")
+        void ifHasNumber() {
+            EnumValue value = EnumValue.newBuilder()
+                                       .setNumber(EXECUTING.getNumber())
+                                       .build();
+            checkConverts(value, EXECUTING);
+        }
+
+        @Test
+        @DisplayName("using the constant name if both the name and the number are specified")
+        void preferringConversionWithName() {
+            // Set the different name and number just for the sake of test.
+            EnumValue value = EnumValue.newBuilder()
+                                       .setName(SUCCESS.name())
+                                       .setNumber(FAILED.getNumber())
+                                       .build();
+            checkConverts(value, SUCCESS);
+        }
+
+        private void checkConverts(EnumValue enumValue, Enum<?> expected) {
+            Any wrapped = AnyPacker.pack(enumValue);
+            Object mappedJavaObject =
+                    TypeConverter.toObject(wrapped, expected.getDeclaringClass());
+            assertEquals(expected, mappedJavaObject);
+        }
+    }
+
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
+    @Test
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is passed")
+    void throwOnUnknownName() {
+        String unknownName = "some_name";
+        EnumValue value = EnumValue.newBuilder()
+                                   .setName(unknownName)
+                                   .build();
+        Any wrapped = AnyPacker.pack(value);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+    }
+
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
+    @Test
+    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is passed")
+    void throwOnUnknownNumber() {
+        int unknownValue = 156;
+        EnumValue value = EnumValue.newBuilder()
+                                   .setNumber(unknownValue)
+                                   .build();
+        Any wrapped = AnyPacker.pack(value);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+    }
+
+    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
+    @Test
+    @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
+    void throwOnRawValuesForEnum() {
+        Int32Value enumNumber = Int32Value
+                .newBuilder()
+                .setValue(SUCCESS.getNumber())
+                .build();
+        Any packed = AnyPacker.pack(enumNumber);
+        assertThrows(IllegalArgumentException.class,
+                     () -> TypeConverter.toObject(packed, TaskStatus.class));
+    }
+
+    @Test
+    @DisplayName("convert `Enum` to `EnumValue`")
+    void convertEnumToEnumValue() {
+        Any restoredWrapped = TypeConverter.toAny(SUCCESS);
+        Message restored = AnyPacker.unpack(restoredWrapped);
+        EnumValue expected = EnumValue
+                .newBuilder()
+                .setName(SUCCESS.name())
+                .setNumber(SUCCESS.getNumber())
+                .build();
+        assertEquals(expected, restored);
     }
 
     @Nested
