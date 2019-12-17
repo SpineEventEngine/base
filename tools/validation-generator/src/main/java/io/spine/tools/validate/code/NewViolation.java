@@ -87,11 +87,13 @@ public final class NewViolation implements Expression<ConstraintViolation> {
     }
 
     private void addFieldPath(CodeBlock.Builder builder) {
-        builder.add(".setFieldPath($T.newBuilder()", FieldPath.class);
-        for (String fieldName : field.getFieldNameList()) {
-            builder.add(".addFieldName($S)", fieldName);
+        if (field.getFieldNameCount() > 0) {
+            builder.add(".setFieldPath($T.newBuilder()", FieldPath.class);
+            for (String fieldName : field.getFieldNameList()) {
+                builder.add(".addFieldName($S)", fieldName);
+            }
+            builder.add(".build())");
         }
-        builder.add(".build())");
     }
 
     private void addParams(CodeBlock.Builder builder) {
@@ -117,14 +119,14 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         FieldDeclaration declaration = field.targetDeclaration();
         return new Builder()
                 .setType(declaration.declaringType())
-                .setField(field.fieldPath().getFieldNameList());
+                .setField(field.fieldPath());
     }
 
     public static Builder forMessage(FieldContext context, MessageType type) {
         checkNotNull(context);
         return new Builder()
                 .setType(type)
-                .setField(context.fieldPath().getFieldNameList());
+                .setField(context.fieldPath());
     }
 
     /**
@@ -160,19 +162,8 @@ public final class NewViolation implements Expression<ConstraintViolation> {
             return this;
         }
 
-        public Builder setField(String... fieldNames) {
-            this.field = FieldPath
-                    .newBuilder()
-                    .addAllFieldName(asList(fieldNames))
-                    .build();
-            return this;
-        }
-
-        public Builder setField(List<String> fieldNames) {
-            this.field = FieldPath
-                    .newBuilder()
-                    .addAllFieldName(fieldNames)
-                    .build();
+        public Builder setField(FieldPath field) {
+            this.field = checkNotNull(field);
             return this;
         }
 
