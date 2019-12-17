@@ -27,12 +27,14 @@ import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.MessageAccess;
 import io.spine.tools.validate.code.BooleanExpression;
+import io.spine.tools.validate.code.IsSet;
 
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.element;
 import static io.spine.tools.validate.code.Blocks.empty;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A validation constraint based on a Protobuf option of a message field.
@@ -45,7 +47,8 @@ public final class ConstraintCode implements Logging {
     private final FieldAccess fieldAccess;
     private final Cardinality cardinality;
     private final AccumulateViolations onViolation;
-    private final CodeBlock onNoViolation;
+    private final FieldDeclaration field;
+    private final boolean onlyIfSet;
 
     private ConstraintCode(Builder builder) {
         this.declarations = builder.declarations;
@@ -54,14 +57,32 @@ public final class ConstraintCode implements Logging {
         this.fieldAccess = builder.fieldAccess();
         this.cardinality = builder.cardinality();
         this.onViolation = builder.onViolation;
-        this.onNoViolation = builder.onNoViolation;
+        this.onlyIfSet = builder.onlyIfSet;
+        this.field = builder.field;
     }
 
     public CodeBlock compile() {
+        IsSet isSet = new IsSet(field);
+        CodeBlock validationCode = compileValidation(isSet);
+        MessageAccess messageAccess = fieldAccess
+                .containingMessage()
+                .orElseThrow(
+                        () -> newIllegalStateException(
+                                "Cannot access receiver message of `%s`.",
+                                fieldAccess
+                        )
+                );
+        BooleanExpression fieldIsSet = isSet.invocation(messageAccess);
+        return onlyIfSet
+               ? fieldIsSet.ifTrue(validationCode).toCode()
+               : validationCode;
+    }
+
+    private CodeBlock compileValidation(IsSet fieldIsSet) {
         if (cardinality == Cardinality.SINGULAR) {
-            return compileSingular(fieldAccess);
+            return compileSingular(fieldIsSet, fieldAccess);
         } else {
-            CodeBlock elementValidation = compileSingular(element);
+            CodeBlock elementValidation = compileSingular(fieldIsSet, element);
             return CodeBlock
                     .builder()
                     .beginControlFlow("$L.forEach($N ->", fieldAccess, element.value())
@@ -71,19 +92,24 @@ public final class ConstraintCode implements Logging {
         }
     }
 
-    private CodeBlock compileSingular(FieldAccess field) {
+    private CodeBlock compileSingular(IsSet fieldIsSet, FieldAccess field) {
         CodeBlock ifViolation = onViolation.apply(createViolation.apply(field))
                                            .toCode();
         BooleanExpression condition = conditionCheck.apply(field);
+        if (onlyIfSet) {
+            BooleanExpression valueIsPresent = fieldIsSet.valueIsPresent(field);
+            condition = valueIsPresent.and(condition);
+        }
         return condition.isConstant()
                ? evaluateConstantCondition(condition, ifViolation)
                : evaluate(declarations.apply(field), condition, ifViolation);
     }
 
-    private CodeBlock evaluate(CodeBlock declarations, BooleanExpression condition,
-                               CodeBlock onViolation) {
+    private static CodeBlock evaluate(CodeBlock declarations,
+                                      BooleanExpression condition,
+                                      CodeBlock onViolation) {
         CodeBlock check = condition.ifTrue(onViolation)
-                                   .orElse(onNoViolation);
+                                   .toCode();
         return CodeBlock.builder()
                         .add(declarations)
                         .add(check)
@@ -96,7 +122,7 @@ public final class ConstraintCode implements Logging {
             _warn().log("Violation is always produced as validation check is a constant.");
             return onViolation;
         } else {
-            return onNoViolation;
+            return empty();
         }
     }
 
@@ -120,8 +146,8 @@ public final class ConstraintCode implements Logging {
         private Check conditionCheck;
         private CreateViolation createViolation;
         private AccumulateViolations onViolation;
-        private CodeBlock onNoViolation = empty();
         private boolean forceSingular = false;
+        private boolean onlyIfSet = false;
 
         private Builder(FieldDeclaration field) {
             this.field = checkNotNull(field);
@@ -152,13 +178,13 @@ public final class ConstraintCode implements Logging {
             return this;
         }
 
-        public Builder onNoViolation(CodeBlock onNoViolation) {
-            this.onNoViolation = checkNotNull(onNoViolation);
+        public Builder validateAsCollection() {
+            this.forceSingular = true;
             return this;
         }
 
-        public Builder validateAsCollection() {
-            this.forceSingular = true;
+        public Builder validateOnlyIfSet() {
+            this.onlyIfSet = true;
             return this;
         }
 

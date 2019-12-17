@@ -28,6 +28,7 @@ import io.spine.validate.option.Distinct;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.Goes;
 import io.spine.validate.option.Required;
+import io.spine.validate.option.Valid;
 import io.spine.validate.option.ValidatingOptionFactory;
 
 import java.util.Set;
@@ -70,7 +71,11 @@ final class FieldConstraints {
             case ENUM:
                 return objectLike(ValidatingOptionFactory::forEnum, field);
             case MESSAGE:
-                return objectLike(ValidatingOptionFactory::forMessage, field);
+                return ConstraintsFrom
+                        .factories(ValidatingOptionFactory::forMessage)
+                        .and(Required.create(false), Goes.create(), new Valid())
+                        .andForCollections(Distinct.create())
+                        .forField(field);
             default:
                 log.atWarning().log("Unknown field type `%s` at `%s`.", type, declaration);
                 return Stream.of();

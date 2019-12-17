@@ -84,7 +84,7 @@ public final class IsSet {
     }
 
     private CodeBlock methodBodyForSingular(FieldAccess fieldAccess) {
-        BooleanExpression expression = singularIsSet(fieldAccess);
+        BooleanExpression expression = valueIsPresent(fieldAccess);
         alwaysTrue = expression.isConstant() && expression.isConstantTrue();
         return expression.returnStatement();
     }
@@ -94,7 +94,7 @@ public final class IsSet {
                 .isEmpty(fieldAccess)
                 .negate();
         Expression<?> elementAccess = Expression.of("el");
-        BooleanExpression elementIsSet = singularIsSet(elementAccess);
+        BooleanExpression elementIsSet = valueIsPresent(elementAccess);
         if (elementIsSet.isConstant()) {
             checkState(elementIsSet.isConstantTrue(), "Field `%s` can never be non-default.");
             return collectionIsNotEmpty.returnStatement();
@@ -119,7 +119,8 @@ public final class IsSet {
         }
     }
 
-    private BooleanExpression singularIsSet(Expression<?> fieldAccess) {
+
+    public BooleanExpression valueIsPresent(Expression<?> valueAccess) {
         JavaType javaType = field.isMap()
                             ? field.valueDeclaration()
                                    .javaType()
@@ -128,12 +129,12 @@ public final class IsSet {
             case STRING:
             case BYTE_STRING:
                 return Containers
-                        .isEmpty(fieldAccess)
+                        .isEmpty(valueAccess)
                         .negate();
             case ENUM:
             case MESSAGE:
                 return Containers
-                        .isDefault(fieldAccess)
+                        .isDefault(valueAccess)
                         .negate();
             case BOOLEAN:
             case INT:

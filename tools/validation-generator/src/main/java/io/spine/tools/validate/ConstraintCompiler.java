@@ -72,6 +72,7 @@ import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static io.spine.tools.validate.field.Containers.isEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.validate.diags.ViolationText.errorMessage;
+import static java.util.stream.Collectors.toList;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -123,6 +124,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
             append(constraintCode(field)
                            .conditionCheck(check)
                            .createViolation(violation)
+                           .validateOnlyIfSet()
                            .build());
         }
     }
@@ -131,7 +133,6 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     public void visitRequired(RequiredConstraint constraint) {
         FieldDeclaration field = constraint.field();
         IsSet fieldIsSet = new IsSet(field);
-        generatedMethods.add(fieldIsSet.method());
         Check messageIsNotSet = fieldAccess -> fieldIsSet.invocation(messageAccess)
                                                          .negate();
         CreateViolation violation = fieldAccess -> violation(constraint, field);
@@ -154,6 +155,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         append(constraintCode(field)
                        .conditionCheck(check)
                        .createViolation(violation)
+                       .validateOnlyIfSet()
                        .build());
     }
 
@@ -184,8 +186,6 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         FieldDeclaration pairedField = type.field(pairedFieldName);
         IsSet fieldIsSet = new IsSet(field);
         IsSet pairedIsSet = new IsSet(pairedField);
-        generatedMethods.add(fieldIsSet.method());
-        generatedMethods.add(pairedIsSet.method());
         Check check = f -> fieldIsSet.invocation(messageAccess)
                                      .and(pairedIsSet.invocation(messageAccess).negate());
         CreateViolation createViolation = f -> violation(constraint, field);
@@ -220,6 +220,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                        .preparingDeclarations(nestedViolations)
                        .conditionCheck(check)
                        .createViolation(violation)
+                       .validateOnlyIfSet()
                        .build());
     }
 
@@ -228,7 +229,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         ImmutableSet<Alternative> alternatives = constraint.alternatives();
         BooleanExpression fieldsAreSet = alternatives
                 .stream()
-                .map(this::matches)
+                .map(ConstraintCompiler::matches)
                 .reduce(BooleanExpression::or)
                 .orElseThrow(
                         () -> new IllegalStateException("`(required_field)` must not be empty.")
@@ -247,13 +248,12 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         compiledConstraints.add(check);
     }
 
-    private BooleanExpression matches(Alternative alternative) {
+    private static BooleanExpression matches(Alternative alternative) {
         BooleanExpression alternativeMatched =
                 alternative
                         .fields()
                         .stream()
                         .map(IsSet::new)
-                        .peek(isSet -> generatedMethods.add(isSet.method()))
                         .reduce(trueLiteral(),
                                 (condition, isSet) ->
                                         condition.and(isSet.invocation(messageAccess)),
@@ -267,8 +267,15 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
 
     @Override
     public ImmutableSet<MethodSpec> translate() {
+        List<MethodSpec> isSetMethods = type
+                .fields()
+                .stream()
+                .map(IsSet::new)
+                .map(IsSet::method)
+                .collect(toList());
         ImmutableSet<MethodSpec> methods = generatedMethods
                 .add(buildValidate())
+                .addAll(isSetMethods)
                 .build();
         return methods;
     }

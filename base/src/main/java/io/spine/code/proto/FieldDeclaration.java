@@ -146,8 +146,8 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Obtains fully-qualified name of the Java class that corresponds to the declared type
-     * of the field.
+     * Obtains fully-qualified canonical name of the Java class that corresponds to the declared
+     * type of the field.
      *
      * <p>If the field is {@code repeated}, obtains the name of the elements.
      *
@@ -162,11 +162,14 @@ public final class FieldDeclaration {
     private static String javaTypeName(FieldDeclaration declaration) {
         FieldDescriptor.Type fieldType = declaration.field.getType();
         if (fieldType == MESSAGE) {
-            return declaration.messageClassName();
+            MessageType messageType =
+                    new MessageType(declaration.descriptor().getMessageType());
+            return messageType.javaClassName().canonicalName();
         }
 
         if (fieldType == ENUM) {
-            return declaration.enumClassName();
+            EnumType enumType = EnumType.create(declaration.field.getEnumType());
+            return enumType.javaClassName().canonicalName();
         }
 
         return ScalarType.javaTypeName(declaration.field
@@ -188,11 +191,6 @@ public final class FieldDeclaration {
                     "Cannot find a type %s in the list of known types:%n%s", typeName, allTypeUrls
             );
         }
-    }
-
-    private String enumClassName() {
-        EnumType enumType = EnumType.create(field.getEnumType());
-        return enumType.javaClassName().value();
     }
 
     /**

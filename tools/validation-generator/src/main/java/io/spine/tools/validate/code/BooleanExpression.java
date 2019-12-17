@@ -108,20 +108,20 @@ public final class BooleanExpression
 
     public BooleanExpression and(BooleanExpression other) {
         if (this.isConstant()) {
-            return this.isConstantTrue() ? trueLiteral() : other;
+            return this.isConstantTrue() ? other : falseLiteral();
         }
         if (other.isConstant()) {
-            return other.isConstantTrue() ? trueLiteral() : this;
+            return other.isConstantTrue() ? this : falseLiteral();
         }
         return fromCode("($L && $L)", this, other);
     }
 
     public BooleanExpression or(BooleanExpression other) {
         if (this.isConstant()) {
-            return this.isConstantTrue() ? other : falseLiteral();
+            return this.isConstantTrue() ? trueLiteral() : other;
         }
         if (other.isConstant()) {
-            return other.isConstantTrue() ? this : falseLiteral();
+            return other.isConstantTrue() ? trueLiteral() : this;
         }
         return fromCode("($L || $L)", this, other);
     }
