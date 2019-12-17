@@ -25,11 +25,13 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.option.Distinct;
+import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.Goes;
 import io.spine.validate.option.Required;
-import io.spine.validate.option.Valid;
 import io.spine.validate.option.ValidatingOptionFactory;
 
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,56 +50,52 @@ final class FieldConstraints {
         // Assembles many options and option factories for all field types.
     static Stream<Constraint> of(FieldContext field) {
         checkNotNull(field);
-        Required required = Required.create(false);
-        Valid validate = new Valid();
-        Distinct distinct = Distinct.create();
-        Goes goes = Goes.create();
         FieldDeclaration declaration = field.targetDeclaration();
         JavaType type = declaration.javaType();
         switch (type) {
             case INT:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forInt)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return primitive(ValidatingOptionFactory::forInt, field);
             case LONG:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forLong)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return primitive(ValidatingOptionFactory::forLong, field);
             case FLOAT:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forFloat)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return primitive(ValidatingOptionFactory::forFloat, field);
             case DOUBLE:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forDouble)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return primitive(ValidatingOptionFactory::forDouble, field);
             case BOOLEAN:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forBoolean)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return primitive(ValidatingOptionFactory::forBoolean, field);
             case STRING:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forString)
-                                      .and(required, goes)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return objectLike(ValidatingOptionFactory::forString, field);
             case BYTE_STRING:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forByteString)
-                                      .and(required, goes)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return objectLike(ValidatingOptionFactory::forByteString, field);
             case ENUM:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forEnum)
-                                      .and(required, goes)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return objectLike(ValidatingOptionFactory::forEnum, field);
             case MESSAGE:
-                return ConstraintsFrom.factories(ValidatingOptionFactory::forMessage)
-                                      .and(required, goes, validate)
-                                      .andForCollections(distinct)
-                                      .forField(field);
+                return objectLike(ValidatingOptionFactory::forMessage, field);
             default:
                 log.atWarning().log("Unknown field type `%s` at `%s`.", type, declaration);
                 return Stream.of();
         }
+    }
+
+    private static Stream<Constraint>
+    primitive(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector,
+              FieldContext context) {
+        return ConstraintsFrom
+                .factories(selector)
+                .andForCollections(Required.create(false),
+                                   Goes.create(),
+                                   Distinct.create())
+                .forField(context);
+
+    }
+
+    private static Stream<Constraint>
+    objectLike(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector,
+               FieldContext context) {
+        return ConstraintsFrom
+                .factories(selector)
+                .and(Required.create(false), Goes.create())
+                .andForCollections(Distinct.create())
+                .forField(context);
     }
 }
