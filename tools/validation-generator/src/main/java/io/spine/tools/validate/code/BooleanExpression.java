@@ -34,7 +34,7 @@ public final class BooleanExpression
     private static final long serialVersionUID = 0L;
 
     private static final BooleanExpression TRUE = new BooleanExpression(true);
-    private static final BooleanExpression FALSE = new BooleanExpression(true);
+    private static final BooleanExpression FALSE = new BooleanExpression(false);
 
     private final @Nullable Boolean literalValue;
 
