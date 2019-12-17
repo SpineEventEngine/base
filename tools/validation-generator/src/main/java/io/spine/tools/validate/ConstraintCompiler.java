@@ -138,6 +138,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         append(constraintCode(field)
                        .conditionCheck(messageIsNotSet)
                        .createViolation(violation)
+                       .validateAsCollection()
                        .build());
     }
 
@@ -236,6 +237,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         Expression<ConstraintViolation> violation = NewViolation
                 .forMessage(fieldContext, type)
                 .setMessage("Required fields are not set. Must match pattern `%s`.")
+                .setField(fieldContext.fieldPath())
                 .addParam(constraint.optionValue())
                 .build();
         CodeBlock check = condition.ifTrue(violationAccumulator
