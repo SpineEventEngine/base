@@ -34,7 +34,6 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.element;
 import static io.spine.tools.validate.code.Blocks.empty;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A validation constraint based on a Protobuf option of a message field.
@@ -62,23 +61,7 @@ public final class ConstraintCode implements Logging {
     }
 
     public CodeBlock compile() {
-        IsSet isSet = new IsSet(field);
-        CodeBlock validationCode = compileValidation(isSet);
-        MessageAccess messageAccess = fieldAccess
-                .containingMessage()
-                .orElseThrow(
-                        () -> newIllegalStateException(
-                                "Cannot access receiver message of `%s`.",
-                                fieldAccess
-                        )
-                );
-        BooleanExpression fieldIsSet = isSet.invocation(messageAccess);
-        return onlyIfSet
-               ? fieldIsSet.ifTrue(validationCode).toCode()
-               : validationCode;
-    }
-
-    private CodeBlock compileValidation(IsSet fieldIsSet) {
+        IsSet fieldIsSet = new IsSet(field);
         if (cardinality == Cardinality.SINGULAR) {
             return compileSingular(fieldIsSet, fieldAccess);
         } else {

@@ -23,9 +23,6 @@ package io.spine.tools.validate;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.validate.code.CodeExpression;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -34,13 +31,10 @@ public final class FieldAccess extends CodeExpression<Object> {
 
     private static final long serialVersionUID = 0L;
 
-    public static final FieldAccess element = new FieldAccess("element", null);
+    public static final FieldAccess element = new FieldAccess("element");
 
-    private final @Nullable MessageAccess message;
-
-    private FieldAccess(String value, @Nullable MessageAccess message) {
+    private FieldAccess(String value) {
         super(value);
-        this.message = message;
     }
 
     public static FieldAccess fieldOfMessage(MessageAccess message, FieldDeclaration field) {
@@ -54,10 +48,6 @@ public final class FieldAccess extends CodeExpression<Object> {
         } else {
             return repeatedField(message, fieldName);
         }
-    }
-
-    public Optional<MessageAccess> containingMessage() {
-        return Optional.ofNullable(message);
     }
 
     private static FieldAccess singularField(MessageAccess receiver, FieldName field) {
@@ -77,6 +67,6 @@ public final class FieldAccess extends CodeExpression<Object> {
         checkNotNull(receiver);
         checkNotNull(field);
         String expression = format(template, receiver, field.toCamelCase());
-        return new FieldAccess(expression, receiver);
+        return new FieldAccess(expression);
     }
 }
