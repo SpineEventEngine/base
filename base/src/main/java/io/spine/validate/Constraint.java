@@ -24,13 +24,34 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 
-// TODO:2019-12-05:dmytro.dashenkov: Document.
+/**
+ * A validation rule attributed to a message type.
+ *
+ * <p>A {@code Constraint} may cover the values of one or more fields of a message.
+ */
 @Immutable
 public interface Constraint {
 
+    /**
+     * The associated message type.
+     */
     MessageType targetType();
 
+    /**
+     * Produces an error message for the given field validation context.
+     *
+     * <p>Implementations may choose to ignore the field context or to embed its parts into
+     * the error message.
+     *
+     * @param field the validated field
+     */
     String errorMessage(FieldContext field);
 
+    /**
+     * Accepts the given {@link ConstraintTranslator}.
+     *
+     * <p>{@code Constraint} and {@code ConstraintTranslator} implement the visitor pattern.
+     * Implementations should call the appropriate method of {@code ConstraintTranslator}.
+     */
     void accept(ConstraintTranslator<?> visitor);
 }
