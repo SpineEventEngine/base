@@ -36,8 +36,13 @@ import io.spine.validate.option.ValidateConstraint;
  * a translator may perform validation and output any found {@linkplain ConstraintViolation
  * violations}. Another example would be printing validation code in a target language (e.g. Java).
  *
+ * <p>A instance of {@code ConstraintTranslator} should only be used for a single type of messages.
+ * A translator need not be thread-safe. An instance of translator is, most likely, a mutable
+ * object. If any resources must be closed when finishing the translation job, {@link #translate()}
+ * is the right place to do so.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Translator_(computing)">
- *         Definition of "Translator"</a>
+ *         Definition of a "Translator"</a>
  */
 @Internal
 public interface ConstraintTranslator<T> {
@@ -56,5 +61,8 @@ public interface ConstraintTranslator<T> {
 
     void visitRequiredField(RequiredFieldConstraint constraint);
 
+    /**
+     * Finalizes the translation for a message type.
+     */
     T translate();
 }

@@ -47,6 +47,15 @@ final class ConstraintsFrom {
     private final List<FieldValidatingOption<?>> options = new ArrayList<>();
     private final List<FieldValidatingOption<?>> collectionOptions = new ArrayList<>();
 
+    /**
+     * Creates a new builder by obtaining all the constraints from {@link ValidatingOptionFactory}
+     * implementations matched by the given {@code selector}.
+     *
+     * @param selector
+     *         a function which accepts a {@link ValidatingOptionFactory} and uses it to
+     *         create validation option for a certain field type
+     * @return new {@code ConstraintsFrom}
+     */
     static ConstraintsFrom
     factories(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector) {
         ImmutableSet<FieldValidatingOption<?>> options = fromFactories(selector);
@@ -55,19 +64,30 @@ final class ConstraintsFrom {
         return result;
     }
 
+    /**
+     * Add constraints produced by the given options.
+     */
     ConstraintsFrom and(FieldValidatingOption<?>... options) {
         this.options.addAll(ImmutableList.copyOf(options));
         return this;
     }
 
+    /**
+     * Add constraints produced by the given options only if the target given is {@code repeated}
+     * or a {@code map}.
+     */
     ConstraintsFrom andForCollections(FieldValidatingOption<?>... options) {
         collectionOptions.addAll(ImmutableList.copyOf(options));
         return this;
     }
 
+    /**
+     * Builds a {@code Stream} of {@link Constraint}s assembled for the given {@code field}.
+     */
     Stream<Constraint> forField(FieldContext field) {
         Stream<Constraint> constraints = toConstraints(options, field);
-        if (field.targetDeclaration().isCollection()) {
+        if (field.targetDeclaration()
+                 .isCollection()) {
             Stream<Constraint> collectionConstraints = toConstraints(collectionOptions, field);
             constraints = concat(constraints, collectionConstraints);
         }

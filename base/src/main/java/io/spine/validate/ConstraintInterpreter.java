@@ -57,6 +57,11 @@ import static io.spine.validate.MessageValue.atTopLevel;
 import static io.spine.validate.MessageValue.nestedIn;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Interprets validation constraints by applying them to a given message value.
+ *
+ * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
+ */
 final class ConstraintInterpreter implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
@@ -168,6 +173,12 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         violation.ifPresent(violations::add);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Obtains the resulting {@link ValidationError} or an {@code Optional.empty()} if
+     * the message value is valid.
+     */
     @Override
     public Optional<ValidationError> translate() {
         if (violations.isEmpty()) {

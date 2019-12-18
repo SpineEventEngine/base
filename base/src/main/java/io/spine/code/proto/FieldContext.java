@@ -96,6 +96,13 @@ public final class FieldContext {
         return new FieldContext(this, child);
     }
 
+    /**
+     * Obtains {@code FieldContext} for the specified child.
+     *
+     * @param child
+     *         the child declaration
+     * @return the child declaration context
+     */
     public FieldContext forChild(FieldDeclaration child) {
         return forChild(child.descriptor());
     }
@@ -109,6 +116,11 @@ public final class FieldContext {
         return checkNotNull(target, "Empty context cannot have a target.");
     }
 
+    /**
+     * Obtains target of this context as a {@link FieldDeclaration}.
+     *
+     * @return the target declaration
+     */
     public FieldDeclaration targetDeclaration() {
         FieldDescriptor target = target();
         return new FieldDeclaration(target);

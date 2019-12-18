@@ -37,6 +37,9 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A factory of field validation {@link Constraint}s.
+ */
 final class FieldConstraints {
 
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
@@ -47,6 +50,13 @@ final class FieldConstraints {
     private FieldConstraints() {
     }
 
+    /**
+     * Assembles {@link Constraint}s for a given field.
+     *
+     * @param field
+     *         field to validate
+     * @return validation constraints
+     */
     @SuppressWarnings("OverlyComplexMethod")
         // Assembles many options and option factories for all field types.
     static Stream<Constraint> of(FieldContext field) {

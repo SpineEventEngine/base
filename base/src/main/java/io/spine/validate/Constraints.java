@@ -29,6 +29,9 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Validation constraints of a single Protobuf message type.
+ */
 public final class Constraints {
 
     private final ImmutableList<Constraint> constraints;
@@ -37,10 +40,19 @@ public final class Constraints {
         this.constraints = constraints;
     }
 
+    /**
+     * Assembles constraints from the given message type.
+     */
     public static Constraints of(MessageType type) {
         return of(type, FieldContext.empty());
     }
 
+    /**
+     * Assembles constraints from the given message type in the given field context.
+     *
+     * <p>The field context is not empty if the constraints must consider messages values of a field
+     * rather than independent messages.
+     */
     public static Constraints of(MessageType type, FieldContext context) {
         checkNotNull(type);
         checkNotNull(context);
@@ -63,6 +75,17 @@ public final class Constraints {
                 .flatMap(FieldConstraints::of);
     }
 
+    /**
+     * Feeds these constraints to the given {@link ConstraintTranslator} and obtains the result of
+     * translation.
+     *
+     * @param constraintTranslator
+     *         the {@code ConstraintTranslator} which reduces the constrains to
+     *         a value of {@code T}
+     * @param <T>
+     *         type of the translation result
+     * @return the translation result
+     */
     public <T> T runThrough(ConstraintTranslator<T> constraintTranslator) {
         constraints.forEach(c -> c.accept(constraintTranslator));
         return constraintTranslator.translate();
