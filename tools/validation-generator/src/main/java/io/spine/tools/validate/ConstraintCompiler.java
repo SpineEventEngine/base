@@ -76,15 +76,26 @@ import static java.util.stream.Collectors.toList;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * A {@link ConstraintTranslator} which generates Java code for message validation.
+ *
+ * <p>The compiler operates under the assumption that the generated code is embedded into
+ * the message class. The result of the compilation is a set of methods to be added to a single
+ * nesting class. The nesting class need not be the message class. It might be a class nested inside
+ * the message class. Note that some methods are declared as {@code static}. Thus, they cannot be
+ * placed into an inner (non-static) class.
+ */
 final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> {
 
     private static final String VIOLATIONS = "violations";
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listBuilderOfViolations =
-            new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {}.getType();
+            new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {
+            }.getType();
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listOfViolations =
-            new TypeToken<List<ConstraintViolation>>() {}.getType();
+            new TypeToken<List<ConstraintViolation>>() {
+            }.getType();
     private static final MessageAccess messageAccess = MessageAccess.of("msg");
 
     private final List<CodeBlock> compiledConstraints;
@@ -94,6 +105,25 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     private final String methodName;
     private final MessageType type;
 
+    /**
+     * Creates a new compiler.
+     *
+     * <p>The {@code methodName} is the name of the method which must be generated. The method:
+     * <ol>
+     *     <li>must be {@code static};
+     *     <li>must accept the validated message as the only argument;
+     *     <li>must return an {@link ImmutableList} of {@link ConstraintViolation}s;
+     *     <li>may be declared {@code private}.
+     * </ol>
+     *
+     * <p>The method generated for the {@code methodName} is the de facto public API for validating
+     * the message {@code type}.
+     *
+     * @param methodName
+     *         the expected name of the message validating method
+     * @param type
+     *         the type of the validated message
+     */
     ConstraintCompiler(String methodName, MessageType type) {
         this.methodName = checkNotEmptyOrBlank(methodName);
         this.type = checkNotNull(type);
@@ -111,9 +141,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         checkRange(constraint, field, Limit.UPPER);
     }
 
-    private void checkRange(RangedConstraint<?> constraint,
-                                                    FieldDeclaration field,
-                                                    Limit limit) {
+    private void checkRange(RangedConstraint<?> constraint, FieldDeclaration field, Limit limit) {
         Range<ComparableNumber> range = constraint.range();
         if (limit.boundExists(range)) {
             Check check = fieldAccess -> fromCode("$L $L$L $L", fieldAccess,
@@ -236,6 +264,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                         () -> new IllegalStateException("`(required_field)` must not be empty.")
                 );
         BooleanExpression condition = fieldsAreSet.negate();
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates in generated code.
         Expression<ConstraintViolation> violation = NewViolation
                 .forMessage(fieldContext, type)
                 .setMessage("Required fields are not set. Must match pattern `%s`.")
