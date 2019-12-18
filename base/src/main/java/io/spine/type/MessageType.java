@@ -63,6 +63,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         super(descriptor, true);
     }
 
+    /**
+     * Obtains the type of the given message.
+     */
     public static MessageType of(Message message) {
         checkNotNull(message);
         return new MessageType(message.getDescriptorForType());
@@ -259,6 +262,15 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return result;
     }
 
+    /**
+     * Finds a {@linkplain FieldDeclaration declaration} of a field by the field name.
+     *
+     * <p>Throws an {@link IllegalArgumentException} if a field with such a name is not declared in
+     * this message type.
+     *
+     * @param name the name of a Protobuf field
+     * @return the field declaration
+     */
     public FieldDeclaration field(String name) {
         FieldDescriptor fieldDescriptor = descriptor()
                 .findFieldByName(name);

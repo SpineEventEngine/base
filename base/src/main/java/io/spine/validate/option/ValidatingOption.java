@@ -44,5 +44,8 @@ interface ValidatingOption<@ImmutableTypeParameter T,
                            @ImmutableTypeParameter K extends GenericDescriptor>
         extends Option<T, K> {
 
+    /**
+     * Creates a {@link Constraint} for the given field based on the value of the option.
+     */
     Constraint constraintFor(C field);
 }

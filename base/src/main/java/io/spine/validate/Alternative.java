@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
- * Combinations of required fields found in the message value.
+ * A combination of required fields found in the message value.
  */
 @Immutable
 public final class Alternative {
@@ -59,6 +59,18 @@ public final class Alternative {
         this.fields = fields;
     }
 
+    /**
+     * Parses field combinations from the given raw input.
+     *
+     * <p>Fields may be combined via `{@code |}` ("or") or `{@code &}` ("and") operators. The "and"
+     * operator always has a priority. Brackets are not supported.
+     *
+     * @param notation
+     *         the field expression
+     * @param type
+     *         the type which declares the fields
+     * @return a set of parsed alternatives
+     */
     public static ImmutableSet<Alternative> parse(String notation, MessageType type) {
         ImmutableSet.Builder<Alternative> alternatives = ImmutableSet.builder();
         String whiteSpaceRemoved = WHITESPACE.matcher(notation)
@@ -79,6 +91,9 @@ public final class Alternative {
         return new Alternative(fields);
     }
 
+    /**
+     * Obtains fields joined in this combination.
+     */
     public ImmutableSet<FieldDeclaration> fields() {
         return fields;
     }
