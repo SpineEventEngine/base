@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.annotation.Internal;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
 import io.spine.validate.option.PatternConstraint;
@@ -44,7 +43,6 @@ import io.spine.validate.option.ValidateConstraint;
  * @see <a href="https://en.wikipedia.org/wiki/Translator_(computing)">
  *         Definition of a "Translator"</a>
  */
-@Internal
 public interface ConstraintTranslator<T> {
 
     void visitRange(RangedConstraint<?> constraint);
