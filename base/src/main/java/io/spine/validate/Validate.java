@@ -51,6 +51,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * This class provides general validation routines.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // Many deprecated methods will be removed in future.
 public final class Validate {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
