@@ -33,14 +33,17 @@ import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import io.spine.annotation.Internal;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
@@ -57,11 +60,13 @@ import static io.spine.protobuf.AnyPacker.unpack;
  *         the official document</a>.
  *     <li>{@linkplain Enum Java Enum} types - the passed {@link Any} is unpacked into the {@link
  *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
- *         EnumValue#getName() name}.
+ *         EnumValue#getName() name} or {@linkplain EnumValue#getNumber() number}.
  * </ul>
  */
 @Internal
 public final class TypeConverter {
+
+    private static final TypeUrl ENUM_VALUE_TYPE_URL = TypeUrl.of(EnumValue.class);
 
     /** Prevents instantiation of this utility class. */
     private TypeConverter() {
@@ -78,6 +83,7 @@ public final class TypeConverter {
     public static <T> T toObject(Any message, Class<T> target) {
         checkNotNull(message);
         checkNotNull(target);
+        checkNotRawEnum(message, target);
         MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
         Message genericMessage = unpack(message);
         T result = caster.convert(genericMessage);
@@ -132,6 +138,25 @@ public final class TypeConverter {
     }
 
     /**
+     * Makes sure no incorrectly packed enum values are passed to the message caster.
+     *
+     * <p>Currently, the enum values can only be converted from the {@link EnumValue} proto type.
+     * All other enum representations, including plain strings and numbers, are not supported.
+     */
+    private static void checkNotRawEnum(Any message, Class<?> target) {
+        if (!target.isEnum()) {
+            return;
+        }
+        String typeUrl = message.getTypeUrl();
+        String enumValueTypeUrl = ENUM_VALUE_TYPE_URL.value();
+        checkArgument(
+                enumValueTypeUrl.equals(typeUrl),
+                "Currently the conversion of enum types packed as `%s` is not supported. " +
+                        "Please make sure the enum value is wrapped with `%s` on the calling site.",
+                typeUrl, enumValueTypeUrl);
+    }
+
+    /**
      * The {@link Function} performing the described type conversion.
      */
     private abstract static class MessageCaster<M extends Message, T> extends Converter<M, T> {
@@ -145,7 +170,7 @@ public final class TypeConverter {
                 caster = new BytesCaster();
             } else if (Enum.class.isAssignableFrom(cls)) {
                 @SuppressWarnings("unchecked") // Checked at runtime.
-                Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
+                Class<? extends Enum<?>> enumCls = (Class<? extends Enum<?>>) cls;
                 caster = new EnumCaster(enumCls);
             } else {
                 caster = new PrimitiveTypeCaster<>();
@@ -188,31 +213,60 @@ public final class TypeConverter {
         }
     }
 
-    private static final class EnumCaster extends MessageCaster<EnumValue, Enum> {
+    private static final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
 
+        @SuppressWarnings("rawtypes") // Needed to be able to pass the value to `Enum.valueOf(...)`.
         private final Class<? extends Enum> type;
 
-        EnumCaster(Class<? extends Enum> type) {
+        EnumCaster(Class<? extends Enum<?>> type) {
             super();
             this.type = type;
         }
 
         @Override
-        protected Enum toObject(EnumValue input) {
+        protected Enum<?> toObject(EnumValue input) {
             String name = input.getName();
-            @SuppressWarnings("unchecked") // Checked at runtime.
-            Enum value = Enum.valueOf(type, name);
-            return value;
+            if (name.isEmpty()) {
+                int number = input.getNumber();
+                return convertByNumber(number);
+            } else {
+                return convertByName(name);
+            }
+        }
+
+        private Enum<?> convertByNumber(int number) {
+            Enum<?>[] constants = type.getEnumConstants();
+            for (Enum<?> constant : constants) {
+                ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
+                int valueNumber = asProtoEnum.getNumber();
+                if (number == valueNumber) {
+                    return constant;
+                }
+            }
+            throw unknownNumber(number);
+        }
+
+        @SuppressWarnings("unchecked") // Checked at runtime.
+        private Enum<?> convertByName(String name) {
+            return Enum.valueOf(type, name);
         }
 
         @Override
-        protected EnumValue toMessage(Enum input) {
+        protected EnumValue toMessage(Enum<?> input) {
             String name = input.name();
+            ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) input;
             EnumValue value = EnumValue
                     .newBuilder()
                     .setName(name)
+                    .setNumber(asProtoEnum.getNumber())
                     .build();
             return value;
+        }
+
+        private IllegalArgumentException unknownNumber(int number) {
+            throw newIllegalArgumentException(
+                    "Could not find a enum value of type `%s` for number `%d`.",
+                    type.getCanonicalName(), number);
         }
     }
 
