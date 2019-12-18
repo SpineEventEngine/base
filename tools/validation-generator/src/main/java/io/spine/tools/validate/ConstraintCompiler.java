@@ -164,10 +164,11 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         FieldDeclaration field = constraint.field();
         String duplicatesName = "duplicates" + field.name().toCamelCase();
         Function<FieldAccess, CodeBlock> duplicates =
-                fieldAccess -> CodeBlock.of("Set<?> $N = $T.findIn($L);",
-                                duplicatesName,
-                                Duplicates.class,
-                                fieldAccess);
+                fieldAccess -> CodeBlock.of("$T<?> $N = $T.findIn($L);",
+                                            Set.class,
+                                            duplicatesName,
+                                            Duplicates.class,
+                                            fieldAccess);
         Check check = fieldAccess -> isEmpty(Expression.of(duplicatesName)).negate();
         CreateViolation violation = fieldAccess -> violation(constraint, field);
         append(constraintCode(field)

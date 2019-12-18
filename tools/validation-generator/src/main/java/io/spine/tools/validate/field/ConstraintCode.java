@@ -34,6 +34,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.element;
 import static io.spine.tools.validate.code.Blocks.empty;
+import static java.lang.System.lineSeparator;
 
 /**
  * A validation constraint based on a Protobuf option of a message field.
@@ -95,6 +96,7 @@ public final class ConstraintCode implements Logging {
                                    .toCode();
         return CodeBlock.builder()
                         .add(declarations)
+                        .add(lineSeparator())
                         .add(check)
                         .build();
     }
