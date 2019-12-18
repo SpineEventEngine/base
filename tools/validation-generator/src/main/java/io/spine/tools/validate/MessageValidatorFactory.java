@@ -20,8 +20,6 @@
 
 package io.spine.tools.validate;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -36,10 +34,10 @@ import io.spine.validate.Constraints;
 import io.spine.validate.ValidationException;
 
 import javax.annotation.Generated;
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
+import static io.spine.tools.validate.ValidateMethod.immutableListOfViolations;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -53,10 +51,6 @@ public final class MessageValidatorFactory {
     private static final String VALIDATE_METHOD = "validate";
     private static final String MESSAGE_VARIABLE = "msg";
     private static final String VIOLATIONS = "constraintViolations";
-
-    @SuppressWarnings("UnstableApiUsage")
-    static final Type immutableListOfViolations =
-            new TypeToken<ImmutableList<ConstraintViolation>>() {}.getType();
 
     private final MessageType type;
     private final NestedClassName messageSimpleName;

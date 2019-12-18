@@ -28,6 +28,7 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.MessageAccess;
 import io.spine.tools.validate.field.Containers;
+import io.spine.validate.Alternative;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -119,7 +120,6 @@ public final class IsSet {
         }
     }
 
-
     public BooleanExpression valueIsPresent(Expression<?> valueAccess) {
         JavaType javaType = field.isMap()
                             ? field.valueDeclaration()
@@ -144,5 +144,19 @@ public final class IsSet {
             default:
                 return trueLiteral();
         }
+    }
+
+    public static BooleanExpression
+    alternativeIsSet(Alternative alternative, MessageAccess messageAccess) {
+        BooleanExpression alternativeMatched =
+                alternative
+                        .fields()
+                        .stream()
+                        .map(IsSet::new)
+                        .reduce(trueLiteral(),
+                                (condition, isSet) ->
+                                        condition.and(isSet.invocation(messageAccess)),
+                                BooleanExpression::and);
+        return alternativeMatched;
     }
 }

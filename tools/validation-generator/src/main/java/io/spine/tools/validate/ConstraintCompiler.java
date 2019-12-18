@@ -20,14 +20,12 @@
 
 package io.spine.tools.validate;
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
@@ -63,18 +61,13 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.BoundType.OPEN;
-import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.MessageValidatorFactory.immutableListOfViolations;
 import static io.spine.tools.validate.code.BooleanExpression.fromCode;
-import static io.spine.tools.validate.code.BooleanExpression.trueLiteral;
+import static io.spine.tools.validate.code.IsSet.alternativeIsSet;
 import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static io.spine.tools.validate.field.Containers.isEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.validate.diags.ViolationText.errorMessage;
 import static java.util.stream.Collectors.toList;
-import static javax.lang.model.element.Modifier.PRIVATE;
-import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A {@link ConstraintTranslator} which generates Java code for message validation.
@@ -87,15 +80,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> {
 
-    private static final String VIOLATIONS = "violations";
-    @SuppressWarnings("UnstableApiUsage")
-    private static final Type listBuilderOfViolations =
-            new TypeToken<ImmutableList.Builder<ConstraintViolation>>() {
-            }.getType();
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listOfViolations =
-            new TypeToken<List<ConstraintViolation>>() {
-            }.getType();
+            new TypeToken<List<ConstraintViolation>>() {}.getType();
     private static final MessageAccess messageAccess = MessageAccess.of("msg");
 
     private final List<CodeBlock> compiledConstraints;
@@ -123,6 +110,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
      *         the expected name of the message validating method
      * @param type
      *         the type of the validated message
+     * @see ValidateMethod
      */
     ConstraintCompiler(String methodName, MessageType type) {
         this.methodName = checkNotEmptyOrBlank(methodName);
@@ -130,24 +118,21 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         this.fieldContext = FieldContext.empty();
         this.compiledConstraints = new ArrayList<>();
         this.violationAccumulator =
-                violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
+                violation -> formatted("%s.add(%s);", ValidateMethod.VIOLATIONS, violation);
         this.generatedMethods = ImmutableSet.builder();
     }
 
     @Override
     public void visitRange(RangedConstraint<?> constraint) {
         FieldDeclaration field = constraint.field();
-        checkRange(constraint, field, Limit.LOWER);
-        checkRange(constraint, field, Limit.UPPER);
+        checkRange(constraint, field, Bound.LOWER);
+        checkRange(constraint, field, Bound.UPPER);
     }
 
-    private void checkRange(RangedConstraint<?> constraint, FieldDeclaration field, Limit limit) {
+    private void checkRange(RangedConstraint<?> constraint, FieldDeclaration field, Bound bound) {
         Range<ComparableNumber> range = constraint.range();
-        if (limit.boundExists(range)) {
-            Check check = fieldAccess -> fromCode("$L $L$L $L", fieldAccess,
-                                                  limit.sign,
-                                                  limit.type(range) == OPEN ? "=" : "",
-                                                  limit.endpoint(range));
+        if (bound.exists(range)) {
+            Check check = fieldAccess -> bound.matches(fieldAccess, range).negate();
             CreateViolation violation = fieldAccess -> violation(constraint, field, fieldAccess);
             append(constraintCode(field)
                            .conditionCheck(check)
@@ -258,7 +243,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         ImmutableSet<Alternative> alternatives = constraint.alternatives();
         BooleanExpression fieldsAreSet = alternatives
                 .stream()
-                .map(ConstraintCompiler::matches)
+                .map(alt -> alternativeIsSet(alt, messageAccess))
                 .reduce(BooleanExpression::or)
                 .orElseThrow(
                         () -> new IllegalStateException("`(required_field)` must not be empty.")
@@ -278,19 +263,6 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         compiledConstraints.add(check);
     }
 
-    private static BooleanExpression matches(Alternative alternative) {
-        BooleanExpression alternativeMatched =
-                alternative
-                        .fields()
-                        .stream()
-                        .map(IsSet::new)
-                        .reduce(trueLiteral(),
-                                (condition, isSet) ->
-                                        condition.and(isSet.invocation(messageAccess)),
-                                BooleanExpression::and);
-        return alternativeMatched;
-    }
-
     private void append(ConstraintCode constraintCode) {
         compiledConstraints.add(constraintCode.compile());
     }
@@ -303,41 +275,14 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 .map(IsSet::new)
                 .map(IsSet::method)
                 .collect(toList());
+        ValidateMethod validateMethod =
+                new ValidateMethod(type, methodName, messageAccess, compiledConstraints);
         ImmutableSet<MethodSpec> methods = generatedMethods
-                .add(buildValidate())
+                .add()
+                .add(validateMethod.spec())
                 .addAll(isSetMethods)
                 .build();
         return methods;
-    }
-
-    private MethodSpec buildValidate() {
-        SimpleClassName messageSimpleName = type.javaClassName().toSimple();
-        MethodSpec validateMethod = MethodSpec
-                .methodBuilder(methodName)
-                .addModifiers(PRIVATE, STATIC)
-                .returns(immutableListOfViolations)
-                .addParameter(bestGuess(messageSimpleName.value()), messageAccess.toString())
-                .addCode(buildValidateBody())
-                .build();
-        return validateMethod;
-    }
-
-    private CodeBlock buildValidateBody() {
-        CodeBlock.Builder validationCode = CodeBlock.builder();
-        for (CodeBlock constraintCode : compiledConstraints) {
-            validationCode.add(constraintCode);
-        }
-        return validationCode.isEmpty()
-               ? CodeBlock.of("return $T.of();", ImmutableList.class)
-               : CodeBlock
-                       .builder()
-                       .addStatement("$T $N = $T.builder()",
-                                     listBuilderOfViolations,
-                                     VIOLATIONS,
-                                     ImmutableList.class)
-                       .add(validationCode.build())
-                       .addStatement("return $N.build()", VIOLATIONS)
-                       .build();
     }
 
     private NewViolation.Builder newViolation(FieldDeclaration field, Constraint constraint) {
@@ -366,51 +311,4 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 .onViolation(violationAccumulator);
     }
 
-    private enum Limit {
-
-        LOWER("<") {
-            @Override
-            boolean boundExists(Range<?> range) {
-                return range.hasLowerBound();
-            }
-
-            @Override
-            BoundType type(Range<?> range) {
-                return range.lowerBoundType();
-            }
-
-            @Override
-            Number endpoint(Range<? extends Number> range) {
-                return range.lowerEndpoint();
-            }
-        },
-        UPPER(">") {
-            @Override
-            boolean boundExists(Range<?> range) {
-                return range.hasUpperBound();
-            }
-
-            @Override
-            BoundType type(Range<?> range) {
-                return range.upperBoundType();
-            }
-
-            @Override
-            Number endpoint(Range<? extends Number> range) {
-                return range.upperEndpoint();
-            }
-        };
-
-        private final String sign;
-
-        Limit(String sign) {
-            this.sign = sign;
-        }
-
-        abstract boolean boundExists(Range<?> range);
-
-        abstract BoundType type(Range<?> range);
-
-        abstract Number endpoint(Range<? extends Number> range);
-    }
 }
