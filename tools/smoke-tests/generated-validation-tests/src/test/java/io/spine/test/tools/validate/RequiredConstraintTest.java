@@ -22,16 +22,17 @@ package io.spine.test.tools.validate;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
-import io.spine.base.Identifier;
 import io.spine.protobuf.MessageWithConstraints;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.Identifier.newUuid;
 import static java.util.stream.Collectors.toList;
 
 @DisplayName("`(required)` constraint should be compiled so that")
@@ -119,7 +120,7 @@ class RequiredConstraintTest {
         Singulars singulars = Singulars
                 .newBuilder()
                 .setNotDefault(Enclosed.newBuilder()
-                                       .setValue(Identifier.newUuid()))
+                                       .setValue(newUuid()))
                 .buildPartial();
         checkNoViolation(singulars, "not_default");
     }
@@ -234,6 +235,87 @@ class RequiredConstraintTest {
                 .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
                 .buildPartial();
         checkNoViolation(instance, "at_least_one_piece_of_meat");
+    }
+
+    @Nested
+    @DisplayName("when checking an ID")
+    class IdCheck {
+
+        @Test
+        @DisplayName("in an event, produce no violations if ID is present")
+        void event() {
+            ProjectCreated event = ProjectCreated
+                    .newBuilder()
+                    .setId(newUuid())
+                    .build();
+            assertThat(event.validate()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("in an event, produce a violation if ID is not set")
+        void invalidEvent() {
+            ProjectCreated event = ProjectCreated
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(event, "id");
+        }
+
+        @Test
+        @DisplayName("in a command, produce no violations if ID is present")
+        void command() {
+            CreateProject event = CreateProject
+                    .newBuilder()
+                    .setId(newUuid())
+                    .build();
+            assertThat(event.validate()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("in a command, produce a violation if ID is not set")
+        void invalidCommand() {
+            CreateProject event = CreateProject
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(event, "id");
+        }
+
+        @Test
+        @DisplayName("in a rejection, produce no violations if ID is present")
+        void rejection() {
+            TestRejections.CannotCreateProject event = TestRejections.CannotCreateProject
+                    .newBuilder()
+                    .setId(newUuid())
+                    .build();
+            assertThat(event.validate()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("in a rejection, produce a violation if ID is not set")
+        void invalidRejection() {
+            TestRejections.CannotCreateProject event = TestRejections.CannotCreateProject
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(event, "id");
+        }
+
+        @Test
+        @DisplayName("in an entity state, produce no violations if ID is present")
+        void state() {
+            Project event = Project
+                    .newBuilder()
+                    .setId(newUuid())
+                    .build();
+            assertThat(event.validate()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("in an entity state, produce a violation if ID is not set")
+        void invalidState() {
+            Project event = Project
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(event, "id");
+        }
     }
 
     private static void checkViolation(MessageWithConstraints message, String field) {
