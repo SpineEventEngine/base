@@ -14,3 +14,9 @@ message Project {
 
     string id = 1;
 }
+
+message Task {
+    option (entity).kind = ENTITY;
+
+    string id = 1 [(required) = false];
+}

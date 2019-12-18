@@ -242,79 +242,88 @@ class RequiredConstraintTest {
     class IdCheck {
 
         @Test
-        @DisplayName("in an event, produce no violations if ID is present")
+        @DisplayName("in an event, no violations if ID is present")
         void event() {
-            ProjectCreated event = ProjectCreated
+            ProjectCreated msg = ProjectCreated
                     .newBuilder()
                     .setId(newUuid())
                     .build();
-            assertThat(event.validate()).isEmpty();
+            assertThat(msg.validate()).isEmpty();
         }
 
         @Test
-        @DisplayName("in an event, produce a violation if ID is not set")
+        @DisplayName("in an event, a violation must be produced if ID is not set")
         void invalidEvent() {
-            ProjectCreated event = ProjectCreated
+            ProjectCreated msg = ProjectCreated
                     .newBuilder()
                     .buildPartial();
-            checkViolation(event, "id");
+            checkViolation(msg, "id");
         }
 
         @Test
-        @DisplayName("in a command, produce no violations if ID is present")
+        @DisplayName("in a command, no violations if ID is present")
         void command() {
-            CreateProject event = CreateProject
+            CreateProject msg = CreateProject
                     .newBuilder()
                     .setId(newUuid())
                     .build();
-            assertThat(event.validate()).isEmpty();
+            assertThat(msg.validate()).isEmpty();
         }
 
         @Test
-        @DisplayName("in a command, produce a violation if ID is not set")
+        @DisplayName("in a command, a violation must be produced if ID is not set")
         void invalidCommand() {
-            CreateProject event = CreateProject
+            CreateProject msg = CreateProject
                     .newBuilder()
                     .buildPartial();
-            checkViolation(event, "id");
+            checkViolation(msg, "id");
         }
 
         @Test
-        @DisplayName("in a rejection, produce no violations if ID is present")
+        @DisplayName("in a rejection, no violations if ID is present")
         void rejection() {
-            TestRejections.CannotCreateProject event = TestRejections.CannotCreateProject
+            TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
                     .newBuilder()
                     .setId(newUuid())
                     .build();
-            assertThat(event.validate()).isEmpty();
+            assertThat(msg.validate()).isEmpty();
         }
 
         @Test
-        @DisplayName("in a rejection, produce a violation if ID is not set")
+        @DisplayName("in a rejection, a violation must be produced if ID is not set")
         void invalidRejection() {
-            TestRejections.CannotCreateProject event = TestRejections.CannotCreateProject
+            TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
                     .newBuilder()
                     .buildPartial();
-            checkViolation(event, "id");
+            checkViolation(msg, "id");
         }
 
         @Test
-        @DisplayName("in an entity state, produce no violations if ID is present")
+        @DisplayName("in an entity state, no violations if ID is present")
         void state() {
-            Project event = Project
+            Project msg = Project
                     .newBuilder()
                     .setId(newUuid())
                     .build();
-            assertThat(event.validate()).isEmpty();
+            assertThat(msg.validate()).isEmpty();
         }
 
         @Test
-        @DisplayName("in an entity state, produce a violation if ID is not set")
+        @DisplayName("in an entity state, a violation must be produced if ID is not set")
         void invalidState() {
-            Project event = Project
+            Project msg = Project
                     .newBuilder()
                     .buildPartial();
-            checkViolation(event, "id");
+            checkViolation(msg, "id");
+        }
+
+        @Test
+        @DisplayName("if stated explicitly, ID should not be required")
+        void notRequired() {
+            Task msg = Task
+                    .newBuilder()
+                    .build();
+            assertThat(msg.validate()).isEmpty();
         }
     }
 
