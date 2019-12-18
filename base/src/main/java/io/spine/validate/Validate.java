@@ -37,11 +37,8 @@ import io.spine.util.Preconditions2;
 import io.spine.validate.option.SetOnce;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -424,17 +421,5 @@ public final class Validate {
                                         .value())
                 .build();
         return violation;
-    }
-
-    /**
-     * Checks if the given collection contains duplicate entries.
-     *
-     * @return {@code true} if {@code collection} has duplicates, {@code false} otherwise
-     */
-    @Internal
-    public static boolean containsDuplicates(Collection<?> collection) {
-        checkNotNull(collection);
-        Set<?> asSet = new HashSet<>(collection);
-        return asSet.size() != collection.size();
     }
 }
