@@ -41,8 +41,8 @@ final class NumberConversionChecker {
     }
 
     /**
-     * Determines if the supplied {@code number} can be safely converted to the {@code
-     * anotherNumber}.
+     * Determines if the supplied {@code number} can be safely converted to
+     * the {@code anotherNumber}.
      */
     static boolean check(Number number, Number anotherNumber) {
         checkNotNull(number);
