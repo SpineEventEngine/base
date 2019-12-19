@@ -18,25 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.testing;
 
-import io.spine.validate.option.ObjectLikeOptionFactory;
-import io.spine.validate.option.PrimitiveOptionFactory;
-import io.spine.validate.option.ValidatingOptionsLoader;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.truth.Correspondence;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Correspondences.type;
+public final class Correspondences {
 
-@DisplayName("ValidatingOptionsLoader should")
-class ValidatingOptionFactoryLoaderTest {
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Correspondences() {
+    }
 
-    @Test
-    @DisplayName("load common options")
-    void loadCommon() {
-        assertThat(ValidatingOptionsLoader.INSTANCE.implementations())
-                .comparingElementsUsing(type())
-                .containsExactly(PrimitiveOptionFactory.class, ObjectLikeOptionFactory.class);
+    @SuppressWarnings("NullableProblems") // False positive.
+    public static <T> Correspondence<T, @NonNull Class<?>> type() {
+        return Correspondence.from(
+                (o, cls) -> cls.isInstance(o), "is an instance of"
+        );
     }
 }

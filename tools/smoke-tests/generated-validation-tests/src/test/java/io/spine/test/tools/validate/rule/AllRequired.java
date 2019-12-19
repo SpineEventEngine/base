@@ -20,10 +20,26 @@
 
 package io.spine.test.tools.validate.rule;
 
-import io.spine.validate.option.ValidatingOptionFactory;
-import com.google.auto.service.AutoService;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.FieldContext;
+import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
+import io.spine.validate.option.FieldValidatingOption;
 
-@AutoService(ValidatingOptionFactory.class)
-public class NoneIsDefaultFactory implements ValidatingOptionFactory {
+@Immutable
+public final class AllRequired extends FieldValidatingOption<Boolean> {
 
+    AllRequired() {
+        super(OptionsProto.required);
+    }
+
+    @Override
+    public boolean shouldValidate(FieldContext context) {
+        return context.targetDeclaration().isCollection() && super.shouldValidate(context);
+    }
+
+    @Override
+    public Constraint constraintFor(FieldContext field) {
+        return new AllRequiredConstraint(optionValue(field), field.targetDeclaration());
+    }
 }

@@ -18,25 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.test.tools.validate.rule;
 
-import io.spine.validate.option.ObjectLikeOptionFactory;
-import io.spine.validate.option.PrimitiveOptionFactory;
-import io.spine.validate.option.ValidatingOptionsLoader;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.validate.option.FieldValidatingOption;
+import io.spine.validate.option.ValidatingOptionFactory;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Correspondences.type;
+import java.util.Set;
 
-@DisplayName("ValidatingOptionsLoader should")
-class ValidatingOptionFactoryLoaderTest {
+@Immutable
+@AutoService(ValidatingOptionFactory.class)
+public final class BytesAllRequiredFactory implements ValidatingOptionFactory {
 
-    @Test
-    @DisplayName("load common options")
-    void loadCommon() {
-        assertThat(ValidatingOptionsLoader.INSTANCE.implementations())
-                .comparingElementsUsing(type())
-                .containsExactly(PrimitiveOptionFactory.class, ObjectLikeOptionFactory.class);
+    private static final ImmutableSet<FieldValidatingOption<?>> OPTIONS =
+            ImmutableSet.of(new AllRequired());
+
+    @Override
+    public Set<FieldValidatingOption<?>> forByteString() {
+        return OPTIONS;
     }
 }
