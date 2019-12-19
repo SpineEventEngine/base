@@ -23,6 +23,9 @@ package io.spine.testing;
 import com.google.common.truth.Correspondence;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A factory of {@link Correspondence}s for constructing fluent assertions for collection elements.
+ */
 public final class Correspondences {
 
     /**
@@ -31,6 +34,22 @@ public final class Correspondences {
     private Correspondences() {
     }
 
+    /**
+     * Obtains a {@link Correspondence} of an object to its type.
+     *
+     * <p>Elements of a collection can be matched to their class using this correspondence.
+     *
+     * <p>Example:
+     * {@code
+     * assertThat(objects)
+     *     .comparingElementsUsing(type())
+     *     .containsExactly(String.class, String.class);
+     * }
+     *
+     * @param <T>
+     *         type of the input object
+     * @return correspondence by type
+     */
     @SuppressWarnings("NullableProblems") // False positive.
     public static <T> Correspondence<T, @NonNull Class<?>> type() {
         return Correspondence.from(

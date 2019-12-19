@@ -26,6 +26,11 @@ import io.spine.option.OptionsProto;
 import io.spine.validate.Constraint;
 import io.spine.validate.option.FieldValidatingOption;
 
+/**
+ * A field validating option which creates {@link AllRequiredConstraint}s.
+ *
+ * <p>The option reuses the {@link OptionsProto#required} extension.
+ */
 @Immutable
 public final class AllRequired extends FieldValidatingOption<Boolean> {
 

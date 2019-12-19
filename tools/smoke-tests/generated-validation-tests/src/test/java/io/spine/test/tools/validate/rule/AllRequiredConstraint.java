@@ -33,6 +33,9 @@ import io.spine.validate.option.FieldConstraint;
 
 import static java.lang.String.format;
 
+/**
+ * A field constraint for collection fields which makes all the field elements to be non-default.
+ */
 @Immutable
 public final class AllRequiredConstraint
         extends FieldConstraint<Boolean>
