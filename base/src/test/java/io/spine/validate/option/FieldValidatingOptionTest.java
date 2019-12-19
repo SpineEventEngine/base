@@ -20,6 +20,7 @@
 
 package io.spine.validate.option;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
@@ -32,7 +33,8 @@ import io.spine.test.validate.option.NoValidationTestMessage;
 import io.spine.test.validate.option.TestFieldOptionProto;
 import io.spine.type.MessageType;
 import io.spine.validate.Constraint;
-import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.CustomConstraint;
 import io.spine.validate.ExternalConstraints;
 import io.spine.validate.FieldValue;
 import io.spine.validate.MessageValue;
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.testing.TestValues.randomString;
 import static java.lang.String.format;
@@ -173,7 +176,7 @@ final class FieldValidatingOptionTest {
 
     @Immutable
     private static final class MaxLengthConstraint
-            extends FieldConstraint<Integer> {
+            extends FieldConstraint<Integer> implements CustomConstraint {
 
         /**
          * Creates a new instance of this constraint.
@@ -193,8 +196,20 @@ final class FieldValidatingOptionTest {
         }
 
         @Override
-        public void accept(ConstraintTranslator<?> visitor) {
-            // Do nothing.
+        public ImmutableList<ConstraintViolation> validate(MessageValue containingMessage) {
+            FieldValue value = containingMessage.valueOf(field());
+            int maxLength = optionValue();
+            FieldContext context = value.context();
+            return value.nonDefault()
+                        .filter(val -> val.toString().length() > maxLength)
+                        .map(val -> ConstraintViolation.newBuilder()
+                                                       .setFieldPath(context.fieldPath())
+                                                       .setTypeName(containingMessage.declaration()
+                                                                                     .name()
+                                                                                     .value())
+                                                       .setMsgFormat(errorMessage(context))
+                                                       .build())
+                        .collect(toImmutableList());
         }
     }
 }

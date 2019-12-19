@@ -43,6 +43,7 @@ import io.spine.validate.ComparableNumber;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
+import io.spine.validate.CustomConstraint;
 import io.spine.validate.Duplicates;
 import io.spine.validate.Validate;
 import io.spine.validate.option.DistinctConstraint;
@@ -65,6 +66,7 @@ import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static io.spine.tools.validate.code.IsSet.alternativeIsSet;
 import static io.spine.tools.validate.code.VoidExpression.formatted;
 import static io.spine.tools.validate.field.Containers.isEmpty;
+import static io.spine.util.Exceptions.unsupported;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.validate.diags.ViolationText.errorMessage;
 import static java.util.stream.Collectors.toList;
@@ -261,6 +263,15 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                                                    .toCode())
                                    .toCode();
         compiledConstraints.add(check);
+    }
+
+    @Override
+    public void visitCustom(CustomConstraint constraint) {
+        throw unsupported(
+                "Custom constraints, such as `%s`, cannot be compiled into source code.%n" +
+                        "Please remove the constraint from code generator classpath.",
+                constraint
+        );
     }
 
     private void append(ConstraintCode constraintCode) {

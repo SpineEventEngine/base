@@ -59,6 +59,8 @@ public interface ConstraintTranslator<T> {
 
     void visitRequiredField(RequiredFieldConstraint constraint);
 
+    void visitCustom(CustomConstraint constraint);
+
     /**
      * Finalizes the translation for a message type.
      */

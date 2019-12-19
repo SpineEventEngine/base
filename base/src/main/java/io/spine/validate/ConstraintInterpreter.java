@@ -173,6 +173,12 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         violation.ifPresent(violations::add);
     }
 
+    @Override
+    public void visitCustom(CustomConstraint constraint) {
+        ImmutableList<ConstraintViolation> violations = constraint.validate(message);
+        this.violations.addAll(violations);
+    }
+
     /**
      * {@inheritDoc}
      *
