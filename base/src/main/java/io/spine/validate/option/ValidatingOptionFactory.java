@@ -35,6 +35,9 @@ import java.util.Set;
  *
  * <p>This interface is designed as a Service Provider Interface. The implementations are
  * {@linkplain ValidatingOptionsLoader loaded} via the {@link ServiceLoader} mechanism.
+ *
+ * @see FieldValidatingOption
+ * @see io.spine.validate.CustomConstraint
  */
 @SPI
 @Immutable

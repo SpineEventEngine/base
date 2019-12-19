@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
@@ -306,7 +306,6 @@ public final class Validate {
      *
      * @return violations of the validation rules or an empty list if the message is valid
      */
-    @Internal
     public static List<ConstraintViolation> violationsOf(Message message) {
         return message instanceof MessageWithConstraints
                ? ((MessageWithConstraints) message).validate()
@@ -316,6 +315,16 @@ public final class Validate {
     private static List<ConstraintViolation> validateAtRuntime(Message message) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message))
+                           .runThrough(new ConstraintInterpreter(message));
+        List<ConstraintViolation> violations =
+                error.map(ValidationError::getConstraintViolationList)
+                     .orElse(ImmutableList.of());
+        return violations;
+    }
+
+    public static List<ConstraintViolation> violationsOfCustomConstraints(Message message) {
+        Optional<ValidationError> error =
+                Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
                            .runThrough(new ConstraintInterpreter(message));
         List<ConstraintViolation> violations =
                 error.map(ValidationError::getConstraintViolationList)

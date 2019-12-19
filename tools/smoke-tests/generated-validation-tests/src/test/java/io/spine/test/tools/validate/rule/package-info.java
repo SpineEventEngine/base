@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    generateValidation = true
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.test.tools.validate.rule;
 
-dependencies {
-    testAnnotationProcessor deps.build.autoService.processor
-    testCompileOnly deps.build.autoService.annotations
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

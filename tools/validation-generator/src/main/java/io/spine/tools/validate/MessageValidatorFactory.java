@@ -38,6 +38,7 @@ import java.util.Set;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
 import static io.spine.tools.validate.ValidateMethod.immutableListOfViolations;
+import static java.lang.System.lineSeparator;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -152,15 +153,16 @@ public final class MessageValidatorFactory {
      * @return {@code validate()} method
      */
     public MethodSpec generateValidate() {
-        CodeBlock body = CodeBlock.of("return $T.$N(this);",
-                                      bestGuess(validatorSimpleName), VALIDATE_METHOD);
         return MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(PUBLIC)
                 .addAnnotation(Beta.class)
                 .addAnnotation(Override.class)
                 .returns(immutableListOfViolations)
-                .addCode(body)
+                .addCode("return $T.$N(this);$L",
+                         bestGuess(validatorSimpleName),
+                         VALIDATE_METHOD,
+                         lineSeparator())
                 .build();
     }
 

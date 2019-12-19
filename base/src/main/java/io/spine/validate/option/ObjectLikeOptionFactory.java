@@ -27,54 +27,37 @@ import io.spine.annotation.Internal;
 
 import java.util.Set;
 
-/**
- * An implementation of {@link ValidatingOptionFactory} which adds validation options for some
- * primitive types.
- *
- * <p>Creates options:
- * <ul>
- *     <li>{@code (pattern)} for {@code string} fields;
- *     <li>{@code (max)}, {@code (min)}, and {@code (range)} for number fields.
- * </ul>
- */
+import static com.google.common.collect.Sets.union;
+
 @AutoService(ValidatingOptionFactory.class)
 @Internal
 @Immutable
-public final class PrimitiveValidatingOptionFactory implements ValidatingOptionFactory {
+public final class ObjectLikeOptionFactory implements StandardOptionFactory {
 
     private static final ImmutableSet<FieldValidatingOption<?>> STRING_OPTIONS =
             ImmutableSet.of(Pattern.create());
-    private static final ImmutableSet<FieldValidatingOption<?>> INT_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?>> LONG_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?>> FLOAT_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create());
-    private static final ImmutableSet<FieldValidatingOption<?>> DOUBLE_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create());
+    private static final ImmutableSet<FieldValidatingOption<?>> COLLECTION_OPTIONS =
+            ImmutableSet.of(Required.create(false), Goes.create(), Distinct.create());
+    private static final ImmutableSet<FieldValidatingOption<?>> MESSAGE_OPTIONS =
+            ImmutableSet.of(new Valid());
 
     @Override
     public Set<FieldValidatingOption<?>> forString() {
-        return STRING_OPTIONS;
+        return union(STRING_OPTIONS, COLLECTION_OPTIONS);
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forInt() {
-        return INT_OPTIONS;
+    public Set<FieldValidatingOption<?>> forByteString() {
+        return COLLECTION_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forLong() {
-        return LONG_OPTIONS;
+    public Set<FieldValidatingOption<?>> forEnum() {
+        return COLLECTION_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forFloat() {
-        return FLOAT_OPTIONS;
-    }
-
-    @Override
-    public Set<FieldValidatingOption<?>> forDouble() {
-        return DOUBLE_OPTIONS;
+    public Set<FieldValidatingOption<?>> forMessage() {
+        return union(MESSAGE_OPTIONS, COLLECTION_OPTIONS);
     }
 }

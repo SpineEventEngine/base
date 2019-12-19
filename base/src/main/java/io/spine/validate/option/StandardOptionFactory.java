@@ -21,33 +21,9 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.option.IfMissingOption;
-import io.spine.validate.ConstraintTranslator;
-import io.spine.validate.diags.ViolationText;
+import io.spine.annotation.Internal;
 
-/**
- * A constraint that, when applied to a field, checks whether the field is set to a non-default
- * value.
- */
+@Internal
 @Immutable
-public final class RequiredConstraint extends FieldConstraint<Boolean> {
-
-    RequiredConstraint(boolean required,
-                       FieldDeclaration declaration) {
-        super(required, declaration);
-    }
-
-    @Override
-    public String errorMessage(FieldContext field) {
-        IfMissing ifMissing = new IfMissing();
-        IfMissingOption option = ifMissing.valueOrDefault(field.target());
-        return ViolationText.errorMessage(option, option.getMsgFormat());
-    }
-
-    @Override
-    public void accept(ConstraintTranslator<?> visitor) {
-        visitor.visitRequired(this);
-    }
+public interface StandardOptionFactory extends ValidatingOptionFactory {
 }

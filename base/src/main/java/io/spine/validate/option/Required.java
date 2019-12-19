@@ -22,9 +22,9 @@ package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
 import io.spine.validate.Constraint;
@@ -94,22 +94,22 @@ public class Required
      * @param field
      *         a value that the option is applied to
      */
-    void checkUsage(FieldDescriptor field) {
-        JavaType type = field.getJavaType();
-        if (!CAN_BE_REQUIRED.contains(type)) {
-            String typeName = field.getType().name();
+    void checkUsage(FieldDeclaration field) {
+        JavaType type = field.javaType();
+        if (!CAN_BE_REQUIRED.contains(type) && field.isNotCollection()) {
+            String typeName = field.descriptor().getType().name();
             _warn().log("The field `%s.%s` has the type %s and" +
                                 " should not be declared as `(required)`.",
-                  field.getContainingType().getFullName(),
-                  field.getName(),
+                  field.declaringType().name(),
+                  field.name(),
                   typeName);
         }
     }
 
     @Override
     public Constraint constraintFor(FieldContext context) {
-        checkUsage(context.target());
+        checkUsage(context.targetDeclaration());
         boolean value = notAssumingRequired(context);
-        return new RequiredConstraint(value, context.targetDeclaration(), CAN_BE_REQUIRED);
+        return new RequiredConstraint(value, context.targetDeclaration());
     }
 }

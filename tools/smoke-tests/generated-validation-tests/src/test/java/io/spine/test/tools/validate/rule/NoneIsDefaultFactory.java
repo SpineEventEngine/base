@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    generateValidation = true
-}
+package io.spine.test.tools.validate.rule;
 
-dependencies {
-    testAnnotationProcessor deps.build.autoService.processor
-    testCompileOnly deps.build.autoService.annotations
+import io.spine.validate.option.ValidatingOptionFactory;
+import com.google.auto.service.AutoService;
+
+@AutoService(ValidatingOptionFactory.class)
+public class NoneIsDefaultFactory implements ValidatingOptionFactory {
+
 }

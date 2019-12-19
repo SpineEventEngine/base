@@ -62,6 +62,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.validate.ValidateMethod.VIOLATIONS;
 import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 import static io.spine.tools.validate.code.IsSet.alternativeIsSet;
 import static io.spine.tools.validate.code.VoidExpression.formatted;
@@ -69,6 +70,7 @@ import static io.spine.tools.validate.field.Containers.isEmpty;
 import static io.spine.util.Exceptions.unsupported;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.validate.diags.ViolationText.errorMessage;
+import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -120,7 +122,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         this.fieldContext = FieldContext.empty();
         this.compiledConstraints = new ArrayList<>();
         this.violationAccumulator =
-                violation -> formatted("%s.add(%s);", ValidateMethod.VIOLATIONS, violation);
+                violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
         this.generatedMethods = ImmutableSet.builder();
     }
 
@@ -280,6 +282,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
 
     @Override
     public ImmutableSet<MethodSpec> translate() {
+        compileCustomConstraints();
         List<MethodSpec> isSetMethods = type
                 .fields()
                 .stream()
@@ -294,6 +297,15 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 .addAll(isSetMethods)
                 .build();
         return methods;
+    }
+
+    private void compileCustomConstraints() {
+        CodeBlock code = CodeBlock.of("$N.addAll($T.violationsOfCustomConstraints($L));$L",
+                                      VIOLATIONS,
+                                      Validate.class,
+                                      messageAccess,
+                                      lineSeparator());
+        compiledConstraints.add(code);
     }
 
     private NewViolation.Builder newViolation(FieldDeclaration field, Constraint constraint) {

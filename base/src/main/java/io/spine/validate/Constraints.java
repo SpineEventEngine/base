@@ -28,6 +28,8 @@ import io.spine.validate.option.RequiredField;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.validate.FieldConstraints.customFactoriesExist;
 
 /**
  * Validation constraints of a single Protobuf message type.
@@ -59,12 +61,16 @@ public final class Constraints {
         ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
         fieldConstraints(type, context)
                 .forEach(constraintBuilder::add);
-        RequiredField requiredField = new RequiredField();
-        if (requiredField.valuePresent(type.descriptor())) {
-            Constraint requiredFieldConstraint = requiredField.constraintFor(type);
-            constraintBuilder.add(requiredFieldConstraint);
-        }
+        addRequiredField(type, constraintBuilder);
         return new Constraints(constraintBuilder.build());
+    }
+
+    static Constraints onlyCustom(MessageType type, FieldContext context) {
+        checkNotNull(type);
+        checkNotNull(context);
+        ImmutableList<Constraint> constraintBuilder = customFieldConstraints(type, context)
+                .collect(toImmutableList());
+        return new Constraints(constraintBuilder);
     }
 
     private static Stream<Constraint> fieldConstraints(MessageType type, FieldContext context) {
@@ -73,6 +79,25 @@ public final class Constraints {
                 .stream()
                 .map(field -> context.forChild(field.descriptor()))
                 .flatMap(FieldConstraints::of);
+    }
+
+    private static Stream<Constraint>
+    customFieldConstraints(MessageType type, FieldContext context) {
+        return customFactoriesExist()
+               ? type.fields()
+                     .stream()
+                     .map(field -> context.forChild(field.descriptor()))
+                     .flatMap(FieldConstraints::customConstraintsFor)
+               : Stream.of();
+    }
+
+    private static void addRequiredField(MessageType type,
+                                         ImmutableList.Builder<Constraint> constraintBuilder) {
+        RequiredField requiredField = new RequiredField();
+        if (requiredField.valuePresent(type.descriptor())) {
+            Constraint requiredFieldConstraint = requiredField.constraintFor(type);
+            constraintBuilder.add(requiredFieldConstraint);
+        }
     }
 
     /**

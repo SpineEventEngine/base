@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 
 import java.util.List;
@@ -130,7 +131,8 @@ public abstract class ValidationOfConstraintTest {
 
     protected void assertSingleViolation(Message message, String invalidFieldName) {
         assertNotValid(message);
-        assertEquals(1, violations.size());
+        assertThat(violations)
+             .hasSize(1);
         assertFieldPathIs(firstViolation(), invalidFieldName);
     }
 }

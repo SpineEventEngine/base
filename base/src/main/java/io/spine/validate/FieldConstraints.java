@@ -20,22 +20,22 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.validate.option.Distinct;
 import io.spine.validate.option.FieldValidatingOption;
-import io.spine.validate.option.Goes;
-import io.spine.validate.option.Required;
-import io.spine.validate.option.Valid;
+import io.spine.validate.option.StandardOptionFactory;
 import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.option.ValidatingOptionsLoader;
 
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * A factory of field validation {@link Constraint}s.
@@ -43,6 +43,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class FieldConstraints {
 
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final ImmutableSet<ValidatingOptionFactory> allFactories =
+            ValidatingOptionsLoader.INSTANCE.implementations();
+    private static final ImmutableSet<ValidatingOptionFactory> customFactories =
+            allFactories.stream()
+                        .filter(factory -> !(factory instanceof StandardOptionFactory))
+                        .collect(toImmutableSet());
 
     /**
      * Prevents the utility class instantiation.
@@ -57,60 +63,65 @@ final class FieldConstraints {
      *         field to validate
      * @return validation constraints
      */
-    @SuppressWarnings("OverlyComplexMethod")
-        // Assembles many options and option factories for all field types.
     static Stream<Constraint> of(FieldContext field) {
+        return findConstraints(field, allFactories);
+    }
+
+    static boolean customFactoriesExist() {
+        return !customFactories.isEmpty();
+    }
+
+    static Stream<Constraint> customConstraintsFor(FieldContext field) {
+        return findConstraints(field, customFactories);
+    }
+
+    @SuppressWarnings("OverlyComplexMethod")
+    // Assembles many options and option factories for all field types.
+    private static Stream<Constraint>
+    findConstraints(FieldContext field, ImmutableSet<ValidatingOptionFactory> factories) {
         checkNotNull(field);
         FieldDeclaration declaration = field.targetDeclaration();
         JavaType type = declaration.javaType();
         switch (type) {
             case INT:
-                return primitive(ValidatingOptionFactory::forInt, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forInt, field);
             case LONG:
-                return primitive(ValidatingOptionFactory::forLong, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forLong, field);
             case FLOAT:
-                return primitive(ValidatingOptionFactory::forFloat, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forFloat, field);
             case DOUBLE:
-                return primitive(ValidatingOptionFactory::forDouble, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forDouble, field);
             case BOOLEAN:
-                return primitive(ValidatingOptionFactory::forBoolean, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forBoolean, field);
             case STRING:
-                return objectLike(ValidatingOptionFactory::forString, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forString, field);
             case BYTE_STRING:
-                return objectLike(ValidatingOptionFactory::forByteString, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forByteString, field);
             case ENUM:
-                return objectLike(ValidatingOptionFactory::forEnum, field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forEnum, field);
             case MESSAGE:
-                return ConstraintsFrom
-                        .factories(ValidatingOptionFactory::forMessage)
-                        .and(Required.create(false), Goes.create(), new Valid())
-                        .andForCollections(Distinct.create())
-                        .forField(field);
+                return constraintsFrom(factories, ValidatingOptionFactory::forMessage, field);
             default:
-                log.atWarning().log("Unknown field type `%s` at `%s`.", type, declaration);
+                log.atWarning()
+                   .log("Unknown field type `%s` at `%s`.", type, declaration);
                 return Stream.of();
         }
     }
 
     private static Stream<Constraint>
-    primitive(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector,
-              FieldContext context) {
-        return ConstraintsFrom
-                .factories(selector)
-                .andForCollections(Required.create(false),
-                                   Goes.create(),
-                                   Distinct.create())
-                .forField(context);
-
+    constraintsFrom(ImmutableSet<ValidatingOptionFactory> factories,
+                    Selector selector,
+                    FieldContext field) {
+        return factories.stream()
+                        .map(selector)
+                        .flatMap(Set::stream)
+                        .filter(option -> option.shouldValidate(field))
+                        .map(option -> option.constraintFor(field));
     }
 
-    private static Stream<Constraint>
-    objectLike(Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector,
-               FieldContext context) {
-        return ConstraintsFrom
-                .factories(selector)
-                .and(Required.create(false), Goes.create())
-                .andForCollections(Distinct.create())
-                .forField(context);
+    @FunctionalInterface
+    private interface Selector
+            extends Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> {
+
     }
 }

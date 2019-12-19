@@ -20,26 +20,28 @@
 
 package io.spine.validate;
 
-import io.spine.validate.option.PrimitiveValidatingOptionFactory;
-import io.spine.validate.option.ValidatingOptionFactory;
+import com.google.common.truth.Correspondence;
+import io.spine.validate.option.ObjectLikeOptionFactory;
+import io.spine.validate.option.PrimitiveOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("ValidatingOptionsLoader should")
 class ValidatingOptionFactoryLoaderTest {
 
+    private static final Correspondence<Object, @NonNull Class<?>> instanceOf = Correspondence.from(
+            (o, cls) -> cls.isInstance(o), "is instance of"
+    );
+
     @Test
     @DisplayName("load common options")
     void loadCommon() {
-        List<ValidatingOptionFactory> implementations = ValidatingOptionsLoader.INSTANCE
-                .implementations()
-                .asList();
-        assertThat(implementations).hasSize(1);
-        assertThat(implementations.get(0)).isInstanceOf(PrimitiveValidatingOptionFactory.class);
+        assertThat(ValidatingOptionsLoader.INSTANCE.implementations())
+                .comparingElementsUsing(instanceOf)
+                .containsExactly(PrimitiveOptionFactory.class, ObjectLikeOptionFactory.class);
     }
 }

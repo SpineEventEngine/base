@@ -46,7 +46,7 @@ final class AlwaysRequired extends Required {
      */
     @Override
     public boolean shouldValidate(FieldContext context) {
-        checkUsage(context.target());
+        checkUsage(context.targetDeclaration());
         return true;
     }
 }
