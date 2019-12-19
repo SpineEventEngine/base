@@ -310,5 +310,4 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                 .messageAccess(messageAccess)
                 .onViolation(violationAccumulator);
     }
-
 }
