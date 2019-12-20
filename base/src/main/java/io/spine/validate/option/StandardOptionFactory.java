@@ -23,6 +23,13 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.Internal;
 
+/**
+ * A {@link ValidatingOptionFactory} of known options.
+ *
+ * <p>The options produced by a {@code StandardOptionFactory} are supported by the code validation
+ * generation. If code generation takes place, checking constraints produced by these options is
+ * obsolete.
+ */
 @Internal
 @Immutable
 public interface StandardOptionFactory extends ValidatingOptionFactory {
