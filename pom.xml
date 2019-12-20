@@ -58,7 +58,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-gradle-plugin</artifactId>
-    <version>0.8.10</version>
+    <version>0.8.11</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
