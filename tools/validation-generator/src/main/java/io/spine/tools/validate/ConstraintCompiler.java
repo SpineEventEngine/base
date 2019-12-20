@@ -82,6 +82,7 @@ import static java.util.stream.Collectors.toList;
  * the message class. Note that some methods are declared as {@code static}. Thus, they cannot be
  * placed into an inner (non-static) class.
  */
+@SuppressWarnings("OverlyCoupledClass")
 final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> {
 
     @SuppressWarnings("UnstableApiUsage")
@@ -168,6 +169,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         Check check = fieldAccess -> fromCode("$L.matches($S)", fieldAccess, pattern).negate();
         CreateViolation violation = fieldAccess -> newViolation(field, constraint)
                 .setFieldValue(fieldAccess)
+                .addParam(pattern)
                 .build();
         append(constraintCode(field)
                        .conditionCheck(check)
@@ -206,7 +208,9 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         IsSet pairedIsSet = new IsSet(pairedField);
         Check check = f -> fieldIsSet.invocation(messageAccess)
                                      .and(pairedIsSet.invocation(messageAccess).negate());
-        CreateViolation createViolation = f -> violation(constraint, field);
+        CreateViolation createViolation = f -> newViolation(field, constraint)
+                .addParam(field.name().value(), pairedFieldName)
+                .build();
         append(constraintCode(field)
                        .conditionCheck(check)
                        .createViolation(createViolation)

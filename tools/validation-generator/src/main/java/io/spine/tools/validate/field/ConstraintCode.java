@@ -170,8 +170,7 @@ public final class ConstraintCode implements Logging {
         }
 
         /**
-         * Configures the built code to validate the field as a whole, even if it's
-         * a {@linkplain Cardinality#COLLECTION collection}.
+         * Configures the built code to validate the field as a whole, even if it's a collection.
          */
         public Builder validateAsWhole() {
             this.forceSingular = true;
