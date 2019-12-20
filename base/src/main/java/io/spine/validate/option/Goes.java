@@ -21,17 +21,24 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.logging.Logging;
 import io.spine.option.GoesOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
 import io.spine.validate.Constraint;
+
+import static java.lang.String.format;
 
 /**
  * An option that defines field bond to another field within the message.
  */
 @Immutable
 public final class Goes
-        extends FieldValidatingOption<GoesOption> {
+        extends FieldValidatingOption<GoesOption>
+        implements Logging {
 
     private Goes() {
         super(OptionsProto.goes);
@@ -44,5 +51,48 @@ public final class Goes
     @Override
     public Constraint constraintFor(FieldContext field) {
         return new GoesConstraint(field.targetDeclaration(), optionValue(field));
+    }
+
+    @Override
+    public boolean shouldValidate(FieldContext field) {
+        return super.shouldValidate(field)
+                && canBeRequired(field)
+                && canPairedBeRequired(field);
+    }
+
+    private boolean canBeRequired(FieldContext context) {
+        FieldDeclaration field = context.targetDeclaration();
+        String warning = format(
+                "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
+                field
+        );
+        return checkType(field, warning);
+    }
+
+    private boolean canPairedBeRequired(FieldContext context) {
+        GoesOption option = optionValue(context);
+        String pairedFieldName = option.getWith().trim();
+        if (pairedFieldName.isEmpty()) {
+            return false;
+        }
+        FieldDeclaration field = context.targetDeclaration();
+        MessageType messageType = field.declaringType();
+        FieldDeclaration pairedField = messageType.field(pairedFieldName);
+        String warningMessage = format(
+                "Field `%s` paired with `%s` cannot be checked for presence. " +
+                        "`(goes).with` at %s is obsolete.",
+                pairedField, field, field
+        );
+        return checkType(pairedField, warningMessage);
+    }
+
+    private boolean checkType(FieldDeclaration field, String warningMessage) {
+        JavaType type = field.javaType();
+        if (field.isCollection() || Required.CAN_BE_REQUIRED.contains(type)) {
+            return true;
+        } else {
+            _warn().log(warningMessage);
+            return false;
+        }
     }
 }

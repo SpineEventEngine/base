@@ -92,8 +92,8 @@ final class GoesTest extends ValidationOfConstraintTest {
                 .setId(newUuid())
                 .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                                                       () -> validate(msg));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                                                          () -> validate(msg));
         assertThat(exception).hasMessageThat()
                              .contains("user_id");
     }
