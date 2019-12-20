@@ -322,6 +322,17 @@ public final class Validate {
         return violations;
     }
 
+    /**
+     * Validates the given message according to custom validation constraints.
+     *
+     * <p>If there are user-defined {@link io.spine.validate.option.ValidatingOptionFactory} in
+     * the classpath, they are used to create validating options and assemble constraints. If there
+     * are no such factories, this method always returns an empty list.
+     *
+     * @param message
+     *         the message to validate
+     * @return a list of violations; an empty list if the message is valid
+     */
     public static List<ConstraintViolation> violationsOfCustomConstraints(Message message) {
         Optional<ValidationError> error =
                 Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
