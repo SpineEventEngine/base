@@ -29,35 +29,38 @@ import java.util.Set;
 
 import static com.google.common.collect.Sets.union;
 
+/**
+ * An implementation of {@link ValidatingOptionFactory} which adds validation options for numbers.
+ *
+ * <p>Creates {@code (max)}, {@code (min)}, and {@code (range)} options for number fields.
+ */
 @AutoService(ValidatingOptionFactory.class)
 @Internal
 @Immutable
-public final class ObjectLikeOptionFactory implements StandardOptionFactory {
+public final class NumberOptionFactory implements StandardOptionFactory {
 
-    private static final ImmutableSet<FieldValidatingOption<?>> STRING_OPTIONS =
-            ImmutableSet.of(Pattern.create());
+    private static final ImmutableSet<FieldValidatingOption<?>> NUMBER_OPTIONS =
+            ImmutableSet.of(Max.create(), Min.create(), Range.create());
     private static final ImmutableSet<FieldValidatingOption<?>> COLLECTION_OPTIONS =
             ImmutableSet.of(Required.create(false), Goes.create(), Distinct.create());
-    private static final ImmutableSet<FieldValidatingOption<?>> MESSAGE_OPTIONS =
-            ImmutableSet.of(new Valid());
 
     @Override
-    public Set<FieldValidatingOption<?>> forString() {
-        return union(STRING_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forInt() {
+        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forByteString() {
-        return COLLECTION_OPTIONS;
+    public Set<FieldValidatingOption<?>> forLong() {
+        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forEnum() {
-        return COLLECTION_OPTIONS;
+    public Set<FieldValidatingOption<?>> forFloat() {
+        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forMessage() {
-        return union(MESSAGE_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forDouble() {
+        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
     }
 }

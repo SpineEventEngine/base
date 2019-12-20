@@ -20,8 +20,8 @@
 
 package io.spine.validate;
 
-import io.spine.validate.option.ObjectLikeOptionFactory;
-import io.spine.validate.option.PrimitiveOptionFactory;
+import io.spine.validate.option.NonPrimitiveOptionFactory;
+import io.spine.validate.option.NumberOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +37,6 @@ class ValidatingOptionFactoryLoaderTest {
     void loadCommon() {
         assertThat(ValidatingOptionsLoader.INSTANCE.implementations())
                 .comparingElementsUsing(type())
-                .containsExactly(PrimitiveOptionFactory.class, ObjectLikeOptionFactory.class);
+                .containsExactly(NumberOptionFactory.class, NonPrimitiveOptionFactory.class);
     }
 }

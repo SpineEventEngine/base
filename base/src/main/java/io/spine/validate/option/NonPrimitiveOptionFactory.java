@@ -30,42 +30,37 @@ import java.util.Set;
 import static com.google.common.collect.Sets.union;
 
 /**
- * An implementation of {@link ValidatingOptionFactory} which adds validation options for some
- * primitive types.
- *
- * <p>Creates options:
- * <ul>
- *     <li>{@code (pattern)} for {@code string} fields;
- *     <li>{@code (max)}, {@code (min)}, and {@code (range)} for number fields.
- * </ul>
+ * A factory of standard validating options for non-primitive types.
  */
 @AutoService(ValidatingOptionFactory.class)
 @Internal
 @Immutable
-public final class PrimitiveOptionFactory implements StandardOptionFactory {
+public final class NonPrimitiveOptionFactory implements StandardOptionFactory {
 
-    private static final ImmutableSet<FieldValidatingOption<?>> NUMBER_OPTIONS =
-            ImmutableSet.of(Max.create(), Min.create(), Range.create());
+    private static final ImmutableSet<FieldValidatingOption<?>> STRING_OPTIONS =
+            ImmutableSet.of(Pattern.create());
     private static final ImmutableSet<FieldValidatingOption<?>> COLLECTION_OPTIONS =
             ImmutableSet.of(Required.create(false), Goes.create(), Distinct.create());
+    private static final ImmutableSet<FieldValidatingOption<?>> MESSAGE_OPTIONS =
+            ImmutableSet.of(new Valid());
 
     @Override
-    public Set<FieldValidatingOption<?>> forInt() {
-        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forString() {
+        return union(STRING_OPTIONS, COLLECTION_OPTIONS);
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forLong() {
-        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forByteString() {
+        return COLLECTION_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forFloat() {
-        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forEnum() {
+        return COLLECTION_OPTIONS;
     }
 
     @Override
-    public Set<FieldValidatingOption<?>> forDouble() {
-        return union(NUMBER_OPTIONS, COLLECTION_OPTIONS);
+    public Set<FieldValidatingOption<?>> forMessage() {
+        return union(MESSAGE_OPTIONS, COLLECTION_OPTIONS);
     }
 }
