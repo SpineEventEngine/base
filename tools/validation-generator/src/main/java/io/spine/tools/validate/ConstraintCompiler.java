@@ -225,11 +225,13 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                                                           .javaCase());
         Function<FieldAccess, CodeBlock> nestedViolations = fieldAccess ->
                 CodeBlock.builder()
-                         .addStatement("$T $N = $T.violationsOf($L)",
+                         .addStatement("$T $N = $L ? $T.violationsOf($L) : $T.of()",
                                        listOfViolations,
                                        violationsVar.toString(),
+                                       new IsSet(field).valueIsPresent(fieldAccess),
                                        Validate.class,
-                                       fieldAccess)
+                                       fieldAccess,
+                                       ImmutableList.class)
                          .build();
         Check check = fieldAccess -> isEmpty(violationsVar).negate();
         IfInvalidOption errorMessageOption = new IfInvalid().valueOrDefault(field.descriptor());
@@ -242,7 +244,6 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                        .preparingDeclarations(nestedViolations)
                        .conditionCheck(check)
                        .createViolation(violation)
-                       .validateOnlyIfSet()
                        .build());
     }
 

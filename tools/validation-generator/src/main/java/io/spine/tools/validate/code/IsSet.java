@@ -135,6 +135,17 @@ public final class IsSet {
         }
     }
 
+    /**
+     * Produces an expression which tests if a single value of the field is present.
+     *
+     * <p>If the field is singular, the expression is equivalent (but not the same) as the one
+     * produced by {@link #invocation(MessageAccess)}. If the field is a collection however,
+     * the produced expression only tests a single value (i.e. element of the collection).
+     *
+     * @param valueAccess
+     *         the value to be tested
+     * @return the boolean expression testing if the value is non-default
+     */
     public BooleanExpression valueIsPresent(Expression<?> valueAccess) {
         JavaType javaType = field.isMap()
                             ? field.valueDeclaration()

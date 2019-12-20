@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.Identifier.newUuid;
+import static io.spine.base.Identifier.pack;
 
 @DisplayName("`(validate)` constraint should be compiled so that")
 class ValidateConstraintTest {
@@ -86,5 +88,19 @@ class ValidateConstraintTest {
             assertThat(invalidPhone.getViolationList())
                     .hasSize(1);
         }
+    }
+
+    @Test
+    @DisplayName("recursive validation has an exit point")
+    void recursive() {
+        BinaryTree tree = BinaryTree
+                .newBuilder()
+                .setValue(pack(newUuid()))
+                .setLeftChild(BinaryTree
+                                      .newBuilder()
+                                      .setValue(pack(newUuid())))
+                .build();
+        List<ConstraintViolation> violations = tree.validate();
+        assertThat(violations).isEmpty();
     }
 }
