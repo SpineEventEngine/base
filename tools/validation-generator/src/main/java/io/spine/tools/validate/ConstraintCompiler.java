@@ -156,7 +156,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         append(constraintCode(field)
                        .conditionCheck(messageIsNotSet)
                        .createViolation(violation)
-                       .validateAsCollection()
+                       .validateAsWhole()
                        .build());
     }
 
@@ -192,7 +192,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                        .preparingDeclarations(duplicates)
                        .conditionCheck(check)
                        .createViolation(violation)
-                       .validateAsCollection()
+                       .validateAsWhole()
                        .build());
     }
 

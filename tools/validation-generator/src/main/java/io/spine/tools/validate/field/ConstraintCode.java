@@ -143,6 +143,12 @@ public final class ConstraintCode implements Logging {
             return this;
         }
 
+        /**
+         * Sets a function which, given a field access expression, produces preliminary code.
+         *
+         * <p>The result of the preliminary code may be used by the condition and violation
+         * expressions.
+         */
         public Builder preparingDeclarations(Function<FieldAccess, CodeBlock> declarations) {
             this.declarations = checkNotNull(declarations);
             return this;
@@ -163,11 +169,18 @@ public final class ConstraintCode implements Logging {
             return this;
         }
 
-        public Builder validateAsCollection() {
+        /**
+         * Configures the built code to validate the field as a whole, even if it's
+         * a {@linkplain Cardinality#COLLECTION collection}.
+         */
+        public Builder validateAsWhole() {
             this.forceSingular = true;
             return this;
         }
 
+        /**
+         * Configures the built code to run validation only on non-default values of the field.
+         */
         public Builder validateOnlyIfSet() {
             this.onlyIfSet = true;
             return this;
@@ -198,9 +211,19 @@ public final class ConstraintCode implements Logging {
         }
     }
 
+    /**
+     * Cardinality of a field.
+     */
     private enum Cardinality {
 
+        /**
+         * A field has just a single value.
+         */
         SINGULAR,
+
+        /**
+         * A field may have 0 to many values (a repeated field or a map).
+         */
         COLLECTION
     }
 }

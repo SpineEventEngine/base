@@ -27,6 +27,9 @@ import io.spine.tools.validate.code.CodeExpression;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
 
+/**
+ * An expression which yields a message.
+ */
 public final class MessageAccess extends CodeExpression<Message> {
 
     private static final long serialVersionUID = 0L;
@@ -40,6 +43,9 @@ public final class MessageAccess extends CodeExpression<Message> {
         return new MessageAccess(value);
     }
 
+    /**
+     * Obtains an expression which yields a field of this method.
+     */
     public FieldAccess get(FieldDeclaration field) {
         return fieldOfMessage(this, field);
     }
