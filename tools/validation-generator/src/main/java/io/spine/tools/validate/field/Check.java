@@ -25,6 +25,10 @@ import io.spine.tools.validate.code.BooleanExpression;
 
 import java.util.function.Function;
 
+/**
+ * A function which accepts a field and produces an expression which checks some property of
+ * the field.
+ */
 @FunctionalInterface
 public interface Check extends Function<FieldAccess, BooleanExpression> {
 }

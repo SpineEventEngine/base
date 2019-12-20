@@ -22,6 +22,9 @@ package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
 
+/**
+ * A factory of {@link CodeBlock}s.
+ */
 public final class Blocks {
 
     private static final CodeBlock EMPTY = CodeBlock.of("");
@@ -32,6 +35,9 @@ public final class Blocks {
     private Blocks() {
     }
 
+    /**
+     * Obtains an empty code block.
+     */
     public static CodeBlock empty() {
         return EMPTY;
     }

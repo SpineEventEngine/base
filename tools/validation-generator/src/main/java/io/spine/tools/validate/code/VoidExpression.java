@@ -20,8 +20,6 @@
 
 package io.spine.tools.validate.code;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import static java.lang.String.format;
 
 /**
@@ -42,10 +40,5 @@ public final class VoidExpression extends CodeExpression<Void> {
 
     public static VoidExpression formatted(String template, Object... args) {
         return new VoidExpression(format(template, args));
-    }
-
-    @VisibleForTesting
-    public static VoidExpression empty() {
-        return new VoidExpression("");
     }
 }

@@ -39,6 +39,9 @@ import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * A factory of code which check is a given field is set.
+ */
 public final class IsSet {
 
     private static final String MESSAGE = "msg";
@@ -55,6 +58,13 @@ public final class IsSet {
         this.methodBody = methodBody();
     }
 
+    /**
+     * Invokes the method which checks if the value is set.
+     *
+     * @param parameter the parameter to the method - the message containing the field
+     * @return an expression which checks if the field is set
+     * @see #method()
+     */
     public BooleanExpression invocation(MessageAccess parameter) {
         checkNotNull(parameter);
         return alwaysTrue
@@ -64,6 +74,11 @@ public final class IsSet {
                                             parameter);
     }
 
+    /**
+     * Creates a method which checks if the value is set.
+     *
+     * @see #invocation(MessageAccess)
+     */
     public MethodSpec method() {
         TypeName messageType = bestGuess(field.declaringType()
                                               .javaClassName()
@@ -146,6 +161,17 @@ public final class IsSet {
         }
     }
 
+    /**
+     * Checks if a given {@linkplain Alternative set of fields} is set.
+     *
+     * <p>For the resulting expression to yield {@code true}, all the fields in the given
+     * {@link Alternative} must be set.
+     *
+     * @param alternative
+     *         fields to check
+     * @param messageAccess
+     *         message containing the fields
+     */
     public static BooleanExpression
     alternativeIsSet(Alternative alternative, MessageAccess messageAccess) {
         BooleanExpression alternativeMatched =

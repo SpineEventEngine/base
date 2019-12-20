@@ -24,6 +24,7 @@ import com.squareup.javapoet.CodeBlock;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An expression which yields a {@code boolean} value.
@@ -88,14 +89,37 @@ public final class BooleanExpression
         return new ConditionalStatement(this, checkNotNull(branch));
     }
 
+    /**
+     * Checks if this expression is a constant, {@code `true`} literal or {@code `false`} literal.
+     *
+     * @return {@code true} if this expression is a {@code `true`} of {@code `false`} literal,
+     *         {@code false} otherwise
+     */
     public boolean isConstant() {
         return literalValue != null;
     }
 
+    /**
+     * Obtains the literal value of this constant expression.
+     *
+     * <p>Throws an {@code IllegalStateException} if this expression is not a literal.
+     *
+     * @return {@code true} if this expression is a {@code `true`} literal, {@code false} if its
+     *         a {@code `false`} literal
+     * @see #isConstant()
+     */
     public boolean isConstantTrue() {
-        return checkNotNull(literalValue, "`%s` is not a literal.", this);
+        checkState(literalValue != null, "`%s` is not a literal.", this);
+        return literalValue;
     }
 
+    /**
+     * Obtains an expression which yields the opposite boolean value.
+     *
+     * <p>If this expression is a literal, obtains the other literal.
+     *
+     * @return the negated expression
+     */
     public BooleanExpression negate() {
         if (this.equals(TRUE)) {
             return FALSE;
@@ -106,6 +130,14 @@ public final class BooleanExpression
         }
     }
 
+    /**
+     * Obtains an expression which yields the result of {@code &&} (AND) operation between this
+     * expression and the {@code other operation}.
+     *
+     * @param other
+     *         the second operand
+     * @return {@code this && other}
+     */
     public BooleanExpression and(BooleanExpression other) {
         if (this.isConstant()) {
             return this.isConstantTrue() ? other : falseLiteral();
@@ -116,6 +148,14 @@ public final class BooleanExpression
         return fromCode("($L && $L)", this, other);
     }
 
+    /**
+     * Obtains an expression which yields the result of {@code ||} (OR) operation between this
+     * expression and the {@code other operation}.
+     *
+     * @param other
+     *         the second operand
+     * @return {@code this || other}
+     */
     public BooleanExpression or(BooleanExpression other) {
         if (this.isConstant()) {
             return this.isConstantTrue() ? trueLiteral() : other;

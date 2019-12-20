@@ -29,8 +29,8 @@ import static java.lang.System.lineSeparator;
 /**
  * A builder for {@code if} - {@code else} statements.
  *
- * <p>An instance of {@code ConditionalStatement} is not reusable. See {@link #toCode()} and
- * {@link #orElse(CodeBlock)} doc for the details.
+ * <p>An instance of {@code ConditionalStatement} is not reusable. See {@link #toCode()} doc for
+ * the details.
  */
 public final class ConditionalStatement {
 
@@ -69,30 +69,6 @@ public final class ConditionalStatement {
      */
     public CodeBlock toCode() {
         complete();
-        code.endControlFlow();
-        return code.build();
-    }
-
-    /**
-     * Adds the {@code else} block and converts this statement into Java code.
-     *
-     * <p>Completes this statement. If the statement is already complete, throws
-     * an {@link IllegalStateException}.
-     *
-     * @param branch
-     *         the code which should be executed if the {@code if} condition is {@code false}
-     */
-    public CodeBlock orElse(CodeBlock branch) {
-        return branch.isEmpty()
-               ? toCode()
-               : alternativeBranch(branch);
-    }
-
-    private CodeBlock alternativeBranch(CodeBlock branch) {
-        complete();
-        code.nextControlFlow("else");
-        code.add(branch);
-        code.add(lineSeparator());
         code.endControlFlow();
         return code.build();
     }

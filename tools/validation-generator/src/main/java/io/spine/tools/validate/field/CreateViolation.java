@@ -26,6 +26,10 @@ import io.spine.validate.ConstraintViolation;
 
 import java.util.function.Function;
 
+/**
+ * A function which accepts a field and produces an expression of a {@link ConstraintViolation}
+ * on that field.
+ */
 @FunctionalInterface
 public interface CreateViolation extends Function<FieldAccess, Expression<ConstraintViolation>> {
 }

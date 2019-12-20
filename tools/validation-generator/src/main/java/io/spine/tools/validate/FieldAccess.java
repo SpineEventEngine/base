@@ -27,16 +27,36 @@ import io.spine.tools.validate.code.CodeExpression;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
+/**
+ * An language expression which obtains a field from a Protobuf message.
+ */
 public final class FieldAccess extends CodeExpression<Object> {
 
     private static final long serialVersionUID = 0L;
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // In the generated code.
     public static final FieldAccess element = new FieldAccess("element");
 
     private FieldAccess(String value) {
         super(value);
     }
 
+    /**
+     * Creates a new {@code FieldAccess}.
+     *
+     * <p>If the given field is singular, the expression yields the value of the field.
+     *
+     * <p>If the given field is repeated, the expression yields the list of values of the field.
+     *
+     * <p>If the given field is a map, the expression yields the collection of values of the field,
+     * without the keys.
+     *
+     * @param message
+     *         an expression of the message to obtain the field from
+     * @param field
+     *         the field
+     * @return new {@code FieldAccess}
+     */
     public static FieldAccess fieldOfMessage(MessageAccess message, FieldDeclaration field) {
         checkNotNull(message);
         checkNotNull(field);
