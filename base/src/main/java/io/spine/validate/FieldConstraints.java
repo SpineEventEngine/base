@@ -110,18 +110,12 @@ final class FieldConstraints {
 
     private static Stream<Constraint>
     constraintsFrom(ImmutableSet<ValidatingOptionFactory> factories,
-                    Selector selector,
+                    Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> selector,
                     FieldContext field) {
         return factories.stream()
                         .map(selector)
                         .flatMap(Set::stream)
                         .filter(option -> option.shouldValidate(field))
                         .map(option -> option.constraintFor(field));
-    }
-
-    @FunctionalInterface
-    private interface Selector
-            extends Function<ValidatingOptionFactory, Set<FieldValidatingOption<?>>> {
-
     }
 }
