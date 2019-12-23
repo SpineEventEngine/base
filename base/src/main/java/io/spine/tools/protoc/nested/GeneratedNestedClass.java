@@ -18,35 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc.nested;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.UuidConfig;
-import io.spine.type.MessageType;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.value.StringTypeValue;
 
 /**
- * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
+ * A generated Java nested class source code.
+ *
+ * <p>SPI users are responsible for checking that the generated code is properly formatted and
+ * contains all the required modifiers, comments, and Javadoc.
+ *
+ * <p>The actual compilation of the class is performed as a part of the compilation of other
+ * Protobuf-generated sources.
  */
-final class GenerateUuidMethods extends MethodGenerationTask {
+@Immutable
+public final class GeneratedNestedClass extends StringTypeValue {
 
-    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
-    }
+    private static final long serialVersionUID = 0L;
 
     /**
-     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
-     * {@code type}.
+     * Creates a new instance of the generated code holder.
      */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return generateMethodsFor(type);
+    public GeneratedNestedClass(String value) {
+        super(value);
     }
 }

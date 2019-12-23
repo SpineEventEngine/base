@@ -57,6 +57,22 @@ public final class ProtocTaskConfigs {
                 .build();
     }
 
+    public static QueryableConfig queryableConfig(ClassName className) {
+        checkNotNull(className);
+        return QueryableConfig
+                .newBuilder()
+                .setValue(className.value())
+                .build();
+    }
+
+    public static SubscribableConfig subscribableConfig(ClassName className) {
+        checkNotNull(className);
+        return SubscribableConfig
+                .newBuilder()
+                .setValue(className.value())
+                .build();
+    }
+
     /**
      * Creates a new {@link ConfigByPattern} instance from the supplied {@code className} and
      * {@code pattern}.

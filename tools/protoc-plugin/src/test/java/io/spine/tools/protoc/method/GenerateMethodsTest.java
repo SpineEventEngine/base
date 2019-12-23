@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.given.TestMethodFactory;
@@ -48,7 +49,7 @@ final class GenerateMethodsTest {
             assertThrows(NullPointerException.class, () ->
                     new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
             assertThrows(NullPointerException.class, () ->
-                    new GenerateMethods(testMethodFactories(), null)
+                    new GenerateMethods(testClassLoader(), null)
             );
         }
 
@@ -58,7 +59,7 @@ final class GenerateMethodsTest {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(FilePatterns.filePrefix("non-default"))
                     .build();
-            GenerateMethods generateMethods = new GenerateMethods(testMethodFactories(), config);
+            GenerateMethods generateMethods = new GenerateMethods(testClassLoader(), config);
             assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
         }
     }
@@ -78,7 +79,7 @@ final class GenerateMethodsTest {
                 .setPattern(FilePatterns.filePrefix("non-default"))
                 .build();
         assertThrows(IllegalArgumentException.class, () ->
-                new GenerateMethods(testMethodFactories(), config));
+                new GenerateMethods(testClassLoader(), config));
     }
 
     @DisplayName("generate empty result if")
@@ -116,11 +117,11 @@ final class GenerateMethodsTest {
     }
 
     private static GenerateMethods newTask(ConfigByPattern config) {
-        return new GenerateMethods(testMethodFactories(), config);
+        return new GenerateMethods(testClassLoader(), config);
     }
 
-    private static MethodFactories testMethodFactories() {
-        return new MethodFactories(Classpath.getDefaultInstance());
+    private static ExternalClassLoader<MethodFactory> testClassLoader() {
+        return new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
     }
 
     private static MessageType testType() {

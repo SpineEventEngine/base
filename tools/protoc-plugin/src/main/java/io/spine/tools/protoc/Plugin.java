@@ -27,6 +27,7 @@ import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.builder.BuilderGenerator;
 import io.spine.tools.protoc.iface.InterfaceGenerator;
 import io.spine.tools.protoc.method.MethodGenerator;
+import io.spine.tools.protoc.nested.NestedClassGenerator;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -65,6 +66,7 @@ public final class Plugin {
                 .builder()
                 .add(InterfaceGenerator.instance(config))
                 .add(MethodGenerator.instance(config))
+                .add(NestedClassGenerator.instance(config))
                 .add(BuilderGenerator.instance(config))
                 .build();
         CodeGeneratorResponse response = generator.process(request);

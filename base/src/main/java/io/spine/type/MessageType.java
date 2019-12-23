@@ -30,11 +30,13 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
+import io.spine.code.proto.EntityStateOption;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
+import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
@@ -45,6 +47,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
+import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
+import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 
 /**
  * A message type as declared in a proto file.
@@ -180,6 +184,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     public boolean isEvent() {
         boolean result = isTopLevel() && declaringFileName().isEvents();
         return result;
+    }
+
+    public boolean isEntityState() {
+        Optional<EntityOption.Kind> entityType = EntityStateOption.entityTypeOf(descriptor());
+        return entityType.isPresent()
+                && entityType.get() != UNRECOGNIZED
+                && entityType.get() != KIND_UNKNOWN;
     }
 
     /**

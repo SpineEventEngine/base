@@ -18,41 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.SubscribableConfig;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
-/**
- * An abstract base for the method code generation tasks.
- */
-abstract class MethodGenerationTask implements CodeGenerationTask {
+final class GenerateFields extends NestedClassGenerationTask {
 
-    private final ExternalClassLoader<MethodFactory> classLoader;
-    private final String factoryName;
-
-    MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
-        this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+    GenerateFields(ExternalClassLoader<NestedClassFactory> classLoader, SubscribableConfig config) {
+        super(classLoader, config.getValue());
     }
 
-    /**
-     * Performs the actual method code generation using supplied {@linkplain #factoryName factory}.
-     */
-    ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
-        return factory
-                .createFor(type)
-                .stream()
-                .map(methodBody -> MessageMethod.from(methodBody, type))
-                .collect(toImmutableList());
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        boolean isSubscribableType = type.isEntityState() || type.isEvent() || type.isRejection();
+        if (!isSubscribableType) {
+            return ImmutableList.of();
+        }
+        return generateNestedClassesFor(type);
     }
 }

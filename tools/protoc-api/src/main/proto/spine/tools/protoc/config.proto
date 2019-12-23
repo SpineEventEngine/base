@@ -24,6 +24,9 @@ message SpineProtocConfig {
     // Methods generation tasks.
     AddMethods add_methods = 2;
 
+    // Nested classes generation tasks.
+    AddNestedClasses add_nested_classes = 4;
+
     // Determines if the generation of `ValidatingBuilder` should be skipped.
     //
     // If set to `true`, message builder classes will NOT implement
@@ -58,6 +61,15 @@ message AddMethods {
     Classpath factory_classpath = 3;
 }
 
+message AddNestedClasses {
+
+    QueryableConfig queryable_factory = 1;
+
+    SubscribableConfig subscribable_factory = 2;
+
+    Classpath factory_classpath = 3;
+}
+
 // UUID value code generation configuration.
 //
 message UuidConfig {
@@ -65,6 +77,33 @@ message UuidConfig {
     // A fully-qualified name of the target.
     //
     // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+}
+
+// The code generation configuration for entity state messages.
+//
+message EntityStateConfig {
+
+    // A fully-qualified name of the interface to mark the entity state messages with.
+    //
+    string value = 1;
+}
+
+message QueryableConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently, only the nested class factory name is expected.
+    //
+    string value = 1;
+}
+
+message SubscribableConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently, only the nested class factory name is expected.
     //
     string value = 1;
 }
@@ -82,15 +121,6 @@ message ConfigByPattern {
 
     // A file pattern that defines for which message types code should be generated.
     FilePattern pattern = 2;
-}
-
-// The code generation configuration for entity state messages.
-//
-message EntityStateConfig {
-
-    // A fully-qualified name of the interface to mark the entity state messages with.
-    //
-    string value = 1;
 }
 
 // File pattern which is used to filter messages.

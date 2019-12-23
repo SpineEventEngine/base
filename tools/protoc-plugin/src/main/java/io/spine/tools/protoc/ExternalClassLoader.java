@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import io.spine.logging.Logging;
-import io.spine.tools.protoc.Classpath;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -34,63 +34,63 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An utility class for instantiating {@link MethodFactory}.
+ * A utility for instantiating a particular class from its {@linkplain FullyQualifiedName FQN}
+ * using the specified classpath.
  */
-final class MethodFactories implements Logging {
+public final class ExternalClassLoader<T> implements Logging {
 
-    private final ClassLoader externalClassLoader;
+    private final ClassLoader classLoader;
+    private final Class<T> loadedClass;
 
-    MethodFactories(Classpath factoryClasspath) {
-        this.externalClassLoader = externalClassLoader(factoryClasspath);
+    public ExternalClassLoader(Classpath classpath, Class<T> loadedClass) {
+        this.classLoader = classLoader(classpath);
+        this.loadedClass = loadedClass;
     }
 
-    /**
-     * Instantiates a {@link MethodFactory} with the specified {@code factoryName}.
-     */
-    MethodFactory newFactory(String factoryName) {
-        checkNotEmptyOrBlank(factoryName);
-        MethodFactory result = from(factoryName);
+    public T newInstance(@FullyQualifiedName String className) {
+        checkNotEmptyOrBlank(className);
+        T result = from(className);
         return result;
     }
 
     /**
-     * Instantiates a new {@link MethodFactory} from the specified fully-qualified class name.
+     * Instantiates the class defined by the specified fully-qualified name.
      */
-    private MethodFactory from(String fqn) {
-        Class<MethodFactory> factoryClass = methodFactoryClass(fqn);
+    private T from(String fqn) {
+        Class<T> clazz = loadClass(fqn);
         try {
-            MethodFactory factory = factoryClass.getConstructor()
-                                                .newInstance();
-            return factory;
+            T instance = clazz.getConstructor()
+                              .newInstance();
+            return instance;
         } catch (InstantiationException | IllegalAccessException
                 | NoSuchMethodException | InvocationTargetException e) {
             _error().withCause(e)
-                    .log("Unable to create method factory `%s`.", fqn);
-            throw new MethodFactoryInstantiationException(fqn, e);
+                    .log("Unable to instantiate the class `%s`.", fqn);
+            throw new ClassInstantiationException(fqn, e);
         }
     }
 
-    @SuppressWarnings("unchecked") // factory is already assignable from MethodFactory during cast
-    private Class<MethodFactory> methodFactoryClass(String fqn) {
-        Class<?> factory = factoryClass(fqn);
-        if (MethodFactory.class.isAssignableFrom(factory)) {
-            return (Class<MethodFactory>) factory;
+    @SuppressWarnings("unchecked") // The class is already checked to be assignable during the cast.
+    private Class<T> loadClass(String fqn) {
+        Class<?> factory = classByFqn(fqn);
+        if (loadedClass.isAssignableFrom(factory)) {
+            return (Class<T>) factory;
         }
-        _error().log("Class `%s` does not implement `%s`.", fqn, MethodFactory.class.getName());
-        throw new MethodFactoryInstantiationException(fqn);
+        _error().log("Class `%s` does not implement `%s`.", fqn, loadedClass.getName());
+        throw new ClassInstantiationException(fqn);
     }
 
-    private Class<?> factoryClass(String fqn) {
+    private Class<?> classByFqn(String fqn) {
         try {
-            Class<?> factory = externalClassLoader.loadClass(fqn);
+            Class<?> factory = classLoader.loadClass(fqn);
             return factory;
         } catch (ClassNotFoundException e) {
-            _error().log("Unable to resolve `MethodFactory` `%s`.", fqn);
-            throw new MethodFactoryInstantiationException(fqn, e);
+            _error().log("Unable to resolve class `%s`.", fqn);
+            throw new ClassInstantiationException(fqn, e);
         }
     }
 
-    private static ClassLoader externalClassLoader(Classpath factoryClasspath) {
+    private static ClassLoader classLoader(Classpath factoryClasspath) {
         ClassLoader currentClassLoader = Thread.currentThread()
                                                .getContextClassLoader();
         URL[] classPathUrls = classPathUrls(factoryClasspath);
@@ -104,7 +104,7 @@ final class MethodFactories implements Logging {
                 .stream()
                 .map(File::new)
                 .map(File::toURI)
-                .map(MethodFactories::toUrl)
+                .map(ExternalClassLoader::toUrl)
                 .toArray(URL[]::new);
     }
 

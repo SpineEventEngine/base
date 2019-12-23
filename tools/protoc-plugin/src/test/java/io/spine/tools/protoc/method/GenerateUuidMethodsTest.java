@@ -23,6 +23,7 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.type.MessageType;
@@ -48,7 +49,7 @@ final class GenerateUuidMethodsTest {
             assertThrows(NullPointerException.class, () ->
                     new GenerateUuidMethods(null, UuidConfig.getDefaultInstance()));
             assertThrows(NullPointerException.class, () ->
-                    new GenerateUuidMethods(testMethodFactories(), null)
+                    new GenerateUuidMethods(testClassLoader(), null)
             );
         }
 
@@ -56,7 +57,7 @@ final class GenerateUuidMethodsTest {
         @Test
         void nullMessageTypeIsSupplied() {
             UuidConfig config = newTaskConfig("test");
-            GenerateUuidMethods task = new GenerateUuidMethods(testMethodFactories(), config);
+            GenerateUuidMethods task = new GenerateUuidMethods(testClassLoader(), config);
             assertThrows(NullPointerException.class, () -> task.generateFor(null));
         }
     }
@@ -67,7 +68,7 @@ final class GenerateUuidMethodsTest {
     void throwIllegalArgumentException(String factoryName) {
         UuidConfig config = newTaskConfig(factoryName);
         assertThrows(IllegalArgumentException.class, () ->
-                new GenerateUuidMethods(testMethodFactories(), config));
+                new GenerateUuidMethods(testClassLoader(), config));
     }
 
     @DisplayName("generate empty result if")
@@ -103,11 +104,11 @@ final class GenerateUuidMethodsTest {
     }
 
     private static GenerateUuidMethods newTask(UuidConfig config) {
-        return new GenerateUuidMethods(testMethodFactories(), config);
+        return new GenerateUuidMethods(testClassLoader(), config);
     }
 
-    private static MethodFactories testMethodFactories() {
-        return new MethodFactories(Classpath.getDefaultInstance());
+    private static ExternalClassLoader<MethodFactory> testClassLoader() {
+        return new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
     }
 
     private static MessageType testType() {

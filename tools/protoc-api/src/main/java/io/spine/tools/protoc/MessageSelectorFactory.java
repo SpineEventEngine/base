@@ -62,6 +62,14 @@ public final class MessageSelectorFactory {
         return new EntityState();
     }
 
+    public QueryableMessage queryable() {
+        return new QueryableMessage();
+    }
+
+    public SubscribableMessage subscribable() {
+        return new SubscribableMessage();
+    }
+
     /**
      * Creates a {@link PatternSelector} out of the supplied configuration.
      *

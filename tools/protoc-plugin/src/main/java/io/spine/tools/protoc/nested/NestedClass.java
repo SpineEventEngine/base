@@ -18,35 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc.nested;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.UuidConfig;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.tools.protoc.AbstractCompilerOutput;
+import io.spine.tools.protoc.InsertionPoint;
+import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.type.MessageType;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
+ * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
+ * message class with a new nested class.
  */
-final class GenerateUuidMethods extends MethodGenerationTask {
+final class NestedClass extends AbstractCompilerOutput {
 
-    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
+    private NestedClass(File file) {
+        super(file);
     }
 
     /**
-     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
-     * {@code type}.
+     * Creates a new instance of {@code NestedClass}.
      */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return generateMethodsFor(type);
+    static NestedClass from(GeneratedNestedClass generatedClass, MessageType messageType) {
+        String insertionPoint = InsertionPoint.class_scope.forType(messageType);
+        String content = generatedClass.value();
+        File.Builder file = ProtocPluginFiles.prepareFile(messageType);
+        File result = file.setInsertionPoint(insertionPoint)
+                          .setContent(content)
+                          .build();
+        return new NestedClass(result);
     }
 }

@@ -28,6 +28,7 @@ import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedNestedClasses;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -166,6 +167,8 @@ public class Extension extends GradleExtension {
     public final GeneratedInterfaces interfaces = new GeneratedInterfaces();
 
     public final GeneratedMethods methods = new GeneratedMethods();
+
+    public final GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
 
     public boolean generateValidatingBuilders = true;
 
@@ -366,6 +369,11 @@ public class Extension extends GradleExtension {
     public static GeneratedMethods getMethods(Project project) {
         GeneratedMethods methods = extension(project).methods;
         return methods;
+    }
+
+    public static GeneratedNestedClasses getNestedClasses(Project project) {
+        GeneratedNestedClasses nestedClasses = extension(project).nestedClasses;
+        return nestedClasses;
     }
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {

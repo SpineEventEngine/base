@@ -23,9 +23,11 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
 import io.spine.tools.protoc.AddMethods;
+import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedNestedClasses;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -41,6 +43,7 @@ import java.util.Set;
 
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
+import static io.spine.tools.gradle.compiler.Extension.getNestedClasses;
 import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidatingBuilders;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -86,16 +89,24 @@ final class ProtocPluginConfiguration {
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
         GeneratedInterfaces interfaces = getInterfaces(project);
         GeneratedMethods methods = getMethods(project);
+        GeneratedNestedClasses nestedClasses = getNestedClasses(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
+        Classpath projectClasspath = projectClasspath(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
                 .toBuilder()
-                .setFactoryClasspath(projectClasspath(project))
+                .setFactoryClasspath(projectClasspath)
+                .build();
+        AddNestedClasses nestedClassesGeneration = nestedClasses
+                .asProtocConfig()
+                .toBuilder()
+                .setFactoryClasspath(projectClasspath)
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methodsGeneration)
+                .setAddNestedClasses(nestedClassesGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .build();
         return result;

@@ -23,6 +23,7 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePatternMatcher;
 import io.spine.type.MessageType;
 
@@ -36,8 +37,8 @@ final class GenerateMethods extends MethodGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    GenerateMethods(MethodFactories methodFactories, ConfigByPattern config) {
-        super(methodFactories, config.getValue());
+    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader, ConfigByPattern config) {
+        super(classLoader, config.getValue());
         checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }

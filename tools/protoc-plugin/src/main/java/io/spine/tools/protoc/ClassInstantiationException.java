@@ -18,44 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import static java.lang.String.format;
 
 /**
- * Exception that is thrown when a particular
- * {@link io.spine.tools.protoc.method.MethodFactory MethodFactory} could not be instantiated.
+ * Exception that is thrown when a particular class passed by FQN cannot be instantiated.
  */
-final class MethodFactoryInstantiationException extends RuntimeException {
+final class ClassInstantiationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
     private static final String ERR_MSG_UNABLE_TO_INSTANTIATE =
-            "Unable to instantiate MethodFactory `%s`.";
+            "Unable to instantiate class `%s`.";
 
     /**
-     * Creates a new instance with the factory name.
+     * Creates a new instance with the class name.
      *
-     * @param factoryName
-     *         the MessageFactory name
+     * @param className
+     *         the class name
      */
-    MethodFactoryInstantiationException(String factoryName) {
-        super(makeMsg(factoryName));
+    ClassInstantiationException(String className) {
+        super(makeMsg(className));
     }
 
-    private static String makeMsg(String factoryName) {
-        return format(ERR_MSG_UNABLE_TO_INSTANTIATE, factoryName);
+    private static String makeMsg(String className) {
+        return format(ERR_MSG_UNABLE_TO_INSTANTIATE, className);
     }
 
     /**
-     * Creates a new instance with the factory name and the cause.
+     * Creates a new instance with the class name and the cause.
      *
-     * @param factoryName
-     *         the MessageFactory name
+     * @param className
+     *         the class name
      * @param cause
      *         the exception cause
      */
-    MethodFactoryInstantiationException(String factoryName, Throwable cause) {
-        super(makeMsg(factoryName), cause);
+    ClassInstantiationException(String className, Throwable cause) {
+        super(makeMsg(className), cause);
     }
 }

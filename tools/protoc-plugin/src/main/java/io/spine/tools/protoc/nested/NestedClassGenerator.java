@@ -18,14 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.AddMethods;
+import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -37,38 +36,28 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.Messages.isNotDefault;
 
-/**
- * The {@link SpineProtoGenerator} implementation generating additional message methods.
- *
- * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
- * {@link io.spine.tools.protoc.InsertionPoint#class_scope class scope} insertion point.
- */
-public final class MethodGenerator extends SpineProtoGenerator {
+public final class NestedClassGenerator extends SpineProtoGenerator {
 
     private final CodeGenerationTasks codeGenerationTasks;
 
-    /** Prevents singleton class instantiation. */
-    private MethodGenerator(ImmutableList<CodeGenerationTask> codeGenerationTasks) {
+    private NestedClassGenerator(ImmutableList<CodeGenerationTask> tasks) {
         super();
-        this.codeGenerationTasks = new CodeGenerationTasks(codeGenerationTasks);
+        this.codeGenerationTasks = new CodeGenerationTasks(tasks);
     }
 
-    /**
-     * Retrieves the single instance of the {@code MethodGenerator}.
-     */
-    public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
+    public static NestedClassGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        AddMethods config = spineProtocConfig.getAddMethods();
-        ExternalClassLoader<MethodFactory> classLoader =
-                new ExternalClassLoader<>(config.getFactoryClasspath(), MethodFactory.class);
+        AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
+        ExternalClassLoader<NestedClassFactory> classLoader =
+                new ExternalClassLoader<>(config.getFactoryClasspath(), NestedClassFactory.class);
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        if (isNotDefault(config.getUuidFactory())) {
-            tasks.add(new GenerateUuidMethods(classLoader, config.getUuidFactory()));
+        if (isNotDefault(config.getQueryableFactory())) {
+            tasks.add(new GenerateColumns(classLoader, config.getQueryableFactory()));
         }
-        for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
-            tasks.add(new GenerateMethods(classLoader, byPattern));
+        if (isNotDefault(config.getSubscribableFactory())) {
+            tasks.add(new GenerateFields(classLoader, config.getSubscribableFactory()));
         }
-        return new MethodGenerator(tasks.build());
+        return new NestedClassGenerator(tasks.build());
     }
 
     @Override

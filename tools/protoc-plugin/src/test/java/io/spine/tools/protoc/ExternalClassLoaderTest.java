@@ -18,12 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.testing.logging.MuteLogging;
-import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,81 +37,84 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("MessageFactories should")
-final class MethodFactoriesTest {
+@DisplayName("`ExternalClassLoader` should")
+final class ExternalClassLoaderTest {
 
-    private MethodFactories methodFactories;
+    private ExternalClassLoader<MethodFactory> classLoader;
 
     @BeforeEach
     void setUp() {
-        methodFactories = new MethodFactories(Classpath.getDefaultInstance());
+        classLoader =
+                new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
     }
 
-    @DisplayName("throw IllegalArgumentException if factory name is")
+    @DisplayName("throw `IllegalArgumentException` if the class name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String factoryName) {
-        assertThrows(IllegalArgumentException.class, () -> methodFactories.newFactory(factoryName));
+        assertThrows(IllegalArgumentException.class, () -> classLoader.newInstance(factoryName));
     }
 
     @MuteLogging
     @SuppressWarnings("NonExceptionNameEndsWithException")
-    @DisplayName("throw MethodFactoryInstantiationException")
+    @DisplayName("throw `ClassInstantiationException`")
     @Nested
     final class ThrowInstantiationException {
 
         @DisplayName("if implementation does not have a public constructor")
         @Test
         void withoutPublicConstructor() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> newFactoryFor(WithoutPublicConstructor.class));
+            assertThrows(ClassInstantiationException.class,
+                         () -> newInstanceFor(WithoutPublicConstructor.class));
         }
 
         @DisplayName("if implementation has private constructor")
         @Test
         void withPrivateConstructor() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> newFactoryFor(WithPrivateConstructor.class));
+            assertThrows(ClassInstantiationException.class,
+                         () -> newInstanceFor(WithPrivateConstructor.class));
         }
 
         @DisplayName("if exception is thrown during instantiation")
         @Test
         void exceptionThrownDuringInstantiation() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> newFactoryFor(WithExceptionDuringInstantiation.class));
+            assertThrows(ClassInstantiationException.class,
+                         () -> newInstanceFor(WithExceptionDuringInstantiation.class));
         }
 
         @DisplayName("if implementation is abstract")
         @Test
         void implementationIsAbstract() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> newFactoryFor(WithAbstractImplementation.class));
+            assertThrows(ClassInstantiationException.class,
+                         () -> newInstanceFor(WithAbstractImplementation.class));
         }
 
+        @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
         @DisplayName("if implementation is not found or not available")
         @Test
         void classIsNotFound() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> methodFactories.newFactory("com.example.NonExistingMethodFactory"));
+            assertThrows(ClassInstantiationException.class,
+                         () -> classLoader.newInstance("com.example.NonExistingMethodFactory"));
         }
 
         @DisplayName("if supplied class does not implement MethodFactory")
         @Test
         void doesNotImplementMethodFactory() {
-            assertThrows(MethodFactoryInstantiationException.class,
-                         () -> newFactoryFor(NotMethodFactory.class));
+            assertThrows(ClassInstantiationException.class,
+                         () -> newInstanceFor(NotMethodFactory.class));
         }
     }
 
-    @DisplayName("return MethodFactory instance by it's fully-qualified name")
+    @DisplayName("return a class instance by it's fully-qualified name")
     @Test
-    void returnMethodFactoryInstanceByFullyQualifiedName() {
-        assertThat(newFactoryFor(StubMethodFactory.class))
+    void returnClassInstanceByFqn() {
+        assertThat(newInstanceFor(StubMethodFactory.class))
                 .isInstanceOf(StubMethodFactory.class);
     }
 
-    private MethodFactory newFactoryFor(Class<?> factory) {
-        return methodFactories.newFactory(factory.getName());
+    @CanIgnoreReturnValue
+    private MethodFactory newInstanceFor(Class<?> clazz) {
+        return classLoader.newInstance(clazz.getName());
     }
 
     @Immutable
@@ -131,7 +136,6 @@ final class MethodFactoriesTest {
     @Immutable
     @SuppressWarnings("EmptyClass") // for test reasons
     private static final class WithoutPublicConstructor extends EmptyMethodFactory {
-
     }
 
     @Immutable

@@ -59,4 +59,9 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
         EntityStateOption option = new EntityStateOption();
         return option.valueFrom(message);
     }
+
+    public static Optional<EntityOption.Kind> entityTypeOf(Descriptor message) {
+        Optional<EntityOption> option = valueOf(message);
+        return option.map(EntityOption::getKind);
+    }
 }

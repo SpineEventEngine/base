@@ -37,6 +37,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  *         Protobuf configuration
  * @see GeneratedInterfaces
  * @see GeneratedMethods
+ * @see GeneratedNestedClasses
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
