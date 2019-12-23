@@ -42,10 +42,17 @@ import static io.spine.validate.FieldConstraints.customFactoriesExist;
 @Immutable
 public final class Constraints {
 
+    private static final int CACHE_SIZE = 1000;
+
+    private static final LoadingCache<CacheKey, Constraints> allConstraints = CacheBuilder
+            .newBuilder()
+            .maximumSize(CACHE_SIZE)
+            .build(new ConstraintCacheLoader());
     private static final LoadingCache<CacheKey, Constraints> customConstraints = CacheBuilder
             .newBuilder()
-            .maximumSize(1000)
-            .build(new ConstraintCacheLoader());
+            .maximumSize(CACHE_SIZE)
+            .build(new CustomConstraintCacheLoader());
+
     private final ImmutableList<Constraint> constraints;
 
     private Constraints(ImmutableList<Constraint> constraints) {
@@ -68,11 +75,8 @@ public final class Constraints {
     public static Constraints of(MessageType type, FieldContext context) {
         checkNotNull(type);
         checkNotNull(context);
-        ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
-        fieldConstraints(type, context)
-                .forEach(constraintBuilder::add);
-        addRequiredField(type, constraintBuilder);
-        return new Constraints(constraintBuilder.build());
+        CacheKey key = new CacheKey(type, context);
+        return allConstraints.getUnchecked(key);
     }
 
     static Constraints onlyCustom(MessageType type, FieldContext context) {
@@ -80,23 +84,6 @@ public final class Constraints {
         checkNotNull(context);
         CacheKey key = new CacheKey(type, context);
         return customConstraints.getUnchecked(key);
-    }
-
-    private static Stream<Constraint> fieldConstraints(MessageType type, FieldContext context) {
-        return type
-                .fields()
-                .stream()
-                .map(field -> context.forChild(field.descriptor()))
-                .flatMap(FieldConstraints::of);
-    }
-
-    private static void addRequiredField(MessageType type,
-                                         ImmutableList.Builder<Constraint> constraintBuilder) {
-        RequiredField requiredField = new RequiredField();
-        if (requiredField.valuePresent(type.descriptor())) {
-            Constraint requiredFieldConstraint = requiredField.constraintFor(type);
-            constraintBuilder.add(requiredFieldConstraint);
-        }
     }
 
     /**
@@ -145,6 +132,35 @@ public final class Constraints {
     }
 
     private static final class ConstraintCacheLoader extends CacheLoader<CacheKey, Constraints> {
+
+        @Override
+        public Constraints load(CacheKey key) {
+            ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
+            fieldConstraints(key.type, key.fieldContext)
+                    .forEach(constraintBuilder::add);
+            addRequiredField(key.type, constraintBuilder);
+            return new Constraints(constraintBuilder.build());
+        }
+
+        private static Stream<Constraint> fieldConstraints(MessageType type, FieldContext context) {
+            return type
+                    .fields()
+                    .stream()
+                    .map(field -> context.forChild(field.descriptor()))
+                    .flatMap(FieldConstraints::of);
+        }
+
+        private static void addRequiredField(MessageType type,
+                                             ImmutableList.Builder<Constraint> constraintBuilder) {
+            RequiredField requiredField = new RequiredField();
+            if (requiredField.valuePresent(type.descriptor())) {
+                Constraint requiredFieldConstraint = requiredField.constraintFor(type);
+                constraintBuilder.add(requiredFieldConstraint);
+            }
+        }
+    }
+
+    private static final class CustomConstraintCacheLoader extends CacheLoader<CacheKey, Constraints> {
 
         @Override
         public Constraints load(CacheKey key) {

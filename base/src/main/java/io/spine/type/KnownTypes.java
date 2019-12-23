@@ -195,7 +195,7 @@ public class KnownTypes implements Serializable {
 
     private Type<?, ?> get(TypeName name) throws UnknownTypeException {
         Type<?, ?> result = typeSet.find(name)
-                             .orElseThrow(() -> new UnknownTypeException(name.value()));
+                                   .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 

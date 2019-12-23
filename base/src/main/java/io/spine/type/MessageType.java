@@ -39,6 +39,7 @@ import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -54,6 +55,7 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
  * A message type as declared in a proto file.
  */
 @Immutable
+@SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     private final ImmutableList<FieldDeclaration> fields;
@@ -63,11 +65,17 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public MessageType(Descriptor descriptor) {
         super(descriptor, true);
-        this.fields = descriptor
-                .getFields()
-                .stream()
-                .map(field -> new FieldDeclaration(field, this))
-                .collect(toImmutableList());
+        this.fields = collectFields();
+    }
+
+    private ImmutableList<FieldDeclaration> collectFields() {
+        List<FieldDescriptor> descriptors = descriptor().getFields();
+        ImmutableList.Builder<FieldDeclaration> fields =
+                ImmutableList.builderWithExpectedSize(descriptors.size());
+        for (FieldDescriptor field : descriptors) {
+            fields.add(new FieldDeclaration(field, this));
+        }
+        return fields.build();
     }
 
     /**
@@ -329,8 +337,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (!file.hasSourceCodeInfo()) {
             _warn().log(
                     "Unable to obtain proto source code info. " +
-                    "Please configure the Gradle Protobuf plugin as follows:%n" +
-                    "`task.descriptorSetOptions.includeSourceInfo = true`."
+                            "Please configure the Gradle Protobuf plugin as follows:%n" +
+                            "`task.descriptorSetOptions.includeSourceInfo = true`."
             );
             return Optional.empty();
         }
@@ -349,3 +357,4 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                         .test(this);
     }
 }
+
