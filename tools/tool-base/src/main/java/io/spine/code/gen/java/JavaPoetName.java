@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gen;
+package io.spine.code.gen.java;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.gen.java.NestedClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 
