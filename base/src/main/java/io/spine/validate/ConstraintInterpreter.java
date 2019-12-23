@@ -62,6 +62,7 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
  */
+@SuppressWarnings("OverlyCoupledClass")
 final class ConstraintInterpreter implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
@@ -145,21 +146,19 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
 
     @Override
     public void visitValidate(ValidateConstraint constraint) {
-        if (constraint.shouldBeValid()) {
-            FieldValue fieldValue = message.valueOf(constraint.field());
-            if (!fieldValue.isDefault()) {
-                List<ConstraintViolation> childViolations = fieldValue
-                        .values()
-                        .map(val -> unpackIfPacked((Message) val))
-                        .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
-                        .collect(toList());
-                if (!childViolations.isEmpty()) {
-                    ConstraintViolation parentViolation = violation(constraint, fieldValue)
-                            .toBuilder()
-                            .addAllViolation(childViolations)
-                            .build();
-                    violations.add(parentViolation);
-                }
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        if (!fieldValue.isDefault()) {
+            List<ConstraintViolation> childViolations = fieldValue
+                    .values()
+                    .map(val -> unpackIfPacked((Message) val))
+                    .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
+                    .collect(toList());
+            if (!childViolations.isEmpty()) {
+                ConstraintViolation parentViolation = violation(constraint, fieldValue)
+                        .toBuilder()
+                        .addAllViolation(childViolations)
+                        .build();
+                violations.add(parentViolation);
             }
         }
     }
@@ -198,11 +197,11 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
         }
     }
 
-    private static List<ConstraintViolation> childViolations(FieldContext field, Message msg) {
-        MessageValue messageValue = nestedIn(field, msg);
+    private static List<ConstraintViolation> childViolations(FieldContext field, Message message) {
+        MessageValue messageValue = nestedIn(field, unpackIfPacked(message));
         ConstraintInterpreter childInterpreter = new ConstraintInterpreter(messageValue);
         return Constraints
-                .of(MessageType.of(msg), field)
+                .of(MessageType.of(message), field)
                 .runThrough(childInterpreter)
                 .map(ValidationError::getConstraintViolationList)
                 .orElse(ImmutableList.of());

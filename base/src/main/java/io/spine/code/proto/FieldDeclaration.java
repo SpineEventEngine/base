@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -216,33 +217,16 @@ public final class FieldDeclaration {
      * <p>An ID satisfies the following conditions:
      * <ul>
      *     <li>Declared as the first field.
-     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message},
-     *         an event message, a command message, or a rejection message.
+     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message} or
+     *         a {@linkplain io.spine.base.CommandMessage command message};
      *     <li>Is not a map or a repeated field.
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
-     * @see #isEntityId()
      */
     public boolean isId() {
-        MessageType type = declaringType();
-        boolean typeHasId = isEntityField()
-                         || type.isEvent()
-                         || type.isCommand()
-                         || type.isRejection();
-        return typeHasId && isFirstField() && isNotCollection();
-    }
-
-    /**
-     * Determines whether the field is a command ID.
-     *
-     * <p>A command ID is the first field of a message declared in a
-     * {@link MessageFile#COMMANDS commands file}.
-     *
-     * @return {@code true} if the field is a command ID, {@code false} otherwise
-     */
-    public boolean isCommandId() {
-        return isFirstField() && isCommandsFile();
+        boolean fieldMatches = isFirstField() && isNotCollection();
+        return fieldMatches && (isCommandsFile() || isEntityField());
     }
 
     /**
@@ -268,6 +252,12 @@ public final class FieldDeclaration {
 
     public boolean isMessage() {
         return field.getType() == MESSAGE;
+    }
+
+    public boolean isAny() {
+        return isMessage() && field.getMessageType()
+                                   .getFullName()
+                                   .equals(Any.getDescriptor().getFullName());
     }
 
     /**

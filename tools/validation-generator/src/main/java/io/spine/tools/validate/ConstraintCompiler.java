@@ -30,6 +30,7 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
 import io.spine.option.IfInvalidOption;
+import io.spine.protobuf.AnyPacker;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.IsSet;
@@ -223,6 +224,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
         Expression<List<ConstraintViolation>> violationsVar =
                 Expression.formatted("%sViolations", field.name()
                                                           .javaCase());
+
         Function<FieldAccess, CodeBlock> nestedViolations = fieldAccess ->
                 CodeBlock.builder()
                          .addStatement("$T $N = $L ? $T.violationsOf($L) : $T.of()",
@@ -230,7 +232,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                                        violationsVar.toString(),
                                        new IsSet(field).valueIsPresent(fieldAccess),
                                        Validate.class,
-                                       fieldAccess,
+                                       unpackedMessage(field, fieldAccess),
                                        ImmutableList.class)
                          .build();
         Check check = fieldAccess -> isEmpty(violationsVar).negate();
@@ -245,6 +247,12 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
                        .conditionCheck(check)
                        .createViolation(violation)
                        .build());
+    }
+
+    private static Expression<?> unpackedMessage(FieldDeclaration field, FieldAccess fieldAccess) {
+        return field.isAny()
+               ? Expression.of(CodeBlock.of("$T.unpack($L)", AnyPacker.class, fieldAccess))
+               : fieldAccess;
     }
 
     @Override
