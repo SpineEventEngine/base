@@ -20,7 +20,12 @@
 
 package io.spine.validate;
 
+import com.google.common.base.Objects;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 import io.spine.validate.option.RequiredField;
@@ -34,8 +39,13 @@ import static io.spine.validate.FieldConstraints.customFactoriesExist;
 /**
  * Validation constraints of a single Protobuf message type.
  */
+@Immutable
 public final class Constraints {
 
+    private static final LoadingCache<CacheKey, Constraints> customConstraints = CacheBuilder
+            .newBuilder()
+            .maximumSize(1000)
+            .build(new ConstraintCacheLoader());
     private final ImmutableList<Constraint> constraints;
 
     private Constraints(ImmutableList<Constraint> constraints) {
@@ -68,9 +78,8 @@ public final class Constraints {
     static Constraints onlyCustom(MessageType type, FieldContext context) {
         checkNotNull(type);
         checkNotNull(context);
-        ImmutableList<Constraint> constraintBuilder = customFieldConstraints(type, context)
-                .collect(toImmutableList());
-        return new Constraints(constraintBuilder);
+        CacheKey key = new CacheKey(type, context);
+        return customConstraints.getUnchecked(key);
     }
 
     private static Stream<Constraint> fieldConstraints(MessageType type, FieldContext context) {
@@ -79,16 +88,6 @@ public final class Constraints {
                 .stream()
                 .map(field -> context.forChild(field.descriptor()))
                 .flatMap(FieldConstraints::of);
-    }
-
-    private static Stream<Constraint>
-    customFieldConstraints(MessageType type, FieldContext context) {
-        return customFactoriesExist()
-               ? type.fields()
-                     .stream()
-                     .map(field -> context.forChild(field.descriptor()))
-                     .flatMap(FieldConstraints::customConstraintsFor)
-               : Stream.of();
     }
 
     private static void addRequiredField(MessageType type,
@@ -114,5 +113,55 @@ public final class Constraints {
     public <T> T runThrough(ConstraintTranslator<T> constraintTranslator) {
         constraints.forEach(c -> c.accept(constraintTranslator));
         return constraintTranslator.translate();
+    }
+
+    private static final class CacheKey {
+
+        private final MessageType type;
+        private final FieldContext fieldContext;
+
+        private CacheKey(MessageType type, FieldContext context) {
+            this.type = checkNotNull(type);
+            this.fieldContext = checkNotNull(context);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof CacheKey)) {
+                return false;
+            }
+            CacheKey key = (CacheKey) o;
+            return Objects.equal(type, key.type) &&
+                    Objects.equal(fieldContext, key.fieldContext);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(type, fieldContext);
+        }
+    }
+
+    private static final class ConstraintCacheLoader extends CacheLoader<CacheKey, Constraints> {
+
+        @Override
+        public Constraints load(CacheKey key) {
+            ImmutableList<Constraint> constraintBuilder =
+                    customFieldConstraints(key.type, key.fieldContext)
+                            .collect(toImmutableList());
+            return new Constraints(constraintBuilder);
+        }
+
+        private static Stream<Constraint>
+        customFieldConstraints(MessageType type, FieldContext context) {
+            return customFactoriesExist()
+                   ? type.fields()
+                         .stream()
+                         .map(field -> context.forChild(field.descriptor()))
+                         .flatMap(FieldConstraints::customConstraintsFor)
+                   : Stream.of();
+        }
     }
 }

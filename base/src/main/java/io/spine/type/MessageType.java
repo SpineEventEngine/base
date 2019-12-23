@@ -56,11 +56,18 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 @Immutable
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
+    private final ImmutableList<FieldDeclaration> fields;
+
     /**
      * Creates a new instance by the given message descriptor.
      */
     public MessageType(Descriptor descriptor) {
         super(descriptor, true);
+        this.fields = descriptor
+                .getFields()
+                .stream()
+                .map(field -> new FieldDeclaration(field, this))
+                .collect(toImmutableList());
     }
 
     /**
@@ -254,12 +261,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Obtains fields declared in the message type.
      */
     public ImmutableList<FieldDeclaration> fields() {
-        ImmutableList<FieldDeclaration> result =
-                descriptor().getFields()
-                            .stream()
-                            .map(field -> new FieldDeclaration(field, this))
-                            .collect(toImmutableList());
-        return result;
+        return fields;
     }
 
     /**

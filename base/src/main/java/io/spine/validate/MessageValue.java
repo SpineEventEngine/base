@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -30,15 +28,12 @@ import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterators.unmodifiableIterator;
 
 /**
  * A value of a {@link Message} to validate.
@@ -75,14 +70,6 @@ public final class MessageValue {
      */
     private final FieldContext context;
 
-    /**
-     * The cached message contents.
-     *
-     * <p>Do not contain {@code oneof} fields, as they are rarely accessed.
-     */
-    @SuppressWarnings("Immutable")  // cached field values are effectively immutable.
-    private @MonotonicNonNull ImmutableList<FieldValue> nonOneofValues;
-
     private MessageValue(Message message, FieldContext context) {
         this.message = checkNotNull(message);
         this.descriptor = message.getDescriptorForType();
@@ -92,7 +79,6 @@ public final class MessageValue {
         } else {
             asFieldAware = null;
         }
-        this.nonOneofValues = readNonOneofs();
     }
 
     /**
@@ -121,34 +107,6 @@ public final class MessageValue {
 
     public MessageType declaration() {
         return new MessageType(descriptor);
-    }
-
-    /**
-     * Obtains field values of the message.
-     *
-     * <p>Values of {@code Oneof} fields are filtered out and not returned.
-     *
-     * @return values of message fields excluding {@code Oneof} fields
-     * @implNote The values are computed in lazy mode and cached in this
-     *         {@code MessageValue} instance to improve the performance of the repeated calls.
-     */
-    ImmutableList<FieldValue> fieldsExceptOneofs() {
-        if(nonOneofValues == null) {
-            nonOneofValues = readNonOneofs();
-        }
-        return nonOneofValues;
-    }
-
-    private ImmutableList<FieldValue> readNonOneofs() {
-        ImmutableList.Builder<FieldValue> builder = ImmutableList.builder();
-        List<FieldDescriptor> fields = descriptor.getFields();
-        for (FieldDescriptor field : fields) {
-            if (isNotOneof(field)) {
-                FieldValue value = valueOfField(field);
-                builder.add(value);
-            }
-        }
-        return builder.build();
     }
 
     /**
@@ -198,12 +156,6 @@ public final class MessageValue {
         return valueOfNullable(field);
     }
 
-    /** Returns descriptors of {@code Oneof} declarations in the message. */
-    UnmodifiableIterator<OneofDescriptor> oneofDescriptors() {
-        return unmodifiableIterator(descriptor.getOneofs()
-                                              .iterator());
-    }
-
     /** Returns the context of the message. */
     @SuppressWarnings("unused")
     FieldContext context() {
@@ -230,7 +182,4 @@ public final class MessageValue {
         return asFieldAware == null ? message.getField(field) : asFieldAware.readValue(field);
     }
 
-    private static boolean isNotOneof(FieldDescriptor field) {
-        return field.getContainingOneof() == null;
-    }
 }

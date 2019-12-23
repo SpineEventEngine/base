@@ -185,12 +185,16 @@ public final class FieldContext {
             return false;
         }
         FieldContext context = (FieldContext) o;
-        return Objects.equals(target, context.target) &&
-                Objects.equals(parent, context.parent);
+        return Objects.equals(targetNameOrEmpty(), context.targetNameOrEmpty())
+                && Objects.equals(parent, context.parent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(target, parent);
+        return Objects.hash(targetNameOrEmpty(), parent);
+    }
+
+    private String targetNameOrEmpty() {
+        return target != null ? target.getFullName() : "";
     }
 }
