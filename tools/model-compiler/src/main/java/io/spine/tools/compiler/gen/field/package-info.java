@@ -18,23 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+/**
+ * TODO:2019-12-24:dmytro.kuzmin:WIP: Document.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.gen.field;
 
-import io.spine.value.ValueHolder;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-public final class SimpleField extends ValueHolder<FieldPath> {
-
-    private static final long serialVersionUID = 0L;
-
-    public SimpleField() {
-        this("temporarily empty");
-    }
-
-    public SimpleField(FieldPath value) {
-        super(value);
-    }
-
-    public SimpleField(String value) {
-        super(FieldPath.newBuilder().addFieldName(value).build());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

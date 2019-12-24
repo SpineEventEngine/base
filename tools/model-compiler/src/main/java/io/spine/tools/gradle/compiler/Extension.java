@@ -134,6 +134,16 @@ public class Extension extends GradleExtension {
     public String targetTestGenColumnsRootDir;
 
     /**
+     * The absolute path to the main target generated fields root directory.
+     */
+    public String targetGenFieldsRootDir;
+
+    /**
+     * The absolute path to the test target generated fields root directory.
+     */
+    public String targetTestGenFieldsRootDir;
+
+    /**
      * The absolute path to directory to delete.
      *
      * <p>Either this property OR {@code dirsToClean} property is used.
@@ -276,6 +286,18 @@ public class Extension extends GradleExtension {
 
     public static String getTargetTestGenColumnsRootDir(Project project) {
         return pathOrDefault(extension(project).targetTestGenColumnsRootDir,
+                             def(project).generated()
+                                         .testSpine());
+    }
+
+    public static String getTargetGenFieldsRootDir(Project project) {
+        return pathOrDefault(extension(project).targetGenFieldsRootDir,
+                             def(project).generated()
+                                         .mainSpine());
+    }
+
+    public static String getTargetTestGenFieldsRootDir(Project project) {
+        return pathOrDefault(extension(project).targetTestGenFieldsRootDir,
                              def(project).generated()
                                          .testSpine());
     }

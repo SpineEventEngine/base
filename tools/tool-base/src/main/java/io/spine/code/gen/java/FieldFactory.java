@@ -65,9 +65,7 @@ public final class FieldFactory implements NestedClassFactory {
     private static void addFieldDeclaration(FieldDeclaration field, TypeSpec.Builder typeSpec) {
         JavaPoetName returnType;
         if (field.isMessage()) {
-            String fieldTypeName = field.descriptor()
-                                        .getMessageType()
-                                        .getFullName();
+            String fieldTypeName = field.javaTypeName();
             String returnTypeName = format("%sField", fieldTypeName);
             ClassName className = ClassName.of(returnTypeName);
             returnType = JavaPoetName.of(className);
@@ -79,7 +77,7 @@ public final class FieldFactory implements NestedClassFactory {
                 .methodBuilder(fieldName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
-                .addStatement("return new $T(\"$L\")", returnType.value(), fieldName)
+                .addStatement("return new $T()", returnType.value())
                 .build();
         typeSpec.addMethod(method);
     }

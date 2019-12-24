@@ -20,21 +20,5 @@
 
 package io.spine.base;
 
-import io.spine.value.ValueHolder;
-
-public final class SimpleField extends ValueHolder<FieldPath> {
-
-    private static final long serialVersionUID = 0L;
-
-    public SimpleField() {
-        this("temporarily empty");
-    }
-
-    public SimpleField(FieldPath value) {
-        super(value);
-    }
-
-    public SimpleField(String value) {
-        super(FieldPath.newBuilder().addFieldName(value).build());
-    }
+public interface SubscribableField {
 }
