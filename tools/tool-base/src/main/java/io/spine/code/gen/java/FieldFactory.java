@@ -24,7 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.EntityColumn;
+import io.spine.base.SimpleField;
+import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
@@ -33,14 +34,14 @@ import io.spine.type.MessageType;
 
 import java.util.List;
 
-import static io.spine.code.proto.ColumnOption.columnsOf;
+import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 @Immutable
-public final class ColumnFactory implements NestedClassFactory {
+public final class FieldFactory implements NestedClassFactory {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
@@ -49,11 +50,11 @@ public final class ColumnFactory implements NestedClassFactory {
                 .addModifiers(PRIVATE)
                 .build();
         TypeSpec.Builder typeSpec = TypeSpec
-                .classBuilder("Columns")
+                .classBuilder("Fields")
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(privateCtor);
-        for (FieldDeclaration column : columnsOf(messageType)) {
-            addColumnDeclaration(column, typeSpec);
+        for (FieldDeclaration field : messageType.fields()) {
+            addFieldDeclaration(field, typeSpec);
         }
         String generatedCode = typeSpec.build()
                                        .toString();
@@ -61,14 +62,24 @@ public final class ColumnFactory implements NestedClassFactory {
         return ImmutableList.of(result);
     }
 
-    private static void addColumnDeclaration(FieldDeclaration column, TypeSpec.Builder typeSpec) {
-        JavaPoetName returnType = JavaPoetName.of(EntityColumn.class);
-        FieldName columnName = column.name();
+    private static void addFieldDeclaration(FieldDeclaration field, TypeSpec.Builder typeSpec) {
+        JavaPoetName returnType;
+        if (field.isMessage()) {
+            String fieldTypeName = field.descriptor()
+                                        .getMessageType()
+                                        .getFullName();
+            String returnTypeName = format("%sField", fieldTypeName);
+            ClassName className = ClassName.of(returnTypeName);
+            returnType = JavaPoetName.of(className);
+        } else {
+            returnType = JavaPoetName.of(SimpleField.class);
+        }
+        FieldName fieldName = field.name();
         MethodSpec method = MethodSpec
-                .methodBuilder(columnName.javaCase())
+                .methodBuilder(fieldName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
-                .addStatement("return new $T(\"$L\")", EntityColumn.class, columnName)
+                .addStatement("return new $T(\"$L\")", returnType.value(), fieldName)
                 .build();
         typeSpec.addMethod(method);
     }

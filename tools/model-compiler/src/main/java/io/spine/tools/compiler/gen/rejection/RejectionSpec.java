@@ -36,7 +36,7 @@ import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
