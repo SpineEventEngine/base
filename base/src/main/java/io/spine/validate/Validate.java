@@ -315,7 +315,7 @@ public final class Validate {
     private static List<ConstraintViolation> validateAtRuntime(Message message) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message))
-                           .runThrough(new ConstraintInterpreter(message));
+                           .runThrough(new MessageValidator(message));
         List<ConstraintViolation> violations =
                 error.map(ValidationError::getConstraintViolationList)
                      .orElse(ImmutableList.of());
@@ -337,7 +337,7 @@ public final class Validate {
         checkNotNull(message);
         Optional<ValidationError> error =
                 Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
-                           .runThrough(new ConstraintInterpreter(message));
+                           .runThrough(new MessageValidator(message));
         List<ConstraintViolation> violations =
                 error.map(ValidationError::getConstraintViolationList)
                      .orElse(ImmutableList.of());

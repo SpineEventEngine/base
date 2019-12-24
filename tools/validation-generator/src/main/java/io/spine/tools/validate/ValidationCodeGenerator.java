@@ -77,14 +77,14 @@ import static java.util.stream.Collectors.toList;
 /**
  * A {@link ConstraintTranslator} which generates Java code for message validation.
  *
- * <p>The compiler operates under the assumption that the generated code is embedded into
- * the message class. The result of the compilation is a set of methods to be added to a single
+ * <p>The generator operates under the assumption that the generated code is embedded into
+ * the message class. The result of the code generation is a set of methods to be added to a single
  * nesting class. The nesting class need not be the message class. It might be a class nested inside
  * the message class. Note that some methods are declared as {@code static}. Thus, they cannot be
  * placed into an inner (non-static) class.
  */
 @SuppressWarnings("OverlyCoupledClass")
-final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> {
+final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSpec>> {
 
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listOfViolations =
@@ -99,7 +99,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
     private final MessageType type;
 
     /**
-     * Creates a new compiler.
+     * Creates a new {@code ValidationCodeGenerator}.
      *
      * <p>The {@code methodName} is the name of the method which must be generated. The method:
      * <ol>
@@ -118,7 +118,7 @@ final class ConstraintCompiler implements ConstraintTranslator<Set<MethodSpec>> 
      *         the type of the validated message
      * @see ValidateMethod
      */
-    ConstraintCompiler(String methodName, MessageType type) {
+    ValidationCodeGenerator(String methodName, MessageType type) {
         this.methodName = checkNotEmptyOrBlank(methodName);
         this.type = checkNotNull(type);
         this.fieldContext = FieldContext.empty();

@@ -37,7 +37,7 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`ConstraintCompiler` should")
-class ConstraintCompilerTest {
+class ValidationCodeGeneratorTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
@@ -45,15 +45,15 @@ class ConstraintCompilerTest {
         new NullPointerTester()
                 .setDefault(MessageType.class, FakeConstraint.INSTANCE.targetType())
                 .setDefault(String.class, "nonEmptyString")
-                .testConstructors(ConstraintCompiler.class, PACKAGE);
+                .testConstructors(ValidationCodeGenerator.class, PACKAGE);
     }
 
     @Test
     @DisplayName("throw `UnsupportedOperationException` upon `CustomConstraint`")
     void notAllowCustom() {
         CustomConstraint constraint = FakeConstraint.INSTANCE;
-        ConstraintCompiler compiler =
-                new ConstraintCompiler("test", constraint.targetType());
+        ValidationCodeGenerator compiler =
+                new ValidationCodeGenerator("test", constraint.targetType());
         assertThrows(UnsupportedOperationException.class, () -> compiler.visitCustom(constraint));
     }
 

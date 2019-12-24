@@ -139,7 +139,7 @@ public final class MessageValidatorFactory {
     private Set<MethodSpec> generateMembers() {
         Constraints constraints = Constraints.of(type);
         Set<MethodSpec> methods = constraints
-                .runThrough(new ConstraintCompiler(VALIDATE_METHOD, type));
+                .runThrough(new ValidationCodeGenerator(VALIDATE_METHOD, type));
         return methods;
     }
 

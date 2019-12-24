@@ -58,21 +58,21 @@ import static io.spine.validate.MessageValue.nestedIn;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Interprets validation constraints by applying them to a given message value.
+ * Validates a given message according to the constraints.
  *
  * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
  */
 @SuppressWarnings("OverlyCoupledClass")
-final class ConstraintInterpreter implements ConstraintTranslator<Optional<ValidationError>> {
+final class MessageValidator implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
     private final List<ConstraintViolation> violations;
 
-    ConstraintInterpreter(Message message) {
+    MessageValidator(Message message) {
         this(atTopLevel(checkNotNull(message)));
     }
 
-    private ConstraintInterpreter(MessageValue message) {
+    private MessageValidator(MessageValue message) {
         this.message = message;
         this.violations = new ArrayList<>();
     }
@@ -199,7 +199,7 @@ final class ConstraintInterpreter implements ConstraintTranslator<Optional<Valid
 
     private static List<ConstraintViolation> childViolations(FieldContext field, Message message) {
         MessageValue messageValue = nestedIn(field, unpackIfPacked(message));
-        ConstraintInterpreter childInterpreter = new ConstraintInterpreter(messageValue);
+        MessageValidator childInterpreter = new MessageValidator(messageValue);
         return Constraints
                 .of(MessageType.of(message), field)
                 .runThrough(childInterpreter)
