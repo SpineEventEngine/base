@@ -81,11 +81,7 @@ public final class Constraints {
     }
 
     /**
-     * Obtains custom {@link Constraint}s for the given type in the given context.
-     *
-     * @param type
-     * @param context
-     * @return
+     * Assembles non-standard constraints from the given message type in the given field context.
      */
     static Constraints onlyCustom(MessageType type, FieldContext context) {
         checkNotNull(type);
@@ -150,6 +146,9 @@ public final class Constraints {
         }
     }
 
+    /**
+     * Loads a cache of all constraints per type per field context.
+     */
     private static final class ConstraintCacheLoader extends CacheLoader<CacheKey, Constraints> {
 
         @Override
@@ -179,7 +178,11 @@ public final class Constraints {
         }
     }
 
-    private static final class CustomConstraintCacheLoader extends CacheLoader<CacheKey, Constraints> {
+    /**
+     * Loads a cache of non-standard constraints per type per field context.
+     */
+    private static final class CustomConstraintCacheLoader
+            extends CacheLoader<CacheKey, Constraints> {
 
         @Override
         public Constraints load(CacheKey key) {
