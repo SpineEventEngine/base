@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Allows to determine safe variants of a number conversions without loosing precision.
+ * Allows to determine safe variants of a number conversions without losing precision.
  *
  * <p>Mimics the actual automatic conversions that are applied to primitive number types.
  */
