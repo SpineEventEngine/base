@@ -356,6 +356,16 @@ public class Extension extends GradleExtension {
         action.execute(methods);
     }
 
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void nestedClasses(Closure closure) {
+        ConfigureUtil.configure(closure, nestedClasses);
+    }
+
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void nestedClasses(Action<? super GeneratedNestedClasses> action) {
+        action.execute(nestedClasses);
+    }
+
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
