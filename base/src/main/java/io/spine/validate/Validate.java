@@ -334,6 +334,7 @@ public final class Validate {
      * @return a list of violations; an empty list if the message is valid
      */
     public static List<ConstraintViolation> violationsOfCustomConstraints(Message message) {
+        checkNotNull(message);
         Optional<ValidationError> error =
                 Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
                            .runThrough(new ConstraintInterpreter(message));
