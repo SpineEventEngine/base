@@ -127,13 +127,20 @@ public final class MessageValue {
      *
      * @param fieldDescriptor
      *         the field descriptor of the field to obtain
-     * @return a value of the field
-     *         or {@code Optional.empty()} if the message doesn't contain the field
+     * @return a value of the field or {@code Optional.empty()} if the message doesn't contain
+     * the field
      */
     public Optional<FieldValue> valueOf(FieldDescriptor fieldDescriptor) {
         return valueOfNullable(fieldDescriptor);
     }
 
+    /**
+     * Obtains the value of the field with the specified field declaration.
+     *
+     * @param field
+     *         the declaration of the field to obtain
+     * @return a value of the field
+     */
     public FieldValue valueOf(FieldDeclaration field) {
         checkNotNull(field);
         return valueOfField(field.descriptor());

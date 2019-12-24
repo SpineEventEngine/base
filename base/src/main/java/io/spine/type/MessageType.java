@@ -357,4 +357,3 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                         .test(this);
     }
 }
-

@@ -244,16 +244,22 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Tells if the field is of enum type.
+     * Tells if the field is of an enum type.
      */
     public boolean isEnum() {
         return field.getType() == ENUM;
     }
 
+    /**
+     * Tells if the field is of a message type.
+     */
     public boolean isMessage() {
         return field.getType() == MESSAGE;
     }
 
+    /**
+     * Tells if the field is of type {@code google.protobuf.Any}.
+     */
     public boolean isAny() {
         return isMessage() && field.getMessageType()
                                    .getFullName()
