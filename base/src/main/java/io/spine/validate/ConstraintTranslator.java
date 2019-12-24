@@ -42,20 +42,68 @@ import io.spine.validate.option.ValidateConstraint;
  */
 public interface ConstraintTranslator<T> {
 
+    /**
+     * Translates the given {@link RangedConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a number field
+     */
     void visitRange(RangedConstraint<?> constraint);
 
+    /**
+     * Translates the given {@link RequiredConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a field
+     */
     void visitRequired(RequiredConstraint constraint);
 
+    /**
+     * Translates the given {@link PatternConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a string field
+     */
     void visitPattern(PatternConstraint constraint);
 
+    /**
+     * Translates the given {@link DistinctConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a collection field
+     */
     void visitDistinct(DistinctConstraint constraint);
 
+    /**
+     * Translates the given {@link GoesConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a field
+     */
     void visitGoesWith(GoesConstraint constraint);
 
+    /**
+     * Translates the given {@link ValidateConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a message field
+     */
     void visitValidate(ValidateConstraint constraint);
 
+    /**
+     * Translates the given {@link RequiredFieldConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a field combination
+     */
     void visitRequiredField(RequiredFieldConstraint constraint);
 
+    /**
+     * Translates the given {@link CustomConstraint}.
+     *
+     * @param constraint
+     *         the self-validating constraint
+     */
     void visitCustom(CustomConstraint constraint);
 
     /**
