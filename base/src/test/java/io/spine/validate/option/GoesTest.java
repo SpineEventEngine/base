@@ -92,10 +92,11 @@ final class GoesTest extends ValidationOfConstraintTest {
                 .setId(newUuid())
                 .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                                                          () -> validate(msg));
-        assertThat(exception).hasMessageThat()
-                             .contains("user_id");
+        Exception exception = assertThrows(IllegalStateException.class, () -> validate(msg));
+        assertThat(exception)
+                .hasCauseThat()
+                .hasMessageThat()
+                .contains("user_id");
     }
 
     @DisplayName("(goes).with is set as external constraint")

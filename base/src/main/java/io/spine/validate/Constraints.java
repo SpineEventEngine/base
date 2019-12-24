@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.validate.FieldConstraints.customFactoriesExist;
 
 /**
@@ -76,14 +77,32 @@ public final class Constraints {
         checkNotNull(type);
         checkNotNull(context);
         CacheKey key = new CacheKey(type, context);
-        return allConstraints.getUnchecked(key);
+        return fromCache(allConstraints, key);
     }
 
+    /**
+     * Obtains custom {@link Constraint}s for the given type in the given context.
+     *
+     * @param type
+     * @param context
+     * @return
+     */
     static Constraints onlyCustom(MessageType type, FieldContext context) {
         checkNotNull(type);
         checkNotNull(context);
         CacheKey key = new CacheKey(type, context);
-        return customConstraints.getUnchecked(key);
+        return fromCache(customConstraints, key);
+    }
+
+    private static Constraints
+    fromCache(LoadingCache<CacheKey, Constraints> constraints, CacheKey key) {
+        try {
+            return constraints.get(key);
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+                 // `get(..)` Can throw checked and unchecked Exceptions and Errors.
+                 Throwable e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     /**

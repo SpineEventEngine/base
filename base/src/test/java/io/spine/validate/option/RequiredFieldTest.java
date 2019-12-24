@@ -173,10 +173,12 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         @DisplayName("oneof or other field is not set")
         @Test
         void oneofOrOtherNotSet() {
-            IllegalArgumentException exception =
-                    assertThrows(IllegalArgumentException.class,
-                                 () -> validate(OneofFieldAndOtherFieldRequired.getDefaultInstance()));
+            Exception exception = assertThrows(
+                    IllegalStateException.class,
+                    () -> validate(OneofFieldAndOtherFieldRequired.getDefaultInstance())
+            );
             assertThat(exception)
+                    .hasCauseThat()
                     .hasMessageThat()
                     .contains("(");
         }
