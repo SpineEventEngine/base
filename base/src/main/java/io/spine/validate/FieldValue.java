@@ -175,15 +175,14 @@ public final class FieldValue {
      * empty char and byte strings, and empty messages are considered default values.
      */
     public final Stream<?> nonDefault() {
-        return values()
-                .filter(val -> !isDefault(val));
+        return values().filter(val -> !isDefault(val));
     }
 
     /**
      * Obtains the single value of this field.
      *
      * <p>If the field is a {@linkplain FieldDeclaration#isCollection() collection}, obtains
-     * the first element. If the fist element is not available, throws
+     * the first element. If the first element is not available, throws
      * an {@code IllegalStateException}.
      *
      * @return a single value of this field
