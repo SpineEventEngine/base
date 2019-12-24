@@ -21,6 +21,7 @@
 package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityColumn;
@@ -39,6 +40,7 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+@Immutable
 public final class ColumnFactory implements NestedClassFactory {
 
     @Override
