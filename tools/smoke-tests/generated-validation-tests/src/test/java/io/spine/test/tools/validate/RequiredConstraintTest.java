@@ -242,22 +242,12 @@ class RequiredConstraintTest {
     class IdCheck {
 
         @Test
-        @DisplayName("in an event, no violations if ID is present")
+        @DisplayName("in an event, no violations if ID is not set")
         void event() {
             ProjectCreated msg = ProjectCreated
                     .newBuilder()
-                    .setId(newUuid())
                     .build();
             assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in an event, a violation must be produced if ID is not set")
-        void invalidEvent() {
-            ProjectCreated msg = ProjectCreated
-                    .newBuilder()
-                    .buildPartial();
-            checkViolation(msg, "id");
         }
 
         @Test
@@ -280,22 +270,12 @@ class RequiredConstraintTest {
         }
 
         @Test
-        @DisplayName("in a rejection, no violations if ID is present")
+        @DisplayName("in a rejection, no violations if ID is not set")
         void rejection() {
             TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
                     .newBuilder()
-                    .setId(newUuid())
                     .build();
             assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in a rejection, a violation must be produced if ID is not set")
-        void invalidRejection() {
-            TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
-                    .newBuilder()
-                    .buildPartial();
-            checkViolation(msg, "id");
         }
 
         @Test
