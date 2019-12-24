@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
@@ -26,8 +26,6 @@ import io.spine.logging.Logging;
 import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.MessageAccess;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.IsSet;
 
 import java.util.function.Function;
 
@@ -37,7 +35,7 @@ import static io.spine.tools.validate.code.Blocks.empty;
 import static java.lang.System.lineSeparator;
 
 /**
- * A validation constraint based on a Protobuf option of a message field.
+ * Conditional code which checks a validation constraint.
  */
 public final class ConstraintCode implements Logging {
 
@@ -61,6 +59,9 @@ public final class ConstraintCode implements Logging {
         this.field = builder.field;
     }
 
+    /**
+     * Builds a {@link CodeBlock} which represents this constraint code.
+     */
     public CodeBlock compile() {
         IsSet fieldIsSet = new IsSet(field);
         if (cardinality == Cardinality.SINGULAR) {

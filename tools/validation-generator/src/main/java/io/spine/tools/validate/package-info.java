@@ -19,7 +19,7 @@
  */
 
 /**
- * Contains utilities for generating Java message validation code.
+ * Contains the utilities generating the Java code used for message validation.
  */
 
 @CheckReturnValue

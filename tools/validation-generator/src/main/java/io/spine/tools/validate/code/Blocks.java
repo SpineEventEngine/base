@@ -25,7 +25,7 @@ import com.squareup.javapoet.CodeBlock;
 /**
  * A factory of {@link CodeBlock}s.
  */
-public final class Blocks {
+final class Blocks {
 
     private static final CodeBlock EMPTY = CodeBlock.of("");
 
@@ -38,7 +38,7 @@ public final class Blocks {
     /**
      * Obtains an empty code block.
      */
-    public static CodeBlock empty() {
+    static CodeBlock empty() {
         return EMPTY;
     }
 }

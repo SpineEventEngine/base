@@ -18,14 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.validate.code;
+
+import io.spine.tools.validate.FieldAccess;
+import io.spine.validate.ConstraintViolation;
+
+import java.util.function.Function;
+
 /**
- * Contains types which work with field validation.
+ * A function which accepts a field and produces an expression of a {@link ConstraintViolation}
+ * on that field.
  */
-
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.validate.field;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+@FunctionalInterface
+public interface CreateViolation extends Function<FieldAccess, Expression<ConstraintViolation>> {
+}

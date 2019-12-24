@@ -29,8 +29,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An expression which yields a {@code boolean} value.
  */
-public final class BooleanExpression
-        extends CodeExpression<Boolean> {
+public final class BooleanExpression extends CodeExpression<Boolean> {
 
     private static final long serialVersionUID = 0L;
 

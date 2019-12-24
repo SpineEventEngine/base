@@ -24,6 +24,8 @@ import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import com.squareup.javapoet.CodeBlock;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
@@ -51,6 +53,11 @@ public interface Expression<R> {
      */
     CodeBlock toCode();
 
+    /**
+     * Builds a return statement based on this expression.
+     *
+     * <p>The resulting code returns the value of this expression from a method.
+     */
     default CodeBlock returnStatement() {
         return CodeBlock.of("return $L;$L", this.toCode(), lineSeparator());
     }
@@ -59,6 +66,7 @@ public interface Expression<R> {
      * Creates an {@code Expression} from the given value.
      */
     static <R> Expression<R> of(String code) {
+        checkNotEmptyOrBlank(code);
         return new CodeExpression<>(code);
     }
 
@@ -66,6 +74,7 @@ public interface Expression<R> {
      * Creates an {@code Expression} from the given value.
      */
     static <R> Expression<R> of(CodeBlock code) {
+        checkNotNull(code);
         return new CodeExpression<>(code.toString());
     }
 
@@ -75,6 +84,7 @@ public interface Expression<R> {
      */
     @FormatMethod
     static <R> Expression<R> formatted(@FormatString String template, Object... args) {
+        checkNotNull(template);
         String code = format(template, args);
         return of(code);
     }

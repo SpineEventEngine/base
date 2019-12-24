@@ -27,7 +27,6 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.MessageAccess;
-import io.spine.tools.validate.field.Containers;
 import io.spine.validate.Alternative;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -59,9 +58,10 @@ public final class IsSet {
     }
 
     /**
-     * Invokes the method which checks if the value is set.
+     * Produces an expression which invokes the method which checks if the value is set.
      *
-     * @param parameter the parameter to the method - the message containing the field
+     * @param parameter
+     *         the parameter to the method - the message containing the field
      * @return an expression which checks if the field is set
      * @see #method()
      */
@@ -93,7 +93,8 @@ public final class IsSet {
     }
 
     private CodeBlock methodBody() {
-        FieldAccess fieldAccess = MessageAccess.of(MESSAGE).get(field);
+        MessageAccess message = MessageAccess.of(MESSAGE);
+        FieldAccess fieldAccess = message.get(field);
         return field.isCollection()
                ? methodBodyForCollection(fieldAccess)
                : methodBodyForSingular(fieldAccess);
@@ -173,7 +174,7 @@ public final class IsSet {
     }
 
     /**
-     * Checks if a given {@linkplain Alternative set of fields} is set.
+     * Produces an expression which checks if a given {@linkplain Alternative set of fields} is set.
      *
      * <p>For the resulting expression to yield {@code true}, all the fields in the given
      * {@link Alternative} must be set.

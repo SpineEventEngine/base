@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.tools.validate.code;
 
 import io.spine.tools.validate.FieldAccess;
-import io.spine.tools.validate.code.BooleanExpression;
 
 import java.util.function.Function;
 

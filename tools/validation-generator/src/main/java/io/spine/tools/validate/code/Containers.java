@@ -18,11 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.field;
+package io.spine.tools.validate.code;
 
 import io.spine.protobuf.Messages;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.Expression;
 
 import static io.spine.tools.validate.code.BooleanExpression.fromCode;
 
