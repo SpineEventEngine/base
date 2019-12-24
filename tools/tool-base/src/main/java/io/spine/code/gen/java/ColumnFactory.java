@@ -70,7 +70,7 @@ public final class ColumnFactory implements NestedClassFactory {
                 .methodBuilder(columnName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
-                .addStatement("return new $T(\"$L\")", returnType, columnName)
+                .addStatement("return new $T(\"$L\")", EntityColumn.class, columnName)
                 .build();
         typeSpec.addMethod(method);
     }
