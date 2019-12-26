@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * An language expression which obtains a field from a Protobuf message.
+ * A language expression which obtains a field from a Protobuf message.
  */
 public final class FieldAccess extends CodeExpression<Object> {
 

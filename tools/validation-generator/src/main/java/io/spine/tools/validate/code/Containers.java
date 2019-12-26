@@ -44,6 +44,10 @@ public final class Containers {
         return fromCode("$L.isEmpty()", value.toCode());
     }
 
+    /**
+     * Obtains the expression which calls {@code Messages.isDefault())} method on the given
+     * {@code value}.
+     */
     public static BooleanExpression isDefault(Expression<?> value) {
         return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
     }
