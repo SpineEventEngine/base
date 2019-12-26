@@ -26,7 +26,7 @@ import io.spine.option.OptionsProto;
 import io.spine.validate.Constraint;
 
 /**
- * An option that indicates that the fields internal field should be included into the validation.
+ * An option that indicates that the message field should be validated according to its constraints.
  */
 @Immutable
 public final class Valid extends FieldValidatingOption<Boolean> {
