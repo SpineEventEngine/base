@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName("NumberConversionChecker should")
 final class NumberConversionTest extends UtilityClassTest<NumberConversion> {
 
@@ -53,21 +52,21 @@ final class NumberConversionTest extends UtilityClassTest<NumberConversion> {
 
         @DisplayName("to short")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#shorts")
+        @MethodSource("io.spine.validate.NumberConversionTest#shorts")
         void toShort(Number shortNumber) {
             assertTrue(NumberConversion.check(Short.valueOf("1"), shortNumber));
         }
 
         @DisplayName("to integer")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#integers")
+        @MethodSource("io.spine.validate.NumberConversionTest#integers")
         void toInteger(Number integerNumber) {
             assertTrue(NumberConversion.check(1, integerNumber));
         }
 
         @DisplayName("to long")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#longs")
+        @MethodSource("io.spine.validate.NumberConversionTest#longs")
         void toLong(Number longNumber) {
             assertTrue(NumberConversion.check(1L, longNumber));
         }
@@ -80,7 +79,7 @@ final class NumberConversionTest extends UtilityClassTest<NumberConversion> {
 
         @DisplayName("to double")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#doubles")
+        @MethodSource("io.spine.validate.NumberConversionTest#doubles")
         void toDouble(Number doubleNumber) {
             assertTrue(NumberConversion.check(1.0d, doubleNumber));
         }
@@ -92,42 +91,42 @@ final class NumberConversionTest extends UtilityClassTest<NumberConversion> {
 
         @DisplayName("it is not possible to convert non-byte to byte")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonBytes")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonBytes")
         void byteToOthers(Number nonByte) {
             assertFalse(NumberConversion.check(Byte.valueOf("1"), nonByte));
         }
 
         @DisplayName("it is not possible to convert non-short to short")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonShorts")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonShorts")
         void shortToOthers(Number nonShort) {
             assertFalse(NumberConversion.check(Short.valueOf("1"), nonShort));
         }
 
         @DisplayName("it is not possible to convert non-integer to integer")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonIntegers")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonIntegers")
         void integerToOthers(Number nonInteger) {
             assertFalse(NumberConversion.check(1, nonInteger));
         }
 
         @DisplayName("it is not possible to convert non-long to long")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonLongs")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonLongs")
         void longToOthers(Number nonLong) {
             assertFalse(NumberConversion.check(1L, nonLong));
         }
 
         @DisplayName("it is not possible to convert non-float to float")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonFloats")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonFloats")
         void floatToOthers(Number nonFloat) {
             assertFalse(NumberConversion.check(1.0f, nonFloat));
         }
 
         @DisplayName("it is not possible to convert non-double to double")
         @ParameterizedTest
-        @MethodSource("NumberConversionCheckerTest#nonDoubles")
+        @MethodSource("io.spine.validate.NumberConversionTest#nonDoubles")
         void doubleToOthers(Number nonDouble) {
             assertFalse(NumberConversion.check(1.0d, nonDouble));
         }
