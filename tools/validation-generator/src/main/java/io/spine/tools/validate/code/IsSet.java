@@ -69,9 +69,7 @@ public final class IsSet {
         checkNotNull(parameter);
         return alwaysTrue
                ? trueLiteral()
-               : BooleanExpression.fromCode("$N($L)",
-                                            methodName,
-                                            parameter);
+               : BooleanExpression.fromCode("$N($L)", methodName, parameter);
     }
 
     /**
@@ -186,15 +184,13 @@ public final class IsSet {
      */
     public static BooleanExpression
     alternativeIsSet(Alternative alternative, MessageAccess messageAccess) {
-        BooleanExpression alternativeMatched =
-                alternative
-                        .fields()
-                        .stream()
-                        .map(IsSet::new)
-                        .reduce(trueLiteral(),
-                                (condition, isSet) ->
-                                        condition.and(isSet.invocation(messageAccess)),
-                                BooleanExpression::and);
+        BooleanExpression alternativeMatched = alternative
+                .fields()
+                .stream()
+                .map(IsSet::new)
+                .reduce(trueLiteral(),
+                        (condition, isSet) -> condition.and(isSet.invocation(messageAccess)),
+                        BooleanExpression::and);
         return alternativeMatched;
     }
 }
