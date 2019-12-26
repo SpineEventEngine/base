@@ -36,8 +36,7 @@ import static java.lang.String.format;
  * greater than (or equal to, if specified by the value of the respective option) a min value.
  */
 @Immutable
-public final class MinConstraint
-        extends RangedConstraint<MinOption> {
+public final class MinConstraint extends RangedConstraint<MinOption> {
 
     MinConstraint(MinOption optionValue, FieldDeclaration field) {
         super(optionValue, minRange(optionValue), field);

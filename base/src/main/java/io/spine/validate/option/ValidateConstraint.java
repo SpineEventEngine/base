@@ -26,14 +26,14 @@ import io.spine.option.IfInvalidOption;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.diags.ViolationText;
 
+/**
+ * A constraint that, when applied to a message field, signifies that the message should have valid
+ * properties.
+ */
 public final class ValidateConstraint extends FieldConstraint<Boolean> {
 
     ValidateConstraint(Boolean optionValue, FieldDeclaration field) {
         super(optionValue, field);
-    }
-
-    public boolean shouldBeValid() {
-        return optionValue();
     }
 
     @Override

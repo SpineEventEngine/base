@@ -35,8 +35,7 @@ import static java.lang.String.format;
  * A constraint, which checks whether a numeric field value exceeds a max value, when applied.
  */
 @Immutable
-public final class MaxConstraint
-        extends RangedConstraint<MaxOption> {
+public final class MaxConstraint extends RangedConstraint<MaxOption> {
 
     MaxConstraint(MaxOption optionValue, FieldDeclaration field) {
         super(optionValue, maxRange(optionValue), field);

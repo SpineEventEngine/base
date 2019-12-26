@@ -26,8 +26,8 @@ import io.spine.option.OptionsProto;
 import io.spine.validate.Constraint;
 
 /**
- * An option that can be applied to {@code repeated} Protobuf fields to specify that values
- * represented by that {@code repeated} field should not contain duplicates.
+ * An option that can be applied to {@code repeated} and {@code map} Protobuf fields to specify that
+ * values represented by that field should not contain duplicates.
  */
 @Immutable
 public final class Distinct extends FieldValidatingOption<Boolean> {

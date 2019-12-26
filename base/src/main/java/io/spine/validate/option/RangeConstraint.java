@@ -45,8 +45,7 @@ import static java.lang.String.format;
  * than 5.
  */
 @Immutable
-public final class RangeConstraint
-        extends RangedConstraint<String> {
+public final class RangeConstraint extends RangedConstraint<String> {
 
     /**
      * The regular expression for parsing number ranges.

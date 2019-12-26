@@ -39,8 +39,7 @@ import static com.google.common.collect.BoundType.CLOSED;
  *         value of the option
  */
 @Immutable
-public abstract class RangedConstraint<@ImmutableTypeParameter T>
-        extends FieldConstraint<T> {
+public abstract class RangedConstraint<@ImmutableTypeParameter T> extends FieldConstraint<T> {
 
     private static final String OR_EQUAL_TO = "or equal to ";
 
