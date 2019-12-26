@@ -18,19 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.option;
+package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.validate.ComparableNumber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Allows to determine safe variants of a number conversions without loosing precision.
+ * Allows to determine safe variants of a number conversions without losing precision.
  *
  * <p>Mimics the actual automatic conversions that are applied to primitive number types.
  */
-final class NumberConversionChecker {
+final class NumberConversion {
 
     private static final ImmutableList<ConversionChecker<?>> CHECKERS = ImmutableList.of(
             new ByteChecker(), new ShortChecker(), new IntegerChecker(), new LongChecker(),
@@ -38,12 +37,12 @@ final class NumberConversionChecker {
     );
 
     /** Prevents direct instantiation. */
-    private NumberConversionChecker() {
+    private NumberConversion() {
     }
 
     /**
-     * Determines if the supplied {@code number} can be safely converted to the {@code
-     * anotherNumber}.
+     * Determines if the supplied {@code number} can be safely converted to
+     * the {@code anotherNumber}.
      */
     static boolean check(Number number, Number anotherNumber) {
         checkNotNull(number);

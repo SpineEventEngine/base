@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.option;
+package io.spine.validate;
 
 import io.spine.testing.UtilityClassTest;
-import io.spine.validate.ComparableNumber;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
 @DisplayName("NumberConversionChecker should")
-final class NumberConversionCheckerTest extends UtilityClassTest<NumberConversionChecker> {
+final class NumberConversionTest extends UtilityClassTest<NumberConversion> {
 
-    NumberConversionCheckerTest() {
-        super(NumberConversionChecker.class);
+    NumberConversionTest() {
+        super(NumberConversion.class);
     }
 
     @DisplayName("tell that it is possible to convert")
@@ -49,41 +48,41 @@ final class NumberConversionCheckerTest extends UtilityClassTest<NumberConversio
         @DisplayName("to byte")
         @Test
         void toByte() {
-            assertTrue(NumberConversionChecker.check(Byte.valueOf("1"), Byte.valueOf("2")));
+            assertTrue(NumberConversion.check(Byte.valueOf("1"), Byte.valueOf("2")));
         }
 
         @DisplayName("to short")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#shorts")
+        @MethodSource("NumberConversionCheckerTest#shorts")
         void toShort(Number shortNumber) {
-            assertTrue(NumberConversionChecker.check(Short.valueOf("1"), shortNumber));
+            assertTrue(NumberConversion.check(Short.valueOf("1"), shortNumber));
         }
 
         @DisplayName("to integer")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#integers")
+        @MethodSource("NumberConversionCheckerTest#integers")
         void toInteger(Number integerNumber) {
-            assertTrue(NumberConversionChecker.check(1, integerNumber));
+            assertTrue(NumberConversion.check(1, integerNumber));
         }
 
         @DisplayName("to long")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#longs")
+        @MethodSource("NumberConversionCheckerTest#longs")
         void toLong(Number longNumber) {
-            assertTrue(NumberConversionChecker.check(1L, longNumber));
+            assertTrue(NumberConversion.check(1L, longNumber));
         }
 
         @DisplayName("to float")
         @Test
         void toFloat() {
-            assertTrue(NumberConversionChecker.check(1.0f, 3.14f));
+            assertTrue(NumberConversion.check(1.0f, 3.14f));
         }
 
         @DisplayName("to double")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#doubles")
+        @MethodSource("NumberConversionCheckerTest#doubles")
         void toDouble(Number doubleNumber) {
-            assertTrue(NumberConversionChecker.check(1.0d, doubleNumber));
+            assertTrue(NumberConversion.check(1.0d, doubleNumber));
         }
     }
 
@@ -93,44 +92,44 @@ final class NumberConversionCheckerTest extends UtilityClassTest<NumberConversio
 
         @DisplayName("it is not possible to convert non-byte to byte")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonBytes")
+        @MethodSource("NumberConversionCheckerTest#nonBytes")
         void byteToOthers(Number nonByte) {
-            assertFalse(NumberConversionChecker.check(Byte.valueOf("1"), nonByte));
+            assertFalse(NumberConversion.check(Byte.valueOf("1"), nonByte));
         }
 
         @DisplayName("it is not possible to convert non-short to short")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonShorts")
+        @MethodSource("NumberConversionCheckerTest#nonShorts")
         void shortToOthers(Number nonShort) {
-            assertFalse(NumberConversionChecker.check(Short.valueOf("1"), nonShort));
+            assertFalse(NumberConversion.check(Short.valueOf("1"), nonShort));
         }
 
         @DisplayName("it is not possible to convert non-integer to integer")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonIntegers")
+        @MethodSource("NumberConversionCheckerTest#nonIntegers")
         void integerToOthers(Number nonInteger) {
-            assertFalse(NumberConversionChecker.check(1, nonInteger));
+            assertFalse(NumberConversion.check(1, nonInteger));
         }
 
         @DisplayName("it is not possible to convert non-long to long")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonLongs")
+        @MethodSource("NumberConversionCheckerTest#nonLongs")
         void longToOthers(Number nonLong) {
-            assertFalse(NumberConversionChecker.check(1L, nonLong));
+            assertFalse(NumberConversion.check(1L, nonLong));
         }
 
         @DisplayName("it is not possible to convert non-float to float")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonFloats")
+        @MethodSource("NumberConversionCheckerTest#nonFloats")
         void floatToOthers(Number nonFloat) {
-            assertFalse(NumberConversionChecker.check(1.0f, nonFloat));
+            assertFalse(NumberConversion.check(1.0f, nonFloat));
         }
 
         @DisplayName("it is not possible to convert non-double to double")
         @ParameterizedTest
-        @MethodSource("io.spine.validate.option.NumberConversionCheckerTest#nonDoubles")
+        @MethodSource("NumberConversionCheckerTest#nonDoubles")
         void doubleToOthers(Number nonDouble) {
-            assertFalse(NumberConversionChecker.check(1.0d, nonDouble));
+            assertFalse(NumberConversion.check(1.0d, nonDouble));
         }
     }
 
@@ -138,13 +137,13 @@ final class NumberConversionCheckerTest extends UtilityClassTest<NumberConversio
     @Test
     void comparableNumbersAreUnwrapped() {
         ComparableNumber number = new ComparableNumber(3);
-        assertTrue(NumberConversionChecker.check(number, number));
+        assertTrue(NumberConversion.check(number, number));
     }
 
     @DisplayName("tell that BigDecimals are not supported")
     @Test
     void bigDecimalsAreNotSupported() {
-        assertFalse(NumberConversionChecker.check(BigDecimal.valueOf(1), 1L));
+        assertFalse(NumberConversion.check(BigDecimal.valueOf(1), 1L));
     }
 
     private static Stream<Number> nonBytes() {

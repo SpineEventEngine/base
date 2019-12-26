@@ -235,7 +235,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     private static void checkBoundaryAndValue(NumberText boundary, FieldValue value) {
         ComparableNumber boundaryNumber = boundary.toNumber();
         Number valueNumber = (Number) value.singleValue();
-        if (!NumberConversionChecker.check(boundaryNumber, valueNumber)) {
+        if (!NumberConversion.check(boundaryNumber, valueNumber)) {
             String errorMessage =
                     "Boundary values must have types consistent with values they bind: " +
                             "boundary %s, value %s";
