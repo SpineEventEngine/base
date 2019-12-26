@@ -20,6 +20,9 @@
 
 package io.spine.tools.validate.code;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import static java.lang.String.format;
 
 /**
@@ -38,7 +41,12 @@ public final class VoidExpression extends CodeExpression<Void> {
         super(value);
     }
 
-    public static VoidExpression formatted(String template, Object... args) {
+    /**
+     * Creates a {@code VoidExpression} by formatting the given template string by the rules of
+     * {@code String.format()}.
+     */
+    @FormatMethod
+    public static VoidExpression formatted(@FormatString String template, Object... args) {
         return new VoidExpression(format(template, args));
     }
 }
