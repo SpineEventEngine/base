@@ -24,11 +24,9 @@ import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Extension;
 import com.google.protobuf.Message;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
@@ -96,22 +94,6 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Obtains the given option for this declaration or the option default value if ont set.
-     */
-    public <T> T findOption(Extension<FieldOptions, T> option) {
-        return field.getOptions()
-                    .getExtension(option);
-    }
-
-    /**
-     * Checks if the given option is set for this field.
-     */
-    public boolean hasOption(Extension<FieldOptions, ?> option) {
-        return field.getOptions()
-                .hasExtension(option);
-    }
-
-    /**
      * Obtains the declaring message type if known.
      */
     public MessageType declaringType() {
@@ -156,26 +138,26 @@ public final class FieldDeclaration {
      */
     public String javaTypeName() {
         return isMap()
-               ? javaTypeName(valueDeclaration())
-               : javaTypeName(this);
+               ? javaTypeName(valueDeclaration().field)
+               : javaTypeName(this.field);
     }
 
-    private static String javaTypeName(FieldDeclaration declaration) {
-        FieldDescriptor.Type fieldType = declaration.field.getType();
+    private static String javaTypeName(FieldDescriptor field) {
+        FieldDescriptor.Type fieldType = field.getType();
         if (fieldType == MESSAGE) {
             MessageType messageType =
-                    new MessageType(declaration.descriptor().getMessageType());
-            return messageType.javaClassName().canonicalName();
+                    new MessageType(field.getMessageType());
+            return messageType.javaClassName()
+                              .canonicalName();
         }
 
         if (fieldType == ENUM) {
-            EnumType enumType = EnumType.create(declaration.field.getEnumType());
-            return enumType.javaClassName().canonicalName();
+            EnumType enumType = EnumType.create(field.getEnumType());
+            return enumType.javaClassName()
+                           .canonicalName();
         }
 
-        return ScalarType.javaTypeName(declaration.field
-                                               .toProto()
-                                               .getType());
+        return ScalarType.javaTypeName(field.toProto().getType());
     }
 
     private String messageClassName() {
