@@ -44,7 +44,7 @@ public interface Option<@ImmutableTypeParameter T,
      * Obtains the value of this option for the specified object that holds it.
      *
      * @param object
-     *         holder of the option
+     *         the option holder
      * @return value of this option
      */
     Optional<T> valueFrom(K object);
