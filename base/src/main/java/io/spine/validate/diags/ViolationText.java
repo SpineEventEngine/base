@@ -70,26 +70,6 @@ public final class ViolationText {
         return result;
     }
 
-    /**
-     * Returns a validation error message which may have formatting placeholders
-     *
-     * <p>A custom message is returned if it is present in the option. Otherwise,
-     * default message is returned.
-     *
-     * @param option
-     *         a validation option used to get the default message
-     * @param customMsg
-     *         a user-defined error message
-     */
-    @Internal
-    public static String errorMessage(Message option, String customMsg) {
-        String defaultMsg = option.getDescriptorForType()
-                                  .getOptions()
-                                  .getExtension(OptionsProto.defaultMessage);
-        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
-        return msg;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = buildMessage();
@@ -124,5 +104,25 @@ public final class ViolationText {
                   .append(backtick(prefix))
                   .append(": ");
         }
+    }
+
+    /**
+     * Returns a validation error message which may have formatting placeholders.
+     *
+     * <p>A custom message is returned if it is present in the option. Otherwise,
+     * default message is returned.
+     *
+     * @param option
+     *         a validation option used to get the default message
+     * @param customMsg
+     *         a user-defined error message
+     */
+    @Internal
+    public static String errorMessage(Message option, String customMsg) {
+        String defaultMsg = option.getDescriptorForType()
+                                  .getOptions()
+                                  .getExtension(OptionsProto.defaultMessage);
+        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
+        return msg;
     }
 }
