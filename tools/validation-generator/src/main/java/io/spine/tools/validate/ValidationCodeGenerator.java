@@ -39,13 +39,13 @@ import io.spine.tools.validate.code.Expression;
 import io.spine.tools.validate.code.IsSet;
 import io.spine.tools.validate.code.NewViolation;
 import io.spine.type.MessageType;
+import io.spine.util.Duplicates;
 import io.spine.validate.Alternative;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.CustomConstraint;
-import io.spine.validate.Duplicates;
 import io.spine.validate.Validate;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
@@ -58,6 +58,7 @@ import io.spine.validate.option.ValidateConstraint;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -179,6 +180,11 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
                        .build());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The generated code relies on {@link Duplicates#findIn(Collection)}.
+     */
     @Override
     public void visitDistinct(DistinctConstraint constraint) {
         FieldDeclaration field = constraint.field();

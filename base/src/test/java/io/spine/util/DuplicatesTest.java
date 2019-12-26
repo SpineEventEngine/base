@@ -18,32 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.util;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import static com.google.common.truth.Truth.assertThat;
 
-public final class Duplicates {
+@DisplayName("`Duplicates` should")
+class DuplicatesTest extends UtilityClassTest<Duplicates> {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Duplicates() {
+    DuplicatesTest() {
+        super(Duplicates.class);
     }
 
-    public static ImmutableSet<?> findIn(Collection<?> elements) {
-        Set<? super Object> uniques = new HashSet<>();
-        ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
-        elements.forEach(potentialDuplicate -> {
-            if (uniques.contains(potentialDuplicate)) {
-                duplicates.add(potentialDuplicate);
-            } else {
-                uniques.add(potentialDuplicate);
-            }
-        });
-        return duplicates.build();
+    @Test
+    @DisplayName("report duplicates")
+    void reportDuplicates() {
+        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 1, 42, 42));
+        assertThat(duplicates).containsExactly(1, 42);
+    }
+
+    @Test
+    @DisplayName("report if no duplicates")
+    void empty() {
+        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 42));
+        assertThat(duplicates).isEmpty();
+    }
+
+    @Test
+    @DisplayName("report no duplicates in an empty list")
+    void emptyInput() {
+        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of());
+        assertThat(duplicates).isEmpty();
     }
 }
