@@ -35,9 +35,9 @@ import static io.spine.validate.given.MessageValidatorTestEnv.EQUAL_MIN;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_MAX_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_THAN_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_THAN_MIN;
+import static io.spine.validate.given.MessageValidatorTestEnv.LESS_MIN_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN;
-import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 
 @DisplayName(VALIDATION_SHOULD + "analyze (min) and (max) options and")
@@ -92,7 +92,7 @@ class NumberRangeTest extends ValidationOfConstraintTest {
     @DisplayName("provide one valid violation if number is less than min")
     void provideOneValidViolationIfNumberIsLessThanDecimalMin() {
         minNumberTest(LESS_THAN_MIN, true, false);
-        assertSingleViolation(LESS_THAN_MIN_MSG, VALUE);
+        assertSingleViolation(LESS_MIN_MSG, VALUE);
     }
 
     @Test

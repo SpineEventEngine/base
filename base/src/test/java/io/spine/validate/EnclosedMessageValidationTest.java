@@ -103,7 +103,7 @@ class EnclosedMessageValidationTest extends ValidationOfConstraintTest {
         validate(msg);
 
         ConstraintViolation violation = singleViolation();
-        assertEquals("Message must have valid properties.", violation.getMsgFormat());
+        assertEquals("The message must have valid properties.", violation.getMsgFormat());
         assertFieldPathIs(violation, OUTER_MSG_FIELD);
         List<ConstraintViolation> innerViolations = violation.getViolationList();
         assertEquals(1, innerViolations.size());

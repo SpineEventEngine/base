@@ -519,7 +519,7 @@ extend google.protobuf.ServiceOptions {
 message IfMissingOption {
 
     // The default error message.
-    option (default_message) = "Value must be set.";
+    option (default_message) = "A value must be set.";
 
     // A user-defined validation error format message.
     string msg_format = 1;
@@ -544,7 +544,7 @@ message MinOption {
     //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
     //   2) the minimum number.
     //
-    option (default_message) = "Number must be greater than %s%s.";
+    option (default_message) = "The number must be greater than %s%s.";
 
     // The string representation of the minimum field value.
     string value = 1;
@@ -578,7 +578,7 @@ message MaxOption {
     //   1) "or equal to " string (if the `exclusive` parameter is false) or an empty string;
     //   2) the maximum number.
     //
-    option (default_message) = "Number must be less than %s%s.";
+    option (default_message) = "The number must be less than %s%s.";
 
     // The string representation of the maximum field value.
     string value = 1;
@@ -609,7 +609,7 @@ message PatternOption {
     //
     // The format parameter is the regular expression to which the value must match.
     //
-    option (default_message) = "String must match the regular expression `%s`.";
+    option (default_message) = "The string must match the regular expression `%s`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -634,7 +634,7 @@ message PatternOption {
 message IfInvalidOption {
 
     // The default error message for the field.
-    option (default_message) = "Message must have valid properties.";
+    option (default_message) = "The message must have valid properties.";
 
     // A user-defined validation error format message.
     string msg_format = 1;
