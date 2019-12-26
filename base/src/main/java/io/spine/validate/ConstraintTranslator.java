@@ -39,6 +39,9 @@ import io.spine.validate.option.ValidateConstraint;
  * A translator need not be thread-safe. An instance of translator is, most likely, a mutable
  * object. If any resources must be closed when finishing the translation job, {@link #translate()}
  * is the right place to do so.
+ *
+ * @param <T>
+ *         the type of the translation result
  */
 public interface ConstraintTranslator<T> {
 

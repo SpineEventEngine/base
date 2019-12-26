@@ -43,15 +43,16 @@ public interface Constraint {
      * <p>Implementations may choose to ignore the field context or to embed its parts into
      * the error message.
      *
-     * @param field the validated field
+     * @param field
+     *         the validated field
      */
     String errorMessage(FieldContext field);
 
     /**
      * Accepts the given {@link ConstraintTranslator}.
      *
-     * <p>{@code Constraint} and {@code ConstraintTranslator} implement the visitor pattern.
-     * Implementations should call the appropriate method of {@code ConstraintTranslator}.
+     * @implNote {@code Constraint} and {@code ConstraintTranslator} implement the visitor pattern.
+     *         Implementations should call the appropriate method of {@code ConstraintTranslator}.
      */
     void accept(ConstraintTranslator<?> visitor);
 }
