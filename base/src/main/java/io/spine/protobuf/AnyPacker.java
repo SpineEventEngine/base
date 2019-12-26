@@ -88,20 +88,6 @@ public final class AnyPacker {
     }
 
     /**
-     * Unwraps the given message if it's an {@code Any}.
-     *
-     * @param messageOrAny
-     *         a message which could be an {@code Any}
-     * @return the unpacked message or the original message if it is not an {@code Any}
-     */
-    public static Message unpackIfPacked(Message messageOrAny) {
-        checkNotNull(messageOrAny);
-        return messageOrAny instanceof Any
-               ? unpack((Any) messageOrAny)
-               : messageOrAny;
-    }
-
-    /**
      * Unwraps {@code Any} value into an instance of the passed class.
      *
      * <p>If there is no Java class for the type, {@link UnexpectedTypeException

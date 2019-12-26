@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.protobuf.AnyPacker.unpackIfPacked;
+import static io.spine.protobuf.Messages.ensureMessage;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.validate.MessageValue.atTopLevel;
@@ -150,7 +150,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
         if (!fieldValue.isDefault()) {
             List<ConstraintViolation> childViolations = fieldValue
                     .values()
-                    .map(val -> unpackIfPacked((Message) val))
+                    .map(val -> ensureMessage((Message) val))
                     .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
                     .collect(toList());
             if (!childViolations.isEmpty()) {
@@ -198,7 +198,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     }
 
     private static List<ConstraintViolation> childViolations(FieldContext field, Message message) {
-        MessageValue messageValue = nestedIn(field, unpackIfPacked(message));
+        MessageValue messageValue = nestedIn(field, ensureMessage(message));
         MessageValidator childInterpreter = new MessageValidator(messageValue);
         return Constraints
                 .of(MessageType.of(message), field)
