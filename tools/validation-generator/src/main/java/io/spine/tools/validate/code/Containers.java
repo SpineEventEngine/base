@@ -39,6 +39,10 @@ public final class Containers {
 
     /**
      * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
+     *
+     * @param value
+     *         an expression which yields an object which has a {@code isEmpty()} method, e.g.
+     *         a {@code String}
      */
     public static BooleanExpression isEmpty(Expression<?> value) {
         return fromCode("$L.isEmpty()", value.toCode());
@@ -47,6 +51,9 @@ public final class Containers {
     /**
      * Obtains the expression which calls {@code Messages.isDefault())} method on the given
      * {@code value}.
+     *
+     * @param value
+     *         an expression of a Protobuf message or a Protobuf enum
      */
     public static BooleanExpression isDefault(Expression<?> value) {
         return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
