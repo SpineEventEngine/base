@@ -31,6 +31,15 @@ import java.util.function.Function;
  * an expression of the violation being saved.
  *
  * <p>Typically, one accumulator is used many times for different violations.
+ *
+ * <p>For example:
+ * <pre>
+ * AccumulateViolation accumulator =
+ *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
+ * </pre>
+ *
+ * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
+ * to add the violation to a {@code ValidationError} builder.
  */
 @FunctionalInterface
 public interface AccumulateViolations
