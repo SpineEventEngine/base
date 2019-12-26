@@ -111,7 +111,7 @@ public final class IsSet {
         Expression<?> elementAccess = Expression.of("el");
         BooleanExpression elementIsSet = valueIsPresent(elementAccess);
         if (elementIsSet.isConstant()) {
-            checkState(elementIsSet.isConstantTrue(), "Field `%s` can never be non-default.");
+            checkState(elementIsSet.isConstantTrue(), "The field `%s` can never be non-default.");
             return collectionIsNotEmpty.returnStatement();
         } else {
             String nonDefaultField = "nonDefault";
@@ -184,13 +184,14 @@ public final class IsSet {
      */
     public static BooleanExpression
     alternativeIsSet(Alternative alternative, MessageAccess messageAccess) {
-        BooleanExpression alternativeMatched = alternative
-                .fields()
-                .stream()
-                .map(IsSet::new)
-                .reduce(trueLiteral(),
-                        (condition, isSet) -> condition.and(isSet.invocation(messageAccess)),
-                        BooleanExpression::and);
+        BooleanExpression alternativeMatched =
+                alternative.fields()
+                           .stream()
+                           .map(IsSet::new)
+                           .reduce(trueLiteral(),
+                                   (condition, isSet) ->
+                                           condition.and(isSet.invocation(messageAccess)),
+                                   BooleanExpression::and);
         return alternativeMatched;
     }
 }
