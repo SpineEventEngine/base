@@ -84,7 +84,6 @@ import static java.util.stream.Collectors.toList;
  * the message class. Note that some methods are declared as {@code static}. Thus, they cannot be
  * placed into an inner (non-static) class.
  */
-@SuppressWarnings("OverlyCoupledClass")
 final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSpec>> {
 
     @SuppressWarnings("UnstableApiUsage")

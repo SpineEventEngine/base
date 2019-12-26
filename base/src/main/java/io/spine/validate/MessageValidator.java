@@ -62,7 +62,6 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
  */
-@SuppressWarnings("OverlyCoupledClass")
 final class MessageValidator implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
