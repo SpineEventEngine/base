@@ -88,13 +88,15 @@ public final class RangeConstraint extends RangedConstraint<String> {
         Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
         if (!rangeOption.isEmpty()) {
             checkState(rangeMatcher.matches(),
-                       "Range '%s' on field `%s` is invalid.", rangeOption, field);
-            boolean minInclusive = rangeMatcher.group(1)
-                                               .equals("[");
+                       "Malformed range `%s` on field `%s`. " +
+                       "Must have a form of `[a..b]` " +
+                       "where `a` and `b` are valid literals of type %s. " +
+                       "See doc of `(range)` for more details.",
+                       rangeOption, field, field.javaTypeName());
+            boolean minInclusive = rangeMatcher.group(1).equals("[");
             ComparableNumber minValue = new NumberText(rangeMatcher.group(2)).toNumber();
             ComparableNumber maxValue = new NumberText(rangeMatcher.group(3)).toNumber();
-            boolean maxInclusive = rangeMatcher.group(4)
-                                               .equals("]");
+            boolean maxInclusive = rangeMatcher.group(4).equals("]");
             if (minInclusive) {
                 return maxInclusive ? closed(minValue, maxValue) : closedOpen(minValue, maxValue);
             } else {
