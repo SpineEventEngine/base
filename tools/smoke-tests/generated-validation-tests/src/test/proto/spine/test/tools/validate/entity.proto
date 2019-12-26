@@ -9,12 +9,20 @@ option java_package = "io.spine.test.tools.validate";
 option java_outer_classname = "EntityProto";
 option java_multiple_files = true;
 
+// An entity type.
+//
+// By default, `id` is required.
+//
 message Project {
     option (entity).kind = ENTITY;
 
     string id = 1;
 }
 
+// An entity type with a non-required ID.
+//
+// The `id` field is explicitly non-required.
+//
 message Task {
     option (entity).kind = ENTITY;
 
