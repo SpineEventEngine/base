@@ -23,7 +23,6 @@ package io.spine.validate.option;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.ConstraintTranslator;
@@ -85,53 +84,45 @@ public final class RangeConstraint extends RangedConstraint<String> {
 
     @VisibleForTesting
     static Range<ComparableNumber> rangeFromOption(String rangeOption, FieldDeclaration field) {
+        return !rangeOption.isEmpty()
+               ? compileRange(rangeOption, field)
+               : Range.all();
+    }
+
+    private static Range<ComparableNumber>
+    compileRange(String rangeOption, FieldDeclaration field) {
         Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
-        if (!rangeOption.isEmpty()) {
-            checkState(rangeMatcher.matches(),
-                       "Malformed range `%s` on field `%s`. " +
-                       "Must have a form of `[a..b]` " +
-                       "where `a` and `b` are valid literals of type %s. " +
-                       "See doc of `(range)` for more details.",
-                       rangeOption, field, field.javaTypeName());
-            boolean minInclusive = rangeMatcher.group(1).equals("[");
-            ComparableNumber minValue = new NumberText(rangeMatcher.group(2)).toNumber();
-            ComparableNumber maxValue = new NumberText(rangeMatcher.group(3)).toNumber();
-            boolean maxInclusive = rangeMatcher.group(4).equals("]");
-            if (minInclusive) {
-                return maxInclusive ? closed(minValue, maxValue) : closedOpen(minValue, maxValue);
-            } else {
-                return maxInclusive ? openClosed(minValue, maxValue) : open(minValue, maxValue);
-            }
+        checkState(rangeMatcher.matches(),
+                   "Malformed range `%s` on field `%s`. " +
+                   "Must have a form of `[a..b]` " +
+                   "where `a` and `b` are valid literals of type %s. " +
+                   "See doc of `(range)` for more details.",
+                   rangeOption, field, field.javaTypeName());
+        boolean minInclusive = rangeMatcher.group(1).equals("[");
+        ComparableNumber minValue = new NumberText(rangeMatcher.group(2)).toNumber();
+        ComparableNumber maxValue = new NumberText(rangeMatcher.group(3)).toNumber();
+        boolean maxInclusive = rangeMatcher.group(4).equals("]");
+        if (minInclusive) {
+            return maxInclusive ? closed(minValue, maxValue) : closedOpen(minValue, maxValue);
         } else {
-            return Range.all();
+            return maxInclusive ? openClosed(minValue, maxValue) : open(minValue, maxValue);
         }
     }
 
     @Override
-    public String errorMessage(FieldContext field) {
-        return format("Field %s is out of range.", field());
-    }
-
-    @Override
     protected String compileErrorMessage(Range<ComparableNumber> range) {
-        return new StringBuilder(format("Value of `%s`", field()))
-                .append(forLowerBound())
-                .append(range().lowerEndpoint())
-                .append(" and ")
-                .append(forUpperBound())
-                .append(range().upperEndpoint())
-                .append('.')
-                .toString();
+        return format("Field `%s` is out of range. Must be between %s%s and %s%s.",
+                      field(),
+                      forLowerBound(range), range.lowerEndpoint(),
+                      forUpperBound(range), range.upperEndpoint());
     }
 
-    private String forLowerBound() {
-        String greaterThan = "greater than %s";
-        return format(greaterThan, orEqualTo(range().lowerBoundType()));
+    private static String forLowerBound(Range<?> range) {
+        return format("greater than %s", orEqualTo(range.lowerBoundType()));
     }
 
-    private String forUpperBound() {
-        String lessThan = "less than %s";
-        return format(lessThan, orEqualTo(range().lowerBoundType()));
+    private static String forUpperBound(Range<?> range) {
+        return format("less than %s", orEqualTo(range.upperBoundType()));
     }
 
     @Override
