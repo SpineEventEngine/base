@@ -46,8 +46,11 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A factory of message validation code.
+ *
+ * @implSpec The public generated API of a message validation is the {@code validate()} method
+ *           declared in {@link io.spine.protobuf.MessageWithConstraints}.
  */
-public final class MessageValidatorFactory {
+public final class ValidateGenerator {
 
     private static final String VALIDATE_METHOD = "validate";
     private static final String MESSAGE_VARIABLE = "msg";
@@ -63,7 +66,7 @@ public final class MessageValidatorFactory {
      * @param type
      *         type of the message to validate
      */
-    public MessageValidatorFactory(MessageType type) {
+    public ValidateGenerator(MessageType type) {
         this.type = type;
         this.messageSimpleName = NestedClassName.from(type.javaClassName());
         this.validatorSimpleName = nameForValidator(type);

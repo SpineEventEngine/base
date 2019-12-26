@@ -32,7 +32,7 @@ import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.iface.MessageImplements;
 import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.tools.protoc.iface.PredefinedInterface;
-import io.spine.tools.validate.MessageValidatorFactory;
+import io.spine.tools.validate.ValidateGenerator;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -73,7 +73,7 @@ public final class ValidatorCode extends CodeGenerator {
     }
 
     private static Collection<CompilerOutput> compileValidation(MessageType type) {
-        MessageValidatorFactory factory = new MessageValidatorFactory(type);
+        ValidateGenerator factory = new ValidateGenerator(type);
         CompilerOutput builderInsertionPoint =
                 insertCode(type, builder_scope, factory.generateVBuild().toString());
         CompilerOutput validateMethod =

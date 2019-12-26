@@ -35,13 +35,13 @@ import static javax.lang.model.SourceVersion.isName;
 import static javax.lang.model.element.Modifier.PRIVATE;
 
 @DisplayName("`MessageValidatorFactory` should")
-class MessageValidatorFactoryTest {
+class ValidateGeneratorTest {
 
     @Test
     @DisplayName("generate `Validator` class")
     void generateClass() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        MessageValidatorFactory factory = new MessageValidatorFactory(type);
+        ValidateGenerator factory = new ValidateGenerator(type);
         TypeSpec validatorClass = factory.generateClass();
         assertThat(isName(validatorClass.name))
                 .isTrue();
@@ -55,7 +55,7 @@ class MessageValidatorFactoryTest {
     @DisplayName("generate `validate()` method")
     void generateValidate() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        MessageValidatorFactory factory = new MessageValidatorFactory(type);
+        ValidateGenerator factory = new ValidateGenerator(type);
         MethodSpec validateMethod = factory.generateValidate();
         assertThat(isName(validateMethod.name))
                 .isTrue();
@@ -67,7 +67,7 @@ class MessageValidatorFactoryTest {
     @DisplayName("generate `vBuild()` method")
     void generateVBuild() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        MessageValidatorFactory factory = new MessageValidatorFactory(type);
+        ValidateGenerator factory = new ValidateGenerator(type);
         MethodSpec validateMethod = factory.generateVBuild();
         assertThat(isName(validateMethod.name))
                 .isTrue();
@@ -83,7 +83,7 @@ class MessageValidatorFactoryTest {
     }
 
     private static void checkEscaped(Descriptor type) {
-        MessageValidatorFactory ifOuterClass = new MessageValidatorFactory(new MessageType(type));
+        ValidateGenerator ifOuterClass = new ValidateGenerator(new MessageType(type));
         assertThat(ifOuterClass.generateClass().name).isEqualTo("Validator$");
     }
 }
