@@ -93,9 +93,9 @@ public final class RangeConstraint extends RangedConstraint<String> {
     compileRange(String rangeOption, FieldDeclaration field) {
         Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
         checkState(rangeMatcher.matches(),
-                   "Malformed range `%s` on field `%s`. " +
+                   "Malformed range `%s` on the field `%s`. " +
                    "Must have a form of `[a..b]` " +
-                   "where `a` and `b` are valid literals of type %s. " +
+                   "where `a` and `b` are valid literals of the type `%s`. " +
                    "See doc of `(range)` for more details.",
                    rangeOption, field, field.javaTypeName());
         boolean minInclusive = rangeMatcher.group(1).equals("[");
